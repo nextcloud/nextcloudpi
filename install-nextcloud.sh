@@ -128,7 +128,6 @@ EOF
   a2enmod dir
   a2enmod mime
   a2enmod ssl
-  a2ensite default-ssl
 
   # INSTALL NEXTCLOUD
   ##########################################
@@ -176,23 +175,35 @@ EOF
     chown ${rootuser}:${htgroup} ${ocpath}/data/.htaccess
   fi
 
-  cat > /etc/apache2/sites-available/nextcloud.conf <<EOF
-Alias /nextcloud "/var/www/nextcloud/"
-
-CustomLog /var/log/nextcloud/access.log combined
-ErrorLog /var/log/nextcloud/error.log
-
-<Directory /var/www/nextcloud/>
-  Options +FollowSymlinks
-  AllowOverride All
-
-  <IfModule mod_dav.c>
-    Dav off
+cat > /etc/apache2/sites-available/000-default.conf <<'EOF'
+<VirtualHost _default_:80>
+  DocumentRoot /var/www/nextcloud
+  <IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{HTTPS} !=on
+    RewriteRule ^/?(.*) https://%{SERVER_NAME}/$1 [R,L]
   </IfModule>
+</VirtualHost>
+EOF
 
-  SetEnv HOME /var/www/nextcloud
-  SetEnv HTTP_HOME /var/www/nextcloud
-</Directory>
+cat > /etc/apache2/sites-available/nextcloud.conf <<'EOF'
+<IfModule mod_ssl.c>
+  <VirtualHost _default_:443>
+    DocumentRoot /var/www/nextcloud
+    CustomLog /var/log/nextcloud/access.log combined
+    ErrorLog /var/log/nextcloud/error.log
+    SSLEngine on
+    SSLCertificateFile      /etc/ssl/certs/ssl-cert-snakeoil.pem
+    SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
+  </VirtualHost>
+  <Directory /var/www/nextcloud/>
+    Options +FollowSymlinks
+    AllowOverride All
+    <IfModule mod_dav.c>
+      Dav off
+    </IfModule>
+  </Directory>
+</IfModule>
 EOF
   a2ensite nextcloud
 
@@ -219,14 +230,6 @@ EOF
   sed -i "s/post_max_size=.*/upload_max_filesize=$MAX_FILESIZE/" /var/www/nextcloud/.user.ini 
   sed -i "s/post_max_size=.*/post_max_size=$MAX_FILESIZE/"       /var/www/nextcloud/.htaccess
   sed -i "s/post_max_size=.*/upload_max_filesize=$MAX_FILESIZE/" /var/www/nextcloud/.htaccess
-
-cat >> /var/www/nextcloud/.htaccess <<EOF
-<IfModule mod_rewrite.c>
-  RewriteEngine On
-  RewriteCond %{HTTPS} !=on
-  RewriteRule ^/?(.*) https://%{SERVER_NAME}/nextcloud/$1 [R,L]
-</IfModule>
-EOF
 
   echo "*/15  *  *  *  * php -f /var/www/nextcloud/cron.php" > /tmp/crontab_http
   crontab -u www-data /tmp/crontab_http
@@ -262,6 +265,7 @@ EOF
   apt-get clean
   rm /var/lib/apt/lists/* -r
 
+  systemctl disable ssh
   rm $STATE_FILE 
   halt
 fi
