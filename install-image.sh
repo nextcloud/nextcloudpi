@@ -46,13 +46,15 @@ while [[ $NUM_REBOOTS != -1 ]]; do
     sleep 1
   done
 
-  sleep 90
+  sleep 120
   echo "Launching installation"
   cat install-nextcloud.sh | sshpass -praspberry $SSH pi@$IP
   wait 
   NUM_REBOOTS=$(( NUM_REBOOTS-1 ))
 done
-echo "$IMGFILE generated successfully"
+echo "$IMGFILE generated successfully. Compressing"
+TARNAME=$( basename $IMGFILE ).tar.bz2
+test -f $TARNAME || tar -I pbzip2 -cvf $TARNAME  $IMGFILE
 
 # License
 #
