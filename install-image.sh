@@ -7,20 +7,21 @@
 # GPL licensed (see end of file) * Use at your own risk!
 #
 # Usage:
-#   ./install-image.sh <IP> # Use the IP of your running QEMU Raspbian image
+#   ./install-nextcloud.sh <IP> # Use the IP of your running QEMU Raspbian image
 #
 # Notes:
 #   Set DOWNLOAD=0 if you have already downloaded an image. Rename it to nextcloudpi.img
 
 IP=$1          # First argument is the QEMU Raspbian IP address
-DOWNLOAD=1     # Download the latest image
+DOWNLOAD=0     # Download the latest image
 #IMG=raspbian_latest
 IMG=raspbian_lite_latest
-
-[[ "$IP" == "" ]] && { echo "usage: ./install-image.sh <IP>"; exit; }
-
-SSH="ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o ServerAliveInterval=5 -o ConnectTimeout=1 -o LogLevel=quiet"
+INSTALL_SCRIPT=nextcloud.sh
 IMGFILE="NextCloudPi_$( date  "+%m-%d-%y" ).img"
+
+[[ "$IP" == "" ]] && { echo "usage: ./$0 <IP>"; exit; }
+
+source library.sh
 
 if [[ "$DOWNLOAD" == "1" ]]; then
   wget https://downloads.raspberrypi.org/$IMG -O $IMG.zip && \
@@ -29,32 +30,8 @@ if [[ "$DOWNLOAD" == "1" ]]; then
   qemu-img resize $IMGFILE +1G
 fi
 
-test -d qemu-raspbian-network || git clone https://github.com/nachoparker/qemu-raspbian-network.git
-sed -i '30s/NO_NETWORK=1/NO_NETWORK=0/' qemu-raspbian-network/qemu-pi.sh
+launch_install_qemu $INSTALL_SCRIPT $IMGFILE $IP
 
-NUM_REBOOTS=$( grep -c reboot install-nextcloud.sh )
-while [[ $NUM_REBOOTS != -1 ]]; do
-  echo "Starting QEMU"
-  cd qemu-raspbian-network
-  sudo ./qemu-pi.sh ../$IMGFILE &
-  cd -
-
-  sleep 10
-  echo "Waiting for SSH to be up"
-  while true; do
-    sshpass -praspberry $SSH pi@$IP ls &>/dev/null && break
-    sleep 1
-  done
-
-  sleep 120
-  echo "Launching installation"
-  cat install-nextcloud.sh | sshpass -praspberry $SSH pi@$IP
-  wait 
-  NUM_REBOOTS=$(( NUM_REBOOTS-1 ))
-done
-echo "$IMGFILE generated successfully. Compressing"
-TARNAME=$( basename $IMGFILE ).tar.bz2
-test -f $TARNAME || tar -I pbzip2 -cvf $TARNAME  $IMGFILE
 
 # License
 #
