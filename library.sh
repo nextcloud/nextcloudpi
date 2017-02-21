@@ -10,7 +10,7 @@ function launch_install_qemu()
   local INSTALL_SCRIPT=$1
   local IMGFILE=$2
   local IP=$3
-  [[ "$IP" == "" ]] && { echo "usage: launch_install_qemu <script> <img> <IP>"; exit; } # TODO
+  [[ "$IP" == "" ]] && { echo "usage: launch_install_qemu <script> <img> <IP>"; exit; }
   local SSH="ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o ServerAliveInterval=5 -o ConnectTimeout=1 -o LogLevel=quiet"
   local NUM_REBOOTS=$( grep -c reboot $INSTALL_SCRIPT )
 
@@ -32,7 +32,7 @@ function launch_install_qemu()
 
     sleep 120
     echo "Launching installation"
-    cat install-nextcloud.sh | sshpass -praspberry $SSH pi@$IP
+    cat $INSTALL_SCRIPT | sshpass -praspberry $SSH pi@$IP
     wait 
     NUM_REBOOTS=$(( NUM_REBOOTS-1 ))
   done
