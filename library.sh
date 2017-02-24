@@ -5,40 +5,74 @@
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
 
+SSH=( ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o ServerAliveInterval=5 -o ConnectTimeout=1 -o LogLevel=quiet )
+
 function launch_install_qemu()
 {
   local INSTALL_SCRIPT=$1
-  local IMGFILE=$2
+  local IMG=$2
   local IP=$3
-  [[ "$IP" == "" ]] && { echo "usage: launch_install_qemu <script> <img> <IP>"; exit; }
-  local SSH="ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o ServerAliveInterval=5 -o ConnectTimeout=1 -o LogLevel=quiet"
+  [[ "$IP" == "" ]] && { echo "usage: launch_install_qemu <script> <img> <IP>"; return 1; }
+  test -f $IMG            || { echo "input file $IMG            not found"; return 1; }
+  test -f $INSTALL_SCRIPT || { echo "input file $INSTALL_SCRIPT not found"; return 1; }
+
+  # take a copy of the input image for processing ( append "-stage1" )
+  local BASE=$( sed 's=-stage[[:digit:]]=='         <<< $IMG )
+  local NUM=$(  sed 's=.*-stage\([[:digit:]]\)=\1=' <<< $IMG )
+  [[ "$BASE" == "$IMG" ]] && NUM=0
+  local IMGFILE="$BASE-stage$(( NUM+1 ))"
+  cp -v $IMG $IMGFILE || return 1
+
   local NUM_REBOOTS=$( grep -c reboot $INSTALL_SCRIPT )
-
-  test -d qemu-raspbian-network || git clone https://github.com/nachoparker/qemu-raspbian-network.git
-  sed -i '30s/NO_NETWORK=1/NO_NETWORK=0/' qemu-raspbian-network/qemu-pi.sh
-
   while [[ $NUM_REBOOTS != -1 ]]; do
-    echo "Starting QEMU"
-    cd qemu-raspbian-network
-    sudo ./qemu-pi.sh ../$IMGFILE &
-    cd -
-
+    launch_qemu $IMGFILE &
     sleep 10
-    echo "Waiting for SSH to be up"
-    while true; do
-      sshpass -praspberry $SSH pi@$IP ls &>/dev/null && break
-      sleep 1
-    done
-
-    sleep 120
-    echo "Launching installation"
-    cat $INSTALL_SCRIPT | sshpass -praspberry $SSH pi@$IP
+    wait_SSH $IP
+    sleep 120                               # FIXME for some reason, SSH is ready but blocks for PIXEL image
+    launch_installation $INSTALL_SCRIPT 
     wait 
     NUM_REBOOTS=$(( NUM_REBOOTS-1 ))
   done
-  echo "$IMGFILE generated successfully. Compressing"
-  local TARNAME=$( basename $IMGFILE ).tar.bz2
-  test -f $TARNAME || tar -I pbzip2 -cvf $TARNAME  $IMGFILE
+  echo "$IMGFILE generated successfully"
+}
+
+function launch_qemu()
+{
+  local IMG=$1
+  test -f $1 || { echo "Image $IMG not found"; return 1; }
+  test -d qemu-raspbian-network || git clone https://github.com/nachoparker/qemu-raspbian-network.git
+  sed -i '30s/NO_NETWORK=1/NO_NETWORK=0/' qemu-raspbian-network/qemu-pi.sh
+  echo "Starting QEMU image $IMG"
+  ( cd qemu-raspbian-network && sudo ./qemu-pi.sh ../$IMG )
+}
+
+function wait_SSH()
+{
+  local IP=$1
+  echo "Waiting for SSH to be up on $IP..."
+  while true; do
+    sshpass -praspberry ${SSH[@]} pi@$IP ls &>/dev/null && break
+    sleep 1
+  done
+  echo "SSH is up"
+}
+
+function launch_installation()
+{
+  local INSTALL_SCRIPT=$1
+  test -f $1 || { echo "File $INSTALL_SCRIPT not found"; return 1; }
+  echo "Launching installation"
+  cat $INSTALL_SCRIPT | sshpass -praspberry ${SSH[@]} pi@$IP
+}
+
+function pack_image()
+{
+  local IMGFILE="$1"
+  local IMGOUT="$2"
+  local TARNAME=$( basename $IMGOUT .img ).tar.bz2
+  cp -v $( ls -1t $IMGFILE-stage* | head -1 ) $IMGOUT
+  tar -I pbzip2 -cvf $TARNAME $IMGOUT &>/dev/null && \
+    echo -e "$TARNAME packed successfully"
 }
 
 # License
