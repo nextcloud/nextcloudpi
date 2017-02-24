@@ -7,7 +7,11 @@
 # GPL licensed (see end of file) * Use at your own risk!
 #
 # Usage:
-#   cat install-nextcloud.sh | sshpass -praspberry ssh pi@$IP
+#   cat nextcloud.sh | sshpass -praspberry ssh pi@$IP
+#
+#   , or scp this file to a Raspberry Pi and run it from Raspbian
+#
+#   ./nextcloud.sh
 #
 # Notes:
 #   Upon each necessary restart, the system will cut the SSH session, therefore
@@ -136,7 +140,6 @@ EOF
   wget https://download.nextcloud.com/server/releases/nextcloud-$VER.tar.bz2 -O nextcloud.tar.bz2
   tar -xvf nextcloud.tar.bz2
   rm nextcloud.tar.bz2
-  mkdir /var/log/nextcloud
   mkdir /var/www/nextcloud/.opcache
 
   ocpath='/var/www/nextcloud'
@@ -190,8 +193,8 @@ cat > /etc/apache2/sites-available/nextcloud.conf <<'EOF'
 <IfModule mod_ssl.c>
   <VirtualHost _default_:443>
     DocumentRoot /var/www/nextcloud
-    CustomLog /var/log/nextcloud/access.log combined
-    ErrorLog /var/log/nextcloud/error.log
+    CustomLog /var/www/nextcloud/data/access.log combined
+    ErrorLog /var/www/nextcloud/data/error.log
     SSLEngine on
     SSLCertificateFile      /etc/ssl/certs/ssl-cert-snakeoil.pem
     SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
@@ -264,6 +267,7 @@ EOF
   apt-get autoremove -y
   apt-get clean
   rm /var/lib/apt/lists/* -r
+  rm -f /home/pi/.bash_history
 
   systemctl disable ssh
   rm $STATE_FILE 
