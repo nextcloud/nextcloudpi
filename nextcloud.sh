@@ -18,6 +18,8 @@
 #   it is required to save the state of the installation. See variable $STATE_FILE
 #   It will be necessary to invoke this a number of times for a complete installation
 
+set -xe
+
 sudo su
 
 VER=11.0.1
@@ -27,8 +29,7 @@ DBPASSWD=ownyourbits
 MAX_FILESIZE=1G
 STATE_FILE=/home/pi/.installation_state
 
-set -x
-set -e
+set -xe
 
 test -f $STATE_FILE && STATE=$( cat $STATE_FILE 2>/dev/null )
 if [ "$STATE" == "" ]; then
@@ -52,7 +53,8 @@ elif [ "$STATE" == "0" ]; then
   apt-get update
   apt-get upgrade -y
   apt-get dist-upgrade -y
-  apt-get autoremove
+  apt-get install rpi-update -y
+  echo -e "y\n" | rpi-update
 
   echo 1 > $STATE_FILE 
   reboot
