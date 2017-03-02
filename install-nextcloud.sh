@@ -19,9 +19,8 @@ EXTRACT=1      # Extract the image from zip, so start from 0
 IMG=raspbian_lite_latest
 INSTALL_SCRIPT=nextcloud.sh
 IMGFILE="NextCloudPi_$( date  "+%m-%d-%y" ).img-stage0"
-IMGOUT="NextCloudPi_$( date  "+%m-%d-%y" ).img"
 
-source library.sh
+source library.sh       # initializes $IMGOUT
 
 [[ "$DOWNLOAD" == "1" ]] && { wget https://downloads.raspberrypi.org/$IMG -O $IMG.zip || exit; }
 [[ "$DOWNLOAD" == "1" ]] || [[ "$EXTRACT"  == "1" ]] && {
@@ -29,6 +28,8 @@ source library.sh
   mv *-raspbian-*.img $IMGFILE && \
   qemu-img resize $IMGFILE +1G || exit 
 }
+
+IMGOUT="NextCloudPi_$( date  "+%m-%d-%y" ).img"
 
 launch_install_qemu $INSTALL_SCRIPT $IMGFILE $IP || exit
 pack_image $IMGFILE $IMGOUT
