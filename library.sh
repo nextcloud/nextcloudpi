@@ -5,6 +5,9 @@
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
 
+
+IMGOUT=$( basename $IMGFILE .img )_$( basename $INSTALL_SCRIPT .sh ).img
+
 SSH=( ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o ServerAliveInterval=5 -o ConnectTimeout=1 -o LogLevel=quiet )
 
 function launch_install_qemu()
@@ -43,7 +46,7 @@ function launch_qemu()
   test -d qemu-raspbian-network || git clone https://github.com/nachoparker/qemu-raspbian-network.git
   sed -i '30s/NO_NETWORK=1/NO_NETWORK=0/' qemu-raspbian-network/qemu-pi.sh
   echo "Starting QEMU image $IMG"
-  ( cd qemu-raspbian-network && sudo ./qemu-pi.sh ../$IMG )
+  ( cd qemu-raspbian-network && sudo ./qemu-pi.sh ../$IMG 2>/dev/null )
 }
 
 function wait_SSH()
