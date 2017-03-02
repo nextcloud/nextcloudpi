@@ -15,6 +15,8 @@
 #
 # See the variables on the top of the script for tweaking
 
+set -xe
+
 sudo su
 
 NCLOG=/var/www/nextcloud/data/nextcloud.log     # location of Nextcloud logs
@@ -22,8 +24,7 @@ BANTIME=600                                     # time to ban an IP that exceede
 FINDTIME=600                                    # cooldown time for incorrect passwords
 MAXRETRY=6                                      # bad attempts before banning an IP
 
-set -x
-set -e
+set -xe
 
 
 # INSTALLATION
