@@ -1,34 +1,45 @@
 #!/bin/bash
 
-# TODO
-# config from the beginning and store it in a variable?
-# install to real rpi without QEMU
-# no dialog (automatic) version
-
-
-
-# Generic software installer on QEMU emulated Raspbian image
+# Generic software installer for Raspbian. Online on a running RPi, or offline with QEMU.
 # Tested with 2017-01-11-raspbian-jessie.img (and lite)
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
 #
 # Usage:
-#  ./installer.sh <script.sh> <imgfile.img> <IP> 
+#
+#  To install to an image using QEMU
+#
+#      ./installer.sh <script.sh> <IP> <imgfile.img> 
+#
+#  To install directly to a running Raspberry Pi through SSH, omit the image
+#
+#      ./installer.sh <script.sh> <IP> 
+#
+#  In order to skip interactive configuration (you can edit the variables at the top of the scripts)
+#
+#      NO_CONFIG=1 ./installer.sh <script.sh> <IP> (<imgfile.img>)
 #
 # Notes:
 #  Use a Raspbian image to be run on QEMU
 #  Use any script that would run locally on the image
 #  Use the IP of your running QEMU Raspbian image (DHCP should assign always the same)
+#
 
-INSTALL_SCRIPT=$1
-IMGFILE=$2              # First argument is the image file to start from
-IP=$3                   # Second argument is the QEMU Raspbian IP address
+INSTALL_SCRIPT=$1       # First argument is the script to be run inside Raspbian
+IP=$2                   # Second argument is the QEMU Raspbian IP address
+IMGFILE=$3              # Third argument is the image file to start from ( empty for online installation )
  
 source library.sh       # initializes $IMGOUT
 
-launch_install_qemu $INSTALL_SCRIPT $IMGFILE $IP || exit
-pack_image                          $IMGFILE $IMGOUT
+config $INSTALL_SCRIPT || exit 1
+
+if [[ "$IMGFILE" != "" ]]; then
+  launch_install_qemu "$IMGFILE" $IP || exit 1
+  pack_image          "$IMGFILE" "$IMGOUT" 
+else
+  launch_installation $IP
+fi
 
 
 # License
@@ -47,4 +58,3 @@ pack_image                          $IMGFILE $IMGOUT
 # along with this script; if not, write to the
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
-
