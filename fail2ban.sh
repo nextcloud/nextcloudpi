@@ -19,10 +19,10 @@ set -xe
 
 sudo su
 
-NCLOG=/var/www/nextcloud/data/nextcloud.log     # location of Nextcloud logs
-BANTIME=600                                     # time to ban an IP that exceeded attempts
-FINDTIME=600                                    # cooldown time for incorrect passwords
-MAXRETRY=6                                      # bad attempts before banning an IP
+NCLOG_=/var/www/nextcloud/data/nextcloud.log     # location of Nextcloud logs
+BANTIME_=600                                     # time to ban an IP that exceeded attempts
+FINDTIME_=600                                    # cooldown time for incorrect passwords
+MAXRETRY_=6                                      # bad attempts before banning an IP
 
 set -xe
 
@@ -39,7 +39,7 @@ chown -R www-data /var/www/nextcloud/data
 cd /var/www/nextcloud
 sudo -u www-data php occ config:system:set loglevel --value=2
 sudo -u www-data php occ config:system:set log_type --value=file
-sudo -u www-data php occ config:system:set logfile  --value=$NCLOG
+sudo -u www-data php occ config:system:set logfile  --value=$NCLOG_
 
 cat > /etc/fail2ban/filter.d/nextcloud.conf <<'EOF'
 [INCLUDES]
@@ -62,12 +62,12 @@ cat > /etc/fail2ban/jail.conf <<EOF
 ignoreip = 127.0.0.1/8
 
 # "bantime" is the number of seconds that a host is banned.
-bantime  = $BANTIME
+bantime  = $BANTIME_
 
 # A host is banned if it has generated "maxretry" during the last "findtime"
 # seconds.
-findtime = $FINDTIME
-maxretry = $MAXRETRY
+findtime = $FINDTIME_
+maxretry = $MAXRETRY_
 
 #
 # ACTIONS
@@ -90,7 +90,7 @@ enabled  = true
 port     = ssh
 filter   = sshd
 logpath  = /var/log/auth.log
-maxretry = $MAXRETRY
+maxretry = $MAXRETRY_
 
 #
 # HTTP servers
@@ -101,8 +101,8 @@ maxretry = $MAXRETRY
 enabled  = true
 port     = http,https
 filter   = nextcloud
-logpath  = $NCLOG
-maxretry = $MAXRETRY
+logpath  = $NCLOG_
+maxretry = $MAXRETRY_
 EOF
 
 # CLEANUP
