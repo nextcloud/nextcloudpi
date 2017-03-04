@@ -7,7 +7,7 @@
 # GPL licensed (see end of file) * Use at your own risk!
 #
 # Usage:
-#   cat install-fail2ban.sh | sshpass -praspberry ssh pi@$IP
+#   cat install-fail2ban.sh | ssh pi@$IP
 #
 #   , or scp this file to a Raspberry Pi and run it from Raspbian
 #

@@ -9,16 +9,14 @@
 IMGOUT=$( basename $IMGFILE .img )_$( basename $INSTALL_SCRIPT .sh ).img
 CFGOUT=config_$( basename $INSTALL_SCRIPT .sh ).txt
 
-SSH=( ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o ServerAliveInterval=5 -o ConnectTimeout=20 -o LogLevel=quiet )
+SSH=( ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o ServerAliveInterval=20 -o ConnectTimeout=20 -o LogLevel=quiet )
 
 function launch_install_qemu()
 {
-  local INSTALL_SCRIPT=$1
-  local IMG=$2
-  local IP=$3
-  [[ "$IP" == "" ]] && { echo "usage: launch_install_qemu <script> <img> <IP>"; return 1; }
-  test -f $IMG            || { echo "input file $IMG            not found"; return 1; }
-  test -f $INSTALL_SCRIPT || { echo "input file $INSTALL_SCRIPT not found"; return 1; }
+  local IMG=$1
+  local IP=$2
+  [[ "$IP"      == ""  ]] && { echo "usage: launch_install_qemu <script> <img> <IP>"; return 1; }
+  test -f $IMG            || { echo "input file $IMG not found";                      return 1; }
 
   # take a copy of the input image for processing ( append "-stage1" )
   local BASE=$( sed 's=-stage[[:digit:]]=='         <<< $IMG )
@@ -32,8 +30,7 @@ function launch_install_qemu()
     launch_qemu $IMGFILE &
     sleep 10
     wait_SSH $IP
-    sleep 120                               # FIXME for some reason, SSH is ready but fails if CPU still busy
-    launch_installation $INSTALL_SCRIPT $IP
+    launch_installation $IP
     wait 
     NUM_REBOOTS=$(( NUM_REBOOTS-1 ))
   done
@@ -63,14 +60,14 @@ function wait_SSH()
 
 function launch_installation()
 {
-  local INSTALL_SCRIPT=$1
-  local IP=$2
-  test -f $1 || { echo "File $INSTALL_SCRIPT not found"; return 1; }
+  local IP=$1
+  [[ "$INSTALLATION_CODE" == "" ]] && { echo "Need to run config first"; return 1; }
   echo "Launching installation"
-  config $INSTALL_SCRIPT 4>&1 1>&2 2>&4 4>&- | sshpass -praspberry ${SSH[@]} pi@$IP | sed 1,7d
+  echo -e "$INSTALLATION_CODE" | sshpass -praspberry ${SSH[@]} pi@$IP 
   echo "configuration saved to $CFGOUT"
 }
 
+# Initializes $INSTALLATION_CODE
 function config()
 {
   local INSTALL_SCRIPT="$1"
@@ -80,7 +77,7 @@ function config()
   local VARS=( $( grep "^[[:alpha:]]\+_=" "$INSTALL_SCRIPT" | cut -d= -f1 | sed 's|_$||' ) )
   local VALS=( $( grep "^[[:alpha:]]\+_=" "$INSTALL_SCRIPT" | cut -d= -f2 ) )
 
-  test ${#VARS[@]} -eq 0 && { echo here; cat "$INSTALL_SCRIPT" >&2; return; }
+  [[ "$NO_CONFIG" == "1" ]] || test ${#VARS[@]} -eq 0 && { INSTALLATION_CODE="$( cat "$INSTALL_SCRIPT" )"; return; }
 
   for i in `seq 1 1 ${#VARS[@]} `; do
     local PARAM+="${VARS[$((i-1))]} $i 1 ${VALS[$((i-1))]} $i 15 30 0 "
@@ -93,20 +90,20 @@ function config()
   local DIALOG_ITEM_HELP=4
   local DIALOG_ERROR=254
   local DIALOG_ESC=255
-  local returncode=0
+  local RET=0
 
-  while test $returncode != 1 && test $returncode != 250; do
+  while test $RET != 1 && test $RET != 250; do
     exec 3>&1
     local value
-    value=$( dialog --ok-label "Submit" \
-      --backtitle "$BACKTITLE" \
-      --form "Enter the desired configuration" \
-      20 50 0 $PARAM \
-      2>&1 1>&3 )
-    returncode=$?
+    value=$( dialog --ok-label "Start" \
+                    --backtitle "$BACKTITLE" \
+                    --form "Enter the desired configuration" \
+                    20 50 0 $PARAM \
+            2>&1 1>&3 )
+    RET=$?
     exec 3>&-
 
-    case $returncode in
+    case $RET in
       $DIALOG_CANCEL)
         dialog \
           --clear \
@@ -114,10 +111,11 @@ function config()
           --yesno "Really quit?" 10 30
         case $? in
           $DIALOG_OK)
-            break
+            echo "Aborted"
+            return 1
             ;;
           $DIALOG_CANCEL)
-            returncode=99
+            RET=99
             ;;
         esac
         ;;
@@ -136,34 +134,34 @@ function config()
             break
             ;;
           $DIALOG_CANCEL)
-            returncode=99
+            RET=99
             ;;
         esac
         ;;
       $DIALOG_HELP)
         echo "Button 2 (Help) pressed."
-        return
+        return 1
         ;;
       $DIALOG_EXTRA)
         echo "Button 3 (Extra) pressed."
-        return
+        return 1
         ;;
       $DIALOG_ERROR)
         echo "ERROR!$value"
-        return
+        return 1
         ;;
       $DIALOG_ESC)
         echo "ESC pressed."
-        return
+        return 1
         ;;
       *)
-        echo "Return code was $returncode"
-        return
+        echo "Return code was $RET"
+        return 1
         ;;
     esac
   done
 
-  sed $SEDRULE "$INSTALL_SCRIPT" >&2
+  INSTALLATION_CODE="$( sed $SEDRULE "$INSTALL_SCRIPT" )"
   echo -e "$CONFIG" > $CFGOUT
   clear
 }
