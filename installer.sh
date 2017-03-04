@@ -1,17 +1,25 @@
 #!/bin/bash
 
 # TODO
-# Nextcloud installation on QEMU emulated Raspbian image
+# config from the beginning and store it in a variable?
+# install to real rpi without QEMU
+# no dialog (automatic) version
+
+
+
+# Generic software installer on QEMU emulated Raspbian image
 # Tested with 2017-01-11-raspbian-jessie.img (and lite)
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
 #
 # Usage:
-#   ./install-nextcloud.sh <IP> # Use the IP of your running QEMU Raspbian image
+#  ./installer.sh <script.sh> <imgfile.img> <IP> 
 #
 # Notes:
-#   Set DOWNLOAD=0 if you have already downloaded an image. Rename it to nextcloudpi.img
+#  Use a Raspbian image to be run on QEMU
+#  Use any script that would run locally on the image
+#  Use the IP of your running QEMU Raspbian image (DHCP should assign always the same)
 
 INSTALL_SCRIPT=$1
 IMGFILE=$2              # First argument is the image file to start from
@@ -20,7 +28,7 @@ IP=$3                   # Second argument is the QEMU Raspbian IP address
 source library.sh       # initializes $IMGOUT
 
 launch_install_qemu $INSTALL_SCRIPT $IMGFILE $IP || exit
-pack_image $IMGFILE $IMGOUT
+pack_image                          $IMGFILE $IMGOUT
 
 
 # License

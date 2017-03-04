@@ -23,10 +23,10 @@ set -xe
 sudo su
 
 VER=11.0.1
-ADMINUSER=admin
-DBADMIN=ncadmin
-DBPASSWD=ownyourbits
-MAX_FILESIZE=1G
+ADMINUSER_=admin
+DBADMIN_=ncadmin
+DBPASSWD_=ownyourbits
+MAX_FILESIZE_=1G
 STATE_FILE=/home/pi/.installation_state
 
 set -xe
@@ -79,8 +79,8 @@ EOF
   apt-get install php7.0-APC -y
   apt-get install libxml2-dev php-zip php-dom php-xmlwriter php-xmlreader php-gd php-curl php-mbstring -y
 
-  debconf-set-selections <<< "mariadb-server-5.5 mysql-server/root_password password $DBPASSWD"
-  debconf-set-selections <<< "mariadb-server-5.5 mysql-server/root_password_again password $DBPASSWD"
+  debconf-set-selections <<< "mariadb-server-5.5 mysql-server/root_password password $DBPASSWD_"
+  debconf-set-selections <<< "mariadb-server-5.5 mysql-server/root_password_again password $DBPASSWD_"
   apt-get install mariadb-server php7.0-mysql -y
 
   # CONFIGURE APACHE AND PHP7
@@ -212,10 +212,10 @@ cat > /etc/apache2/sites-available/nextcloud.conf <<'EOF'
 EOF
   a2ensite nextcloud
 
-  mysql -u root -p$DBPASSWD <<EOF
+  mysql -u root -p$DBPASSWD_ <<EOF
 CREATE DATABASE nextcloud;
-CREATE USER '$DBADMIN'@'localhost' IDENTIFIED BY '$DBPASSWD';
-GRANT ALL PRIVILEGES ON nextcloud.* TO $DBADMIN@localhost;
+CREATE USER '$DBADMIN_'@'localhost' IDENTIFIED BY '$DBPASSWD_';
+GRANT ALL PRIVILEGES ON nextcloud.* TO $DBADMIN_@localhost;
 EXIT
 EOF
 
@@ -224,17 +224,17 @@ EOF
   cd /var/www/nextcloud/
 
   sudo -u www-data php occ maintenance:install --database \
-  "mysql" --database-name "nextcloud"  --database-user "$DBADMIN" --database-pass \
-  "$DBPASSWD" --admin-user "$ADMINUSER" --admin-pass "$DBPASSWD" 
+  "mysql" --database-name "nextcloud"  --database-user "$DBADMIN_" --database-pass \
+  "$DBPASSWD_" --admin-user "$ADMINUSER_" --admin-pass "$DBPASSWD_" 
 
   sudo -u www-data php occ background:cron
 
   sed -i '$s=^.*$=  '\''memcache.local'\'' \=> '\''\\OC\\Memcache\\APCu'\'',\n);=' /var/www/nextcloud/config/config.php
 
-  sed -i "s/post_max_size=.*/post_max_size=$MAX_FILESIZE/"       /var/www/nextcloud/.user.ini 
-  sed -i "s/post_max_size=.*/upload_max_filesize=$MAX_FILESIZE/" /var/www/nextcloud/.user.ini 
-  sed -i "s/post_max_size=.*/post_max_size=$MAX_FILESIZE/"       /var/www/nextcloud/.htaccess
-  sed -i "s/post_max_size=.*/upload_max_filesize=$MAX_FILESIZE/" /var/www/nextcloud/.htaccess
+  sed -i "s/post_max_size=.*/post_max_size=$MAX_FILESIZE_/"       /var/www/nextcloud/.user.ini 
+  sed -i "s/post_max_size=.*/upload_max_filesize=$MAX_FILESIZE_/" /var/www/nextcloud/.user.ini 
+  sed -i "s/post_max_size=.*/post_max_size=$MAX_FILESIZE_/"       /var/www/nextcloud/.htaccess
+  sed -i "s/post_max_size=.*/upload_max_filesize=$MAX_FILESIZE_/" /var/www/nextcloud/.htaccess
 
   echo "*/15  *  *  *  * php -f /var/www/nextcloud/cron.php" > /tmp/crontab_http
   crontab -u www-data /tmp/crontab_http
