@@ -12,13 +12,17 @@
 #
 #      ./installer.sh <script.sh> <IP> <imgfile.img> 
 #
-#  To install directly to a running Raspberry Pi through SSH, omit the image
+#  To install directly to a running Raspberry Pi through SSH, omit the image parameter
 #
 #      ./installer.sh <script.sh> <IP> 
 #
 #  In order to skip interactive configuration (you can edit the variables at the top of the scripts)
 #
 #      NO_CONFIG=1 ./installer.sh <script.sh> <IP> (<imgfile.img>)
+#
+#  In order to use other than default SSH user and/or password, you can specify it in the same way
+#
+#      PIUSER=nacho PIPASS=ownyourbits ./installer.sh <script.sh> <IP> (<imgfile.img>)
 #
 # Notes:
 #  Use a Raspbian image to be run on QEMU
