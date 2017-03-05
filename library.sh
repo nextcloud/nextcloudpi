@@ -9,7 +9,6 @@
 IMGOUT=$( basename $IMGFILE .img )_$( basename $INSTALL_SCRIPT .sh ).img
 CFGOUT=config_$( basename $INSTALL_SCRIPT .sh ).txt
 
-SSH=( ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o ServerAliveInterval=20 -o ConnectTimeout=20 -o LogLevel=quiet )
 
 function launch_install_qemu()
 {
@@ -47,12 +46,27 @@ function launch_qemu()
   ( cd qemu-raspbian-network && sudo ./qemu-pi.sh ../$IMG 2>/dev/null )
 }
 
+function ssh_pi()
+{
+  local IP=$1
+  local ARGS=${@:2}
+  local PIUSER=${PIUSER:-pi}
+  local PIPASS=${PIPASS:-raspberry}
+  local SSH=( ssh -q  -o UserKnownHostsFile=/dev/null\
+                      -o StrictHostKeyChecking=no\
+                      -o ServerAliveInterval=20\
+                      -o ConnectTimeout=20\
+                      -o LogLevel=quiet                  )
+  type sshpass &>/dev/null && local SSHPASS=( sshpass -p$PIPASS )
+  ${SSHPASS[@]} ${SSH[@]} ${PIUSER}@$IP $ARGS
+}
+
 function wait_SSH()
 {
   local IP=$1
   echo "Waiting for SSH to be up on $IP..."
   while true; do
-    sshpass -praspberry ${SSH[@]} pi@$IP ls &>/dev/null && break
+    ssh_pi $IP : && break
     sleep 1
   done
   echo "SSH is up"
@@ -63,7 +77,7 @@ function launch_installation()
   local IP=$1
   [[ "$INSTALLATION_CODE" == "" ]] && { echo "Need to run config first"; return 1; }
   echo "Launching installation"
-  echo -e "$INSTALLATION_CODE" | sshpass -praspberry ${SSH[@]} pi@$IP 
+  echo -e "$INSTALLATION_CODE" | ssh_pi $IP || echo "SSH to $IP failed"
   echo "configuration saved to $CFGOUT"
 }
 
