@@ -58,7 +58,14 @@ function ssh_pi()
                       -o ConnectTimeout=20\
                       -o LogLevel=quiet                  )
   type sshpass &>/dev/null && local SSHPASS=( sshpass -p$PIPASS )
-  ${SSHPASS[@]} ${SSH[@]} ${PIUSER}@$IP $ARGS
+  if [[ "${SSHPASS[@]}" == "" ]]; then
+    ${SSH[@]} ${PIUSER}@$IP $ARGS; 
+  else
+    ${SSHPASS[@]} ${SSH[@]} ${PIUSER}@$IP $ARGS 
+    local RET=$?
+    [[ $RET -eq 5 ]] && { ${SSH[@]} ${PIUSER}@$IP $ARGS; return $?; }
+    return $RET
+  fi
 }
 
 function wait_SSH()
@@ -86,6 +93,8 @@ function config()
 {
   local INSTALL_SCRIPT="$1"
   local BACKTITLE="NextCloudPi installer configuration"
+
+  type dialog &>/dev/null || { echo "please, install dialog for interactive configuration"; return 1; }
 
   test -f "$INSTALL_SCRIPT" || { echo "file "$INSTALL_SCRIPT" not found"; return 1; }
   local VARS=( $( grep "^[[:alpha:]]\+_=" "$INSTALL_SCRIPT" | cut -d= -f1 | sed 's|_$||' ) )
