@@ -14,7 +14,7 @@
 #   ./no-ip.sh
 #
 # Notes:
-#   Note that you need network connectivity for the installation to register with no-ip.org
+#   Note that you need internet access for the installation to register with no-ip.org
 #
 
 set -xe
