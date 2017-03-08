@@ -8,7 +8,7 @@
 
 IMGOUT=$( basename $IMGFILE .img )_$( basename $INSTALL_SCRIPT .sh ).img
 CFGOUT=config_$( basename $INSTALL_SCRIPT .sh ).txt
-
+DBG=x
 
 function launch_install_qemu()
 {
@@ -29,7 +29,7 @@ function launch_install_qemu()
     launch_qemu $IMGFILE &
     sleep 10
     wait_SSH $IP
-    launch_installation $IP
+    launch_installation_qemu $IP || return 1
     wait 
     NUM_REBOOTS=$(( NUM_REBOOTS-1 ))
   done
@@ -82,10 +82,40 @@ function wait_SSH()
 function launch_installation()
 {
   local IP=$1
-  [[ "$INSTALLATION_CODE" == "" ]] && { echo "Need to run config first"; return 1; }
+  [[ "$INSTALLATION_CODE"  == "" ]] && { echo "Need to run config first"    ; return 1; }
+  [[ "$INSTALLATION_STEPS" == "" ]] && { echo "No installation instructions"; return 1; }
+  local PREINST_CODE="
+set -e$DBG
+sudo su
+set -e$DBG
+"
   echo "Launching installation"
-  echo -e "$INSTALLATION_CODE" | ssh_pi $IP || echo "SSH to $IP failed"
+  echo -e "$PREINST_CODE\n$INSTALLATION_CODE\n$INSTALLATION_STEPS" | ssh_pi $IP || { echo "Installation to $IP failed" && return 1; }
   echo "configuration saved to $CFGOUT"
+}
+
+function launch_installation_qemu()
+{
+  local IP=$1
+  [[ "$NO_CFG_STEP" != "1" ]]  && local CFG_STEP=configure
+  local INSTALLATION_STEPS="
+install
+$CFG_STEP
+cleanup
+nohup halt &>/dev/null &
+"
+  launch_installation $IP
+}
+
+function launch_installation_online()
+{
+  local IP=$1
+  [[ "$NO_CFG_STEP" != "1" ]]  && local CFG_STEP=configure
+  local INSTALLATION_STEPS="
+install
+$CFG_STEP
+"
+  launch_installation $IP
 }
 
 # Initializes $INSTALLATION_CODE
@@ -103,28 +133,23 @@ function config()
   [[ "$NO_CONFIG" == "1" ]] || test ${#VARS[@]} -eq 0 && { INSTALLATION_CODE="$( cat "$INSTALL_SCRIPT" )"; return; }
 
   for i in `seq 1 1 ${#VARS[@]} `; do
-    local PARAM+="${VARS[$((i-1))]} $i 1 ${VALS[$((i-1))]} $i 15 30 0 "
+    local PARAM+="${VARS[$((i-1))]} $i 1 ${VALS[$((i-1))]} $i 15 60 0 "
   done
 
   local DIALOG_OK=0
   local DIALOG_CANCEL=1
-  local DIALOG_HELP=2
-  local DIALOG_EXTRA=3
-  local DIALOG_ITEM_HELP=4
   local DIALOG_ERROR=254
   local DIALOG_ESC=255
   local RET=0
 
   while test $RET != 1 && test $RET != 250; do
-    exec 3>&1
     local value
     value=$( dialog --ok-label "Start" \
                     --backtitle "$BACKTITLE" \
-                    --form "Enter the desired configuration" \
-                    20 50 0 $PARAM \
-            2>&1 1>&3 )
+                    --form "$( basename "$INSTALL_SCRIPT" .sh ) Enter the desired configuration" \
+                    20 70 0 $PARAM \
+             3>&1 1>&2 2>&3 )
     RET=$?
-    exec 3>&-
 
     case $RET in
       $DIALOG_CANCEL)
@@ -161,14 +186,6 @@ function config()
             ;;
         esac
         ;;
-      $DIALOG_HELP)
-        echo "Button 2 (Help) pressed."
-        return 1
-        ;;
-      $DIALOG_EXTRA)
-        echo "Button 3 (Extra) pressed."
-        return 1
-        ;;
       $DIALOG_ERROR)
         echo "ERROR!$value"
         return 1
@@ -185,8 +202,7 @@ function config()
   done
 
   INSTALLATION_CODE="$( sed $SEDRULE "$INSTALL_SCRIPT" )"
-  echo -e "$CONFIG" > $CFGOUT
-  clear
+  [[ "$CFGOUT" != "" ]] && echo -e "$CONFIG" > "$CFGOUT"
 }
 
 function pack_image()

@@ -38,9 +38,7 @@ if [ "$STATE" == "" ]; then
   ##########################################
 
   SECTOR=$( fdisk -l /dev/sda | grep Linux | awk '{ print $2 }' )
-  set +e 
-  echo -e "d\n2\nn\np\n2\n$SECTOR\n\nw\n" | fdisk /dev/sda
-  set -e
+  echo -e "d\n2\nn\np\n2\n$SECTOR\n\nw\n" | fdisk /dev/sda || true
 
   echo 0 > $STATE_FILE 
   reboot
@@ -64,7 +62,7 @@ elif [ "$STATE" == "1" ]; then
   ##########################################
 
   echo "deb http://mirrordirector.raspbian.org/raspbian/ stretch main contrib non-free rpi" >> /etc/apt/sources.list
-cat > /etc/apt/preferences <<EOF
+  cat > /etc/apt/preferences <<EOF
 Package: *
 Pin: release n=jessie
 Pin-Priority: 600

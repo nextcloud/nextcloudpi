@@ -7,41 +7,44 @@
 # GPL licensed (see end of file) * Use at your own risk!
 #
 # Usage:
-#   cat install-fail2ban.sh | ssh pi@$IP
+# 
+#   ./installer.sh fail2ban.sh <IP> (<img>)
 #
-#   , or scp this file to a Raspberry Pi and run it from Raspbian
+# See installer.sh instructions for details
 #
-#   ./fail2ban.sh
-#
-# See the variables on the top of the script for tweaking
 
-set -xe
+# location of Nextcloud logs
+NCLOG_=/var/www/nextcloud/data/nextcloud.log     
 
-sudo su
+# time to ban an IP that exceeded attempts
+BANTIME_=600
 
-NCLOG_=/var/www/nextcloud/data/nextcloud.log     # location of Nextcloud logs
-BANTIME_=600                                     # time to ban an IP that exceeded attempts
-FINDTIME_=600                                    # cooldown time for incorrect passwords
-MAXRETRY_=6                                      # bad attempts before banning an IP
+# cooldown time for incorrect passwords
+FINDTIME_=600                                    
 
-set -xe
+# bad attempts before banning an IP
+MAXRETRY_=6                                      
 
+DESCRIPTION="Brute force protection"
 
-# INSTALLATION
-##########################################
+install()
+{
+  apt-get update
+  apt-get install fail2ban -y
+  #update-rc.d fail2ban disable
+}
 
-apt-get update
-apt-get install fail2ban -y
+configure()
+{
+  touch /var/www/nextcloud/data/nextcloud.log
+  chown -R www-data /var/www/nextcloud/data
 
-touch /var/www/nextcloud/data/nextcloud.log
-chown -R www-data /var/www/nextcloud/data
+  cd /var/www/nextcloud
+  sudo -u www-data php occ config:system:set loglevel --value=2
+  sudo -u www-data php occ config:system:set log_type --value=file
+  sudo -u www-data php occ config:system:set logfile  --value=$NCLOG_
 
-cd /var/www/nextcloud
-sudo -u www-data php occ config:system:set loglevel --value=2
-sudo -u www-data php occ config:system:set log_type --value=file
-sudo -u www-data php occ config:system:set logfile  --value=$NCLOG_
-
-cat > /etc/fail2ban/filter.d/nextcloud.conf <<'EOF'
+  cat > /etc/fail2ban/filter.d/nextcloud.conf <<'EOF'
 [INCLUDES]
 before = common.conf
 
@@ -51,7 +54,7 @@ ignoreregex =
 EOF
 
 
-cat > /etc/fail2ban/jail.conf <<EOF
+  cat > /etc/fail2ban/jail.conf <<EOF
 # The DEFAULT allows a global definition of the options. They can be overridden
 # in each jail afterwards.
 [DEFAULT]
@@ -104,16 +107,18 @@ filter   = nextcloud
 logpath  = $NCLOG_
 maxretry = $MAXRETRY_
 EOF
+  #update-rc.d fail2ban defaults
+  #service fail2ban start
+}
 
-# CLEANUP
-##########################################
-
-apt-get autoremove -y
-apt-get clean
-rm /var/lib/apt/lists/* -r
-rm -f /home/pi/.bash_history
-systemctl disable ssh
-halt
+cleanup()
+{
+  apt-get autoremove -y
+  apt-get clean
+  rm /var/lib/apt/lists/* -r
+  rm -f /home/pi/.bash_history
+  systemctl disable ssh
+}
 
 # License
 #
