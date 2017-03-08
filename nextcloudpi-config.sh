@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# no-ip.org installation on Raspbian 
+# nextcloudpi-config installation on Raspbian 
 # Tested with 2017-01-11-raspbian-jessie.img (and lite)
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
@@ -8,55 +8,33 @@
 #
 # Usage:
 # 
-#   ./installer.sh no-ip.sh <IP> (<img>)
+#   ./installer.sh nextcloudpi-config.sh <IP> (<img>)
 #
 # See installer.sh instructions for details
 #
 
-USER_=my-noip-user@email.com
-PASS_=noip-pass
-TIME_=30
-DESCRIPTION="free Dynamic DNS provider (need account)"
+CONFDIR=/usr/local/etc/nextcloudpi-config.d/
 
 install()
 {
-  mkdir /tmp/noip && cd /tmp/noip
-  wget http://www.no-ip.com/client/linux/noip-duc-linux.tar.gz
-  tar vzxf noip-duc-linux.tar.gz
-  cd -; cd $OLDPWD/noip-*
-  make
-  cp noip2 /usr/local/bin/
-
-  cat > /etc/init.d/noip2 <<'EOF'
-#! /bin/sh
-# /etc/init.d/noip2
-
-### BEGIN INIT INFO
-# Provides:          no-ip.org
-# Required-Start:    $local_fs $remote_fs
-# Required-Stop:     $local_fs $remote_fs
-# Default-Start:     2 3 4 5
-# Default-Stop:      0 1 6
-# Short-Description: Start no-ip.org dynamic DNS
-### END INIT INFO
-EOF
-
-  cat debian.noip2.sh >> /etc/init.d/noip2 
-
-  chmod +x /etc/init.d/noip2
-  cd -
-  rm -r /tmp/noip
+  apt-get update
+  apt-get install -y dialog
+  mkdir -p $CONFDIR
+  chown pi $CONFDIR        # TODO
+  # scp dnsmasq.sh no-ip.sh pi@192.168.0.130:/usr/local/etc/nextcloudpi-config.d
+  # scp library nextcloudpi-config pi@192.168.0.130:/usr/local/bin/
 }
 
-configure() 
+configure()
 {
-  /usr/local/bin/noip2 -C -c /usr/local/etc/no-ip2.conf -U $TIME_ -u $USER_ -p $PASS_
-  update-rc.d noip2 defaults
-  service noip2 start
+  echo nothin
 }
 
 cleanup()
 {
+  apt-get autoremove -y
+  apt-get clean
+  rm /var/lib/apt/lists/* -r
   rm -f /home/pi/.bash_history
   systemctl disable ssh
 }

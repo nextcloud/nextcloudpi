@@ -42,7 +42,7 @@ if [[ "$IMGFILE" != "" ]]; then
   launch_install_qemu "$IMGFILE" $IP || exit 1
   pack_image          "$IMGFILE" "$IMGOUT" 
 else
-  launch_installation $IP
+  launch_installation_online $IP
 fi
 
 
