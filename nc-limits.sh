@@ -1,25 +1,30 @@
 #!/bin/bash
 
-# Batch creation of NextCloudPi image
+# System limit configurator for NextCloudPi
 # Tested with 2017-03-02-raspbian-jessie-lite.img
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
 #
 # Usage:
+# 
+#   ./installer.sh nc-limits.sh <IP> (<img>)
+#
+# See installer.sh instructions for details
 #
 
+DESCRIPTION="Configure system limits for NextCloudPi"
+MAXFILESIZE_=768M
 
-IP=$1                   # First argument is the QEMU Raspbian IP address
-IMG=$2                  # TODO
+configure()
+{
+  sed -i "s/post_max_size=.*/post_max_size=$MAXFILESIZE_/"             /var/www/nextcloud/.user.ini
+  sed -i "s/upload_max_filesize=.*/upload_max_filesize=$MAXFILESIZE_/" /var/www/nextcloud/.user.ini
+  sed -i "s/memory_limit=.*/memory_limit=$MAXFILESIZE_/"               /var/www/nextcloud/.user.ini
+}
 
-IMG=NextCloudPi_03-13-17.img
-
-NO_CONFIG=1 NO_HALT_STEP=1 ./install-nextcloud.sh     $IP
-NO_CONFIG=1 NO_CFG_STEP=1  ./installer.sh fail2ban.sh $IP $( ls -1t *.img | head -1 )
-NO_CONFIG=1 NO_CFG_STEP=1  ./installer.sh no-ip.sh    $IP $( ls -1t *.img | head -1 )  
-NO_CONFIG=1 NO_CFG_STEP=1  ./installer.sh dnsmasq.sh  $IP $( ls -1t *.img | head -1 ) 
-#TODO rename to FULL
+install() { :; }
+cleanup() { :; }
 
 # License
 #
@@ -37,3 +42,4 @@ NO_CONFIG=1 NO_CFG_STEP=1  ./installer.sh dnsmasq.sh  $IP $( ls -1t *.img | head
 # along with this script; if not, write to the
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
+

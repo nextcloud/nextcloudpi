@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # no-ip.org installation on Raspbian 
-# Tested with 2017-01-11-raspbian-jessie.img (and lite)
+# Tested with 2017-03-02-raspbian-jessie-lite.img
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -52,7 +52,7 @@ configure()
 {
   /usr/local/bin/noip2 -C -c /usr/local/etc/no-ip2.conf -U $TIME_ -u $USER_ -p $PASS_
   update-rc.d noip2 defaults
-  service noip2 start
+  service noip2 restart
 }
 
 cleanup()
