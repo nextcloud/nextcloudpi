@@ -7,10 +7,12 @@ Use QEMU to automatically generate Raspbian Images with Nextcloud
 ## Features
 
 * Raspbian 8 Jessie
-* Nextcloud 11.0.1
+* Nextcloud 11.0.2
 * Apache 2.4.25, with HTTP2 enabled
-* PHP 7.0 
+* PHP 7.0 (double the speed of PHP5!)
 * MariaDB 10
+* 4.9.13 Linux Kernel ( NEW 03-13-2017 ) [[ LINK ]]
+* nextcloudpi-config for easy setup
 * Automatic redirection to HTTPS
 * ACPU PHP cache
 * PHP Zend OPcache enabled with file cache
@@ -29,14 +31,22 @@ cd nextcloud-raspbian-generator
 ./install-nextcloud.sh 192.168.0.145 # change to your QEMU raspbian IP
 ```
 
-If we also want fail2ban in our image
+If we also want extras in our image
 
 ```
-./install-fail2ban.sh 192.168.0.145 NextCloudPi_02-18-17.img # change to your QEMU raspbian IP
+./installer.sh extrascript.sh 192.168.0.145 NextCloudPi_03-13-17.img # change to your QEMU raspbian IP
 ```
 
-Adjust for the image name generated in the first step. Same thing for the other extras.
+Adjust for the image name generated in the first step. 
 
-Get the image or find details and instructions at
+Extras can be activated and configured using
+
+```
+sudo nextcloudpi-config
+```
+
+![NCP-config](/resources/ncp-config.jpg)
+
+Get the image, find details and more instructions at
 
 https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/
