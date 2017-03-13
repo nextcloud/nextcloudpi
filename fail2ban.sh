@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Fail2ban installation script for Raspbian 
-# Tested with 2017-01-11-raspbian-jessie.img (and lite)
+# Tested with 2017-03-02-raspbian-jessie-lite.img
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -31,7 +31,7 @@ install()
 {
   apt-get update
   apt-get install fail2ban -y
-  #update-rc.d fail2ban disable
+  update-rc.d fail2ban disable
 }
 
 configure()
@@ -107,8 +107,8 @@ filter   = nextcloud
 logpath  = $NCLOG_
 maxretry = $MAXRETRY_
 EOF
-  #update-rc.d fail2ban defaults
-  #service fail2ban start
+  update-rc.d fail2ban defaults
+  service fail2ban restart
 }
 
 cleanup()

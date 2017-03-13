@@ -1,43 +1,42 @@
 #!/bin/bash
 
-# nextcloudpi-config installation on Raspbian 
-# Tested with 2017-01-11-raspbian-jessie.img (and lite)
+# Data dir configuration script for NextCloudPi
+# Tested with 2017-03-02-raspbian-jessie-lite.img
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
 #
 # Usage:
 # 
-#   ./installer.sh nextcloudpi-config.sh <IP> (<img>)
+#   ./installer.sh nc-datadir.sh <IP> (<img>)
 #
 # See installer.sh instructions for details
 #
 
-CONFDIR=/usr/local/etc/nextcloudpi-config.d/
-
-install()
-{
-  apt-get update
-  apt-get install -y dialog
-  mkdir -p $CONFDIR
-  chown pi $CONFDIR        # TODO
-  # scp dnsmasq.sh no-ip.sh pi@192.168.0.130:/usr/local/etc/nextcloudpi-config.d
-  # scp library nextcloudpi-config pi@192.168.0.130:/usr/local/bin/
-}
+DATADIR_=/media/USBdrive/ncdata
+DESCRIPTION="Change your data dir location"
 
 configure()
 {
-  echo nothin
+  [ -d $DATADIR_ ] && { echo "$DATADIR_ already exists" && return 1; }
+
+  service apache2 stop
+
+  local BASEDIR=$( dirname "$DATADIR_" )
+  mkdir -p "$BASEDIR"
+
+  [[ $( stat -fc%d / ) == $( stat -fc%d $BASEDIR ) ]] && \
+    echo -e "INFO: moving data dir to another place in the same SD card\nIf you want to use an external mount, make sure it is properly set up"
+
+  cp -ra /var/www/nextcloud/data/ "$DATADIR_" || return 1
+  
+  cd /var/www/nextcloud
+  sudo -u www-data php occ config:system:set datadirectory --value=$DATADIR_
+  service apache2 start
 }
 
-cleanup()
-{
-  apt-get autoremove -y
-  apt-get clean
-  rm /var/lib/apt/lists/* -r
-  rm -f /home/pi/.bash_history
-  systemctl disable ssh
-}
+install() { :; }
+cleanup() { :; }
 
 # License
 #

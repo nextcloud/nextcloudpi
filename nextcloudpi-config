@@ -20,11 +20,11 @@ function nextcloud-config()
   local LIST=()
   for item in $CONFDIR/*.sh; do
     local DESC="$( grep "DESCRIPTION=" $item | sed 's|^DESCRIPTION=||' )"
-    LIST+=( $( basename $item .sh ) "$DESC" off )
+    LIST+=( $( basename $item .sh ) "$DESC" )
   done
   local script
   script=$( dialog --backtitle "NextCloudPi configuration" \
-                   --radiolist "Select program to configure and activate:" 20 80 10 \
+                   --menu "Select program to configure and activate:" 20 80 10 \
                    "${LIST[@]}" \
             3>&1 1>&2 2>&3 )
 

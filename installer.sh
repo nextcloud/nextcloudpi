@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Generic software installer for Raspbian. Online on a running RPi, or offline with QEMU.
-# Tested with 2017-01-11-raspbian-jessie.img (and lite)
+# Tested with 2017-03-02-raspbian-jessie-lite.img
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -33,6 +33,7 @@
 INSTALL_SCRIPT=$1       # First argument is the script to be run inside Raspbian
 IP=$2                   # Second argument is the QEMU Raspbian IP address
 IMGFILE=$3              # Third argument is the image file to start from ( empty for online installation )
+CONFDIR=/usr/local/etc/nextcloudpi-config.d/
  
 source library.sh       # initializes $IMGOUT
 
@@ -40,6 +41,7 @@ config $INSTALL_SCRIPT || exit 1
 
 if [[ "$IMGFILE" != "" ]]; then
   launch_install_qemu "$IMGFILE" $IP || exit 1
+  copy_to_image $( ls -1t $IMGFILE-stage* | head -1 ) $CONFDIR $INSTALL_SCRIPT || exit 1
   pack_image          "$IMGFILE" "$IMGOUT" 
 else
   launch_installation_online $IP

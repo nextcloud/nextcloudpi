@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # dnsmasq DNS server with cache installation on Raspbian 
-# Tested with 2017-01-11-raspbian-jessie.img (and lite)
+# Tested with 2017-03-02-raspbian-jessie-lite.img
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -46,7 +46,7 @@ EOF
 IGNORE_RESOLVCONF=yes
 EOF
   update-rc.d dnsmasq defaults
-  service dnsmasq start
+  service dnsmasq restart
   cd /var/www/nextcloud
   sudo -u www-data php occ config:system:set trusted_domains 2 --value=$DOMAIN_
 }

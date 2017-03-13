@@ -1,36 +1,35 @@
 #!/bin/bash
 
-# Nextcloud installation on Raspbian through SSH
-# Tested with 2017-01-11-raspbian-jessie.img (and lite)
+# Nextcloud installation on Raspbian 
+# Tested with 2017-03-02-raspbian-jessie-lite.img
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
 #
 # Usage:
-#   cat nextcloud.sh | sshpass -praspberry ssh pi@$IP
+# 
+#   ./installer.sh no-ip.sh <IP> (<img>)
 #
-#   , or scp this file to a Raspberry Pi and run it from Raspbian
-#
-#   ./nextcloud.sh
+# See installer.sh instructions for details
 #
 # Notes:
 #   Upon each necessary restart, the system will cut the SSH session, therefore
 #   it is required to save the state of the installation. See variable $STATE_FILE
 #   It will be necessary to invoke this a number of times for a complete installation
 
-set -xe
-
-sudo su
-
 VER=11.0.1
 ADMINUSER_=admin
 DBADMIN_=ncadmin
 DBPASSWD_=ownyourbits
-MAX_FILESIZE_=1G
+MAXFILESIZE_=768M
+MAXTRANSFERTIME_=3600
+OPCACHEDIR=/var/www/nextcloud/data/.opcache
+CONFDIR=/usr/local/etc/nextcloudpi-config.d/
 STATE_FILE=/home/pi/.installation_state
 
-set -xe
 
+install()
+{
 test -f $STATE_FILE && STATE=$( cat $STATE_FILE 2>/dev/null )
 if [ "$STATE" == "" ]; then
 
@@ -41,7 +40,7 @@ if [ "$STATE" == "" ]; then
   echo -e "d\n2\nn\np\n2\n$SECTOR\n\nw\n" | fdisk /dev/sda || true
 
   echo 0 > $STATE_FILE 
-  reboot
+  nohup reboot &>/dev/null &
 elif [ "$STATE" == "0" ]; then
 
   # UPDATE EVERYTHING
@@ -55,7 +54,7 @@ elif [ "$STATE" == "0" ]; then
   echo -e "y\n" | rpi-update
 
   echo 1 > $STATE_FILE 
-  reboot
+  nohup reboot &>/dev/null &
 elif [ "$STATE" == "1" ]; then
 
   # GET STRETCH SOURCES FOR HTTP2 AND PHP7
@@ -118,7 +117,7 @@ EOF
 
   cat > /etc/php/7.0/mods-available/opcache.ini <<EOF
 zend_extension=opcache.so
-opcache.file_cache=/var/www/nextcloud/.opcache;
+opcache.file_cache=$OPCACHEDIR;
 opcache.fast_shutdown=1
 EOF
 
@@ -133,6 +132,10 @@ EOF
   a2enmod mime
   a2enmod ssl
 
+  echo 2 > $STATE_FILE 
+  nohup reboot &>/dev/null &
+
+elif [ "$STATE" == "2" ]; then
   # INSTALL NEXTCLOUD
   ##########################################
 
@@ -140,7 +143,6 @@ EOF
   wget https://download.nextcloud.com/server/releases/nextcloud-$VER.tar.bz2 -O nextcloud.tar.bz2
   tar -xvf nextcloud.tar.bz2
   rm nextcloud.tar.bz2
-  mkdir /var/www/nextcloud/.opcache
 
   ocpath='/var/www/nextcloud'
   htuser='www-data'
@@ -150,30 +152,34 @@ EOF
   printf "Creating possible missing Directories\n"
   mkdir -p $ocpath/data
   mkdir -p $ocpath/updater
+  mkdir -p $OPCACHEDIR
 
   printf "chmod Files and Directories\n"
   find ${ocpath}/ -type f -print0 | xargs -0 chmod 0640
   find ${ocpath}/ -type d -print0 | xargs -0 chmod 0750
 
   printf "chown Directories\n"
-  chown -R ${rootuser}:${htgroup} ${ocpath}/
+  # recommended defaults do not play well with updater app
+  # re-check this with every new version
+  #chown -R ${rootuser}:${htgroup} ${ocpath}/
+  chown -R ${htuser}:${htgroup} ${ocpath}/
   chown -R ${htuser}:${htgroup} ${ocpath}/apps/
   chown -R ${htuser}:${htgroup} ${ocpath}/config/
   chown -R ${htuser}:${htgroup} ${ocpath}/data/
   chown -R ${htuser}:${htgroup} ${ocpath}/themes/
   chown -R ${htuser}:${htgroup} ${ocpath}/updater/
-  chown -R ${htuser}:${htgroup} ${ocpath}/.opcache/
+  chown -R ${htuser}:${htgroup} $OPCACHEDIR
 
   chmod +x ${ocpath}/occ
 
   printf "chmod/chown .htaccess\n"
-  if [ -f ${ocpath}/.htaccess ]
-  then
-    chmod 0644 ${ocpath}/.htaccess
+  if [ -f ${ocpath}/.htaccess ]; then
+    # breaks updater, see above
+    #chmod 0644 ${ocpath}/.htaccess
+    chmod 0664 ${ocpath}/.htaccess
     chown ${rootuser}:${htgroup} ${ocpath}/.htaccess
   fi
-  if [ -f ${ocpath}/data/.htaccess ]
-  then
+  if [ -f ${ocpath}/data/.htaccess ]; then
     chmod 0644 ${ocpath}/data/.htaccess
     chown ${rootuser}:${htgroup} ${ocpath}/data/.htaccess
   fi
@@ -217,8 +223,15 @@ GRANT ALL PRIVILEGES ON nextcloud.* TO $DBADMIN_@localhost;
 EXIT
 EOF
 
-  # CONFIGURE NEXTCLOUD
-  ##########################################
+  # NEXTCLOUDPI-CONFIG
+  apt-get install -y dialog
+  mkdir -p $CONFDIR
+fi
+}
+
+configure()
+{ 
+  [ "$STATE" != "2" ] && return
   cd /var/www/nextcloud/
 
   sudo -u www-data php occ maintenance:install --database \
@@ -227,12 +240,14 @@ EOF
 
   sudo -u www-data php occ background:cron
 
-  sed -i '$s=^.*$=  '\''memcache.local'\'' \=> '\''\\OC\\Memcache\\APCu'\'',\n);=' /var/www/nextcloud/config/config.php
+  sed -i '$s|^.*$|  '\''memcache.local'\'' => '\''\\\\OC\\\\Memcache\\\\APCu'\'',\\n);|' /var/www/nextcloud/config/config.php
 
-  sed -i "s/post_max_size=.*/post_max_size=$MAX_FILESIZE_/"       /var/www/nextcloud/.user.ini 
-  sed -i "s/post_max_size=.*/upload_max_filesize=$MAX_FILESIZE_/" /var/www/nextcloud/.user.ini 
-  sed -i "s/post_max_size=.*/post_max_size=$MAX_FILESIZE_/"       /var/www/nextcloud/.htaccess
-  sed -i "s/post_max_size=.*/upload_max_filesize=$MAX_FILESIZE_/" /var/www/nextcloud/.htaccess
+  sed -i "s/post_max_size=.*/post_max_size=$MAXFILESIZE_/"             /var/www/nextcloud/.user.ini 
+  sed -i "s/upload_max_filesize=.*/upload_max_filesize=$MAXFILESIZE_/" /var/www/nextcloud/.user.ini 
+  sed -i "s/memory_limit=.*/memory_limit=$MAXFILESIZE_/"               /var/www/nextcloud/.user.ini 
+
+  # slow transfers will be killed after this time
+  cat >> /var/www/nextcloud/.user.ini <<< "max_execution_time=$MAXTRANSFERTIME_"
 
   echo "*/15  *  *  *  * php -f /var/www/nextcloud/cron.php" > /tmp/crontab_http
   crontab -u www-data /tmp/crontab_http
@@ -260,10 +275,11 @@ ExecStart=/bin/bash /usr/local/bin/nextcloud-domain.sh
 WantedBy=multi-user.target
 EOF
   systemctl enable nextcloud-domain
+}
 
-  # CLEANUP
-  ##########################################
-
+cleanup()   
+{ 
+  [ "$STATE" != "2" ] && return
   apt-get autoremove -y
   apt-get clean
   rm /var/lib/apt/lists/* -r
@@ -271,8 +287,8 @@ EOF
 
   systemctl disable ssh
   rm $STATE_FILE 
-  halt
-fi
+  nohup halt &>/dev/null &
+}
 
 # License
 #

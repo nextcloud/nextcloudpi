@@ -17,20 +17,22 @@ function launch_install_qemu()
   [[ "$IP"      == ""  ]] && { echo "usage: launch_install_qemu <script> <img> <IP>"; return 1; }
   test -f $IMG            || { echo "input file $IMG not found";                      return 1; }
 
-  # take a copy of the input image for processing ( append "-stage1" )
   local BASE=$( sed 's=-stage[[:digit:]]=='         <<< $IMG )
   local NUM=$(  sed 's=.*-stage\([[:digit:]]\)=\1=' <<< $IMG )
   [[ "$BASE" == "$IMG" ]] && NUM=0
-  local IMGFILE="$BASE-stage$(( NUM+1 ))"
-  cp -v $IMG $IMGFILE || return 1
 
   local NUM_REBOOTS=$( grep -c reboot $INSTALL_SCRIPT )
   while [[ $NUM_REBOOTS != -1 ]]; do
+    NUM=$(( NUM+1 ))
+    local IMGFILE="$BASE-stage$NUM"
+    cp -v $IMG $IMGFILE || return 1 # take a copy of the input image for processing ( append "-stage1" )
+
     launch_qemu $IMGFILE &
     sleep 10
     wait_SSH $IP
     launch_installation_qemu $IP || return 1
     wait 
+    IMG="$IMGFILE"
     NUM_REBOOTS=$(( NUM_REBOOTS-1 ))
   done
   echo "$IMGFILE generated successfully"
@@ -97,12 +99,14 @@ set -e$DBG
 function launch_installation_qemu()
 {
   local IP=$1
-  [[ "$NO_CFG_STEP" != "1" ]]  && local CFG_STEP=configure
+  [[ "$NO_CFG_STEP"  != "1" ]] && local CFG_STEP=configure
+  [[ "$NO_CLEANUP"   != "1" ]] && local CLEANUP_STEP=cleanup
+  [[ "$NO_HALT_STEP" != "1" ]] && local HALT_STEP="nohup halt &>/dev/null &"
   local INSTALLATION_STEPS="
 install
 $CFG_STEP
-cleanup
-nohup halt &>/dev/null &
+$CLEANUP_STEP
+$HALT_STEP
 "
   launch_installation $IP
 }
@@ -146,7 +150,7 @@ function config()
     local value
     value=$( dialog --ok-label "Start" \
                     --backtitle "$BACKTITLE" \
-                    --form "$( basename "$INSTALL_SCRIPT" .sh ) Enter the desired configuration" \
+                    --form "Enter the desired configuration for $( basename "$INSTALL_SCRIPT" .sh )" \
                     20 70 0 $PARAM \
              3>&1 1>&2 2>&3 )
     RET=$?
@@ -203,6 +207,21 @@ function config()
 
   INSTALLATION_CODE="$( sed $SEDRULE "$INSTALL_SCRIPT" )"
   [[ "$CFGOUT" != "" ]] && echo -e "$CONFIG" > "$CFGOUT"
+}
+
+function copy_to_image()
+{
+  local IMG=$1
+  local DST=$2
+  local SRC=${@: 3 }
+  local SECTOR=$( fdisk -l $IMG | grep Linux | awk '{ print $2 }' )
+  local OFFSET=$(( SECTOR * 512 ))
+
+  mkdir -p tmpmnt
+  sudo mount $IMG -o offset=$OFFSET tmpmnt || return 1
+  sudo cp $SRC tmpmnt/$DST || return 1
+  sudo umount -l tmpmnt
+  rmdir tmpmnt &>/dev/null
 }
 
 function pack_image()
