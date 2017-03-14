@@ -18,7 +18,13 @@ DESCRIPTION="Change your data dir location"
 
 configure()
 {
-  [ -d $DATADIR_ ] && { echo "$DATADIR_ already exists" && return 1; }
+  [ -d $DATADIR_ ] && {
+    [[ $( find "$DATADIR_" -maxdepth 0 -empty | wc -l ) == 0 ]] && {
+      echo "$DATADIR_ is not empty"
+      return 1
+    }
+    rmdir "$DATADIR_" 
+  }
 
   service apache2 stop
 
