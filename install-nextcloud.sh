@@ -13,7 +13,7 @@
 #   Set DOWNLOAD=0 if you have already downloaded an image. Rename it to nextcloudpi.img
 
 IP=$1          # First argument is the QEMU Raspbian IP address
-DOWNLOAD=0     # Download the latest image
+DOWNLOAD=1     # Download the latest image
 EXTRACT=1      # Extract the image from zip, so start from 0
 IMG=raspbian_lite_latest
 INSTALL_SCRIPT=nextcloud.sh

@@ -25,7 +25,7 @@ FINDTIME_=600
 # bad attempts before banning an IP
 MAXRETRY_=6                                      
 
-DESCRIPTION="Brute force protection"
+DESCRIPTION="fail2ban: Brute force protection"
 
 install()
 {
