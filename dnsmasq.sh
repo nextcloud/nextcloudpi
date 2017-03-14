@@ -17,7 +17,7 @@ DOMAIN_=mycloud.ownyourbits.com
 IP_=127.0.0.1
 DNSSERVER_=8.8.8.8
 CACHESIZE_=150 
-DESCRIPTION="DNS server with cache"
+DESCRIPTION="dnsmasq: DNS server with cache"
 
 install()
 {
