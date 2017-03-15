@@ -13,11 +13,11 @@
 #   Set DOWNLOAD=0 if you have already downloaded an image. Rename it to nextcloudpi.img
 
 IP=$1          # First argument is the QEMU Raspbian IP address
+IMGFILE=$2     # Second argument is the name for the output image
 DOWNLOAD=1     # Download the latest image
 EXTRACT=1      # Extract the image from zip, so start from 0
 IMG=raspbian_lite_latest
 INSTALL_SCRIPT=nextcloud.sh
-IMGFILE="NextCloudPi_$( date  "+%m-%d-%y" ).img"
 
 source library.sh       # initializes $IMGOUT
 
@@ -34,9 +34,9 @@ config $INSTALL_SCRIPT || exit 1
 launch_install_qemu "$IMGFILE" $IP || exit 1
 
 CONFDIR=/usr/local/etc/nextcloudpi-config.d/
-copy_to_image $( ls -1t $IMGFILE-stage* | head -1 ) $CONFDIR nc-limits.sh nc-datadir.sh
-copy_to_image $( ls -1t $IMGFILE-stage* | head -1 ) $CONFDIR/library library.sh
-copy_to_image $( ls -1t $IMGFILE-stage* | head -1 ) /usr/local/bin/ nextcloudpi-config
+copy_to_image "$IMGOUT" $CONFDIR nc-limits.sh nc-datadir.sh
+copy_to_image "$IMGOUT" $CONFDIR/library library.sh
+copy_to_image "$IMGOUT" /usr/local/bin/ nextcloudpi-config
 
 pack_image $IMGFILE $IMGOUT
 

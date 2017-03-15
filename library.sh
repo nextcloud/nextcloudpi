@@ -6,10 +6,11 @@
 # GPL licensed (see end of file) * Use at your own risk!
 
 
-IMGOUT=$( basename $IMGFILE .img )_$( basename $INSTALL_SCRIPT .sh ).img
+IMGNAME=$( basename $IMGFILE .img )_$( basename $INSTALL_SCRIPT .sh ).img
 CFGOUT=config_$( basename $INSTALL_SCRIPT .sh ).txt
 DBG=x
 
+# $IMGOUT will contain the name of the last step
 function launch_install_qemu()
 {
   local IMG=$1
@@ -24,18 +25,18 @@ function launch_install_qemu()
   local NUM_REBOOTS=$( grep -c reboot $INSTALL_SCRIPT )
   while [[ $NUM_REBOOTS != -1 ]]; do
     NUM=$(( NUM+1 ))
-    local IMGFILE="$BASE-stage$NUM"
-    cp -v $IMG $IMGFILE || return 1 # take a copy of the input image for processing ( append "-stage1" )
+    IMGOUT="$BASE-stage$NUM"
+    cp -v $IMG $IMGOUT || return 1 # take a copy of the input image for processing ( append "-stage1" )
 
-    launch_qemu $IMGFILE &
+    launch_qemu $IMGOUT &
     sleep 10
     wait_SSH $IP
     launch_installation_qemu $IP || return 1
     wait 
-    IMG="$IMGFILE"
+    IMG="$IMGOUT"
     NUM_REBOOTS=$(( NUM_REBOOTS-1 ))
   done
-  echo "$IMGFILE generated successfully"
+  echo "$IMGOUT generated successfully"
 }
 
 function launch_qemu()
@@ -217,6 +218,7 @@ function copy_to_image()
   local SECTOR=$( fdisk -l $IMG | grep Linux | awk '{ print $2 }' )
   local OFFSET=$(( SECTOR * 512 ))
 
+  [ -f "$IMG" ] || { echo "no image"; return 1; }
   mkdir -p tmpmnt
   sudo mount $IMG -o offset=$OFFSET tmpmnt || return 1
   sudo cp $SRC tmpmnt/$DST || return 1
@@ -226,11 +228,11 @@ function copy_to_image()
 
 function pack_image()
 {
-  local IMGFILE="$1"
-  local IMGOUT="$2"
-  local TARNAME=$( basename $IMGOUT .img ).tar.bz2
-  cp -v $( ls -1t $IMGFILE-stage* | head -1 ) $IMGOUT
-  tar -I pbzip2 -cvf $TARNAME $IMGOUT &>/dev/null && \
+  local IMGOUT="$1"
+  local IMGNAME="$2"
+  local TARNAME=$( basename $IMGNAME .img ).tar.bz2
+  cp -v "$IMGOUT" "$IMGNAME" || return 1
+  tar -I pbzip2 -cvf $TARNAME "$IMGNAME" &>/dev/null && \
     echo -e "$TARNAME packed successfully"
 }
 
