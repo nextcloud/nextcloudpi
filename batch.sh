@@ -9,6 +9,7 @@
 # Usage:
 #
 
+source library.sh       # initializes $IMGNAME
 
 IP=$1                   # First argument is the QEMU Raspbian IP address
 
@@ -20,7 +21,10 @@ NO_CONFIG=1 NO_CFG_STEP=1  ./installer.sh no-ip.sh        $IP $( ls -1t *.img | 
 NO_CONFIG=1 NO_CFG_STEP=1  ./installer.sh dnsmasq.sh      $IP $( ls -1t *.img | head -1 ) 
 NO_CONFIG=1 NO_CFG_STEP=1  ./installer.sh letsencrypt.sh  $IP $( ls -1t *.img | head -1 ) 
 
-cp -v "$( ls -1t *.img | head -1 )" $( basename "$IMGFILE" .img )_FULL.img
+IMGOUT=$( ls -1t *.img | head -1 )
+IMGFULL=$( basename "$IMGFILE" .img )_FULL.img
+
+pack_image "$IMGOUT" "$IMGFULL" 
 
 # License
 #
