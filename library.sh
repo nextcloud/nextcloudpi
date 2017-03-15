@@ -221,7 +221,7 @@ function copy_to_image()
   [ -f "$IMG" ] || { echo "no image"; return 1; }
   mkdir -p tmpmnt
   sudo mount $IMG -o offset=$OFFSET tmpmnt || return 1
-  sudo cp $SRC tmpmnt/$DST || return 1
+  sudo cp -v $SRC tmpmnt/$DST || return 1
   sudo umount -l tmpmnt
   rmdir tmpmnt &>/dev/null
 }
