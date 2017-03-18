@@ -11,7 +11,7 @@ Use QEMU to automatically generate Raspbian Images with Nextcloud
 * Apache 2.4.25, with HTTP2 enabled
 * PHP 7.0 (double the speed of PHP5!)
 * MariaDB 10
-* 4.9.13 Linux Kernel ( NEW 03-13-2017 ) [[ LINK ]]
+* 4.9.13 Linux Kernel ( NEW 03-13-2017 ) 
 * nextcloudpi-config for easy setup
 * Automatic redirection to HTTPS
 * ACPU PHP cache
@@ -19,6 +19,7 @@ Use QEMU to automatically generate Raspbian Images with Nextcloud
 * HSTS
 * Cron jobs for Nextcloud
 * Sane configuration defaults
+* Let’s Ecrypt for trusted HTTPS certificates.(  NEW 03-16-2017 )
 * Fail2Ban protection against brute force attacks. ( NEW 02-24-2017 )
 * Dynamic DNS support for no-ip.org ( NEW 03-05-2017 )
 * dnsmasq DNS server with DNS cache ( NEW 03-09-2017 )
