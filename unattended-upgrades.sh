@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Let's encrypt certbot installation on Raspbian 
+# Unattended upgrades installation on Raspbian 
 # Tested with 2017-03-02-raspbian-jessie-lite.img
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
@@ -8,35 +8,33 @@
 #
 # Usage:
 # 
-#   ./installer.sh letsencrypt.sh <IP> (<img>)
+#   ./installer.sh unattended-upgrades.sh <IP> (<img>)
 #
 # See installer.sh instructions for details
 #
 
-DOMAIN_=mycloud.ownyourbits.com
-EMAIL_=mycloud@ownyourbits.com
-VHOSTCFG_=/etc/apache2/sites-available/nextcloud.conf
-DESCRIPTION="Let's Encrypt: automatic signed SSL certificates"
+ACTIVE_=yes
+AUTOREBOOT_=yes
+DESCRIPTION="unattended upgrades: automatically install security updates. Keep your cloud safe"
 
 install()
 {
   apt-get update
-  apt install -y --no-install-recommends git 
-  cd /etc
-  git clone https://github.com/letsencrypt/letsencrypt
-  /etc/letsencrypt/letsencrypt-auto --help # do not actually run certbot, only install packages
+  apt install -y --no-install-recommends unattended-upgrades 
 }
 
-# tested with git version v0.11.0-71-g018a304
 configure() 
-{
-  grep -q ServerName $VHOSTCFG_ && \
-    sed -i "s|ServerName .*|ServerName $DOMAIN_|" $VHOSTCFG_ || \
-    sed -i "/DocumentRoot/aServerName $DOMAIN_" $VHOSTCFG_ 
-
-  /etc/letsencrypt/letsencrypt-auto -n --no-self-upgrade --apache --agree-tos -m $EMAIL_ -d $DOMAIN_
-  echo "* 1 * * 1 root /etc/letsencrypt/certbot-auto renew --quiet" > /etc/cron.d/letsencrypt-ncp
-  service apache2 reload
+{ 
+  [[ $ACTIVE_     == "yes" ]] && local AUTOUPGRADE=1   || local AUTOUPGRADE=0
+  [[ $AUTOREBOOT_ == "yes" ]] && local AUTOREBOOT=true || local AUTOREBOOT=false
+  cat > /etc/apt/apt.conf.d/20nextcloudpi-upgrades <<EOF
+APT::Periodic::Update-Package-Lists "1";
+APT::Periodic::Unattended-Upgrade "$AUTOUPGRADE";
+APT::Periodic::MaxAge "14"; 
+APT::Periodic::AutocleanInterval "7";
+Unattended-Upgrade::Automatic-Reboot "$AUTOREBOOT";
+Unattended-Upgrade::Automatic-Reboot-Time "04:00";
+EOF
 }
 
 cleanup()

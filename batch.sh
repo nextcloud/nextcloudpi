@@ -15,11 +15,12 @@ IP=$1                   # First argument is the QEMU Raspbian IP address
 
 IMGFILE="NextCloudPi_$( date  "+%m-%d-%y" ).img"
 
-NO_CONFIG=1 NO_HALT_STEP=1 ./install-nextcloud.sh         $IP $IMGFILE
-NO_CONFIG=1 NO_CFG_STEP=1  ./installer.sh fail2ban.sh     $IP $( ls -1t *.img | head -1 )
-NO_CONFIG=1 NO_CFG_STEP=1  ./installer.sh no-ip.sh        $IP $( ls -1t *.img | head -1 )  
-NO_CONFIG=1 NO_CFG_STEP=1  ./installer.sh dnsmasq.sh      $IP $( ls -1t *.img | head -1 ) 
-NO_CONFIG=1 NO_CFG_STEP=1  ./installer.sh letsencrypt.sh  $IP $( ls -1t *.img | head -1 ) 
+NO_CONFIG=1 NO_HALT_STEP=1 ./install-nextcloud.sh                 $IP $IMGFILE
+NO_CONFIG=1 NO_CFG_STEP=1  ./installer.sh fail2ban.sh             $IP $( ls -1t *.img | head -1 )
+NO_CONFIG=1 NO_CFG_STEP=1  ./installer.sh no-ip.sh                $IP $( ls -1t *.img | head -1 )  
+NO_CONFIG=1 NO_CFG_STEP=1  ./installer.sh dnsmasq.sh              $IP $( ls -1t *.img | head -1 ) 
+NO_CONFIG=1 NO_CFG_STEP=1  ./installer.sh letsencrypt.sh          $IP $( ls -1t *.img | head -1 ) 
+NO_CONFIG=1                ./installer.sh unattended-upgrades.sh  $IP $( ls -1t *.img | head -1 ) 
 
 IMGOUT=$( ls -1t *.img | head -1 )
 IMGFULL=$( basename "$IMGFILE" .img )_FULL.img
