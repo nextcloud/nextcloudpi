@@ -16,7 +16,7 @@
 
 ACTIVE_=yes
 AUTOREBOOT_=yes
-DESCRIPTION="unattended upgrades: automatically install security updates. Keep your cloud safe"
+DESCRIPTION="Automatic installation of security updates. Keep your cloud safe"
 
 install()
 {
