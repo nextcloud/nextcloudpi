@@ -26,7 +26,7 @@ FINDTIME_=600
 # bad attempts before banning an IP
 MAXRETRY_=6                                      
 
-DESCRIPTION="fail2ban: Brute force protection"
+DESCRIPTION="fail2ban: Brute force protection for SSH and NextCloud"
 
 install()
 {
