@@ -12,6 +12,8 @@
 #
 # See installer.sh instructions for details
 #
+# More at https://ownyourbits.com/2017/03/13/nextcloudpi-gets-nextcloudpi-config/
+#
 
 DATADIR_=/media/USBdrive/ncdata
 DESCRIPTION="Change your data dir location"
