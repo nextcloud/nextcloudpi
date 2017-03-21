@@ -11,6 +11,7 @@
 #   ./installer.sh fail2ban.sh <IP> (<img>)
 #
 # See installer.sh instructions for details
+# More at: https://ownyourbits.com/2017/02/24/nextcloudpi-fail2ban-installer/
 #
 
 # location of Nextcloud logs

@@ -16,6 +16,9 @@
 #   Upon each necessary restart, the system will cut the SSH session, therefore
 #   it is required to save the state of the installation. See variable $STATE_FILE
 #   It will be necessary to invoke this a number of times for a complete installation
+#
+# More at https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/
+#
 
 VER=11.0.1
 ADMINUSER_=admin
@@ -26,6 +29,7 @@ MAXTRANSFERTIME_=3600
 OPCACHEDIR=/var/www/nextcloud/data/.opcache
 CONFDIR=/usr/local/etc/nextcloudpi-config.d/
 STATE_FILE=/home/pi/.installation_state
+APTINSTALL="apt-get install -y --no-install-recommends"
 
 
 install()
@@ -48,9 +52,9 @@ elif [ "$STATE" == "0" ]; then
   resize2fs /dev/sda2
 
   apt-get update
-  apt-get upgrade -y
-  apt-get dist-upgrade -y
-  apt-get install rpi-update -y
+  apt-get upgrade 
+  apt-get dist-upgrade 
+  $APTINSTALL rpi-update 
   echo -e "y\n" | rpi-update
 
   echo 1 > $STATE_FILE 
@@ -71,14 +75,14 @@ EOF
   # INSTALL FROM STRETCH
   ##########################################
 
-  apt-get install -t stretch apache2 -y
-  apt-get install -t stretch php7.0 php7.0-curl php7.0-gd php7.0-fpm php7.0-cli php7.0-opcache php7.0-mbstring php7.0-xml php7.0-zip -y
-  apt-get install php7.0-APC -y
-  apt-get install libxml2-dev php-zip php-dom php-xmlwriter php-xmlreader php-gd php-curl php-mbstring -y
+  $APTINSTALL -t stretch apache2
+  $APTINSTALL -t stretch php7.0 php7.0-curl php7.0-gd php7.0-fpm php7.0-cli php7.0-opcache php7.0-mbstring php7.0-xml php7.0-zip 
+  $APTINSTALL php7.0-APC 
+  $APTINSTALL libxml2-dev php-zip php-dom php-xmlwriter php-xmlreader php-gd php-curl php-mbstring 
 
   debconf-set-selections <<< "mariadb-server-5.5 mysql-server/root_password password $DBPASSWD_"
   debconf-set-selections <<< "mariadb-server-5.5 mysql-server/root_password_again password $DBPASSWD_"
-  apt-get install mariadb-server php7.0-mysql -y
+  $APTINSTALL mariadb-server php7.0-mysql 
 
   # CONFIGURE APACHE AND PHP7
   ##########################################
@@ -224,7 +228,7 @@ EXIT
 EOF
 
   # NEXTCLOUDPI-CONFIG
-  apt-get install -y dialog
+  $APTINSTALL dialog
   mkdir -p $CONFDIR
 fi
 }
@@ -280,7 +284,7 @@ EOF
 cleanup()   
 { 
   [ "$STATE" != "2" ] && return
-  apt-get autoremove -y
+  apt-get autoremove
   apt-get clean
   rm /var/lib/apt/lists/* -r
   rm -f /home/pi/.bash_history

@@ -9,6 +9,8 @@
 # Usage:
 #   sudo nextcloudpi-config
 #
+# More at https://ownyourbits.com/2017/03/13/nextcloudpi-gets-nextcloudpi-config/
+#
 
 CONFDIR=/usr/local/etc/nextcloudpi-config.d/
 

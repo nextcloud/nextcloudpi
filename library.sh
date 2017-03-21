@@ -4,6 +4,9 @@
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
+#
+# More at ownyourbits.com
+#
 
 
 IMGNAME=$( basename $IMGFILE .img )_$( basename $INSTALL_SCRIPT .sh ).img

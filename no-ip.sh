@@ -12,6 +12,8 @@
 #
 # See installer.sh instructions for details
 #
+# More at https://ownyourbits.com/2017/03/05/dynamic-dns-for-raspbian-with-no-ip-org-installer/
+#
 
 USER_=my-noip-user@email.com
 PASS_=noip-pass

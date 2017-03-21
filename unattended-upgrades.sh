@@ -11,6 +11,7 @@
 #   ./installer.sh unattended-upgrades.sh <IP> (<img>)
 #
 # See installer.sh instructions for details
+# More at: ownyourbits.com 
 #
 
 ACTIVE_=yes
