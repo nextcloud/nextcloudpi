@@ -11,6 +11,7 @@
 #   ./installer.sh dnsmasq.sh <IP> (<img>)
 #
 # See installer.sh instructions for details
+# More at: https://ownyourbits.com/2017/03/09/dnsmasq-as-dns-cache-server-for-nextcloudpi-and-raspbian/
 #
 
 DOMAIN_=mycloud.ownyourbits.com

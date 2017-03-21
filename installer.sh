@@ -29,6 +29,8 @@
 #  Use any script that would run locally on the image
 #  Use the IP of your running QEMU Raspbian image (DHCP should assign always the same)
 #
+# More at: https://ownyourbits.com/2017/03/05/generic-software-installer-for-raspbian/
+#
 
 INSTALL_SCRIPT=$1       # First argument is the script to be run inside Raspbian
 IP=$2                   # Second argument is the QEMU Raspbian IP address

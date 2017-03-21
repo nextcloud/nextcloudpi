@@ -12,6 +12,7 @@
 #
 # See installer.sh instructions for details
 #
+# More at https://ownyourbits.com/2017/03/17/lets-encrypt-installer-for-apache/
 
 DOMAIN_=mycloud.ownyourbits.com
 EMAIL_=mycloud@ownyourbits.com
@@ -34,7 +35,7 @@ configure()
     sed -i "s|ServerName .*|ServerName $DOMAIN_|" $VHOSTCFG_ || \
     sed -i "/DocumentRoot/aServerName $DOMAIN_" $VHOSTCFG_ 
 
-  /etc/letsencrypt/letsencrypt-auto -n --no-self-upgrade --apache --agree-tos -m $EMAIL_ -d $DOMAIN_
+  /etc/letsencrypt/letsencrypt-auto -n --no-self-upgrade --apache --hsts --agree-tos -m $EMAIL_ -d $DOMAIN_
   echo "* 1 * * 1 root /etc/letsencrypt/certbot-auto renew --quiet" > /etc/cron.d/letsencrypt-ncp
   service apache2 reload
 }

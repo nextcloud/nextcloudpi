@@ -11,6 +11,9 @@
 #
 # Notes:
 #   Set DOWNLOAD=0 if you have already downloaded an image. Rename it to nextcloudpi.img
+#
+# More at https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/
+#
 
 IP=$1          # First argument is the QEMU Raspbian IP address
 IMGFILE=$2     # Second argument is the name for the output image
