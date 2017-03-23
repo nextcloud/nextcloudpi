@@ -23,22 +23,16 @@ Use QEMU to automatically generate Raspbian Images with Nextcloud
 * Fail2Ban protection against brute force attacks. ( NEW 02-24-2017 )
 * Dynamic DNS support for no-ip.org ( NEW 03-05-2017 )
 * dnsmasq DNS server with DNS cache ( NEW 03-09-2017 )
+* Automatic security updates, activated by default. ( NEW 03-21-2017 )
+* ModSecurity Web Application Firewall ( NEW 03-23-2017 )
 
 ## Usage
 
 ```
 git clone https://github.com/nachoparker/nextcloud-raspbian-generator.git
 cd nextcloud-raspbian-generator
-./install-nextcloud.sh 192.168.0.145 # change to your QEMU raspbian IP
+./batch.sh 192.168.0.145 # change to your QEMU raspbian IP
 ```
-
-If we also want extras in our image
-
-```
-./installer.sh extrascript.sh 192.168.0.145 NextCloudPi_03-13-17.img # change to your QEMU raspbian IP
-```
-
-Adjust for the image name generated in the first step. 
 
 Extras can be activated and configured using
 

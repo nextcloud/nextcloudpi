@@ -14,6 +14,8 @@
 # More at: https://ownyourbits.com/2017/02/24/nextcloudpi-fail2ban-installer/
 #
 
+ACTIVE_=yes
+
 # location of Nextcloud logs
 NCLOG_=/var/www/nextcloud/data/nextcloud.log     
 
@@ -37,6 +39,8 @@ install()
 
 configure()
 {
+  [[ $ACTIVE_ == "no" ]] && { service fail2ban stop; update-rc.d fail2ban disable; return; }
+
   touch /var/www/nextcloud/data/nextcloud.log
   chown -R www-data /var/www/nextcloud/data
 
