@@ -14,6 +14,7 @@
 # More at: https://ownyourbits.com/2017/03/09/dnsmasq-as-dns-cache-server-for-nextcloudpi-and-raspbian/
 #
 
+ACTIVE_=yes
 DOMAIN_=mycloud.ownyourbits.com
 IP_=127.0.0.1
 DNSSERVER_=8.8.8.8
@@ -29,6 +30,8 @@ install()
 
 configure()
 {
+  [[ $ACTIVE_ == "no" ]] && { service dnsmasq stop; update-rc.d dnsmasq disable; return; }
+
   cat > /etc/dnsmasq.conf <<EOF
 domain-needed         # Never forward plain names (without a dot or domain part)
 bogus-priv            # Never forward addresses in the non-routed address spaces.
@@ -39,13 +42,8 @@ server=$DNSSERVER_
 address=/$DOMAIN_/$IP_  # This is optional if we add it to /etc/hosts
 EOF
 
-  cat >> /etc/hosts <<EOF
-$IP_ $DOMAIN_ # This is optional if we add it to dnsmasq.conf, but doesn't harm
-EOF
+  sed 's|#\?IGNORE_RESOLVCONF=.*|IGNORE_RESOLVCONF=yes|' /etc/default/dnsmasq
 
-  cat >> /etc/default/dnsmasq <<EOF
-IGNORE_RESOLVCONF=yes
-EOF
   update-rc.d dnsmasq defaults
   service dnsmasq restart
   cd /var/www/nextcloud

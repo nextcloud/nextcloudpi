@@ -15,6 +15,7 @@
 # More at https://ownyourbits.com/2017/03/05/dynamic-dns-for-raspbian-with-no-ip-org-installer/
 #
 
+ACTIVE_=yes
 USER_=my-noip-user@email.com
 PASS_=noip-pass
 TIME_=30
@@ -52,6 +53,8 @@ EOF
 
 configure() 
 {
+  [[ $ACTIVE_ == "no" ]] && { service noip2 stop; update-rc.d noip2 disable; return; }
+
   /usr/local/bin/noip2 -C -c /usr/local/etc/no-ip2.conf -U $TIME_ -u $USER_ -p $PASS_
   update-rc.d noip2 defaults
   service noip2 restart
