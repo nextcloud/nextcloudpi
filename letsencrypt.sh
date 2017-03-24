@@ -17,7 +17,7 @@
 DOMAIN_=mycloud.ownyourbits.com
 EMAIL_=mycloud@ownyourbits.com
 VHOSTCFG_=/etc/apache2/sites-available/nextcloud.conf
-DESCRIPTION="Let's Encrypt: automatic signed SSL certificates"
+DESCRIPTION="Automatic signed SSL certificates"
 
 install()
 {

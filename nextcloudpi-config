@@ -25,9 +25,11 @@ function nextcloud-config()
     LIST+=( $( basename $item .sh ) "$DESC" )
   done
   local script
-  script=$( dialog --notags --backtitle "NextCloudPi configuration" \
-                   --menu "Select program to configure and activate:" 20 80 10 \
-                   "${LIST[@]}" \
+  script=$( whiptail --backtitle "NextCloudPi configuration" \
+                     --title "NextCloudPi Software Configuration Tool (nextcloudpi-config)" \
+                     --cancel-button Finish --ok-button Select \
+                     --menu "Select program to configure and activate:" 20 100 10 \
+                     "${LIST[@]}" \
             3>&1 1>&2 2>&3 )
 
   [[ $? -ne $DIALOG_OK ]] || [[ "$script" == "" ]] && return 1
