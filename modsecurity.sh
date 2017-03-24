@@ -17,7 +17,7 @@
 
 ACTIVE_=no
 NCDIR_=/var/www/nextcloud/
-DESCRIPTION="modsecurity: Web Application Firewall for extra security (experimental)"
+DESCRIPTION="Web Application Firewall for extra security (experimental)"
 
 install()
 {

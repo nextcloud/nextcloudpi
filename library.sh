@@ -153,7 +153,7 @@ function config()
   while test $RET != 1 && test $RET != 250; do
     local value
     value=$( dialog --ok-label "Start" \
-                    --backtitle "$BACKTITLE" \
+                    --no-lines --backtitle "$BACKTITLE" \
                     --form "Enter the desired configuration for $( basename "$INSTALL_SCRIPT" .sh )" \
                     20 70 0 $PARAM \
              3>&1 1>&2 2>&3 )
@@ -162,7 +162,7 @@ function config()
     case $RET in
       $DIALOG_CANCEL)
         dialog \
-          --clear \
+          --no-lines --clear \
           --backtitle "$BACKTITLE" \
           --yesno "Really quit?" 10 30
         case $? in
@@ -176,23 +176,12 @@ function config()
         esac
         ;;
       $DIALOG_OK)
-        dialog \
-          --clear \
-          --backtitle "$BACKTITLE" --no-collapse --cr-wrap \
-          --yesno "The following configuration will be used\n\n$value" 10 60
-        case $? in
-          $DIALOG_OK)
-            local RET=( $value )
-            for i in `seq 0 1 $(( ${#RET[@]} - 1 )) `; do
-              local SEDRULE+="s|^${VARS[$i]}_=.*|${VARS[$i]}_=${RET[$i]}|;"
-              local CONFIG+="${VARS[$i]}=${RET[$i]}\n"
-            done
-            break
-            ;;
-          $DIALOG_CANCEL)
-            RET=99
-            ;;
-        esac
+        local RET=( $value )
+        for i in `seq 0 1 $(( ${#RET[@]} - 1 )) `; do
+          local SEDRULE+="s|^${VARS[$i]}_=.*|${VARS[$i]}_=${RET[$i]}|;"
+          local CONFIG+="${VARS[$i]}=${RET[$i]}\n"
+        done
+        break
         ;;
       $DIALOG_ERROR)
         echo "ERROR!$value"

@@ -230,6 +230,8 @@ EOF
   # NEXTCLOUDPI-CONFIG
   $APTINSTALL dialog
   mkdir -p $CONFDIR
+  sed -i '/Change User Password/i"0 NextCloudPi Configuration" "Configuration of NextCloudPi" \\'  /usr/bin/raspi-config
+  sed -i '/1\\ \*) do_change_pass ;;/i0\\ *) nextcloudpi-config ;;'                                /usr/bin/raspi-config
 fi
 }
 
