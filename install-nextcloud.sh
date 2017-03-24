@@ -37,7 +37,7 @@ config $INSTALL_SCRIPT || exit 1
 launch_install_qemu "$IMGFILE" $IP || exit 1
 
 CONFDIR=/usr/local/etc/nextcloudpi-config.d/
-copy_to_image "$IMGOUT" $CONFDIR nc-limits.sh nc-datadir.sh
+copy_to_image "$IMGOUT" $CONFDIR nc-limits.sh nc-datadir.sh nc-httpsonly.sh
 copy_to_image "$IMGOUT" $CONFDIR/library library.sh
 copy_to_image "$IMGOUT" /usr/local/bin/ nextcloudpi-config
 

@@ -32,7 +32,7 @@ function nextcloud-config()
                      "${LIST[@]}" \
             3>&1 1>&2 2>&3 )
 
-  [[ $? -ne $DIALOG_OK ]] || [[ "$script" == "" ]] && return 1
+  [[ $? -ne $DIALOG_OK ]] || [[ "$script" == "" ]] && return 0
 
   (
     cd $CONFDIR
