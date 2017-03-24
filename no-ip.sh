@@ -19,7 +19,7 @@ ACTIVE_=yes
 USER_=my-noip-user@email.com
 PASS_=noip-pass
 TIME_=30
-DESCRIPTION="no-ip.org: free Dynamic DNS provider (need account)"
+DESCRIPTION="Free Dynamic DNS provider (need account)"
 
 install()
 {
