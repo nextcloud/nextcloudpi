@@ -223,7 +223,9 @@ function pack_image()
   local IMGOUT="$1"
   local IMGNAME="$2"
   local TARNAME=$( basename $IMGNAME .img ).tar.bz2
-  cp -v "$IMGOUT" "$IMGNAME" || return 1
+  echo "copying $IMGNAME → $TARNAME"
+  cp "$IMGOUT" "$IMGNAME" || return 1
+  echo "packing $IMGNAME → $TARNAME"
   tar -I pbzip2 -cvf $TARNAME "$IMGNAME" &>/dev/null && \
     echo -e "$TARNAME packed successfully"
 }
