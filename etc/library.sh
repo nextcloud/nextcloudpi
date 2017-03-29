@@ -202,6 +202,33 @@ function config()
   [[ "$CFGOUT" != "" ]] && echo -e "$CONFIG" > "$CFGOUT"
 }
 
+
+function install_script()
+{
+  (
+    local SCRIPT=$1
+    source ./$SCRIPT 
+    echo -e "Installing \e[1m$( basename $SCRIPT .sh )\e[0m"
+    set +x
+    install
+    cleanup
+  )
+}
+
+function configure_script()
+{
+  (
+    local SCRIPT=$1
+    cd /usr/local/etc/nextcloudpi-config.d/
+    config $SCRIPT || return 1                 # writes "$INSTALLATION_CODE"
+    echo -e "$INSTALLATION_CODE" > $SCRIPT     # save configuration
+    source ./$SCRIPT                           # load configuration
+    echo -e "Configuring \e[1m$( basename $SCRIPT .sh )\e[0m"
+    set +x
+    configure
+  )
+}
+
 function copy_to_image()
 {
   local IMG=$1
@@ -223,7 +250,7 @@ function pack_image()
   local IMGOUT="$1"
   local IMGNAME="$2"
   local TARNAME=$( basename $IMGNAME .img ).tar.bz2
-  echo "copying $IMGNAME → $TARNAME"
+  echo "copying $IMGOUT → $IMGNAME"
   cp "$IMGOUT" "$IMGNAME" || return 1
   echo "packing $IMGNAME → $TARNAME"
   tar -I pbzip2 -cvf $TARNAME "$IMGNAME" &>/dev/null && \

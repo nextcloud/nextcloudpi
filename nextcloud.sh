@@ -228,10 +228,111 @@ EXIT
 EOF
 
   # NEXTCLOUDPI-CONFIG
+  ##########################################
+
   $APTINSTALL dialog
   mkdir -p $CONFDIR
   sed -i '/Change User Password/i"0 NextCloudPi Configuration" "Configuration of NextCloudPi" \\\\'  /usr/bin/raspi-config
-  sed -i '/1\\\\ \*) do_change_pass ;;/i0\\\\ *) nextcloudpi-config ;;'                                /usr/bin/raspi-config
+  sed -i '/1\\\\ \*) do_change_pass ;;/i0\\\\ *) nextcloudpi-config ;;'                              /usr/bin/raspi-config
+
+  # NEXTCLOUDPI MOTD
+  ##########################################
+  mkdir /etc/update-motd.d
+  rm /etc/motd
+  ln -s /var/run/motd /etc/motd
+
+  cat > /etc/update-motd.d/10logo <<EOF
+#!/bin/sh
+echo
+cat /usr/local/etc/ncp-ascii.txt
+EOF
+
+  cat > /etc/update-motd.d/20updates <<'EOF'
+#!/bin/bash
+/usr/local/bin/ncp-check-updates
+EOF
+  chmod a+x /etc/update-motd.d/*
+
+  # NEXTCLOUDPI UPDATES
+  ##########################################
+  $APTINSTALL git
+
+  cat > /usr/local/bin/ncp-check-updates <<'EOF'
+#!/bin/bash
+
+NEED_UPDATE=false
+VERFILE=/var/run/.ncp-latest-version
+
+if test -f $VERFILE && grep -qP "v\d+\.\d+\.\d+" $VERFILE; then
+
+  MAJOR=$( grep -oP "\d+\.\d+\.\d+" $VERFILE | cut -d. -f1 )
+  MINOR=$( grep -oP "\d+\.\d+\.\d+" $VERFILE | cut -d. -f2 )
+  PATCH=$( grep -oP "\d+\.\d+\.\d+" $VERFILE | cut -d. -f3 )
+
+  MAJ=$( grep -oP "\d+\.\d+\.\d+" /usr/local/etc/ncp-version | cut -d. -f1 )
+  MIN=$( grep -oP "\d+\.\d+\.\d+" /usr/local/etc/ncp-version | cut -d. -f2 )
+  PAT=$( grep -oP "\d+\.\d+\.\d+" /usr/local/etc/ncp-version | cut -d. -f3 )
+
+  if [[ $MAJOR > $MAJ ]]; then
+    NEED_UPDATE=true
+  elif [[ $MAJOR == $MAJ ]] && [[ $MINOR > $MIN ]]; then
+    NEED_UPDATE=true
+  elif [[ $MAJOR == $MAJ ]] && [[ $MINOR == $MIN ]] && [[ $PATCH > $PAT ]]; then
+    NEED_UPDATE=true
+  fi
+fi
+
+if $NEED_UPDATE; then
+  echo -e "\nNextCloudPi \e[1m$( cat $VERFILE )\e[0m available!!"
+  echo -e "update through 'nextcloudpi-config' or type 'sudo ncp-update'" 
+else
+  echo -e "\nNextCloudPi \e[1m$( cat /usr/local/etc/ncp-version )\e[0m is up to date"
+fi
+EOF
+  chmod a+x /usr/local/bin/ncp-check-updates
+
+
+  cat > /etc/cron.daily/ncp-check-version <<EOF
+#!/bin/sh
+/usr/local/bin/ncp-check-version
+EOF
+  chmod a+x /etc/cron.daily/ncp-check-version
+
+
+  cat > /usr/local/bin/ncp-check-version <<'EOF'
+#!/bin/bash
+[ $(id -u) -ne 0 ] && exit 1
+git clone -q --depth 1 https://github.com/nachoparker/nextcloud-raspbian-generator.git /tmp/ncp-check-tmp
+cd /tmp/ncp-check-tmp
+git describe --always --tags > /var/run/.ncp-latest-version
+cd /
+rm -rf /tmp/ncp-check-tmp
+EOF
+  chmod a+x /usr/local/bin/ncp-check-version
+
+
+  cat > /usr/local/bin/ncp-update <<'EOF'
+#!/bin/bash
+echo -e "Downloading updates"
+rm -rf /tmp/ncp-update-tmp
+git clone -q --depth 1 https://github.com/nachoparker/nextcloud-raspbian-generator.git /tmp/ncp-update-tmp
+cd /tmp/ncp-update-tmp
+
+echo -e "Performing updates"
+./update.sh
+
+VER=$( git describe --always --tags )
+echo $VER > /usr/local/etc/ncp-version
+echo $VER > /var/run/.ncp-latest-version
+
+cd /
+rm -rf /tmp/ncp-update-tmp
+
+echo -e "NextCloudPi updated to version \e[1m$VER\e[0m"
+EOF
+  chmod a+x /usr/local/bin/ncp-update
+
+  /usr/local/bin/ncp-update
 fi
 }
 
