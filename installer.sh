@@ -35,15 +35,13 @@
 INSTALL_SCRIPT=$1       # First argument is the script to be run inside Raspbian
 IP=$2                   # Second argument is the QEMU Raspbian IP address
 IMGFILE=$3              # Third argument is the image file to start from ( empty for online installation )
-CONFDIR=/usr/local/etc/nextcloudpi-config.d/
  
-source library.sh       # initializes $IMGNAME
+source etc/library.sh   # initializes $IMGNAME
 
 config $INSTALL_SCRIPT || exit 1
 
 if [[ "$IMGFILE" != "" ]]; then
-  launch_install_qemu "$IMGFILE" $IP                      || exit 1    # initializes $IMGOUT
-  copy_to_image       "$IMGOUT"  $CONFDIR $INSTALL_SCRIPT || exit 1
+  launch_install_qemu "$IMGFILE" $IP         || exit 1    # initializes $IMGOUT
   pack_image          "$IMGOUT" "$IMGNAME" 
 else
   launch_installation_online $IP

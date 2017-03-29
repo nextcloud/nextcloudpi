@@ -14,7 +14,7 @@
 
 CONFDIR=/usr/local/etc/nextcloudpi-config.d/
 
-source $CONFDIR/library
+source /usr/local/etc/library.sh
 
 function nextcloud-config()
 {
@@ -34,14 +34,7 @@ function nextcloud-config()
 
   [[ $? -ne $DIALOG_OK ]] || [[ "$script" == "" ]] && return 0
 
-  (
-    cd $CONFDIR
-    config $script.sh || return 1                 # writes "$INSTALLATION_CODE"
-    echo -e "$INSTALLATION_CODE" > $script.sh     # save configuration
-    source ./$script.sh                           # load configuration
-    set +x
-    configure
-  )
+  configure_script $script.sh
 }
 
 if [ $(id -u) -ne 0 ]; then
