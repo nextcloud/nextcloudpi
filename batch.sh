@@ -9,7 +9,7 @@
 # Usage:
 #
 
-source library.sh       # initializes $IMGNAME
+source etc/library.sh       # initializes $IMGNAME
 
 IP=$1                   # First argument is the QEMU Raspbian IP address
 
