@@ -16,10 +16,13 @@
 #
 
 DATADIR_=/media/USBdrive/ncdata
-DESCRIPTION="Change your data dir location"
+DESCRIPTION="Change your data dir to a new location, like a USB drive"
 
 configure()
 {
+  local SRCDIR=$( cd /var/www/nextcloud; sudo -u www-data php occ config:system:get datadirectory )
+  [ -d $SRCDIR ] || { echo -e "data directory $SRCDIR not found"; return 1; }
+
   [ -d $DATADIR_ ] && {
     [[ $( find "$DATADIR_" -maxdepth 0 -empty | wc -l ) == 0 ]] && {
       echo "$DATADIR_ is not empty"
@@ -28,15 +31,15 @@ configure()
     rmdir "$DATADIR_" 
   }
 
-  service apache2 stop
-
   local BASEDIR=$( dirname "$DATADIR_" )
   mkdir -p "$BASEDIR"
 
   [[ $( stat -fc%d / ) == $( stat -fc%d $BASEDIR ) ]] && \
     echo -e "INFO: moving data dir to another place in the same SD card\nIf you want to use an external mount, make sure it is properly set up"
 
-  cp -ra /var/www/nextcloud/data/ "$DATADIR_" || return 1
+  service apache2 stop
+
+  cp -ra "$SRCDIR" "$DATADIR_" || return 1
   
   cd /var/www/nextcloud
   sudo -u www-data php occ config:system:set datadirectory --value=$DATADIR_
