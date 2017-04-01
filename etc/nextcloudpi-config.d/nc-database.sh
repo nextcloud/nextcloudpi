@@ -32,7 +32,7 @@ configure()
     rmdir "$DBDIR_" 
   }
 
-  local BASEDIR=$( dirname "$DATADIR_" )
+  local BASEDIR=$( dirname "$DBDIR_" )
   mkdir -p "$BASEDIR"
 
   [[ $( stat -fc%d / ) == $( stat -fc%d $BASEDIR ) ]] && \

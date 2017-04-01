@@ -33,6 +33,7 @@ install()
 
   # CONFIGURE
   cp /etc/modsecurity/modsecurity.conf-recommended /etc/modsecurity/modsecurity.conf
+  sed -i "s|SecRuleEngine .*|SecRuleEngine Off|"               /etc/modsecurity/modsecurity.conf
   sed -i 's|SecTmpDir .*|SecTmpDir   /var/cache/modsecurity/|' /etc/modsecurity/modsecurity.conf
   sed -i 's|SecDataDir .*|SecDataDir /var/cache/modsecurity/|' /etc/modsecurity/modsecurity.conf
 
