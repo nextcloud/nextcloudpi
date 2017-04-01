@@ -32,10 +32,10 @@ tmpfs /var/log tmpfs defaults,noatime,mode=1777 0 0 # Logs in RAM
 tmpfs /tmp     tmpfs defaults,noatime,mode=1777 0 0 # /tmp in RAM
 EOF
 
-  local HTTPUNIT=/etc/systemd/system/multi-user.target.wants/apache2.service
+  local HTTPUNIT=/lib/systemd/system/apache2.service
   grep -q mkdir /etc/init.d/mysql   || sed -i "/\<start)/amkdir -p /var/log/mysql"   /etc/init.d/mysql
   grep -q mkdir /etc/init.d/apache2 || sed -i "/\<start)/amkdir -p /var/log/apache2" /etc/init.d/apache2
-  grep -q mkdir $HTTPUNIT           || sed -i "ExecStartPre=/bin/mkdir -p /var/log/apache2" $HTTPUNIT
+  grep -q mkdir $HTTPUNIT           || sed -i "/ExecStart/iExecStartPre=/bin/mkdir -p /var/log/apache2" $HTTPUNIT
 
   grep -q vm.swappiness /etc/sysctl.conf || echo "vm.swappiness = 10" >> /etc/sysctl.conf && sysctl --load
   echo "Logs in RAM. Reboot for changes to take effect"
