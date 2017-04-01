@@ -21,13 +21,16 @@ DESCRIPTION="Move and resize your swapfile. Recommended to move to a permanent U
 
 configure()
 {
-  [[ $( stat -fc%d / ) == $( stat -fc%d $SWAPFILE_ ) ]] && \
+  local ORIG=$( grep -oP "CONF_SWAPFILE=.*" /etc/dphys-swapfile | cut -f2 -d= )
+  [[ "$ORIG" == "$SWAPFILE_" ]] && return
+
+  [[ $( stat -fc%d / ) == $( stat -fc%d $( dirname $SWAPFILE_ ) ) ]] && \
     echo -e "INFO: moving swapfile to another place in the same SD card\nIf you want to use an external mount, make sure it is properly set up"
 
   sed -i "s|#\?CONF_SWAPFILE=.*|CONF_SWAPFILE=$SWAPFILE_|" /etc/dphys-swapfile
   sed -i "s|#\?CONF_SWAPSIZE=.*|CONF_SWAPSIZE=$SWAPSIZE_|" /etc/dphys-swapfile
   grep -q vm.swappiness /etc/sysctl.conf || echo "vm.swappiness = 10" >> /etc/sysctl.conf && sysctl --load
-  service dphys-swapfile restart
+  service dphys-swapfile restart && swapoff "$ORIG" && rm -f "$ORIG"
 }
 
 install() { :; }
