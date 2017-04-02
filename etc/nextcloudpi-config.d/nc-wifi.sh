@@ -35,6 +35,12 @@ configure()
 5) F10 to save
 6) C to connect" \
   20 90
+
+  # Installation in QEMU (without a wireless interface) produces 
+  # wicd installation to generate 'wireless_interface = None'.
+  # It does not hurt to restart it to wlan0 for RPi3 & zero w
+  sed -i 's|^wireless_interface = None|wireless_interface = wlan0|' /etc/wicd/manager-settings.conf
+
   wicd-curses
 }
 
