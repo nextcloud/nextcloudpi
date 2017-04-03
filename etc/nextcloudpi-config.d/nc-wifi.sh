@@ -21,10 +21,14 @@ install()
 {
   apt-get update
   apt install -y --no-install-recommends wicd-curses
+  systemctl disable wicd 
 }
 
 configure()
 {
+  systemctl enable wicd 
+  systemctl start wicd
+
   whiptail --msgbox \
            --backtitle "NextCloudPi configuration" \
            --title "Instructions to configure Wi-Fi" \
