@@ -12,20 +12,35 @@
 # More at https://ownyourbits.com/2017/03/13/nextcloudpi-gets-nextcloudpi-config/
 #
 
-CONFDIR=/usr/local/etc/nextcloudpi-config.d/
-
 source /usr/local/etc/library.sh
 
 function nextcloud-config()
 {
   local DIALOG_OK=0
   local LIST=()
+  local VERSION=$( cat /usr/local/etc/ncp-version )
+  local VERFILE=/var/run/.ncp-latest-version
+  local BACKTITLE="NextCloudPi configuration ver. $VERSION"
+  local CONFDIR=/usr/local/etc/nextcloudpi-config.d/ 
+
+  # save latest version if it has never done before
+  test -f $VERFILE || ncp-check-version
+
+  # ask for update if outdated
+  ncp-test-updates && \
+  whiptail --backtitle "$BACKTITLE" \
+    --title "NextCloudPi update available" \
+    --clear --yesno "Update to $( cat $VERFILE )?" \
+    10 40
+  [[ $? -eq $DIALOG_OK ]] && ncp-update
+
+  # launch the selection menu
   for item in $CONFDIR/*.sh; do
     local DESC=$( grep "DESCRIPTION=" $item | sed 's|^DESCRIPTION="||;s|"$||' )
     LIST+=( $( basename $item .sh ) "$DESC" )
   done
   local script
-  script=$( whiptail --backtitle "NextCloudPi configuration" \
+  script=$( whiptail --backtitle "$BACKTITLE" \
                      --title "NextCloudPi Software Configuration Tool (nextcloudpi-config)" \
                      --cancel-button Finish --ok-button Select \
                      --menu "Select program to configure and activate:" 20 100 10 \
@@ -34,6 +49,7 @@ function nextcloud-config()
 
   [[ $? -ne $DIALOG_OK ]] || [[ "$script" == "" ]] && return 0
 
+  # launch selected script
   configure_script $script.sh
 }
 

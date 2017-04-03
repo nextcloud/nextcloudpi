@@ -1,0 +1,24 @@
+#!/bin/bash
+
+NEED_UPDATE=false
+VERFILE=/var/run/.ncp-latest-version
+
+if test -f $VERFILE && grep -qP "v\d+\.\d+\.\d+" $VERFILE; then
+
+  MAJOR=$( grep -oP "\d+\.\d+\.\d+" $VERFILE | cut -d. -f1 )
+  MINOR=$( grep -oP "\d+\.\d+\.\d+" $VERFILE | cut -d. -f2 )
+  PATCH=$( grep -oP "\d+\.\d+\.\d+" $VERFILE | cut -d. -f3 )
+
+  MAJ=$( grep -oP "\d+\.\d+\.\d+" /usr/local/etc/ncp-version | cut -d. -f1 )
+  MIN=$( grep -oP "\d+\.\d+\.\d+" /usr/local/etc/ncp-version | cut -d. -f2 )
+  PAT=$( grep -oP "\d+\.\d+\.\d+" /usr/local/etc/ncp-version | cut -d. -f3 )
+
+  if [[ $MAJOR > $MAJ ]]; then
+    NEED_UPDATE=true
+  elif [[ $MAJOR == $MAJ ]] && [[ $MINOR > $MIN ]]; then
+    NEED_UPDATE=true
+  elif [[ $MAJOR == $MAJ ]] && [[ $MINOR == $MIN ]] && [[ $PATCH > $PAT ]]; then
+    NEED_UPDATE=true
+  fi
+fi
+[[ "$NEED_UPDATE" == "true" ]] && exit 0
