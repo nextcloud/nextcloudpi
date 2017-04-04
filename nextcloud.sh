@@ -266,23 +266,26 @@ EOF
 
   cat > /usr/local/bin/ncp-update <<'EOF'
 #!/bin/bash
-ping  -W 2 -w 1 -q github.com &>/dev/null || { echo "No internet connectivity"; exit 1; }
-echo -e "Downloading updates"
-rm -rf /tmp/ncp-update-tmp
-git clone -q --depth 1 https://github.com/nachoparker/nextcloud-raspbian-generator.git /tmp/ncp-update-tmp || exit 1
-cd /tmp/ncp-update-tmp
+{
+  ping  -W 2 -w 1 -q github.com &>/dev/null || { echo "No internet connectivity"; exit 1; }
+  echo -e "Downloading updates"
+  rm -rf /tmp/ncp-update-tmp
+  git clone -q --depth 1 https://github.com/nachoparker/nextcloud-raspbian-generator.git /tmp/ncp-update-tmp || exit 1
+  cd /tmp/ncp-update-tmp
 
-echo -e "Performing updates"
-./update.sh
+  echo -e "Performing updates"
+  ./update.sh
 
-VER=$( git describe --always --tags )
-echo $VER > /usr/local/etc/ncp-version
-echo $VER > /var/run/.ncp-latest-version
+  VER=$( git describe --always --tags )
+  echo $VER > /usr/local/etc/ncp-version
+  echo $VER > /var/run/.ncp-latest-version
 
-cd /
-rm -rf /tmp/ncp-update-tmp
+  cd /
+  rm -rf /tmp/ncp-update-tmp
 
-echo -e "NextCloudPi updated to version \e[1m$VER\e[0m"
+  echo -e "NextCloudPi updated to version \e[1m$VER\e[0m"
+  exit
+}
 EOF
   chmod a+x /usr/local/bin/ncp-update
 
