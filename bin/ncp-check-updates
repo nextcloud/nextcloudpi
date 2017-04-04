@@ -1,6 +1,9 @@
 #!/bin/bash
-  cat > /usr/local/bin/ncp-check-updates <<'EOF'
+
+# print message if an update is available
+
 VERFILE=/var/run/.ncp-latest-version
+
 if ncp-test-updates; then
   echo -e "\nNextCloudPi \e[1m$( cat $VERFILE )\e[0m available!!"
   echo -e "update through 'nextcloudpi-config' or type 'sudo ncp-update'" 
