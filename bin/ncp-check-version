@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# update latest available version in /var/run/.ncp-latest-version
+
+[ $(id -u) -ne 0 ] && exit 1
+
+ping  -W 2 -w 1 -q github.com &>/dev/null || { echo "No internet connectivity"; exit 1; }
+
+git clone -q --depth 1 https://github.com/nachoparker/nextcloud-raspbian-generator.git /tmp/ncp-check-tmp || exit 1
+
+cd /tmp/ncp-check-tmp
+git describe --always --tags > /var/run/.ncp-latest-version
+cd /
+
+rm -rf /tmp/ncp-check-tmp

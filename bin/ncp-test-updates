@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# given in disk version information, return 0 if an update is available
+
 NEED_UPDATE=false
 VERFILE=/var/run/.ncp-latest-version
 

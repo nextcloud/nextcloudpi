@@ -264,23 +264,12 @@ EOF
   chmod a+x /etc/cron.daily/ncp-check-version
 
 
-  cat > /usr/local/bin/ncp-check-version <<'EOF'
-#!/bin/bash
-[ $(id -u) -ne 0 ] && exit 1
-git clone -q --depth 1 https://github.com/nachoparker/nextcloud-raspbian-generator.git /tmp/ncp-check-tmp
-cd /tmp/ncp-check-tmp
-git describe --always --tags > /var/run/.ncp-latest-version
-cd /
-rm -rf /tmp/ncp-check-tmp
-EOF
-  chmod a+x /usr/local/bin/ncp-check-version
-
-
   cat > /usr/local/bin/ncp-update <<'EOF'
 #!/bin/bash
+ping  -W 2 -w 1 -q github.com &>/dev/null || { echo "No internet connectivity"; exit 1; }
 echo -e "Downloading updates"
 rm -rf /tmp/ncp-update-tmp
-git clone -q --depth 1 https://github.com/nachoparker/nextcloud-raspbian-generator.git /tmp/ncp-update-tmp
+git clone -q --depth 1 https://github.com/nachoparker/nextcloud-raspbian-generator.git /tmp/ncp-update-tmp || exit 1
 cd /tmp/ncp-update-tmp
 
 echo -e "Performing updates"
