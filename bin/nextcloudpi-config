@@ -18,9 +18,8 @@ function nextcloud-config()
 {
   local DIALOG_OK=0
   local LIST=()
-  local VERSION=$( cat /usr/local/etc/ncp-version )
   local VERFILE=/var/run/.ncp-latest-version
-  local BACKTITLE="NextCloudPi configuration ver. $VERSION"
+  local BACKTITLE="NextCloudPi configuration ver. "
   local CONFDIR=/usr/local/etc/nextcloudpi-config.d/ 
 
   # save latest version if it has never done before
@@ -28,7 +27,7 @@ function nextcloud-config()
 
   # ask for update if outdated
   ncp-test-updates && \
-  whiptail --backtitle "$BACKTITLE" \
+  whiptail --backtitle "$BACKTITLE $( cat /usr/local/etc/ncp-version )" \
     --title "NextCloudPi update available" \
     --clear --yesno "Update to $( cat $VERFILE )?" \
     10 40
@@ -40,7 +39,7 @@ function nextcloud-config()
     LIST+=( $( basename $item .sh ) "$DESC" )
   done
   local script
-  script=$( whiptail --backtitle "$BACKTITLE" \
+  script=$( whiptail --backtitle "$BACKTITLE $( cat /usr/local/etc/ncp-version )" \
                      --title "NextCloudPi Software Configuration Tool (nextcloudpi-config)" \
                      --cancel-button Finish --ok-button Select \
                      --menu "Select program to configure and activate:" 20 100 10 \
