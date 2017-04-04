@@ -26,8 +26,10 @@ install()
 
 configure()
 {
-  systemctl enable wicd 
-  systemctl start wicd
+  systemctl stop    dhcpcd
+  systemctl disable dhcpcd
+  systemctl enable  wicd 
+  systemctl start   wicd
 
   whiptail --msgbox \
            --backtitle "NextCloudPi configuration" \
