@@ -267,6 +267,7 @@ EOF
   cat > /usr/local/bin/ncp-update <<'EOF'
 #!/bin/bash
 {
+  [ $(id -u) -ne 0 ] && { printf "Must be run as root. Try 'sudo $0'\n"; exit 1; }
   ping  -W 2 -w 1 -q github.com &>/dev/null || { echo "No internet connectivity"; exit 1; }
   echo -e "Downloading updates"
   rm -rf /tmp/ncp-update-tmp
