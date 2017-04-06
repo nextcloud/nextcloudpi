@@ -42,9 +42,10 @@ server=$DNSSERVER_
 address=/$DOMAIN_/$IP_  # This is optional if we add it to /etc/hosts
 EOF
 
-  sed 's|#\?IGNORE_RESOLVCONF=.*|IGNORE_RESOLVCONF=yes|' /etc/default/dnsmasq
+  sed -i 's|#\?IGNORE_RESOLVCONF=.*|IGNORE_RESOLVCONF=yes|' /etc/default/dnsmasq
 
   update-rc.d dnsmasq defaults
+  update-rc.d dnsmasq enable
   service dnsmasq restart
   cd /var/www/nextcloud
   sudo -u www-data php occ config:system:set trusted_domains 2 --value=$DOMAIN_
