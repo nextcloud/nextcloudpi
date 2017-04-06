@@ -57,6 +57,7 @@ configure()
 
   /usr/local/bin/noip2 -C -c /usr/local/etc/no-ip2.conf -U $TIME_ -u $USER_ -p $PASS_
   update-rc.d noip2 defaults
+  update-rc.d noip2 enable
   service noip2 restart
 }
 
