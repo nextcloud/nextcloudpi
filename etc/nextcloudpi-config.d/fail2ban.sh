@@ -113,6 +113,7 @@ logpath  = $NCLOG_
 maxretry = $MAXRETRY_
 EOF
   update-rc.d fail2ban defaults
+  update-rc.d fail2ban enable
   service fail2ban restart
 }
 
