@@ -48,6 +48,7 @@ function launch_qemu()
   test -f $1 || { echo "Image $IMG not found"; return 1; }
   test -d qemu-raspbian-network || git clone https://github.com/nachoparker/qemu-raspbian-network.git
   sed -i '30s/NO_NETWORK=1/NO_NETWORK=0/' qemu-raspbian-network/qemu-pi.sh
+  sed -i '35s/NO_GRAPHIC=0/NO_GRAPHIC=1/' qemu-raspbian-network/qemu-pi.sh
   echo "Starting QEMU image $IMG"
   ( cd qemu-raspbian-network && sudo ./qemu-pi.sh ../$IMG 2>/dev/null )
 }
