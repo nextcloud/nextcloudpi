@@ -212,7 +212,6 @@ function install_script()
     echo -e "Installing \e[1m$( basename $SCRIPT .sh )\e[0m"
     set +x
     install
-    cleanup
   )
 }
 

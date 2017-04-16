@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# SAMBA/CIFS server for Raspbian 
+# SAMBA server for Raspbian 
 # Tested with 2017-03-02-raspbian-jessie-lite.img
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
@@ -17,9 +17,7 @@
 DIR_=/media/USBdrive/ncdata/admin/files
 USER_=pi
 PWD_=raspberry
-DESCRIPTION="SAMBA/CIFS file server (for Mac/Linux/Windows)"
-
-# mkdir -p /var/log/samba in init.d
+DESCRIPTION="SMB/CIFS file server (for Mac/Linux/Windows)"
 
 install()
 {
