@@ -30,6 +30,8 @@ Use QEMU to automatically generate Raspbian Images with Nextcloud
 * Dynamic DNS support for no-ip.org ( NEW 03-05-2017 )
 * dnsmasq DNS server with DNS cache ( NEW 03-09-2017 )
 * ModSecurity Web Application Firewall ( NEW 03-23-2017 )
+* NFS ready to mount your files over LAN ( NEW 04-13-2017 )
+* SAMBA ready to share your files with Windows/Mac/Linux ( NEW 04-16-2017 )
 * Remote updates ( NEW 03-31-2017 )
 
 ## Usage
