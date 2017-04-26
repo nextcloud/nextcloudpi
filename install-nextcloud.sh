@@ -20,7 +20,7 @@ IMGFILE=$2     # Second argument is the name for the output image
 DOWNLOAD=1     # Download the latest image
 EXTRACT=1      # Extract the image from zip, so start from 0
 IMG=raspbian_lite_latest
-INSTALL_SCRIPT=nextcloud.sh
+INSTALL_SCRIPT=nextcloud_base.sh
 
 source etc/library.sh       # initializes $IMGNAME
 
@@ -31,13 +31,10 @@ source etc/library.sh       # initializes $IMGNAME
   qemu-img resize $IMGFILE +1G || exit 
 }
 
-IMGOUT="NextCloudPi_$( date  "+%m-%d-%y" ).img"
-
 config $INSTALL_SCRIPT              || exit 1
 launch_install_qemu "$IMGFILE" $IP  || exit 1    # initializes $IMGOUT
 
-pack_image $IMGFILE $IMGOUT
-
+pack_image $IMGOUT $IMGFILE 
 
 # License
 #
