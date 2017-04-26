@@ -45,9 +45,7 @@ install()
   find ${ocpath}/ -type d -print0 | xargs -0 chmod 0750
 
   printf "chown Directories\n"
-  # recommended defaults do not play well with updater app
-  # re-check this with every new version
-  #chown -R ${rootuser}:${htgroup} ${ocpath}/
+
   chown -R ${htuser}:${htgroup} ${ocpath}/
   chown -R ${htuser}:${htgroup} ${ocpath}/apps/
   chown -R ${htuser}:${htgroup} ${ocpath}/config/
@@ -60,9 +58,7 @@ install()
 
   printf "chmod/chown .htaccess\n"
   if [ -f ${ocpath}/.htaccess ]; then
-    # breaks updater, see above
-    #chmod 0644 ${ocpath}/.htaccess
-    chmod 0664 ${ocpath}/.htaccess
+    chmod 0644 ${ocpath}/.htaccess
     chown ${rootuser}:${htgroup} ${ocpath}/.htaccess
   fi
   if [ -f ${ocpath}/data/.htaccess ]; then
