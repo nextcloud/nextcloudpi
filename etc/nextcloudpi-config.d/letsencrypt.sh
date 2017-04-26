@@ -21,8 +21,6 @@ DESCRIPTION="Automatic signed SSL certificates"
 
 install()
 {
-  apt-get update
-  apt install -y --no-install-recommends git 
   cd /etc
   git clone https://github.com/letsencrypt/letsencrypt
   /etc/letsencrypt/letsencrypt-auto --help # do not actually run certbot, only install packages
