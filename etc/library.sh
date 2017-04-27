@@ -215,6 +215,18 @@ function install_script()
   )
 }
 
+function info_script()
+{
+  (
+    local SCRIPT=$1
+    cd /usr/local/etc/nextcloudpi-config.d/
+    unset show_info
+    source ./$SCRIPT
+    [[ $( type -t show_info ) == function ]] || return 0
+    [[ $( type -t show_info ) == function ]] && show_info 
+  )
+}
+
 function configure_script()
 {
   (
