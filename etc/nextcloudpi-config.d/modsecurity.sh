@@ -88,6 +88,16 @@ EOF
 EOF
 }
 
+show_info()
+{
+  whiptail --yesno \
+           --backtitle "NextCloudPi configuration" \
+           --title "Experimental feature warning" \
+"This feature is highly experimental and has only been tested with
+a basic NextCloud installation. If a new App does not work disable it" \
+  20 90
+}
+
 configure() 
 { 
   [[ $ACTIVE_ == "yes" ]] && local STATE=On || local STATE=Off
