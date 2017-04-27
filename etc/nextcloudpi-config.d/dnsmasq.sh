@@ -14,7 +14,7 @@
 # More at: https://ownyourbits.com/2017/03/09/dnsmasq-as-dns-cache-server-for-nextcloudpi-and-raspbian/
 #
 
-ACTIVE_=yes
+ACTIVE_=no
 DOMAIN_=mycloud.ownyourbits.com
 IP_=127.0.0.1
 DNSSERVER_=8.8.8.8

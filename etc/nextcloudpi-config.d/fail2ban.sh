@@ -14,7 +14,7 @@
 # More at: https://ownyourbits.com/2017/02/24/nextcloudpi-fail2ban-installer/
 #
 
-ACTIVE_=yes
+ACTIVE_=no
 
 # location of Nextcloud logs
 NCLOG_=/var/www/nextcloud/data/nextcloud.log     
