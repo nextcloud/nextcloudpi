@@ -162,19 +162,8 @@ function config()
 
     case $RET in
       $DIALOG_CANCEL)
-        dialog \
-          --no-lines --clear \
-          --backtitle "$BACKTITLE" \
-          --yesno "Really quit?" 10 30
-        case $? in
-          $DIALOG_OK)
-            echo "Aborted"
-            return 1
-            ;;
-          $DIALOG_CANCEL)
-            RET=99
-            ;;
-        esac
+        echo "Aborted"
+        return 1
         ;;
       $DIALOG_OK)
         local RET=( $value )
@@ -202,7 +191,6 @@ function config()
   INSTALLATION_CODE="$( sed $SEDRULE "$INSTALL_SCRIPT" )"
   [[ "$CFGOUT" != "" ]] && echo -e "$CONFIG" > "$CFGOUT"
 }
-
 
 function install_script()
 {
