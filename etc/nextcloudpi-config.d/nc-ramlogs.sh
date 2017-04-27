@@ -16,7 +16,7 @@
 #
 
 ACTIVE_=no
-DESCRIPTION="mount logs in RAM to prevent SD card degradation (faster, consumes more RAM)"
+DESCRIPTION="mount logs in RAM to prevent SD degradation (faster, consumes more RAM)"
 
 show_info()
 {

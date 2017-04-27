@@ -15,7 +15,7 @@
 # More at https://ownyourbits.com/2017/03/05/dynamic-dns-for-raspbian-with-no-ip-org-installer/
 #
 
-ACTIVE_=yes
+ACTIVE_=no
 USER_=my-noip-user@email.com
 PASS_=noip-pass
 TIME_=30
