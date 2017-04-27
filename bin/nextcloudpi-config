@@ -16,43 +16,52 @@ source /usr/local/etc/library.sh
 
 function nextcloud-config()
 {
-  local DIALOG_OK=0
-  local LIST=()
-  local VERFILE=/var/run/.ncp-latest-version
-  local BACKTITLE="NextCloudPi configuration ver. "
-  local CONFDIR=/usr/local/etc/nextcloudpi-config.d/ 
+  {
+    local DIALOG_OK=0
+    local VERFILE=/var/run/.ncp-latest-version
+    local BACKTITLE="NextCloudPi configuration ver. "
+    local CONFDIR=/usr/local/etc/nextcloudpi-config.d/ 
 
-  # save latest version if it has never done before
-  test -f $VERFILE || ncp-check-version
+    # save latest version if it has never done before
+    test -f $VERFILE || ncp-check-version
 
-  # ask for update if outdated
-  ncp-test-updates && \
-  whiptail --backtitle "$BACKTITLE $( cat /usr/local/etc/ncp-version )" \
-    --title "NextCloudPi update available" \
-    --clear --yesno "Update to $( cat $VERFILE )?" \
-    10 40
-  [[ $? -eq $DIALOG_OK ]] && ncp-update
+    # ask for update if outdated
+    ncp-test-updates && \
+    whiptail --backtitle "$BACKTITLE $( cat /usr/local/etc/ncp-version )" \
+      --title "NextCloudPi update available" \
+      --clear --yesno "Update to $( cat $VERFILE )?" \
+      10 40
+    [[ $? -eq $DIALOG_OK ]] && ncp-update
 
-  # launch the selection menu
-  for item in $CONFDIR/*.sh; do
-    local DESC=$( grep "DESCRIPTION=" $item | sed 's|^DESCRIPTION="||;s|"$||' )
-    LIST+=( $( basename $item .sh ) "$DESC" )
-  done
-  while true; do
-    local script
-    script=$( whiptail --backtitle "$BACKTITLE $( cat /usr/local/etc/ncp-version )" \
-                       --title "NextCloudPi Software Configuration Tool (nextcloudpi-config)" \
-                       --cancel-button Finish --ok-button Select \
-                       --menu "Select program to configure and activate:" 20 100 10 \
-                       "${LIST[@]}" \
-              3>&1 1>&2 2>&3 )
+    while true; do
+      # fill options
+      local LIST=()
+      for item in $CONFDIR/*.sh; do
+        local DESC=$( grep "DESCRIPTION=" $item | sed 's|^DESCRIPTION="||;s|"$||' )
+        grep -q "^ACTIVE_=yes" $item && local ON="✓" || local ON=" "
+        LIST+=( "$ON $( basename $item .sh )" "$DESC" )
+      done
 
-    [[ $? -ne $DIALOG_OK ]] || [[ "$script" == "" ]] && return 0
+      # launch the selection menu
+      local script
+      script=$( whiptail --backtitle "$BACKTITLE $( cat /usr/local/etc/ncp-version )" \
+                         --title "NextCloudPi Software Configuration Tool (nextcloudpi-config)" \
+                         --cancel-button Finish --ok-button Select \
+                         --menu "Select program to configure and activate:" 20 105 10 \
+                         "${LIST[@]}" \
+                3>&1 1>&2 2>&3 )
 
-    # launch selected script
-    info_script      $script.sh || continue;
-    configure_script $script.sh
-  done
+      [[ $? -ne $DIALOG_OK ]] || [[ "$script" == "" ]] && return 0
+
+      # remove ✓ and spaces
+      script=$( sed  's=✓\| ==g' <<< "$script" ) 
+
+      # launch selected script
+      info_script      $script.sh || continue;
+      configure_script $script.sh
+    done
+    return 
+  } # force to read the whole thing into memory, as its contents might change in update.sh
 }
 
 if [ $(id -u) -ne 0 ]; then
