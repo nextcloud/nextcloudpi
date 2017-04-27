@@ -51,6 +51,15 @@ EOF
   rm -r /tmp/noip
 }
 
+show_info()
+{
+  whiptail --yesno \
+           --backtitle "NextCloudPi configuration" \
+           --title "Warning" \
+"Internet access is required for this configuration to complete" \
+  20 90
+}
+
 configure() 
 {
   [[ $ACTIVE_ == "no" ]] && { service noip2 stop; update-rc.d noip2 disable; return; }

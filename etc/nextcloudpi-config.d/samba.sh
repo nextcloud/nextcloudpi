@@ -29,11 +29,9 @@ install()
   grep -q mkdir /etc/init.d/smbd || sed -i "/\<start)/amkdir -p /var/log/samba" /etc/init.d/smbd
 }
 
-configure()
+show_info()
 {
-  # INFO
-  ################################
-  whiptail --msgbox \
+  whiptail --yesno \
            --backtitle "NextCloudPi configuration" \
            --title "Instructions for external synchronization" \
 "If we intend to modify the data folder through SAMBA,
@@ -41,7 +39,10 @@ then we have to synchronize NextCloud to make it aware of the changes. \n
 This can be done manually or automatically using 'nc-scan' and 'nc-scan-auto' 
 from 'nextcloudpi-config'" \
   20 90
+}
 
+configure()
+{
   # CHECKS
   ################################
   [ -d "$DIR_" ] || { echo -e "INFO: directory $DIR_ does not exist. Creating"; mkdir -p "$DIR_"; }

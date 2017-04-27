@@ -26,6 +26,15 @@ install()
   /etc/letsencrypt/letsencrypt-auto --help # do not actually run certbot, only install packages
 }
 
+show_info()
+{
+  whiptail --yesno \
+           --backtitle "NextCloudPi configuration" \
+           --title "Warning" \
+"Internet access is required for this configuration to complete" \
+  20 90
+}
+
 # tested with git version v0.11.0-71-g018a304
 configure() 
 {

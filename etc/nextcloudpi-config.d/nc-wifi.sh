@@ -24,6 +24,20 @@ install()
   systemctl disable wicd 
 }
 
+show_info()
+{
+  whiptail --yesno \
+           --backtitle "NextCloudPi configuration" \
+           --title "Instructions to configure Wi-Fi" \
+"1) Select a Wi-Fi network
+2) Press right arrow ->
+3) Enter the passphrase for your Wi-Fi
+4) Make sure to select 'connect automatically'
+5) F10 to save
+6) C to connect" \
+  20 90
+}
+
 configure()
 {
   # Installation in QEMU (without a wireless interface) produces 
@@ -40,17 +54,6 @@ configure()
   systemctl disable dhcpcd
   systemctl enable  wicd 
   systemctl start   wicd
-
-  whiptail --msgbox \
-           --backtitle "NextCloudPi configuration" \
-           --title "Instructions to configure Wi-Fi" \
-"1) Select a Wi-Fi network
-2) Press right arrow ->
-3) Enter the passphrase for your Wi-Fi
-4) Make sure to select 'connect automatically'
-5) F10 to save
-6) C to connect" \
-  20 90
 
   wicd-curses
 }
