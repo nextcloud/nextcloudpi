@@ -49,6 +49,7 @@ function nextcloud-config()
   [[ $? -ne $DIALOG_OK ]] || [[ "$script" == "" ]] && return 0
 
   # launch selected script
+  info_script      $script.sh || return 1;
   configure_script $script.sh
 }
 
