@@ -18,6 +18,15 @@
 DBDIR_=/media/USBdrive/ncdatabase
 DESCRIPTION="Move your database to a new location, like a USB drive"
 
+show_info()
+{
+  whiptail --yesno \
+           --backtitle "NextCloudPi configuration" \
+           --title "Info" \
+"Note that non Unix filesystems such as NTFS are not supported
+because they do not provide a compatible user/permissions system" \
+  20 90
+}
 
 configure()
 {
@@ -34,6 +43,8 @@ configure()
 
   local BASEDIR=$( dirname "$DBDIR_" )
   mkdir -p "$BASEDIR"
+
+  grep -q ext <( stat -fc%T $BASEDIR ) || { echo -e "Only ext filesystems can hold the database"; sleep 3; return 1; }
 
   [[ $( stat -fc%d / ) == $( stat -fc%d $BASEDIR ) ]] && \
     echo -e "INFO: moving database to another place in the same SD card\nIf you want to use an external mount, make sure it is properly set up"
