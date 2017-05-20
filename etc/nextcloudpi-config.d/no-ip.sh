@@ -18,6 +18,7 @@
 ACTIVE_=no
 USER_=my-noip-user@email.com
 PASS_=noip-pass
+DOMAIN_=mycloud.ownyourbits.com
 TIME_=30
 DESCRIPTION="Free Dynamic DNS provider (need account)"
 
@@ -68,6 +69,8 @@ configure()
   update-rc.d noip2 defaults
   update-rc.d noip2 enable
   service noip2 restart
+  cd /var/www/nextcloud
+  sudo -u www-data php occ config:system:set trusted_domains 3 --value=$DOMAIN_
 }
 
 cleanup()
