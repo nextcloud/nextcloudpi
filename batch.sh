@@ -15,11 +15,12 @@ IP=$1                       # First argument is the QEMU Raspbian IP address
 
 IMGBASE="NextCloudPi_$( date  "+%m-%d-%y" )_base.img"
 
-NO_CONFIG=1 NO_HALT_STEP=1 ./install-nextcloud.sh      $IP $IMGBASE
-NO_CONFIG=1                ./installer.sh nextcloud.sh $IP $( ls -1t *.img | head -1 )
+NO_CONFIG=1 NO_HALT_STEP=1 ./install-nextcloud.sh        $IP $IMGBASE
+NO_CONFIG=1                ./installer.sh nextcloudpi.sh $IP $( ls -1t *.img | head -1 )
+NO_CONFIG=1                ./installer.sh nextcloud.sh   $IP $( ls -1t *.img | head -1 )
 
 IMGFILE=$( ls -1t *.img | head -1 )
-IMGOUT=$( basename "$IMGFILE" _base_nextcloud.img ).img
+IMGOUT=$( basename "$IMGFILE" _base ).img
 
 pack_image "$IMGFILE" "$IMGOUT" 
 md5sum $( ls -1t *.img | head -1 )
