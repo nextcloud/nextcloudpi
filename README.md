@@ -7,7 +7,7 @@ Use QEMU to automatically generate Raspbian Images with Nextcloud
 ## Features
 
 * Raspbian 8 Jessie
-* Nextcloud 11.0.2
+* Nextcloud 12
 * Apache 2.4.25, with HTTP2 enabled
 * PHP 7.0 (double the speed of PHP5!)
 * MariaDB 10
@@ -23,16 +23,19 @@ Use QEMU to automatically generate Raspbian Images with Nextcloud
 
 ## Extras
 
-* Wi-Fi ready ( NEW 03-31-2017 )
-* Automatic security updates, activated by default. ( NEW 03-21-2017 )
-* Let’s Ecrypt for trusted HTTPS certificates.(  NEW 03-16-2017 )
-* Fail2Ban protection against brute force attacks. ( NEW 02-24-2017 )
-* Dynamic DNS support for no-ip.org ( NEW 03-05-2017 )
-* dnsmasq DNS server with DNS cache ( NEW 03-09-2017 )
-* ModSecurity Web Application Firewall ( NEW 03-23-2017 )
-* NFS ready to mount your files over LAN ( NEW 04-13-2017 )
-* SAMBA ready to share your files with Windows/Mac/Linux ( NEW 04-16-2017 )
-* Remote updates ( NEW 03-31-2017 )
+ * Wi-Fi ready ( NEW 03-31-2017 )
+ * Automatic security updates, activated by default. ( NEW 03-21-2017 )
+ * Let’s Encrypt for trusted HTTPS certificates.(  NEW 03-16-2017 )
+ * Fail2Ban protection against brute force attacks. ( NEW 02-24-2017 )
+ * Dynamic DNS support for no-ip.org ( NEW 03-05-2017 )
+ * dnsmasq DNS server with DNS cache ( NEW 03-09-2017 )
+ * ModSecurity Web Application Firewall ( NEW 03-23-2017 )
+ * NFS ready to mount your files over LAN ( NEW 04-13-2017 )
+ * SAMBA ready to share your files with Windows/Mac/Linux ( NEW 04-16-2017 )
+ * USB automount ( NEW 05-24-2017 )
+ * Remote updates ( NEW 03-31-2017 )
+ * NextCloud backup and restore ( NEW 05-24-2017 )
+ * NextCloud online installation ( NEW 05-24-2017 )
 
 ## Usage
 
