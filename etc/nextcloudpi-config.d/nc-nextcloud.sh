@@ -8,32 +8,68 @@
 #
 # Usage:
 # 
-#   ./installer.sh nextcloud.sh <IP> (<img>)
+#   ./installer.sh nc-nextcloud <IP> (<img>)
 #
 # See installer.sh instructions for details
 #
 # More at https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/
 #
 
-VER=11.0.3
+VER_=11.0.3
 ADMINUSER_=admin
 DBADMIN_=ncadmin
 DBPASSWD_=ownyourbits
 MAXFILESIZE_=768M
 MAXTRANSFERTIME_=3600
 OPCACHEDIR=/var/www/nextcloud/data/.opcache
+DESCRIPTION="Install any NextCloud version"
 
-install()
+show_info()
 {
+  [ -d /var/www/nextcloud ] && \
+    whiptail --yesno \
+           --backtitle "NextCloudPi configuration" \
+           --title "NextCloud installation" \
+"This new installation will cleanup current
+NextCloud instance, including files and database.
+
+** perform backup before proceding **
+
+You can use nc-backup " \
+  20 90
+}
+
+install() { :; }
+
+configure()
+{
+  service apache2 stop
+
+  # RE-CREATE DATABASE TABLE (workaround to emulate DROP USER IF EXISTS ..;)
+  sleep 40 # TODO wait for mysql to be up
+  mysql -u root -p$DBPASSWD_ <<EOF
+DROP DATABASE IF EXISTS nextcloud;
+CREATE DATABASE nextcloud;
+GRANT USAGE ON *.* TO '$DBADMIN_'@'localhost' IDENTIFIED BY '$DBPASSWD_';
+DROP USER '$DBADMIN_'@'localhost';
+CREATE USER '$DBADMIN_'@'localhost' IDENTIFIED BY '$DBPASSWD_';
+GRANT ALL PRIVILEGES ON nextcloud.* TO $DBADMIN_@localhost;
+EXIT
+EOF
+  [ $? -ne 0 ] && { echo -e "error configuring nextcloud database"; return 1; }
+
+  # DOWNLOAD AND (OVER)WRITE NEXTCLOUD
   cd /var/www/
-  wget https://download.nextcloud.com/server/releases/nextcloud-$VER.tar.bz2 -O nextcloud.tar.bz2
+  wget https://download.nextcloud.com/server/releases/nextcloud-$VER_.tar.bz2 -O nextcloud.tar.bz2
+  rm -rf nextcloud
   tar -xvf nextcloud.tar.bz2
   rm nextcloud.tar.bz2
 
-  ocpath='/var/www/nextcloud'
-  htuser='www-data'
-  htgroup='www-data'
-  rootuser='root'
+  # CONFIGURE FILE PERMISSIONS
+  local ocpath='/var/www/nextcloud'
+  local htuser='www-data'
+  local htgroup='www-data'
+  local rootuser='root'
 
   printf "Creating possible missing Directories\n"
   mkdir -p $ocpath/data
@@ -66,6 +102,7 @@ install()
     chown ${rootuser}:${htgroup} ${ocpath}/data/.htaccess
   fi
 
+  # CONFIGURE NEXTCLOUD 
 cat > /etc/apache2/sites-available/000-default.conf <<'EOF'
 <VirtualHost _default_:80>
   DocumentRoot /var/www/nextcloud
@@ -77,32 +114,6 @@ cat > /etc/apache2/sites-available/000-default.conf <<'EOF'
 </VirtualHost>
 EOF
 
-  mkdir -p /usr/lib/systemd/system
-  cat > /usr/lib/systemd/system/nextcloud-domain.service <<'EOF'
-[Unit]
-Description=Register Current IP as Nextcloud trusted domain
-Requires=network.target
-After=mysql.service
-
-[Service]
-ExecStart=/bin/bash /usr/local/bin/nextcloud-domain.sh
-
-[Install]
-WantedBy=multi-user.target
-EOF
-  systemctl enable nextcloud-domain
-
-  cat > /usr/local/bin/nextcloud-domain.sh <<'EOF'
-#!/bin/bash
-IFACE=$( ip r | grep "default via" | awk '{ print $5 }' )
-IP=$( ip a | grep "global $IFACE" | grep -oP '\d{1,3}(.\d{1,3}){3}' | head -1 )
-cd /var/www/nextcloud
-sudo -u www-data php occ config:system:set trusted_domains 1 --value=$IP
-EOF
-}
-
-configure()
-{
   cd /var/www/nextcloud/
 
   sudo -u www-data php occ maintenance:install --database \
@@ -123,14 +134,18 @@ configure()
   echo "*/15  *  *  *  * php -f /var/www/nextcloud/cron.php" > /tmp/crontab_http
   crontab -u www-data /tmp/crontab_http
   rm /tmp/crontab_http
+
+  # Initial Trusted Domain
+  local IFACE=$( ip r | grep "default via" | awk '{ print $5 }' )
+  local IP=$( ip a | grep "global $IFACE" | grep -oP '\d{1,3}(.\d{1,3}){3}' | head -1 )
+  sudo -u www-data php occ config:system:set trusted_domains 1 --value=$IP
+  cd -
+
+  service apache2 start
 }
 
 cleanup()   
 { 
-  [ "$STATE" != "1" ] && return
-  apt-get autoremove
-  apt-get clean
-  rm /var/lib/apt/lists/* -r
   rm -f /home/pi/.bash_history
 
   systemctl disable ssh
