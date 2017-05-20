@@ -121,7 +121,6 @@ configure() { :; }
 
 cleanup()   
 { 
-  [ "$STATE" != "1" ] && return
   apt-get autoremove
   apt-get clean
   rm /var/lib/apt/lists/* -r
