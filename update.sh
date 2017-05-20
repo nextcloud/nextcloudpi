@@ -9,7 +9,6 @@
 # More at https://ownyourbits.com/
 #
 
-
 cp etc/library.sh /usr/local/etc/
 
 source /usr/local/etc/library.sh
@@ -26,11 +25,13 @@ for file in etc/nextcloudpi-config.d/*; do
   [ -f /usr/local/$file ] || install_script $file
 
   # save current configuration to (possibly) updated script
-  VARS=( $( grep "^[[:alpha:]]\+_=" /usr/local/$file | cut -d= -f1 ) )
-  VALS=( $( grep "^[[:alpha:]]\+_=" /usr/local/$file | cut -d= -f2 ) )
-  for i in `seq 0 1 ${#VARS[@]} `; do
-    sed -i "s|^${VARS[$i]}=.*|${VARS[$i]}=${VALS[$i]}|" $file
-  done
+  [ -f /usr/local/$file ] && {
+    VARS=( $( grep "^[[:alpha:]]\+_=" /usr/local/$file | cut -d= -f1 ) )
+    VALS=( $( grep "^[[:alpha:]]\+_=" /usr/local/$file | cut -d= -f2 ) )
+    for i in `seq 0 1 ${#VARS[@]} `; do
+      sed -i "s|^${VARS[$i]}=.*|${VARS[$i]}=${VALS[$i]}|" $file
+    done
+  }
 
   cp $file /usr/local/$file
 done
