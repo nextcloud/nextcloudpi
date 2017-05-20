@@ -8,7 +8,7 @@
 #
 # Usage:
 # 
-#   ./installer.sh nextcloud_base.sh <IP> (<img>)
+#   ./installer.sh nextcloud_lamp.sh <IP> (<img>)
 #
 # See installer.sh instructions for details
 #
@@ -164,72 +164,6 @@ CREATE USER '$DBADMIN_'@'localhost' IDENTIFIED BY '$DBPASSWD_';
 GRANT ALL PRIVILEGES ON nextcloud.* TO $DBADMIN_@localhost;
 EXIT
 EOF
-
-    # NEXTCLOUDPI-CONFIG
-    ##########################################
-
-    $APTINSTALL dialog
-    mkdir -p $CONFDIR
-    sed -i '/Change User Password/i"0 NextCloudPi Configuration" "Configuration of NextCloudPi" \\\\'  /usr/bin/raspi-config
-    sed -i '/1\\\\ \*) do_change_pass ;;/i0\\\\ *) nextcloudpi-config ;;'                              /usr/bin/raspi-config
-
-    # NEXTCLOUDPI MOTD
-    ##########################################
-    mkdir /etc/update-motd.d
-    rm /etc/motd
-    ln -s /var/run/motd /etc/motd
-
-  cat > /etc/update-motd.d/10logo <<EOF
-#!/bin/sh
-echo
-cat /usr/local/etc/ncp-ascii.txt
-EOF
-
-    cat > /etc/update-motd.d/20updates <<'EOF'
-#!/bin/bash
-/usr/local/bin/ncp-check-updates
-EOF
-    chmod a+x /etc/update-motd.d/*
-
-    # NEXTCLOUDPI UPDATES
-    ##########################################
-    $APTINSTALL git
-
-    cat > /etc/cron.daily/ncp-check-version <<EOF
-#!/bin/sh
-/usr/local/bin/ncp-check-version
-EOF
-    chmod a+x /etc/cron.daily/ncp-check-version
-
-
-  cat > /usr/local/bin/ncp-update <<'EOF'
-#!/bin/bash
-{
-  [ $(id -u) -ne 0 ] && { printf "Must be run as root. Try 'sudo $0'\n"; exit 1; }
-  ping  -W 2 -w 1 -q github.com &>/dev/null || { echo "No internet connectivity"; exit 1; }
-  echo -e "Downloading updates"
-  rm -rf /tmp/ncp-update-tmp
-  git clone -q --depth 1 https://github.com/nachoparker/nextcloud-raspbian-generator.git /tmp/ncp-update-tmp || exit 1
-  cd /tmp/ncp-update-tmp
-
-  echo -e "Performing updates"
-  ./update.sh
-
-  VER=$( git describe --always --tags )
-  echo $VER > /usr/local/etc/ncp-version
-  echo $VER > /var/run/.ncp-latest-version
-
-  cd /
-  rm -rf /tmp/ncp-update-tmp
-
-  echo -e "NextCloudPi updated to version \e[1m$VER\e[0m"
-  exit
-}
-EOF
-    chmod a+x /usr/local/bin/ncp-update
-
-    # update to latest version from github as part of the build process
-    /usr/local/bin/ncp-update
   fi
 }
 
