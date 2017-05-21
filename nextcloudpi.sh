@@ -15,9 +15,6 @@
 # More at https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/
 #
 
-DBADMIN_=ncadmin
-DBPASSWD_=ownyourbits
-OPCACHEDIR=/var/www/nextcloud/data/.opcache
 CONFDIR=/usr/local/etc/nextcloudpi-config.d/
 APTINSTALL="apt-get install -y --no-install-recommends"
 
