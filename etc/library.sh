@@ -222,7 +222,7 @@ function configure_script()
     config $SCRIPT || return 0                 # writes "$INSTALLATION_CODE"
     echo -e "$INSTALLATION_CODE" > $SCRIPT     # save configuration
     source ./$SCRIPT                           # load configuration
-    echo -e "Configuring \e[1m$( basename $SCRIPT .sh )\e[0m"
+    echo -e "Launching \e[1m$( basename $SCRIPT .sh )\e[0m"
     set +x
     configure
   )
