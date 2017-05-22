@@ -71,7 +71,7 @@ IP=$( ip a | grep "global $IFACE" | grep -oP '\d{1,3}(.\d{1,3}){3}' | head -1 )
 cd /var/www/nextcloud
 sudo -u www-data php occ config:system:set trusted_domains 1 --value=$IP
 EOF
-  systemctl enable nextcloud-domain
+  systemctl enable nextcloud-domain # make sure this is called on last re-boot
 
   # NEXTCLOUDPI UPDATES
   ##########################################

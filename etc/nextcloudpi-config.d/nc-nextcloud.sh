@@ -15,7 +15,7 @@
 # More at https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/
 #
 
-VER_=11.0.3
+VER_=12.0.0
 ADMINUSER_=admin
 DBADMIN_=ncadmin
 DBPASSWD_=ownyourbits

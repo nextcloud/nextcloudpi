@@ -17,7 +17,7 @@
 #
 
 
-BACKUPFILE_=/home/pi/file.tar
+BACKUPFILE_=/media/USBdrive/nextcloud-bkp_xxxxxxxx.tar
 BASEDIR_=/var/www
 DBPASSWD_=ownyourbits
 DBADMIN_=ncadmin
