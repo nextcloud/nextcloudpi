@@ -15,9 +15,7 @@
 #
 
 
-# TODO maintenance mode
-
-DESTDIR_=/home/pi
+DESTDIR_=/media/USBdrive
 BASEDIR_=/var/www
 DBPASSWD_=ownyourbits
 
