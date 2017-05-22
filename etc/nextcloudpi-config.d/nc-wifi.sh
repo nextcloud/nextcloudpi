@@ -56,6 +56,8 @@ configure()
   systemctl start   wicd
 
   wicd-curses
+
+  systemctl start nextcloud-domain
 }
 
 cleanup()
