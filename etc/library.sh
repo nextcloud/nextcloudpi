@@ -202,6 +202,17 @@ function install_script()
   )
 }
 
+function activate_script()
+{
+  (
+    local SCRIPT=$1
+    source ./$SCRIPT 
+    echo -e "Activating \e[1m$( basename $SCRIPT .sh )\e[0m"
+    set +x
+    configure
+  )
+}
+
 function info_script()
 {
   (

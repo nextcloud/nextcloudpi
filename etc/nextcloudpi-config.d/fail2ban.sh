@@ -39,7 +39,7 @@ install()
 
 configure()
 {
-  [[ $ACTIVE_ == "no" ]] && { service fail2ban stop; update-rc.d fail2ban disable; return; }
+  [[ $ACTIVE_ != "yes" ]] && { service fail2ban stop; update-rc.d fail2ban disable; return; }
 
   touch /var/www/nextcloud/data/nextcloud.log
   chown -R www-data /var/www/nextcloud/data

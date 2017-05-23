@@ -21,8 +21,13 @@ done
 
 # install new entries of nextcloudpi-config and update others
 for file in etc/nextcloudpi-config.d/*; do
-  [ -f $file ] || continue;
-  [ -f /usr/local/$file ] || install_script $file
+  [ -f $file ] || continue;    # skip dirs
+  [ -f /usr/local/$file ] || { # new entry
+    install_script $file       # install
+
+    # configure if active by default
+    grep -q '^ACTIVE_=yes$' $file && activate_script $file 
+  }
 
   # save current configuration to (possibly) updated script
   [ -f /usr/local/$file ] && {
