@@ -14,6 +14,7 @@
 # More at: https://ownyourbits.com
 #
 
+ACTIVE_=no
 SCANINTERVAL_=60
 DESCRIPTION="Periodically scan NC for externally modified files"
 
@@ -23,14 +24,13 @@ show_info()
     --backtitle "NextCloudPi configuration" \
     --title "Instructions for auto synchronization" \
 "Set the time in minutes in SCANINTERVAL. \n
->>> If there are too many files this can greatly affect performance. <<< \n
-SCANINTERVAL=0 will disable periodic synchronization." \
+>>> If there are too many files this can greatly affect performance. <<<" \
       20 90
 }
 
 configure() 
 {
-    [[ $SCANINTERVAL_ == 0 ]] && { 
+    [[ $ACTIVE_ != "yes" ]] && { 
     systemctl stop    nc-scan.timer
     systemctl disable nc-scan.timer
     return 0
