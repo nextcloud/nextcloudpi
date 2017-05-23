@@ -14,6 +14,7 @@
 # More at: https://ownyourbits.com
 #
 
+ACTIVE_=no
 DIR_=/media/USBdrive/ncdata/admin/files
 USER_=pi
 PWD_=raspberry
@@ -43,6 +44,8 @@ from 'nextcloudpi-config'" \
 
 configure()
 {
+  [[ $ACTIVE_ != "yes" ]] && { service smbd stop; update-rc.d smbd disable; return; } 
+
   # CHECKS
   ################################
   [ -d "$DIR_" ] || { echo -e "INFO: directory $DIR_ does not exist. Creating"; mkdir -p "$DIR_"; }

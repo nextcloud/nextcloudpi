@@ -14,6 +14,7 @@
 # More at: https://ownyourbits.com
 #
 
+ACTIVE_=no
 DIR_=/media/USBdrive/ncdata/admin/files
 SUBNET_=192.168.1.0/24
 USER_=www-data
@@ -41,6 +42,8 @@ from 'nextcloudpi-config'" \
 
 configure()
 {
+  [[ $ACTIVE_ != "yes" ]] && { service nfs-kernel-server stop; systemctl disable nfs-kernel-server; return; } 
+
   # CHECKS
   ################################
   [ -d "$DIR_" ] || { echo -e "INFO: directory $DIR_ does not exist. Creating"; mkdir -p "$DIR_"; }

@@ -30,7 +30,7 @@ install()
 
 configure()
 {
-  [[ $ACTIVE_ == "no" ]] && { service dnsmasq stop; update-rc.d dnsmasq disable; return; }
+  [[ $ACTIVE_ != "yes" ]] && { service dnsmasq stop; update-rc.d dnsmasq disable; return; }
 
   cat > /etc/dnsmasq.conf <<EOF
 domain-needed         # Never forward plain names (without a dot or domain part)
