@@ -15,6 +15,7 @@
 # More at https://ownyourbits.com/
 #
 
+ACTIVE_=no
 DESCRIPTION="Configure your Wi-Fi connection"
 
 install()
@@ -40,6 +41,15 @@ show_info()
 
 configure()
 {
+  [[ $ACTIVE_ != "yes" ]] && { 
+    systemctl stop     wicd
+    systemctl disable  wicd 
+    systemctl start   dhcpcd
+    systemctl enable  dhcpcd
+    systemctl start nextcloud-domain
+    return; 
+  } 
+
   # Installation in QEMU (without a wireless interface) produces 
   # wicd installation to generate 'wireless_interface = None'.
   # It does not hurt to restart it to wlan0 for RPi3 & zero w
