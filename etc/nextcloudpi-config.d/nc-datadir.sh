@@ -46,6 +46,8 @@ configure()
 
   grep -q ext <( stat -fc%T $BASEDIR ) || { echo -e "Only ext filesystems can hold the data directory"; sleep 3; return 1; }
 
+  sudo -u www-data test -x $BASEDIR || { echo -e "ERROR: the user www-data does not have access permissions over $BASEDIR"; sleep 3; return 1; }
+
   [[ $( stat -fc%d / ) == $( stat -fc%d $BASEDIR ) ]] && \
     echo -e "INFO: moving data dir to another place in the same SD card\nIf you want to use an external mount, make sure it is properly set up"
 
