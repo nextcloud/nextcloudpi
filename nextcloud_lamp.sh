@@ -23,7 +23,6 @@
 DBADMIN_=ncadmin
 DBPASSWD_=ownyourbits
 OPCACHEDIR=/var/www/nextcloud/data/.opcache
-CONFDIR=/usr/local/etc/nextcloudpi-config.d/
 STATE_FILE=/home/pi/.installation_state
 APTINSTALL="apt-get install -y --no-install-recommends"
 

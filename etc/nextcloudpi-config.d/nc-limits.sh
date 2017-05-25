@@ -16,13 +16,14 @@
 #
 
 DESCRIPTION="Configure system limits for NextCloudPi"
-MAXFILESIZE_=768M
+MAXFILESIZE_=2G
+MEMORYLIMIT_=768M
 
 configure()
 {
   sed -i "s/post_max_size=.*/post_max_size=$MAXFILESIZE_/"             /var/www/nextcloud/.user.ini
   sed -i "s/upload_max_filesize=.*/upload_max_filesize=$MAXFILESIZE_/" /var/www/nextcloud/.user.ini
-  sed -i "s/memory_limit=.*/memory_limit=$MAXFILESIZE_/"               /var/www/nextcloud/.user.ini
+  sed -i "s/memory_limit=.*/memory_limit=$MEMORYLIMIT_/"               /var/www/nextcloud/.user.ini
 }
 
 install() { :; }
