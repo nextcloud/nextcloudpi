@@ -19,7 +19,8 @@ VER_=12.0.0
 ADMINUSER_=admin
 DBADMIN_=ncadmin
 DBPASSWD_=ownyourbits
-MAXFILESIZE_=768M
+MAXFILESIZE_=2G
+MEMORYLIMIT_=768M
 MAXTRANSFERTIME_=3600
 OPCACHEDIR=/var/www/nextcloud/data/.opcache
 DESCRIPTION="Install any NextCloud version"
@@ -126,10 +127,11 @@ EOF
 
   sed -i "s/post_max_size=.*/post_max_size=$MAXFILESIZE_/"             /var/www/nextcloud/.user.ini 
   sed -i "s/upload_max_filesize=.*/upload_max_filesize=$MAXFILESIZE_/" /var/www/nextcloud/.user.ini 
-  sed -i "s/memory_limit=.*/memory_limit=$MAXFILESIZE_/"               /var/www/nextcloud/.user.ini 
+  sed -i "s/memory_limit=.*/memory_limit=$MEMORYLIMIT_/"               /var/www/nextcloud/.user.ini 
 
   # slow transfers will be killed after this time
   cat >> /var/www/nextcloud/.user.ini <<< "max_execution_time=$MAXTRANSFERTIME_"
+  cat >> /var/www/nextcloud/.user.ini <<< "max_input_time=$MAXTRANSFERTIME_"
 
   echo "*/15  *  *  *  * php -f /var/www/nextcloud/cron.php" > /tmp/crontab_http
   crontab -u www-data /tmp/crontab_http
