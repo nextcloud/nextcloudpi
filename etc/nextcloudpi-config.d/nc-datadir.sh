@@ -55,6 +55,12 @@ configure()
 
   cp -ra "$SRCDIR" "$DATADIR_" || return 1
   
+  # tmp upload dir
+  mkdir -p "$DATADIR_/tmp" 
+  chown www-data:www-data "$DATADIR_/tmp"
+  sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $DATADIR_/tmp|" /etc/php/7.0/fpm/php.ini
+
+  # datadir
   cd /var/www/nextcloud
   sudo -u www-data php occ config:system:set datadirectory --value=$DATADIR_
   service apache2 start
