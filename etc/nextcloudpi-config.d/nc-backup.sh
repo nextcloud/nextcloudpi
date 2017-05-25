@@ -18,6 +18,7 @@
 DESTDIR_=/media/USBdrive
 BASEDIR_=/var/www
 DBPASSWD_=ownyourbits
+DESCRIPTION="Backup this NC instance to a file"
 
 DESTFILE=$DESTDIR_/nextcloud-bkp_`date +"%Y%m%d"`.tar 
 DBBACKUP=nextcloud-sqlbkp_`date +"%Y%m%d"`.bak
@@ -32,8 +33,9 @@ configure()
   mysqldump -u root -p$DBPASSWD_ --single-transaction nextcloud > $DBBACKUP
 
   echo -e "backup files..."
-  tar -cf $DESTFILE $DBBACKUP nextcloud/ || return 1 # TODO
-  echo -e "backup $DESTFILE generated"
+  tar -cf $DESTFILE $DBBACKUP nextcloud/ && \
+    echo -e "backup $DESTFILE generated" || \
+    echo -e "error generating backup"
   rm $DBBACKUP
 
   cd $BASEDIR_/nextcloud
