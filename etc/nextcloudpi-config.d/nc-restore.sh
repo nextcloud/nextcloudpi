@@ -21,6 +21,7 @@ BACKUPFILE_=/media/USBdrive/nextcloud-bkp_xxxxxxxx.tar
 BASEDIR_=/var/www
 DBPASSWD_=ownyourbits
 DBADMIN_=ncadmin
+DESCRIPTION="Restore a previously backuped NC instance"
 
 show_info()
 {
