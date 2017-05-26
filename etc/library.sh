@@ -230,7 +230,7 @@ function configure_script()
   (
     local SCRIPT=$1
     cd /usr/local/etc/nextcloudpi-config.d/
-    config $SCRIPT || return 0                 # writes "$INSTALLATION_CODE"
+    config $SCRIPT || return 1                 # writes "$INSTALLATION_CODE"
     echo -e "$INSTALLATION_CODE" > $SCRIPT     # save configuration
     source ./$SCRIPT                           # load configuration
     echo -e "Launching \e[1m$( basename $SCRIPT .sh )\e[0m"
