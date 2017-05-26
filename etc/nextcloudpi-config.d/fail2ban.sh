@@ -41,8 +41,11 @@ configure()
 {
   [[ $ACTIVE_ != "yes" ]] && { service fail2ban stop; update-rc.d fail2ban disable; return; }
 
-  touch /var/www/nextcloud/data/nextcloud.log
-  chown -R www-data /var/www/nextcloud/data
+  local BASEDIR=$( dirname "$NCLOG_" )
+  [ -d $BASEDIR ] || { echo -e "directory $BASEDIR not found"; return 1; }
+
+  sudo -u www-data touch $NCLOG_ || { echo -e "ERROR: user www-data does not have write permissions on $NCLOG_"; return 1; }
+  chown -R www-data $BASEDIR
 
   cd /var/www/nextcloud
   sudo -u www-data php occ config:system:set loglevel --value=2
