@@ -58,9 +58,7 @@ function nextcloud-config()
 
       # launch selected script
       info_script      $script.sh || continue;
-      configure_script $script.sh
-      echo "Press any key..."
-      read
+      configure_script $script.sh && { echo "Done. Press any key..."; read; }
     done
     return 
   } # force to read the whole thing into memory, as its contents might change in update.sh
