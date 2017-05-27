@@ -27,7 +27,7 @@ show_info()
 on boot or at the moment of insertion.
 
 Format your drive as ext4 in order to move NC datafolder or database
-VFAT or NTFS is not recommended and will not work without hackery
+VFAT or NTFS is not recommended for this task, as it does not suport permissions
 
 IMPORTANT: halt or umount the drive before extracting" \
   20 90
