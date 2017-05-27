@@ -30,6 +30,7 @@ because they do not provide a compatible user/permissions system" \
 
 configure()
 {
+  ## CHECKS
   local SRCDIR=$( cd /var/www/nextcloud; sudo -u www-data php occ config:system:get datadirectory )
   [ -d $SRCDIR ] || { echo -e "data directory $SRCDIR not found"; return 1; }
 
@@ -51,6 +52,7 @@ configure()
   [[ $( stat -fc%d / ) == $( stat -fc%d $BASEDIR ) ]] && \
     echo -e "INFO: moving data dir to another place in the same SD card\nIf you want to use an external mount, make sure it is properly set up"
 
+  ## COPY
   service apache2 stop
 
   cp -ra "$SRCDIR" "$DATADIR_" || return 1
@@ -59,6 +61,9 @@ configure()
   mkdir -p "$DATADIR_/tmp" 
   chown www-data:www-data "$DATADIR_/tmp"
   sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $DATADIR_/tmp|" /etc/php/7.0/fpm/php.ini
+
+  # opcache dir
+  sed -i "s|^opcache.file_cache=.*|opcache.file_cache=$DATADIR_/.opcache|" /etc/php/7.0/mods-available/opcache.ini
 
   # datadir
   cd /var/www/nextcloud
