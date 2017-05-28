@@ -13,10 +13,10 @@
 #
 
 source /usr/local/etc/library.sh
+{
 
 function nextcloud-config()
 {
-  {
     local DIALOG_OK=0
     local VERFILE=/var/run/.ncp-latest-version
     local BACKTITLE="NextCloudPi configuration ver. "
@@ -60,8 +60,6 @@ function nextcloud-config()
       info_script      $script.sh || continue;
       configure_script $script.sh && { echo "Done. Press any key..."; read; }
     done
-    return 
-  } # force to read the whole thing into memory, as its contents might change in update.sh
 }
 
 if [ $(id -u) -ne 0 ]; then
@@ -70,6 +68,9 @@ if [ $(id -u) -ne 0 ]; then
 fi
 
 nextcloud-config
+
+exit $?
+} # force to read the whole thing into memory, as its contents might change in update.sh
 
 # License
 #
