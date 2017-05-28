@@ -236,6 +236,7 @@ function configure_script()
     echo -e "Launching \e[1m$( basename $SCRIPT .sh )\e[0m"
     set +x
     configure
+    return 0
   )
 }
 
