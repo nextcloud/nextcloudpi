@@ -92,13 +92,10 @@ ACTION!="remove", PROGRAM="/usr/local/etc/blknum", RUN+="/bin/mkdir -p /media/US
 ENV{ID_FS_LABEL}!="", ENV{dir_name}="%E{ID_FS_LABEL}"
 
 # Link with label name if exists
-ACTION!="remove", ENV{ID_FS_LABEL}!="", RUN+="/bin/ln -s /media/USBdrive%c /media/%E{ID_FS_LABEL}"
-
-# Clean up created directory
-ACTION=="remove", RUN+="/bin/rmdir /media/USBdrive%c"
+ACTION!="remove", ENV{ID_FS_LABEL}!="", ENV{ID_FS_LABEL}!="USBdrive*", RUN+="/bin/ln -sT /media/USBdrive%c /media/%E{ID_FS_LABEL}"
 
 # Cleanup created link
-ACTION=="remove", ENV{ID_FS_LABEL}!="", RUN+="/bin/rm /media/%E{ID_FS_LABEL}"
+ACTION=="remove", ENV{ID_FS_LABEL}, ENV{ID_FS_LABEL}!="USBdrive*"!="", RUN+="/bin/rm /media/%E{ID_FS_LABEL}"
 
 # Exit
 LABEL="exit"
