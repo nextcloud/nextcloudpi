@@ -50,7 +50,7 @@ install()
     apt-get upgrade -y
     apt-get dist-upgrade -y
     $APTINSTALL rpi-update 
-    echo -e "y\n" | rpi-update
+    echo -e "y\n" | PRUNE_MODULES=1 rpi-update
 
     echo 1 > $STATE_FILE 
     nohup reboot &>/dev/null &
