@@ -31,7 +31,11 @@ because they do not provide a compatible user/permissions system" \
 configure()
 {
   ## CHECKS
-  local SRCDIR=$( cd /var/www/nextcloud; sudo -u www-data php occ config:system:get datadirectory )
+  local SRCDIR
+  SRCDIR=$( cd /var/www/nextcloud; sudo -u www-data php occ config:system:get datadirectory ) || {
+    echo -e "Error reading data directory. Is NextCloud running and configured?"; 
+    return 1;
+  }
   [ -d $SRCDIR ] || { echo -e "data directory $SRCDIR not found"; return 1; }
 
   [ -d $DATADIR_ ] && {
