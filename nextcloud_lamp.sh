@@ -159,6 +159,8 @@ EOF
     <IfModule mod_dav.c>
       Dav off
     </IfModule>
+    LimitRequestBody 0
+    SSLRenegBufferSize 10486000
   </Directory>
 </IfModule>
 EOF

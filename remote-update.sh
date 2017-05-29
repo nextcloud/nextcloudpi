@@ -26,6 +26,9 @@ cleanup()
   rm -rf /var/lib/apt/lists/* 
   rm -f  /home/pi/.bash_history
   systemctl disable ssh
+
+  cd /var/www/nextcloud
+  sudo -u www-data php occ config:system:delete trusted_domains 1
 }
 
 
