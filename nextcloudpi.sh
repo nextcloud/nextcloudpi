@@ -120,6 +120,7 @@ EOF
   mkdir -p "$UPLOADTMPDIR"
   chown www-data:www-data "$UPLOADTMPDIR"
   sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $UPLOADTMPDIR|" /etc/php/7.0/fpm/php.ini
+  sed -i "s|^;\?sys_temp_dir =.*$|sys_temp_dir = $UPLOADTMPDIR|" /etc/php/7.0/fpm/php.ini
 
   # update to latest version from github as part of the build process
   /usr/local/bin/ncp-update
