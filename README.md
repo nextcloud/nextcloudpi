@@ -1,8 +1,10 @@
-# NextCloudPi generator
+# NextCloudPi
 
 ![NC Logo](/resources/nextcloud-square-logo.png)
 
-Use QEMU to automatically generate Raspbian Images with Nextcloud 
+This is the build code for [NextCloudPi](https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/).
+
+NextCloudPi is a ready to use image for Raspberry Pi.
 
 ## Features
 
@@ -37,11 +39,16 @@ Use QEMU to automatically generate Raspbian Images with Nextcloud
  * NextCloud backup and restore ( NEW 05-24-2017 )
  * NextCloud online installation ( NEW 05-24-2017 )
 
-## Usage
+
+Any extra can be installed independently in a running Raspbian instance through SSH. See `installer.sh`
+
+## How to build
+
+NextCloudPi is based on Raspbian and is automatically generated using QEMU.
 
 ```
-git clone https://github.com/nachoparker/nextcloud-raspbian-generator.git
-cd nextcloud-raspbian-generator
+git clone https://github.com/nextcloud/nextcloudpi.git
+cd nextcloudpi
 ./batch.sh 192.168.0.145 # change to your QEMU raspbian IP
 ```
 
@@ -52,6 +59,8 @@ sudo nextcloudpi-config
 ```
 
 ![NCP-config](/resources/ncp-config.jpg)
+
+## Download image
 
 Get the image, find details and more instructions at
 
