@@ -97,7 +97,7 @@ cat > /usr/local/bin/ncp-update <<'EOF'
 ping  -W 2 -w 1 -q github.com &>/dev/null || { echo "No internet connectivity"; exit 1; }
 echo -e "Downloading updates"
 rm -rf /tmp/ncp-update-tmp
-git clone -q --depth 1 https://github.com/nachoparker/nextcloud-raspbian-generator.git /tmp/ncp-update-tmp || exit 1
+git clone -q --depth 1 https://github.com/nextcloud/nextcloudpi.git /tmp/ncp-update-tmp || exit 1
 cd /tmp/ncp-update-tmp
 
 echo -e "Performing updates"
