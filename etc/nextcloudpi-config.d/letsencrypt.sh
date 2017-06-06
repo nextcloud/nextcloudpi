@@ -44,6 +44,10 @@ configure()
 
   /etc/letsencrypt/letsencrypt-auto -n --no-self-upgrade --apache --hsts --agree-tos -m $EMAIL_ -d $DOMAIN_
   echo "* 1 * * 1 root /etc/letsencrypt/certbot-auto renew --quiet" > /etc/cron.d/letsencrypt-ncp
+
+  cd /var/www/nextcloud
+  sudo -u www-data php occ config:system:set trusted_domains 4 --value=$DOMAIN_
+
   service apache2 reload
 }
 
