@@ -20,7 +20,7 @@ install()
 {
   echo -e "Downloading updates"
   rm -rf /tmp/ncp-update-tmp
-  git clone -q --depth 1 -b devel https://github.com/nachoparker/nextcloud-raspbian-generator.git /tmp/ncp-update-tmp
+  git clone -q --depth 1 -b devel https://github.com/nextcloud/nextcloudpi.git /tmp/ncp-update-tmp
   cd /tmp/ncp-update-tmp
 
   echo -e "Performing updates"
