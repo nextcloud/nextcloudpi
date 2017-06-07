@@ -31,6 +31,7 @@ function launch_install_qemu()
     IMGOUT="$BASE-stage$NUM"
     cp -v $IMG $IMGOUT || return 1 # take a copy of the input image for processing ( append "-stage1" )
 
+    pgrep qemu-system-arm &>/dev/null && { echo -e "QEMU instance already running. Abort..."; return 1; }
     launch_qemu $IMGOUT &
     sleep 10
     wait_SSH $IP

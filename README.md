@@ -6,6 +6,8 @@ This is the build code for [NextCloudPi](https://ownyourbits.com/2017/02/13/next
 
 NextCloudPi is a ready to use image for Raspberry Pi.
 
+This code also generates the [NextCloudPi ARM docker image](https://hub.docker.com/r/ownyourbits/nextcloudpi/).
+
 ## Features
 
 * Raspbian 8 Jessie
@@ -58,10 +60,23 @@ Extras can be activated and configured using
 sudo nextcloudpi-config
 ```
 
+The docker image can be generated in an ARM environment with docker
+
+```
+git clone https://github.com/nextcloud/nextcloudpi.git
+make -C nextcloudpi
+```
+
 ![NCP-config](/resources/ncp-config.jpg)
 
-## Download image
+## Downloads
 
 Get the image, find details and more instructions at
 
 https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/
+
+Pull the docker image
+
+https://ownyourbits.com/2017/06/08/nextcloudpi-docker-for-raspberry-pi/
+
+https://hub.docker.com/r/ownyourbits/nextcloudpi/

@@ -41,7 +41,7 @@ source etc/library.sh   # initializes $IMGNAME
 config $INSTALL_SCRIPT || exit 1
 
 if [[ "$IMGFILE" != "" ]]; then
-  launch_install_qemu "$IMGFILE" $IP         || exit 1    # initializes $IMGOUT
+  launch_install_qemu "$IMGFILE" $IP         || { sudo killall qemu-system-arm; exit 1; }    # initializes $IMGOUT
   pack_image          "$IMGOUT" "$IMGNAME" 
 else
   launch_installation_online $IP
