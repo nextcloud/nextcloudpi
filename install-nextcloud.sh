@@ -20,7 +20,7 @@ IMGFILE=$2     # Second argument is the name for the output image
 DOWNLOAD=1     # Download the latest image
 EXTRACT=1      # Extract the image from zip, so start from 0
 IMG=raspbian_lite_latest
-INSTALL_SCRIPT=nextcloud_lamp.sh
+INSTALL_SCRIPT=lamp.sh
 
 source etc/library.sh       # initializes $IMGNAME
 

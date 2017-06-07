@@ -20,42 +20,14 @@
 # More at https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/
 #
 
-DBADMIN_=ncadmin
 DBPASSWD_=ownyourbits
 OPCACHEDIR=/var/www/nextcloud/data/.opcache
-STATE_FILE=/home/pi/.installation_state
-APTINSTALL="apt-get install -y --no-install-recommends"
 
+APTINSTALL="apt-get install -y --no-install-recommends"
+export DEBIAN_FRONTEND=noninteractive
 
 install()
 {
-  test -f $STATE_FILE && STATE=$( cat $STATE_FILE 2>/dev/null )
-  if [ "$STATE" == "" ]; then
-
-    # RESIZE IMAGE
-    ##########################################
-
-    SECTOR=$( fdisk -l /dev/sda | grep Linux | awk '{ print $2 }' )
-    echo -e "d\n2\nn\np\n2\n$SECTOR\n\nw\n" | fdisk /dev/sda || true
-
-    echo 0 > $STATE_FILE 
-    nohup reboot &>/dev/null &
-  elif [ "$STATE" == "0" ]; then
-
-    # UPDATE EVERYTHING
-    ##########################################
-    resize2fs /dev/sda2
-
-    apt-get update
-    apt-get upgrade -y
-    apt-get dist-upgrade -y
-    $APTINSTALL rpi-update 
-    echo -e "y\n" | PRUNE_MODULES=1 rpi-update
-
-    echo 1 > $STATE_FILE 
-    nohup reboot &>/dev/null &
-  elif [ "$STATE" == "1" ]; then
-
     # GET STRETCH SOURCES FOR HTTP2 AND PHP7
     ##########################################
 
@@ -70,14 +42,17 @@ EOF
     # INSTALL FROM STRETCH
     ##########################################
 
+    $APTINSTALL apt-utils 
+    $APTINSTALL cron
     $APTINSTALL -t stretch apache2
-    $APTINSTALL -t stretch php7.0 php7.0-curl php7.0-gd php7.0-fpm php7.0-cli php7.0-opcache php7.0-mbstring php7.0-xml php7.0-zip 
-    $APTINSTALL php7.0-APC 
-    $APTINSTALL libxml2-dev php-zip php-dom php-xmlwriter php-xmlreader php-gd php-curl php-mbstring 
+    $APTINSTALL -t stretch php7.0 php7.0-curl php7.0-gd php7.0-fpm php7.0-cli php7.0-opcache php7.0-mbstring php7.0-xml php7.0-zip php7.0-APC
+    mkdir -p /run/php
 
     debconf-set-selections <<< "mariadb-server-5.5 mysql-server/root_password password $DBPASSWD_"
     debconf-set-selections <<< "mariadb-server-5.5 mysql-server/root_password_again password $DBPASSWD_"
-    $APTINSTALL mariadb-server php7.0-mysql 
+    $APTINSTALL -t stretch mariadb-server php7.0-mysql 
+    mkdir -p /run/mysqld
+    chown mysql /run/mysqld
 
     # CONFIGURE APACHE AND PHP7
     ##########################################
@@ -126,6 +101,8 @@ opcache.memory_consumption=128
 opcache.save_comments=1
 opcache.revalidate_freq=1
 EOF
+    mkdir -p $OPCACHEDIR
+    chown -R www-data:www-data $OPCACHEDIR
 
     a2enmod http2
     a2enconf http2 
@@ -165,28 +142,18 @@ EOF
 </IfModule>
 EOF
     a2ensite nextcloud
-
-    mysql -u root -p$DBPASSWD_ <<EOF
-CREATE DATABASE nextcloud;
-CREATE USER '$DBADMIN_'@'localhost' IDENTIFIED BY '$DBPASSWD_';
-GRANT ALL PRIVILEGES ON nextcloud.* TO $DBADMIN_@localhost;
-EXIT
-EOF
-  fi
 }
 
 configure() { :; }
 
 cleanup()   
 { 
-  [ "$STATE" != "1" ] && return
   apt-get autoremove
   apt-get clean
   rm /var/lib/apt/lists/* -r
   rm -f /home/pi/.bash_history
 
   systemctl disable ssh
-  rm $STATE_FILE 
   nohup halt &>/dev/null &
 }
 

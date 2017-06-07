@@ -12,13 +12,17 @@
 source etc/library.sh       # initializes $IMGNAME
 
 IP=$1                       # First argument is the QEMU Raspbian IP address
-NC_SCRIPT=etc/nextcloudpi-config.d/nc-nextcloud.sh
+NC_INSTALL=etc/nextcloudpi-config.d/nc-nextcloud.sh
+NC_CONFIG=etc/nc-init.sh
 
 IMGBASE="NextCloudPi_$( date  "+%m-%d-%y" )_base.img"
 
-NO_CONFIG=1 NO_HALT_STEP=1 ./install-nextcloud.sh        $IP $IMGBASE
-NO_CONFIG=1                ./installer.sh $NC_SCRIPT     $IP $( ls -1t *.img | head -1 )
-NO_CONFIG=1                ./installer.sh nextcloudpi.sh $IP $( ls -1t *.img | head -1 )
+export NO_CONFIG=1           # skip interactive configuration
+
+NO_HALT_STEP=1 ./install-nextcloud.sh        $IP $IMGBASE
+               ./installer.sh $NC_INSTALL    $IP $( ls -1t *.img | head -1 )
+               ./installer.sh $NC_CONFIG     $IP $( ls -1t *.img | head -1 )
+               ./installer.sh nextcloudpi.sh $IP $( ls -1t *.img | head -1 )
 
 IMGFILE=$( ls -1t *.img | head -1 )
 IMGOUT=$( basename "$IMGFILE" _base_nc-nextcloud_nextcloudpi.img ).img
