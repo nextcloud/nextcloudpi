@@ -16,14 +16,12 @@
 #
 
 VER_=12.0.0
-ADMINUSER_=admin
-DBADMIN_=ncadmin
-DBPASSWD_=ownyourbits
 MAXFILESIZE_=2G
 MEMORYLIMIT_=768M
 MAXTRANSFERTIME_=3600
-OPCACHEDIR=/var/www/nextcloud/data/.opcache
 DESCRIPTION="Install any NextCloud version"
+
+export DEBIAN_FRONTEND=noninteractive
 
 show_info()
 {
@@ -44,29 +42,14 @@ install() { :; }
 
 configure()
 {
-  service apache2 stop
-
-  # RE-CREATE DATABASE TABLE (workaround to emulate DROP USER IF EXISTS ..;)
-  sleep 40 # TODO wait for mysql to be up
-  mysql -u root -p$DBPASSWD_ <<EOF
-DROP DATABASE IF EXISTS nextcloud;
-CREATE DATABASE nextcloud;
-GRANT USAGE ON *.* TO '$DBADMIN_'@'localhost' IDENTIFIED BY '$DBPASSWD_';
-DROP USER '$DBADMIN_'@'localhost';
-CREATE USER '$DBADMIN_'@'localhost' IDENTIFIED BY '$DBPASSWD_';
-GRANT ALL PRIVILEGES ON nextcloud.* TO $DBADMIN_@localhost;
-EXIT
-EOF
-  [ $? -ne 0 ] && { echo -e "error configuring nextcloud database"; return 1; }
-
-  # DOWNLOAD AND (OVER)WRITE NEXTCLOUD
+  ## DOWNLOAD AND (OVER)WRITE NEXTCLOUD
   cd /var/www/
   wget https://download.nextcloud.com/server/releases/nextcloud-$VER_.tar.bz2 -O nextcloud.tar.bz2
   rm -rf nextcloud
   tar -xvf nextcloud.tar.bz2
   rm nextcloud.tar.bz2
 
-  # CONFIGURE FILE PERMISSIONS
+  ## CONFIGURE FILE PERMISSIONS
   local ocpath='/var/www/nextcloud'
   local htuser='www-data'
   local htgroup='www-data'
@@ -75,7 +58,6 @@ EOF
   printf "Creating possible missing Directories\n"
   mkdir -p $ocpath/data
   mkdir -p $ocpath/updater
-  mkdir -p $OPCACHEDIR
 
   printf "chmod Files and Directories\n"
   find ${ocpath}/ -type f -print0 | xargs -0 chmod 0640
@@ -89,7 +71,6 @@ EOF
   chown -R ${htuser}:${htgroup} ${ocpath}/data/
   chown -R ${htuser}:${htgroup} ${ocpath}/themes/
   chown -R ${htuser}:${htgroup} ${ocpath}/updater/
-  chown -R ${htuser}:${htgroup} $OPCACHEDIR
 
   chmod +x ${ocpath}/occ
 
@@ -103,7 +84,7 @@ EOF
     chown ${rootuser}:${htgroup} ${ocpath}/data/.htaccess
   fi
 
-  # CONFIGURE NEXTCLOUD 
+  ## CONFIGURE NEXTCLOUD 
 cat > /etc/apache2/sites-available/000-default.conf <<'EOF'
 <VirtualHost _default_:80>
   DocumentRoot /var/www/nextcloud
@@ -115,16 +96,7 @@ cat > /etc/apache2/sites-available/000-default.conf <<'EOF'
 </VirtualHost>
 EOF
 
-  cd /var/www/nextcloud/
-
-  sudo -u www-data php occ maintenance:install --database \
-  "mysql" --database-name "nextcloud"  --database-user "$DBADMIN_" --database-pass \
-  "$DBPASSWD_" --admin-user "$ADMINUSER_" --admin-pass "$DBPASSWD_" 
-
-  sudo -u www-data php occ background:cron
-
-  sed -i '$s|^.*$|  '\''memcache.local'\'' => '\''\\\\OC\\\\Memcache\\\\APCu'\'',\\n);|' /var/www/nextcloud/config/config.php
-
+  ## SET LIMITS
   sed -i "s/post_max_size=.*/post_max_size=$MAXFILESIZE_/"             /var/www/nextcloud/.user.ini 
   sed -i "s/upload_max_filesize=.*/upload_max_filesize=$MAXFILESIZE_/" /var/www/nextcloud/.user.ini 
   sed -i "s/memory_limit=.*/memory_limit=$MEMORYLIMIT_/"               /var/www/nextcloud/.user.ini 
@@ -133,17 +105,10 @@ EOF
   cat >> /var/www/nextcloud/.user.ini <<< "max_execution_time=$MAXTRANSFERTIME_"
   cat >> /var/www/nextcloud/.user.ini <<< "max_input_time=$MAXTRANSFERTIME_"
 
+  ## SET CRON
   echo "*/15  *  *  *  * php -f /var/www/nextcloud/cron.php" > /tmp/crontab_http
   crontab -u www-data /tmp/crontab_http
   rm /tmp/crontab_http
-
-  # Initial Trusted Domain
-  local IFACE=$( ip r | grep "default via" | awk '{ print $5 }' )
-  local IP=$( ip a | grep "global $IFACE" | grep -oP '\d{1,3}(.\d{1,3}){3}' | head -1 )
-  sudo -u www-data php occ config:system:set trusted_domains 1 --value=$IP
-  cd -
-
-  service apache2 start
 }
 
 cleanup()   
