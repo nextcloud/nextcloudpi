@@ -27,7 +27,7 @@ done
 
 test -d /data/app || {
 
-  echo "First run"
+  echo "[First run]"
 
   # INIT DATABASE AND NEXTCLOUD CONFIG
   source         /usr/local/etc/library.sh

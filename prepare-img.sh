@@ -7,10 +7,11 @@
 # GPL licensed (see end of file) * Use at your own risk!
 #
 # Usage:
-#   ./install-nextcloud.sh <IP> # Use the IP of your running QEMU Raspbian image
+#   ./prepare-img.sh <IP> # Use the IP of your running QEMU Raspbian image
 #
 # Notes:
-#   Set DOWNLOAD=0 if you have already downloaded an image. Rename it to nextcloudpi.img
+#   Set DOWNLOAD=0 if you have already downloaded an image. 
+#   Set EXTRACT=0  if you have already extracted the image.
 #
 # More at https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/
 #
@@ -20,18 +21,18 @@ IMGFILE=$2     # Second argument is the name for the output image
 DOWNLOAD=1     # Download the latest image
 EXTRACT=1      # Extract the image from zip, so start from 0
 IMG=raspbian_lite_latest
-INSTALL_SCRIPT=lamp.sh
+INSTALL_SCRIPT=prepare.sh
 
 source etc/library.sh       # initializes $IMGNAME
 
-[[ "$DOWNLOAD" == "1" ]] && { wget https://downloads.raspberrypi.org/$IMG -O $IMG.zip || exit; }
+[[ "$DOWNLOAD" == "1" ]] && { wget https://downloads.raspberrypi.org/$IMG -O $IMG.zip || exit 1; }
 [[ "$DOWNLOAD" == "1" ]] || [[ "$EXTRACT"  == "1" ]] && {
   unzip $IMG.zip && \
   mv *-raspbian-*.img $IMGFILE && \
-  qemu-img resize $IMGFILE +1G || exit 
+  qemu-img resize $IMGFILE +1G || exit 1
 }
 
-config $INSTALL_SCRIPT              || exit 1
+config $INSTALL_SCRIPT              || exit 1    # Initializes $INSTALLATION_CODE
 launch_install_qemu "$IMGFILE" $IP  || exit 1    # initializes $IMGOUT
 
 pack_image $IMGOUT $IMGFILE 

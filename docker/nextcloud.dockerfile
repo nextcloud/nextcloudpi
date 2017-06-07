@@ -7,7 +7,7 @@ MAINTAINER Ignacio Núñez Hernanz <nacho@ownyourbits.com>
 
 SHELL ["/bin/bash", "-c"]
 
-COPY etc/library.sh nc-init.sh etc/nextcloudpi-config.d/nc-nextcloud.sh /usr/local/etc/
+COPY etc/library.sh etc/nc-init.sh etc/nextcloudpi-config.d/nc-nextcloud.sh /usr/local/etc/
 
 RUN apt-get update; apt-get install --no-install-recommends -y wget ca-certificates; \
     source /usr/local/etc/library.sh; set +x; activate_script /usr/local/etc/nc-nextcloud.sh; \
