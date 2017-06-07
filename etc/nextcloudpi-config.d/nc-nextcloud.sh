@@ -116,7 +116,6 @@ cleanup()
   rm -f /home/pi/.bash_history
 
   systemctl disable ssh
-  nohup halt &>/dev/null &
 }
 # License
 #

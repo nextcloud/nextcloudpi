@@ -8,7 +8,7 @@
 #
 # Usage:
 # 
-#   ./installer.sh nextcloud_lamp.sh <IP> (<img>)
+#   ./installer.sh lamp.sh <IP> (<img>)
 #
 # See installer.sh instructions for details
 #
@@ -148,13 +148,12 @@ configure() { :; }
 
 cleanup()   
 { 
-  apt-get autoremove
+  apt-get autoremove -y
   apt-get clean
   rm /var/lib/apt/lists/* -r
   rm -f /home/pi/.bash_history
 
   systemctl disable ssh
-  nohup halt &>/dev/null &
 }
 
 # License

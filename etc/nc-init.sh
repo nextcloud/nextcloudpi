@@ -51,7 +51,7 @@ EOF
     "$DBPASSWD_" --admin-user "$ADMINUSER_" --admin-pass "$DBPASSWD_"
 
   sudo -u www-data php occ background:cron
-  sed -i '$s|^.*$|  '\''memcache.local'\'' => '\''\\\\OC\\\\Memcache\\\\APCu'\'',\n);|' /var/www/nextcloud/config/config.php
+  sed -i '$i\ \ '\''memcache.local'\'' => '\''\\\\OC\\\\Memcache\\\\APCu'\'',' /var/www/nextcloud/config/config.php
 }
 
 configure(){ :; }
