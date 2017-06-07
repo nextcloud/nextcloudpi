@@ -22,7 +22,6 @@ APTINSTALL="apt-get install -y --no-install-recommends"
 
 install()
 {
-
   # NEXTCLOUDPI-CONFIG
   ##########################################
   apt-get update
@@ -155,4 +154,3 @@ cleanup()
 # along with this script; if not, write to the
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
-
