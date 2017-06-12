@@ -257,6 +257,24 @@ function copy_to_image()
   rmdir tmpmnt &>/dev/null
 }
 
+function download_resize_raspbian_img()
+{
+  local SIZE=$1
+  local IMGFILE=$2
+  local IMG=raspbian_lite_latest
+
+  test -f $IMGFILE && \
+    echo -e "INFO: $IMGFILE already exists. Skipping download ..." && return 0 
+
+  test -f $IMG.zip || \
+    wget https://downloads.raspberrypi.org/$IMG -O $IMG.zip || return 1
+
+  unzip -o $IMG.zip && \
+    mv *-raspbian-*.img $IMGFILE && \
+    qemu-img resize -f raw $IMGFILE +$SIZE  && \
+    return 0
+}
+
 function pack_image()
 {
   local IMGOUT="$1"

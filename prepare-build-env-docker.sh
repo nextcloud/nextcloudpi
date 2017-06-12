@@ -1,41 +1,42 @@
 #!/bin/bash
 
-# Nextcloud installation on QEMU emulated Raspbian image
+# Create a Raspbian image with docker
 # Tested with 2017-03-02-raspbian-jessie-lite.img
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
 #
 # Usage:
-#   ./prepare-img.sh <IP> # Use the IP of your running QEMU Raspbian image
+#   ./prepare-build-env-docker.sh <IP> # Use the IP of your running QEMU Raspbian image
 #
 # Notes:
 #   Set DOWNLOAD=0 if you have already downloaded an image. 
 #   Set EXTRACT=0  if you have already extracted the image.
 #
-# More at https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/
+# More at https://ownyourbits.com
 #
 
 IP=$1          # First argument is the QEMU Raspbian IP address
-IMGFILE=$2     # Second argument is the name for the output image
-DOWNLOAD=1     # Download the latest image
-EXTRACT=1      # Extract the image from zip, so start from 0
+DOWNLOAD=0     # Download the latest image
+EXTRACT=0      # Extract the image from zip, so start from 0
 IMG=raspbian_lite_latest
-INSTALL_SCRIPT=prepare.sh
 
 source etc/library.sh       # initializes $IMGNAME
 
-[[ "$DOWNLOAD" == "1" ]] && { wget https://downloads.raspberrypi.org/$IMG -O $IMG.zip || exit 1; }
-[[ "$DOWNLOAD" == "1" ]] || [[ "$EXTRACT"  == "1" ]] && {
-  unzip $IMG.zip && \
-  mv *-raspbian-*.img $IMGFILE && \
-  qemu-img resize $IMGFILE +1G || exit 1
-}
+IMGBASE="raspbian_docker_base.img"
 
-config $INSTALL_SCRIPT              || exit 1    # Initializes $INSTALLATION_CODE
-launch_install_qemu "$IMGFILE" $IP  || exit 1    # initializes $IMGOUT
+export NO_CONFIG=1           # skip interactive configuration
 
-pack_image $IMGOUT $IMGFILE 
+download_resize_raspbian_img 3G $IMGBASE || exit 1
+
+NO_HALT_STEP=1 ./installer.sh prepare.sh            $IP $IMGBASE                    || exit 1
+               ./installer.sh docker/docker-env.sh  $IP $( ls -1t *.img | head -1 ) || exit 1
+
+IMGFILE=$( ls -1t *.img | head -1 )
+IMGOUT="raspbian_docker.img"
+
+pack_image "$IMGFILE" "$IMGOUT" 
+
 
 # License
 #
@@ -53,4 +54,3 @@ pack_image $IMGOUT $IMGFILE
 # along with this script; if not, write to the
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
-
