@@ -17,16 +17,18 @@ NC_CONFIG=etc/nc-init.sh
 
 IMGBASE="NextCloudPi_$( date  "+%m-%d-%y" )_base.img"
 
-export NO_CONFIG=1           # skip interactive configuration
+export NO_CONFIG=1          # skip interactive configuration
 
-NO_HALT_STEP=1 ./prepare-img.sh              $IP $IMGBASE                    || exit 1
+download_resize_raspbian_img 1G $IMGBASE || exit 1
+
+NO_HALT_STEP=1 ./installer.sh prepare.sh     $IP $IMGBASE                    || exit 1
                ./installer.sh lamp.sh        $IP $( ls -1t *.img | head -1 ) || exit 1
                ./installer.sh $NC_INSTALL    $IP $( ls -1t *.img | head -1 ) || exit 1
                ./installer.sh $NC_CONFIG     $IP $( ls -1t *.img | head -1 ) || exit 1
                ./installer.sh nextcloudpi.sh $IP $( ls -1t *.img | head -1 ) || exit 1
 
 IMGFILE=$( ls -1t *.img | head -1 )
-IMGOUT=$( basename "$IMGFILE" _base_lamp_nc-nextcloud_nc-init_nextcloudpi.img ).img
+IMGOUT=$( basename "$IMGFILE" _base_prepare_lamp_nc-nextcloud_nc-init_nextcloudpi.img ).img
 
 pack_image "$IMGFILE" "$IMGOUT" 
 md5sum $( ls -1t *.img | head -1 )
