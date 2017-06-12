@@ -1,41 +1,25 @@
 #!/bin/bash
 
-# Create a Raspbian image with docker
-# Tested with 2017-03-02-raspbian-jessie-lite.img
+# Launch a Raspbian-docker instance in QEMU and build container
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
 #
 # Usage:
-#   ./prepare-build-env-docker.sh <IP> # Use the IP of your running QEMU Raspbian image
-#
-# Notes:
-#   Set DOWNLOAD=0 if you have already downloaded an image. 
-#   Set EXTRACT=0  if you have already extracted the image.
+#   ./launch-build-container.sh <IP> # Use the IP of your running QEMU Raspbian image
 #
 # More at https://ownyourbits.com
 #
 
 IP=$1          # First argument is the QEMU Raspbian IP address
-DOWNLOAD=0     # Download the latest image
-EXTRACT=0      # Extract the image from zip, so start from 0
-IMG=raspbian_lite_latest
 
 source etc/library.sh       # initializes $IMGNAME
 
 IMGBASE="raspbian_docker_base.img"
 
-export NO_CONFIG=1          # skip interactive configuration
+test -f raspbian_docker.img || ./prepare-build-env-docker.sh $IP || exit 1
 
-download_resize_raspbian_img 3G $IMGBASE || exit 1
-
-NO_HALT_STEP=1 ./installer.sh prepare.sh            $IP $IMGBASE                    || exit 1
-               ./installer.sh docker/docker-env.sh  $IP $( ls -1t *.img | head -1 ) || exit 1
-
-IMGFILE=$( ls -1t *.img | head -1 )
-IMGOUT="raspbian_docker.img"
-
-pack_image "$IMGFILE" "$IMGOUT" 
+./installer.sh docker/build-container.sh $IP raspbian_docker.img || exit 1
 
 # License
 #
