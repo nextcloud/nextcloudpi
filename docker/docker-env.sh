@@ -1,58 +1,31 @@
 #!/bin/bish
 
-# Prepare a Raspbian image (resize and update)
+# Install docker ARM on Raspbian
 # Tested with 2017-03-02-raspbian-jessie-lite.img
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
 #
-# Usage: ./installer.sh prepare.sh <DHCP QEMU image IP> <image>
+# Usage: ./installer.sh docker-env.sh <DHCP QEMU image IP> <image>
 #
 
 
-STATE_FILE=/home/pi/.installation_state
-APTINSTALL="apt-get install -y --no-install-recommends"
-
 install()
 {
-  test -f $STATE_FILE && STATE=$( cat $STATE_FILE 2>/dev/null )
-  if [ "$STATE" == "" ]; then
-
-    # RESIZE IMAGE
-    ##########################################
-
-    SECTOR=$( fdisk -l /dev/sda | grep Linux | awk '{ print $2 }' )
-    echo -e "d\n2\nn\np\n2\n$SECTOR\n\nw\n" | fdisk /dev/sda || true
-
-    echo 0 > $STATE_FILE 
-    nohup reboot &>/dev/null &
-  elif [ "$STATE" == "0" ]; then
-
-    # UPDATE EVERYTHING
-    ##########################################
-    resize2fs /dev/sda2
-
-    apt-get update
-    apt-get upgrade -y
-    apt-get dist-upgrade -y
-    $APTINSTALL rpi-update 
-    echo -e "y\n" | PRUNE_MODULES=1 rpi-update
-  fi
+  curl -sSL get.docker.com | sh
+  usermod -aG docker pi
 }
 
 configure(){ :; }
 
 cleanup()
 {
-  [ "$STATE" != "0" ] && return
   apt-get autoremove
   apt-get clean
   rm /var/lib/apt/lists/* -r
   rm -f /home/pi/.bash_history
 
   systemctl disable ssh
-  rm $STATE_FILE
-  nohup halt &>/dev/null &
 }
 
 # License
