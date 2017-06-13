@@ -26,9 +26,11 @@ install()
   echo -e "Performing updates"
   ./update.sh
 
-  VER=$( git describe --always --tags )
-  echo $VER > /usr/local/etc/ncp-version
-  echo $VER > /var/run/.ncp-latest-version
+  VER=$( git describe --always --tags | grep -oP "v\d+\.\d+\.\d+" )
+  grep -qP "v\d+\.\d+\.\d+" <<< $VER && {       # check format
+    echo $VER > /usr/local/etc/ncp-version
+    echo $VER > /var/run/.ncp-latest-version
+  }
 
   cd /
   rm -rf /tmp/ncp-update-tmp
