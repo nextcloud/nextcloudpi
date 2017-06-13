@@ -21,7 +21,7 @@ DBPASSWD_=ownyourbits
 
 install()
 {
-  # RE-CREATE DATABASE TABLE (workaround to emulate DROP USER IF EXISTS ..;)
+  ## RE-CREATE DATABASE TABLE (workaround to emulate DROP USER IF EXISTS ..;)
 
   echo "Setting up database..."
 
@@ -33,7 +33,9 @@ install()
 
   mysql -u root -p$DBPASSWD_ <<EOF
 DROP DATABASE IF EXISTS nextcloud;
-CREATE DATABASE nextcloud;
+CREATE DATABASE nextcloud
+    CHARACTER SET utf8mb4
+    COLLATE utf8mb4_unicode_ci;
 GRANT USAGE ON *.* TO '$DBADMIN_'@'localhost' IDENTIFIED BY '$DBPASSWD_';
 DROP USER '$DBADMIN_'@'localhost';
 CREATE USER '$DBADMIN_'@'localhost' IDENTIFIED BY '$DBPASSWD_';
@@ -41,7 +43,7 @@ GRANT ALL PRIVILEGES ON nextcloud.* TO $DBADMIN_@localhost;
 EXIT
 EOF
 
-  # INITIALIZE NEXTCLOUD
+  ## INITIALIZE NEXTCLOUD
 
   echo "Setting up Nextcloud..."
 
@@ -50,8 +52,14 @@ EOF
     "mysql" --database-name "nextcloud"  --database-user "$DBADMIN_" --database-pass \
     "$DBPASSWD_" --admin-user "$ADMINUSER_" --admin-pass "$DBPASSWD_"
 
+  # cron jobs
   sudo -u www-data php occ background:cron
+
+  # ACPu cache
   sed -i '$i\ \ '\''memcache.local'\'' => '\''\\\\OC\\\\Memcache\\\\APCu'\'',' /var/www/nextcloud/config/config.php
+
+  # 4 Byte UTF8 support
+  sudo -u www-data php occ config:system:set mysql.utf8mb4 --type boolean --value="true"
 }
 
 configure(){ :; }
