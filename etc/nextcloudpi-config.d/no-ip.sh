@@ -27,7 +27,8 @@ show_info()
   whiptail --yesno \
            --backtitle "NextCloudPi configuration" \
            --title "Info" \
-"For this step to succeed, you need to register a noip account first." \
+"For this step to succeed, you need to register a noip account first.
+Internet access is required for this configuration to complete." \
   20 90
 }
 
@@ -59,15 +60,6 @@ EOF
   chmod +x /etc/init.d/noip2
   cd -
   rm -r /tmp/noip
-}
-
-show_info()
-{
-  whiptail --yesno \
-           --backtitle "NextCloudPi configuration" \
-           --title "Warning" \
-"Internet access is required for this configuration to complete" \
-  20 90
 }
 
 configure() 
