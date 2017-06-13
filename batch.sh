@@ -31,7 +31,7 @@ IMGFILE=$( ls -1t *.img | head -1 )
 IMGOUT=$( basename "$IMGFILE" _base_prepare_lamp_nc-nextcloud_nc-init_nextcloudpi.img ).img
 
 pack_image "$IMGFILE" "$IMGOUT" 
-md5sum $( ls -1t *.img | head -1 )
+md5sum $( ls -1t *.tar.bz2 | head -1 )
 
 # License
 #
