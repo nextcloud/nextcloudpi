@@ -54,7 +54,7 @@ EOF
     mkdir -p /run/mysqld
     chown mysql /run/mysqld
 
-    # CONFIGURE APACHE AND PHP7
+    # CONFIGURE APACHE 
     ##########################################
 
   cat >/etc/apache2/conf-available/http2.conf <<EOF
@@ -77,6 +77,9 @@ EOF
   Header always set Strict-Transport-Security "max-age=15768000; includeSubDomains; preload"
 </IfModule>
 EOF
+
+    # CONFIGURE PHP7
+    ##########################################
 
     cat > /etc/php/7.0/mods-available/apcu.ini <<EOF
 extension=apcu.so
@@ -119,6 +122,11 @@ EOF
     ##########################################
 
     $APTINSTALL ssl-cert # self signed snakeoil certs
+
+    # configure MariaDB ( UTF8 4 byte support )
+    sed -i '/\[mysqld\]/ainnodb_large_prefix=on'       /etc/mysql/mariadb.conf.d/50-server.cnf 
+    sed -i '/\[mysqld\]/ainnodb_file_per_table=1'      /etc/mysql/mariadb.conf.d/50-server.cnf 
+    sed -i '/\[mysqld\]/ainnodb_file_format=barracuda' /etc/mysql/mariadb.conf.d/50-server.cnf
 
     cat > /etc/apache2/sites-available/nextcloud.conf <<'EOF'
 <IfModule mod_ssl.c>
