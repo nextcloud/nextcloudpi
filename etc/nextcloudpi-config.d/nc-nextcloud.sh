@@ -44,9 +44,9 @@ configure()
 {
   ## DOWNLOAD AND (OVER)WRITE NEXTCLOUD
   cd /var/www/
-  wget https://download.nextcloud.com/server/releases/nextcloud-$VER_.tar.bz2 -O nextcloud.tar.bz2
+  wget -q https://download.nextcloud.com/server/releases/nextcloud-$VER_.tar.bz2 -O nextcloud.tar.bz2
   rm -rf nextcloud
-  tar -xvf nextcloud.tar.bz2
+  tar -xf nextcloud.tar.bz2
   rm nextcloud.tar.bz2
 
   ## CONFIGURE FILE PERMISSIONS

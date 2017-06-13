@@ -22,6 +22,15 @@ DOMAIN_=mycloud.ownyourbits.com
 TIME_=30
 DESCRIPTION="Free Dynamic DNS provider (need account)"
 
+show_info()
+{
+  whiptail --yesno \
+           --backtitle "NextCloudPi configuration" \
+           --title "Info" \
+"For this step to succeed, you need to register a noip account first." \
+  20 90
+}
+
 install()
 {
   mkdir /tmp/noip && cd /tmp/noip
