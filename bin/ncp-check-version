@@ -6,10 +6,13 @@
 
 ping  -W 2 -w 1 -q github.com &>/dev/null || { echo "No internet connectivity"; exit 1; }
 
-git clone -q --depth 1 https://github.com/nextcloud/nextcloudpi.git /tmp/ncp-check-tmp || exit 1
+git clone -q --bare https://github.com/nextcloud/nextcloudpi.git /tmp/ncp-check-tmp || exit 1
 
 cd /tmp/ncp-check-tmp
-git describe --always --tags > /var/run/.ncp-latest-version
+VER=$( git describe --always --tags | grep -oP "v\d+\.\d+\.\d+" )
+grep -qP "v\d+\.\d+\.\d+" <<< $VER && {       # check format
+  echo $VER > /var/run/.ncp-latest-version
+}
 cd /
 
 rm -rf /tmp/ncp-check-tmp
