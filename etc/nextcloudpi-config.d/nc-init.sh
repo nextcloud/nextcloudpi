@@ -18,10 +18,26 @@
 ADMINUSER_=admin
 DBADMIN_=ncadmin
 DBPASSWD_=ownyourbits
+DESCRIPTION="(Re)initiate Nextcloud to a clean configuration"
 
-install()
+show_info()
 {
-  ## RE-CREATE DATABASE TABLE (workaround to emulate DROP USER IF EXISTS ..;)
+  whiptail --yesno \
+         --backtitle "NextCloudPi configuration" \
+         --title "Clean NextCloud configuration" \
+"This action will configure NextCloud to NextCloudPi defaults.
+
+** YOUR CONFIGURATION WILL BE LOST **
+
+" \
+  20 90
+}
+
+configure()
+{
+  systemctl stop apache2;
+
+  ## RE-CREATE DATABASE TABLE 
 
   echo "Setting up database..."
 
@@ -31,6 +47,7 @@ install()
     sleep 0.5
   done
 
+  # workaround to emulate DROP USER IF EXISTS ..;)
   mysql -u root -p$DBPASSWD_ <<EOF
 DROP DATABASE IF EXISTS nextcloud;
 CREATE DATABASE nextcloud
@@ -48,6 +65,7 @@ EOF
   echo "Setting up Nextcloud..."
 
   cd /var/www/nextcloud/
+  rm -f config/config.php
   sudo -u www-data php occ maintenance:install --database \
     "mysql" --database-name "nextcloud"  --database-user "$DBADMIN_" --database-pass \
     "$DBPASSWD_" --admin-user "$ADMINUSER_" --admin-pass "$DBPASSWD_"
@@ -60,9 +78,14 @@ EOF
 
   # 4 Byte UTF8 support
   sudo -u www-data php occ config:system:set mysql.utf8mb4 --type boolean --value="true"
+
+  # Default trusted domain ( only from nextcloudpi-config )
+  test -f /usr/local/bin/nextcloud-domain.sh && bash /usr/local/bin/nextcloud-domain.sh
+
+  systemctl start apache2;
 }
 
-configure(){ :; }
+install(){ :; }
 cleanup()  { :; }
 
 # License

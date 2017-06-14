@@ -21,7 +21,6 @@
 #
 
 DBPASSWD_=ownyourbits
-OPCACHEDIR=/var/www/nextcloud/data/.opcache
 
 APTINSTALL="apt-get install -y --no-install-recommends"
 export DEBIAN_FRONTEND=noninteractive
@@ -96,16 +95,14 @@ EOF
 zend_extension=opcache.so
 opcache.enable=1
 opcache.enable_cli=1
-opcache.file_cache=$OPCACHEDIR;
 opcache.fast_shutdown=1
 opcache.interned_strings_buffer=8
 opcache.max_accelerated_files=10000
 opcache.memory_consumption=128
 opcache.save_comments=1
 opcache.revalidate_freq=1
+opcache.file_cache=/tmp;
 EOF
-    mkdir -p $OPCACHEDIR
-    chown -R www-data:www-data $OPCACHEDIR
 
     a2enmod http2
     a2enconf http2 
@@ -127,29 +124,6 @@ EOF
     sed -i '/\[mysqld\]/ainnodb_large_prefix=on'       /etc/mysql/mariadb.conf.d/50-server.cnf 
     sed -i '/\[mysqld\]/ainnodb_file_per_table=1'      /etc/mysql/mariadb.conf.d/50-server.cnf 
     sed -i '/\[mysqld\]/ainnodb_file_format=barracuda' /etc/mysql/mariadb.conf.d/50-server.cnf
-
-    cat > /etc/apache2/sites-available/nextcloud.conf <<'EOF'
-<IfModule mod_ssl.c>
-  <VirtualHost _default_:443>
-    DocumentRoot /var/www/nextcloud
-    CustomLog /var/www/nextcloud/data/access.log combined
-    ErrorLog /var/www/nextcloud/data/error.log
-    SSLEngine on
-    SSLCertificateFile      /etc/ssl/certs/ssl-cert-snakeoil.pem
-    SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
-  </VirtualHost>
-  <Directory /var/www/nextcloud/>
-    Options +FollowSymlinks
-    AllowOverride All
-    <IfModule mod_dav.c>
-      Dav off
-    </IfModule>
-    LimitRequestBody 0
-    SSLRenegBufferSize 10486000
-  </Directory>
-</IfModule>
-EOF
-    a2ensite nextcloud
 }
 
 configure() { :; }
