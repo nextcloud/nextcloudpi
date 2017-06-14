@@ -19,6 +19,8 @@ VER_=12.0.0
 MAXFILESIZE_=2G
 MEMORYLIMIT_=768M
 MAXTRANSFERTIME_=3600
+DBADMIN_=ncadmin
+DBPASSWD_=ownyourbits
 DESCRIPTION="Install any NextCloud version"
 
 export DEBIAN_FRONTEND=noninteractive
@@ -32,6 +34,8 @@ show_info()
 "This new installation will cleanup current
 NextCloud instance, including files and database.
 
+You can later use nc-init to configure to NextCloudPi defaults
+
 ** perform backup before proceding **
 
 You can use nc-backup " \
@@ -42,10 +46,38 @@ install() { :; }
 
 configure()
 {
+  systemctl stop apache2;
+
+  ## RE-CREATE DATABASE TABLE 
+
+  # wait for mariadb
+  while :; do
+    [[ -S /var/run/mysqld/mysqld.sock ]] && break
+    sleep 0.5
+  done
+
+  echo "Setting up database..."
+  # workaround to emulate DROP USER IF EXISTS ..;)
+  mysql -u root -p$DBPASSWD_ <<EOF
+DROP DATABASE IF EXISTS nextcloud;
+CREATE DATABASE nextcloud
+    CHARACTER SET utf8mb4
+    COLLATE utf8mb4_unicode_ci;
+GRANT USAGE ON *.* TO '$DBADMIN_'@'localhost' IDENTIFIED BY '$DBPASSWD_';
+DROP USER '$DBADMIN_'@'localhost';
+CREATE USER '$DBADMIN_'@'localhost' IDENTIFIED BY '$DBPASSWD_';
+GRANT ALL PRIVILEGES ON nextcloud.* TO $DBADMIN_@localhost;
+EXIT
+EOF
+
   ## DOWNLOAD AND (OVER)WRITE NEXTCLOUD
   cd /var/www/
-  wget -q https://download.nextcloud.com/server/releases/nextcloud-$VER_.tar.bz2 -O nextcloud.tar.bz2
+
+  echo "Downloading Nextcloud $VER_..."
+  wget -q https://download.nextcloud.com/server/releases/nextcloud-$VER_.tar.bz2 -O nextcloud.tar.bz2 || return 1
   rm -rf nextcloud
+
+  echo "Installing  Nextcloud $VER_..."
   tar -xf nextcloud.tar.bz2
   rm nextcloud.tar.bz2
 
@@ -84,7 +116,37 @@ configure()
     chown ${rootuser}:${htgroup} ${ocpath}/data/.htaccess
   fi
 
-  ## CONFIGURE NEXTCLOUD 
+    # create and configure opcache dir
+    OPCACHEDIR=/var/www/nextcloud/data/.opcache
+    sed -i "s|^opcache.file_cache=.*|opcache.file_cache=$OPCACHEDIR|" /etc/php/7.0/mods-available/opcache.ini 
+    mkdir -p $OPCACHEDIR
+    chown -R www-data:www-data $OPCACHEDIR
+
+  ## SET APACHE VHOST
+    cat > /etc/apache2/sites-available/nextcloud.conf <<'EOF'
+<IfModule mod_ssl.c>
+  <VirtualHost _default_:443>
+    DocumentRoot /var/www/nextcloud
+    CustomLog /var/www/nextcloud/data/access.log combined
+    ErrorLog /var/www/nextcloud/data/error.log
+    SSLEngine on
+    SSLCertificateFile      /etc/ssl/certs/ssl-cert-snakeoil.pem
+    SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
+  </VirtualHost>
+  <Directory /var/www/nextcloud/>
+    Options +FollowSymlinks
+    AllowOverride All
+    <IfModule mod_dav.c>
+      Dav off
+    </IfModule>
+    LimitRequestBody 0
+    SSLRenegBufferSize 10486000
+  </Directory>
+</IfModule>
+EOF
+    a2ensite nextcloud
+  echo "Setting up Apache..."
+
 cat > /etc/apache2/sites-available/000-default.conf <<'EOF'
 <VirtualHost _default_:80>
   DocumentRoot /var/www/nextcloud
@@ -95,6 +157,8 @@ cat > /etc/apache2/sites-available/000-default.conf <<'EOF'
   </IfModule>
 </VirtualHost>
 EOF
+
+  echo "Setting up system..."
 
   ## SET LIMITS
   sed -i "s/post_max_size=.*/post_max_size=$MAXFILESIZE_/"             /var/www/nextcloud/.user.ini 
@@ -109,6 +173,10 @@ EOF
   echo "*/15  *  *  *  * php -f /var/www/nextcloud/cron.php" > /tmp/crontab_http
   crontab -u www-data /tmp/crontab_http
   rm /tmp/crontab_http
+  
+  systemctl start apache2;
+
+  echo "Don't forget to run nc-init"
 }
 
 cleanup()   

@@ -31,7 +31,7 @@ test -d /data/app || {
 
   # INIT DATABASE AND NEXTCLOUD CONFIG
   source         /usr/local/etc/library.sh
-  install_script /usr/local/etc/nc-init.sh
+  activate_script /usr/local/etc/nextcloudpi-config.d/nc-init.sh
 
   # COPY DATADIR TO /data, WHICH WILL BE IN A PERSISTENT VOLUME
   cd /var/www/nextcloud/
