@@ -64,7 +64,7 @@ The docker image can be generated in an ARM environment with docker
 
 ```
 git clone https://github.com/nextcloud/nextcloudpi.git
-make -C nextcloudpi
+make nextcloud
 ```
 
 ![NCP-config](/resources/ncp-config.jpg)
