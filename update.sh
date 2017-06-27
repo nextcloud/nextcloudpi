@@ -41,6 +41,9 @@ for file in etc/nextcloudpi-config.d/*; do
   cp $file /usr/local/$file
 done
 
+# these files can contain sensitive information, such as passwords
+chmod 700 /usr/local/etc/nextcloudpi-config.d/*
+
 # License
 #
 # This script is free software; you can redistribute it and/or modify it
