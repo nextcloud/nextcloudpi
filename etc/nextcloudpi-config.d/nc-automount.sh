@@ -52,18 +52,11 @@ EOF
   cat > /usr/local/etc/blknum <<'EOF'
 #!/bin/bash
 
-OUT=$( lsblk -l )
+# count all block devices with a file system, except /boot and /root. Start in 0
+NUM=$(( $( lsblk -l -n -o NAME,FSTYPE | grep -v mmcblk | awk '{ print $2 }' | sed '/^$/d' | wc -l ) - 1 ))
 
-# partitions, from USB hard drives
-PARTS=$( grep part <<< "$OUT" | wc -l )
-
-# removable flash sticks
-RM=$( awk '{ print $3 }' <<< "$OUT" | grep -c 1 )
-
-# discount /boot and /root, start at 0
-RES=$(( RM + PARTS - 3 ))
-
-[[ $RES > 0 ]] && echo $RES || exit 0
+# first drive will be USBdrive, second USBdrive1 ...
+[[ $NUM > 0 ]] && echo $NUM || exit 0
 
 EOF
   chmod +x /usr/local/etc/blknum
@@ -103,6 +96,7 @@ EOF
 
   [[ "$ACTIVE_" != "yes" ]] && rm -f /etc/udev/rules.d/50-automount.rules
 
+  # mount whatever is currently plugged in
   udevadm control --reload-rules && udevadm trigger
 }
 
