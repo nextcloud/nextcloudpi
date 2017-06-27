@@ -7,7 +7,7 @@
 #
 # Usage:
 # 
-#   ./installer.sh nc-backup <IP> (<img>)
+#   ./installer.sh nc-backup.sh <IP> (<img>)
 #
 # See installer.sh instructions for details
 #

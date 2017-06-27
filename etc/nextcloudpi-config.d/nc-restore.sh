@@ -9,7 +9,7 @@
 #
 # Usage:
 # 
-#   ./installer.sh nc-restore <IP> (<img>)
+#   ./installer.sh nc-restore.sh <IP> (<img>)
 #
 # See installer.sh instructions for details
 #
