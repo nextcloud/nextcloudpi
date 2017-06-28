@@ -156,7 +156,7 @@ function config()
     local value
     value=$( dialog --ok-label "Start" \
                     --no-lines --backtitle "$BACKTITLE" \
-                    --form "Enter the desired configuration for $( basename "$INSTALL_SCRIPT" .sh )" \
+                    --form "Enter configuration for $( basename "$INSTALL_SCRIPT" .sh )" \
                     20 70 0 $PARAM \
              3>&1 1>&2 2>&3 )
     RET=$?
