@@ -46,6 +46,7 @@ configure()
     systemctl disable  wicd 
     systemctl start   dhcpcd
     systemctl enable  dhcpcd
+    ip link set down dev wlan0
     systemctl start nextcloud-domain
     return; 
   } 
@@ -60,6 +61,7 @@ configure()
   # It does not hurt to restart it to wlan0 for RPi3 & zero w
   sed -i 's|^wireless_interface = $|wireless_interface = wlan0|'    /etc/wicd/manager-settings.conf
 
+  ip link set up dev wlan0
   systemctl stop    dhcpcd
   systemctl disable dhcpcd
   systemctl enable  wicd 
