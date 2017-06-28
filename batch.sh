@@ -26,12 +26,15 @@ NO_HALT_STEP=1 ./installer.sh prepare.sh     $IP $IMGBASE                    || 
                ./installer.sh $NC_INSTALL    $IP $( ls -1t *.img | head -1 ) || exit 1
                ./installer.sh $NC_CONFIG     $IP $( ls -1t *.img | head -1 ) || exit 1
                ./installer.sh nextcloudpi.sh $IP $( ls -1t *.img | head -1 ) || exit 1
+#              ./installer.sh test-devel.sh  $IP $( ls -1t *.img | head -1 ) || exit 1
 
 IMGFILE=$( ls -1t *.img | head -1 )
 IMGOUT=$( basename "$IMGFILE" _base_prepare_lamp_nc-nextcloud_nc-init_nextcloudpi.img ).img
 
 pack_image "$IMGFILE" "$IMGOUT" 
 md5sum $( ls -1t *.tar.bz2 | head -1 )
+
+mkdir -p partial && mv NextCloudPi*.bz2 partial
 
 # License
 #
