@@ -234,6 +234,7 @@ function configure_script()
     config $SCRIPT || return 1                 # writes "$INSTALLATION_CODE"
     echo -e "$INSTALLATION_CODE" > $SCRIPT     # save configuration
     source ./$SCRIPT                           # load configuration
+    printf '\033[2J' && tput cup 0 0           # clear screen, don't clear scroll, cursor on top
     echo -e "Launching \e[1m$( basename $SCRIPT .sh )\e[0m"
     set +x
     configure
