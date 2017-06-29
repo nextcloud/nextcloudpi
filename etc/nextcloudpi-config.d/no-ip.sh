@@ -60,6 +60,9 @@ EOF
   chmod +x /etc/init.d/noip2
   cd -
   rm -r /tmp/noip
+
+  update-rc.d noip2 defaults
+  update-rc.d noip2 disable
 }
 
 configure() 
@@ -67,7 +70,6 @@ configure()
   [[ $ACTIVE_ != "yes" ]] && { service noip2 stop; update-rc.d noip2 disable; return; }
 
   /usr/local/bin/noip2 -C -c /usr/local/etc/no-ip2.conf -U $TIME_ -u $USER_ -p $PASS_
-  update-rc.d noip2 defaults
   update-rc.d noip2 enable
   service noip2 restart
   cd /var/www/nextcloud
