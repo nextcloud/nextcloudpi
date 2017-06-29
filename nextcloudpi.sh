@@ -125,6 +125,9 @@ EOF
 
   # update to latest version from github as part of the build process
   /usr/local/bin/ncp-update
+
+  # External requirements for Apps
+  $APTINSTALL smbclient
 }
 
 configure() { :; }
