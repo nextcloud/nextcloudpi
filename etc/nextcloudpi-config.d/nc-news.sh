@@ -26,6 +26,8 @@ configure()
   wget $URL || return 1
   tar -xf news.tar.gz || return 1
   rm *.tar.gz
+
+  echo "You can now activate it in the \"Apps\" section"
 }
 
 install() { :; }
