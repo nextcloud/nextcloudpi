@@ -52,11 +52,15 @@ EOF
   cat > /usr/local/etc/blknum <<'EOF'
 #!/bin/bash
 
-# count all block devices with a file system, except /boot and /root. Start in 0
-NUM=$(( $( lsblk -l -n -o NAME,FSTYPE | grep -v mmcblk | awk '{ print $2 }' | sed '/^$/d' | wc -l ) - 1 ))
+test -e /dev/USBdrive || exit 0
 
-# first drive will be USBdrive, second USBdrive1 ...
-[[ $NUM > 0 ]] && echo $NUM || exit 0
+for i in `seq 1 1 8`; do
+  test -e /dev/USBdrive$i && continue
+  echo $i
+  exit 0
+done
+
+exit 1
 
 EOF
   chmod +x /usr/local/etc/blknum
@@ -76,7 +80,7 @@ KERNEL!="sd[a-z]*", GOTO="exit"
 IMPORT{program}="/sbin/blkid -o udev -p %N"
 
 # Need to be a filesystem
-ENV{ID_FS_TYPE}!="vfat|ntfs|ext4", GOTO="exit"
+ENV{ID_FS_TYPE}!="vfat|ntfs|ext4|iso9660", GOTO="exit"
 
 # Create symlink that will be understood by fstab, and a directory in /media
 ACTION!="remove", PROGRAM="/usr/local/etc/blknum", RUN+="/bin/mkdir -p /media/USBdrive%c", SYMLINK+="USBdrive%c"
