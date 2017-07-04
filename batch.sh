@@ -29,12 +29,19 @@ NO_HALT_STEP=1 ./installer.sh prepare.sh     $IP $IMGBASE                    || 
 #              ./installer.sh test-devel.sh  $IP $( ls -1t *.img | head -1 ) || exit 1
 
 IMGFILE=$( ls -1t *.img | head -1 )
-IMGOUT=$( basename "$IMGFILE" _base_prepare_lamp_nc-nextcloud_nc-init_nextcloudpi.img ).img
+IMGNAME=$( basename "$IMGFILE" _base_prepare_lamp_nc-nextcloud_nc-init_nextcloudpi.img )
 
-pack_image "$IMGFILE" "$IMGOUT" 
-md5sum $( ls -1t *.tar.bz2 | head -1 )
+[[ "$IMGNAME" != "" ]] || exit 1
+
+pack_image "$IMGFILE" "$IMGNAME.img" 
+md5sum $IMGNAME.tar.bz2
+
+rm -rf   torrent/$IMGNAME 
+mkdir -p torrent/$IMGNAME && cp $IMGNAME.tar.bz2 torrent/$IMGNAME
+create_torrent torrent/$IMGNAME
 
 mkdir -p partial && mv NextCloudPi*.bz2 partial
+rm *.img
 
 # License
 #

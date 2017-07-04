@@ -2,3 +2,4 @@
 *.img
 *.bz2
 qemu-raspbian-network/
+torrent/

@@ -23,6 +23,7 @@ This code also generates the [NextCloudPi ARM docker image](https://hub.docker.c
 * HSTS
 * Cron jobs for Nextcloud
 * Sane configuration defaults
+* Full emoji support ( NEW 05-24-2017 )
 * Secure
 
 ## Extras
@@ -38,8 +39,11 @@ This code also generates the [NextCloudPi ARM docker image](https://hub.docker.c
  * SAMBA ready to share your files with Windows/Mac/Linux ( NEW 04-16-2017 )
  * USB automount ( NEW 05-24-2017 )
  * Remote updates ( NEW 03-31-2017 )
+ * Unofficial Nextcloud News App installer ( NEW 05-24-2017 )
  * NextCloud backup and restore ( NEW 05-24-2017 )
  * NextCloud online installation ( NEW 05-24-2017 )
+ * Format USB drive to ext4 ( NEW 07-03-2017 )
+ * UPnP automatic port forwarding ( NEW 07-03-2017 )
 
 
 Any extra can be installed independently in a running Raspbian instance through SSH. See `installer.sh`
