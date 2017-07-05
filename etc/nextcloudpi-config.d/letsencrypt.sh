@@ -31,7 +31,10 @@ show_info()
   whiptail --yesno \
            --backtitle "NextCloudPi configuration" \
            --title "Warning" \
-"Internet access is required for this configuration to complete" \
+"Internet access is required for this configuration to complete
+  
+Your certificate will be automatically renewed every month
+" \
   20 90
 }
 
