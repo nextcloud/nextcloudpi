@@ -36,7 +36,7 @@ or the database will fail.
 
 configure()
 {
-  local SRCDIR=$( grep datadir /etc/mysql/my.cnf | cut -d= -f2 )
+  local SRCDIR=$( grep datadir /etc/mysql/mariadb.conf.d/50-server.cnf | cut -d= -f2 )
   [ -d $SRCDIR ] || { echo -e "database directory $SRCDIR not found"; return 1; }
 
   [ -d "$DBDIR_" ] && {
@@ -61,7 +61,7 @@ configure()
   service mysql    stop
 
   mv $SRCDIR "$DBDIR_" || return 1
-  sed -i "s|^datadir.*|datadir = $DBDIR_|" /etc/mysql/my.cnf
+  sed -i "s|^datadir.*|datadir = $DBDIR_|" /etc/mysql/mariadb.conf.d/50-server.cnf
 
   service mysql start && service apache2 start
 }
