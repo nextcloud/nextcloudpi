@@ -12,6 +12,10 @@
 source etc/library.sh       # initializes $IMGNAME
 
 IP=$1                       # First argument is the QEMU Raspbian IP address
+
+
+## BUILDING
+
 NC_INSTALL=etc/nextcloudpi-config.d/nc-nextcloud.sh
 NC_CONFIG=etc/nextcloudpi-config.d/nc-init.sh
 
@@ -33,6 +37,8 @@ IMGNAME=$( basename "$IMGFILE" _base_prepare_lamp_nc-nextcloud_nc-init_nextcloud
 
 [[ "$IMGNAME" != "" ]] || exit 1
 
+## PACKING
+
 pack_image "$IMGFILE" "$IMGNAME.img" 
 md5sum $IMGNAME.tar.bz2
 
@@ -41,7 +47,15 @@ mkdir -p torrent/$IMGNAME && cp $IMGNAME.tar.bz2 torrent/$IMGNAME
 create_torrent torrent/$IMGNAME
 
 mkdir -p partial && mv NextCloudPi*.bz2 partial
-rm *.img
+
+## TESTING
+launch_qemu "$IMGNAME.img" &
+sleep 10
+wait_SSH $IP
+sleep 180                         # Wait for the services to start. Improve this ( wait HTTP && trusted domains )
+tests/tests.py $IP
+
+rm -f *.img
 
 # License
 #

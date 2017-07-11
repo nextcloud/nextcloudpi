@@ -8,7 +8,7 @@
 #
 # Usage:
 # 
-#   ./installer.sh test-devel.sh <IP> (<img>)
+#   ./installer.sh build-devel.sh <IP> (<img>)
 #
 # See installer.sh instructions for details
 #
