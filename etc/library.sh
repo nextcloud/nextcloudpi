@@ -205,10 +205,16 @@ function install_script()
 
 function activate_script()
 {
+  local SCRIPT=$1
+  echo -e "Activating \e[1m$( basename $SCRIPT .sh )\e[0m"
+  launch_script $SCRIPT
+}
+
+function launch_script()
+{
   (
     local SCRIPT=$1
     source ./$SCRIPT 
-    echo -e "Activating \e[1m$( basename $SCRIPT .sh )\e[0m"
     set +x
     configure
   )

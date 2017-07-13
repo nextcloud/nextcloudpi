@@ -30,6 +30,52 @@ install()
   sed -i '/Change User Password/i"0 NextCloudPi Configuration" "Configuration of NextCloudPi" \\\\'  /usr/bin/raspi-config
   sed -i '/1\\\\ \*) do_change_pass ;;/i0\\\\ *) nextcloudpi-config ;;'                              /usr/bin/raspi-config
 
+
+  # NEXTCLOUDPI-CONFIG WEB
+  ##########################################
+  cat > /etc/apache2/sites-available/ncp.conf <<'EOF'
+Listen 8089
+<VirtualHost _default_:8089>
+  DocumentRoot /var/www/ncp-web
+</VirtualHost>
+<Directory /var/www/ncp-web/>
+  Require host localhost
+  Require ip 127.0.0.1
+  Require ip 192.168
+  Require ip 10
+</Directory>
+
+Listen 4443
+<VirtualHost _default_:4443>
+  DocumentRoot /var/www/ncp-web
+  SSLEngine on
+  SSLCertificateFile      /etc/ssl/certs/ssl-cert-snakeoil.pem
+  SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
+</VirtualHost>
+<Directory /var/www/ncp-web/>
+  Require host localhost
+  Require ip 127.0.0.1
+  Require ip 192.168
+  Require ip 10
+</Directory>
+EOF
+  a2ensite ncp
+
+  mkdir /home/www -p
+  chown www-data:www-data /home/www
+  chmod 700 /home/www
+
+  cat > /home/www/ncp-launcher.sh <<'EOF'
+#!/bin/bash
+DIR=/usr/local/etc/nextcloudpi-config.d
+test -f $DIR/$1 || { echo "File not found"; exit 1; }
+source /usr/local/etc/library.sh
+cd $DIR
+launch_script $1
+EOF
+  chmod 700 /home/www/ncp-launcher.sh
+  echo "www-data ALL = NOPASSWD: /home/www/ncp-launcher.sh" >> /etc/sudoers
+
   # NEXTCLOUDPI MOTD
   ##########################################
   mkdir /etc/update-motd.d
@@ -121,7 +167,7 @@ EOF
   mkdir -p "$UPLOADTMPDIR"
   chown www-data:www-data "$UPLOADTMPDIR"
   sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $UPLOADTMPDIR|" /etc/php/7.0/fpm/php.ini
-  sed -i "s|^;\?sys_temp_dir =.*$|sys_temp_dir = $UPLOADTMPDIR|" /etc/php/7.0/fpm/php.ini
+  sed -i "s|^;\?sys_temp_dir =.*$|sys_temp_dir = $UPLOADTMPDIR|"     /etc/php/7.0/fpm/php.ini
 
   # update to latest version from github as part of the build process
   /usr/local/bin/ncp-update

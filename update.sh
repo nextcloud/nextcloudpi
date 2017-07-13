@@ -42,7 +42,13 @@ for file in etc/nextcloudpi-config.d/*; do
 done
 
 # these files can contain sensitive information, such as passwords
-chmod 700 /usr/local/etc/nextcloudpi-config.d/*
+chown -R root:www-data /usr/local/etc/nextcloudpi-config.d
+chmod 660 /usr/local/etc/nextcloudpi-config.d/*
+
+# install web interface
+cp -r ncp-web /var/www/
+chown www-data:www-data /var/www/ncp-web
+chmod 770               /var/www/ncp-web
 
 # License
 #

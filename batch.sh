@@ -30,7 +30,7 @@ NO_HALT_STEP=1 ./installer.sh prepare.sh     $IP $IMGBASE                    || 
                ./installer.sh $NC_INSTALL    $IP $( ls -1t *.img | head -1 ) || exit 1
                ./installer.sh $NC_CONFIG     $IP $( ls -1t *.img | head -1 ) || exit 1
                ./installer.sh nextcloudpi.sh $IP $( ls -1t *.img | head -1 ) || exit 1
-#              ./installer.sh test-devel.sh  $IP $( ls -1t *.img | head -1 ) || exit 1
+#              ./installer.sh build-devel.sh $IP $( ls -1t *.img | head -1 ) || exit 1
 
 IMGFILE=$( ls -1t *.img | head -1 )
 IMGNAME=$( basename "$IMGFILE" _base_prepare_lamp_nc-nextcloud_nc-init_nextcloudpi.img )
