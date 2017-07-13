@@ -116,14 +116,14 @@ EOF
     chown ${rootuser}:${htgroup} ${ocpath}/data/.htaccess
   fi
 
-    # create and configure opcache dir
-    OPCACHEDIR=/var/www/nextcloud/data/.opcache
-    sed -i "s|^opcache.file_cache=.*|opcache.file_cache=$OPCACHEDIR|" /etc/php/7.0/mods-available/opcache.ini 
-    mkdir -p $OPCACHEDIR
-    chown -R www-data:www-data $OPCACHEDIR
+  # create and configure opcache dir
+  OPCACHEDIR=/var/www/nextcloud/data/.opcache
+  sed -i "s|^opcache.file_cache=.*|opcache.file_cache=$OPCACHEDIR|" /etc/php/7.0/mods-available/opcache.ini 
+  mkdir -p $OPCACHEDIR
+  chown -R www-data:www-data $OPCACHEDIR
 
-  ## SET APACHE VHOST
-    cat > /etc/apache2/sites-available/nextcloud.conf <<'EOF'
+## SET APACHE VHOST
+  cat > /etc/apache2/sites-available/nextcloud.conf <<'EOF'
 <IfModule mod_ssl.c>
   <VirtualHost _default_:443>
     DocumentRoot /var/www/nextcloud
@@ -144,10 +144,10 @@ EOF
   </Directory>
 </IfModule>
 EOF
-    a2ensite nextcloud
+  a2ensite nextcloud
   echo "Setting up Apache..."
 
-cat > /etc/apache2/sites-available/000-default.conf <<'EOF'
+  cat > /etc/apache2/sites-available/000-default.conf <<'EOF'
 <VirtualHost _default_:80>
   DocumentRoot /var/www/nextcloud
   <IfModule mod_rewrite.c>
