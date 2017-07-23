@@ -35,8 +35,6 @@ show_info()
 
 configure()
 {
-  systemctl stop apache2;
-
   ## RE-CREATE DATABASE TABLE 
 
   echo "Setting up database..."
@@ -81,8 +79,6 @@ EOF
 
   # Default trusted domain ( only from nextcloudpi-config )
   test -f /usr/local/bin/nextcloud-domain.sh && bash /usr/local/bin/nextcloud-domain.sh
-
-  systemctl start apache2;
 }
 
 install(){ :; }

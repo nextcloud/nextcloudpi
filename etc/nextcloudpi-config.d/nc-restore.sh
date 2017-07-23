@@ -44,7 +44,8 @@ configure()
   [ -d $BASEDIR_           ] || { echo -e "$BASEDIR_    not found"; return 1;  }
   [ -d $BASEDIR_/nextcloud ] && { echo -e "WARNING: overwriting old instance"; }
 
-  service apache2 stop
+  cd $BASEDIR_/nextcloud
+  sudo -u www-data php occ maintenance:mode --on
 
   # RESTORE FILES
   echo -e "restore files..."
@@ -69,8 +70,6 @@ EOF
 
   cd $BASEDIR_/nextcloud
   sudo -u www-data php occ maintenance:mode --off
-
-  service apache2 start
 }
 
 install() { :; }

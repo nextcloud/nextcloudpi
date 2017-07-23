@@ -57,13 +57,16 @@ configure()
   [[ $( stat -fc%d / ) == $( stat -fc%d $BASEDIR ) ]] && \
     echo -e "INFO: moving database to another place in the same SD card\nIf you want to use an external mount, make sure it is properly set up"
 
-  service apache2  stop
-  service mysql    stop
+  cd /var/www/nextcloud
+  sudo -u www-data php occ maintenance:mode --on
 
+  echo "moving database to $DBDIR_..."
+  service mysql stop
   mv $SRCDIR "$DBDIR_" || return 1
   sed -i "s|^datadir.*|datadir = $DBDIR_|" /etc/mysql/mariadb.conf.d/50-server.cnf
+  service mysql start 
 
-  service mysql start && service apache2 start
+  sudo -u www-data php occ maintenance:mode --off
 }
 
 install(){ :; }
