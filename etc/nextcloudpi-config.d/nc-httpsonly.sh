@@ -22,7 +22,10 @@ configure()
 {
   [[ $ACTIVE_ == "no" ]] && local OPT=Off || local OPT=On
   sed -i "s|RewriteEngine .*|RewriteEngine $OPT|" /etc/apache2/sites-available/000-default.conf
-  service apache2 reload
+  echo "Forcing HTTPS $OPT"
+
+  # delayed in bg so it does not kill the connection, and we get AJAX response
+  ( sleep 2 && systemctl restart apache2 ) &>/dev/null & 
 }
 
 install() { :; }

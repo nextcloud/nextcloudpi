@@ -46,8 +46,6 @@ install() { :; }
 
 configure()
 {
-  systemctl stop apache2;
-
   ## RE-CREATE DATABASE TABLE 
 
   # wait for mariadb
@@ -174,7 +172,7 @@ EOF
   crontab -u www-data /tmp/crontab_http
   rm /tmp/crontab_http
   
-  systemctl start apache2;
+  systemctl start apache2
 
   echo "Don't forget to run nc-init"
 }

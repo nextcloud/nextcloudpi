@@ -57,8 +57,10 @@ configure()
     echo -e "INFO: moving data dir to another place in the same SD card\nIf you want to use an external mount, make sure it is properly set up"
 
   ## COPY
-  service apache2 stop
+  cd /var/www/nextcloud
+  sudo -u www-data php occ maintenance:mode --on
 
+  echo "moving data dir to $DATADIR_..."
   cp -ra "$SRCDIR" "$DATADIR_" || return 1
   
   # tmp upload dir
@@ -70,9 +72,8 @@ configure()
   sed -i "s|^opcache.file_cache=.*|opcache.file_cache=$DATADIR_/.opcache|" /etc/php/7.0/mods-available/opcache.ini
 
   # datadir
-  cd /var/www/nextcloud
   sudo -u www-data php occ config:system:set datadirectory --value=$DATADIR_
-  service apache2 start
+  sudo -u www-data php occ maintenance:mode --off
 }
 
 install() { :; }

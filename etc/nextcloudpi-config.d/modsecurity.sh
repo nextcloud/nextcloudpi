@@ -76,8 +76,7 @@ a basic NextCloud installation. If a new App does not work disable it" \
 
 configure() 
 { 
-
-  cat >> /etc/modsecurity/modsecurity_crs_99_whitelist.conf <<EOF
+  cat > /etc/modsecurity/modsecurity_crs_99_whitelist.conf <<EOF
 <Directory $NCDIR_>
   # VIDEOS
   SecRuleRemoveById 958291             # Range Header Checks
@@ -120,8 +119,10 @@ EOF
 
   [[ $ACTIVE_ == "yes" ]] && local STATE=On || local STATE=Off
   sed -i "s|SecRuleEngine .*|SecRuleEngine $STATE|" /etc/modsecurity/modsecurity.conf
-  a2enmod security2
-  service apache2 restart
+  [[ $ACTIVE_ == "yes" ]] && a2enmod security2 || a2dismod security2
+
+  # delayed in bg so it does not kill the connection, and we get AJAX response
+  ( sleep 2 && systemctl restart apache2 ) &>/dev/null & 
 }
 
 cleanup()
