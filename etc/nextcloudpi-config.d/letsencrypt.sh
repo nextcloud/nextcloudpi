@@ -45,7 +45,7 @@ configure()
     sed -i "s|ServerName .*|ServerName $DOMAIN_|" $VHOSTCFG_ || \
     sed -i "/DocumentRoot/aServerName $DOMAIN_" $VHOSTCFG_ 
 
-  /etc/letsencrypt/letsencrypt-auto -n --no-self-upgrade --apache --hsts --agree-tos -m $EMAIL_ -d $DOMAIN_
+  /etc/letsencrypt/letsencrypt-auto -n --no-self-upgrade --apache --hsts --agree-tos -m $EMAIL_ -d $DOMAIN_ || return 1
   echo "* 1 * * 1 root /etc/letsencrypt/certbot-auto renew --quiet" > /etc/cron.d/letsencrypt-ncp
 
   cd /var/www/nextcloud
