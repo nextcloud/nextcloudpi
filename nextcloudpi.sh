@@ -34,17 +34,6 @@ install()
   # NEXTCLOUDPI-CONFIG WEB
   ##########################################
   cat > /etc/apache2/sites-available/ncp.conf <<'EOF'
-Listen 8089
-<VirtualHost _default_:8089>
-  DocumentRoot /var/www/ncp-web
-</VirtualHost>
-<Directory /var/www/ncp-web/>
-  Require host localhost
-  Require ip 127.0.0.1
-  Require ip 192.168
-  Require ip 10
-</Directory>
-
 Listen 4443
 <VirtualHost _default_:4443>
   DocumentRoot /var/www/ncp-web
