@@ -19,7 +19,7 @@ if ( $_POST['action'] == "cfgreq" )
   //CSFR check
   $token = isset($_POST['csrf_token']) ? $_POST['csrf_token'] : '';
   if ( empty($token) || !validateCSRFToken($token) )
-    exit( '{ "output": "Unauthorized request" }' );
+    exit( '{ "output": "Unauthorized request. Try reloading the page" }' );
 
   $path  = '/usr/local/etc/nextcloudpi-config.d/';
   $files = array_diff(scandir($path), array('.', '..'));
@@ -55,7 +55,7 @@ else if ( $_POST['action'] == "launch" && $_POST['config'] )
   // CSRF check
   $token = isset($_POST['csrf_token']) ? $_POST['csrf_token'] : '';
   if ( empty($token) || !validateCSRFToken($token) )
-    exit( '{ "output": "Unauthorized request" }' );
+    exit( '{ "output": "Unauthorized request. Try reloading the page" }' );
 
   chdir('/usr/local/etc/nextcloudpi-config.d/');
 
