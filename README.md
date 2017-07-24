@@ -1,6 +1,6 @@
 # NextCloudPi
 
-![NC Logo](/resources/nextcloud-square-logo.png)
+![NC Logo](https://ownyourbits.com/wp-content/uploads/2017/02/nextcloudpi-logo.png)
 
 This is the build code for [NextCloudPi](https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/).
 
@@ -28,6 +28,7 @@ This code also generates the [NextCloudPi ARM docker image](https://hub.docker.c
 
 ## Extras
 
+ * NextCloudPi Web Panel ( NEW 07-24-2017 )
  * Wi-Fi ready ( NEW 03-31-2017 )
  * Automatic security updates, activated by default. ( NEW 03-21-2017 )
  * Let’s Encrypt for trusted HTTPS certificates.(  NEW 03-16-2017 )
@@ -48,6 +49,20 @@ This code also generates the [NextCloudPi ARM docker image](https://hub.docker.c
 
 Any extra can be installed independently in a running Raspbian instance through SSH. See `installer.sh`
 
+Extras can be activated and configured using the web interface at HTTPS port 4443
+
+
+![NCP-config](https://ownyourbits.com/wp-content/uploads/2017/07/web-letsencrypt.jpg)
+
+, or from the command line from
+
+```
+sudo nextcloudpi-config
+```
+
+![NCP-config](https://ownyourbits.com/wp-content/uploads/2017/03/ncp-conf-700x456.jpg)
+
+
 ## How to build
 
 NextCloudPi is based on Raspbian and is automatically generated using QEMU.
@@ -58,20 +73,12 @@ cd nextcloudpi
 ./batch.sh 192.168.0.145 # change to your QEMU raspbian IP
 ```
 
-Extras can be activated and configured using
-
-```
-sudo nextcloudpi-config
-```
-
 The docker image can be generated in an ARM environment with docker
 
 ```
 git clone https://github.com/nextcloud/nextcloudpi.git
 make -C nextcloudpi
 ```
-
-![NCP-config](/resources/ncp-config.jpg)
 
 ## Downloads
 
