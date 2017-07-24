@@ -16,6 +16,7 @@
 
 DOMAIN_=mycloud.ownyourbits.com
 EMAIL_=mycloud@ownyourbits.com
+NCDIR_=/var/www/nextcloud
 VHOSTCFG_=/etc/apache2/sites-available/nextcloud.conf
 DESCRIPTION="Automatic signed SSL certificates"
 
@@ -32,7 +33,7 @@ show_info()
            --backtitle "NextCloudPi configuration" \
            --title "Warning" \
 "Internet access is required for this configuration to complete
-  
+ 
 Your certificate will be automatically renewed every month
 " \
   20 90
@@ -45,13 +46,17 @@ configure()
     sed -i "s|ServerName .*|ServerName $DOMAIN_|" $VHOSTCFG_ || \
     sed -i "/DocumentRoot/aServerName $DOMAIN_" $VHOSTCFG_ 
 
-  /etc/letsencrypt/letsencrypt-auto -n --no-self-upgrade --apache --hsts --agree-tos -m $EMAIL_ -d $DOMAIN_ || return 1
+  sed -i "s|SSLCertificateFile.*|SSLCertificateFile /etc/letsencrypt/live/$DOMAIN_/fullchain.pem|" $VHOSTCFG_
+  sed -i "s|SSLCertificateKeyFile.*|SSLCertificateKeyFile /etc/letsencrypt/live/$DOMAIN_/privkey.pem|" $VHOSTCFG_
+
+  /etc/letsencrypt/letsencrypt-auto certonly -n --no-self-upgrade --webroot -w $NCDIR_ --hsts --agree-tos -m $EMAIL_ -d $DOMAIN_ || return 1
   echo "* 1 * * 1 root /etc/letsencrypt/certbot-auto renew --quiet" > /etc/cron.d/letsencrypt-ncp
 
   cd /var/www/nextcloud
   sudo -u www-data php occ config:system:set trusted_domains 4 --value=$DOMAIN_
 
-  service apache2 reload
+  # delayed in bg so it does not kill the connection, and we get AJAX response
+  ( sleep 2 && systemctl restart apache2 ) &>/dev/null & 
 }
 
 cleanup()
