@@ -33,6 +33,7 @@ configure()
   mysqldump -u root -p$DBPASSWD_ --single-transaction nextcloud > $DBBACKUP
 
   echo -e "backup files..."
+  mkdir -p $DESTDIR
   tar -cf $DESTFILE $DBBACKUP nextcloud/ && \
     echo -e "backup $DESTFILE generated" || \
     echo -e "error generating backup"
