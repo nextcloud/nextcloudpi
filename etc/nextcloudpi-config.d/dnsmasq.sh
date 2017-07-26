@@ -16,7 +16,6 @@
 
 ACTIVE_=no
 DOMAIN_=mycloud.ownyourbits.com
-IP_=127.0.0.1
 DNSSERVER_=8.8.8.8
 CACHESIZE_=150 
 DESCRIPTION="DNS server with cache"
@@ -41,6 +40,11 @@ configure()
 {
   [[ $ACTIVE_ != "yes" ]] && { service dnsmasq stop; update-rc.d dnsmasq disable; return; }
 
+  local IFACE=$( ip r | grep "default via"   | awk '{ print $5 }' )
+  local    IP=$( ip a | grep "global $IFACE" | grep -oP '\d{1,3}(.\d{1,3}){3}' | head -1 )
+
+  [[ "$IP" == "" ]] && { echo "could not detect IP"; return 1; }
+  
   cat > /etc/dnsmasq.conf <<EOF
 domain-needed         # Never forward plain names (without a dot or domain part)
 bogus-priv            # Never forward addresses in the non-routed address spaces.
@@ -48,7 +52,7 @@ no-poll               # Don't poll for changes in /etc/resolv.conf
 no-resolv             # Don't use /etc/resolv.conf or any other file
 cache-size=$CACHESIZE_ 
 server=$DNSSERVER_
-address=/$DOMAIN_/$IP_  # This is optional if we add it to /etc/hosts
+address=/$DOMAIN_/$IP  # This is optional if we add it to /etc/hosts
 EOF
 
   sed -i 's|#\?IGNORE_RESOLVCONF=.*|IGNORE_RESOLVCONF=yes|' /etc/default/dnsmasq
