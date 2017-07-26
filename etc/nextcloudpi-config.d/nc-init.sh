@@ -40,6 +40,8 @@ configure()
   echo "Setting up database..."
 
   # wait for mariadb
+  pgrep -x mysqld &>/dev/null || { echo "mariaDB process not found"; return 1; }
+
   while :; do
     [[ -S /var/run/mysqld/mysqld.sock ]] && break
     sleep 0.5
