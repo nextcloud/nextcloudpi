@@ -23,11 +23,15 @@ configure()
   local URL=$( curl -s https://api.github.com/repos/nextcloud/news/releases | \
     grep browser_download_url | head -1 | cut -d '"' -f 4 )
   cd $NCDIR_/apps/
-  wget $URL || return 1
+
+  echo "Downloading..."
+  wget $URL           || return 1
+
+  echo "Installing..."
   tar -xf news.tar.gz || return 1
   rm *.tar.gz
-
-  echo "You can now activate it in the \"Apps\" section"
+  cd $NCDIR_
+  sudo -u www-data php "$NCDIR_"/occ app:enable news
 }
 
 install() { :; }
