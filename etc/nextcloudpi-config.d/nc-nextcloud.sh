@@ -47,8 +47,14 @@ install() { :; }
 configure()
 {
   ## RE-CREATE DATABASE TABLE 
+  echo "Starting mariaDB"
+
+  # launch mariadb if not already running (for docker build)
+  pgrep -x mysqld &>/dev/null || { mysqld & }
 
   # wait for mariadb
+  pgrep -x mysqld &>/dev/null || { echo "mariaDB process not found"; return 1; }
+
   while :; do
     [[ -S /var/run/mysqld/mysqld.sock ]] && break
     sleep 0.5
@@ -172,8 +178,6 @@ EOF
   crontab -u www-data /tmp/crontab_http
   rm /tmp/crontab_http
   
-  systemctl start apache2
-
   echo "Don't forget to run nc-init"
 }
 
