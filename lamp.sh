@@ -124,6 +124,15 @@ EOF
     sed -i '/\[mysqld\]/ainnodb_large_prefix=on'       /etc/mysql/mariadb.conf.d/50-server.cnf 
     sed -i '/\[mysqld\]/ainnodb_file_per_table=1'      /etc/mysql/mariadb.conf.d/50-server.cnf 
     sed -i '/\[mysqld\]/ainnodb_file_format=barracuda' /etc/mysql/mariadb.conf.d/50-server.cnf
+
+    mysql_secure_installation <<EOF
+$DBPASSWD_
+n
+y
+y
+y
+y
+EOF
 }
 
 configure() { :; }
