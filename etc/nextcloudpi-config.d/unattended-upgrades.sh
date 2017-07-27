@@ -36,6 +36,7 @@ APT::Periodic::AutocleanInterval "7";
 Unattended-Upgrade::Automatic-Reboot "$AUTOREBOOT";
 Unattended-Upgrade::Automatic-Reboot-Time "04:00";
 EOF
+  echo "Unattended upgrades active: $ACTIVE_ (autoreboot $AUTOREBOOT_)"
 }
 
 cleanup()
