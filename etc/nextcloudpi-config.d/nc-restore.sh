@@ -69,6 +69,9 @@ EOF
 
   mysql -u root -p$DBPASSWD nextcloud <  nextcloud-sqlbkp_*.bak || { echo -e "error restoring nextcloud database"; return 1; }
 
+  # Just in case we moved the opcache dir
+  sed -i "s|^opcache.file_cache=.*|opcache.file_cache=$BASEDIR_/nextcloud/data/.opcache|" /etc/php/7.0/mods-available/opcache.ini
+
   cd $BASEDIR_/nextcloud
   sudo -u www-data php occ maintenance:mode --off
 }
