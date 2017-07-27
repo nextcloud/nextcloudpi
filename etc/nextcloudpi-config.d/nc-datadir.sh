@@ -60,7 +60,7 @@ configure()
   cd /var/www/nextcloud
   sudo -u www-data php occ maintenance:mode --on
 
-  echo "moving data dir to $DATADIR_..."
+  echo "moving data dir from $SRCDIR to $DATADIR_..."
   cp -ra "$SRCDIR" "$DATADIR_" || return 1
   
   # tmp upload dir

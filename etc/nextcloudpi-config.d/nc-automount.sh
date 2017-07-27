@@ -102,6 +102,8 @@ EOF
 
   # mount whatever is currently plugged in
   udevadm control --reload-rules && udevadm trigger
+
+  [[ "$ACTIVE_" != "yes" ]] && echo "automount is now inactive" || echo "automount is now active"
 }
 
 # License
