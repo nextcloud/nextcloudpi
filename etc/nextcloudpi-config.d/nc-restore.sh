@@ -19,7 +19,6 @@
 
 BACKUPFILE_=/media/USBdrive/nextcloud-bkp_xxxxxxxx.tar
 BASEDIR_=/var/www
-DBPASSWD_=ownyourbits
 DBADMIN_=ncadmin
 DESCRIPTION="Restore a previously backuped NC instance"
 
@@ -40,6 +39,8 @@ You can use nc-backup " \
 
 configure()
 { 
+  local DBPASSWD=$( cat /root/.dbpass )
+
   [ -f $BACKUPFILE_        ] || { echo -e "$BACKUPFILE_ not found"; return 1;  }
   [ -d $BASEDIR_           ] || { echo -e "$BASEDIR_    not found"; return 1;  }
   [ -d $BASEDIR_/nextcloud ] && { echo -e "WARNING: overwriting old instance"; }
@@ -55,18 +56,18 @@ configure()
 
   # RE-CREATE DATABASE TABLE
   echo -e "restore database..."
-  mysql -u root -p$DBPASSWD_ <<EOF
+  mysql -u root -p$DBPASSWD <<EOF
 DROP DATABASE IF EXISTS nextcloud;
 CREATE DATABASE nextcloud;
-GRANT USAGE ON *.* TO '$DBADMIN_'@'localhost' IDENTIFIED BY '$DBPASSWD_';
+GRANT USAGE ON *.* TO '$DBADMIN_'@'localhost' IDENTIFIED BY '$DBPASSWD';
 DROP USER '$DBADMIN_'@'localhost';
-CREATE USER '$DBADMIN_'@'localhost' IDENTIFIED BY '$DBPASSWD_';
+CREATE USER '$DBADMIN_'@'localhost' IDENTIFIED BY '$DBPASSWD';
 GRANT ALL PRIVILEGES ON nextcloud.* TO $DBADMIN_@localhost;
 EXIT
 EOF
   [ $? -ne 0 ] && { echo -e "error configuring nextcloud database"; return 1; }
 
-  mysql -u root -p$DBPASSWD_ nextcloud <  nextcloud-sqlbkp_*.bak || { echo -e "error restoring nextcloud database"; return 1; }
+  mysql -u root -p$DBPASSWD nextcloud <  nextcloud-sqlbkp_*.bak || { echo -e "error restoring nextcloud database"; return 1; }
 
   cd $BASEDIR_/nextcloud
   sudo -u www-data php occ maintenance:mode --off

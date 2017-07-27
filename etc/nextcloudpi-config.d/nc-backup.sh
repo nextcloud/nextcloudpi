@@ -17,7 +17,6 @@
 
 DESTDIR_=/media/USBdrive
 BASEDIR_=/var/www
-DBPASSWD_=ownyourbits
 DESCRIPTION="Backup this NC instance to a file"
 
 DESTFILE=$DESTDIR_/nextcloud-bkp_`date +"%Y%m%d"`.tar 
@@ -25,12 +24,14 @@ DBBACKUP=nextcloud-sqlbkp_`date +"%Y%m%d"`.bak
 
 configure()
 {
+  local DBPASSWD=$( cat /root/.dbpass )
+
   cd $BASEDIR_/nextcloud
   sudo -u www-data php occ maintenance:mode --on
 
   cd $BASEDIR_
   echo -e "backup database..."
-  mysqldump -u root -p$DBPASSWD_ --single-transaction nextcloud > $DBBACKUP
+  mysqldump -u root -p$DBPASSWD --single-transaction nextcloud > $DBBACKUP
 
   echo -e "backup files..."
   mkdir -p $DESTDIR

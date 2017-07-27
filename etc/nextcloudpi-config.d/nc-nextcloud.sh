@@ -20,7 +20,6 @@ MAXFILESIZE_=2G
 MEMORYLIMIT_=768M
 MAXTRANSFERTIME_=3600
 DBADMIN_=ncadmin
-DBPASSWD_=ownyourbits
 DESCRIPTION="Install any NextCloud version"
 
 export DEBIAN_FRONTEND=noninteractive
@@ -46,6 +45,8 @@ install() { :; }
 
 configure()
 {
+  local DBPASSWD=$( cat /root/.dbpass )
+
   ## RE-CREATE DATABASE TABLE 
   echo "Starting mariaDB"
 
@@ -62,14 +63,14 @@ configure()
 
   echo "Setting up database..."
   # workaround to emulate DROP USER IF EXISTS ..;)
-  mysql -u root -p$DBPASSWD_ <<EOF
+  mysql -u root -p$DBPASSWD <<EOF
 DROP DATABASE IF EXISTS nextcloud;
 CREATE DATABASE nextcloud
     CHARACTER SET utf8mb4
     COLLATE utf8mb4_unicode_ci;
-GRANT USAGE ON *.* TO '$DBADMIN_'@'localhost' IDENTIFIED BY '$DBPASSWD_';
+GRANT USAGE ON *.* TO '$DBADMIN_'@'localhost' IDENTIFIED BY '$DBPASSWD';
 DROP USER '$DBADMIN_'@'localhost';
-CREATE USER '$DBADMIN_'@'localhost' IDENTIFIED BY '$DBPASSWD_';
+CREATE USER '$DBADMIN_'@'localhost' IDENTIFIED BY '$DBPASSWD';
 GRANT ALL PRIVILEGES ON nextcloud.* TO $DBADMIN_@localhost;
 EXIT
 EOF
