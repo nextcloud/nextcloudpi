@@ -20,8 +20,6 @@
 # More at https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/
 #
 
-DBPASSWD_=ownyourbits
-
 APTINSTALL="apt-get install -y --no-install-recommends"
 export DEBIAN_FRONTEND=noninteractive
 
@@ -47,8 +45,14 @@ EOF
     $APTINSTALL -t stretch php7.0 php7.0-curl php7.0-gd php7.0-fpm php7.0-cli php7.0-opcache php7.0-mbstring php7.0-xml php7.0-zip php7.0-APC
     mkdir -p /run/php
 
-    debconf-set-selections <<< "mariadb-server-5.5 mysql-server/root_password password $DBPASSWD_"
-    debconf-set-selections <<< "mariadb-server-5.5 mysql-server/root_password_again password $DBPASSWD_"
+    # Randomize mariaDB password
+    # Suggested by @enoch85 and taken from the nextcloud vm ( https://github.com/nextcloud/vm/blob/master/lib.sh#L46 )
+    $DBPASSWD=$(tr -dc "a-zA-Z0-9@#*=" < /dev/urandom | fold -w "$(shuf -i 30-35 -n 1)" | head -n 1)
+    echo $DBPASSWD > /root/.dbpass
+    chmod 600 /root/.dbpass
+
+    debconf-set-selections <<< "mariadb-server-5.5 mysql-server/root_password password $DBPASSWD"
+    debconf-set-selections <<< "mariadb-server-5.5 mysql-server/root_password_again password $DBPASSWD"
     $APTINSTALL -t stretch mariadb-server php7.0-mysql 
     mkdir -p /run/mysqld
     chown mysql /run/mysqld
@@ -126,7 +130,7 @@ EOF
     sed -i '/\[mysqld\]/ainnodb_file_format=barracuda' /etc/mysql/mariadb.conf.d/50-server.cnf
 
     mysql_secure_installation <<EOF
-$DBPASSWD_
+$DBPASSWD
 n
 y
 y
