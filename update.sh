@@ -50,6 +50,10 @@ cp -r ncp-web /var/www/
 chown www-data:www-data /var/www/ncp-web
 chmod 770               /var/www/ncp-web
 
+# force-fix unattended-upgrades for old image users
+cd /usr/local/etc/nextcloudpi-config.d/
+activate_script unattended-upgrades.sh
+
 # License
 #
 # This script is free software; you can redistribute it and/or modify it

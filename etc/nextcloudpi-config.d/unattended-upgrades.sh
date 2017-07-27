@@ -28,6 +28,9 @@ configure()
 { 
   [[ $ACTIVE_     == "yes" ]] && local AUTOUPGRADE=1   || local AUTOUPGRADE=0
   [[ $AUTOREBOOT_ == "yes" ]] && local AUTOREBOOT=true || local AUTOREBOOT=false
+
+  # It seems like the label Raspbian-Security does not work for Raspbian
+  # See https://www.raspberrypi.org/forums/viewtopic.php?t=82863&p=585739
   cat > /etc/apt/apt.conf.d/20nextcloudpi-upgrades <<EOF
 APT::Periodic::Update-Package-Lists "1";
 APT::Periodic::Unattended-Upgrade "$AUTOUPGRADE";
@@ -35,6 +38,10 @@ APT::Periodic::MaxAge "14";
 APT::Periodic::AutocleanInterval "7";
 Unattended-Upgrade::Automatic-Reboot "$AUTOREBOOT";
 Unattended-Upgrade::Automatic-Reboot-Time "04:00";
+Unattended-Upgrade::Origins-Pattern {
+o=Raspbian,n=jessie,l=Raspbian;
+o=Raspbian,n=stretch,l=Raspbian;
+}
 EOF
   echo "Unattended upgrades active: $ACTIVE_ (autoreboot $AUTOREBOOT_)"
 }
