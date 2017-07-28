@@ -82,6 +82,9 @@ EOF
 
   # Default trusted domain ( only from nextcloudpi-config )
   test -f /usr/local/bin/nextcloud-domain.sh && bash /usr/local/bin/nextcloud-domain.sh
+
+  # more
+  sudo -u www-data php occ config:system:set overwriteprotocol --value=https
 }
 
 install(){ :; }
