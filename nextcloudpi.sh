@@ -18,6 +18,7 @@
 CONFDIR=/usr/local/etc/nextcloudpi-config.d/
 UPLOADTMPDIR=/var/www/nextcloud/data/tmp
 APTINSTALL="apt-get install -y --no-install-recommends"
+export DEBIAN_FRONTEND=noninteractive
 
 
 install()
@@ -162,7 +163,7 @@ EOF
   /usr/local/bin/ncp-update
 
   # External requirements for Apps
-  $APTINSTALL smbclient
+  $APTINSTALL -o "Dpkg::Options::=--force-confold" -t stretch php-smbclient
 }
 
 configure() { :; }
