@@ -111,6 +111,7 @@ class LoginNewUserTest(unittest.TestCase):
         driver.find_element_by_id("user").send_keys("test_user1")
         driver.find_element_by_id("password").send_keys("ownyourbits")
         driver.find_element_by_id("submit").click()
+        self.assertNotIn("Wrong password", driver.page_source)
 
         time.sleep(60)  # first run can be really slow on QEMU
         wait = WebDriverWait(driver, 210)

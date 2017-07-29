@@ -43,16 +43,18 @@ configure()
   [ -d $BASEDIR_           ] || { echo -e "$BASEDIR_    not found"; return 1;  }
   [ -d $BASEDIR_/nextcloud ] && { echo -e "WARNING: overwriting old instance"; }
 
-  cd $BASEDIR_/nextcloud
-  sudo -u www-data php occ maintenance:mode --on
+  local TMPDIR="$( dirname $BACKUPFILE_ )/$( basename ${BACKUPFILE_}-tmp )"
+  rm -rf "$TMPDIR" && mkdir -p "$TMPDIR"
+  tar -xf "$BACKUPFILE_" -C "$TMPDIR" || return 1
 
-  # RESTORE FILES
+  ## RESTORE FILES
+
   echo -e "restore files..."
-  cd $BASEDIR_
-  rm -rf nextcloud
-  tar -xf $BACKUPFILE_ || return 1
+  rm -rf $BASEDIR_/nextcloud
+  mv "$TMPDIR"/nextcloud $BASEDIR_
 
-  # RE-CREATE DATABASE TABLE
+  ## RE-CREATE DATABASE TABLE
+
   local DBPASSWD=$( grep password /root/.my.cnf | cut -d= -f2 )
   echo -e "restore database..."
   mysql -u root -p$DBPASSWD <<EOF
@@ -64,15 +66,48 @@ CREATE USER '$DBADMIN_'@'localhost' IDENTIFIED BY '$DBPASSWD';
 GRANT ALL PRIVILEGES ON nextcloud.* TO $DBADMIN_@localhost;
 EXIT
 EOF
-  [ $? -ne 0 ] && { echo -e "error configuring nextcloud database"; return 1; }
+  [ $? -ne 0 ] && { echo -e "Error configuring nextcloud database"; return 1; }
 
-  mysql -u root -p$DBPASSWD nextcloud <  nextcloud-sqlbkp_*.bak || { echo -e "error restoring nextcloud database"; return 1; }
+  mysql -u root -p$DBPASSWD nextcloud <  "$TMPDIR"/nextcloud-sqlbkp_*.bak || { echo -e "Error restoring nextcloud database"; return 1; }
+
+  ## RESTORE DATADIR
+
+  cd $BASEDIR_/nextcloud
+
+  # INCLUDEDATA=yes situation
+
+  if [[ $( ls "$TMPDIR" | wc -l ) == 2 ]]; then           
+    local DATADIR=$( grep datadirectory $BASEDIR_/nextcloud/config/config.php | awk '{ print $3 }' | grep -oP "[^']*[^']" | head -1 ) 
+    [[ "$DATADIR" == "" ]] && { echo -e "Error reading data directory"; return 1; }
+    echo -e "restore datadir to $DATADIR..."
+    rm -rf "$DATADIR"
+    mkdir -p "$( dirname "$DATADIR" )"
+    mv "$TMPDIR/$( basename "$DATADIR" )" "$DATADIR"
+    sudo -u www-data php occ maintenance:mode --off
+
+  # INCLUDEDATA=no situation
+
+  else      
+    echo -e "no datadir found in backup"
+    sed -i "s|'datadirectory' =>.*|'datadirectory' => '/var/www/nextcloud/data',|" "config/config.php"
+
+    sudo -u www-data php occ maintenance:mode --off
+    sudo -u www-data php occ files:scan --all
+
+    # cache needs to be cleaned as of NC 12
+    (
+      sleep 3
+      systemctl stop php7.0-fpm
+      systemctl stop mysqld
+      sleep 0.5
+      systemctl start php7.0-fpm
+      systemctl start mysqld
+    ) &>/dev/null &
+  fi
+  rm -r "$TMPDIR"
 
   # Just in case we moved the opcache dir
   sed -i "s|^opcache.file_cache=.*|opcache.file_cache=$BASEDIR_/nextcloud/data/.opcache|" /etc/php/7.0/mods-available/opcache.ini
-
-  cd $BASEDIR_/nextcloud
-  sudo -u www-data php occ maintenance:mode --off
 }
 
 install() { :; }
