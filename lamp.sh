@@ -47,9 +47,9 @@ EOF
 
     # Randomize mariaDB password
     # Suggested by @enoch85 and taken from the nextcloud vm ( https://github.com/nextcloud/vm/blob/master/lib.sh#L46 )
-    $DBPASSWD=$(tr -dc "a-zA-Z0-9@#*=" < /dev/urandom | fold -w "$(shuf -i 30-35 -n 1)" | head -n 1)
-    echo $DBPASSWD > /root/.dbpass
-    chmod 600 /root/.dbpass
+    DBPASSWD=$(tr -dc "a-zA-Z0-9@#*=" < /dev/urandom | fold -w "$(shuf -i 30-35 -n 1)" | head -n 1)
+    echo -e "[client]\npassword=$DBPASSWD" > /root/.my.cnf
+    chmod 600 /root/.my.cnf
 
     debconf-set-selections <<< "mariadb-server-5.5 mysql-server/root_password password $DBPASSWD"
     debconf-set-selections <<< "mariadb-server-5.5 mysql-server/root_password_again password $DBPASSWD"

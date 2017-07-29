@@ -34,8 +34,6 @@ show_info()
 
 configure()
 {
-  local DBPASSWD=$( cat /root/.dbpass )
-
   ## RE-CREATE DATABASE TABLE 
 
   echo "Setting up database..."
@@ -49,6 +47,7 @@ configure()
   done
 
   # workaround to emulate DROP USER IF EXISTS ..;)
+  local DBPASSWD=$( grep password /root/.my.cnf | cut -d= -f2 )
   mysql -u root -p$DBPASSWD <<EOF
 DROP DATABASE IF EXISTS nextcloud;
 CREATE DATABASE nextcloud

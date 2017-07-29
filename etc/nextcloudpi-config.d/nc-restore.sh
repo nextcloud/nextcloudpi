@@ -39,8 +39,6 @@ You can use nc-backup " \
 
 configure()
 { 
-  local DBPASSWD=$( cat /root/.dbpass )
-
   [ -f $BACKUPFILE_        ] || { echo -e "$BACKUPFILE_ not found"; return 1;  }
   [ -d $BASEDIR_           ] || { echo -e "$BASEDIR_    not found"; return 1;  }
   [ -d $BASEDIR_/nextcloud ] && { echo -e "WARNING: overwriting old instance"; }
@@ -55,6 +53,7 @@ configure()
   tar -xf $BACKUPFILE_ || return 1
 
   # RE-CREATE DATABASE TABLE
+  local DBPASSWD=$( grep password /root/.my.cnf | cut -d= -f2 )
   echo -e "restore database..."
   mysql -u root -p$DBPASSWD <<EOF
 DROP DATABASE IF EXISTS nextcloud;
