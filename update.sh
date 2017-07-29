@@ -50,9 +50,14 @@ cp -r ncp-web /var/www/
 chown www-data:www-data /var/www/ncp-web
 chmod 770               /var/www/ncp-web
 
-# force-fix unattended-upgrades for old image users
+## BACKWARD FIXES ( for older images )
+
+# force-fix unattended-upgrades 
 cd /usr/local/etc/nextcloudpi-config.d/
 activate_script unattended-upgrades.sh
+
+# for old image users, save default password
+test -f /root/.my.cnf || echo -e "[client]\npassword=ownyourbits" > /root/.my.cnf
 
 # License
 #

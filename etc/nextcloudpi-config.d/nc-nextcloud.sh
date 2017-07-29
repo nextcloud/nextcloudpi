@@ -45,7 +45,6 @@ install() { :; }
 
 configure()
 {
-  local DBPASSWD=$( cat /root/.dbpass )
 
   ## RE-CREATE DATABASE TABLE 
   echo "Starting mariaDB"
@@ -62,7 +61,9 @@ configure()
   done
 
   echo "Setting up database..."
+
   # workaround to emulate DROP USER IF EXISTS ..;)
+  local DBPASSWD=$( grep password /root/.my.cnf | cut -d= -f2 )
   mysql -u root -p$DBPASSWD <<EOF
 DROP DATABASE IF EXISTS nextcloud;
 CREATE DATABASE nextcloud

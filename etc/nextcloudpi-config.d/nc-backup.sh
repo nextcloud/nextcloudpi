@@ -24,17 +24,15 @@ DBBACKUP=nextcloud-sqlbkp_`date +"%Y%m%d"`.bak
 
 configure()
 {
-  local DBPASSWD=$( cat /root/.dbpass )
-
   cd $BASEDIR_/nextcloud
   sudo -u www-data php occ maintenance:mode --on
 
   cd $BASEDIR_
   echo -e "backup database..."
-  mysqldump -u root -p$DBPASSWD --single-transaction nextcloud > $DBBACKUP
+  mysqldump -u root --single-transaction nextcloud > $DBBACKUP
 
   echo -e "backup files..."
-  mkdir -p $DESTDIR
+  mkdir -p $DESTDIR_
   tar -cf $DESTFILE $DBBACKUP nextcloud/ && \
     echo -e "backup $DESTFILE generated" || \
     echo -e "error generating backup"
