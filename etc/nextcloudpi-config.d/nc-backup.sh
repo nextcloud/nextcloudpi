@@ -16,29 +16,42 @@
 
 
 DESTDIR_=/media/USBdrive
-BASEDIR_=/var/www
+INCLUDEDATA_=no
 DESCRIPTION="Backup this NC instance to a file"
 
 DESTFILE=$DESTDIR_/nextcloud-bkp_`date +"%Y%m%d"`.tar 
 DBBACKUP=nextcloud-sqlbkp_`date +"%Y%m%d"`.bak
+BASEDIR=/var/www
 
 configure()
 {
-  cd $BASEDIR_/nextcloud
+  local DATADIR
+  DATADIR=$( cd $BASEDIR/nextcloud; sudo -u www-data php occ config:system:get datadirectory ) || {
+    echo -e "Error reading data directory. Is NextCloud running and configured?";
+    return 1;
+  }
+
+  cd $BASEDIR/nextcloud
   sudo -u www-data php occ maintenance:mode --on
 
-  cd $BASEDIR_
+  cd $BASEDIR
   echo -e "backup database..."
   mysqldump -u root --single-transaction nextcloud > $DBBACKUP
 
+  [[ "$INCLUDEDATA_" == "yes" ]] && echo -e "backup datadir... "
   echo -e "backup files..."
   mkdir -p $DESTDIR_
-  tar -cf $DESTFILE $DBBACKUP nextcloud/ && \
+  tar -cf $DESTFILE $DATAFILE $DBBACKUP nextcloud/ --exclude "nextcloud/data/*/files/*" && \
     echo -e "backup $DESTFILE generated" || \
     echo -e "error generating backup"
   rm $DBBACKUP
 
-  cd $BASEDIR_/nextcloud
+  [[ "$INCLUDEDATA_" == "yes" ]] && {
+    tar -rf $DESTFILE -C $DATADIR/.. $( basename $DATADIR ) || \
+      echo -e "error generating data backup"
+  }
+
+  cd $BASEDIR/nextcloud
   sudo -u www-data php occ maintenance:mode --off
 }
 
