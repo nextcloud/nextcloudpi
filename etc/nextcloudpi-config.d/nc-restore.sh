@@ -19,7 +19,7 @@
 
 BACKUPFILE_=/media/USBdrive/nextcloud-bkp_xxxxxxxx.tar
 BASEDIR_=/var/www
-DBADMIN_=ncadmin
+DBADMIN=ncadmin
 DESCRIPTION="Restore a previously backuped NC instance"
 
 show_info()
@@ -60,10 +60,10 @@ configure()
   mysql -u root -p$DBPASSWD <<EOF
 DROP DATABASE IF EXISTS nextcloud;
 CREATE DATABASE nextcloud;
-GRANT USAGE ON *.* TO '$DBADMIN_'@'localhost' IDENTIFIED BY '$DBPASSWD';
-DROP USER '$DBADMIN_'@'localhost';
-CREATE USER '$DBADMIN_'@'localhost' IDENTIFIED BY '$DBPASSWD';
-GRANT ALL PRIVILEGES ON nextcloud.* TO $DBADMIN_@localhost;
+GRANT USAGE ON *.* TO '$DBADMIN'@'localhost' IDENTIFIED BY '$DBPASSWD';
+DROP USER '$DBADMIN'@'localhost';
+CREATE USER '$DBADMIN'@'localhost' IDENTIFIED BY '$DBPASSWD';
+GRANT ALL PRIVILEGES ON nextcloud.* TO $DBADMIN@localhost;
 EXIT
 EOF
   [ $? -ne 0 ] && { echo -e "Error configuring nextcloud database"; return 1; }
