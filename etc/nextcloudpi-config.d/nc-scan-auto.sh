@@ -28,26 +28,8 @@ show_info()
       20 90
 }
 
-configure() 
+install() 
 {
-    [[ $ACTIVE_ != "yes" ]] && { 
-    systemctl stop    nc-scan.timer
-    systemctl disable nc-scan.timer
-    return 0
-  }
-
-    cat > /etc/systemd/system/nc-scan.timer <<EOF
-    [Unit]
-    Description=Timer to scan NC for externally modified files
-
-    [Timer]
-    OnBootSec=${SCANINTERVAL_}min
-    OnUnitActiveSec=${SCANINTERVAL_}min
-    Unit=nc-scan.service
-
-    [Install]
-    WantedBy=timers.target
-EOF
   cat > /etc/systemd/system/nc-scan.service <<EOF
 [Unit]
 Description=Scan NC for externally modified files
@@ -59,12 +41,34 @@ ExecStart=/usr/local/bin/ncp-scan
 [Install]
 WantedBy=default.target
 EOF
+}
+
+configure() 
+{
+    [[ $ACTIVE_ != "yes" ]] && { 
+    systemctl stop    nc-scan.timer
+    systemctl disable nc-scan.timer
+    return 0
+  }
+
+  cat > /etc/systemd/system/nc-scan.timer <<EOF
+[Unit]
+Description=Timer to scan NC for externally modified files
+
+[Timer]
+OnBootSec=${SCANINTERVAL_}min
+OnUnitActiveSec=${SCANINTERVAL_}min
+Unit=nc-scan.service
+
+[Install]
+WantedBy=timers.target
+EOF
+
   systemctl daemon-reload
   systemctl enable nc-scan.timer
   systemctl start  nc-scan.timer
 }
 
-install() { :; }
 cleanup() { :; }
 
 # License
