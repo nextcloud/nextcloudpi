@@ -16,7 +16,8 @@
 #
 
 ADMINUSER_=admin
-DBADMIN_=ncadmin
+ADMINPASS_=ownyourbits
+DBADMIN=ncadmin
 DESCRIPTION="(Re)initiate Nextcloud to a clean configuration"
 
 show_info()
@@ -53,10 +54,10 @@ DROP DATABASE IF EXISTS nextcloud;
 CREATE DATABASE nextcloud
     CHARACTER SET utf8mb4
     COLLATE utf8mb4_unicode_ci;
-GRANT USAGE ON *.* TO '$DBADMIN_'@'localhost' IDENTIFIED BY '$DBPASSWD';
-DROP USER '$DBADMIN_'@'localhost';
-CREATE USER '$DBADMIN_'@'localhost' IDENTIFIED BY '$DBPASSWD';
-GRANT ALL PRIVILEGES ON nextcloud.* TO $DBADMIN_@localhost;
+GRANT USAGE ON *.* TO '$DBADMIN'@'localhost' IDENTIFIED BY '$DBPASSWD';
+DROP USER '$DBADMIN'@'localhost';
+CREATE USER '$DBADMIN'@'localhost' IDENTIFIED BY '$DBPASSWD';
+GRANT ALL PRIVILEGES ON nextcloud.* TO $DBADMIN@localhost;
 EXIT
 EOF
 
@@ -67,8 +68,8 @@ EOF
   cd /var/www/nextcloud/
   rm -f config/config.php
   sudo -u www-data php occ maintenance:install --database \
-    "mysql" --database-name "nextcloud"  --database-user "$DBADMIN_" --database-pass \
-    "$DBPASSWD" --admin-user "$ADMINUSER_" --admin-pass "$DBPASSWD"
+    "mysql" --database-name "nextcloud"  --database-user "$DBADMIN" --database-pass \
+    "$DBPASSWD" --admin-user "$ADMINUSER_" --admin-pass "$ADMINPASS_"
 
   # cron jobs
   sudo -u www-data php occ background:cron
