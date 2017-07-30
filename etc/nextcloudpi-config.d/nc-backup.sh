@@ -17,6 +17,7 @@
 
 DESTDIR_=/media/USBdrive
 INCLUDEDATA_=no
+BACKUPLIMIT_=4
 DESCRIPTION="Backup this NC instance to a file"
 
 DESTFILE=$DESTDIR_/nextcloud-bkp_`date +"%Y%m%d"`.tar 
@@ -49,6 +50,15 @@ configure()
   [[ "$INCLUDEDATA_" == "yes" ]] && {
     tar -rf $DESTFILE -C $DATADIR/.. $( basename $DATADIR ) || \
       echo -e "error generating data backup"
+  }
+
+  # delete older backups
+  [[ $BACKUPLIMIT_ != 0 ]] && {
+    local NUMBKPS=$( ls $DESTDIR_/nextcloud-bkp_* | wc -l )
+    ls -t $DESTDIR_/nextcloud-bkp_* | tail -$(( $NUMBKPS - $BACKUPLIMIT_ )) | while read f; do
+      echo -e "clean up old backup $f"
+      rm $f
+    done
   }
 
   cd $BASEDIR/nextcloud
