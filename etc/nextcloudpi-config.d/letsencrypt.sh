@@ -17,7 +17,8 @@
 DOMAIN_=mycloud.ownyourbits.com
 EMAIL_=mycloud@ownyourbits.com
 NCDIR_=/var/www/nextcloud
-VHOSTCFG_=/etc/apache2/sites-available/nextcloud.conf
+VHOSTCFG=/etc/apache2/sites-available/nextcloud.conf
+VHOSTCFG2=/etc/apache2/sites-available/ncp.conf
 DESCRIPTION="Automatic signed SSL certificates"
 
 install()
@@ -42,12 +43,15 @@ Your certificate will be automatically renewed every month
 # tested with git version v0.11.0-71-g018a304
 configure() 
 {
-  grep -q ServerName $VHOSTCFG_ && \
-    sed -i "s|ServerName .*|ServerName $DOMAIN_|" $VHOSTCFG_ || \
-    sed -i "/DocumentRoot/aServerName $DOMAIN_" $VHOSTCFG_ 
+  grep -q ServerName $VHOSTCFG && \
+    sed -i "s|ServerName .*|ServerName $DOMAIN_|" $VHOSTCFG || \
+    sed -i "/DocumentRoot/aServerName $DOMAIN_" $VHOSTCFG 
 
-  sed -i "s|SSLCertificateFile.*|SSLCertificateFile /etc/letsencrypt/live/$DOMAIN_/fullchain.pem|" $VHOSTCFG_
-  sed -i "s|SSLCertificateKeyFile.*|SSLCertificateKeyFile /etc/letsencrypt/live/$DOMAIN_/privkey.pem|" $VHOSTCFG_
+  sed -i "s|SSLCertificateFile.*|SSLCertificateFile /etc/letsencrypt/live/$DOMAIN_/fullchain.pem|" $VHOSTCFG
+  sed -i "s|SSLCertificateKeyFile.*|SSLCertificateKeyFile /etc/letsencrypt/live/$DOMAIN_/privkey.pem|" $VHOSTCFG
+
+  sed -i "s|SSLCertificateFile.*|SSLCertificateFile /etc/letsencrypt/live/$DOMAIN_/fullchain.pem|" $VHOSTCFG2
+  sed -i "s|SSLCertificateKeyFile.*|SSLCertificateKeyFile /etc/letsencrypt/live/$DOMAIN_/privkey.pem|" $VHOSTCFG2
 
   /etc/letsencrypt/letsencrypt-auto certonly -n --no-self-upgrade --webroot -w $NCDIR_ --hsts --agree-tos -m $EMAIL_ -d $DOMAIN_ || return 1
   echo "* 1 * * 1 root /etc/letsencrypt/certbot-auto renew --quiet" > /etc/cron.d/letsencrypt-ncp
