@@ -16,7 +16,8 @@
 
 DOMAIN_=mycloud.ownyourbits.com
 EMAIL_=mycloud@ownyourbits.com
-NCDIR_=/var/www/nextcloud
+
+NCDIR=/var/www/nextcloud
 VHOSTCFG=/etc/apache2/sites-available/nextcloud.conf
 VHOSTCFG2=/etc/apache2/sites-available/ncp.conf
 DESCRIPTION="Automatic signed SSL certificates"
@@ -53,7 +54,7 @@ configure()
   sed -i "s|SSLCertificateFile.*|SSLCertificateFile /etc/letsencrypt/live/$DOMAIN_/fullchain.pem|" $VHOSTCFG2
   sed -i "s|SSLCertificateKeyFile.*|SSLCertificateKeyFile /etc/letsencrypt/live/$DOMAIN_/privkey.pem|" $VHOSTCFG2
 
-  /etc/letsencrypt/letsencrypt-auto certonly -n --no-self-upgrade --webroot -w $NCDIR_ --hsts --agree-tos -m $EMAIL_ -d $DOMAIN_ || return 1
+  /etc/letsencrypt/letsencrypt-auto certonly -n --no-self-upgrade --webroot -w $NCDIR --hsts --agree-tos -m $EMAIL_ -d $DOMAIN_ || return 1
   echo "* 1 * * 1 root /etc/letsencrypt/certbot-auto renew --quiet" > /etc/cron.d/letsencrypt-ncp
 
   cd /var/www/nextcloud
