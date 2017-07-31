@@ -19,6 +19,7 @@ DESCRIPTION="Scan NC for externally modified files"
 install() 
 { 
   cat > /usr/local/bin/ncp-scan <<EOF
+#!/bin/bash
 cd /var/www/nextcloud
 sudo -u www-data php occ files:scan --all
 EOF
