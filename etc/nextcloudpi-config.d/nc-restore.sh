@@ -18,7 +18,7 @@
 
 
 BACKUPFILE_=/media/USBdrive/nextcloud-bkp_xxxxxxxx.tar
-BASEDIR_=/var/www
+BASEDIR=/var/www
 DBADMIN=ncadmin
 DESCRIPTION="Restore a previously backuped NC instance"
 
@@ -39,9 +39,9 @@ You can use nc-backup " \
 
 configure()
 { 
-  [ -f $BACKUPFILE_        ] || { echo -e "$BACKUPFILE_ not found"; return 1;  }
-  [ -d $BASEDIR_           ] || { echo -e "$BASEDIR_    not found"; return 1;  }
-  [ -d $BASEDIR_/nextcloud ] && { echo -e "WARNING: overwriting old instance"; }
+  [ -f $BACKUPFILE_       ] || { echo -e "$BACKUPFILE_ not found"; return 1;  }
+  [ -d $BASEDIR           ] || { echo -e "$BASEDIR    not found"; return 1;   }
+  [ -d $BASEDIR/nextcloud ] && { echo -e "WARNING: overwriting old instance"; }
 
   local TMPDIR="$( dirname $BACKUPFILE_ )/$( basename ${BACKUPFILE_}-tmp )"
   rm -rf "$TMPDIR" && mkdir -p "$TMPDIR"
@@ -50,8 +50,8 @@ configure()
   ## RESTORE FILES
 
   echo -e "restore files..."
-  rm -rf $BASEDIR_/nextcloud
-  mv "$TMPDIR"/nextcloud $BASEDIR_
+  rm -rf $BASEDIR/nextcloud
+  mv "$TMPDIR"/nextcloud $BASEDIR
 
   ## RE-CREATE DATABASE TABLE
 
@@ -72,12 +72,12 @@ EOF
 
   ## RESTORE DATADIR
 
-  cd $BASEDIR_/nextcloud
+  cd $BASEDIR/nextcloud
 
   # INCLUDEDATA=yes situation
 
   if [[ $( ls "$TMPDIR" | wc -l ) == 2 ]]; then           
-    local DATADIR=$( grep datadirectory $BASEDIR_/nextcloud/config/config.php | awk '{ print $3 }' | grep -oP "[^']*[^']" | head -1 ) 
+    local DATADIR=$( grep datadirectory $BASEDIR/nextcloud/config/config.php | awk '{ print $3 }' | grep -oP "[^']*[^']" | head -1 ) 
     [[ "$DATADIR" == "" ]] && { echo -e "Error reading data directory"; return 1; }
     echo -e "restore datadir to $DATADIR..."
     rm -rf "$DATADIR"
@@ -107,7 +107,7 @@ EOF
   rm -r "$TMPDIR"
 
   # Just in case we moved the opcache dir
-  sed -i "s|^opcache.file_cache=.*|opcache.file_cache=$BASEDIR_/nextcloud/data/.opcache|" /etc/php/7.0/mods-available/opcache.ini
+  sed -i "s|^opcache.file_cache=.*|opcache.file_cache=$BASEDIR/nextcloud/data/.opcache|" /etc/php/7.0/mods-available/opcache.ini
 }
 
 install() { :; }

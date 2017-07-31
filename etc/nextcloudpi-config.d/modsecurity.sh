@@ -16,7 +16,7 @@
 #
 
 ACTIVE_=no
-NCDIR_=/var/www/nextcloud/
+NCDIR=/var/www/nextcloud/
 DESCRIPTION="Web Application Firewall for extra security (experimental)"
 
 install()
@@ -77,7 +77,7 @@ a basic NextCloud installation. If a new App does not work disable it" \
 configure() 
 { 
   cat > /etc/modsecurity/modsecurity_crs_99_whitelist.conf <<EOF
-<Directory $NCDIR_>
+<Directory $NCDIR>
   # VIDEOS
   SecRuleRemoveById 958291             # Range Header Checks
   SecRuleRemoveById 981203             # Correlated Attack Attempt
