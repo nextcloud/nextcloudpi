@@ -48,6 +48,7 @@ configure()
     [[ $ACTIVE_ != "yes" ]] && { 
     systemctl stop    nc-scan.timer
     systemctl disable nc-scan.timer
+    echo "automatic scans disabled"
     return 0
   }
 
@@ -67,6 +68,7 @@ EOF
   systemctl daemon-reload
   systemctl enable nc-scan.timer
   systemctl start  nc-scan.timer
+  echo "automatic scans enabled"
 }
 
 cleanup() { :; }
