@@ -44,6 +44,7 @@ configure()
     [[ $ACTIVE_ != "yes" ]] && { 
     systemctl stop    nc-backup.timer
     systemctl disable nc-backup.timer
+    echo "automatic backups disabled"
     return 0
   }
 
@@ -108,6 +109,7 @@ EOF
   systemctl daemon-reload
   systemctl enable nc-backup.timer
   systemctl start  nc-backup.timer
+  echo "automatic backups enabled"
 }
 
 cleanup() { :; }
