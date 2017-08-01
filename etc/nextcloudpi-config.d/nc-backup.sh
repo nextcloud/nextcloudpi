@@ -55,10 +55,11 @@ configure()
   # delete older backups
   [[ $BACKUPLIMIT_ != 0 ]] && {
     local NUMBKPS=$( ls $DESTDIR_/nextcloud-bkp_* | wc -l )
-    ls -t $DESTDIR_/nextcloud-bkp_* | tail -$(( $NUMBKPS - $BACKUPLIMIT_ )) | while read f; do
-      echo -e "clean up old backup $f"
-      rm $f
-    done
+    [[ $NUMBKPS > $BACKUPLIMIT_ ]] && \
+      ls -t $DESTDIR_/nextcloud-bkp_* | tail -$(( NUMBKPS - $BACKUPLIMIT_ )) | while read f; do
+        echo -e "clean up old backup $f"
+        rm $f
+      done
   }
 
   cd $BASEDIR/nextcloud

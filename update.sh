@@ -47,8 +47,8 @@ chmod 660 /usr/local/etc/nextcloudpi-config.d/*
 
 # install web interface
 cp -r ncp-web /var/www/
-chown www-data:www-data /var/www/ncp-web
-chmod 770               /var/www/ncp-web
+chown -R www-data:www-data /var/www/ncp-web
+chmod 770                  /var/www/ncp-web
 
 ## BACKWARD FIXES ( for older images )
 
