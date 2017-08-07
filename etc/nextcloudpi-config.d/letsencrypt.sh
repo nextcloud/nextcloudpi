@@ -35,6 +35,7 @@ show_info()
            --backtitle "NextCloudPi configuration" \
            --title "Warning" \
 "Internet access is required for this configuration to complete
+Both ports 80 and 443 need to be accessible from the internet
  
 Your certificate will be automatically renewed every month
 " \
