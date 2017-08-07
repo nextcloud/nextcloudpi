@@ -163,7 +163,7 @@ EOF
   /usr/local/bin/ncp-update
 
   # External requirements for Apps
-  $APTINSTALL -o "Dpkg::Options::=--force-confold" -t stretch php-smbclient
+  #$APTINSTALL -o "Dpkg::Options::=--force-confold" -t stretch php-smbclient # TODO breaks samba
 }
 
 configure() { :; }
