@@ -69,7 +69,7 @@ configure()
 {
   [[ $ACTIVE_ != "yes" ]] && { service noip2 stop; update-rc.d noip2 disable; return; }
 
-  /usr/local/bin/noip2 -C -c /usr/local/etc/no-ip2.conf -U $TIME_ -u $USER_ -p $PASS_
+  /usr/local/bin/noip2 -C -c /usr/local/etc/no-ip2.conf -U $TIME_ -u $USER_ -p $PASS_ || return 1
   update-rc.d noip2 enable
   service noip2 restart
   cd /var/www/nextcloud
