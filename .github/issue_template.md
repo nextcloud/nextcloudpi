@@ -44,7 +44,7 @@ If you don't have access to the web interface, open a terminal session and paste
 
 ```
 Paste the output of `systemctl status apache2`
-Paste the output of `tail -100 /var/log/apache2/*.log`
+Paste the output of `tail -n 100 /var/log/apache2/*.log`
 ```
 </details>
 <details>
@@ -52,6 +52,6 @@ Paste the output of `tail -100 /var/log/apache2/*.log`
 
 ```
 Paste the output of `systemctl status mysqld`
-Paste the output of `tail -100 /var/log/mysql/*.log`
+Paste the output of `tail -n 100 /var/log/mysql/*.log`
 ```
 </details>
