@@ -26,35 +26,6 @@ install()
   apt-get update
   apt-get install --no-install-recommends -y nfs-kernel-server 
   systemctl disable nfs-kernel-server
-}
-
-show_info()
-{
-  whiptail --yesno \
-           --backtitle "NextCloudPi configuration" \
-           --title "Instructions for external synchronization" \
-"If we intend to modify the data folder through NFS,
-then we have to synchronize NextCloud to make it aware of the changes. \n
-This can be done manually or automatically using 'nc-scan' and 'nc-scan-auto' 
-from 'nextcloudpi-config'" \
-  20 90
-}
-
-configure()
-{
-  [[ $ACTIVE_ != "yes" ]] && { service nfs-kernel-server stop; systemctl disable nfs-kernel-server; return; } 
-
-  # CHECKS
-  ################################
-  [ -d "$DIR_" ] || { echo -e "INFO: directory $DIR_ does not exist. Creating"; mkdir -p "$DIR_"; }
-  [[ $( stat -fc%d / ) == $( stat -fc%d $DIR_ ) ]] && \
-    echo -e "INFO: mounting a in the SD card\nIf you want to use an external mount, make sure it is properly set up"
-
-  # CONFIG
-  ################################
-  cat > /etc/exports <<EOF
-$DIR_ $SUBNET_(rw,sync,all_squash,anonuid=$(id -u $USER_),anongid=$(id -g $GROUP_),no_subtree_check)
-EOF
 
   cat > /etc/systemd/system/nfs-common.services <<EOF
 [Unit]
@@ -89,10 +60,45 @@ Restart=on-failure
 WantedBy=sysinit.target
 Alias=portmap
 EOF
+}
+
+show_info()
+{
+  whiptail --yesno \
+           --backtitle "NextCloudPi configuration" \
+           --title "Instructions for external synchronization" \
+"If we intend to modify the data folder through NFS,
+then we have to synchronize NextCloud to make it aware of the changes. \n
+This can be done manually or automatically using 'nc-scan' and 'nc-scan-auto' 
+from 'nextcloudpi-config'" \
+  20 90
+}
+
+configure()
+{
+  [[ $ACTIVE_ != "yes" ]] && { 
+    service nfs-kernel-server stop
+    systemctl disable nfs-kernel-server
+    echo -e "NFS disabled"
+    return
+  } 
+
+  # CHECKS
+  ################################
+  [ -d "$DIR_" ] || { echo -e "INFO: directory $DIR_ does not exist. Creating"; mkdir -p "$DIR_"; }
+  [[ $( stat -fc%d / ) == $( stat -fc%d $DIR_ ) ]] && \
+    echo -e "INFO: mounting a in the SD card\nIf you want to use an external mount, make sure it is properly set up"
+
+  # CONFIG
+  ################################
+  cat > /etc/exports <<EOF
+$DIR_ $SUBNET_(rw,sync,all_squash,anonuid=$(id -u $USER_),anongid=$(id -g $GROUP_),no_subtree_check)
+EOF
 
   systemctl enable rpcbind
   systemctl enable nfs-kernel-server
   service nfs-kernel-server restart
+  echo -e "NFS enabled"
 }
 
 cleanup()
