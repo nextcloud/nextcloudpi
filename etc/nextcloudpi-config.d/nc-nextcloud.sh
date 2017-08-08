@@ -115,11 +115,11 @@ EOF
   printf "chmod/chown .htaccess\n"
   if [ -f ${ocpath}/.htaccess ]; then
     chmod 0644 ${ocpath}/.htaccess
-    chown ${rootuser}:${htgroup} ${ocpath}/.htaccess
+    chown ${htuser}:${htgroup} ${ocpath}/.htaccess
   fi
   if [ -f ${ocpath}/data/.htaccess ]; then
     chmod 0644 ${ocpath}/data/.htaccess
-    chown ${rootuser}:${htgroup} ${ocpath}/data/.htaccess
+    chown ${htuser}:${htgroup} ${ocpath}/data/.htaccess
   fi
 
   # create and configure opcache dir

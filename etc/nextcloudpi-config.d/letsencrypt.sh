@@ -55,15 +55,17 @@ configure()
   sed -i "s|SSLCertificateFile.*|SSLCertificateFile /etc/letsencrypt/live/$DOMAIN_/fullchain.pem|" $VHOSTCFG2
   sed -i "s|SSLCertificateKeyFile.*|SSLCertificateKeyFile /etc/letsencrypt/live/$DOMAIN_/privkey.pem|" $VHOSTCFG2
 
-  /etc/letsencrypt/letsencrypt-auto certonly -n --no-self-upgrade --webroot -w $NCDIR --hsts --agree-tos -m $EMAIL_ -d $DOMAIN_ || return 1
-  echo "* 1 * * 1 root /etc/letsencrypt/certbot-auto renew --quiet" > /etc/cron.d/letsencrypt-ncp
+  /etc/letsencrypt/letsencrypt-auto certonly -n --no-self-upgrade --webroot -w $NCDIR --hsts --agree-tos -m $EMAIL_ -d $DOMAIN_ && {
+    echo "* 1 * * 1 root /etc/letsencrypt/certbot-auto renew --quiet" > /etc/cron.d/letsencrypt-ncp
 
-  cd /var/www/nextcloud
-  sudo -u www-data php occ config:system:set trusted_domains 4 --value=$DOMAIN_
-  sudo -u www-data php occ config:system:set overwrite.cli.url --value=https://$DOMAIN_
+    cd /var/www/nextcloud
+    sudo -u www-data php occ config:system:set trusted_domains 4 --value=$DOMAIN_
+    sudo -u www-data php occ config:system:set overwrite.cli.url --value=https://$DOMAIN_
 
-  # delayed in bg so it does not kill the connection, and we get AJAX response
-  ( sleep 2 && systemctl restart apache2 ) &>/dev/null & 
+    # delayed in bg so it does not kill the connection, and we get AJAX response
+    ( sleep 2 && systemctl restart apache2 ) &>/dev/null & 
+  }
+  rm -rf $NCDIR/.well-known
 }
 
 cleanup()

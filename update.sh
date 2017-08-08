@@ -59,6 +59,10 @@ activate_script unattended-upgrades.sh
 # for old image users, save default password
 test -f /root/.my.cnf || echo -e "[client]\npassword=ownyourbits" > /root/.my.cnf
 
+# fix updates from NC12 to NC12.0.1
+chown www-data /var/www/nextcloud/.htaccess
+rm -rf /var/www/nextcloud/.well-known
+
 # License
 #
 # This script is free software; you can redistribute it and/or modify it
