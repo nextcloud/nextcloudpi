@@ -50,7 +50,7 @@ configure()
   ################################
   [ -d "$DIR_" ] || { echo -e "INFO: directory $DIR_ does not exist. Creating"; mkdir -p "$DIR_"; }
   [[ $( stat -fc%d / ) == $( stat -fc%d $DIR_ ) ]] && \
-    echo -e "INFO: mounting a in the SD card\nIf you want to use an external mount, make sure it is properly set up"
+    echo -e "INFO: working in the SD card\nIf you want to use an external mount, make sure it is properly set up"
 
   # CONFIG
   ################################
