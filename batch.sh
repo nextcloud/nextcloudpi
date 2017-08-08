@@ -55,6 +55,8 @@ wait_SSH $IP
 sleep 180                         # Wait for the services to start. Improve this ( wait HTTP && trusted domains )
 tests/tests.py $IP
 
+ssh_pi $IP sudo halt
+
 rm -f *.img
 
 # License
