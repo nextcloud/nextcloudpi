@@ -57,7 +57,7 @@ configure()
 
   local DBPASSWD=$( grep password /root/.my.cnf | cut -d= -f2 )
   echo -e "restore database..."
-  mysql -u root -p$DBPASSWD <<EOF
+  mysql -u root <<EOF
 DROP DATABASE IF EXISTS nextcloud;
 CREATE DATABASE nextcloud;
 GRANT USAGE ON *.* TO '$DBADMIN'@'localhost' IDENTIFIED BY '$DBPASSWD';
@@ -68,7 +68,7 @@ EXIT
 EOF
   [ $? -ne 0 ] && { echo -e "Error configuring nextcloud database"; return 1; }
 
-  mysql -u root -p$DBPASSWD nextcloud <  "$TMPDIR"/nextcloud-sqlbkp_*.bak || { echo -e "Error restoring nextcloud database"; return 1; }
+  mysql -u root nextcloud <  "$TMPDIR"/nextcloud-sqlbkp_*.bak || { echo -e "Error restoring nextcloud database"; return 1; }
 
   ## RESTORE DATADIR
 
@@ -89,7 +89,7 @@ EOF
 
   else      
     echo -e "no datadir found in backup"
-    sed -i "s|'datadirectory' =>.*|'datadirectory' => '/var/www/nextcloud/data',|" "config/config.php"
+    sed -i "s|'datadirectory' =>.*|'datadirectory' => '/var/www/nextcloud/data',|" config/config.php
 
     sudo -u www-data php occ maintenance:mode --off
     sudo -u www-data php occ files:scan --all
@@ -105,6 +105,9 @@ EOF
     ) &>/dev/null &
   fi
   rm -r "$TMPDIR"
+
+  # update NC database password to this instance
+  sed -i "s|'dbpassword' =>.*|'dbpassword' => '$DBPASSWD',|" config/config.php
 
   # Just in case we moved the opcache dir
   sed -i "s|^opcache.file_cache=.*|opcache.file_cache=$BASEDIR/nextcloud/data/.opcache|" /etc/php/7.0/mods-available/opcache.ini
