@@ -80,7 +80,7 @@ EOF
     local DATADIR=$( grep datadirectory $BASEDIR/nextcloud/config/config.php | awk '{ print $3 }' | grep -oP "[^']*[^']" | head -1 ) 
     [[ "$DATADIR" == "" ]] && { echo -e "Error reading data directory"; return 1; }
     echo -e "restore datadir to $DATADIR..."
-    rm -rf "$DATADIR"
+    test -e "$DATADIR" && mv "$DATADIR" "$DATADIR-$( date "+%m-%d-%y" )"
     mkdir -p "$( dirname "$DATADIR" )"
     mv "$TMPDIR/$( basename "$DATADIR" )" "$DATADIR"
     sudo -u www-data php occ maintenance:mode --off
