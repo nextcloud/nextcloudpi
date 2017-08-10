@@ -35,7 +35,16 @@ if ( $_POST['action'] == "cfgreq" )
 
   while ( $line = fgets($fh) ) 
   {
-    if ( preg_match('/^(\w+)_=(.*)$/', $line, $matches) )
+    if ( preg_match('/^(\w+)_=(yes|no)$/', $line, $matches) )
+    {
+      if ( $matches[2] == "yes" )
+        $checked = "checked";
+      $output = $output . "<tr>";
+      $output = $output . "<td><label for=\"$matches[1]\">$matches[1]</label></td>";
+      $output = $output . "<td><input type=\"checkbox\" id=\"$matches[1]\" name=\"$matches[1]\" value=\"$matches[2]\" $checked></td>";
+      $output = $output . "</tr>";
+    }
+    else if ( preg_match('/^(\w+)_=(.*)$/', $line, $matches) )
     {
       $output = $output . "<tr>";
       $output = $output . "<td><label for=\"$matches[1]\">$matches[1]</label></td>";

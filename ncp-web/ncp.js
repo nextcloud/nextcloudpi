@@ -56,6 +56,8 @@ $(function()
     // create configuration object
     var cfg = {};
     $( 'input' , '#config-box' ).each( function(item){ 
+      if( item.getAttribute('type') == 'checkbox' )
+        item.value = item.checked ? 'yes' : 'no';
       cfg[item.name] = item.value;
     } );
 
