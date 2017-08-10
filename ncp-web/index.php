@@ -54,6 +54,9 @@
             </div>
         </a>
     </div>
+    <div id="header-right">
+      <?php echo file_get_contents( "/usr/local/etc/ncp-version" ) . "&nbsp;&nbsp;"; ?>
+    </div>
   </header>
 
   <div id="content-wrapper">

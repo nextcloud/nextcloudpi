@@ -409,6 +409,7 @@ input[type='checkbox'].checkbox--white:indeterminate:disabled + label:after,inpu
  flex-grow:1
 }
 #header #header-right {
+ color: white;
  justify-content:flex-end
 }
 .header-appname-container .header-appname {
