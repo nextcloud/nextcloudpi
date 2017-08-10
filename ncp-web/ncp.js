@@ -25,6 +25,9 @@ $(function()
     if ( confLock ) return;
     confLock = true;
 
+    $( '#' + selectedID ).set('-active');
+    this.set( '+active' );
+
     var that = this;
     $.request('post', 'ncp-launcher.php', { action:'cfgreq', 
                                             ref:this.get('.id') ,
