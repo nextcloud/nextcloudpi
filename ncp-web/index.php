@@ -42,16 +42,18 @@
   <div id="nojavascript"> <div>This application requires JavaScript for correct operation. Please <a href="http://enable-javascript.com/" target="_blank" rel="noreferrer">enable JavaScript</a> and reload the page.		</div> </div>
   </noscript>
   <div id="notification-container">
-    <div id="notification">
-      <div class="row type-error closeable">
-        <?php 
-          exec( "ncp-test-updates" , $output, $ret );
-          if ( $ret == 0 ) 
-            echo "version " . file_get_contents( "/var/run/.ncp-latest-version" ) . "is available";
-        ?>
-        <a class="action close icon-close" href="#" alt="Dismiss"></a>
-      </div>
-    </div>
+    <?php 
+      exec( "ncp-test-updates" , $output, $ret );
+      if ( $ret == 0 ) 
+      {
+        echo '<div id="notification">';
+        echo '<div class="row type-error closeable">';
+        echo "version " . file_get_contents( "/var/run/.ncp-latest-version" ) . " is available";
+        echo '<a class="action close icon-close" href="#" alt="Dismiss"></a>';
+        echo '</div>';
+        echo '</div>';
+      }
+    ?>
   </div>
 
   <header role="banner"><div id="header">
