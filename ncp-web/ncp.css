@@ -1013,7 +1013,7 @@ select {
   width: 100%;
 }
 
-#config-box-wrapper input {
+#config-box-wrapper input[type='text'] {
   width: 100%;
 }
 
