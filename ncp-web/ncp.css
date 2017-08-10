@@ -344,6 +344,50 @@ input[type='checkbox'].checkbox--white:indeterminate:disabled + label:after,inpu
  box-sizing:border-box;
  justify-content:space-between
 }
+
+#notification-container {
+ position:absolute;
+ top:0;
+ width:100%;
+ text-align:center
+}
+#notification {
+ margin:0 auto;
+ max-width:60%;
+ z-index:8000;
+ background-color:#fff;
+ border:0;
+ padding:1px 8px;
+ display:none;
+ position:relative;
+ top:0;
+ border-bottom-left-radius:3px;
+ border-bottom-right-radius:3px;
+ -ms-filter:'progid:DXImageTransform.Microsoft.Alpha(Opacity=90)';
+ opacity:0.9;
+ overflow-x:hidden;
+ overflow-y:auto;
+ max-height:100px
+}
+#notification span {
+ cursor:pointer;
+ margin-left:1em
+}
+#notification .row {
+ position:relative
+}
+#notification .row .close {
+ display:inline-block;
+ vertical-align:middle;
+ position:absolute;
+ right:0;
+ top:0;
+ margin-top:2px
+}
+#notification .row.closeable {
+ padding-right:20px
+}
+
 #nextcloudpi {
  padding:5px;
  padding-bottom:0;
@@ -361,7 +405,9 @@ input[type='checkbox'].checkbox--white:indeterminate:disabled + label:after,inpu
  opacity:1
 }
 #header {
+ color: white;
 }
+
 #header .logo {
  background-image:url("logo.svg");
  background-repeat:no-repeat;
@@ -409,7 +455,6 @@ input[type='checkbox'].checkbox--white:indeterminate:disabled + label:after,inpu
  flex-grow:1
 }
 #header #header-right {
- color: white;
  justify-content:flex-end
 }
 .header-appname-container .header-appname {
@@ -1036,3 +1081,6 @@ select {
   justify-content: center;
 }
 
+.icon-close {
+ background-image:url('../../../core/css/../img/actions/close.svg?v=1')
+}
