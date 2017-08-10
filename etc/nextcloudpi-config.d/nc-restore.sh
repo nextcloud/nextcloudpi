@@ -41,7 +41,7 @@ configure()
 { 
   [ -f $BACKUPFILE_       ] || { echo -e "$BACKUPFILE_ not found"; return 1;  }
   [ -d $BASEDIR           ] || { echo -e "$BASEDIR    not found"; return 1;   }
-  [ -d $BASEDIR/nextcloud ] && { echo -e "WARNING: overwriting old instance"; }
+  [ -d $BASEDIR/nextcloud ] && { echo -e "INFO: overwriting old instance"; }
 
   local TMPDIR="$( dirname $BACKUPFILE_ )/$( basename ${BACKUPFILE_}-tmp )"
   rm -rf "$TMPDIR" && mkdir -p "$TMPDIR"
@@ -80,7 +80,10 @@ EOF
     local DATADIR=$( grep datadirectory $BASEDIR/nextcloud/config/config.php | awk '{ print $3 }' | grep -oP "[^']*[^']" | head -1 ) 
     [[ "$DATADIR" == "" ]] && { echo -e "Error reading data directory"; return 1; }
     echo -e "restore datadir to $DATADIR..."
-    test -e "$DATADIR" && mv "$DATADIR" "$DATADIR-$( date "+%m-%d-%y" )"
+    test -e "$DATADIR" && { 
+      echo "backing up existing $DATADIR"
+      mv "$DATADIR" "$DATADIR-$( date "+%m-%d-%y" )" 
+    }
     mkdir -p "$( dirname "$DATADIR" )"
     mv "$TMPDIR/$( basename "$DATADIR" )" "$DATADIR"
     sudo -u www-data php occ maintenance:mode --off
