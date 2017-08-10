@@ -44,7 +44,7 @@ Listen 4443
 </VirtualHost>
 <Directory /var/www/ncp-web/>
   Require host localhost
-  Require ip 127.0.0.1
+  Require local
   Require ip 192.168
   Require ip 10
 </Directory>
