@@ -70,14 +70,19 @@
               {
                 $script = pathinfo( $file , PATHINFO_FILENAME );
                 $fh     = fopen( $path . $file ,'r');
+                $active = "";
                 while ($line = fgets($fh)) 
+                {
+                  if ( $line == "ACTIVE_=yes\n" )
+                    $active = " ✓";
                   if ( preg_match('/^DESCRIPTION="(.*)"$/', $line, $matches) )
                   {
                     echo "<li id=\"$script\" class=\"nav-recent\">";
-                    echo "<a href=\"#\"> $script </a>";
+                    echo "<a href=\"#\"> $script$active </a>";
                     echo "<input type=\"hidden\" value=\"$matches[1]\" />";
                     echo "</li>";
                   }
+                }
                 fclose($fh);
               }
               ?>
