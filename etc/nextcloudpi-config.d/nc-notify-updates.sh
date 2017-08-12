@@ -1,0 +1,113 @@
+#!/bin/bash
+
+# Install the latest News third party app
+# Tested with 2017-03-02-raspbian-jessie-lite.img
+#
+# Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
+# GPL licensed (see end of file) * Use at your own risk!
+#
+# Usage:
+# 
+#   ./installer.sh nc-notify-updates.sh <IP> (<img>)
+#
+# See installer.sh instructions for details
+# More at: https://ownyourbits.com
+#
+
+ACTIVE_=yes
+NOTIFYINTERVAL_=60
+DESCRIPTION="Notify in NC when a NextCloudPi update is available"
+
+NCDIR=/var/www/nextcloud
+
+install()
+{
+  # install app
+  local URL=$( curl -s https://api.github.com/repos/nextcloud/admin_notifications/releases | \
+                 grep browser_download_url | head -1 | cut -d '"' -f 4 )
+  cd /var/www/nextcloud/apps
+  wget $URL -O admin_notifications.tar.gz
+  tar -xf admin_notifications.tar.gz
+  rm *.tar.gz
+  chown -R www-data:www-data *
+  sudo -u www-data php /var/www/nextcloud/occ app:enable admin_notifications
+
+  # code
+  cat > /usr/local/bin/ncp-notify-update <<'EOF'
+#!/bin/bash
+ncp-test-updates || { echo "NextCloudPi up to date"; exit 0; }
+
+VERFILE=/usr/local/etc/ncp-version
+LATEST=/var/run/.ncp-latest-version
+IFACE=$( ip r | grep "default via" | awk '{ print $5 }' )
+IP=$( ip a | grep "global $IFACE" | grep -oP '\d{1,3}(.\d{1,3}){3}' | head -1 )
+
+echo "Found update from $( cat $VERFILE ) to $( cat $LATEST ). Sending notification..."
+
+sudo -u www-data php /var/www/nextcloud/occ notification:generate \
+  admin "NextCloudPi $( cat $VERFILE )" \
+     -l "NextCloudPi $( cat $LATEST ) is available. Update from https://$IP:4443"
+EOF
+  chmod +x /usr/local/bin/ncp-notify-update
+
+  # timers
+  cat > /etc/systemd/system/nc-notify-updates.service <<EOF
+[Unit]
+Description=Notify in NC when a NextCloudPi update is available
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/ncp-notify-update
+
+[Install]
+WantedBy=default.target
+EOF
+}
+
+configure()
+{
+  [[ $ACTIVE_ != "yes" ]] && {
+    systemctl stop    nc-notify-updates.timer
+    systemctl disable nc-notify-updates.timer
+    echo "update web notifications disabled"
+    return 0
+  }
+
+  cat > /etc/systemd/system/nc-notify-updates.timer <<EOF
+[Unit]
+Description=Timer notify NCP updates in browser
+
+[Timer]
+OnBootSec=${NOTIFYINTERVAL_}min
+OnUnitActiveSec=${NOTIFYINTERVAL_}min
+Unit=nc-notify-updates.service
+
+[Install]
+WantedBy=timers.target
+EOF
+
+  systemctl daemon-reload
+  systemctl enable nc-notify-updates.timer
+  systemctl start  nc-notify-updates.timer
+  echo "update web notifications enabled"
+}
+
+cleanup() { :; }
+
+# License
+#
+# This script is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This script is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this script; if not, write to the
+# Free Software Foundation, Inc., 59 Temple Place, Suite 330,
+# Boston, MA  02111-1307  USA
+
