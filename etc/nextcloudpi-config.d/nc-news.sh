@@ -14,7 +14,7 @@
 # More at: https://ownyourbits.com
 #
 
-NCDIR_=/var/www/nextcloud
+NCDIR=/var/www/nextcloud
 DESCRIPTION="Install the latest News third party app"
 
 configure() 
@@ -25,11 +25,12 @@ configure()
   cd $NCDIR_/apps/
 
   echo "Downloading..."
-  wget $URL           || return 1
+  wget $URL -O news.tar.gz || return 1
 
   echo "Installing..."
-  tar -xf news.tar.gz || return 1
+  tar -xf news.tar.gz      || return 1
   rm *.tar.gz
+  chown -R www-data:www-data *
   cd $NCDIR_
   sudo -u www-data php "$NCDIR_"/occ app:enable news
 }
