@@ -62,8 +62,8 @@ configure()
 
   echo "moving database to $DBDIR_..."
   service mysql stop
-  mv $SRCDIR "$DBDIR_" || return 1
-  sed -i "s|^datadir.*|datadir = $DBDIR_|" /etc/mysql/mariadb.conf.d/50-server.cnf
+  mv $SRCDIR "$DBDIR_" && \
+    sed -i "s|^datadir.*|datadir = $DBDIR_|" /etc/mysql/mariadb.conf.d/50-server.cnf
   service mysql start 
 
   sudo -u www-data php occ maintenance:mode --off
