@@ -63,6 +63,30 @@ test -f /root/.my.cnf || echo -e "[client]\npassword=ownyourbits" > /root/.my.cn
 chown www-data /var/www/nextcloud/.htaccess
 rm -rf /var/www/nextcloud/.well-known
 
+# fix automount
+cat > /usr/local/etc/blknum <<'EOF'
+#!/bin/bash
+
+# we perform a cleanup with the first one
+ls -d /dev/USBdrive* &>/dev/null || {
+  rmdir /media/USBdrive*
+  for f in `ls /media/`; do
+    test -L $f && rm $f
+  done
+  exit 0
+}
+
+for i in `seq 1 1 8`; do
+  test -e /media/USBdrive$i && continue
+  echo $i
+  exit 0
+done
+
+exit 1
+EOF
+  chmod +x /usr/local/etc/blknum
+
+
 # License
 #
 # This script is free software; you can redistribute it and/or modify it
