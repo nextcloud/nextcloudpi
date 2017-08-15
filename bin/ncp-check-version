@@ -6,7 +6,7 @@
 
 ping  -W 2 -w 1 -q github.com &>/dev/null || { echo "No internet connectivity"; exit 1; }
 
-git clone -q --bare https://github.com/nextcloud/nextcloudpi.git /tmp/ncp-check-tmp || exit 1
+git clone --depth 20 -q --bare https://github.com/nextcloud/nextcloudpi.git /tmp/ncp-check-tmp || exit 1
 
 cd /tmp/ncp-check-tmp
 VER=$( git describe --always --tags | grep -oP "v\d+\.\d+\.\d+" )

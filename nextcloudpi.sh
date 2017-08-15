@@ -124,35 +124,6 @@ EOF
 EOF
   chmod a+x /etc/cron.daily/ncp-check-version
 
-
-cat > /usr/local/bin/ncp-update <<'EOF'
-#!/bin/bash
-{
-[ $(id -u) -ne 0 ] && { printf "Must be run as root. Try 'sudo $0'\n"; exit 1; }
-ping  -W 2 -w 1 -q github.com &>/dev/null || { echo "No internet connectivity"; exit 1; }
-echo -e "Downloading updates"
-rm -rf /tmp/ncp-update-tmp
-git clone -q https://github.com/nextcloud/nextcloudpi.git /tmp/ncp-update-tmp || exit 1
-cd /tmp/ncp-update-tmp
-
-echo -e "Performing updates"
-./update.sh
-
-VER=$( git describe --always --tags | grep -oP "v\d+\.\d+\.\d+" )
-grep -qP "v\d+\.\d+\.\d+" <<< $VER && {       # check format
-  echo $VER > /usr/local/etc/ncp-version
-  echo $VER > /var/run/.ncp-latest-version
-}
-
-cd /
-rm -rf /tmp/ncp-update-tmp
-
-echo -e "NextCloudPi updated to version \e[1m$VER\e[0m"
-exit
-}
-EOF
-  chmod a+x /usr/local/bin/ncp-update
-
   # TMP UPLOAD DIR
   mkdir -p "$UPLOADTMPDIR"
   chown www-data:www-data "$UPLOADTMPDIR"
@@ -160,6 +131,8 @@ EOF
   sed -i "s|^;\?sys_temp_dir =.*$|sys_temp_dir = $UPLOADTMPDIR|"     /etc/php/7.0/fpm/php.ini
 
   # update to latest version from github as part of the build process
+  wget https://raw.githubusercontent.com/nextcloud/nextcloudpi/master/bin/ncp-update -O /usr/local/bin/ncp-update
+  chmod a+x /usr/local/bin/ncp-update
   /usr/local/bin/ncp-update
 
   # External requirements for Apps

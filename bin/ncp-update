@@ -7,7 +7,7 @@
   ping  -W 2 -w 1 -q github.com &>/dev/null || { echo "No internet connectivity"; exit 1; }
   echo -e "Downloading updates"
   rm -rf /tmp/ncp-update-tmp
-  git clone -q https://github.com/nextcloud/nextcloudpi.git /tmp/ncp-update-tmp || exit 1
+  git clone --depth 20 -q https://github.com/nextcloud/nextcloudpi.git /tmp/ncp-update-tmp || exit 1
   cd /tmp/ncp-update-tmp
 
   echo -e "Performing updates"
