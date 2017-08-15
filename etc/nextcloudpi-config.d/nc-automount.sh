@@ -52,16 +52,22 @@ EOF
   cat > /usr/local/etc/blknum <<'EOF'
 #!/bin/bash
 
-test -e /dev/USBdrive || exit 0
+# we perform a cleanup with the first one
+ls -d /dev/USBdrive* &>/dev/null || {
+  rmdir /media/USBdrive*
+  for f in `ls /media/`; do
+    test -L $f && rm $f
+  done
+  exit 0
+}
 
 for i in `seq 1 1 8`; do
-  test -e /dev/USBdrive$i && continue
+  test -e /media/USBdrive$i && continue
   echo $i
   exit 0
 done
 
 exit 1
-
 EOF
   chmod +x /usr/local/etc/blknum
 
@@ -74,7 +80,7 @@ configure()
 {
   cat > /etc/udev/rules.d/50-automount.rules <<'EOF'
 # Need to be a block device
-KERNEL!="sd[a-z]*", GOTO="exit"
+KERNEL!="sd[a-z][0-9]", GOTO="exit"
 
 # Import some useful filesystem info as variables
 IMPORT{program}="/sbin/blkid -o udev -p %N"
@@ -89,10 +95,7 @@ ACTION!="remove", PROGRAM="/usr/local/etc/blknum", RUN+="/bin/mkdir -p /media/US
 ENV{ID_FS_LABEL}!="", ENV{dir_name}="%E{ID_FS_LABEL}"
 
 # Link with label name if exists
-ACTION!="remove", ENV{ID_FS_LABEL}!="", ENV{ID_FS_LABEL}!="USBdrive*", RUN+="/bin/ln -sT /media/USBdrive%c /media/%E{ID_FS_LABEL}"
-
-# Cleanup created link
-ACTION=="remove", ENV{ID_FS_LABEL}, ENV{ID_FS_LABEL}!="USBdrive*"!="", RUN+="/bin/rm /media/%E{ID_FS_LABEL}"
+ACTION=="add", ENV{ID_FS_LABEL}!="", ENV{ID_FS_LABEL}!="USBdrive*", RUN+="/bin/rm /media/%E{ID_FS_LABEL}", RUN+="/bin/ln -sT /media/USBdrive%c /media/%E{ID_FS_LABEL}"
 
 # Exit
 LABEL="exit"
