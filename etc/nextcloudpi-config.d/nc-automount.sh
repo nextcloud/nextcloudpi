@@ -28,6 +28,8 @@ on boot or at the moment of insertion.
 Format your drive as ext4 in order to move NC datafolder or database
 VFAT or NTFS is not recommended for this task, as it does not suport permissions
 
+Drives with multiple partitions are not supported
+
 IMPORTANT: halt or umount the drive before extracting" \
   20 90
 }
