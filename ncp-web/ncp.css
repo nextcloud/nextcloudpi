@@ -1084,3 +1084,36 @@ select {
 .icon-close {
  background-image:url('close.svg')
 }
+
+#power {
+  display: inline-block;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  flex: 0 0 auto;
+}
+
+#expand {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 7px 20px 6px 10px;
+  cursor: pointer;
+}
+
+#expand * {
+  cursor: pointer;
+}
+
+#expand:hover img,#expand:focus img,#expand:active img,#expand:hover #expandDisplayName,#expand:focus #expandDisplayName,#expand:active #expandDisplayName {
+ -ms-filter:'progid:DXImageTransform.Microsoft.Alpha(Opacity=100)';
+ opacity:1
+}
+
+.icon-power-white {
+  background-image: url('poweroff.svg');
+}
+
+#expand #expandDisplayName {
+  padding: 8px;
+  opacity: 0.6;
+}

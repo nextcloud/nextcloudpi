@@ -114,6 +114,9 @@ cat $LATEST > $NOTIFIED
 EOF
   chmod +x /usr/local/bin/ncp-notify-update
 
+# fix permissions for ncp-web: shutdown button
+sed -i 's|www-data.*|www-data ALL = NOPASSWD: /home/www/ncp-launcher.sh , /sbin/halt|' /etc/sudoers
+
 # License
 #
 # This script is free software; you can redistribute it and/or modify it
