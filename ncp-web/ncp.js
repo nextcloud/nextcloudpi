@@ -81,6 +81,18 @@ $(function()
         confLock = false;
       }).error( errorMsg );
   });
+
+  // Power-off button
+  $( '#poweroff' ).on('click', function(e)
+  {
+    // request
+    $.request('post', 'ncp-launcher.php', { action:'poweroff', 
+                                            csrf_token: $( '#csrf-token' ).get( '.value' ) }).then( 
+      function success( result ) 
+      {
+        $('#config-box-title').fill( "Shutting down..." ); 
+      }).error( errorMsg );
+  } );
 });
 
 // License

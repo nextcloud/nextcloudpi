@@ -12,10 +12,10 @@ include ('csrf.php');
 
 session_start();
 
-if ( !$_POST['ref'] ) exit( '{ "output": "Invalid request" }' );
-
 if ( $_POST['action'] == "cfgreq" ) 
 {
+  if ( !$_POST['ref'] ) exit( '{ "output": "Invalid request" }' );
+
   //CSFR check
   $token = isset($_POST['csrf_token']) ? $_POST['csrf_token'] : '';
   if ( empty($token) || !validateCSRFToken($token) )
@@ -64,6 +64,8 @@ if ( $_POST['action'] == "cfgreq" )
 
 else if ( $_POST['action'] == "launch" && $_POST['config'] )
 {
+  if ( !$_POST['ref'] ) exit( '{ "output": "Invalid request" }' );
+
   // CSRF check
   $token = isset($_POST['csrf_token']) ? $_POST['csrf_token'] : '';
   if ( empty($token) || !validateCSRFToken($token) )
@@ -98,6 +100,15 @@ else if ( $_POST['action'] == "launch" && $_POST['config'] )
   echo ' "output": ';
 
   echo json_encode( shell_exec( 'bash -c "sudo /home/www/ncp-launcher.sh ' . $file . '"' ) ) . ' }';
+}
+
+else if ( $_POST['action'] == "poweroff" )
+{
+  // CSRF check
+  $token = isset($_POST['csrf_token']) ? $_POST['csrf_token'] : '';
+  if ( empty($token) || !validateCSRFToken($token) )
+    exit( '{ "output": "Unauthorized request. Try reloading the page" }' );
+  shell_exec( 'bash -c "( sleep 2 && sudo halt ) 2>/dev/null >/dev/null &"' );
 }
 
 // License

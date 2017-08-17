@@ -64,9 +64,14 @@
                 <h1 class="hidden-visually">NextCloudPi</h1>
             </div>
         </a>
+      <?php echo file_get_contents( "/usr/local/etc/ncp-version" ) . "&nbsp;&nbsp;"; ?>
     </div>
     <div id="header-right">
-      <?php echo file_get_contents( "/usr/local/etc/ncp-version" ) . "&nbsp;&nbsp;"; ?>
+      <div id="poweroff">
+        <div id="expand">
+          <div id="expandDisplayName" class="icon-power-white"></div>
+        </div>
+      </div>
     </div>
   </header>
 
