@@ -15,7 +15,7 @@
 #
 
 ACTIVE_=yes
-NOTIFYINTERVAL_=60
+CHECKINTERVAL=60
 DESCRIPTION="Notify in NC when a NextCloudPi update is available"
 
 NCDIR=/var/www/nextcloud
@@ -88,8 +88,8 @@ configure()
 Description=Timer notify NCP updates in browser
 
 [Timer]
-OnBootSec=${NOTIFYINTERVAL_}min
-OnUnitActiveSec=${NOTIFYINTERVAL_}min
+OnBootSec=${CHECKINTERVAL}min
+OnUnitActiveSec=${CHECKINTERVAL}min
 Unit=nc-notify-updates.service
 
 [Install]
