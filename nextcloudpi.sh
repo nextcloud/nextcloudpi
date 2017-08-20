@@ -67,6 +67,7 @@ EOF
 
   # NEXTCLOUDPI MOTD
   ##########################################
+  rm -rf /etc/update-motd.d
   mkdir /etc/update-motd.d
   rm /etc/motd
   ln -s /var/run/motd /etc/motd
@@ -129,13 +130,15 @@ EOF
   sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $UPLOADTMPDIR|" /etc/php/7.0/fpm/php.ini
   sed -i "s|^;\?sys_temp_dir =.*$|sys_temp_dir = $UPLOADTMPDIR|"     /etc/php/7.0/fpm/php.ini
 
+  touch /usr/local/etc/nextcloudpi-config.d/modsecurity.sh # TODO fix after migration to Stretch is done
+
   # update to latest version from github as part of the build process
   wget https://raw.githubusercontent.com/nextcloud/nextcloudpi/master/bin/ncp-update -O /usr/local/bin/ncp-update
   chmod a+x /usr/local/bin/ncp-update
   /usr/local/bin/ncp-update
 
   # External requirements for Apps
-  #$APTINSTALL -o "Dpkg::Options::=--force-confold" -t stretch php-smbclient # TODO breaks samba
+  $APTINSTALL -o "Dpkg::Options::=--force-confold" php-smbclient 
 }
 
 configure() { :; }

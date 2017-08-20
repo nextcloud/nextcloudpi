@@ -24,12 +24,7 @@ install()
   apt-get install -y --no-install-recommends libapache2-mod-security2 modsecurity-crs
   a2dismod security2
 
-  # COPY RULES
-  cd /usr/share/modsecurity-crs/base_rules/
-  for ruleFile in * ; do sudo ln -s /usr/share/modsecurity-crs/base_rules/$ruleFile /etc/modsecurity/$ruleFile ; done
-  cd /usr/share/modsecurity-crs/optional_rules/
-  for ruleFile in * ; do sudo ln -s /usr/share/modsecurity-crs/optional_rules/$ruleFile /etc/modsecurity/$ruleFile ; done
-  rm /etc/modsecurity/modsecurity_crs_16_session_hijacking.conf # https://github.com/SpiderLabs/owasp-modsecurity-crs/commit/e2fbef4ce89fed0c4dd338002b9a090dd2f6491d
+  #FIXME - after migration to Stretch is done
 
   # CONFIGURE
   cp /etc/modsecurity/modsecurity.conf-recommended /etc/modsecurity/modsecurity.conf

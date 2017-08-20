@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # no-ip.org installation on Raspbian 
-# Tested with 2017-03-02-raspbian-jessie-lite.img
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -37,7 +36,7 @@ install()
   mkdir /tmp/noip && cd /tmp/noip
   wget http://www.no-ip.com/client/linux/noip-duc-linux.tar.gz
   tar vzxf noip-duc-linux.tar.gz
-  cd -; cd $OLDPWD/noip-*
+  cd -; cd $OLDPWD/noip-2*
   make
   cp noip2 /usr/local/bin/
 
