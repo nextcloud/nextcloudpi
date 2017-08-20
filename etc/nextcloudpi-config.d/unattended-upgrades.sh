@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # Unattended upgrades installation on Raspbian 
-# Tested with 2017-03-02-raspbian-jessie-lite.img
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -39,7 +38,6 @@ APT::Periodic::AutocleanInterval "7";
 Unattended-Upgrade::Automatic-Reboot "$AUTOREBOOT";
 Unattended-Upgrade::Automatic-Reboot-Time "04:00";
 Unattended-Upgrade::Origins-Pattern {
-o=Raspbian,n=jessie,l=Raspbian;
 o=Raspbian,n=stretch,l=Raspbian;
 }
 EOF

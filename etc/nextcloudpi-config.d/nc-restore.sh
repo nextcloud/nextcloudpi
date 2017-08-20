@@ -2,7 +2,6 @@
 
 #!/bin/bash
 # Nextcloud restore backup
-# Tested with 2017-03-02-raspbian-jessie-lite.img
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!

@@ -10,7 +10,7 @@ This code also generates the [NextCloudPi ARM docker image](https://hub.docker.c
 
 ## Features
 
-* Raspbian 8 Jessie
+* Raspbian 9 Stretch
 * Nextcloud 12
 * Apache 2.4.25, with HTTP2 enabled
 * PHP 7.0 (double the speed of PHP5!)

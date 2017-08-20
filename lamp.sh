@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # Nextcloud LAMP base installation on Raspbian 
-# Tested with 2017-03-02-raspbian-jessie-lite.img
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -25,24 +24,15 @@ export DEBIAN_FRONTEND=noninteractive
 
 install()
 {
-    # GET STRETCH SOURCES FOR HTTP2 AND PHP7
-    ##########################################
-
-    echo "deb http://mirrordirector.raspbian.org/raspbian/ stretch main contrib non-free rpi" >> /etc/apt/sources.list
-    cat > /etc/apt/preferences <<EOF
-Package: *
-Pin: release n=jessie
-Pin-Priority: 600
-EOF
     apt-get update
 
-    # INSTALL FROM STRETCH
+    # INSTALL 
     ##########################################
 
     $APTINSTALL apt-utils 
     $APTINSTALL cron
-    $APTINSTALL -t stretch apache2
-    $APTINSTALL -t stretch php7.0 php7.0-curl php7.0-gd php7.0-fpm php7.0-cli php7.0-opcache php7.0-mbstring php7.0-xml php7.0-zip php7.0-APC
+    $APTINSTALL apache2
+    $APTINSTALL php7.0 php7.0-curl php7.0-gd php7.0-fpm php7.0-cli php7.0-opcache php7.0-mbstring php7.0-xml php7.0-zip php7.0-APC
     mkdir -p /run/php
 
     # Randomize mariaDB password
@@ -53,7 +43,7 @@ EOF
 
     debconf-set-selections <<< "mariadb-server-5.5 mysql-server/root_password password $DBPASSWD"
     debconf-set-selections <<< "mariadb-server-5.5 mysql-server/root_password_again password $DBPASSWD"
-    $APTINSTALL -t stretch mariadb-server php7.0-mysql 
+    $APTINSTALL mariadb-server php7.0-mysql 
     mkdir -p /run/mysqld
     chown mysql /run/mysqld
 
