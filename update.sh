@@ -116,6 +116,9 @@ EOF
 # fix permissions for ncp-web: shutdown button
 sed -i 's|www-data.*|www-data ALL = NOPASSWD: /home/www/ncp-launcher.sh , /sbin/halt|' /etc/sudoers
 
+# fix fail2ban misconfig in stretch
+rm -f /etc/fail2ban/jail.d/defaults-debian.conf
+
 # License
 #
 # This script is free software; you can redistribute it and/or modify it
