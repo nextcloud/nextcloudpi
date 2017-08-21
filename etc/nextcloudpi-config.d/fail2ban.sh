@@ -34,6 +34,7 @@ install()
   apt-get update
   apt-get install fail2ban -y
   update-rc.d fail2ban disable
+  rm -f /etc/fail2ban/jail.d/defaults-debian.conf
 }
 
 configure()
