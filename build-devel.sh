@@ -34,7 +34,7 @@ install()
   cd /
   rm -rf /tmp/ncp-update-tmp
 
-  echo -e "NextCloudPi updated to version \e[1m$VER\e[0m"
+  echo -e "NextCloudPi updated to version $VER"
 }
 
 cleanup()   { :; }

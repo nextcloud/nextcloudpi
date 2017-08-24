@@ -197,7 +197,7 @@ function install_script()
   (
     local SCRIPT=$1
     source ./$SCRIPT 
-    echo -e "Installing \e[1m$( basename $SCRIPT .sh )\e[0m"
+    echo -e "Installing $( basename $SCRIPT .sh )"
     set +x
     install
   )
@@ -206,7 +206,7 @@ function install_script()
 function activate_script()
 {
   local SCRIPT=$1
-  echo -e "Activating \e[1m$( basename $SCRIPT .sh )\e[0m"
+  echo -e "Activating $( basename $SCRIPT .sh )"
   launch_script $SCRIPT
 }
 
@@ -241,7 +241,7 @@ function configure_script()
     echo -e "$INSTALLATION_CODE" > $SCRIPT     # save configuration
     source ./$SCRIPT                           # load configuration
     printf '\033[2J' && tput cup 0 0           # clear screen, don't clear scroll, cursor on top
-    echo -e "Launching \e[1m$( basename $SCRIPT .sh )\e[0m"
+    echo -e "Launching $( basename $SCRIPT .sh )"
     set +x
     configure
     return 0
