@@ -19,6 +19,25 @@ function errorMsg()
 
 $(function() 
 {
+  // Event source to receive process output in real time
+  if (!!window.EventSource)
+    var source = new EventSource('ncp-output.php');
+  else
+    $('#config-box-title').fill( "Browser not supported" ); 
+
+  source.addEventListener('message', function(e) 
+    {
+      if ( e.origin != 'https://' + window.location.hostname + ':4443') 
+      {
+        $('#details-box').fill( "Invalid origin" ); 
+        return;
+      }
+
+      var textarea = $('#details-box');
+      textarea.fill( textarea.text() + e.data + '\n' );
+      textarea[0].scrollTop = textarea[0].scrollHeight;
+    }, false);
+
   // Show selected option configuration box
   $( 'li' , '#app-navigation' ).on('click', function(e)
   {
@@ -38,6 +57,7 @@ $(function()
         var ret = $.parseJSON( result );
         if ( ret.token )
           $('#csrf-token').set( { value: ret.token } );
+        $('#circle-retstatus').hide();
         $('#config-box').ht( ret.output ); 
         $('#config-box-title').fill( $( 'input' , '#' + selectedID ).get( '.value' ) ); 
         $('#config-box-wrapper').show();
@@ -64,6 +84,11 @@ $(function()
       cfg[item.name] = item.value;
     } );
 
+    // reset box
+    $('#details-box').fill();
+    $('#details-box').show();
+    $('#circle-retstatus').hide();
+
     // request
     $.request('post', 'ncp-launcher.php', { action:'launch', 
                                             ref:selectedID ,
@@ -74,8 +99,14 @@ $(function()
         var ret = $.parseJSON( result );
         if ( ret.token )
           $('#csrf-token').set( { value: ret.token } );
-        $('#details-box').fill(ret.output);
-        $('#details-box').show();
+        if ( ret.ret )                           // means that the process was launched
+        {
+          if ( ret.ret == '0' ) $('#circle-retstatus').set( '+icon-green-circle' );
+          else                  $('#circle-retstatus').set( '-icon-green-circle' );
+          $('#circle-retstatus').show();
+        }
+        else                                     // print error from server instead
+          $('#details-box').fill(ret.output);
         $('#config-button').set('@disabled',null);
         $('#loading-gif').hide();
         confLock = false;
