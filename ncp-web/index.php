@@ -1,5 +1,5 @@
 <!--
- NextcloudPi Web Panel javascript library
+ NextcloudPi Web Panel frontend
 
  Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
  GPL licensed (see end of file) * Use at your own risk!
@@ -20,7 +20,7 @@
     session_start();
 
   // security headers
-  header("Content-Security-Policy: default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self';"); 
+  header("Content-Security-Policy: default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self'; object-src 'self';");
   header("X-XSS-Protection: 1; mode=block");
   header("X-Content-Type-Options: nosniff");
   header("X-Robots-Tag: none");
@@ -117,6 +117,7 @@
               <div id="config-button-wrapper">
                 <button id="config-button">Run</button>
                 <img id="loading-gif" src="loading-small.gif">
+                <div id="circle-retstatus" class="icon-red-circle"></div>
               </div>
           </form>
           <textarea readonly id="details-box" rows="25" cols="60"></textarea>

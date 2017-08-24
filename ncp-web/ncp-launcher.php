@@ -11,6 +11,7 @@
 include ('csrf.php');
 
 session_start();
+ignore_user_abort( true );
 
 if ( $_POST['action'] == "cfgreq" ) 
 {
@@ -97,9 +98,11 @@ else if ( $_POST['action'] == "launch" && $_POST['config'] )
 
   // Get new token
   echo '{ "token": "' . getCSRFToken() . '",';
-  echo ' "output": ';
+  echo ' "output": "" , ';
+  echo ' "ret": ';
 
-  echo json_encode( shell_exec( 'bash -c "sudo /home/www/ncp-launcher.sh ' . $file . '"' ) ) . ' }';
+  exec( 'bash -c "sudo /home/www/ncp-launcher.sh ' . $file . '"' , $output , $ret );
+  echo '"' . $ret . '" }';
 }
 
 else if ( $_POST['action'] == "poweroff" )

@@ -60,7 +60,10 @@ DIR=/usr/local/etc/nextcloudpi-config.d
 test -f $DIR/$1 || { echo "File not found"; exit 1; }
 source /usr/local/etc/library.sh
 cd $DIR
-launch_script $1
+touch /run/ncp.log
+chmod 640 /run/ncp.log
+chown root:www-data /run/ncp.log
+launch_script $1 &> /run/ncp.log
 EOF
   chmod 700 /home/www/ncp-launcher.sh
   echo "www-data ALL = NOPASSWD: /home/www/ncp-launcher.sh , /sbin/halt" >> /etc/sudoers

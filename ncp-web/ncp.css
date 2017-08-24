@@ -1113,6 +1113,18 @@ select {
   background-image: url('poweroff.svg');
 }
 
+.icon-red-circle {
+  background-image: url('red-circle.svg');
+  padding: 8px;
+  display: none;
+}
+
+.icon-green-circle {
+  background-image: url('green-circle.svg');
+  padding: 8px;
+}
+
+
 #expand #expandDisplayName {
   padding: 8px;
   opacity: 0.6;

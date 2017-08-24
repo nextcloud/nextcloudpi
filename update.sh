@@ -119,6 +119,20 @@ sed -i 's|www-data.*|www-data ALL = NOPASSWD: /home/www/ncp-launcher.sh , /sbin/
 # fix fail2ban misconfig in stretch
 rm -f /etc/fail2ban/jail.d/defaults-debian.conf
 
+# update ncp-launcher to support realtime updates with SSE
+  cat > /home/www/ncp-launcher.sh <<'EOF'
+#!/bin/bash
+DIR=/usr/local/etc/nextcloudpi-config.d
+test -f $DIR/$1 || { echo "File not found"; exit 1; }
+source /usr/local/etc/library.sh
+cd $DIR
+touch /run/ncp.log
+chmod 640 /run/ncp.log
+chown root:www-data /run/ncp.log
+launch_script $1 &> /run/ncp.log
+EOF
+  chmod 700 /home/www/ncp-launcher.sh
+
 # License
 #
 # This script is free software; you can redistribute it and/or modify it
