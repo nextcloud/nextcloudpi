@@ -36,20 +36,6 @@ IMPORTANT: halt or umount the drive before extracting" \
 
 install()
 {
-  cat >> /etc/fstab <<EOF
-
-# Rules for automounting both at boot and upon USB plugin. Rely on udev rules
-/dev/USBdrive  /media/USBdrive         auto    defaults,noatime,auto,nofail    0       2
-/dev/USBdrive1 /media/USBdrive1        auto    defaults,noatime,auto,nofail    0       2
-/dev/USBdrive2 /media/USBdrive2        auto    defaults,noatime,auto,nofail    0       2
-/dev/USBdrive3 /media/USBdrive3        auto    defaults,noatime,auto,nofail    0       2
-/dev/USBdrive4 /media/USBdrive4        auto    defaults,noatime,auto,nofail    0       2
-/dev/USBdrive5 /media/USBdrive5        auto    defaults,noatime,auto,nofail    0       2
-/dev/USBdrive6 /media/USBdrive6        auto    defaults,noatime,auto,nofail    0       2
-/dev/USBdrive7 /media/USBdrive7        auto    defaults,noatime,auto,nofail    0       2
-/dev/USBdrive8 /media/USBdrive8        auto    defaults,noatime,auto,nofail    0       2
-EOF
-
   cat > /usr/local/etc/blknum <<'EOF'
 #!/bin/bash
 
@@ -79,6 +65,24 @@ cleanup() { :; }
 
 configure()
 {
+  # FSTAB
+  [[ "$ACTIVE_" == "yes" ]] && { 
+    grep -q /media/USBdrive8 /etc/fstab || cat >> /etc/fstab <<EOF
+# Rules for automounting both at boot and upon USB plugin. Rely on udev rules
+# Don't delete manually. Instead deactivate nc-automount
+/dev/USBdrive  /media/USBdrive         auto    defaults,noatime,auto,nofail    0       2
+/dev/USBdrive1 /media/USBdrive1        auto    defaults,noatime,auto,nofail    0       2
+/dev/USBdrive2 /media/USBdrive2        auto    defaults,noatime,auto,nofail    0       2
+/dev/USBdrive3 /media/USBdrive3        auto    defaults,noatime,auto,nofail    0       2
+/dev/USBdrive4 /media/USBdrive4        auto    defaults,noatime,auto,nofail    0       2
+/dev/USBdrive5 /media/USBdrive5        auto    defaults,noatime,auto,nofail    0       2
+/dev/USBdrive6 /media/USBdrive6        auto    defaults,noatime,auto,nofail    0       2
+/dev/USBdrive7 /media/USBdrive7        auto    defaults,noatime,auto,nofail    0       2
+/dev/USBdrive8 /media/USBdrive8        auto    defaults,noatime,auto,nofail    0       2
+EOF
+}
+
+  # UDEV
   cat > /etc/udev/rules.d/50-automount.rules <<'EOF'
 # Need to be a block device
 KERNEL!="sd[a-z][0-9]", GOTO="exit"
@@ -102,7 +106,10 @@ ACTION=="add", ENV{ID_FS_LABEL}!="", ENV{ID_FS_LABEL}!="USBdrive*", RUN+="/bin/r
 LABEL="exit"
 EOF
 
-  [[ "$ACTIVE_" != "yes" ]] && rm -f /etc/udev/rules.d/50-automount.rules
+  [[ "$ACTIVE_" != "yes" ]] && { 
+    rm -f /etc/udev/rules.d/50-automount.rules
+    sed -i '/ # Rules for automounting both/,+11d' /etc/fstab
+  }
 
   # mount whatever is currently plugged in
   udevadm control --reload-rules && udevadm trigger
