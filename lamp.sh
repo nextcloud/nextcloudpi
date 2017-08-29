@@ -127,6 +127,9 @@ y
 y
 y
 EOF
+
+  # adjust max PHP processes so Apps don't overload the board (#146)
+  sed -i 's|pm.max_children =.*|pm.max_children = 3|' /etc/php/7.0/fpm/pool.d/www.conf
 }
 
 configure() { :; }
