@@ -43,7 +43,7 @@ from 'nextcloudpi-config'" \
 
 configure()
 {
-  [[ $ACTIVE_ != "yes" ]] && { service smbd stop; update-rc.d smbd disable; return; } 
+  [[ $ACTIVE_ != "yes" ]] && { service smbd stop; update-rc.d smbd disable; echo "SMB disabled"; return; } 
 
   # CHECKS
   ################################
@@ -53,13 +53,18 @@ configure()
 
   # CONFIG
   ################################
-  sed -i '/\[NextCloudPi\]/,+5d' /etc/samba/smb.conf
+  sed -i '/\[NextCloudPi\]/,+10d' /etc/samba/smb.conf
   cat >> /etc/samba/smb.conf <<EOF
 [NextCloudPi]
 	path = $DIR_
 	writeable = yes
 ;	browseable = yes
 	valid users = $USER_
+    force group = www-data
+    create mask = 0770
+    directory mask = 0771
+    force create mode = 0660
+    force directory mode = 0770
 EOF
 
   update-rc.d smbd defaults
@@ -69,6 +74,7 @@ EOF
   usermod -aG www-data $USER_
   echo -e "$PWD_\n$PWD_" | smbpasswd -s -a $USER_
   sudo chmod g+w $DIR_
+  echo "SMB enabled"
 }
 
 cleanup()
