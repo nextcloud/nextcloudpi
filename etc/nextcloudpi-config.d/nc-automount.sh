@@ -108,7 +108,7 @@ EOF
 
   [[ "$ACTIVE_" != "yes" ]] && { 
     rm -f /etc/udev/rules.d/50-automount.rules
-    sed -i '/ # Rules for automounting both/,+11d' /etc/fstab
+    sed -i '/# Rules for automounting both/,+11d' /etc/fstab
   }
 
   # mount whatever is currently plugged in
