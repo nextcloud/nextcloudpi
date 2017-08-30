@@ -110,7 +110,7 @@ IP=$( ip a | grep "global $IFACE" | grep -oP '\d{1,3}(.\d{1,3}){3}' | head -1 )
 # wicd service finishes before completing DHCP
 while [[ "$IP" == "" ]]; do
   sleep 3
-  IP=$( ip a | grep "global $IFACE" | grep -oP '\d{1,3}(.\d{1,3}){3}' | head -1 )
+  IP=$( ip a | grep "global $IFACE" | grep -oP '\d{1,3}(\.\d{1,3}){3}' | head -1 )
 done
 cd /var/www/nextcloud
 sudo -u www-data php occ config:system:set trusted_domains 1 --value=$IP

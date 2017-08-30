@@ -54,7 +54,7 @@ cd /var/www/nextcloud/
 
 # Trusted Domain ( as an argument )
 [[ "$@" != "" ]] && {
-  IP=$( grep -oP '\d{1,3}(.\d{1,3}){3}' <<< "$1" ) # validate that the first argument is a valid IP
+  IP=$( grep -oP '\d{1,3}(\.\d{1,3}){3}' <<< "$1" ) # validate that the first argument is a valid IP
   if [[ "$IP" != "" ]]; then
     sudo -u www-data php occ config:system:set trusted_domains 1 --value=$IP
   else
