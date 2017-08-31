@@ -31,7 +31,7 @@ show_info()
 install()
 {
   apt-get update
-  apt-get install -y dnsmasq
+  apt-get install --no-install-recommends -y dnsmasq
   update-rc.d dnsmasq disable
 }
 
