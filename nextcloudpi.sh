@@ -153,6 +153,8 @@ cleanup()
   rm /var/lib/apt/lists/* -r
   rm -f /home/pi/.bash_history
 
+  rm /etc/udev/rules.d/90-qemu.rules
+
   systemctl disable ssh
 }
 
