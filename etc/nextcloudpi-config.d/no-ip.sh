@@ -19,7 +19,7 @@ USER_=my-noip-user@email.com
 PASS_=noip-pass
 DOMAIN_=mycloud.ownyourbits.com
 TIME_=30
-DESCRIPTION="Free Dynamic DNS provider (need account)"
+DESCRIPTION="DDNS no-ip free provider (need account)"
 
 show_info()
 {
