@@ -41,7 +41,11 @@ configure()
   [[ "$INCLUDEDATA_" == "yes" ]] && echo -e "backup datadir... "
   echo -e "backup files..."
   mkdir -p $DESTDIR_
-  tar -cf $DESTFILE $DATAFILE $DBBACKUP nextcloud/ --exclude "nextcloud/data/*/files/*" && \
+  tar -cf $DESTFILE $DATAFILE $DBBACKUP nextcloud/ \
+    --exclude "nextcloud/data/*/files/*" \
+    --exclude "nextcloud/data/.opcache" \
+    --exclude "nextcloud/data/{access,error,nextcloud}.log" \
+    && \
     echo -e "backup $DESTFILE generated" || \
     echo -e "error generating backup"
   rm $DBBACKUP
