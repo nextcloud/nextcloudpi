@@ -24,7 +24,7 @@ configure()
   [[ "$ORIG" == "$SWAPFILE_" ]] && return
   test -d "$SWAPFILE_" && { echo "$SWAPFILE_ is a directory. Abort"; return 1; }
 
-  [[ $( stat -fc%d / ) == $( stat -fc%d $( dirname $SWAPFILE_ ) ) ]] && \
+  [[ $( stat -fc%d / ) == $( stat -fc%d $( dirname "$SWAPFILE_" ) ) ]] && \
     echo -e "INFO: moving swapfile to another place in the same SD card\nIf you want to use an external mount, make sure it is properly set up"
 
   sed -i "s|#\?CONF_SWAPFILE=.*|CONF_SWAPFILE=$SWAPFILE_|" /etc/dphys-swapfile

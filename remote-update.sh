@@ -26,8 +26,7 @@ cleanup()
   rm -f  /home/pi/.bash_history
   systemctl disable ssh
 
-  cd /var/www/nextcloud
-  sudo -u www-data php occ config:system:delete trusted_domains 1
+  sudo -u www-data php /var/www/nextcloud/occ config:system:delete trusted_domains 1
 }
 
 

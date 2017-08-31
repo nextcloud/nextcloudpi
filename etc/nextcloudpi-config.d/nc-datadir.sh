@@ -35,7 +35,7 @@ configure()
     echo -e "Error reading data directory. Is NextCloud running and configured?"; 
     return 1;
   }
-  [ -d $SRCDIR ] || { echo -e "data directory $SRCDIR not found"; return 1; }
+  [ -d "$SRCDIR" ] || { echo -e "data directory $SRCDIR not found"; return 1; }
 
   [ -d $DATADIR_ ] && {
     [[ $( find "$DATADIR_" -maxdepth 0 -empty | wc -l ) == 0 ]] && {
@@ -48,11 +48,11 @@ configure()
   local BASEDIR=$( dirname "$DATADIR_" )
   mkdir -p "$BASEDIR"
 
-  grep -q ext <( stat -fc%T $BASEDIR ) || { echo -e "Only ext filesystems can hold the data directory"; return 1; }
+  grep -q ext <( stat -fc%T "$BASEDIR" ) || { echo -e "Only ext filesystems can hold the data directory"; return 1; }
 
-  sudo -u www-data test -x $BASEDIR || { echo -e "ERROR: the user www-data does not have access permissions over $BASEDIR"; return 1; }
+  sudo -u www-data test -x "$BASEDIR" || { echo -e "ERROR: the user www-data does not have access permissions over $BASEDIR"; return 1; }
 
-  [[ $( stat -fc%d / ) == $( stat -fc%d $BASEDIR ) ]] && \
+  [[ $( stat -fc%d / ) == $( stat -fc%d "$BASEDIR" ) ]] && \
     echo -e "INFO: moving data dir to another place in the same SD card\nIf you want to use an external mount, make sure it is properly set up"
 
   ## COPY
@@ -71,7 +71,7 @@ configure()
   sed -i "s|^opcache.file_cache=.*|opcache.file_cache=$DATADIR_/.opcache|" /etc/php/7.0/mods-available/opcache.ini
 
   # datadir
-  sudo -u www-data php occ config:system:set datadirectory --value=$DATADIR_
+  sudo -u www-data php occ config:system:set datadirectory --value="$DATADIR_"
   sudo -u www-data php occ maintenance:mode --off
 }
 

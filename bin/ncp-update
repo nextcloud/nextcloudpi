@@ -3,7 +3,7 @@
 # update latest NextCloudPi code from github
 
 {
-  [ $(id -u) -ne 0 ] && { printf "Must be run as root. Try 'sudo $0'\n"; exit 1; }
+  [ "$(id -u)" -ne 0 ] && { printf "Must be run as root. Try 'sudo $0'\n"; exit 1; }
   ping  -W 2 -w 1 -q github.com &>/dev/null || { echo "No internet connectivity"; exit 1; }
   echo -e "Downloading updates"
   rm -rf /tmp/ncp-update-tmp
@@ -14,9 +14,9 @@
   ./update.sh
 
   VER=$( git describe --always --tags | grep -oP "v\d+\.\d+\.\d+" )
-  grep -qP "v\d+\.\d+\.\d+" <<< $VER && {       # check format
-    echo $VER > /usr/local/etc/ncp-version
-    echo $VER > /var/run/.ncp-latest-version
+  grep -qP "v\d+\.\d+\.\d+" <<< "$VER" && {       # check format
+    echo "$VER" > /usr/local/etc/ncp-version
+    echo "$VER" > /var/run/.ncp-latest-version
   }
 
   cd /

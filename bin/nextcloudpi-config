@@ -20,6 +20,7 @@ function nextcloud-config()
     local VERFILE=/var/run/.ncp-latest-version
     local BACKTITLE="NextCloudPi configuration ver. "
     local CONFDIR=/usr/local/etc/nextcloudpi-config.d/ 
+    local DESC
 
     # save latest version if it has never done before
     test -f $VERFILE || ncp-check-version
@@ -36,9 +37,9 @@ function nextcloud-config()
       # fill options
       local LIST=()
       for item in $CONFDIR/*.sh; do
-        local DESC=$( grep "DESCRIPTION=" $item | sed 's|^DESCRIPTION="||;s|"$||' )
-        grep -q "^ACTIVE_=yes" $item && local ON="✓" || local ON=" "
-        LIST+=( "$ON $( basename $item .sh )" "$DESC" )
+        DESC=$( grep "DESCRIPTION=" "$item" | sed 's|^DESCRIPTION="||;s|"$||' )
+        grep -q "^ACTIVE_=yes" "$item" && local ON="✓" || local ON=" "
+        LIST+=( "$ON $( basename "$item" .sh )" "$DESC" )
       done
 
       # launch the selection menu
@@ -56,8 +57,8 @@ function nextcloud-config()
       script=$( sed  's=✓\| ==g' <<< "$script" ) 
 
       # launch selected script
-      info_script      $script.sh || continue;
-      configure_script $script.sh && { echo "Done. Press any key..."; read; }
+      info_script      "$script".sh || continue;
+      configure_script "$script".sh && { echo "Done. Press any key..."; read -r; }
     done
 }
 

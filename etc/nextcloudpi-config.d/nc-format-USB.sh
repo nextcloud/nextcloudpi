@@ -59,9 +59,9 @@ configure()
   local NAME=( $( lsblk -l -n | grep -v mmcblk | grep disk | awk '{ print $1 }' ) )
   [[ ${#NAME[@]} != 1 ]] && { echo "unexpected error"; return 1; }
 
-  wipefs -a -f /dev/$NAME || return 1
-  printf 'o\nn\np\n1\n\n\nw\n' | sudo fdisk /dev/$NAME || return 1
-  mkfs.ext4 -F /dev/${NAME}1 -L "$LABEL_"
+  wipefs -a -f /dev/"$NAME" || return 1
+  printf 'o\nn\np\n1\n\n\nw\n' | sudo fdisk /dev/"$NAME" || return 1
+  mkfs.ext4 -F /dev/"${NAME}1" -L "$LABEL_"
 
   # trigger automount rules if active
   test -f /etc/udev/rules.d/50-automount.rules || return 0
