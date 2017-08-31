@@ -36,86 +36,77 @@ IMPORTANT: halt or umount the drive before extracting" \
 
 install()
 {
-  cat > /usr/local/etc/blknum <<'EOF'
+  apt-get update
+  apt-get install -y --no-install-recommends udiskie
+
+  cat > /etc/udev/rules.d/99-udisks2.rules <<'EOF'
+ENV{ID_FS_USAGE}=="filesystem|other|crypto", ENV{UDISKS_FILESYSTEM_SHARED}="1"
+EOF
+
+  cat > /usr/lib/systemd/system/nc-automount.service <<'EOF'
+[Unit]
+Description=Automount USB drives
+Before=mysqld.service
+
+[Service]
+Restart=always
+ExecStart=/usr/bin/udiskie -NTF
+ExecStartPost=/bin/sleep 8
+ExecStartPost=/usr/local/etc/nc-automount-links
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+  cat > /usr/local/etc/nc-automount-links <<'EOF'
 #!/bin/bash
 
-# we perform a cleanup with the first one
-ls -d /dev/USBdrive* &>/dev/null || {
-  rmdir /media/USBdrive*
-  for f in `ls /media/`; do
-    test -L $f && rm $f
+ls -d /media/* &>/dev/null && {
+
+  # remove old links
+  for l in `ls /media/`; do
+    test -L /media/"$l" && rm /media/"$l"
   done
-  exit 0
+
+  # create links
+  i=0
+  for d in `ls -d /media/*`; do
+    [ $i -eq 0 ] && \
+      ln -sT "$d" /media/USBdrive   || \
+      ln -sT "$d" /media/USBdrive$i
+    i=$(( i + 1 ))
+  done
 }
-
-for i in `seq 1 1 8`; do
-  test -e /media/USBdrive$i && continue
-  echo $i
-  exit 0
-done
-
-exit 1
 EOF
-  chmod +x /usr/local/etc/blknum
+  chmod +x /usr/local/etc/nc-automount-links
 
-  systemctl daemon-reload
+  # adjust when mariaDB starts
+  local DBUNIT=/lib/systemd/system/mariadb.service
+  grep -q sleep $DBUNIT  || sed -i "/^ExecStart=/iExecStartPre=/bin/sleep 10" $DBUNIT
 }
-
-cleanup() { :; }
 
 configure()
 {
-  # FSTAB
-  [[ "$ACTIVE_" == "yes" ]] && { 
-    grep -q /media/USBdrive8 /etc/fstab || cat >> /etc/fstab <<EOF
-# Rules for automounting both at boot and upon USB plugin. Rely on udev rules
-# Don't delete manually. Instead deactivate nc-automount
-/dev/USBdrive  /media/USBdrive         auto    defaults,noatime,auto,nofail    0       2
-/dev/USBdrive1 /media/USBdrive1        auto    defaults,noatime,auto,nofail    0       2
-/dev/USBdrive2 /media/USBdrive2        auto    defaults,noatime,auto,nofail    0       2
-/dev/USBdrive3 /media/USBdrive3        auto    defaults,noatime,auto,nofail    0       2
-/dev/USBdrive4 /media/USBdrive4        auto    defaults,noatime,auto,nofail    0       2
-/dev/USBdrive5 /media/USBdrive5        auto    defaults,noatime,auto,nofail    0       2
-/dev/USBdrive6 /media/USBdrive6        auto    defaults,noatime,auto,nofail    0       2
-/dev/USBdrive7 /media/USBdrive7        auto    defaults,noatime,auto,nofail    0       2
-/dev/USBdrive8 /media/USBdrive8        auto    defaults,noatime,auto,nofail    0       2
-EOF
-}
-
-  # UDEV
-  cat > /etc/udev/rules.d/50-automount.rules <<'EOF'
-# Need to be a block device
-KERNEL!="sd[a-z][0-9]", GOTO="exit"
-
-# Import some useful filesystem info as variables
-IMPORT{program}="/sbin/blkid -o udev -p %N"
-
-# Need to be a filesystem
-ENV{ID_FS_TYPE}!="vfat|ntfs|ext4|iso9660", GOTO="exit"
-
-# Create symlink that will be understood by fstab, and a directory in /media
-ACTION!="remove", PROGRAM="/usr/local/etc/blknum", RUN+="/bin/mkdir -p /media/USBdrive%c", SYMLINK+="USBdrive%c"
-
-# Get a label if present, otherwise specify one
-ENV{ID_FS_LABEL}!="", ENV{dir_name}="%E{ID_FS_LABEL}"
-
-# Link with label name if exists
-ACTION=="add", ENV{ID_FS_LABEL}!="", ENV{ID_FS_LABEL}!="USBdrive*", RUN+="/bin/rm /media/%E{ID_FS_LABEL}", RUN+="/bin/ln -sT /media/USBdrive%c /media/%E{ID_FS_LABEL}"
-
-# Exit
-LABEL="exit"
-EOF
-
-  [[ "$ACTIVE_" != "yes" ]] && { 
-    rm -f /etc/udev/rules.d/50-automount.rules
-    sed -i '/# Rules for automounting both/,+11d' /etc/fstab
+  [[ $ACTIVE_ != "yes" ]] && {
+    systemctl stop    nc-automount
+    systemctl disable nc-automount
+    echo "automount disabled"
+    return 0
   }
-
-  # mount whatever is currently plugged in
-  udevadm control --reload-rules && udevadm trigger
-
-  [[ "$ACTIVE_" != "yes" ]] && echo "automount is now inactive" || echo "automount is now active"
+  systemctl enable  nc-automount
+  systemctl start   nc-automount
+  echo "automount enabled"
 }
+
+cleanup()
+{
+  apt-get autoremove -y
+  apt-get clean
+  rm /var/lib/apt/lists/* -r
+  rm -f /home/pi/.bash_history
+  systemctl disable ssh
+}
+
 
 # License
 #
