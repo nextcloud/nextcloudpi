@@ -16,9 +16,6 @@
 #
 
 IP=$1          # First argument is the QEMU Raspbian IP address
-DOWNLOAD=0     # Download the latest image
-EXTRACT=0      # Extract the image from zip, so start from 0
-IMG=raspbian_lite_latest
 
 source etc/library.sh       # initializes $IMGNAME
 
@@ -28,8 +25,8 @@ export NO_CONFIG=1          # skip interactive configuration
 
 download_resize_raspbian_img 3G $IMGBASE || exit 1
 
-NO_HALT_STEP=1 ./installer.sh prepare.sh            $IP $IMGBASE                    || exit 1
-               ./installer.sh docker/docker-env.sh  $IP $( ls -1t *.img | head -1 ) || exit 1
+NO_HALT_STEP=1 ./installer.sh prepare.sh            "$IP" "$IMGBASE"                    || exit 1
+               ./installer.sh docker/docker-env.sh  "$IP" "$( ls -1t *.img | head -1 )" || exit 1
 
 IMGFILE=$( ls -1t *.img | head -1 )
 IMGOUT="raspbian_docker.img"

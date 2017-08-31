@@ -40,7 +40,7 @@ EOF
 
 configure()
 {
-    [[ $ACTIVE_ != "yes" ]] && { 
+  [[ $ACTIVE_ != "yes" ]] && { 
     systemctl stop    nc-backup.timer
     systemctl disable nc-backup.timer
     echo "automatic backups disabled"
@@ -67,7 +67,7 @@ mysqldump -u root --single-transaction nextcloud > \$DBBACKUP
 [[ "$INCLUDEDATA_" == "yes" ]] && echo -e "backup datadir... "
 echo -e "backup files..."
 mkdir -p $DESTDIR_
-tar -cf \$DESTFILE $DATAFILE \$DBBACKUP nextcloud/ --exclude 'nextcloud/data/*/files/*' && \
+tar -cf \$DESTFILE \$DBBACKUP nextcloud/ --exclude 'nextcloud/data/*/files/*' && \
   echo -e "backup \$DESTFILE generated" || \
   echo -e "error generating backup"
 rm \$DBBACKUP

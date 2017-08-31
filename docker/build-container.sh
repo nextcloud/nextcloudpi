@@ -1,4 +1,4 @@
-#!/bin/bish
+#!/bin/bash
 
 # Build NextCloudPi ARM docker container in a QEMU Raspbian with docker
 #

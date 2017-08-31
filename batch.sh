@@ -22,14 +22,14 @@ IMGBASE="NextCloudPi_$( date  "+%m-%d-%y" )_base.img"
 
 export NO_CONFIG=1          # skip interactive configuration
 
-download_resize_raspbian_img 1G $IMGBASE || exit 1
+download_resize_raspbian_img 1G "$IMGBASE" || exit 1
 
-NO_HALT_STEP=1 ./installer.sh prepare.sh     $IP $IMGBASE                    || exit 1
-               ./installer.sh lamp.sh        $IP $( ls -1t *.img | head -1 ) || exit 1
-               ./installer.sh $NC_INSTALL    $IP $( ls -1t *.img | head -1 ) || exit 1
-               ./installer.sh $NC_CONFIG     $IP $( ls -1t *.img | head -1 ) || exit 1
-               ./installer.sh nextcloudpi.sh $IP $( ls -1t *.img | head -1 ) || exit 1
-#              ./installer.sh build-devel.sh $IP $( ls -1t *.img | head -1 ) || exit 1
+NO_HALT_STEP=1 ./installer.sh prepare.sh     "$IP" "$IMGBASE"                    || exit 1
+               ./installer.sh lamp.sh        "$IP" "$( ls -1t *.img | head -1 )" || exit 1
+               ./installer.sh $NC_INSTALL    "$IP" "$( ls -1t *.img | head -1 )" || exit 1
+               ./installer.sh $NC_CONFIG     "$IP" "$( ls -1t *.img | head -1 )" || exit 1
+               ./installer.sh nextcloudpi.sh "$IP" "$( ls -1t *.img | head -1 )" || exit 1
+#              ./installer.sh build-devel.sh "$IP" "$( ls -1t *.img | head -1 )" || exit 1
 
 IMGFILE=$( ls -1t *.img | head -1 )
 IMGNAME=$( basename "$IMGFILE" _base_prepare_lamp_nc-nextcloud_nc-init_nextcloudpi.img )
@@ -39,22 +39,22 @@ IMGNAME=$( basename "$IMGFILE" _base_prepare_lamp_nc-nextcloud_nc-init_nextcloud
 ## PACKING
 
 pack_image "$IMGFILE" "$IMGNAME.img" 
-md5sum $IMGNAME.tar.bz2
+md5sum "$IMGNAME.tar.bz2"
 
-rm -rf   torrent/$IMGNAME 
-mkdir -p torrent/$IMGNAME && cp $IMGNAME.tar.bz2 torrent/$IMGNAME
-create_torrent torrent/$IMGNAME
+rm -rf   torrent/"$IMGNAME"
+mkdir -p torrent/"$IMGNAME" && cp "$IMGNAME.tar.bz2" torrent/"$IMGNAME"
+create_torrent torrent/"$IMGNAME"
 
 mkdir -p partial && mv NextCloudPi*.bz2 partial
 
 ## TESTING
 launch_qemu "$IMGNAME.img" &
 sleep 10
-wait_SSH $IP
+wait_SSH "$IP"
 sleep 180                         # Wait for the services to start. Improve this ( wait HTTP && trusted domains )
-tests/tests.py $IP
+tests/tests.py "$IP"
 
-ssh_pi $IP sudo halt
+ssh_pi "$IP" sudo halt
 
 rm -f *.img
 

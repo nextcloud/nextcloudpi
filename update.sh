@@ -14,30 +14,30 @@ source /usr/local/etc/library.sh
 
 # copy all files in bin and etc
 for file in bin/* etc/*; do
-  [ -f $file ] || continue;
-  cp $file /usr/local/$file
+  [ -f "$file" ] || continue;
+  cp "$file" /usr/local/"$file"
 done
 
 # install new entries of nextcloudpi-config and update others
 for file in etc/nextcloudpi-config.d/*; do
-  [ -f $file ] || continue;    # skip dirs
-  [ -f /usr/local/$file ] || { # new entry
-    install_script $file       # install
+  [ -f "$file" ] || continue;    # skip dirs
+  [ -f /usr/local/"$file" ] || { # new entry
+    install_script "$file"       # install
 
     # configure if active by default
-    grep -q '^ACTIVE_=yes$' $file && activate_script $file 
+    grep -q '^ACTIVE_=yes$' "$file" && activate_script "$file" 
   }
 
   # save current configuration to (possibly) updated script
-  [ -f /usr/local/$file ] && {
-    VARS=( $( grep "^[[:alpha:]]\+_=" /usr/local/$file | cut -d= -f1 ) )
-    VALS=( $( grep "^[[:alpha:]]\+_=" /usr/local/$file | cut -d= -f2 ) )
-    for i in `seq 0 1 ${#VARS[@]} `; do
-      sed -i "s|^${VARS[$i]}=.*|${VARS[$i]}=${VALS[$i]}|" $file
+  [ -f /usr/local/"$file" ] && {
+    VARS=( $( grep "^[[:alpha:]]\+_=" /usr/local/"$file" | cut -d= -f1 ) )
+    VALS=( $( grep "^[[:alpha:]]\+_=" /usr/local/"$file" | cut -d= -f2 ) )
+    for i in $( seq 0 1 ${#VARS[@]} ); do
+      sed -i "s|^${VARS[$i]}=.*|${VARS[$i]}=${VALS[$i]}|" "$file"
     done
   }
 
-  cp $file /usr/local/$file
+  cp "$file" /usr/local/"$file"
 done
 
 # these files can contain sensitive information, such as passwords
@@ -52,7 +52,7 @@ chmod 770                  /var/www/ncp-web
 ## BACKWARD FIXES ( for older images )
 
 # force-fix unattended-upgrades 
-cd /usr/local/etc/nextcloudpi-config.d/
+cd /usr/local/etc/nextcloudpi-config.d/ || exit 1
 activate_script unattended-upgrades.sh
 
 # for old image users, save default password
@@ -75,7 +75,7 @@ ls -d /dev/USBdrive* &>/dev/null || {
   exit 0
 }
 
-for i in `seq 1 1 8`; do
+for i in $( seq 1 1 8 ); do
   test -e /media/USBdrive$i && continue
   echo $i
   exit 0

@@ -36,7 +36,7 @@ install()
   mkdir /tmp/noip && cd /tmp/noip
   wget http://www.no-ip.com/client/linux/noip-duc-linux.tar.gz
   tar vzxf noip-duc-linux.tar.gz
-  cd -; cd $OLDPWD/noip-2*
+  cd -; cd "$OLDPWD"/noip-2*
   make
   cp noip2 /usr/local/bin/
 
@@ -70,12 +70,12 @@ configure()
 
   ping  -W 2 -w 1 -q github.com &>/dev/null || { echo "No internet connectivity"; return 1; }
 
-  /usr/local/bin/noip2 -C -c /usr/local/etc/no-ip2.conf -U $TIME_ -u $USER_ -p $PASS_ || return 1
+  /usr/local/bin/noip2 -C -c /usr/local/etc/no-ip2.conf -U "$TIME_" -u "$USER_" -p "$PASS_" || return 1
   update-rc.d noip2 enable
   service noip2 restart
   cd /var/www/nextcloud
-  sudo -u www-data php occ config:system:set trusted_domains 3 --value=$DOMAIN_
-  sudo -u www-data php occ config:system:set overwrite.cli.url --value=https://$DOMAIN_
+  sudo -u www-data php occ config:system:set trusted_domains 3 --value="$DOMAIN_"
+  sudo -u www-data php occ config:system:set overwrite.cli.url --value=https://"$DOMAIN_"
 }
 
 cleanup()

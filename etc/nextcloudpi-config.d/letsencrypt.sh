@@ -17,13 +17,14 @@ DOMAIN_=mycloud.ownyourbits.com
 EMAIL_=mycloud@ownyourbits.com
 
 NCDIR=/var/www/nextcloud
+OCC="$NCDIR/www/nextcloud/occ"
 VHOSTCFG=/etc/apache2/sites-available/nextcloud.conf
 VHOSTCFG2=/etc/apache2/sites-available/ncp.conf
 DESCRIPTION="Automatic signed SSL certificates"
 
 install()
 {
-  cd /etc
+  cd /etc || return 1
   git clone https://github.com/letsencrypt/letsencrypt
   /etc/letsencrypt/letsencrypt-auto --help # do not actually run certbot, only install packages
 }
@@ -59,9 +60,8 @@ configure()
   /etc/letsencrypt/letsencrypt-auto certonly -n --no-self-upgrade --webroot -w $NCDIR --hsts --agree-tos -m $EMAIL_ -d $DOMAIN_ && {
     echo "* 1 * * 1 root /etc/letsencrypt/certbot-auto renew --quiet" > /etc/cron.d/letsencrypt-ncp
 
-    cd /var/www/nextcloud
-    sudo -u www-data php occ config:system:set trusted_domains 4 --value=$DOMAIN_
-    sudo -u www-data php occ config:system:set overwrite.cli.url --value=https://$DOMAIN_
+    sudo -u www-data php $OCC config:system:set trusted_domains 4 --value=$DOMAIN_
+    sudo -u www-data php $OCC config:system:set overwrite.cli.url --value=https://$DOMAIN_
 
     # delayed in bg so it does not kill the connection, and we get AJAX response
     ( sleep 2 && systemctl restart apache2 ) &>/dev/null & 

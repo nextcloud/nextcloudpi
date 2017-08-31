@@ -41,10 +41,10 @@ configure()
 {
   local IFACE=$( ip r | grep "default via" | awk '{ print $5 }' )
   local IP=$( ip a | grep "global $IFACE" | grep -oP '\d{1,3}(.\d{1,3}){3}' | head -1 )
-  upnpc -d $HTTPSPORT_ TCP
-  upnpc -d $HTTPPORT_  TCP
-  upnpc -a $IP 443 $HTTPSPORT_ TCP
-  upnpc -a $IP 80  $HTTPPORT_  TCP
+  upnpc -d "$HTTPSPORT_" TCP
+  upnpc -d "$HTTPPORT_"  TCP
+  upnpc -a "$IP" 443 "$HTTPSPORT_" TCP
+  upnpc -a "$IP" 80  "$HTTPPORT_"  TCP
 }
 
 cleanup()
