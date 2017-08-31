@@ -44,6 +44,8 @@ Your certificate will be automatically renewed every month
 # tested with git version v0.11.0-71-g018a304
 configure() 
 {
+  ping  -W 2 -w 1 -q github.com &>/dev/null || { echo "No internet connectivity"; return 1; }
+
   grep -q ServerName $VHOSTCFG && \
     sed -i "s|ServerName .*|ServerName $DOMAIN_|" $VHOSTCFG || \
     sed -i "/DocumentRoot/aServerName $DOMAIN_" $VHOSTCFG 
