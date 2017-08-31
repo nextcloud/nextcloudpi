@@ -32,7 +32,7 @@ DESCRIPTION="Brute force protection for SSH and NextCloud"
 install()
 {
   apt-get update
-  apt-get install fail2ban -y
+  apt-get install --no-install-recommends -y fail2ban 
   update-rc.d fail2ban disable
   rm -f /etc/fail2ban/jail.d/defaults-debian.conf
 }
