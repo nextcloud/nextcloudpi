@@ -12,6 +12,10 @@ cp etc/library.sh /usr/local/etc/
 
 source /usr/local/etc/library.sh
 
+# fix automount, reinstall if its old version
+AMFILE=/usr/local/etc/nextcloudpi-config.d/nc-automount.sh
+grep -q nc-automount.service $AMFILE || rm $AMFILE
+
 # copy all files in bin and etc
 for file in bin/* etc/*; do
   [ -f "$file" ] || continue;
@@ -62,31 +66,8 @@ test -f /root/.my.cnf || echo -e "[client]\npassword=ownyourbits" > /root/.my.cn
 chown www-data /var/www/nextcloud/.htaccess
 rm -rf /var/www/nextcloud/.well-known
 
-# fix automount
-cat > /usr/local/etc/blknum <<'EOF'
-#!/bin/bash
-
-# we perform a cleanup with the first one
-ls -d /dev/USBdrive* &>/dev/null || {
-  rmdir /media/USBdrive*
-  for f in `ls /media/`; do
-    test -L $f && rm $f
-  done
-  exit 0
-}
-
-for i in $( seq 1 1 8 ); do
-  test -e /media/USBdrive$i && continue
-  echo $i
-  exit 0
-done
-
-exit 1
-EOF
-  chmod +x /usr/local/etc/blknum
-
-  # fix ncp-notify-update
-  cat > /usr/local/bin/ncp-notify-update <<'EOF'
+# fix ncp-notify-update
+cat > /usr/local/bin/ncp-notify-update <<'EOF'
 #!/bin/bash
 VERFILE=/usr/local/etc/ncp-version
 LATEST=/var/run/.ncp-latest-version
