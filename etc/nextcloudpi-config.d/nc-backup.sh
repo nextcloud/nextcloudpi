@@ -19,54 +19,52 @@ INCLUDEDATA_=no
 BACKUPLIMIT_=4
 DESCRIPTION="Backup this NC instance to a file"
 
-DESTFILE=$DESTDIR_/nextcloud-bkp_`date +"%Y%m%d"`.tar 
-DBBACKUP=nextcloud-sqlbkp_`date +"%Y%m%d"`.bak
+DESTFILE="$DESTDIR_"/nextcloud-bkp_$( date +"%Y%m%d" ).tar 
+DBBACKUP=nextcloud-sqlbkp_$( date +"%Y%m%d" ).bak
 BASEDIR=/var/www
 
 configure()
 {
   local DATADIR
-  DATADIR=$( cd $BASEDIR/nextcloud; sudo -u www-data php occ config:system:get datadirectory ) || {
+  DATADIR=$( cd "$BASEDIR"/nextcloud; sudo -u www-data php occ config:system:get datadirectory ) || {
     echo -e "Error reading data directory. Is NextCloud running and configured?";
     return 1;
   }
 
-  cd $BASEDIR/nextcloud
-  sudo -u www-data php occ maintenance:mode --on
+  sudo -u www-data php "$BASEDIR"/nextcloud/occ maintenance:mode --on
 
-  cd $BASEDIR
+  cd "$BASEDIR" || return 1
   echo -e "backup database..."
-  mysqldump -u root --single-transaction nextcloud > $DBBACKUP
+  mysqldump -u root --single-transaction nextcloud > "$DBBACKUP"
 
   [[ "$INCLUDEDATA_" == "yes" ]] && echo -e "backup datadir... "
   echo -e "backup files..."
-  mkdir -p $DESTDIR_
-  tar -cf $DESTFILE $DATAFILE $DBBACKUP nextcloud/ \
+  mkdir -p "$DESTDIR_"
+  tar -cf "$DESTFILE" "$DBBACKUP" nextcloud/ \
     --exclude "nextcloud/data/*/files/*" \
     --exclude "nextcloud/data/.opcache" \
     --exclude "nextcloud/data/{access,error,nextcloud}.log" \
     && \
     echo -e "backup $DESTFILE generated" || \
     echo -e "error generating backup"
-  rm $DBBACKUP
+  rm "$DBBACKUP"
 
   [[ "$INCLUDEDATA_" == "yes" ]] && {
-    tar -rf $DESTFILE -C $DATADIR/.. $( basename $DATADIR ) || \
+    tar -rf "$DESTFILE" -C "$DATADIR"/.. "$( basename "$DATADIR" )" || \
       echo -e "error generating data backup"
   }
 
   # delete older backups
   [[ $BACKUPLIMIT_ != 0 ]] && {
-    local NUMBKPS=$( ls $DESTDIR_/nextcloud-bkp_* | wc -l )
+    local NUMBKPS=$( ls "$DESTDIR_"/nextcloud-bkp_* | wc -l )
     [[ $NUMBKPS > $BACKUPLIMIT_ ]] && \
-      ls -t $DESTDIR_/nextcloud-bkp_* | tail -$(( NUMBKPS - $BACKUPLIMIT_ )) | while read f; do
+      ls -t $DESTDIR_/nextcloud-bkp_* | tail -$(( NUMBKPS - BACKUPLIMIT_ )) | while read -r f; do
         echo -e "clean up old backup $f"
-        rm $f
+        rm "$f"
       done
   }
 
-  cd $BASEDIR/nextcloud
-  sudo -u www-data php occ maintenance:mode --off
+  sudo -u www-data php "$BASEDIR"/nextcloud/occ maintenance:mode --off
 }
 
 install() { :; }
