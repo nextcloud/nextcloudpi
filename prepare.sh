@@ -1,4 +1,4 @@
-#!/bin/bish
+#!/bin/bash
 
 # Prepare a Raspbian image (resize and update)
 #

@@ -15,11 +15,11 @@ if test -f $VERFILE && grep -qP "v\d+\.\d+\.\d+" $VERFILE; then
   MIN=$( grep -oP "\d+\.\d+\.\d+" /usr/local/etc/ncp-version | cut -d. -f2 )
   PAT=$( grep -oP "\d+\.\d+\.\d+" /usr/local/etc/ncp-version | cut -d. -f3 )
 
-  if [ $MAJOR -gt $MAJ ]; then
+  if [ "$MAJOR" -gt "$MAJ" ]; then
     NEED_UPDATE=true
-  elif [ $MAJOR -eq $MAJ ] && [ $MINOR -gt $MIN ]; then
+  elif [ "$MAJOR" -eq "$MAJ" ] && [ "$MINOR" -gt "$MIN" ]; then
     NEED_UPDATE=true
-  elif [ $MAJOR -eq $MAJ ] && [ $MINOR -eq $MIN ] && [ $PATCH -gt $PAT ]; then
+  elif [ "$MAJOR" -eq "$MAJ" ] && [ "$MINOR" -eq "$MIN" ] && [ "$PATCH" -gt "$PAT" ]; then
     NEED_UPDATE=true
   fi
 fi

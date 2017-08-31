@@ -1,4 +1,4 @@
-#!/bin/bish
+#!/bin/bash
 
 # Install docker ARM on Raspbian
 #

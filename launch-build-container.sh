@@ -15,11 +15,9 @@ IP=$1          # First argument is the QEMU Raspbian IP address
 
 source etc/library.sh       # initializes $IMGNAME
 
-IMGBASE="raspbian_docker_base.img"
+test -f raspbian_docker.img || ./prepare-build-env-docker.sh "$IP" || exit 1
 
-test -f raspbian_docker.img || ./prepare-build-env-docker.sh $IP || exit 1
-
-./installer.sh docker/build-container.sh $IP raspbian_docker.img || exit 1
+./installer.sh docker/build-container.sh "$IP" raspbian_docker.img || exit 1
 
 # License
 #
