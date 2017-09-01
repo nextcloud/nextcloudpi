@@ -64,7 +64,7 @@ test -e /data/config && {
 
 # Trusted Domain ( local IP )
 IFACE=$( ip r | grep "default via" | awk '{ print $5 }' )
-IP=$( ip a | grep "global $IFACE" | grep -oP '\d{1,3}(.\d{1,3}){3}' | head -1 )
+IP=$( ip a | grep "global $IFACE" | grep -oP '\d{1,3}(\.\d{1,3}){3}' | head -1 )
 sudo -u www-data php $OCC config:system:set trusted_domains 2 --value="$IP"
 
 echo "Starting Apache"

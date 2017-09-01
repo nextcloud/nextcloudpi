@@ -40,7 +40,7 @@ configure()
   [[ $ACTIVE_ != "yes" ]] && { service dnsmasq stop; update-rc.d dnsmasq disable; return; }
 
   local IFACE=$( ip r | grep "default via"   | awk '{ print $5 }' )
-  local    IP=$( ip a | grep "global $IFACE" | grep -oP '\d{1,3}(.\d{1,3}){3}' | head -1 )
+  local    IP=$( ip a | grep "global $IFACE" | grep -oP '\d{1,3}(\.\d{1,3}){3}' | head -1 )
 
   [[ "$IP" == "" ]] && { echo "could not detect IP"; return 1; }
   
