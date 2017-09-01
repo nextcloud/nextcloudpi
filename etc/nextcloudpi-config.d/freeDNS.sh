@@ -15,12 +15,12 @@
 #
 
 ACTIVE_=yes
-UPDATEURL_=https://freedns.afraid.org/dynamic/update.php?
+UPDATEURL_=https://freedns.afraid.org/dynamic/update.php
 UPDATEHASH_=abcdefghijklmnopqrstuvwxyzABCDEFGHIJK1234567
 DOMAIN_=nextcloud.example.com
 UPDATEINTERVAL_=30
 DESCRIPTION="DDNS FreeDNS client (need account)"
-URL=${UPDATEURL_}${UPDATEHASH_}
+URL="${UPDATEURL_}?${UPDATEHASH_}"
 
 show_info()
 {
