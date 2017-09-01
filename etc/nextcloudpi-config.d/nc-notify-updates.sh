@@ -14,6 +14,7 @@
 #
 
 ACTIVE_=yes
+USER_=admin
 CHECKINTERVAL=60
 DESCRIPTION="Notify in NC when a NextCloudPi update is available"
 
@@ -30,34 +31,6 @@ install()
   rm *.tar.gz
   chown -R www-data:www-data *
   sudo -u www-data php /var/www/nextcloud/occ app:enable admin_notifications
-
-  # code
-  cat > /usr/local/bin/ncp-notify-update <<'EOF'
-#!/bin/bash
-VERFILE=/usr/local/etc/ncp-version
-LATEST=/var/run/.ncp-latest-version
-NOTIFIED=/var/run/.ncp-version-notified
-
-test -e $LATEST  || exit 0;
-ncp-test-updates || { echo "NextCloudPi up to date"; exit 0; }
-
-test -e $NOTIFIED && [[ "$( cat $LATEST )" == "$( cat $NOTIFIED )" ]] && { 
-  echo "Found update from $( cat $VERFILE ) to $( cat $LATEST ). Already notified" 
-  exit 0
-}
-
-echo "Found update from $( cat $VERFILE ) to $( cat $LATEST ). Sending notification..."
-
-IFACE=$( ip r | grep "default via" | awk '{ print $5 }' )
-IP=$( ip a | grep "global $IFACE" | grep -oP '\d{1,3}(.\d{1,3}){3}' | head -1 )
-
-sudo -u www-data php /var/www/nextcloud/occ notification:generate \
-  admin "NextCloudPi $( cat $VERFILE )" \
-     -l "NextCloudPi $( cat $LATEST ) is available. Update from https://$IP:4443"
-
-cat $LATEST > $NOTIFIED
-EOF
-  chmod +x /usr/local/bin/ncp-notify-update
 
   # timers
   cat > /etc/systemd/system/nc-notify-updates.service <<EOF
@@ -82,6 +55,35 @@ configure()
     return 0
   }
 
+  # code
+  cat > /usr/local/bin/ncp-notify-update <<EOF
+#!/bin/bash
+VERFILE=/usr/local/etc/ncp-version
+LATEST=/var/run/.ncp-latest-version
+NOTIFIED=/var/run/.ncp-version-notified
+
+test -e \$LATEST  || exit 0;
+ncp-test-updates || { echo "NextCloudPi up to date"; exit 0; }
+
+test -e \$NOTIFIED && [[ "\$( cat \$LATEST )" == "\$( cat \$NOTIFIED )" ]] && { 
+  echo "Found update from \$( cat \$VERFILE ) to \$( cat \$LATEST ). Already notified" 
+  exit 0
+}
+
+echo "Found update from \$( cat \$VERFILE ) to \$( cat \$LATEST ). Sending notification..."
+
+IFACE=\$( ip r | grep "default via" | awk '{ print \$5 }' )
+IP=\$( ip a | grep "global \$IFACE" | grep -oP '\d{1,3}(\.\d{1,3}){3}' | head -1 )
+
+sudo -u www-data php /var/www/nextcloud/occ notification:generate \
+  $USER_ "NextCloudPi \$( cat \$VERFILE )" \
+     -l "NextCloudPi \$( cat \$LATEST ) is available. Update from https://\$IP:4443"
+
+cat \$LATEST > \$NOTIFIED
+EOF
+  chmod +x /usr/local/bin/ncp-notify-update
+
+  # timer
   cat > /etc/systemd/system/nc-notify-updates.timer <<EOF
 [Unit]
 Description=Timer notify NCP updates in browser
