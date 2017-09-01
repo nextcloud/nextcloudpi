@@ -34,8 +34,7 @@ Set the time in seconds in UPDATEINTERVAL.
 
 install()
 {
-  apt-get install --no-install-recommends -y
-
+apt-get install --no-install-recommends -y dnsutils
   cat > /usr/local/bin/freedns.sh <<EOF
 #!/bin/bash
 echo "FreeDNS client started"
