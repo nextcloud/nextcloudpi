@@ -86,6 +86,20 @@ launch_script $1 &> /run/ncp.log
 EOF
   chmod 700 /home/www/ncp-launcher.sh
 
+# update notify-updates to also notify about unattended upgrades
+cat > /etc/systemd/system/nc-notify-updates.service <<EOF
+[Unit]
+Description=Notify in NC when a NextCloudPi update is available
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/ncp-notify-update
+ExecStartPost=/usr/local/bin/ncp-notify-unattended-upgrade
+
+[Install]
+WantedBy=default.target
+EOF
+
   # adjust max PHP processes so Apps don't overload the board (#146)
   sed -i 's|pm.max_children =.*|pm.max_children = 3|' /etc/php/7.0/fpm/pool.d/www.conf
 

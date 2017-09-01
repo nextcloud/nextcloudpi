@@ -40,6 +40,7 @@ Description=Notify in NC when a NextCloudPi update is available
 [Service]
 Type=simple
 ExecStart=/usr/local/bin/ncp-notify-update
+ExecStartPost=/usr/local/bin/ncp-notify-unattended-upgrade
 
 [Install]
 WantedBy=default.target
@@ -76,12 +77,40 @@ IFACE=\$( ip r | grep "default via" | awk '{ print \$5 }' )
 IP=\$( ip a | grep "global \$IFACE" | grep -oP '\d{1,3}(\.\d{1,3}){3}' | head -1 )
 
 sudo -u www-data php /var/www/nextcloud/occ notification:generate \
-  $USER_ "NextCloudPi \$( cat \$VERFILE )" \
-     -l "NextCloudPi \$( cat \$LATEST ) is available. Update from https://\$IP:4443"
+  $USER_ "NextCloudPi update" \
+     -l "Update from \$( cat \$VERFILE ) to \$( cat \$LATEST ) is available. Update from https://\$IP:4443"
 
 cat \$LATEST > \$NOTIFIED
 EOF
   chmod +x /usr/local/bin/ncp-notify-update
+
+  cat > /usr/local/bin/ncp-notify-unattended-upgrade <<EOF
+#!/bin/bash
+LOGFILE=/var/log/unattended-upgrades/unattended-upgrades.log
+STAMPFILE=/var/run/.ncp-notify-unattended-upgrades
+VERFILE=/usr/local/etc/ncp-version
+
+test -e "\$LOGFILE" || { echo "\$LOGFILE not found"; exit 1; }
+
+test -e "\$STAMPFILE" || touch "\$STAMPFILE"
+
+[ \$( date -r "\$LOGFILE" +'%y%m%d%H%M' ) -le \$( date -r "\$STAMPFILE" +'%y%m%d%H%M' ) ] && { echo "info is up to date"; exit 0; }
+
+LINE=\$( grep "INFO Packages that will be upgraded" "\$LOGFILE" )
+
+[[ "\$LINE" == "" ]] && { echo "no new upgrades"; touch "\$STAMPFILE"; exit 0; }
+
+PKGS=\$( sed 's|^.*Packages that will be upgraded: ||' <<< "\$LINE" )
+
+echo "Packages automatically upgraded: \$PKGS"
+
+touch "\$STAMPFILE"
+
+sudo -u www-data php /var/www/nextcloud/occ notification:generate \
+  $USER_ "NextCloudPi Unattended Upgrades" \
+     -l "Packages automatically upgraded \$PKGS"
+EOF
+  chmod +x /usr/local/bin/ncp-notify-unattended-upgrade
 
   # timer
   cat > /etc/systemd/system/nc-notify-updates.timer <<EOF
