@@ -16,10 +16,10 @@
 
 ACTIVE_=yes
 UPDATEURL_=https://freedns.afraid.org/dynamic/update.php?
-UPDATEHASH_=Rjh1aXdKQlUxWmFCd1lHT2JsNEpiQm55OjE1ODg0ODM4
-DOMAIN_=nextcloud.ignorelist.com
+UPDATEHASH_=abcdefghijklmnopqrstuvwxyzABCDEFGHIJK1234567
+DOMAIN_=nextcloud.example.com
 UPDATEINTERVAL_=30
-DESCRIPTION="FreeDNS client"
+DESCRIPTION="DDNS FreeDNS client (need account)"
 URL=${UPDATEURL_}${UPDATEHASH_}
 
 show_info()
@@ -34,7 +34,7 @@ Set the time in seconds in UPDATEINTERVAL.
 
 install()
 {
-	apt-get install dnsutils -y
+  apt-get install --no-install-recommends -y
 
   cat > /usr/local/bin/freedns.sh <<EOF
 #!/bin/bash
@@ -55,7 +55,7 @@ EOF
 [Unit]
 Description=FreeDNS client
 
-[Service]
+[Service]g
 Type=simple
 ExecStart=/bin/bash /usr/local/bin/freedns.sh
 
@@ -94,8 +94,8 @@ EOF
   echo "FreeDNS client is enabled"
   
   cd /var/www/nextcloud
-  sudo -u www-data php occ config:system:set trusted_domains 3 --value=$DOMAIN_
-  sudo -u www-data php occ config:system:set overwrite.cli.url --value=https://$DOMAIN_
+  sudo -u www-data php occ config:system:set trusted_domains 3 --value="$DOMAIN_"
+  sudo -u www-data php occ config:system:set overwrite.cli.url --value=https://"$DOMAIN_"
   
 
 }
