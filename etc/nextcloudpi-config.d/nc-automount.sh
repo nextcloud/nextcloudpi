@@ -71,11 +71,14 @@ ls -d /media/* &>/dev/null && {
   # create links
   i=0
   for d in `ls -d /media/*`; do
-    [ $i -eq 0 ] && \
-      ln -sT "$d" /media/USBdrive   || \
-      ln -sT "$d" /media/USBdrive$i
+    if [ $i -eq 0 ]; then
+      mountpoint -q "$d" && ln -sT "$d" /media/USBdrive
+    else
+      mountpoint -q "$d" && ln -sT "$d" /media/USBdrive$i
+    fi
     i=$(( i + 1 ))
   done
+
 }
 EOF
   chmod +x /usr/local/etc/nc-automount-links
