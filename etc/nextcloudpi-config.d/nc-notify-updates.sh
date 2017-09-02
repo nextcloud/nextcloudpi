@@ -63,7 +63,7 @@ VERFILE=/usr/local/etc/ncp-version
 LATEST=/var/run/.ncp-latest-version
 NOTIFIED=/var/run/.ncp-version-notified
 
-test -e \$LATEST  || exit 0;
+test -e \$LATEST || exit 0;
 ncp-test-updates || { echo "NextCloudPi up to date"; exit 0; }
 
 test -e \$NOTIFIED && [[ "\$( cat \$LATEST )" == "\$( cat \$NOTIFIED )" ]] && { 
