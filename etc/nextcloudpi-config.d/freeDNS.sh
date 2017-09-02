@@ -14,27 +14,42 @@
 #
 #
 
-ACTIVE_=yes
-UPDATEURL_=https://freedns.afraid.org/dynamic/update.php
+ACTIVE_=no
 UPDATEHASH_=abcdefghijklmnopqrstuvwxyzABCDEFGHIJK1234567
-DOMAIN_=nextcloud.example.com
+DOMAIN_=mynextcloud.example.com
 UPDATEINTERVAL_=30
 DESCRIPTION="DDNS FreeDNS client (need account)"
-URL="${UPDATEURL_}?${UPDATEHASH_}"
 
-show_info()
-{
-  whiptail --yesno \
-           --backtitle "NextCloudPi configuration" \
-           --title --title "Instructions for FreeDNS client 
-Set the time in seconds in UPDATEINTERVAL. 
->>> Long interval may lead to not updating your IP address for long time. <<<" \
-  20 90
-}
+UPDATEURL=https://freedns.afraid.org/dynamic/update.php
+URL="${UPDATEURL}?${UPDATEHASH_}"
 
 install()
 {
-apt-get install --no-install-recommends -y dnsutils
+  apt-get update
+  apt-get install --no-install-recommends -y dnsutils
+  cat > /etc/systemd/system/freedns.service <<EOF
+[Unit]
+Description=FreeDNS client
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/freedns.sh
+
+[Install]
+WantedBy=default.target
+EOF
+}
+
+configure() 
+{
+  [[ $ACTIVE_ != "yes" ]] && { 
+    systemctl stop    freedns.timer
+    systemctl disable freedns.timer
+    systemctl daemon-reload
+    echo "FreeDNS client is disabled"
+    return 0
+  }
+
   cat > /usr/local/bin/freedns.sh <<EOF
 #!/bin/bash
 echo "FreeDNS client started"
@@ -45,61 +60,43 @@ currentIP=$(wget -q -O - http://checkip.dyndns.org|sed s/[^0-9.]//g)
         wget -q -O /dev/null ${URL}
   }
 echo "Registered IP: \$registeredIP | Current IP: \$currentIP"
-
 EOF
-
   chmod +744 /usr/local/bin/freedns.sh
 
-  cat > /etc/systemd/system/freedns.service <<EOF
-[Unit]
-Description=FreeDNS client
-
-[Service]g
-Type=simple
-ExecStart=/bin/bash /usr/local/bin/freedns.sh
-
-[Install]
-WantedBy=default.target
-EOF
-}
-
-configure() 
-{
 
   cat > /etc/systemd/system/freedns.timer <<EOF
 [Unit] 
 Description=Timer to run FreeDNS client per interval 
 
 [Timer] 
-OnBootSec=${UPDATEINTERVAL_}
-OnUnitActiveSec=${UPDATEINTERVAL_}
+OnBootSec=${UPDATEINTERVAL_}min
+OnUnitActiveSec=${UPDATEINTERVAL_}min
 Unit=freedns.service 
 
 [Install] 
 WantedBy=timers.target
 EOF
-    systemctl daemon-reload
+  systemctl daemon-reload
 
-    [[ $ACTIVE_ != "yes" ]] && { 
-    systemctl stop    freedns.timer
-    systemctl disable freedns.timer
-    systemctl daemon-reload
-    echo "FreeDNS client is disabled"
-    return 0
-  }
   systemctl daemon-reload
   systemctl enable freedns.timer
   systemctl start  freedns.timer
-  echo "FreeDNS client is enabled"
   
   cd /var/www/nextcloud
   sudo -u www-data php occ config:system:set trusted_domains 3 --value="$DOMAIN_"
   sudo -u www-data php occ config:system:set overwrite.cli.url --value=https://"$DOMAIN_"
-  
 
+  echo "FreeDNS client is enabled"
 }
 
-  cleanup() { :; }
+cleanup()
+{
+  apt-get autoremove -y
+  apt-get clean
+  rm /var/lib/apt/lists/* -r
+}
+
+
 # License
 #
 # This script is free software; you can redistribute it and/or modify it
