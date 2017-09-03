@@ -14,7 +14,7 @@ source /usr/local/etc/library.sh
 
 # fix automount, reinstall if its old version
 AMFILE=/usr/local/etc/nextcloudpi-config.d/nc-automount.sh
-grep -q nc-automount.service $AMFILE || rm $AMFILE
+grep -q nc-automount-links.service $AMFILE || rm $AMFILE
 
 # copy all files in bin and etc
 for file in bin/* etc/*; do
@@ -102,6 +102,10 @@ EOF
 
   # adjust max PHP processes so Apps don't overload the board (#146)
   sed -i 's|pm.max_children =.*|pm.max_children = 3|' /etc/php/7.0/fpm/pool.d/www.conf
+
+  # automount remove old fstab lines
+  sed -i '/\/dev\/USBdrive/d' /etc/fstab
+  rm -f /etc/udev/rules.d/50-automount.rules /usr/local/etc/blknum
 
   # restart PHP
   sleep 3
