@@ -106,6 +106,7 @@ EOF
   # automount remove old fstab lines
   sed -i '/\/dev\/USBdrive/d' /etc/fstab
   rm -f /etc/udev/rules.d/50-automount.rules /usr/local/etc/blknum
+  udevadm control --reload-rules
 
   # restart PHP
   sleep 3

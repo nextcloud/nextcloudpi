@@ -105,6 +105,8 @@ EOF
   # adjust when mariaDB starts
   local DBUNIT=/lib/systemd/system/mariadb.service
   grep -q sleep $DBUNIT  || sed -i "/^ExecStart=/iExecStartPre=/bin/sleep 10" $DBUNIT
+
+  systemctl daemon-reload
 }
 
 configure()
