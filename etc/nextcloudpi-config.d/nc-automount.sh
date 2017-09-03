@@ -51,8 +51,18 @@ Before=mysqld.service
 [Service]
 Restart=always
 ExecStart=/usr/bin/udiskie -NTF
-ExecStartPost=/bin/sleep 8
-ExecStartPost=/usr/local/etc/nc-automount-links
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+  cat > /usr/lib/systemd/system/nc-automount-links.service <<'EOF'
+[Unit]
+Description=Monitor /media for mountpoints and create USBdrive* symlinks
+
+[Service]
+Restart=always
+ExecStart=/usr/local/etc/nc-automount-links-mon
 
 [Install]
 WantedBy=multi-user.target
@@ -64,13 +74,13 @@ EOF
 ls -d /media/* &>/dev/null && {
 
   # remove old links
-  for l in `ls /media/`; do
+  for l in $( ls /media/ ); do
     test -L /media/"$l" && rm /media/"$l"
   done
 
   # create links
   i=0
-  for d in `ls -d /media/*`; do
+  for d in $( ls -d /media/* 2>/dev/null ); do
     if [ $i -eq 0 ]; then
       mountpoint -q "$d" && ln -sT "$d" /media/USBdrive
     else
@@ -83,6 +93,15 @@ ls -d /media/* &>/dev/null && {
 EOF
   chmod +x /usr/local/etc/nc-automount-links
 
+  cat > /usr/local/etc/nc-automount-links-mon <<'EOF'
+#!/bin/bash
+inotifywait --monitor --event create --event delete --format '%f %e' /media/ | \
+  grep --line-buffered ISDIR | while read f; do
+    /usr/local/etc/nc-automount-links
+done
+EOF
+  chmod +x /usr/local/etc/nc-automount-links-mon
+
   # adjust when mariaDB starts
   local DBUNIT=/lib/systemd/system/mariadb.service
   grep -q sleep $DBUNIT  || sed -i "/^ExecStart=/iExecStartPre=/bin/sleep 10" $DBUNIT
@@ -92,12 +111,16 @@ configure()
 {
   [[ $ACTIVE_ != "yes" ]] && {
     systemctl stop    nc-automount
+    systemctl stop    nc-automount-links
     systemctl disable nc-automount
+    systemctl disable nc-automount-links
     echo "automount disabled"
     return 0
   }
   systemctl enable  nc-automount
+  systemctl enable  nc-automount-links
   systemctl start   nc-automount
+  systemctl start   nc-automount-links
   echo "automount enabled"
 }
 
