@@ -27,6 +27,9 @@ install()
 
   # the directory needs to be recreated if we are using nc-ramlogs
   grep -q mkdir /etc/init.d/smbd || sed -i "/\<start)/amkdir -p /var/log/samba" /etc/init.d/smbd
+
+  # disable SMB1 and SMB2
+  grep -q SMB3 /etc/samba/smb.conf || sed -i '/\[global\]/aprotocol = SMB3' /etc/samba/smb.conf
 }
 
 show_info()
