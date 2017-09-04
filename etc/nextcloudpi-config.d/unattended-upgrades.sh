@@ -21,6 +21,7 @@ install()
 {
   apt-get update
   apt install -y --no-install-recommends unattended-upgrades 
+  rm /etc/apt/apt.conf.d/20auto-upgrades
 }
 
 configure() 
