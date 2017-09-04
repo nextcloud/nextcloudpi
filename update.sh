@@ -108,6 +108,9 @@ EOF
   rm -f /etc/udev/rules.d/50-automount.rules /usr/local/etc/blknum
   udevadm control --reload-rules
 
+  # remove default config file in stretch
+  rm -f /etc/apt/apt.conf.d/20auto-upgrades
+
   # restart PHP
   sleep 3
   systemctl stop php7.0-fpm
