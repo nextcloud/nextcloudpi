@@ -111,6 +111,9 @@ EOF
   # remove default config file in stretch
   rm -f /etc/apt/apt.conf.d/20auto-upgrades
 
+  # disable SMB1 and SMB2
+  grep -q SMB3 /etc/samba/smb.conf || sed -i '/\[global\]/aprotocol = SMB3' /etc/samba/smb.conf
+
   # restart PHP to get updates in the ncp-web
   # FIXME: php doesn't come up if run from ncp-web
   #(
