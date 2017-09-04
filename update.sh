@@ -111,13 +111,16 @@ EOF
   # remove default config file in stretch
   rm -f /etc/apt/apt.conf.d/20auto-upgrades
 
-  # restart PHP
-  sleep 3
-  systemctl stop php7.0-fpm
-  systemctl stop mysqld
-  sleep 0.5
-  systemctl start php7.0-fpm
-  systemctl start mysqld
+  # restart PHP to get updates in the ncp-web
+  # FIXME: php doesn't come up if run from ncp-web
+  #(
+    #sleep 3
+    #systemctl stop php7.0-fpm
+    #systemctl stop mysqld
+    #sleep 0.5
+    #systemctl start php7.0-fpm
+    #systemctl start mysqld
+  #) &>/dev/null &
 
 # License
 #
