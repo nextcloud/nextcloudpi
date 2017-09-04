@@ -14,7 +14,7 @@
 #
 
 ACTIVE_=no
-DIR_=/media/USBdrive/ncdata/admin/files
+NCUSER_=admin
 USER_=pi
 PWD_=raspberry
 DESCRIPTION="SMB/CIFS file server (for Mac/Linux/Windows)"
@@ -50,16 +50,22 @@ configure()
 
   # CHECKS
   ################################
-  [ -d "$DIR_" ] || { echo -e "INFO: directory $DIR_ does not exist. Creating"; mkdir -p "$DIR_"; }
-  [[ $( stat -fc%d / ) == $( stat -fc%d $DIR_ ) ]] && \
-    echo -e "INFO: working in the SD card\nIf you want to use an external mount, make sure it is properly set up"
+  local DATADIR
+  DATADIR=$( sudo -u www-data /var/www/nextcloud/occ config:system:get datadirectory ) || {
+    echo -e "Error reading data directory. Is NextCloud running and configured?"; 
+    return 1;
+  }
+  [ -d "$DATADIR" ] || { echo -e "data directory $DATADIR not found"   ; return 1; }
+
+  local DIR="$DATADIR/$NCUSER_/files"
+  [ -d "$DIR"     ] || { echo -e "INFO: directory $DIR does not exist."; return 1; }
 
   # CONFIG
   ################################
   sed -i '/\[NextCloudPi\]/,+10d' /etc/samba/smb.conf
   cat >> /etc/samba/smb.conf <<EOF
 [NextCloudPi]
-	path = $DIR_
+	path = $DIR
 	writeable = yes
 ;	browseable = yes
 	valid users = $USER_
@@ -76,7 +82,7 @@ EOF
 
   usermod -aG www-data $USER_
   echo -e "$PWD_\n$PWD_" | smbpasswd -s -a $USER_
-  sudo chmod g+w $DIR_
+  sudo chmod g+w $DIR
   echo "SMB enabled"
 }
 
