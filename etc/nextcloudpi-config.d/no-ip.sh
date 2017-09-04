@@ -78,11 +78,7 @@ configure()
   sudo -u www-data php occ config:system:set overwrite.cli.url --value=https://"$DOMAIN_"
 }
 
-cleanup()
-{
-  rm -f /home/pi/.bash_history
-  systemctl disable ssh
-}
+cleanup() { :; }
 
 # License
 #
