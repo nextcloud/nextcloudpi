@@ -183,12 +183,8 @@ EOF
   echo "Don't forget to run nc-init"
 }
 
-cleanup()   
-{ 
-  rm -f /home/pi/.bash_history
+cleanup(){ :; }
 
-  systemctl disable ssh
-}
 # License
 #
 # This script is free software; you can redistribute it and/or modify it
