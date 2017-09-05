@@ -37,7 +37,7 @@ IMPORTANT: halt or umount the drive before extracting" \
 install()
 {
   apt-get update
-  apt-get install -y --no-install-recommends udiskie
+  apt-get install -y --no-install-recommends udiskie inotify-tools
 
   cat > /etc/udev/rules.d/99-udisks2.rules <<'EOF'
 ENV{ID_FS_USAGE}=="filesystem|other|crypto", ENV{UDISKS_FILESYSTEM_SHARED}="1"
