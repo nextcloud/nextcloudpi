@@ -34,6 +34,7 @@ This code also generates the [NextCloudPi ARM docker image](https://hub.docker.c
  * Let’s Encrypt for trusted HTTPS certificates.(  NEW 03-16-2017 )
  * Fail2Ban protection against brute force attacks. ( NEW 02-24-2017 )
  * Dynamic DNS support for no-ip.org ( NEW 03-05-2017 )
+ * Dynamic DNS support for freeDNS ( NEW 09-05-2017 )
  * dnsmasq DNS server with DNS cache ( NEW 03-09-2017 )
  * ModSecurity Web Application Firewall ( NEW 03-23-2017 )
  * NFS ready to mount your files over LAN ( NEW 04-13-2017 )
