@@ -14,6 +14,7 @@
 #
 
 ACTIVE_=no
+NOTIFYUSER_=admin
 DESCRIPTION="Automatically apply NextCloudPi updates"
 
 configure() 
@@ -24,15 +25,14 @@ configure()
     return 0
   }
 
-  cat > /etc/cron.daily/ncp-autoupdate <<'EOF'
+  cat > /etc/cron.daily/ncp-autoupdate <<EOF
 #!/bin/bash
 /usr/local/bin/ncp-test-updates && {
   /usr/local/bin/ncp-update
   sudo -u www-data php /var/www/nextcloud/occ notification:generate \
-    admin "NextCloudPi " \
-       -l "NextCloudPi was updated to $( cat /usr/local/etc/ncp-version )"
+    "$NOTIFYUSER_" "NextCloudPi " \
+       -l "NextCloudPi was updated to \$( cat /usr/local/etc/ncp-version )"
 }
-
 EOF
   chmod a+x /etc/cron.daily/ncp-autoupdate
   echo "automatic NextCloudPi updates enabled"
