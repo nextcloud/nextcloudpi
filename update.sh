@@ -14,7 +14,7 @@ source /usr/local/etc/library.sh
 
 # fix automount, reinstall if its old version
 AMFILE=/usr/local/etc/nextcloudpi-config.d/nc-automount.sh
-grep -q nc-automount-links.service $AMFILE || rm $AMFILE
+grep -q inotify-tools $AMFILE || rm $AMFILE
 
 # copy all files in bin and etc
 for file in bin/* etc/*; do
