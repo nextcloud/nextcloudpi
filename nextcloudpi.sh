@@ -138,8 +138,9 @@ EOF
   chmod a+x /usr/local/bin/ncp-update
   /usr/local/bin/ncp-update
 
-  # External requirements for Apps
+  # Optional packets for Nextcloud and Apps
   $APTINSTALL -o "Dpkg::Options::=--force-confold" php-smbclient 
+  $APTINSTALL postfix
 }
 
 configure() { :; }

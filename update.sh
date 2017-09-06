@@ -129,6 +129,19 @@ inotifywait --monitor --event create --event delete --format '%f %e' /media/ | \
 done
 EOF
   chmod +x /usr/local/etc/nc-automount-links-mon
+
+  # install and configure email if not present
+  type sendmail &>/dev/null || {
+    echo "Installing and configuring email"
+    apt-get update
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends postfix
+    OCC=/var/www/nextcloud/occ
+    sudo -u www-data php $OCC config:system:set mail_smtpmode     --value="php"
+    sudo -u www-data php $OCC config:system:set mail_smtpauthtype --value="LOGIN"
+    sudo -u www-data php $OCC config:system:set mail_from_address --value="admin"
+    sudo -u www-data php $OCC config:system:set mail_domain       --value="ownyourbits.com"
+}
+
   # restart PHP to get updates in the ncp-web
   # FIXME: php doesn't come up if run from ncp-web
   #(
