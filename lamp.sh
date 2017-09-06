@@ -104,10 +104,13 @@ EOF
     a2enconf php7.0-fpm
     a2enmod rewrite
     a2enmod headers
-    a2enmod env
     a2enmod dir
     a2enmod mime
     a2enmod ssl
+
+    a2dismod -f status reqtimeout env autoindex access_compat auth_basic authn_file authn_core alias access_compat
+    echo "ServerName localhost" >> /etc/apache2/apache2.conf
+
 
     # CONFIGURE LAMP FOR NEXTCLOUD
     ##########################################
