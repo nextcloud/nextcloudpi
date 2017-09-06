@@ -97,6 +97,8 @@ EOF
 #!/bin/bash
 inotifywait --monitor --event create --event delete --format '%f %e' /media/ | \
   grep --line-buffered ISDIR | while read f; do
+    echo $f
+    sleep 0.5
     /usr/local/etc/nc-automount-links
 done
 EOF
