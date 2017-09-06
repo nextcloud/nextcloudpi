@@ -135,8 +135,6 @@ EOF
   sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $UPLOADTMPDIR|" /etc/php/7.0/fpm/php.ini
   sed -i "s|^;\?sys_temp_dir =.*$|sys_temp_dir = $UPLOADTMPDIR|"     /etc/php/7.0/fpm/php.ini
 
-  touch /usr/local/etc/nextcloudpi-config.d/modsecurity.sh # TODO fix after migration to Stretch is done
-
   # update to latest version from github as part of the build process
   wget https://raw.githubusercontent.com/nextcloud/nextcloudpi/master/bin/ncp-update -O /usr/local/bin/ncp-update
   chmod a+x /usr/local/bin/ncp-update

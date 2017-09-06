@@ -16,6 +16,10 @@ source /usr/local/etc/library.sh
 AMFILE=/usr/local/etc/nextcloudpi-config.d/nc-automount.sh
 grep -q inotify-tools $AMFILE || rm $AMFILE
 
+# fix modsecurity, reinstall if its old verion
+MSFILE=/usr/local/etc/nextcloudpi-config.d/modsecurity.sh
+grep -q "NextCloudPi:" $MSFILE  || rm $MSFILE
+
 # copy all files in bin and etc
 for file in bin/* etc/*; do
   [ -f "$file" ] || continue;
