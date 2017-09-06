@@ -16,6 +16,7 @@
 
 ACTIVE_=no
 NCDIR=/var/www/nextcloud/
+NCPWB=/var/www/ncp-web/
 DESCRIPTION="Web Application Firewall for extra security (experimental)"
 
 install()
@@ -24,32 +25,17 @@ install()
   apt-get install -y --no-install-recommends libapache2-mod-security2 modsecurity-crs
   a2dismod security2
 
-  #FIXME - after migration to Stretch is done
+  cat >> /etc/modsecurity/crs/crs-setup.conf <<'EOF'
+
+  # NextCloudPi: allow PROPFIND for webDAV
+  SecAction "id:900200, phase:1, nolog, pass, t:none, setvar:'tx.allowed_methods=GET HEAD POST OPTIONS PROPFIND'"
+EOF
 
   # CONFIGURE
   cp /etc/modsecurity/modsecurity.conf-recommended /etc/modsecurity/modsecurity.conf
   sed -i "s|SecRuleEngine .*|SecRuleEngine Off|"               /etc/modsecurity/modsecurity.conf
   sed -i 's|SecTmpDir .*|SecTmpDir   /var/cache/modsecurity/|' /etc/modsecurity/modsecurity.conf
   sed -i 's|SecDataDir .*|SecDataDir /var/cache/modsecurity/|' /etc/modsecurity/modsecurity.conf
-
-  cp /usr/share/modsecurity-crs/modsecurity_crs_10_setup.conf /etc/modsecurity/modsecurity_crs_10_setup.conf
-  patch /etc/modsecurity/modsecurity_crs_10_setup.conf <<<'66,67c66
-< SecDefaultAction "phase:1,deny,log"
-< SecDefaultAction "phase:2,deny,log"
----
-> SecDefaultAction "phase:2,pass,log"
-152c151
-< #SecAction \
----
-> SecAction \
-278c277
-<   setvar:'\''tx.allowed_methods=GET HEAD POST OPTIONS'\'', \
----
->   setvar:'\''tx.allowed_methods=GET HEAD POST OPTIONS PROPFIND'\'', \
-280c279
-<   setvar:'\''tx.allowed_http_versions=HTTP/0.9 HTTP/1.0 HTTP/1.1'\'', \
----
->   setvar:'\''tx.allowed_http_versions=HTTP/1.1 HTTP/2.0'\'', \'
 
   cat >> /etc/apache2/apache2.conf <<EOF
 <IfModule mod_security2.c>
@@ -74,15 +60,15 @@ configure()
 <Directory $NCDIR>
   # VIDEOS
   SecRuleRemoveById 958291             # Range Header Checks
-  SecRuleRemoveById 981203             # Correlated Attack Attempt
+  SecRuleRemoveById 980120             # Correlated Attack Attempt
 
   # PDF
-  SecRuleRemoveById 950109             # Check URL encodings
+  SecRuleRemoveById 920230             # Check URL encodings
 
   # ADMIN (webdav)
   SecRuleRemoveById 960024             # Repeatative Non-Word Chars (heuristic)
   SecRuleRemoveById 981173             # SQL Injection Character Anomaly Usage
-  SecRuleRemoveById 981204             # Correlated Attack Attempt
+  SecRuleRemoveById 980130             # Correlated Attack Attempt
   SecRuleRemoveById 981243             # PHPIDS - Converted SQLI Filters
   SecRuleRemoveById 981245             # PHPIDS - Converted SQLI Filters
   SecRuleRemoveById 981246             # PHPIDS - Converted SQLI Filters
@@ -102,18 +88,23 @@ configure()
   SecRequestBodyNoFilesLimit 5242880
 
   # GENERAL
-  SecRuleRemoveById 960017             # Host header is a numeric IP address
+  SecRuleRemoveById 920350             # Host header is a numeric IP address
 
   # REGISTERED WARNINGS, BUT DID NOT HAVE TO DISABLE THEM
   #SecRuleRemoveById 981220 900046 981407
-  #SecRuleRemoveById 981222 981405 981185 981184
+  #SecRuleRemoveById 981222 981405 981185 949160
 
+</Directory>
+<Directory $NCPWB>
+  # GENERAL
+  SecRuleRemoveById 920350             # Host header is a numeric IP address
 </Directory>
 EOF
 
   [[ $ACTIVE_ == "yes" ]] && local STATE=On || local STATE=Off
   sed -i "s|SecRuleEngine .*|SecRuleEngine $STATE|" /etc/modsecurity/modsecurity.conf
-  [[ $ACTIVE_ == "yes" ]] && a2enmod security2 || a2dismod security2
+  [[ $ACTIVE_ == "yes" ]] && echo "Enabling module security2" || echo "Disabling module security2"
+  [[ $ACTIVE_ == "yes" ]] && a2enmod security2 &>/dev/null || a2dismod security2 &>/dev/null
 
   # delayed in bg so it does not kill the connection, and we get AJAX response
   ( sleep 2 && systemctl restart apache2 ) &>/dev/null & 
