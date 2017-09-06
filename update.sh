@@ -114,6 +114,17 @@ EOF
   # disable SMB1 and SMB2
   grep -q SMB3 /etc/samba/smb.conf || sed -i '/\[global\]/aprotocol = SMB3' /etc/samba/smb.conf
 
+  # improvements to automount-links
+  cat > /usr/local/etc/nc-automount-links-mon <<'EOF'
+#!/bin/bash
+inotifywait --monitor --event create --event delete --format '%f %e' /media/ | \
+  grep --line-buffered ISDIR | while read f; do
+    echo $f
+    sleep 0.5
+    /usr/local/etc/nc-automount-links
+done
+EOF
+  chmod +x /usr/local/etc/nc-automount-links-mon
   # restart PHP to get updates in the ncp-web
   # FIXME: php doesn't come up if run from ncp-web
   #(
