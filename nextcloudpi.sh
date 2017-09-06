@@ -68,6 +68,8 @@ EOF
   chmod 700 /home/www/ncp-launcher.sh
   echo "www-data ALL = NOPASSWD: /home/www/ncp-launcher.sh , /sbin/halt" >> /etc/sudoers
 
+  echo "ServerName localhost" >> /etc/apache2/apache2.conf
+
   # NEXTCLOUDPI MOTD
   ##########################################
   rm -rf /etc/update-motd.d
