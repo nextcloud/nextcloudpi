@@ -82,7 +82,13 @@ EOF
   # Default trusted domain ( only from nextcloudpi-config )
   test -f /usr/local/bin/nextcloud-domain.sh && bash /usr/local/bin/nextcloud-domain.sh
 
-  # more
+  # email
+  sudo -u www-data php occ config:system:set mail_smtpmode     --value="php"
+  sudo -u www-data php occ config:system:set mail_smtpauthtype --value="LOGIN"
+  sudo -u www-data php occ config:system:set mail_from_address --value="admin"
+  sudo -u www-data php occ config:system:set mail_domain       --value="ownyourbits.com"
+
+  # other
   sudo -u www-data php occ config:system:set overwriteprotocol --value=https
 }
 
