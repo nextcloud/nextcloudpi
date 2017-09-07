@@ -305,6 +305,16 @@ function create_torrent()
 
   createtorrent -a udp://tracker.opentrackr.org -p 1337 -c "NextCloudPi. Nextcloud for Raspberry Pi image" "$1" "$1".torrent
 }
+
+function generate_changelog()
+{
+  git log --graph --oneline --decorate \
+    --pretty=format:"[%<(13)%D](https://github.com/nextcloud/nextcloudpi/commit/%h) (%ad) %s" --date=short | \
+    grep 'tag: v' | \
+    sed '/HEAD ->\|origin/s|\[.*\(tag: v[0-9]\+\.[0-9]\+\.[0-9]\+\).*\]|[\1]|' | \
+    sed 's|* \[tag: |\n[|' > changelog.md
+}
+
 # License
 #
 # This script is free software; you can redistribute it and/or modify it

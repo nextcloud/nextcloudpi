@@ -47,6 +47,10 @@ create_torrent torrent/"$IMGNAME"
 
 mkdir -p partial && mv NextCloudPi*.bz2 partial
 
+
+# GENERATE CHANGELOG
+generate_changelog
+
 ## TESTING
 launch_qemu "$IMGNAME.img" &
 sleep 10
