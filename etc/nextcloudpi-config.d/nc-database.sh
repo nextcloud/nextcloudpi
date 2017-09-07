@@ -17,21 +17,13 @@
 DBDIR_=/media/USBdrive/ncdatabase
 DESCRIPTION="Move your database to a new location, like a USB drive"
 
-show_info()
-{
-  whiptail --yesno \
-           --backtitle "NextCloudPi configuration" \
-           --title "Info" \
-"Note that non Unix filesystems such as NTFS are not supported
+INFO="Note that non Unix filesystems such as NTFS are not supported
 because they do not provide a compatible user/permissions system
 
 You need to use a USB drive that is permanently on and is responsive 
 or the database will fail.
 
-** If it ever fails with a white page, move the database back to the SD **
-" \
-  20 90
-}
+** If it ever fails with a white page, move the database back to the SD **"
 
 configure()
 {

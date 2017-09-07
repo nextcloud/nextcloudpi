@@ -17,22 +17,14 @@
 ACTIVE_=no
 DESCRIPTION="Automount USB drives by plugging them in"
 
-show_info()
-{
-  whiptail --yesno \
-           --backtitle "NextCloudPi configuration" \
-           --title "Automount notes" \
-"Plugged in USB drives will be automounted under /media
+INFOTITLE="Automount notes"
+INFO="Plugged in USB drives will be automounted under /media
 on boot or at the moment of insertion.
 
 Format your drive as ext4 in order to move NC datafolder or database
 VFAT or NTFS is not recommended for this task, as it does not suport permissions
 
-Drives with multiple partitions are not supported
-
-IMPORTANT: halt or umount the drive before extracting" \
-  20 90
-}
+IMPORTANT: halt or umount the drive before extracting"
 
 install()
 {

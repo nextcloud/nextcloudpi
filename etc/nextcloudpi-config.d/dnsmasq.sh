@@ -19,14 +19,7 @@ DNSSERVER_=8.8.8.8
 CACHESIZE_=150 
 DESCRIPTION="DNS server with cache"
 
-show_info()
-{
-  whiptail --yesno \
-           --backtitle "NextCloudPi configuration" \
-           --title "Info" \
-"Remember to point your PC and devices DNS to your Raspberry Pi IP" \
-  20 90
-}
+INFO="Remember to point your PC and devices DNS to your Raspberry Pi IP" 
 
 install()
 {

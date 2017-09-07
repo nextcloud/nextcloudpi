@@ -220,15 +220,17 @@ function launch_script()
   )
 }
 
+# show an info box for a script if the INFO variable is set in the script
 function info_script()
 {
   (
     local SCRIPT=$1
     cd /usr/local/etc/nextcloudpi-config.d/ || return 1
-    unset show_info
+    unset show_info INFO INFOTITLE
     source ./"$SCRIPT"
-    [[ $( type -t show_info ) == function ]] || return 0
-    [[ $( type -t show_info ) == function ]] && show_info 
+    local INFOTITLE="${INFOTITLE:-Info}"
+    [[ "$INFO" == "" ]] && return 0
+    whiptail --yesno --backtitle "NextCloudPi configuration" --title "$INFOTITLE" "$INFO" 20 90
   )
 }
 

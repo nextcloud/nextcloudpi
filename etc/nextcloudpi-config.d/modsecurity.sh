@@ -19,6 +19,10 @@ NCDIR=/var/www/nextcloud/
 NCPWB=/var/www/ncp-web/
 DESCRIPTION="Web Application Firewall for extra security (experimental)"
 
+INFOTITLE="Experimental feature warning"
+INFO="This feature is highly experimental and has only been tested with
+a basic NextCloud installation. If a new App does not work disable it"
+
 install()
 {
   apt-get update
@@ -42,16 +46,6 @@ EOF
   SecServerSignature " "
 </IfModule>
 EOF
-}
-
-show_info()
-{
-  whiptail --yesno \
-           --backtitle "NextCloudPi configuration" \
-           --title "Experimental feature warning" \
-"This feature is highly experimental and has only been tested with
-a basic NextCloud installation. If a new App does not work disable it" \
-  20 90
 }
 
 configure() 

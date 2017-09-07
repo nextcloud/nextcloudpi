@@ -16,18 +16,11 @@
 LABEL_=myCloudDrive
 DESCRIPTION="Format an external USB drive as a ext4 partition (dangerous)"
 
-show_info()
-{
-  whiptail --yesno \
-    --backtitle "NextCloudPi configuration" \
-    --title "Instructions for USB drive formatting" \
-"Make sure that ONLY the USB drive that you want to format is plugged in.
+INFOTITLE="Instructions for USB drive formatting" 
+INFO="Make sure that ONLY the USB drive that you want to format is plugged in.
+careful, this will destroy any data in the USB drive
 
-Be careful, this will destroy any data in the USB drive
-
-** YOU WILL LOSE ALL YOUR USB DATA ** " \
-      20 90
-}
+** YOU WILL LOSE ALL YOUR USB DATA **"
 
 configure() 
 {

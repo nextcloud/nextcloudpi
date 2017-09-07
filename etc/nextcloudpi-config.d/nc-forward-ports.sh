@@ -17,19 +17,13 @@ HTTPSPORT_=443
 HTTPPORT_=80
 DESCRIPTION="Set port forwarding to access from outside (UPnP)"
 
-show_info()
-{
-  whiptail --yesno \
-    --backtitle "NextCloudPi configuration" \
-    --title "Instructions for UPnP Port Forwarding" \
-"For NextCloudPi to be able to setup your ports, UPnP must be activated
+INFOTITLE="Instructions for UPnP Port Forwarding"
+INFO="For NextCloudPi to be able to setup your ports, UPnP must be activated
 in your router. Activate it now on your router admin webpage.
 
 ** UPnP is considered a security risk **
 
-Don't forget to disable it afterwards" \
-      20 90
-}
+Don't forget to disable it afterwards"
 
 install()
 {
