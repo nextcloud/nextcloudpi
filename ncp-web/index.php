@@ -48,7 +48,7 @@
       {
         echo '<div id="notification">';
         echo '<div class="row type-error closeable">';
-        echo "version " . file_get_contents( "/var/run/.ncp-latest-version" ) . " is available";
+        echo "<a target=\"_blank\" href=\"https://github.com/nextcloud/nextcloudpi/blob/devel/changelog.md\">version " . file_get_contents( "/var/run/.ncp-latest-version" ) . " is available</a>";
         echo '<a class="action close icon-close" href="#" alt="Dismiss"></a>';
         echo '</div>';
         echo '</div>';
