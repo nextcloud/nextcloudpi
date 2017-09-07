@@ -17,15 +17,8 @@
 DATADIR_=/media/USBdrive/ncdata
 DESCRIPTION="Change your data dir to a new location, like a USB drive"
 
-show_info()
-{
-  whiptail --yesno \
-           --backtitle "NextCloudPi configuration" \
-           --title "Info" \
-"Note that non Unix filesystems such as NTFS are not supported
-because they do not provide a compatible user/permissions system" \
-  20 90
-}
+INFO="Note that non Unix filesystems such as NTFS are not supported
+because they do not provide a compatible user/permissions system"
 
 configure()
 {

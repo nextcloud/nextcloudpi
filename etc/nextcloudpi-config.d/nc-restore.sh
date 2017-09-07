@@ -21,20 +21,13 @@ BASEDIR=/var/www
 DBADMIN=ncadmin
 DESCRIPTION="Restore a previously backuped NC instance"
 
-show_info()
-{
-  [ -d /var/www/nextcloud ] && \
-    whiptail --yesno \
-           --backtitle "NextCloudPi configuration" \
-           --title "Restore NextCloud backup" \
-"This new installation will cleanup current
+INFOTITLE="Restore NextCloud backup"
+INFO="This new installation will cleanup current
 NextCloud instance, including files and database.
 
 ** perform backup before proceding **
 
-You can use nc-backup " \
-  20 90
-}
+You can use nc-backup"
 
 configure()
 { 

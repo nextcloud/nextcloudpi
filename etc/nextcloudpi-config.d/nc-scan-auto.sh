@@ -17,15 +17,10 @@ ACTIVE_=no
 SCANINTERVAL_=60
 DESCRIPTION="Periodically scan NC for externally modified files"
 
-show_info()
-{
-  whiptail --yesno \
-    --backtitle "NextCloudPi configuration" \
-    --title "Instructions for auto synchronization" \
-"Set the time in minutes in SCANINTERVAL. \n
->>> If there are too many files this can greatly affect performance. <<<" \
-      20 90
-}
+INFOTITLE="Instructions for auto synchronization"
+INFO="Set the time in minutes in SCANINTERVAL.
+
+>>> If there are too many files this can greatly affect performance. <<<"
 
 install() 
 {

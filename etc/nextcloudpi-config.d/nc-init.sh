@@ -19,18 +19,12 @@ ADMINPASS_=ownyourbits
 DBADMIN=ncadmin
 DESCRIPTION="(Re)initiate Nextcloud to a clean configuration"
 
-show_info()
-{
-  whiptail --yesno \
-         --backtitle "NextCloudPi configuration" \
-         --title "Clean NextCloud configuration" \
-"This action will configure NextCloud to NextCloudPi defaults.
+INFOTITLE="Clean NextCloud configuration"
+INFO="This action will configure NextCloud to NextCloudPi defaults.
 
 ** YOUR CONFIGURATION WILL BE LOST **
 
-" \
-  20 90
-}
+"
 
 configure()
 {

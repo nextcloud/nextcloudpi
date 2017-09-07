@@ -1,5 +1,7 @@
 
-[v0.26.17](https://github.com/nextcloud/nextcloudpi/commit/a7bfd17) (2017-09-07) ncp-web: link to changelog
+[v0.26.18](https://github.com/nextcloud/nextcloudpi/commit/a4144dc) (2017-09-07) refactor show_info(), make it only depend on variables
+
+[v0.26.17](https://github.com/nextcloud/nextcloudpi/commit/0197f31) (2017-09-07) ncp-web: link to changelog
 
 [v0.26.16](https://github.com/nextcloud/nextcloudpi/commit/e3d07fb) (2017-09-06) added sendmail and mail configuration
 

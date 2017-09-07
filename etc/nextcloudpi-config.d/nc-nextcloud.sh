@@ -23,21 +23,16 @@ DESCRIPTION="Install any NextCloud version"
 
 export DEBIAN_FRONTEND=noninteractive
 
-show_info()
-{
-  [ -d /var/www/nextcloud ] && \
-    whiptail --yesno \
-           --backtitle "NextCloudPi configuration" \
-           --title "NextCloud installation" \
-"This new installation will cleanup current
+[ -d /var/www/nextcloud ] && {                        # don't show this during image build
+INFOTITLE="NextCloud installation"
+INFO="This new installation will cleanup current
 NextCloud instance, including files and database.
 
 You can later use nc-init to configure to NextCloudPi defaults
 
 ** perform backup before proceding **
 
-You can use nc-backup " \
-  20 90
+You can use nc-backup "
 }
 
 install() { :; }

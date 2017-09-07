@@ -20,6 +20,13 @@ USER_=www-data
 GROUP_=www-data
 DESCRIPTION="NFS network file system server (for Linux LAN)"
 
+INFOTITLE="Instructions for external synchronization"
+INFO="If we intend to modify the data folder through NFS,
+then we have to synchronize NextCloud to make it aware of the changes.
+
+This can be done manually or automatically using 'nc-scan' and 'nc-scan-auto' 
+from 'nextcloudpi-config'" 
+
 install()
 {
   apt-get update
@@ -59,18 +66,6 @@ Restart=on-failure
 WantedBy=sysinit.target
 Alias=portmap
 EOF
-}
-
-show_info()
-{
-  whiptail --yesno \
-           --backtitle "NextCloudPi configuration" \
-           --title "Instructions for external synchronization" \
-"If we intend to modify the data folder through NFS,
-then we have to synchronize NextCloud to make it aware of the changes. \n
-This can be done manually or automatically using 'nc-scan' and 'nc-scan-auto' 
-from 'nextcloudpi-config'" \
-  20 90
 }
 
 configure()

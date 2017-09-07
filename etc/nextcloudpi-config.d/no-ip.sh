@@ -21,15 +21,8 @@ DOMAIN_=mycloud.ownyourbits.com
 TIME_=30
 DESCRIPTION="DDNS no-ip free provider (need account)"
 
-show_info()
-{
-  whiptail --yesno \
-           --backtitle "NextCloudPi configuration" \
-           --title "Info" \
-"For this step to succeed, you need to register a noip account first.
-Internet access is required for this configuration to complete." \
-  20 90
-}
+INFO="For this step to succeed, you need to register a noip account first.
+Internet access is required for this configuration to complete."
 
 install()
 {

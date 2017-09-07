@@ -22,24 +22,17 @@ VHOSTCFG=/etc/apache2/sites-available/nextcloud.conf
 VHOSTCFG2=/etc/apache2/sites-available/ncp.conf
 DESCRIPTION="Automatic signed SSL certificates"
 
+INFOTITLE="Warning"
+INFO="Internet access is required for this configuration to complete
+Both ports 80 and 443 need to be accessible from the internet
+ 
+Your certificate will be automatically renewed every month"
+
 install()
 {
   cd /etc || return 1
   git clone https://github.com/letsencrypt/letsencrypt
   /etc/letsencrypt/letsencrypt-auto --help # do not actually run certbot, only install packages
-}
-
-show_info()
-{
-  whiptail --yesno \
-           --backtitle "NextCloudPi configuration" \
-           --title "Warning" \
-"Internet access is required for this configuration to complete
-Both ports 80 and 443 need to be accessible from the internet
- 
-Your certificate will be automatically renewed every month
-" \
-  20 90
 }
 
 # tested with git version v0.11.0-71-g018a304

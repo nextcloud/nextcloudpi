@@ -17,15 +17,9 @@
 ACTIVE_=no
 DESCRIPTION="mount logs in RAM to prevent SD degradation (faster, consumes more RAM)"
 
-show_info()
-{
-  whiptail --yesno \
-           --backtitle "NextCloudPi configuration" \
-           --title "Warning" \
-"If you are installing software other than NextCloud
-that creates folders under '/var/log/' disable this feature" \
-  20 90
-}
+INFOTITLE="Warning"
+INFO="If you are installing software other than NextCloud
+that creates folders under '/var/log/' disable this feature"
 
 configure()
 {

@@ -19,6 +19,13 @@ USER_=pi
 PWD_=raspberry
 DESCRIPTION="SMB/CIFS file server (for Mac/Linux/Windows)"
 
+INFOTITLE="Instructions for external synchronization"
+INFO="If we intend to modify the data folder through SAMBA,
+then we have to synchronize NextCloud to make it aware of the changes.
+
+This can be done manually or automatically using 'nc-scan' and 'nc-scan-auto' 
+from 'nextcloudpi-config'"
+
 install()
 {
   apt-get update
@@ -30,18 +37,6 @@ install()
 
   # disable SMB1 and SMB2
   grep -q SMB3 /etc/samba/smb.conf || sed -i '/\[global\]/aprotocol = SMB3' /etc/samba/smb.conf
-}
-
-show_info()
-{
-  whiptail --yesno \
-           --backtitle "NextCloudPi configuration" \
-           --title "Instructions for external synchronization" \
-"If we intend to modify the data folder through SAMBA,
-then we have to synchronize NextCloud to make it aware of the changes. \n
-This can be done manually or automatically using 'nc-scan' and 'nc-scan-auto' 
-from 'nextcloudpi-config'" \
-  20 90
 }
 
 configure()
