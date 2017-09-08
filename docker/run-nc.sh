@@ -1,7 +1,7 @@
 #!/bin/bash
 
 NCDIR=/var/www/nextcloud
-OCC="$NCDIR/www/nextcloud/occ"
+OCC="$NCDIR/occ"
 
 cleanup()
 {

@@ -17,7 +17,7 @@ DOMAIN_=mycloud.ownyourbits.com
 EMAIL_=mycloud@ownyourbits.com
 
 NCDIR=/var/www/nextcloud
-OCC="$NCDIR/www/nextcloud/occ"
+OCC="$NCDIR/occ"
 VHOSTCFG=/etc/apache2/sites-available/nextcloud.conf
 VHOSTCFG2=/etc/apache2/sites-available/ncp.conf
 DESCRIPTION="Automatic signed SSL certificates"
