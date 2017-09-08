@@ -67,15 +67,28 @@ mysqldump -u root --single-transaction nextcloud > \$DBBACKUP
 [[ "$INCLUDEDATA_" == "yes" ]] && echo -e "backup datadir... "
 echo -e "backup files..."
 mkdir -p $DESTDIR_
-tar -cf \$DESTFILE \$DBBACKUP nextcloud/ --exclude 'nextcloud/data/*/files/*' && \
-  echo -e "backup \$DESTFILE generated" || \
-  echo -e "error generating backup"
-rm \$DBBACKUP
+tar -cf "\$DESTFILE" "\$DBBACKUP" nextcloud/ \
+  --exclude "nextcloud/data/*/files/*" \
+  --exclude "nextcloud/data/.opcache" \
+  --exclude "nextcloud/data/{access,error,nextcloud}.log" \
+  --exclude "nextcloud/data/access.log" \
+    || {
+          echo -e "error generating backup"
+          sudo -u www-data php "$BASEDIR"/nextcloud/occ maintenance:mode --off
+          return 1
+        }
+  rm "\$DBBACKUP"
 
-[[ "$INCLUDEDATA_" == "yes" ]] && {
-  tar -rf \$DESTFILE -C \$DATADIR/.. \$( basename \$DATADIR ) || \
-    echo -e "error generating data backup"
-}
+  [[ "$INCLUDEDATA_" == "yes" ]] && {
+    echo -e "backup data files..."
+    tar -rf "\$DESTFILE" -C "\$DATADIR"/.. "\$( basename "\$DATADIR" )" \
+    || {
+          echo -e "error generating backup"
+          sudo -u www-data php "$BASEDIR"/nextcloud/occ maintenance:mode --off
+          return 1
+        }
+  } 
+  echo -e "backup \$DESTFILE generated"
 
 # delete older backups
 [[ $BACKUPLIMIT_ != 0 ]] && {
