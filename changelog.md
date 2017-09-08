@@ -1,5 +1,9 @@
 
-[v0.26.20](https://github.com/nextcloud/nextcloudpi/commit/bbbe114) (2017-09-08) backend: is_active() functionality
+[v0.26.22](https://github.com/nextcloud/nextcloudpi/commit/e38f24c) (2017-09-08) build devel: deactivate unattended upgrades
+
+[v0.26.21](https://github.com/nextcloud/nextcloudpi/commit/64e878d) (2017-09-08) tag images
+
+[v0.26.20](https://github.com/nextcloud/nextcloudpi/commit/fb900b8) (2017-09-08) backend: is_active() functionality
 
 [v0.26.19](https://github.com/nextcloud/nextcloudpi/commit/9e7b3ab) (2017-09-08) letsencrypt: occ path fix
 
