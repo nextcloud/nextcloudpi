@@ -22,6 +22,12 @@ Keep in mind that many problems come from faulty power sources and corrupted SD 
 
 ### What is the base image that you installed on the SD card? ( eg: NextCloudPi_07-21-17 )
 
+You can discover this by executing
+
+```
+cat /usr/local/etc/ncp-baseimage
+```
+
 ### Expected behavior
 
 ### Actual behaviour

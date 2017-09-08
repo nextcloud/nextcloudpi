@@ -142,6 +142,9 @@ EOF
     sudo -u www-data php $OCC config:system:set mail_domain       --value="ownyourbits.com"
 }
 
+# images are now tagged
+test -f /usr/local/etc/ncp-baseimage || echo "untagged" > /usr/local/etc/ncp-baseimage
+
   # restart PHP to get updates in the ncp-web
   # FIXME: php doesn't come up if run from ncp-web
   #(
