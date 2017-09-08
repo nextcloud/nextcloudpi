@@ -1,5 +1,17 @@
 
-[v0.26.22](https://github.com/nextcloud/nextcloudpi/commit/e38f24c) (2017-09-08) build devel: deactivate unattended upgrades
+[v0.26.28](https://github.com/nextcloud/nextcloudpi/commit/94eb3ce) (2017-09-08) nc-backup: small fixes
+
+[v0.26.27](https://github.com/nextcloud/nextcloudpi/commit/649e8b7) (2017-09-10) ncp-web: link to wiki info for each extra
+
+[v0.26.26](https://github.com/nextcloud/nextcloudpi/commit/6f25713) (2017-09-10) ncp-web: minor tweaks
+
+[v0.26.25](https://github.com/nextcloud/nextcloudpi/commit/fab1815) (2017-09-10) ncp-web: click version for changelog. click new version notification to nc-update
+
+[v0.26.24](https://github.com/nextcloud/nextcloudpi/commit/ea5bbb4) (2017-09-10) nc-format-USB: silent mkfs output
+
+[v0.26.23](https://github.com/nextcloud/nextcloudpi/commit/e820243) (2017-09-10) ncp-web: display info for each option
+
+[v0.26.22](https://github.com/nextcloud/nextcloudpi/commit/a20243e) (2017-09-09) nc-format-USB: adjust to the new automount system
 
 [v0.26.21](https://github.com/nextcloud/nextcloudpi/commit/64e878d) (2017-09-08) tag images
 
