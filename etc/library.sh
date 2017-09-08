@@ -210,6 +210,17 @@ function activate_script()
   launch_script "$SCRIPT"
 }
 
+function is_active_script()
+{
+  (
+    local SCRIPT=$1
+    unset is_active
+    source "$SCRIPT"
+    grep -q "^ACTIVE_=yes" "$SCRIPT" && return 0
+    [[ $( type -t is_active ) == function ]] && is_active
+  )
+}
+
 function launch_script()
 {
   (

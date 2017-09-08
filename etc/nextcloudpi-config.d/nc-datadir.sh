@@ -20,6 +20,13 @@ DESCRIPTION="Change your data dir to a new location, like a USB drive"
 INFO="Note that non Unix filesystems such as NTFS are not supported
 because they do not provide a compatible user/permissions system"
 
+is_active()
+{
+  local SRCDIR
+  SRCDIR=$( cd /var/www/nextcloud; sudo -u www-data php occ config:system:get datadirectory ) || return 1;
+  [[ "$SRCDIR" != "/var/www/nextcloud/data" ]]
+}
+
 configure()
 {
   ## CHECKS

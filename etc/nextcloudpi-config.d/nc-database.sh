@@ -25,6 +25,12 @@ or the database will fail.
 
 ** If it ever fails with a white page, move the database back to the SD **"
 
+is_active()
+{
+  local SRCDIR=$( grep datadir /etc/mysql/mariadb.conf.d/50-server.cnf | awk -F "= " '{ print $2 }' )
+  [[ "$SRCDIR" != "/var/lib/mysql" ]]
+}
+
 configure()
 {
   local SRCDIR=$( grep datadir /etc/mysql/mariadb.conf.d/50-server.cnf | awk -F "= " '{ print $2 }' )
