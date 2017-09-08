@@ -14,9 +14,15 @@
 # More at https://ownyourbits.com/
 #
 
-SWAPFILE_=/var/swap
+SWAPFILE_=/media/USBdrive/swap
 SWAPSIZE_=1024
 DESCRIPTION="Move and resize your swapfile. Recommended to move to a permanent USB drive"
+
+is_active()
+{
+  local DIR=$( swapon -s | sed -n 2p | awk '{ print $1 }' )
+  [[ "$DIR" != "/var/swap" ]]
+}
 
 configure()
 {

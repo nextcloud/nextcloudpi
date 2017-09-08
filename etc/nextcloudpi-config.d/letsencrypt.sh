@@ -28,6 +28,11 @@ Both ports 80 and 443 need to be accessible from the internet
  
 Your certificate will be automatically renewed every month"
 
+is_active()
+{
+  test -d /etc/letsencrypt/live
+}
+
 install()
 {
   cd /etc || return 1

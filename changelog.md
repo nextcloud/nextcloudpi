@@ -1,5 +1,9 @@
 
-[v0.26.18](https://github.com/nextcloud/nextcloudpi/commit/a4144dc) (2017-09-07) refactor show_info(), make it only depend on variables
+[v0.26.20](https://github.com/nextcloud/nextcloudpi/commit/bbbe114) (2017-09-08) backend: is_active() functionality
+
+[v0.26.19](https://github.com/nextcloud/nextcloudpi/commit/9e7b3ab) (2017-09-08) letsencrypt: occ path fix
+
+[v0.26.18](https://github.com/nextcloud/nextcloudpi/commit/0fcde74) (2017-09-07) refactor show_info(), make it only depend on variables
 
 [v0.26.17](https://github.com/nextcloud/nextcloudpi/commit/0197f31) (2017-09-07) ncp-web: link to changelog
 
