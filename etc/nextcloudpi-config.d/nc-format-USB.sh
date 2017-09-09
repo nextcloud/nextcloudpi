@@ -34,18 +34,11 @@ configure()
   }
 
   # umount if mounted
-  umount /dev/USBdrive* &> /dev/null
+  umount /media/USBdrive* &> /dev/null
 
   # check still not mounted
-  local DEVS=()
-  local LINKS=( $( ls /dev/USBdrive* 2>/dev/null ) )
-
-  for link in ${LINKS[@]}; do
-    DEVS+=( $( readlink $link ) )
-  done
-
-  for dev in ${DEVS[@]}; do
-    grep -q /dev/$dev /proc/mounts && { echo "/dev/$dev is still mounted"; return 1; }
+  for dir in $( ls -d /media/* 2>/dev/null ); do
+    mountpoint -q $dir && { echo "$dir is still mounted"; return 1; }
   done
 
   # do it
@@ -55,11 +48,6 @@ configure()
   wipefs -a -f /dev/"$NAME" || return 1
   printf 'o\nn\np\n1\n\n\nw\n' | sudo fdisk /dev/"$NAME" || return 1
   mkfs.ext4 -F /dev/"${NAME}1" -L "$LABEL_"
-
-  # trigger automount rules if active
-  test -f /etc/udev/rules.d/50-automount.rules || return 0
-  udevadm trigger
-  mount /dev/USBdrive*
 }
 
 install() { :; }
