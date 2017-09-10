@@ -47,8 +47,8 @@
       if ( $ret == 0 ) 
       {
         echo '<div id="notification">';
-        echo '<div class="row type-error closeable">';
-        echo "<a target=\"_blank\" href=\"https://github.com/nextcloud/nextcloudpi/blob/devel/changelog.md\">version " . file_get_contents( "/var/run/.ncp-latest-version" ) . " is available</a>";
+        echo '<div id="update-notification" class="row type-error closeable">';
+        echo "version " . file_get_contents( "/var/run/.ncp-latest-version" ) . " is available";
         echo '<a class="action close icon-close" href="#" alt="Dismiss"></a>';
         echo '</div>';
         echo '</div>';
@@ -58,13 +58,15 @@
 
   <header role="banner"><div id="header">
     <div id="header-left">
-        <a href="https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/"
-            id="nextcloudpi" tabindex="1" target="_blank">
-            <div class="logo-icon">
-                <h1 class="hidden-visually">NextCloudPi</h1>
-            </div>
-        </a>
-      <?php echo file_get_contents( "/usr/local/etc/ncp-version" ) . "&nbsp;&nbsp;"; ?>
+      <a href="https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/"
+           id="nextcloudpi" tabindex="1" target="_blank">
+        <div class="logo-icon">
+           <h1 class="hidden-visually">NextCloudPi</h1>
+        </div>
+      </a>
+      <a id=versionlink target="_blank" href="https://github.com/nextcloud/nextcloudpi/blob/devel/changelog.md">
+        <?php echo file_get_contents( "/usr/local/etc/ncp-version" ) ?>
+      </a>
     </div>
     <div id="header-right">
       <div id="poweroff">

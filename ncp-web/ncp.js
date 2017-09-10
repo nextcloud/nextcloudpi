@@ -17,6 +17,18 @@ function errorMsg()
   $('#config-box').fill( "Something went wrong. Try refreshing the page" ); 
 }
 
+function cfgreqReceive( result )
+{
+  var ret = $.parseJSON( result );
+  if ( ret.token )
+    $('#csrf-token').set( { value: ret.token } );
+  $('#circle-retstatus').hide();
+  $('#config-box').ht( ret.output );
+  $('#config-box-title').fill( $( '#' + selectedID + '-desc' ).get( '.value' ) ); 
+  $('#config-box-info' ).fill( $( '#' + selectedID + '-info' ).get( '.value' ) ); 
+  $('#config-box-wrapper').show();
+}
+
 $(function() 
 {
   // Event source to receive process output in real time
@@ -45,8 +57,6 @@ $(function()
     confLock = true;
 
     $( '#' + selectedID ).set('-active');
-    this.set( '+active' );
-
     var that = this;
     $.request('post', 'ncp-launcher.php', { action:'cfgreq', 
                                             ref:this.get('.id') ,
@@ -54,14 +64,10 @@ $(function()
       function success( result ) 
       {
         selectedID = that.get('.id');
-        var ret = $.parseJSON( result );
-        if ( ret.token )
-          $('#csrf-token').set( { value: ret.token } );
-        $('#circle-retstatus').hide();
-        $('#config-box').ht( ret.output );
-        $('#config-box-title').fill( $( '#' + selectedID + '-desc' ).get( '.value' ) ); 
-        $('#config-box-info' ).fill( $( '#' + selectedID + '-info' ).get( '.value' ) ); 
-        $('#config-box-wrapper').show();
+        that.set( '+active' );
+
+        cfgreqReceive( result );
+
         confLock = false;
       }).error( errorMsg );
 
@@ -113,6 +119,33 @@ $(function()
         confLock = false;
       }).error( errorMsg );
   });
+
+  // Update notification
+  $( '#notification' ).on('click', function(e)
+  {
+    if ( confLock ) return;
+    confLock = true;
+    
+    $( '#' + selectedID ).set('-active');
+
+    // request
+    $.request('post', 'ncp-launcher.php', { action:'cfgreq', 
+                                            ref:'nc-update' ,
+                                            csrf_token: $( '#csrf-token' ).get( '.value' ) }).then( 
+      function success( result ) 
+      {
+        selectedID = 'nc-update';
+        $( '#nc-update' ).set( '+active' );
+
+        cfgreqReceive( result );
+
+        confLock = false;
+      }
+      ).error( errorMsg );
+
+    //clear details box
+    $('#details-box').hide( '' );
+  } );
 
   // Power-off button
   $( '#poweroff' ).on('click', function(e)
