@@ -27,6 +27,8 @@ function cfgreqReceive( result )
   $('#config-box-title').fill( $( '#' + selectedID + '-desc' ).get( '.value' ) ); 
   $('#config-box-info' ).fill( $( '#' + selectedID + '-info' ).get( '.value' ) ); 
   $('#config-box-wrapper').show();
+  $('#config-extra-info').set( { $display: 'inline-block' } );
+  $('#config-extra-info').up().set( '@href', 'https://github.com/nextcloud/nextcloudpi/wiki/Configuration-Reference#' + selectedID );
 }
 
 $(function() 

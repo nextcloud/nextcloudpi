@@ -116,6 +116,9 @@
 
       <div id="app-content">
         <h2 id="config-box-title">Configure NextCloudPi features</h2>
+        <a href="#" target="_blank">
+          <div id="config-extra-info" class="icon-info"></div>
+        </a>
         <div id="config-box-info"></div>
         <br/>
         <div id="config-box-wrapper" class="hidden">

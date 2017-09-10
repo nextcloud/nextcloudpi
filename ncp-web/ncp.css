@@ -1129,6 +1129,13 @@ select {
   padding: 8px;
 }
 
+.icon-info {
+  background-image: url('info.svg');
+  padding: 8px;
+  float: right;
+  display: none;
+}
+
 #expand #expandDisplayName {
   padding: 8px;
   opacity: 0.6;
