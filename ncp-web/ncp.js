@@ -58,8 +58,9 @@ $(function()
         if ( ret.token )
           $('#csrf-token').set( { value: ret.token } );
         $('#circle-retstatus').hide();
-        $('#config-box').ht( ret.output ); 
-        $('#config-box-title').fill( $( 'input' , '#' + selectedID ).get( '.value' ) ); 
+        $('#config-box').ht( ret.output );
+        $('#config-box-title').fill( $( '#' + selectedID + '-desc' ).get( '.value' ) ); 
+        $('#config-box-info' ).fill( $( '#' + selectedID + '-info' ).get( '.value' ) ); 
         $('#config-box-wrapper').show();
         confLock = false;
       }).error( errorMsg );

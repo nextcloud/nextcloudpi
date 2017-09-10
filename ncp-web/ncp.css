@@ -1075,6 +1075,11 @@ select {
   text-align: center;
 }
 
+#config-box-info {
+  white-space: pre;
+  text-align: center;
+}
+
 #config-button-wrapper {
   display: flex;
   align-items: center;
@@ -1123,7 +1128,6 @@ select {
   background-image: url('green-circle.svg');
   padding: 8px;
 }
-
 
 #expand #expandDisplayName {
   padding: 8px;
