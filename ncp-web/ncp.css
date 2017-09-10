@@ -1133,3 +1133,19 @@ select {
   padding: 8px;
   opacity: 0.6;
 }
+
+a#versionlink{
+ border:0;
+ color:white;
+ text-decoration:none;
+ cursor:pointer
+}
+
+#update-notification {
+  cursor: pointer;
+}
+
+/* lower version link */
+#header #header-left {
+ align-items:baseline
+}
