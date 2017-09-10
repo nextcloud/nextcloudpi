@@ -88,21 +88,25 @@
               foreach($files as $file) 
               {
                 $script = pathinfo( $file , PATHINFO_FILENAME );
-                $fh     = fopen( $path . $file ,'r');
+                $txt = file_get_contents( $path . $file );
+
                 $active = "";
-                while ($line = fgets($fh)) 
-                {
-                  if ( $line == "ACTIVE_=yes\n" )
-                    $active = " ✓";
-                  if ( preg_match('/^DESCRIPTION="(.*)"$/', $line, $matches) )
-                  {
-                    echo "<li id=\"$script\" class=\"nav-recent\">";
-                    echo "<a href=\"#\"> $script$active </a>";
-                    echo "<input type=\"hidden\" value=\"$matches[1]\" />";
-                    echo "</li>";
-                  }
-                }
-                fclose($fh);
+                if ( preg_match('/^ACTIVE_=yes$/m', $txt, $matches) )
+                  $active = " ✓";
+
+                echo "<li id=\"$script\" class=\"nav-recent\">";
+                echo "<a href=\"#\"> $script$active </a>";
+
+                if ( preg_match('/^DESCRIPTION="(.*)"$/m', $txt, $matches) )
+                  echo "<input id=\"$script-desc\" type=\"hidden\" value=\"$matches[1]\" />";
+
+                if ( preg_match('/^INFO="(.*)"/msU', $txt, $matches) )
+                  echo "<input id=\"$script-info\" type=\"hidden\" value=\"$matches[1]\" />";
+
+                if ( preg_match('/^INFOTITLE="(.*)"/msU', $txt, $matches) )
+                  echo "<input id=\"$script-infotitle\" type=\"hidden\" value=\"$matches[1]\" />";
+
+                echo "</li>";
               }
               ?>
             </ul>
@@ -110,6 +114,7 @@
 
       <div id="app-content">
         <h2 id="config-box-title">Configure NextCloudPi features</h2>
+        <div id="config-box-info"></div>
         <br/>
         <div id="config-box-wrapper" class="hidden">
           <form>
