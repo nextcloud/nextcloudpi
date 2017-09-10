@@ -53,6 +53,9 @@ $(function()
   // Show selected option configuration box
   $( 'li' , '#app-navigation' ).on('click', function(e)
   {
+    if ( selectedID == this.get( '.id' ) ) // already selected
+      return;
+
     if ( confLock ) return;
     confLock = true;
 
@@ -96,6 +99,8 @@ $(function()
     $('#details-box').show();
     $('#circle-retstatus').hide();
 
+    $( 'input' , '#config-box-wrapper' ).set('@disabled',true);
+
     // request
     $.request('post', 'ncp-launcher.php', { action:'launch', 
                                             ref:selectedID ,
@@ -114,6 +119,7 @@ $(function()
         }
         else                                     // print error from server instead
           $('#details-box').fill(ret.output);
+        $( 'input' , '#config-box-wrapper' ).set('@disabled', null);
         $('#config-button').set('@disabled',null);
         $('#loading-gif').hide();
         confLock = false;
@@ -155,8 +161,15 @@ $(function()
                                             csrf_token: $( '#csrf-token' ).get( '.value' ) }).then( 
       function success( result ) 
       {
+        $('#config-box-wrapper').hide();
         $('#config-box-title').fill( "Shutting down..." ); 
       }).error( errorMsg );
+  } );
+
+  // close notification icon
+  $( '.icon-close' ).on('click', function(e)
+  {
+    $( '#notification' ).hide();
   } );
 });
 
