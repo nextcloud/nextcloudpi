@@ -1,7 +1,11 @@
 
-[v0.26.28](https://github.com/nextcloud/nextcloudpi/commit/94eb3ce) (2017-09-08) nc-backup: small fixes
+[v0.26.30](https://github.com/nextcloud/nextcloudpi/commit/49705ee) (2017-09-11) ncp-web: fix php exec with background restarting of processes
 
-[v0.26.27](https://github.com/nextcloud/nextcloudpi/commit/649e8b7) (2017-09-10) ncp-web: link to wiki info for each extra
+[v0.26.29](https://github.com/nextcloud/nextcloudpi/commit/14167d4) (2017-09-11) remove config txt output
+
+[v0.26.28](https://github.com/nextcloud/nextcloudpi/commit/eba23ea) (2017-09-08) nc-backup: small fixes
+
+[v0.26.27](https://github.com/nextcloud/nextcloudpi/commit/3ec03de) (2017-09-10) ncp-web: link to wiki info for each extra
 
 [v0.26.26](https://github.com/nextcloud/nextcloudpi/commit/6f25713) (2017-09-10) ncp-web: minor tweaks
 

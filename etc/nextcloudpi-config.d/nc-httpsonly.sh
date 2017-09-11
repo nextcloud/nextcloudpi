@@ -24,7 +24,7 @@ configure()
   echo "Forcing HTTPS $OPT"
 
   # delayed in bg so it does not kill the connection, and we get AJAX response
-  ( sleep 2 && systemctl restart apache2 ) &>/dev/null & 
+  bash -c "sleep 2 && systemctl restart apache2" &>/dev/null &
 }
 
 install() { :; }
