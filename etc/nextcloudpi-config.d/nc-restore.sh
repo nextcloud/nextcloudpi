@@ -90,14 +90,14 @@ EOF
     sudo -u www-data php occ files:scan --all
 
     # cache needs to be cleaned as of NC 12
-    (
-      sleep 3
-      systemctl stop php7.0-fpm
-      systemctl stop mysqld
-      sleep 0.5
-      systemctl start php7.0-fpm
-      systemctl start mysqld
-    ) &>/dev/null &
+   
+    bash -c " sleep 3
+              systemctl stop php7.0-fpm
+              systemctl stop mysqld
+              sleep 0.5
+              systemctl start php7.0-fpm
+              systemctl start mysqld
+              " &>/dev/null &
   fi
   rm -r "$TMPDIR"
 

@@ -148,17 +148,6 @@ test -f /usr/local/etc/ncp-baseimage || echo "untagged" > /usr/local/etc/ncp-bas
 # remove artifacts
 rm -f /usr/local/etc/nextcloudpi-config.d/config_.txt
 
-  # restart PHP to get updates in the ncp-web
-  # FIXME: php doesn't come up if run from ncp-web
-  #(
-    #sleep 3
-    #systemctl stop php7.0-fpm
-    #systemctl stop mysqld
-    #sleep 0.5
-    #systemctl start php7.0-fpm
-    #systemctl start mysqld
-  #) &>/dev/null &
-
 # License
 #
 # This script is free software; you can redistribute it and/or modify it
