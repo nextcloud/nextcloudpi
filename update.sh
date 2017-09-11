@@ -145,6 +145,9 @@ EOF
 # images are now tagged
 test -f /usr/local/etc/ncp-baseimage || echo "untagged" > /usr/local/etc/ncp-baseimage
 
+# remove artifacts
+rm -f /usr/local/etc/nextcloudpi-config.d/config_.txt
+
   # restart PHP to get updates in the ncp-web
   # FIXME: php doesn't come up if run from ncp-web
   #(

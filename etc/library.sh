@@ -10,7 +10,6 @@
 
 
 IMGNAME=$( basename "$IMGFILE" .img )_$( basename "$INSTALL_SCRIPT" .sh ).img
-CFGOUT=config_$( basename "$INSTALL_SCRIPT" .sh ).txt
 DBG=x
 
 # $IMGOUT will contain the name of the last step
@@ -99,7 +98,6 @@ set -e$DBG
 "
   echo "Launching installation"
   echo -e "$PREINST_CODE\n$INSTALLATION_CODE\n$INSTALLATION_STEPS" | ssh_pi "$IP" || { echo "Installation to $IP failed" && return 1; }
-  echo "configuration saved to $CFGOUT"
 }
 
 function launch_installation_qemu()
@@ -189,7 +187,6 @@ function config()
   done
 
   INSTALLATION_CODE="$( sed "$SEDRULE" "$INSTALL_SCRIPT" )"
-  [[ "$CFGOUT" != "" ]] && echo -e "$CONFIG" > "$CFGOUT"
 }
 
 function install_script()
