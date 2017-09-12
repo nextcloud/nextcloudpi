@@ -15,9 +15,6 @@
 
 ACTIVE_=no
 
-# location of Nextcloud logs
-NCLOG_=/var/www/nextcloud/data/nextcloud.log     
-
 # time to ban an IP that exceeded attempts
 BANTIME_=600
 
@@ -39,18 +36,27 @@ install()
 
 configure()
 {
-  [[ $ACTIVE_ != "yes" ]] && { service fail2ban stop; update-rc.d fail2ban disable; return; }
+  [[ $ACTIVE_ != "yes" ]] && { 
+    service fail2ban stop
+    update-rc.d fail2ban disable
+    echo "fail2ban disabled"
+    return 
+  }
 
-  local BASEDIR=$( dirname "$NCLOG_" )
+  local NCLOG="/var/www/nextcloud/data/nextcloud.log"
+  local NCLOG1="$( sudo -u www-data /var/www/nextcloud/occ config:system:get logfile )"
+
+  [[ "$NCLOG1" != "" ]] && NCLOG="$NCLOG1"
+
+  local BASEDIR=$( dirname "$NCLOG" )
   [ -d "$BASEDIR" ] || { echo -e "directory $BASEDIR not found"; return 1; }
 
-  sudo -u www-data touch "$NCLOG_" || { echo -e "ERROR: user www-data does not have write permissions on $NCLOG_"; return 1; }
+  sudo -u www-data touch "$NCLOG" || { echo -e "ERROR: user www-data does not have write permissions on $NCLOG"; return 1; }
   chown -R www-data "$BASEDIR"
 
   cd /var/www/nextcloud
   sudo -u www-data php occ config:system:set loglevel --value=2
   sudo -u www-data php occ config:system:set log_type --value=file
-  sudo -u www-data php occ config:system:set logfile  --value="$NCLOG_"
 
   cat > /etc/fail2ban/filter.d/nextcloud.conf <<'EOF'
 [INCLUDES]
@@ -112,12 +118,13 @@ maxretry = $MAXRETRY_
 enabled  = true
 port     = http,https
 filter   = nextcloud
-logpath  = $NCLOG_
+logpath  = $NCLOG
 maxretry = $MAXRETRY_
 EOF
   update-rc.d fail2ban defaults
   update-rc.d fail2ban enable
   service fail2ban restart
+  echo "fail2ban enabled"
 }
 
 cleanup()
