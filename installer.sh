@@ -35,7 +35,8 @@ INSTALL_SCRIPT=$1       # First argument is the script to be run inside Raspbian
 IP=$2                   # Second argument is the QEMU Raspbian IP address
 IMGFILE=$3              # Third argument is the image file to start from ( empty for online installation )
  
-source etc/library.sh   # initializes $IMGNAME
+source buildlib.sh      # initializes $IMGNAME
+source etc/library.sh 
 
 test -f "$IMGNAME" && { echo "INFO: $IMGNAME already exists. Skip generation ... "; exit 0; }
 

@@ -8,7 +8,7 @@
 # Usage: ./batch.sh <DHCP QEMU image IP>
 #
 
-source etc/library.sh       # initializes $IMGNAME
+source buildlib.sh          # initializes $IMGNAME
 
 IP=$1                       # First argument is the QEMU Raspbian IP address
 
