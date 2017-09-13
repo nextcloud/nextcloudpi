@@ -7,9 +7,11 @@ If there is an important security issue that has gone unnoticed, please send a p
 
 ### QUESTIONS
 
-Please, look at the issues tagged as 'question' to make sure that your question has not been already covered. https://github.com/nextcloud/nextcloudpi/issues?utf8=✓&q=label:question%20
+Please, look at the FAQ before asking. https://github.com/nextcloud/nextcloudpi/wiki/FAQ
 
-Also, make sure to read the articles in ownyourbits explaining NextCloudPi extras before asking. https://ownyourbits.com/category/nextcloud/
+Also, make sure to read the articles in ownyourbits explaining NextCloudPi extras before asking. https://ownyourbits.com/category/nextcloudpi/
+
+For asking questions, please use the forums. https://help.nextcloud.com/c/support/appliances-docker-snappy-vm
 
 ### PROBLEMS
 
