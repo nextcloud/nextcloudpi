@@ -45,6 +45,8 @@ static domain_name_servers=$DNS
 EOF
 
   systemctl restart dhcpcd
+  sudo -u www-data php occ config:system:set trusted_domains 1 --value="$IP_"
+  sudo -u www-data php occ config:system:set overwrite.cli.url --value=https://"$IP_"
   echo "Static IP set to $IP_"
 }
 
