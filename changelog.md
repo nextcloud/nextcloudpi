@@ -1,5 +1,15 @@
 
-[v0.26.30](https://github.com/nextcloud/nextcloudpi/commit/49705ee) (2017-09-11) ncp-web: fix php exec with background restarting of processes
+[v0.28.1](https://github.com/nextcloud/nextcloudpi/commit/164b656) (2017-09-15) nc-static-IP: add new IP to trusted domain
+
+[v0.28.0 ](https://github.com/nextcloud/nextcloudpi/commit/6cf07b2) (2017-09-14) added nc-static-IP
+
+[v0.27.0 ](https://github.com/nextcloud/nextcloudpi/commit/bef45aa) (2017-09-14) added nc-fix-permissions
+
+[v0.26.32](https://github.com/nextcloud/nextcloudpi/commit/2a6a021) (2017-09-12) split library.sh
+
+[v0.26.31](https://github.com/nextcloud/nextcloudpi/commit/b390652) (2017-09-12) fail2ban: autodetect log path
+
+[v0.26.30](https://github.com/nextcloud/nextcloudpi/commit/05a3895) (2017-09-11) ncp-web: fix php exec with background restarting of processes
 
 [v0.26.29](https://github.com/nextcloud/nextcloudpi/commit/14167d4) (2017-09-11) remove config txt output
 
