@@ -64,7 +64,7 @@
            <h1 class="hidden-visually">NextCloudPi</h1>
         </div>
       </a>
-      <a id=versionlink target="_blank" href="https://github.com/nextcloud/nextcloudpi/blob/devel/changelog.md">
+      <a id=versionlink target="_blank" href="https://github.com/nextcloud/nextcloudpi/blob/master/changelog.md">
         <?php echo file_get_contents( "/usr/local/etc/ncp-version" ) ?>
       </a>
     </div>
