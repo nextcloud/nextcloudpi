@@ -12,13 +12,15 @@ cp etc/library.sh /usr/local/etc/
 
 source /usr/local/etc/library.sh
 
-# fix automount, reinstall if its old version
-AMFILE=/usr/local/etc/nextcloudpi-config.d/nc-automount.sh
-test -e $AMFILE && { grep -q inotify-tools $AMFILE || rm $AMFILE; }
+pgrep -x mysqld &>/dev/null && { # skip docker build
+  # fix automount, reinstall if its old version
+  AMFILE=/usr/local/etc/nextcloudpi-config.d/nc-automount.sh
+  test -e $AMFILE && { grep -q inotify-tools $AMFILE || rm $AMFILE; }
 
-# fix modsecurity, reinstall if its old verion
-MSFILE=/usr/local/etc/nextcloudpi-config.d/modsecurity.sh
-test -e $MSFILE && { grep -q "NextCloudPi:" $MSFILE  || rm $MSFILE; }
+  # fix modsecurity, reinstall if its old verion
+  MSFILE=/usr/local/etc/nextcloudpi-config.d/modsecurity.sh
+  test -e $MSFILE && { grep -q "NextCloudPi:" $MSFILE  || rm $MSFILE; }
+}
 
 # copy all files in bin and etc
 for file in bin/* etc/*; do
@@ -58,6 +60,8 @@ chown -R www-data:www-data /var/www/ncp-web
 chmod 770                  /var/www/ncp-web
 
 ## BACKWARD FIXES ( for older images )
+
+pgrep -x mysqld &>/dev/null && { # skip docker build
 
 # force-fix unattended-upgrades 
 cd /usr/local/etc/nextcloudpi-config.d/ || exit 1
@@ -147,6 +151,8 @@ test -f /usr/local/etc/ncp-baseimage || echo "untagged" > /usr/local/etc/ncp-bas
 
 # remove artifacts
 rm -f /usr/local/etc/nextcloudpi-config.d/config_.txt
+
+}
 
 # License
 #
