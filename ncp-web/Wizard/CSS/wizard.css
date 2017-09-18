@@ -1,0 +1,60 @@
+body {
+	padding-top: 60px;
+	padding-bottom: 40px;
+}
+.sidebar-nav {
+	padding: 9px 0;
+}
+#rootwizard {
+	width: 100%;
+}
+#ncp-nav {
+	display: table;
+	margin: 0 auto;
+}
+#bar {
+	margin: 5px 0 0 0;
+}
+.ncp-tab-pane {
+	display: table;
+	margin: 0 auto;
+}
+.ncp-tab-pane p {
+	text-align: center;
+}
+.ncp-tab-pane h1 {
+	text-align: center;
+}
+.tab-pane {
+	width: 100%;
+}
+
+#ncp-pager {
+	width: 50%;
+	margin: 0 auto;
+}
+.previous {
+	float: left;
+}
+.next {
+	float: right;
+}
+.ncp-hidden {
+	display: none;
+}
+.instructions {
+	padding: 20px;
+	text-align: center;
+}
+.buttons-area {
+	display: table;
+margin: 0 auto;
+}
+
+.ddns-form form {
+	display: table;
+	text-align: center;
+}
+.btn {
+	margin:5px 0;
+}
