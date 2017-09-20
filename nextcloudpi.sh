@@ -68,7 +68,7 @@ EOF
   chmod 700 /home/www/ncp-launcher.sh
   echo "www-data ALL = NOPASSWD: /home/www/ncp-launcher.sh , /sbin/halt" >> /etc/sudoers
 
-  # NEXTCLOUDPI MOTD
+  # NEXTCLOUDPI MOTD 
   ##########################################
   rm -rf /etc/update-motd.d
   mkdir /etc/update-motd.d
@@ -86,6 +86,11 @@ EOF
 /usr/local/bin/ncp-check-updates
 EOF
   chmod a+x /etc/update-motd.d/*
+
+  # HOSTNAME
+  ##########################################
+  echo nextcloudpi > /etc/hostname
+  sed -i '$c127.0.1.1 nextcloudpi' /etc/hosts
 
   # NEXTCLOUDPI AUTO TRUSTED DOMAIN
   ##########################################
