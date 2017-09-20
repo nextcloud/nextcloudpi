@@ -75,6 +75,7 @@ EOF
 
   # Default trusted domain ( only from nextcloudpi-config )
   test -f /usr/local/bin/nextcloud-domain.sh && bash /usr/local/bin/nextcloud-domain.sh
+  sudo -u www-data php occ config:system:set trusted_domains 5 --value="nextcloudpi.local"
 
   # email
   sudo -u www-data php occ config:system:set mail_smtpmode     --value="php"
