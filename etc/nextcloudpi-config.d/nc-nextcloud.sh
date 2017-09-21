@@ -45,7 +45,7 @@ configure()
   echo "Starting mariaDB"
 
   # launch mariadb if not already running (for docker build)
-  pgrep -x mysqld &>/dev/null || { mysqld & }
+  [[ "$DOCKERBUILD" == 1 ]] && { mysqld & }
 
   # wait for mariadb
   pgrep -x mysqld &>/dev/null || { echo "mariaDB process not found"; return 1; }
