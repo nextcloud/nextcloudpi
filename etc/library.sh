@@ -141,6 +141,18 @@ function configure_script()
   )
 }
 
+function persistent_cfg()
+{
+  local SRC="$1"
+  local DST="${2:-/data/etc/$( basename "$SRC" )}"
+  mkdir -p "$( dirname "$DST" )"
+  test -d "$DST" || {
+    echo "Making $SRC persistent ..."
+    mv    "$SRC" "$DST"
+  }
+  rm -rf "$SRC"
+  ln -s "$DST" "$SRC"
+}
 
 # License
 #
