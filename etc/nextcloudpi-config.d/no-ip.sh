@@ -72,7 +72,7 @@ source /usr/local/etc/library.sh
   exit 0
 }
 
-persistent_cfgdir /usr/local/etc/noip2 /data/etc/noip2
+persistent_cfg /usr/local/etc/noip2 /data/etc/noip2
 
 echo "Starting noip..."
 service noip2 start

@@ -44,7 +44,7 @@ install()
 #!/bin/bash
 
 source /usr/local/etc/library.sh
-persistent_cfgdir /etc/letsencrypt
+persistent_cfg /etc/letsencrypt
 
 exit 0
 EOF

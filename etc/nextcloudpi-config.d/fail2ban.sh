@@ -45,7 +45,7 @@ source /usr/local/etc/library.sh
   exit 0
 }
 
-persistent_cfgdir /etc/fail2ban
+persistent_cfg /etc/fail2ban
 
 echo "Starting fail2ban..."
 service fail2ban start

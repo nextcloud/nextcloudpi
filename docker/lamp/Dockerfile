@@ -7,6 +7,8 @@ MAINTAINER Ignacio Núñez Hernanz <nacho@ownyourbits.com>
 
 SHELL ["/bin/bash", "-c"]
 
+ENV DOCKERBUILD 1
+
 COPY etc/library.sh lamp.sh /usr/local/etc/
 
 RUN \
@@ -32,7 +34,7 @@ rm -f /var/log/alternatives.log /var/log/apt/*; \
 
 # specific cleanup
 rm /data/database/ib_logfile*; \
-rm /usr/local/etc/{lamp.sh,library.sh}
+rm /usr/local/etc/lamp.sh
 
 COPY docker/lamp/010-lamp-run.sh /etc/cont-init.d/
 

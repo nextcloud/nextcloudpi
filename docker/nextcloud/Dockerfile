@@ -11,12 +11,14 @@ COPY etc/library.sh etc/nextcloudpi-config.d/nc-init.sh etc/nextcloudpi-config.d
 
 RUN \
 
-# installation
+# installation ( /var/www/nextcloud -> /data/app which will be in a volume )
 apt-get update; \
 apt-get install --no-install-recommends -y wget ca-certificates iputils-ping; \
 source /usr/local/etc/library.sh; \
 set +x; \
 activate_script /usr/local/etc/nc-nextcloud.sh; \
+mv /var/www/nextcloud /data/app; \
+ln -s /data/app /var/www/nextcloud; \
 
 # package cleanup 
 apt-get autoremove -y; \
@@ -31,14 +33,24 @@ rm -f /var/log/alternatives.log /var/log/apt/*; \
 apt-get purge -y wget ca-certificates; \
 rm /usr/local/etc/nc-nextcloud.sh
 
-# TODO install make in noip:
+# TODO test /etc/dnsmasq.conf
+# TODO service start-> only if enabled!
+# TODO noip2 -> use new dir
+# TODO cron
 
-# TODO consider pre-populating /data (volume overcopies)
+# TODO apache2ctl restart ( or service )
+# TODO consider pre-populating /data (volume overcopies) -> nextcloud
 # TODO call cleanup() hooks for extras
 # TODO remove packages unneeded from lamp, wget...
 # # libudev1 util-linux
 # TODO remove mariadb client (reinstall mysqldump later, but that only)
 # apt-get purge -y wget ca-certificates libhogweed4 libnettle4 libpsl5
 # apt-get purge -y wget ca-certificates libgnutls-deb0-28 libhogweed2 libicu52 libnettle4 libpsl0
+
+# TODO remove git??
+# TODO remove make,gcc...??
+# TODO hostname + avahi
+# TODO net=host?  -> entrypiont with IP
+# TODO call cleanups during docker build?
 
 COPY docker/nextcloud/020-nextcloud-run.sh /etc/cont-init.d/

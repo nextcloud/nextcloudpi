@@ -39,7 +39,7 @@ source /usr/local/etc/library.sh
   exit 0
 }
 
-persistent_cfgdir /etc/dnsmasq
+persistent_cfg /etc/dnsmasq.conf
 
 echo "Starting dnsmasq..."
 service dnsmasq start

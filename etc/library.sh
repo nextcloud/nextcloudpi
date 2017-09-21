@@ -141,16 +141,17 @@ function configure_script()
   )
 }
 
-function persistent_cfgdir()
+function persistent_cfg()
 {
-  local SRCDIR="$1"
-  local DSTDIR="${2:-/data/etc/$SRCDIR}"
-  mkdir -p "$( basename "$DSTDIR" )"
-  test -d "$DSTDIR" || {
-    echo "Setting up $SRCDIR dir..."
-    mv /etc/"$SRCDIR" "$DSTDIR"
-    ln -s "$DSTDIR" /etc/"$SRCDIR"
+  local SRC="$1"
+  local DST="${2:-/data/etc/$( basename "$SRC" )}"
+  mkdir -p "$( dirname "$DST" )"
+  test -d "$DST" || {
+    echo "Making $SRC persistent ..."
+    mv    "$SRC" "$DST"
   }
+  rm -rf "$SRC"
+  ln -s "$DST" "$SRC"
 }
 
 # License

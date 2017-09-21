@@ -202,6 +202,8 @@ test -f /usr/local/etc/ncp-baseimage || echo "untagged" > /usr/local/etc/ncp-bas
 # remove artifacts
 rm -f /usr/local/etc/nextcloudpi-config.d/config_.txt
 
+# relocate noip2 config
+mkdir -p /usr/local/etc/noip2
 }
 
 # License

@@ -1,16 +1,22 @@
 #!/bin/bash
 
+source /usr/local/etc/library.sh
+
 set -e
 
-case "$1" in
-  stop)
-      apachectl graceful-stop
-      killall php-fpm7.0
-      mysqladmin -u root shutdown
-      echo "LAMP cleanup complete"
-      exit 0
-    ;;
-esac
+[[ "$1" == "stop" ]] && {
+  echo "Stopping apache"
+  apachectl graceful-stop
+  echo "Stopping PHP-fpm"
+  killall php-fpm7.0
+  echo "Stopping mariaDB"
+  mysqladmin -u root shutdown
+  echo "LAMP cleanup complete"
+  exit 0
+}
+
+# MOVE CONFIGS TO PERSISTENT VOLUME
+persistent_cfg /etc/apache2
 
 echo "Starting PHP-fpm"
 php-fpm7.0 &
