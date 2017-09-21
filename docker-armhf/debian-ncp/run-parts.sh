@@ -2,16 +2,16 @@
 
 cleanup()
 {
-  for file in $( ls -1rv /etc/cont-init.d ); do
-    /etc/cont-init.d/$file stop
+  for file in $( ls -1rv /etc/services.d ); do
+    /etc/services.d/"$file" stop "$1"
   done
   exit
 }
 
 trap cleanup SIGTERM
 
-for file in $( ls -1v /etc/cont-init.d ); do
-  /etc/cont-init.d/$file start
+for file in $( ls -1v /etc/services.d ); do
+  /etc/services.d/"$file" start "$1"
 done
 
 echo "Init done"

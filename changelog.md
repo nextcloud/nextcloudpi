@@ -1,5 +1,7 @@
 
-[v0.32.1](https://github.com/nextcloud/nextcloudpi/commit/b9f5c95) (2017-11-04) build: replace user pi for user ncp
+[v0.32.2 ](https://github.com/nextcloud/nextcloudpi/commit/d46f567) (2017-11-04) ncp-web: fix return value
+
+[v0.32.1 ](https://github.com/nextcloud/nextcloudpi/commit/8f28660) (2017-11-04) build: replace user pi for user ncp
 
 [v0.32.0 ](https://github.com/nextcloud/nextcloudpi/commit/8c70198) (2017-11-03) spDYN: initial adjustments
 

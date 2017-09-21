@@ -31,7 +31,6 @@ install()
 
     $APTINSTALL apt-utils 
     $APTINSTALL cron
-    $APTINSTALL util-linux # TODO only need getopt (busybox?)
     $APTINSTALL apache2
     $APTINSTALL php7.0 php7.0-curl php7.0-gd php7.0-fpm php7.0-cli php7.0-opcache php7.0-mbstring php7.0-xml php7.0-zip php7.0-APC php7.0-fileinfo php7.0-mcrypt
     mkdir -p /run/php

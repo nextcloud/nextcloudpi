@@ -24,13 +24,20 @@ nc-nextcloud.sh
 nc-init.sh
 "
 
+# need to be fixed for this
+EXCL_DOCKER+="
+nc-webui.sh
+dnsmasq.sh
+fail2ban.sh
+"
+
 # better use a designated container
 EXCL_DOCKER+="
 samba.sh
 NFS.sh
 "
 
-# TODO review systemd timers
+# use systemd timers
 EXCL_DOCKER+="
 nc-notify-updates.sh
 nc-scan-auto.sh
@@ -220,6 +227,8 @@ EOF
   grep -q TimeOut /etc/apache2/sites-enabled/ncp.conf || \
     sed -i '/SSLCertificateKeyFile/aTimeOut 172800' /etc/apache2/sites-enabled/ncp.conf
 
+# relocate noip2 config
+mkdir -p /usr/local/etc/noip2
 }
 
 # License

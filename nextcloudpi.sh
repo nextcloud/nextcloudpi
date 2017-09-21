@@ -28,9 +28,9 @@ install()
   # NEXTCLOUDPI-CONFIG
   ##########################################
   apt-get update
-  $APTINSTALL dialog
+  $APTINSTALL dialog whiptail
   mkdir -p $CONFDIR
-  [[ "$DOCKERBUILD" != 1 ]] && {
+  test -f /usr/bin/raspi-config && {
     sed -i '/Change User Password/i"0 NextCloudPi Configuration" "Configuration of NextCloudPi" \\\\'  /usr/bin/raspi-config
     sed -i '/1\\\\ \*) do_change_pass ;;/i0\\\\ *) nextcloudpi-config ;;'                              /usr/bin/raspi-config
   }
@@ -74,6 +74,7 @@ Listen 4443
       Require host localhost
       Require local
       Require ip 192.168
+      Require ip 172
       Require ip 10
    </RequireAny>
 

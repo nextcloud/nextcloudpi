@@ -1,7 +1,4 @@
-# docker run -d -p 4443:4443 -p 443:443 -p 80:80 -v ncdata:/data --name nextcloudpi ownyourbits/nextcloudpi:devel
-# docker build . -f docker/devel/Dockerfile -t ownyourbits/nextcloudpi:devel
-
-FROM ownyourbits/nextcloud
+FROM ownyourbits/nextcloudpi-x86
 
 MAINTAINER Ignacio Núñez Hernanz <nacho@ownyourbits.com>
 

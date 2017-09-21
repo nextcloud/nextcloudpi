@@ -61,25 +61,25 @@ EOF
   mkdir -p /usr/local/etc/noip2
 
   [[ "$DOCKERBUILD" == 1 ]] && {
-    cat > /etc/cont-init.d/100-noip-run.sh <<EOF
+    cat > /etc/services.d/100-noip-run.sh <<EOF
 #!/bin/bash
 
 source /usr/local/etc/library.sh
 
-[[ "$1" == "stop" ]] && {
+[[ "\$1" == "stop" ]] && {
   echo "stopping noip..."
   service noip2 stop
   exit 0
 }
 
-persistent_cfgdir /usr/local/etc/noip2 /data/etc/noip2
+persistent_cfg /usr/local/etc/noip2 /data/etc/noip2
 
 echo "Starting noip..."
 service noip2 start
 
 exit 0
 EOF
-    chmod +x /etc/cont-init.d/100-noip-run.sh
+    chmod +x /etc/services.d/100-noip-run.sh
   }
 }
 

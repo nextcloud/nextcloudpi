@@ -1,0 +1,13 @@
+version: '3'
+services:
+  nextcloud:
+    image: ownyourbits/nextcloud-x86
+    command: "${IP}"
+    ports:
+     - "80:80"
+     - "443:443"
+    volumes:
+     - ncdata:/data
+
+volumes:
+  ncdata:

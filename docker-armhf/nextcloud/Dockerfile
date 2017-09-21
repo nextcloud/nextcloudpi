@@ -1,4 +1,4 @@
-FROM ownyourbits/lamp-x86
+FROM ownyourbits/lamp-armhf
 
 MAINTAINER Ignacio Núñez Hernanz <nacho@ownyourbits.com>
 
