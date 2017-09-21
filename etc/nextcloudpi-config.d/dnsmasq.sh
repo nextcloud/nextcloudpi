@@ -26,6 +26,28 @@ install()
   apt-get update
   apt-get install --no-install-recommends -y dnsmasq
   update-rc.d dnsmasq disable
+
+  [[ "$DOCKERBUILD" == 1 ]] && {
+    cat > /etc/cont-init.d/100-dnsmasq-run.sh <<EOF
+#!/bin/bash
+
+source /usr/local/etc/library.sh
+
+[[ "$1" == "stop" ]] && {
+  echo "stopping dnsmasq..."
+  service dnsmasq stop
+  exit 0
+}
+
+persistent_cfgdir /etc/dnsmasq
+
+echo "Starting dnsmasq..."
+service dnsmasq start
+
+exit 0
+EOF
+    chmod +x /etc/cont-init.d/100-dnsmasq-run.sh
+  }
 }
 
 configure()

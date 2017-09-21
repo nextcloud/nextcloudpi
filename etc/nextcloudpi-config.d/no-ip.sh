@@ -26,6 +26,8 @@ Internet access is required for this configuration to complete."
 
 install()
 {
+  apt-get update
+  apt-get install --no-install-recommends -y make 
   mkdir /tmp/noip && cd /tmp/noip
   wget http://www.no-ip.com/client/linux/noip-duc-linux.tar.gz
   tar vzxf noip-duc-linux.tar.gz
@@ -55,6 +57,30 @@ EOF
 
   update-rc.d noip2 defaults
   update-rc.d noip2 disable
+
+  mkdir -p /usr/local/etc/noip2
+
+  [[ "$DOCKERBUILD" == 1 ]] && {
+    cat > /etc/cont-init.d/100-noip-run.sh <<EOF
+#!/bin/bash
+
+source /usr/local/etc/library.sh
+
+[[ "$1" == "stop" ]] && {
+  echo "stopping noip..."
+  service noip2 stop
+  exit 0
+}
+
+persistent_cfgdir /usr/local/etc/noip2 /data/etc/noip2
+
+echo "Starting noip..."
+service noip2 start
+
+exit 0
+EOF
+    chmod +x /etc/cont-init.d/100-noip-run.sh
+  }
 }
 
 configure() 
@@ -71,7 +97,12 @@ configure()
   sudo -u www-data php occ config:system:set overwrite.cli.url --value=https://"$DOMAIN_"
 }
 
-cleanup() { :; }
+cleanup()
+{
+  apt-get autoremove -y
+  apt-get clean
+  rm /var/lib/apt/lists/* -r
+}
 
 # License
 #

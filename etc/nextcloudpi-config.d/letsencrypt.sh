@@ -38,6 +38,18 @@ install()
   cd /etc || return 1
   git clone https://github.com/letsencrypt/letsencrypt
   /etc/letsencrypt/letsencrypt-auto --help # do not actually run certbot, only install packages
+
+  [[ "$DOCKERBUILD" == 1 ]] && {
+    cat > /etc/cont-init.d/100-letsencrypt-run.sh <<EOF
+#!/bin/bash
+
+source /usr/local/etc/library.sh
+persistent_cfgdir /etc/letsencrypt
+
+exit 0
+EOF
+    chmod +x /etc/cont-init.d/100-letsencrypt-run.sh
+  }
 }
 
 # tested with git version v0.11.0-71-g018a304

@@ -8,11 +8,54 @@
 # More at https://ownyourbits.com/
 #
 
+CONFDIR=/usr/local/etc/nextcloudpi-config.d/
+
+# don't make sense in a docker container
+EXCL_DOCKER="
+nc-automount.sh
+nc-format-USB.sh
+nc-datadir.sh
+nc-database.sh
+nc-ramlogs.sh
+nc-swapfile.sh
+nc-static-IP.sh
+nc-wifi.sh
+nc-nextcloud.sh
+nc-init.sh
+"
+
+# better use a designated container
+EXCL_DOCKER+="
+samba.sh
+NFS.sh
+"
+
+# TODO review systemd timers
+EXCL_DOCKER+="
+nc-notify-updates.sh
+nc-scan-auto.sh
+nc-backup-auto.sh
+freeDNS.sh
+"
+
+# TODO think about updates
+EXCL_DOCKER+="
+nc-update.sh
+nc-autoupdate-ncp.sh
+"
 cp etc/library.sh /usr/local/etc/
 
 source /usr/local/etc/library.sh
 
-pgrep -x mysqld &>/dev/null && { # skip docker build
+# prevent installing some apt packages in the docker version
+[[ "$DOCKERBUILD" == 1 ]] && {
+  mkdir -p $CONFDIR
+  for opt in $EXCL_DOCKER; do 
+    touch $CONFDIR/$opt
+done
+}
+
+[[ "$DOCKERBUILD" != 1 ]] && {
   # fix automount, reinstall if its old version
   AMFILE=/usr/local/etc/nextcloudpi-config.d/nc-automount.sh
   test -e $AMFILE && { grep -q inotify-tools $AMFILE || rm $AMFILE; }
@@ -59,9 +102,16 @@ cp -r ncp-web /var/www/
 chown -R www-data:www-data /var/www/ncp-web
 chmod 770                  /var/www/ncp-web
 
+# remove unwanted packages for the docker version
+[[ "$DOCKERBUILD" == 1 ]] && {
+  for opt in $EXCL_DOCKER; do 
+    rm $CONFDIR/$opt
+done
+}
+
 ## BACKWARD FIXES ( for older images )
 
-pgrep -x mysqld &>/dev/null && { # skip docker build
+[[ "$DOCKERBUILD" != 1 ]] && {
 
 # force-fix unattended-upgrades 
 cd /usr/local/etc/nextcloudpi-config.d/ || exit 1
