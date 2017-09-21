@@ -141,6 +141,17 @@ function configure_script()
   )
 }
 
+function persistent_cfgdir()
+{
+  local SRCDIR="$1"
+  local DSTDIR="${2:-/data/etc/$SRCDIR}"
+  mkdir -p "$( basename "$DSTDIR" )"
+  test -d "$DSTDIR" || {
+    echo "Setting up $SRCDIR dir..."
+    mv /etc/"$SRCDIR" "$DSTDIR"
+    ln -s "$DSTDIR" /etc/"$SRCDIR"
+  }
+}
 
 # License
 #

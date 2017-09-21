@@ -27,9 +27,10 @@ install()
   apt-get update
   $APTINSTALL dialog
   mkdir -p $CONFDIR
-  sed -i '/Change User Password/i"0 NextCloudPi Configuration" "Configuration of NextCloudPi" \\\\'  /usr/bin/raspi-config
-  sed -i '/1\\\\ \*) do_change_pass ;;/i0\\\\ *) nextcloudpi-config ;;'                              /usr/bin/raspi-config
-
+  [[ "$DOCKERBUILD" != 1 ]] && {
+    sed -i '/Change User Password/i"0 NextCloudPi Configuration" "Configuration of NextCloudPi" \\\\'  /usr/bin/raspi-config
+    sed -i '/1\\\\ \*) do_change_pass ;;/i0\\\\ *) nextcloudpi-config ;;'                              /usr/bin/raspi-config
+  }
 
   # NEXTCLOUDPI-CONFIG WEB
   ##########################################
@@ -120,12 +121,12 @@ done
 cd /var/www/nextcloud
 sudo -u www-data php occ config:system:set trusted_domains 1 --value=$IP
 EOF
-  systemctl enable nextcloud-domain # make sure this is called on last re-boot
+
+  # make sure this is called on last re-boot
+  [[ "$DOCKERBUILD" != 1 ]] && systemctl enable nextcloud-domain 
 
   # NEXTCLOUDPI UPDATES
   ##########################################
-  $APTINSTALL git
-
   cat > /etc/cron.daily/ncp-check-version <<EOF
 #!/bin/sh
 /usr/local/bin/ncp-check-version
@@ -139,8 +140,10 @@ EOF
   sed -i "s|^;\?sys_temp_dir =.*$|sys_temp_dir = $UPLOADTMPDIR|"     /etc/php/7.0/fpm/php.ini
 
   # update to latest version from github as part of the build process
+  $APTINSTALL git
   wget https://raw.githubusercontent.com/nextcloud/nextcloudpi/master/bin/ncp-update -O /usr/local/bin/ncp-update
   chmod a+x /usr/local/bin/ncp-update
+
   /usr/local/bin/ncp-update
 
   # Optional packets for Nextcloud and Apps

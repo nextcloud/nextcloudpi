@@ -5,15 +5,20 @@
 #
 
 
+nextcloudpi: nextcloud
+	docker build . -f docker/nextcloudpi/Dockerfile       -t ownyourbits/nextcloudpi:latest
+
 nextcloud: lamp
-	docker build . -f docker/nextcloud.dockerfile -t ownyourbits/nextcloudpi:latest
+	docker build . -f docker/nextcloud/Dockerfile         -t ownyourbits/nextcloud:latest
 
 lamp: miniraspbian
-	docker build . -f docker/lamp.dockerfile      -t ownyourbits/lamp-arm:latest
+	docker build . -f docker/lamp/Dockerfile           -t ownyourbits/lamp-arm:latest
 
 miniraspbian: 
-	docker build . -f docker/raspbian.dockerfile  -t ownyourbits/miniraspbian:latest
+	docker build . -f docker/miniraspbian/Dockerfile   -t ownyourbits/miniraspbian:latest
 
+devel: 
+	docker build . -f docker/devel/Dockerfile   -t ownyourbits/nextcloudpi:devel
 # License
 #
 # This script is free software; you can redistribute it and/or modify it
