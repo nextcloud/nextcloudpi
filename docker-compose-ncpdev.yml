@@ -1,0 +1,15 @@
+version: '3'
+services:
+  nextcloudpi-dev:
+    image: ownyourbits/nextcloudpi-x86
+    command: "${IP}"
+    ports:
+     - "80:80"
+     - "443:443"
+     - "4443:4443"
+    volumes:
+     - ./ncp-web:/var/www/ncp-web
+     - ncdata:/data
+
+volumes:
+  ncdata:

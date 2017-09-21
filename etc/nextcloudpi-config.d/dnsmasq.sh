@@ -28,25 +28,25 @@ install()
   update-rc.d dnsmasq disable
 
   [[ "$DOCKERBUILD" == 1 ]] && {
-    cat > /etc/cont-init.d/100-dnsmasq-run.sh <<EOF
+    cat > /etc/services.d/100-dnsmasq-run.sh <<EOF
 #!/bin/bash
 
 source /usr/local/etc/library.sh
 
-[[ "$1" == "stop" ]] && {
+[[ "\$1" == "stop" ]] && {
   echo "stopping dnsmasq..."
   service dnsmasq stop
   exit 0
 }
 
-persistent_cfgdir /etc/dnsmasq
+persistent_cfg /etc/dnsmasq.conf
 
 echo "Starting dnsmasq..."
 service dnsmasq start
 
 exit 0
 EOF
-    chmod +x /etc/cont-init.d/100-dnsmasq-run.sh
+    chmod +x /etc/services.d/100-dnsmasq-run.sh
   }
 }
 

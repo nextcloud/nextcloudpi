@@ -1,4 +1,4 @@
-FROM ownyourbits/nextcloud-x86
+FROM ownyourbits/nextcloud-armhf
 
 MAINTAINER Ignacio Núñez Hernanz <nacho@ownyourbits.com>
 
@@ -40,21 +40,15 @@ apt-get purge -y \
     libc-dev-bin \
     libc6-dev \
     libcc1-0 \
-    libcilkrts5 \
     libexpat1-dev \
     libffi-dev \
     libgcc-6-dev \
     libgomp1 \
     libisl15 \
-    libitm1 \
-    liblsan0 \
     libmpc3 \
-    libmpx2 \
     libpython-dev \
     libpython2.7-dev \
-    libquadmath0 \
     libssl-dev \
-    libtsan0 \
     libubsan0 \
     linux-libc-dev \
     python-dev \

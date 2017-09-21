@@ -1,4 +1,4 @@
-FROM ownyourbits/debian-ncp-x86
+FROM ownyourbits/debian-ncp-armhf
 
 MAINTAINER Ignacio Núñez Hernanz <nacho@ownyourbits.com>
 

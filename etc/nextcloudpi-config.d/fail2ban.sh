@@ -39,25 +39,25 @@ install()
   rm -f /etc/fail2ban/jail.d/defaults-debian.conf
 
   [[ "$DOCKERBUILD" == 1 ]] && {
-    cat > /etc/cont-init.d/100-fail2ban-run.sh <<EOF
+    cat > /etc/services.d/100-fail2ban-run.sh <<EOF
 #!/bin/bash
 
 source /usr/local/etc/library.sh
 
-[[ "$1" == "stop" ]] && {
+[[ "\$1" == "stop" ]] && {
   echo "stopping fail2ban..."
   service fail2ban stop
   exit 0
 }
 
-persistent_cfgdir /etc/fail2ban
+persistent_cfg /etc/fail2ban
 
 echo "Starting fail2ban..."
 service fail2ban start
 
 exit 0
 EOF
-    chmod +x /etc/cont-init.d/100-fail2ban-run.sh
+    chmod +x /etc/services.d/100-fail2ban-run.sh
   }
 
   # tweak fail2ban email 

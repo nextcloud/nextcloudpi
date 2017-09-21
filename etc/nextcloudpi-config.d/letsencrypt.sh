@@ -36,19 +36,21 @@ is_active()
 install()
 {
   cd /etc || return 1
+  apt-get update
+  apt-get install --no-install-recommends -y python2.7-minimal
   git clone https://github.com/letsencrypt/letsencrypt
   /etc/letsencrypt/letsencrypt-auto --help # do not actually run certbot, only install packages
 
   [[ "$DOCKERBUILD" == 1 ]] && {
-    cat > /etc/cont-init.d/100-letsencrypt-run.sh <<EOF
+    cat > /etc/services.d/100-letsencrypt-run.sh <<EOF
 #!/bin/bash
 
 source /usr/local/etc/library.sh
-persistent_cfgdir /etc/letsencrypt
+persistent_cfg /etc/letsencrypt
 
 exit 0
 EOF
-    chmod +x /etc/cont-init.d/100-letsencrypt-run.sh
+    chmod +x /etc/services.d/100-letsencrypt-run.sh
   }
 }
 

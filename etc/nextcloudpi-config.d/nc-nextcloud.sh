@@ -41,7 +41,7 @@ install()
   # Optional packets for Nextcloud and Apps
   apt-get update
   $APTINSTALL -o "Dpkg::Options::=--force-confold" php-smbclient 
-  $APTINSTALL postfix
+  $APTINSTALL postfix lbzip2 iputils-ping
 }
 
 configure()
