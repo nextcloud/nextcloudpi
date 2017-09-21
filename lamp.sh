@@ -31,6 +31,7 @@ install()
 
     $APTINSTALL apt-utils 
     $APTINSTALL cron
+    $APTINSTALL util-linux # TODO only need getopt (busybox?)
     $APTINSTALL apache2
     $APTINSTALL php7.0 php7.0-curl php7.0-gd php7.0-fpm php7.0-cli php7.0-opcache php7.0-mbstring php7.0-xml php7.0-zip php7.0-APC php7.0-fileinfo php7.0-mcrypt
     mkdir -p /run/php
@@ -122,6 +123,14 @@ EOF
     sed -i '/\[mysqld\]/ainnodb_file_per_table=1'      /etc/mysql/mariadb.conf.d/50-server.cnf 
     sed -i '/\[mysqld\]/ainnodb_file_format=barracuda' /etc/mysql/mariadb.conf.d/50-server.cnf
 
+  # launch mariadb if not already running (for docker build)
+  [[ "$DOCKERBUILD" == 1 ]] && { mysqld & }
+
+  # wait for mariadb
+  while :; do
+    [[ -S /var/run/mysqld/mysqld.sock ]] && break
+    sleep 0.5
+  done
     mysql_secure_installation <<EOF
 $DBPASSWD
 n
