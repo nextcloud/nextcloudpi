@@ -60,10 +60,22 @@ DATADIR=\$( cd $BASEDIR/nextcloud; sudo -u www-data php occ config:system:get da
 cd $BASEDIR/nextcloud
 sudo -u www-data php occ maintenance:mode --on
 
+# delete older backups
+[[ $BACKUPLIMIT_ != 0 ]] && {
+  NUMBKPS=\$( ls "$DESTDIR_"/nextcloud-bkp_* 2>/dev/null | wc -l )
+  [[ \$NUMBKPS -ge $BACKUPLIMIT_ ]] && \
+    ls -t $DESTDIR_/nextcloud-bkp_* | tail -\$(( NUMBKPS - $BACKUPLIMIT_ + 1 )) | while read f; do
+      echo -e "clean up old backup \$f"
+      rm \$f
+    done
+}
+
+# database
 cd $BASEDIR
 echo -e "backup database..."
 mysqldump -u root --single-transaction nextcloud > \$DBBACKUP
 
+# files
 [[ "$INCLUDEDATA_" == "yes" ]] && echo -e "backup datadir... "
 echo -e "backup files..."
 mkdir -p $DESTDIR_
@@ -89,16 +101,6 @@ tar -cf "\$DESTFILE" "\$DBBACKUP" nextcloud/ \
         }
   } 
   echo -e "backup \$DESTFILE generated"
-
-# delete older backups
-[[ $BACKUPLIMIT_ != 0 ]] && {
-  NUMBKPS=\$( ls $DESTDIR_/nextcloud-bkp_* | wc -l )
-  [[ \$NUMBKPS > $BACKUPLIMIT_ ]] && \
-    ls -t $DESTDIR_/nextcloud-bkp_* | tail -\$(( NUMBKPS - $BACKUPLIMIT_ )) | while read f; do
-      echo -e "clean up old backup \$f"
-      rm \$f
-    done
-}
 
 cd $BASEDIR/nextcloud
 sudo -u www-data php occ maintenance:mode --off
