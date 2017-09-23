@@ -39,7 +39,7 @@ Listen 4443
 <VirtualHost _default_:4443>
   DocumentRoot /var/www/ncp-web
   SSLEngine on
-  SSLCertificateFile      /etc/ssl/certs/ssl-cert-fsnakeoil.pem
+  SSLCertificateFile      /etc/ssl/certs/ssl-cert-snakeoil.pem
   SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
 
   <IfModule mod_authnz_external.c>
