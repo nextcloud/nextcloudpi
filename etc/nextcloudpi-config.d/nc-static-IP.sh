@@ -51,7 +51,6 @@ EOF
 }
 
 install() { :; }
-cleanup() { :; }
 
 # License
 #

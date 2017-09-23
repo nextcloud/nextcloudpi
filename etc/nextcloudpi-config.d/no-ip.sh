@@ -97,13 +97,6 @@ configure()
   sudo -u www-data php occ config:system:set overwrite.cli.url --value=https://"$DOMAIN_"
 }
 
-cleanup()
-{
-  apt-get autoremove -y
-  apt-get clean
-  rm /var/lib/apt/lists/* -r
-}
-
 # License
 #
 # This script is free software; you can redistribute it and/or modify it
