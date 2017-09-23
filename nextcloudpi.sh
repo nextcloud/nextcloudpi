@@ -41,13 +41,34 @@ Listen 4443
   SSLEngine on
   SSLCertificateFile      /etc/ssl/certs/ssl-cert-snakeoil.pem
   SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
+
+  <IfModule mod_authnz_external.c>
+    DefineExternalAuth pwauth pipe /usr/sbin/pwauth
+  </IfModule>
+
 </VirtualHost>
 <Directory /var/www/ncp-web/>
-  Require host localhost
-  Require local
-  Require ip 192.168
-  Require ip 10
+
+  AuthType Basic
+  AuthName "Login"
+  AuthBasicProvider external
+  AuthExternal pwauth
+
+  <RequireAll>
+
+   <RequireAny>
+      Require host localhost
+      Require local
+      Require ip 192.168
+      Require ip 10
+   </RequireAny>
+
+   Require user pi
+
+  </RequireAll>
+
 </Directory>
+
 EOF
   a2ensite ncp
 
