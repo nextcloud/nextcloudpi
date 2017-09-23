@@ -178,8 +178,6 @@ EOF
   echo "Don't forget to run nc-init"
 }
 
-cleanup(){ :; }
-
 # License
 #
 # This script is free software; you can redistribute it and/or modify it

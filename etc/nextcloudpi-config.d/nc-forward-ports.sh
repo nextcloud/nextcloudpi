@@ -41,13 +41,6 @@ configure()
   upnpc -a "$IP" 80  "$HTTPPORT_"  TCP
 }
 
-cleanup()
-{
-  apt-get autoremove -y
-  apt-get clean
-  rm /var/lib/apt/lists/* -r
-}
-
 # License
 #
 # This script is free software; you can redistribute it and/or modify it

@@ -76,7 +76,6 @@ configure()
 }
 
 install() { :; }
-cleanup() { :; }
 
 # License
 #

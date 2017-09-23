@@ -103,7 +103,7 @@ function launch_installation_qemu()
 {
   local IP=$1
   [[ "$NO_CFG_STEP"  != "1" ]] && local CFG_STEP=configure
-  [[ "$NO_CLEANUP"   != "1" ]] && local CLEANUP_STEP=cleanup
+  [[ "$NO_CLEANUP"   != "1" ]] && local CLEANUP_STEP="[[ \$( type -t cleanup ) == function ]] && cleanup"
   [[ "$NO_HALT_STEP" != "1" ]] && local HALT_STEP="nohup halt &>/dev/null &"
   local INSTALLATION_STEPS="
 install
