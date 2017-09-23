@@ -22,7 +22,6 @@ configure()
 }
 
 install() { :; }
-cleanup() { :; }
 
 # License
 #

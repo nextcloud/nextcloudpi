@@ -104,13 +104,6 @@ EOF
   bash -c "sleep 2 && systemctl restart apache2" &>/dev/null &
 }
 
-cleanup()
-{
-  apt-get autoremove -y
-  apt-get clean
-  rm /var/lib/apt/lists/* -r
-}
-
 # License
 #
 # This script is free software; you can redistribute it and/or modify it

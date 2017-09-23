@@ -81,13 +81,6 @@ EOF
   echo "SMB enabled"
 }
 
-cleanup()
-{
-  apt-get autoremove -y
-  apt-get clean
-  rm /var/lib/apt/lists/* -r
-}
-
 # License
 #
 # This script is free software; you can redistribute it and/or modify it
