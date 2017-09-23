@@ -30,8 +30,6 @@ configure()
   /usr/local/bin/ncp-scan
 }
 
-cleanup() { :; }
-
 # License
 #
 # This script is free software; you can redistribute it and/or modify it
