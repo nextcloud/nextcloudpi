@@ -50,7 +50,7 @@ Listen 4443
 <Directory /var/www/ncp-web/>
 
   AuthType Basic
-  AuthName "Login"
+  AuthName "ncp-web login"
   AuthBasicProvider external
   AuthExternal pwauth
 
@@ -70,6 +70,8 @@ Listen 4443
 </Directory>
 
 EOF
+  $APTINSTALL libapache2-mod-authnz-external pwauth
+  a2enmod authnz_external authn_core auth_basic
   a2ensite ncp
 
   mkdir /home/www -p

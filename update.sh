@@ -202,6 +202,50 @@ test -f /usr/local/etc/ncp-baseimage || echo "untagged" > /usr/local/etc/ncp-bas
 # remove artifacts
 rm -f /usr/local/etc/nextcloudpi-config.d/config_.txt
 
+# ncp-web password auth
+  grep -q DefineExternalAuth /etc/apache2/sites-available/ncp.conf || {
+    CERTFILE=$( grep SSLCertificateFile    /etc/apache2/sites-available/ncp.conf| awk '{ print $2 }' )
+    KEYFILE=$(  grep SSLCertificateKeyFile /etc/apache2/sites-available/ncp.conf| awk '{ print $2 }' )
+    cat > /etc/apache2/sites-available/ncp.conf <<EOF
+Listen 4443
+<VirtualHost _default_:4443>
+  DocumentRoot /var/www/ncp-web
+  SSLEngine on
+  SSLCertificateFile    $CERTFILE
+  SSLCertificateKeyFile $KEYFILE
+
+  <IfModule mod_authnz_external.c>
+    DefineExternalAuth pwauth pipe /usr/sbin/pwauth
+  </IfModule>
+
+</VirtualHost>
+<Directory /var/www/ncp-web/>
+
+  AuthType Basic
+  AuthName "ncp-web login"
+  AuthBasicProvider external
+  AuthExternal pwauth
+
+  <RequireAll>
+
+   <RequireAny>
+      Require host localhost
+      Require local
+      Require ip 192.168
+      Require ip 10
+   </RequireAny>
+
+   Require user pi
+
+  </RequireAll>
+
+</Directory>
+EOF
+    apt-get update
+    apt-get install -y --no-install-recommends libapache2-mod-authnz-external pwauth
+    a2enmod authnz_external authn_core auth_basic
+    bash -c "sleep 2 && systemctl restart apache2" &>/dev/null &
+  }
 }
 
 # License
