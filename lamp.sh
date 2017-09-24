@@ -33,7 +33,6 @@ install()
     $APTINSTALL cron
     $APTINSTALL util-linux # TODO only need getopt (busybox?)
     $APTINSTALL apache2
-    $APTINSTALL libapache2-mod-authnz-external
     $APTINSTALL php7.0 php7.0-curl php7.0-gd php7.0-fpm php7.0-cli php7.0-opcache php7.0-mbstring php7.0-xml php7.0-zip php7.0-APC php7.0-fileinfo php7.0-mcrypt
     mkdir -p /run/php
 
@@ -109,7 +108,6 @@ EOF
     a2enmod dir
     a2enmod mime
     a2enmod ssl
-    a2enmod authnz_external
     
     a2dismod -f status reqtimeout env autoindex access_compat auth_basic authn_file authn_core alias access_compat
     echo "ServerName localhost" >> /etc/apache2/apache2.conf

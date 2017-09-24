@@ -1,13 +1,13 @@
 
-[v0.29.3](https://github.com/nextcloud/nextcloudpi/commit/93c19f2) (2017-09-21) docker: updated to stretch and added NextCloudPi layer
+[v0.29.3](https://github.com/nextcloud/nextcloudpi/commit/0a5eabe) (2017-09-24) ncp-web: authentication fixes
 
-[v0.29.2 ](https://github.com/nextcloud/nextcloudpi/commit/94a6513) (2017-09-20) changed hostname
+[v0.29.2 ](https://github.com/nextcloud/nextcloudpi/commit/353be22) (2017-09-20) changed hostname
 
-[v0.29.1 ](https://github.com/nextcloud/nextcloudpi/commit/03b0263) (2017-09-20) lamp: add fileinfo mcrypt packages
+[v0.29.1 ](https://github.com/nextcloud/nextcloudpi/commit/0733636) (2017-09-20) lamp: add fileinfo mcrypt packages
 
-[v0.29.0 ](https://github.com/nextcloud/nextcloudpi/commit/74a97c3) (2017-09-20) updated to NC12.0.3
+[v0.29.0 ](https://github.com/nextcloud/nextcloudpi/commit/0c1f1af) (2017-09-20) updated to NC12.0.3
 
-[v0.28.2](https://github.com/nextcloud/nextcloudpi/commit/ac3fcab) (2017-09-18) ncp-web: point changelog to master
+[v0.28.2 ](https://github.com/nextcloud/nextcloudpi/commit/ac3fcab) (2017-09-18) ncp-web: point changelog to master
 
 [v0.28.1 ](https://github.com/nextcloud/nextcloudpi/commit/3b71b3d) (2017-09-15) nc-static-IP: add new IP to trusted domain
 
