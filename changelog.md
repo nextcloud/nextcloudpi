@@ -1,5 +1,9 @@
 
-[v0.29.3](https://github.com/nextcloud/nextcloudpi/commit/0a5eabe) (2017-09-24) ncp-web: authentication fixes
+[v0.30.0](https://github.com/nextcloud/nextcloudpi/commit/4993430) (2017-09-25) reviewed duckDNS: small adaptations
+
+[v0.29.4 ](https://github.com/nextcloud/nextcloudpi/commit/08ca810) (2017-09-23) nc-backup: apply limit before backup
+
+[v0.29.3 ](https://github.com/nextcloud/nextcloudpi/commit/9df3950) (2017-09-24) ncp-web: authentication fixes
 
 [v0.29.2 ](https://github.com/nextcloud/nextcloudpi/commit/353be22) (2017-09-20) changed hostname
 
