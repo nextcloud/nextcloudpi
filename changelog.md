@@ -1,5 +1,9 @@
 
-[v0.29.3](https://github.com/nextcloud/nextcloudpi/commit/0a5eabe) (2017-09-24) ncp-web: authentication fixes
+[v0.30.0](https://github.com/nextcloud/nextcloudpi/commit/ab69e1f) (2017-09-25) reviewed duckDNS: small adaptations
+
+[v0.29.4 ](https://github.com/nextcloud/nextcloudpi/commit/caa38a3) (2017-09-23) nc-backup: apply limit before backup
+
+[v0.29.3 ](https://github.com/nextcloud/nextcloudpi/commit/9df3950) (2017-09-24) ncp-web: authentication fixes
 
 [v0.29.2 ](https://github.com/nextcloud/nextcloudpi/commit/353be22) (2017-09-20) changed hostname
 
@@ -7,7 +11,7 @@
 
 [v0.29.0 ](https://github.com/nextcloud/nextcloudpi/commit/0c1f1af) (2017-09-20) updated to NC12.0.3
 
-[v0.28.2 ](https://github.com/nextcloud/nextcloudpi/commit/ac3fcab) (2017-09-18) ncp-web: point changelog to master
+[v0.28.2](https://github.com/nextcloud/nextcloudpi/commit/ac3fcab) (2017-09-18) ncp-web: point changelog to master
 
 [v0.28.1 ](https://github.com/nextcloud/nextcloudpi/commit/3b71b3d) (2017-09-15) nc-static-IP: add new IP to trusted domain
 
