@@ -26,8 +26,27 @@ is_active()
 
 configure()
 {
+  cat  > /etc/systemd/system/ncp-swapfile.service <<'EOF'
+
+[Unit]
+Description= ncp-swapfile service
+
+[Service]
+Type=simple
+ExecStart=/sbin/dphys-swapfile setup
+ExecStartPost=/sbin/dphys-swapfile swapon
+ExecStop=/sbin/dphys-swapfile swapoff
+
+[Install]
+Requires=nc-automount.service
+After=nc-automount.service
+
+EOF
+
+  systemctl daemon-reload
+
   local ORIG=$( grep -oP "CONF_SWAPFILE=.*" /etc/dphys-swapfile | cut -f2 -d= )
-  [[ "$ORIG" == "$SWAPFILE_" ]] && return
+  [[ "$ORIG" -ef "$SWAPFILE_" ]] && return
   test -d "$SWAPFILE_" && { echo "$SWAPFILE_ is a directory. Abort"; return 1; }
 
   [[ $( stat -fc%d / ) == $( stat -fc%d $( dirname "$SWAPFILE_" ) ) ]] && \
@@ -37,10 +56,8 @@ configure()
   sed -i "s|#\?CONF_SWAPSIZE=.*|CONF_SWAPSIZE=$SWAPSIZE_|" /etc/dphys-swapfile
   grep -q vm.swappiness /etc/sysctl.conf || echo "vm.swappiness = 10" >> /etc/sysctl.conf && sysctl --load
 
-  # workaround for automount, systemd doesn't get the order right
-  grep -q sleep /etc/init.d/dphys-swapfile || sed -i "/\<start)/asleep 15" /etc/init.d/dphys-swapfile
-
-  service dphys-swapfile restart && swapoff "$ORIG" && rm -f "$ORIG"
+  service stop dphys-swapfile 
+  systemctl enable ncp-swapfile && systemctl restart ncp-swapfile && swapoff "$ORIG" && rm -f "$ORIG"
 }
 
 install() { :; }
