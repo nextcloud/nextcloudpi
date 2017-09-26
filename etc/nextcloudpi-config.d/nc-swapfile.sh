@@ -38,7 +38,7 @@ ExecStartPost=/sbin/dphys-swapfile swapon
 ExecStop=/sbin/dphys-swapfile swapoff
 
 [Install]
-Requires=nc-automount.services
+Requires=nc-automount.service
 After=nc-automount.service
 
 EOF
