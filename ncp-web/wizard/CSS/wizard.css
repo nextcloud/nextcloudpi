@@ -58,3 +58,14 @@ margin: 0 auto;
 .btn {
 	margin:5px 0;
 }
+
+div.linkbox {
+  display:inline-block;
+  padding: 10px;
+  text-align: center;
+}
+
+#ncp-welcome-logo {
+  display: block;
+  margin: 0 auto;
+}

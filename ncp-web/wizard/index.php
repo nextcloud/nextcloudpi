@@ -7,6 +7,9 @@
 		<!-- Bootstrap -->
 		<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
 		<link href="CSS/wizard.css" rel="stylesheet">
+        <?php 
+            session_start();
+        ?>
 	</head>
 <body>
 <div id="rootwizard">
@@ -24,8 +27,9 @@
 		<!-- Tab 1 content - Welcome -->
 		<div class="tab-pane" id="tab1">
 			<div class="ncp-tab-pane">
-				<h1>Welcome to NextCloudPi wizard</h1>
-				<p>This is the wizard to help you configure the bare minimum requirements.</p>
+				<h1>Welcome to NextCloudPi</h1>
+                <img id="ncp-welcome-logo" src="img/ncp-logo.png">
+				<p>This wizard will help you configure your personal cloud.</p>
 			</div>
 		</div>
 		<!-- Tab 2 content - USB Configuration -->
@@ -56,40 +60,31 @@
 						<input type="button" class="btn" id="skip-format-USB" value="Skip"/>
 					</div>
 				</div>
+				<!-- Move datadir -->
+				<div class="ncp-hidden" id="nc-datadir-pane">
+					<div class="buttons-area">
+						<input type="button" class="btn" id="nc-datadir" value="Move data to USB"/>
+					</div>
+				</div>
 			</div>
 		</div>
 		<!-- Tab 3 content - Test ports - Port Forwarding -->
 		<div class="tab-pane" id="tab3">
 			<div class="ncp-tab-pane">
-				<!-- Test if public ports are open -->
-					<p class="instructions">
-						To access from the outside of your house, your public ports 80 and 443 need to point to your Raspberry Pi.
-						<br>
-						Test that your ports are open.
-					</p>
-					<div class="buttons-area">
-						<input type="button" class="btn" id="test-ports-run" value="Test Ports"/>
-						<input type="button" class="btn" id="test-ports-continue" value="Continue"/>
-						<input type="button" class="btn" id="test-ports-ok" value="Test ports are OK"/>
-					</div>
-				</div>
-				<!-- Enable port forwarding with UPnP -->
-				<div class="ncp-hidden" id="port-forward">
-					<p class="instructions">
-						Your public ports are closed. Click "Forward Ports" to forward them with UPnP. 
-						<br>
-						You need UPnP enabled on your Router for this. It is recomended that you disable it after you forward, them for security reasons.
-					</p>
-					<div class="buttons-area">
-						<input type="button" class="btn" id="port-forward-run" value="Port Forward"/>
-						<input type="button" class="btn" id="port-forward-ok" value="Port Forwarding OK"/>
-						<input type="button" class="btn" id="port-forward-error" value="Port Forwarding Error"/>
-					</div>
+                  <p class="instructions">
+                      To access from the outside, your need to forward ports 80 and 443 to your RPi IP address <br>
+                      You can have NextCloudPi try to do this automatically for you<br>
+                      To do it manually, you can access your router interface, normally at <a href="http://192.168.1.1" target="_blank">http://192.168.1.1</a><br>
+                  </p>
+                  <div class="buttons-area">
+                      <input type="button" class="btn" id="port-forward-run"   value="Try to do it for me"/>
+                      <input type="button" class="btn" id="port-forward-skip"  value="I will do it manually"/>
+                  </div>
 				</div>
 				<!-- Throw error message when test after UPnP fails -->
 				<div class="ncp-hidden" id="port-forward-not-ok">
 					<p class="instructions" style="color: red">
-						Port forwarding didn"t work with UPnP. You have to manually enable port forwarding from your Router. After this run Test Ports again.
+						Couldn't configure port forwarding automatically. You must manually enable UPnP from your Router. After this, try again.
 					</p>
 				</div>	
 			</div>
@@ -97,23 +92,16 @@
 			<div class="tab-pane" id="tab4">
 				<div class="ncp-tab-pane">
 					<p class="instructions">
-						A DDNS service will keep updated your DNS record every time your Public IP changes. If you don"t have a Domain name, you can get a sub-Domain name for free. Do you want to enable a DDNS client?
-						<br>
-						You need to have a FreeDNS or No-IP account.
-					</p>
-					<div class="buttons-area">
-						<input type="button" class="btn" id="ddns-yes" value="Yes"/>
-						<input type="button" class="btn" id="ddns-skip" value="No"/>
-					</div>
-					<!-- Choose DDNS client -->
-					<div class="ncp-hidden" id="choose-ddns">
-						<p class="instructions">
+                        You need a DDNS provider in order to access from outside.<br>
+                        You will get a domain URL, such as mycloud.ownyourbits.com.<br>
+                        You need to create a free account with FreeDNS, DuckDNS or No-IP. <br>
+                        If you don't know which one to chose just <a href="https://freedns.afraid.org/signup/?plan=starter" target="_blank">click here for FreeDNS</a> <br>
+                        <br>
 						Choose a client.
-						</p>
-						<div class="buttons-area">
-							<input type="button" class="btn" id="ddns-freedns" value="FreeDNS"/>
-							<input type="button" class="btn" id="ddns-noip" value="No-IP"/>
-						</div>	
+					<div class="buttons-area">
+					    <input type="button" class="btn" id="ddns-freedns" value="FreeDNS"/>
+					    <input type="button" class="btn" id="ddns-noip" value="No-IP"/>
+					    <input type="button" class="btn" id="ddns-skip" value="Skip"/>
 					</div>
 					<!-- Configure FreeDNS -->
 					<div class="ncp-hidden" id="freedns">
@@ -123,13 +111,10 @@
 						<div class="buttons-area">
 							<form class="ddns-form">
 								<p>Domain
-									<input type="text" id="freedns-domain" placeholder="Domain">
+									<input type="text" id="freedns-domain" placeholder="cloud.ownyourbits.com">
 								</p>	
 								<p>Update Hash
-									<input type="text" id="freedns-hash" placeholder="Update Hash">
-								</p>
-								<p>Update Interval
-								<input type="text" id="freedns-time" placeholder="Update Interval">
+									<input type="text" id="freedns-hash" placeholder="abcdefghijklmnopqrstuvwxyzABCDEFGHIJK1234567">
 								</p>
 							</form>
 							<input type="button" class="btn" id="ddns-enable-freedns" value="Enable FreeDNS"/>
@@ -144,16 +129,13 @@
 							<div class="ddns-form">
 								<form>
 									<p>User
-									<input type="text" id="noip-user" placeholder="User">
+									<input type="text" id="noip-user" placeholder="user@ownyourbits.com">
 									</p>
 									<p>Password
-									<input type="text" id="noip-password" placeholder="Password">
+									<input type="text" id="noip-password" placeholder="secret">
 									</p>
 									<p>Domain
-									<input type="text" id="noip-domain" placeholder="Domain">
-									</p>
-									<p>Time
-									<input type="text" id="noip-time" placeholder="Time">
+									<input type="text" id="noip-domain" placeholder="cloud.ownyourbits.com">
 									</p>
 								</form>
 							</div>	
@@ -166,7 +148,17 @@
 			<div class="tab-pane" id="tab5">
 				<div class="ncp-tab-pane">
 					<p class="instructions">
-						You now have NextCloudPi configured!</p>
+						NextCloudPi is ready!</p>
+
+                      <div class="linkbox">
+                        <a id='gotonextcloud' href="#"><img id="nextcloud" src="img/nc-logo.png"></a>
+                        <br>go to your Nextcloud
+                      </div>
+                      <div class="linkbox">
+                        <a href=".."><img id="ncp-web" src="img/ncp-logo.png"></a>
+                        <br>go back to NextCloudPi web panel
+                      </div>
+
 				</div>		
 			</div>
 		</div>
@@ -179,7 +171,12 @@
 	</ul>
 </div>
 
-<script src="http://code.jquery.com/jquery-latest.js"></script>
+<?php
+  include ('../csrf.php');
+  echo '<input type="hidden" id="csrf-token" name="csrf-token" value="' . getCSRFToken() . '"/>';
+?>
+
+<script src="JS/jquery-latest.js"></script>
 <script src="bootstrap/js/bootstrap.min.js"></script>
 <script src="JS/jquery.bootstrap.wizard.js"></script>
 <script src="JS/wizard.js"></script>
