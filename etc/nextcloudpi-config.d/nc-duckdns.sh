@@ -30,7 +30,7 @@ configure()
       
       # Adds file to cron to run script for DNS record updates and change permissions 
       touch $CRONFILE
-      echo "*/5 * * * * $INSTALLPATH/duck.sh >/dev/null 2>&1" > $CRONFILE
+      echo "*/5 * * * * 	root	$INSTALLPATH/duck.sh > /dev/null 2>&1" > $CRONFILE
       chmod 700 $INSTALLPATH/duck.sh
       chmod +x $CRONFILE
       
