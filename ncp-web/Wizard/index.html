@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>NextCloudPi Wizard</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<!-- Bootstrap -->
+		<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+		<link href="CSS/wizard.css" rel="stylesheet">
+	</head>
+<body>
+<div id="rootwizard">
+	<ul id="ncp-nav">
+		<li><a href="#tab1" data-toggle="tab">Welcome</a></li>
+		<li><a href="#tab2" data-toggle="tab">USB Configuration</a></li>
+		<li><a href="#tab3" data-toggle="tab">Port Forwarding</a></li>
+		<li><a href="#tab4" data-toggle="tab">DDNS</a></li>
+		<li><a href="#tab5" data-toggle="tab">Finish</a></li>
+	</ul>
+	<div id="bar" class="progress">
+		<div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>
+	</div>
+	<div class="tab-content">
+		<!-- Tab 1 content - Welcome -->
+		<div class="tab-pane" id="tab1">
+			<div class="ncp-tab-pane">
+				<h1>Welcome to NextCloudPi wizard</h1>
+				<p>This is the wizard to help you configure the bare minimum requirements.</p>
+			</div>
+		</div>
+		<!-- Tab 2 content - USB Configuration -->
+		<div class="tab-pane" id="tab2">
+			<div class="ncp-tab-pane">
+				<!-- Enable Automount -->
+				<p class="instructions"> Do you want to save Nextcloud data in a USB drive?</p>
+				<div class="buttons-area">
+					<input type="button" class="btn" id="enable-Automount" value="Yes" />
+					<input type="button" class="btn" id="disable-Automount" value="No" />
+				</div>
+				<!-- Test mount -->
+				<div class="ncp-hidden" id="plug-usb">
+					<p class="instructions">Plug in the USB drive and hit continue.</p>
+					<div class="buttons-area">
+						<input type="button" class="btn" id="plugUSB" value="Continue"/>
+					</div>
+				</div>
+				<!-- Format USB drive -->
+				<div class="ncp-hidden" id="format-usb">
+					<p class="instructions">
+						If you want to prepare the USB drive to be used with NextCloudPi hit Format USB. Skip if already formated as ext4.
+						<br>	
+						<strong>Attention!</strong> This will format your USB drive as ext4 and <strong>will destroy any current data.</strong> 
+					</p>
+					<div class="buttons-area">
+						<input type="button" class="btn" id="format-USB" value="Format USB"/>
+						<input type="button" class="btn" id="skip-format-USB" value="Skip"/>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Tab 3 content - Test ports - Port Forwarding -->
+		<div class="tab-pane" id="tab3">
+			<div class="ncp-tab-pane">
+				<!-- Test if public ports are open -->
+					<p class="instructions">
+						To access from the outside of your house, your public ports 80 and 443 need to point to your Raspberry Pi.
+						<br>
+						Test that your ports are open.
+					</p>
+					<div class="buttons-area">
+						<input type="button" class="btn" id="test-ports-run" value="Test Ports"/>
+						<input type="button" class="btn" id="test-ports-continue" value="Continue"/>
+						<input type="button" class="btn" id="test-ports-ok" value="Test ports are OK"/>
+					</div>
+				</div>
+				<!-- Enable port forwarding with UPnP -->
+				<div class="ncp-hidden" id="port-forward">
+					<p class="instructions">
+						Your public ports are closed. Click "Forward Ports" to forward them with UPnP. 
+						<br>
+						You need UPnP enabled on your Router for this. It is recomended that you disable it after you forward, them for security reasons.
+					</p>
+					<div class="buttons-area">
+						<input type="button" class="btn" id="port-forward-run" value="Port Forward"/>
+						<input type="button" class="btn" id="port-forward-ok" value="Port Forwarding OK"/>
+						<input type="button" class="btn" id="port-forward-error" value="Port Forwarding Error"/>
+					</div>
+				</div>
+				<!-- Throw error message when test after UPnP fails -->
+				<div class="ncp-hidden" id="port-forward-not-ok">
+					<p class="instructions" style="color: red">
+						Port forwarding didn"t work with UPnP. You have to manually enable port forwarding from your Router. After this run Test Ports again.
+					</p>
+				</div>	
+			</div>
+		<!-- Tab 4 content - DDNS -->
+			<div class="tab-pane" id="tab4">
+				<div class="ncp-tab-pane">
+					<p class="instructions">
+						A DDNS service will keep updated your DNS record every time your Public IP changes. If you don"t have a Domain name, you can get a sub-Domain name for free. Do you want to enable a DDNS client?
+						<br>
+						You need to have a FreeDNS or No-IP account.
+					</p>
+					<div class="buttons-area">
+						<input type="button" class="btn" id="ddns-yes" value="Yes"/>
+						<input type="button" class="btn" id="ddns-skip" value="No"/>
+					</div>
+					<!-- Choose DDNS client -->
+					<div class="ncp-hidden" id="choose-ddns">
+						<p class="instructions">
+						Choose a client.
+						</p>
+						<div class="buttons-area">
+							<input type="button" class="btn" id="ddns-freedns" value="FreeDNS"/>
+							<input type="button" class="btn" id="ddns-noip" value="No-IP"/>
+						</div>	
+					</div>
+					<!-- Configure FreeDNS -->
+					<div class="ncp-hidden" id="freedns">
+						<p class="instructions">
+							Fill the input area for FreeDNS.
+						</p>
+						<div class="buttons-area">
+							<form class="ddns-form">
+								<p>Domain
+									<input type="text" id="freedns-domain" placeholder="Domain">
+								</p>	
+								<p>Update Hash
+									<input type="text" id="freedns-hash" placeholder="Update Hash">
+								</p>
+								<p>Update Interval
+								<input type="text" id="freedns-time" placeholder="Update Interval">
+								</p>
+							</form>
+							<input type="button" class="btn" id="ddns-enable-freedns" value="Enable FreeDNS"/>
+						</div>
+					</div>
+					<!-- Configure No-IP -->	
+					<div class="ncp-hidden" id="noip">
+						<p class="instructions">
+						Fill in the input area for No-IP.
+						</p>
+						<div class="buttons-area">
+							<div class="ddns-form">
+								<form>
+									<p>User
+									<input type="text" id="noip-user" placeholder="User">
+									</p>
+									<p>Password
+									<input type="text" id="noip-password" placeholder="Password">
+									</p>
+									<p>Domain
+									<input type="text" id="noip-domain" placeholder="Domain">
+									</p>
+									<p>Time
+									<input type="text" id="noip-time" placeholder="Time">
+									</p>
+								</form>
+							</div>	
+							<input type="button" class="btn" id="ddns-enable-noip" value="Enable No-IP"/>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Tab 5 content - Finish -->
+			<div class="tab-pane" id="tab5">
+				<div class="ncp-tab-pane">
+					<p class="instructions">
+						You now have NextCloudPi configured!</p>
+				</div>		
+			</div>
+		</div>
+		<!-- Navigation buttons -->
+	<ul class="pager wizard" id="ncp-pager">
+		<li class="previous first" style="display:none;"><a href="#">First</a></li>
+		<li class="previous"><a href="#">Previous</a></li>
+		<li class="next last" style="display:none;"><a href="#">Last</a></li>
+		<li class="next"><a href="#">Next</a></li>
+	</ul>
+</div>
+
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script src="bootstrap/js/bootstrap.min.js"></script>
+<script src="JS/jquery.bootstrap.wizard.js"></script>
+<script src="JS/wizard.js"></script>
+</body>
+</html>
