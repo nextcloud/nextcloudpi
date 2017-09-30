@@ -39,6 +39,7 @@ if ( $_POST['action'] == "cfgreq" )
     // checkbox (yes/no) field
     if ( preg_match('/^(\w+)_=(yes|no)$/', $line, $matches) )
     {
+      $checked = "";
       if ( $matches[2] == "yes" )
         $checked = "checked";
       $output = $output . "<tr>";
