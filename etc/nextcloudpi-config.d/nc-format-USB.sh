@@ -47,7 +47,7 @@ configure()
 
   wipefs -a -f /dev/"$NAME" || return 1
   printf 'o\nn\np\n1\n\n\nw\n' | sudo fdisk /dev/"$NAME" || return 1
-  mkfs.ext4 -q -F /dev/"${NAME}1" -L "$LABEL_"
+  mkfs.ext4 -q -E lazy_itable_init=0,lazy_journal_init=0 -F /dev/"${NAME}1" -L "$LABEL_"
 }
 
 install() { :; }

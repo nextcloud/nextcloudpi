@@ -1,7 +1,11 @@
 
-[v0.31.2](https://github.com/nextcloud/nextcloudpi/commit/ac8af38) (2017-09-30) ncp-web: remove http2 push headers. They dont play well with pwauth (#224)
+[v0.31.4](https://github.com/nextcloud/nextcloudpi/commit/ebd1fc1) (2017-09-30) nc-format-USB: speed up ext4 creation with lazy initialization
 
-[v0.31.1](https://github.com/nextcloud/nextcloudpi/commit/789850c) (2017-09-28) nc-static-IP: fix occ path
+[v0.31.3 ](https://github.com/nextcloud/nextcloudpi/commit/c2abfaa) (2017-09-30) letsencrypt: fix uppercase domains cert path (Closes #229)
+
+[v0.31.2 ](https://github.com/nextcloud/nextcloudpi/commit/e3ef973) (2017-09-30) ncp-web: remove http2 push headers. They dont play well with pwauth (#224)
+
+[v0.31.1 ](https://github.com/nextcloud/nextcloudpi/commit/789850c) (2017-09-28) nc-static-IP: fix occ path
 
 [v0.31.0](https://github.com/nextcloud/nextcloudpi/commit/a9f90b9) (2017-09-27) wizard: connect backend with frontend. Modifications for first release
 
