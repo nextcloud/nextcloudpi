@@ -48,6 +48,12 @@ function follow($file)
   $size = 0;
   while (true) 
   {
+    if ( !file_exists($file) )
+    {
+      usleep(200000); // 0.2s
+      continue;
+    }
+
     clearstatcache();
     $currentSize = filesize($file);
     if ($size == $currentSize) 
