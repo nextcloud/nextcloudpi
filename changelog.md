@@ -1,7 +1,11 @@
 
-[v0.31.0](https://github.com/nextcloud/nextcloudpi/commit/5d25473) (2017-09-27) wizard: connect backend with frontend. Modifications for first release
+[v0.31.2](https://github.com/nextcloud/nextcloudpi/commit/ac8af38) (2017-09-30) ncp-web: remove http2 push headers. They dont play well with pwauth (#224)
 
-[v0.30.0](https://github.com/nextcloud/nextcloudpi/commit/87319a2) (2017-09-25) reviewed duckDNS: small adaptations
+[v0.31.1](https://github.com/nextcloud/nextcloudpi/commit/789850c) (2017-09-28) nc-static-IP: fix occ path
+
+[v0.31.0](https://github.com/nextcloud/nextcloudpi/commit/a9f90b9) (2017-09-27) wizard: connect backend with frontend. Modifications for first release
+
+[v0.30.0 ](https://github.com/nextcloud/nextcloudpi/commit/87319a2) (2017-09-25) reviewed duckDNS: small adaptations
 
 [v0.29.4 ](https://github.com/nextcloud/nextcloudpi/commit/caa38a3) (2017-09-23) nc-backup: apply limit before backup
 
