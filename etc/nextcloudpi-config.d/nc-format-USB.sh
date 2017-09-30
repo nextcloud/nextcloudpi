@@ -33,6 +33,9 @@ configure()
     return 1; 
   }
 
+  # disable nc-automount if enabled
+  killall -STOP udiskie 2>/dev/null
+
   # umount if mounted
   umount /media/USBdrive* &> /dev/null
 
@@ -45,9 +48,14 @@ configure()
   local NAME=( $( lsblk -l -n | grep -v mmcblk | grep disk | awk '{ print $1 }' ) )
   [[ ${#NAME[@]} != 1 ]] && { echo "unexpected error"; return 1; }
 
-  wipefs -a -f /dev/"$NAME" || return 1
-  printf 'o\nn\np\n1\n\n\nw\n' | sudo fdisk /dev/"$NAME" || return 1
+  wipefs -a -f /dev/"$NAME"                              || return 1
+  parted /dev/"$NAME" --script -- mklabel gpt            || return 2
+  parted /dev/"$NAME" --script -- mkpart primary 0% 100% || return 3
+  sleep 0.5
   mkfs.ext4 -q -E lazy_itable_init=0,lazy_journal_init=0 -F /dev/"${NAME}1" -L "$LABEL_"
+
+  # enable nc-automount if enabled
+  killall -CONT udiskie 2>/dev/null
 }
 
 install() { :; }
