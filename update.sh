@@ -246,6 +246,12 @@ EOF
     a2enmod authnz_external authn_core auth_basic
     bash -c "sleep 2 && systemctl restart apache2" &>/dev/null &
   }
+
+  # temporary workaround for bug https://github.com/certbot/certbot/issues/5138#issuecomment-333391771
+  test -e /etc/pip.conf && grep -q zope /etc/pip.conf || { 
+    cat >> /etc/pip.conf <<<"extra-index-url=https://www.piwheels.hostedpi.com/simple/zope.components"
+    /etc/letsencrypt/letsencrypt-auto --help
+  }
 }
 
 # License
