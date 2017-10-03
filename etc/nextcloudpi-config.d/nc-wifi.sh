@@ -18,7 +18,9 @@ ACTIVE_=no
 DESCRIPTION="Configure your Wi-Fi connection"
 
 INFOTITLE="Instructions to configure Wi-Fi"
-INFO="1) Select a Wi-Fi network
+INFO="
+0) Write 'yes' to activate wifi, and 'no' to disable it
+1) Select a Wi-Fi network
 2) Press right arrow ->
 3) Enter the passphrase for your Wi-Fi
 4) Make sure to select 'connect automatically'
