@@ -1,11 +1,13 @@
 
-[v0.31.10](https://github.com/nextcloud/nextcloudpi/commit/771e967) (2017-10-04) nc-forward-ports: exit status on failure
+[v0.31.11](https://github.com/nextcloud/nextcloudpi/commit/f4586a0) (2017-10-04) nc-backup: fix excludes
+
+[v0.31.10](https://github.com/nextcloud/nextcloudpi/commit/c0c6b1b) (2017-10-04) nc-forward-ports: exit status on failure
 
 [v0.31.9 ](https://github.com/nextcloud/nextcloudpi/commit/89f1cc4) (2017-10-03) nc-wifi: improve instructions
 
 [v0.31.8 ](https://github.com/nextcloud/nextcloudpi/commit/03f39b2) (2017-09-30) ncp-web: small fixes
 
-[v0.31.6](https://github.com/nextcloud/nextcloudpi/commit/7a95cc1) (2017-10-03) letsencrypt: fix external bug (Closes #230)
+[v0.31.6 ](https://github.com/nextcloud/nextcloudpi/commit/7a95cc1) (2017-10-03) letsencrypt: fix external bug (Closes #230)
 
 [v0.31.5 ](https://github.com/nextcloud/nextcloudpi/commit/1195316) (2017-09-30) nc-format-USB: fix format disks >2TB and more (Closes #223)
 
