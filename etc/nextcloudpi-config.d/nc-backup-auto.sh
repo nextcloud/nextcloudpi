@@ -79,28 +79,31 @@ mysqldump -u root --single-transaction nextcloud > \$DBBACKUP
 [[ "$INCLUDEDATA_" == "yes" ]] && echo -e "backup datadir... "
 echo -e "backup files..."
 mkdir -p $DESTDIR_
-tar -cf "\$DESTFILE" "\$DBBACKUP" nextcloud/ \
-  --exclude "nextcloud/data/*/files/*" \
-  --exclude "nextcloud/data/.opcache" \
-  --exclude "nextcloud/data/{access,error,nextcloud}.log" \
-  --exclude "nextcloud/data/access.log" \
-    || {
-          echo -e "error generating backup"
-          sudo -u www-data php "$BASEDIR"/nextcloud/occ maintenance:mode --off
-          return 1
-        }
-  rm "\$DBBACKUP"
+tar --exclude "nextcloud/data/*/files/*" \
+    --exclude "nextcloud/data/.opcache" \
+    --exclude "nextcloud/data/{access,error,nextcloud}.log" \
+    --exclude "nextcloud/data/access.log" \
+    -cf "\$DESTFILE" "\$DBBACKUP" nextcloud/ \
+  || {
+        echo -e "error generating backup"
+        sudo -u www-data php "$BASEDIR"/nextcloud/occ maintenance:mode --off
+        return 1
+     }
+rm "\$DBBACKUP"
 
-  [[ "$INCLUDEDATA_" == "yes" ]] && {
-    echo -e "backup data files..."
-    tar -rf "\$DESTFILE" -C "\$DATADIR"/.. "\$( basename "\$DATADIR" )" \
-    || {
-          echo -e "error generating backup"
-          sudo -u www-data php "$BASEDIR"/nextcloud/occ maintenance:mode --off
-          return 1
-        }
-  } 
-  echo -e "backup \$DESTFILE generated"
+[[ "$INCLUDEDATA_" == "yes" ]] && {
+  echo -e "backup data files..."
+  tar --exclude "data/.opcache" \
+      --exclude "data/{access,error,nextcloud}.log" \
+      --exclude "data/access.log" \
+      -rf "\$DESTFILE" -C "\$DATADIR"/.. "\$( basename "\$DATADIR" )" \
+  || {
+        echo -e "error generating backup"
+        sudo -u www-data php "$BASEDIR"/nextcloud/occ maintenance:mode --off
+        return 1
+      }
+} 
+echo -e "backup \$DESTFILE generated"
 
 cd $BASEDIR/nextcloud
 sudo -u www-data php occ maintenance:mode --off
