@@ -252,6 +252,14 @@ EOF
     cat >> /etc/pip.conf <<<"extra-index-url=https://www.piwheels.hostedpi.com/simple/zope.components"
     /etc/letsencrypt/letsencrypt-auto --help
   }
+
+  # tweak fail2ban email 
+  F=/etc/fail2ban/action.d/sendmail-common.conf
+  sed -i 's|Fail2Ban|NextCloudPi|' /etc/fail2ban/action.d/sendmail-whois-lines.conf
+  grep -q actionstart_ "$F" || sed -i 's|actionstart|actionstart_|' "$F"
+  grep -q actionstop_  "$F" || sed -i 's|actionstop|actionstop_|'   "$F"
+  type whois &>/dev/null || { apt-get update; apt-get install --no-install-recommends -y whois; }
+  
 }
 
 # License

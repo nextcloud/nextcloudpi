@@ -1,5 +1,7 @@
 
-[v0.31.11](https://github.com/nextcloud/nextcloudpi/commit/f4586a0) (2017-10-04) nc-backup: fix excludes
+[v0.31.12](https://github.com/nextcloud/nextcloudpi/commit/487e06e) (2017-10-05) fail2ban: email notification
+
+[v0.31.11](https://github.com/nextcloud/nextcloudpi/commit/3fc4d3c) (2017-10-04) nc-backup: fix excludes
 
 [v0.31.10](https://github.com/nextcloud/nextcloudpi/commit/c0c6b1b) (2017-10-04) nc-forward-ports: exit status on failure
 
