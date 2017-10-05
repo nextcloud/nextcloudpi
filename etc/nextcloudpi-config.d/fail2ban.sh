@@ -24,12 +24,17 @@ FINDTIME_=600
 # bad attempts before banning an IP
 MAXRETRY_=6                                      
 
+# email to send notifications to
+EMAIL_=optional@email.com
+
+MAILALERTS_=no
+
 DESCRIPTION="Brute force protection for SSH and NextCloud"
 
 install()
 {
   apt-get update
-  apt-get install --no-install-recommends -y fail2ban 
+  apt-get install --no-install-recommends -y fail2ban whois
   update-rc.d fail2ban disable
   rm -f /etc/fail2ban/jail.d/defaults-debian.conf
 
@@ -54,6 +59,12 @@ exit 0
 EOF
     chmod +x /etc/cont-init.d/100-fail2ban-run.sh
   }
+
+  # tweak fail2ban email 
+  local F=/etc/fail2ban/action.d/sendmail-common.conf
+  sed -i 's|Fail2Ban|NextCloudPi|' /etc/fail2ban/action.d/sendmail-whois-lines.conf
+  grep -q actionstart_ "$F" || sed -i 's|actionstart|actionstart_|' "$F"
+  grep -q actionstop_  "$F" || sed -i 's|actionstop|actionstop_|'   "$F"
 }
 
 configure()
@@ -89,6 +100,7 @@ failregex = Login failed.*Remote IP.*'<HOST>'
 ignoreregex =
 EOF
 
+  [[ "$MAILALERTS_" == "yes" ]] && local ACTION=action_mwl || local ACTION=action_
 
   cat > /etc/fail2ban/jail.conf <<EOF
 # The DEFAULT allows a global definition of the options. They can be overridden
@@ -111,13 +123,13 @@ maxretry = $MAXRETRY_
 #
 # ACTIONS
 #
-banaction = iptables-multiport
-protocol = tcp
-chain = INPUT
-action_ = %(banaction)s[name=%(__name__)s, port="%(port)s", protocol="%(protocol)s", chain="%(chain)s"]
-action_mw = %(banaction)s[name=%(__name__)s, port="%(port)s", protocol="%(protocol)s", chain="%(chain)s"]
+banaction  = iptables-multiport
+protocol   = tcp
+chain      = INPUT
+action_    = %(banaction)s[name=%(__name__)s, port="%(port)s", protocol="%(protocol)s", chain="%(chain)s"]
 action_mwl = %(banaction)s[name=%(__name__)s, port="%(port)s", protocol="%(protocol)s", chain="%(chain)s"]
-action = %(action_)s
+           sendmail-whois-lines[name=%(__name__)s, dest=$EMAIL_, sender=ncp-fail2ban@ownyourbits.com]
+action = %($ACTION)s
 
 #
 # SSH
