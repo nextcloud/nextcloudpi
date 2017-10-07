@@ -248,8 +248,12 @@ EOF
   }
 
   # temporary workaround for bug https://github.com/certbot/certbot/issues/5138#issuecomment-333391771
+    cat > /etc/pip.conf <<EOF
+[global]
+extra-index-url=https://www.piwheels.hostedpi.com/simple
+extra-index-url=https://www.piwheels.hostedpi.com/simple/zope.components
+EOF
   test -e /etc/pip.conf && grep -q zope /etc/pip.conf || { 
-    cat >> /etc/pip.conf <<<"extra-index-url=https://www.piwheels.hostedpi.com/simple/zope.components"
     /etc/letsencrypt/letsencrypt-auto --help
   }
 
