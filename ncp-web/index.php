@@ -53,6 +53,29 @@
     ?>
   </div>
 
+<?php
+  if ( !file_exists( 'wizard.cfg' ) )
+  {
+    echo <<<HTML
+    <div id="first-run-wizard">
+      <div>
+        <br>
+        <h2 id="config-box-title">NextCloudPi First Run</h2>
+        <p>Click to start the configuration wizard</p>
+        <br>
+        <a href="wizard"><img id="ncp-welcome-logo" src="wizard/img/ncp-logo.png" class="wizard"></a>
+        <br>
+        <a href="wizard"><button type="button" class="wizard">run</button></a>
+        <button type="button" class="first-run-close" id="skip-wizard">skip</button>
+        <button type="button" class="first-run-close" id="close-wizard">close</button>
+        <br><br>
+      </div>
+    </div>
+HTML;
+    touch( 'wizard.cfg' );
+  }
+?>
+
   <header role="banner"><div id="header">
     <div id="header-left">
       <a href="https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/"
@@ -66,6 +89,11 @@
       </a>
     </div>
     <div id="header-right">
+      <div id="wizard">
+        <div id="expand">
+          <div id="expandDisplayName" class="icon-wizard-white"></div>
+        </div>
+      </div>
       <div id="poweroff">
         <div id="expand">
           <div id="expandDisplayName" class="icon-power-white"></div>

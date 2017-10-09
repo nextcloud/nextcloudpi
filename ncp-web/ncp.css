@@ -1115,9 +1115,12 @@ select {
 }
 
 .icon-power-white {
-  background-image: url('poweroff.svg');
+  background-image: url('img/poweroff.svg');
 }
 
+.icon-wizard-white {
+  background-image: url('img/wizard.svg');
+}
 .icon-red-circle {
   background-image: url('red-circle.svg');
   padding: 8px;
@@ -1154,5 +1157,39 @@ a#versionlink{
 
 /* lower version link */
 #header #header-left {
- align-items:baseline
+  align-items:baseline
+}
+
+#first-run-wizard {
+  position:fixed;
+  top:0;
+  bottom:0;
+  height:100%;
+  width:100%;
+  background-color:rgba(0, 0, 0, 0.5);
+  z-index:9000;
+  text-align:center;
+  cursor:pointer;
+}
+
+#first-run-wizard div {
+  display:block;
+  background: white;
+  position:relative;
+  width:50%;
+  top:25%;
+  margin:0px auto;
+}
+
+#close-wizard {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  display: block;
+  background: none;
+  background-image:url('img/view-close.svg');
+  width: 38px;
+  height: 19px;
+  text-indent: -9999px;
+  border: none;
 }

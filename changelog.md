@@ -1,5 +1,9 @@
 
-[v0.31.12](https://github.com/nextcloud/nextcloudpi/commit/487e06e) (2017-10-05) fail2ban: email notification
+[v0.31.14](https://github.com/nextcloud/nextcloudpi/commit/7e40933) (2017-10-09) ncp-web: integrate ncp-wizard with ncp-web
+
+[v0.31.13](https://github.com/nextcloud/nextcloudpi/commit/583d1b6) (2017-10-07) letsencrypt: fix workaround for old images
+
+[v0.31.12](https://github.com/nextcloud/nextcloudpi/commit/f30c470) (2017-10-05) fail2ban: email notification (Closes #232)
 
 [v0.31.11](https://github.com/nextcloud/nextcloudpi/commit/3fc4d3c) (2017-10-04) nc-backup: fix excludes
 
