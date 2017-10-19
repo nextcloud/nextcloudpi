@@ -1,5 +1,7 @@
 
-[v0.31.14](https://github.com/nextcloud/nextcloudpi/commit/7e40933) (2017-10-09) ncp-web: integrate ncp-wizard with ncp-web
+[v0.31.15](https://github.com/nextcloud/nextcloudpi/commit/ca48e82) (2017-10-19) ncp-web: improve password prompt permissions
+
+[v0.31.14](https://github.com/nextcloud/nextcloudpi/commit/2217045) (2017-10-09) ncp-web: integrate ncp-wizard with ncp-web
 
 [v0.31.13](https://github.com/nextcloud/nextcloudpi/commit/583d1b6) (2017-10-07) letsencrypt: fix workaround for old images
 
@@ -12,6 +14,8 @@
 [v0.31.9 ](https://github.com/nextcloud/nextcloudpi/commit/89f1cc4) (2017-10-03) nc-wifi: improve instructions
 
 [v0.31.8 ](https://github.com/nextcloud/nextcloudpi/commit/03f39b2) (2017-09-30) ncp-web: small fixes
+
+[v0.31.7, tag: v0.31.17](https://github.com/nextcloud/nextcloudpi/commit/2601df3) (2017-10-03) letsencrypt: dont change config if not successful
 
 [v0.31.6 ](https://github.com/nextcloud/nextcloudpi/commit/7a95cc1) (2017-10-03) letsencrypt: fix external bug (Closes #230)
 

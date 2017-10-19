@@ -55,16 +55,6 @@ source /usr/local/etc/library.sh
 done
 }
 
-[[ "$DOCKERBUILD" != 1 ]] && {
-  # fix automount, reinstall if its old version
-  AMFILE=/usr/local/etc/nextcloudpi-config.d/nc-automount.sh
-  test -e $AMFILE && { grep -q inotify-tools $AMFILE || rm $AMFILE; }
-
-  # fix modsecurity, reinstall if its old verion
-  MSFILE=/usr/local/etc/nextcloudpi-config.d/modsecurity.sh
-  test -e $MSFILE && { grep -q "NextCloudPi:" $MSFILE  || rm $MSFILE; }
-}
-
 # copy all files in bin and etc
 for file in bin/* etc/*; do
   [ -f "$file" ] || continue;
@@ -113,100 +103,18 @@ done
 
 [[ "$DOCKERBUILD" != 1 ]] && {
 
-# force-fix unattended-upgrades 
-cd /usr/local/etc/nextcloudpi-config.d/ || exit 1
-activate_script unattended-upgrades.sh
-
-# for old image users, save default password
-test -f /root/.my.cnf || echo -e "[client]\npassword=ownyourbits" > /root/.my.cnf
-
-# fix updates from NC12 to NC12.0.1
-chown www-data /var/www/nextcloud/.htaccess
-rm -rf /var/www/nextcloud/.well-known
-
-# fix permissions for ncp-web: shutdown button
-sed -i 's|www-data.*|www-data ALL = NOPASSWD: /home/www/ncp-launcher.sh , /sbin/halt|' /etc/sudoers
-
-# fix fail2ban misconfig in stretch
-rm -f /etc/fail2ban/jail.d/defaults-debian.conf
-
-# update ncp-launcher to support realtime updates with SSE
-  cat > /home/www/ncp-launcher.sh <<'EOF'
-#!/bin/bash
-DIR=/usr/local/etc/nextcloudpi-config.d
-test -f $DIR/$1 || { echo "File not found"; exit 1; }
-source /usr/local/etc/library.sh
-cd $DIR
-touch /run/ncp.log
-chmod 640 /run/ncp.log
-chown root:www-data /run/ncp.log
-launch_script $1 &> /run/ncp.log
-EOF
-  chmod 700 /home/www/ncp-launcher.sh
-
-# update notify-updates to also notify about unattended upgrades
-cat > /etc/systemd/system/nc-notify-updates.service <<EOF
-[Unit]
-Description=Notify in NC when a NextCloudPi update is available
-
-[Service]
-Type=simple
-ExecStart=/usr/local/bin/ncp-notify-update
-ExecStartPost=/usr/local/bin/ncp-notify-unattended-upgrade
-
-[Install]
-WantedBy=default.target
-EOF
-
-  # adjust max PHP processes so Apps don't overload the board (#146)
-  sed -i 's|pm.max_children =.*|pm.max_children = 3|' /etc/php/7.0/fpm/pool.d/www.conf
-
-  # automount remove old fstab lines
-  sed -i '/\/dev\/USBdrive/d' /etc/fstab
-  rm -f /etc/udev/rules.d/50-automount.rules /usr/local/etc/blknum
-  udevadm control --reload-rules
-
-  # remove default config file in stretch
-  rm -f /etc/apt/apt.conf.d/20auto-upgrades
-
-  # disable SMB1 and SMB2
-  grep -q SMB3 /etc/samba/smb.conf || sed -i '/\[global\]/aprotocol = SMB3' /etc/samba/smb.conf
-
-  # improvements to automount-links
-  cat > /usr/local/etc/nc-automount-links-mon <<'EOF'
-#!/bin/bash
-inotifywait --monitor --event create --event delete --format '%f %e' /media/ | \
-  grep --line-buffered ISDIR | while read f; do
-    echo $f
-    sleep 0.5
-    /usr/local/etc/nc-automount-links
-done
-EOF
-  chmod +x /usr/local/etc/nc-automount-links-mon
-
-  # install and configure email if not present
-  type sendmail &>/dev/null || {
-    echo "Installing and configuring email"
-    apt-get update
-    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends postfix
-    OCC=/var/www/nextcloud/occ
-    sudo -u www-data php $OCC config:system:set mail_smtpmode     --value="php"
-    sudo -u www-data php $OCC config:system:set mail_smtpauthtype --value="LOGIN"
-    sudo -u www-data php $OCC config:system:set mail_from_address --value="admin"
-    sudo -u www-data php $OCC config:system:set mail_domain       --value="ownyourbits.com"
-}
-
-# images are now tagged
-test -f /usr/local/etc/ncp-baseimage || echo "untagged" > /usr/local/etc/ncp-baseimage
-
-# remove artifacts
-rm -f /usr/local/etc/nextcloudpi-config.d/config_.txt
-
 # ncp-web password auth
-  grep -q DefineExternalAuth /etc/apache2/sites-available/ncp.conf || {
     CERTFILE=$( grep SSLCertificateFile    /etc/apache2/sites-available/ncp.conf| awk '{ print $2 }' )
     KEYFILE=$(  grep SSLCertificateKeyFile /etc/apache2/sites-available/ncp.conf| awk '{ print $2 }' )
-    cat > /etc/apache2/sites-available/ncp.conf <<EOF
+
+  grep -q DefineExternalAuth /etc/apache2/sites-available/ncp.conf || {
+    apt-get update
+    apt-get install -y --no-install-recommends libapache2-mod-authnz-external pwauth
+    a2enmod authnz_external authn_core auth_basic
+    bash -c "sleep 2 && systemctl restart apache2" &>/dev/null &
+  }
+
+  cat > /etc/apache2/sites-available/ncp.conf <<EOF
 Listen 4443
 <VirtualHost _default_:4443>
   DocumentRoot /var/www/ncp-web
@@ -226,6 +134,12 @@ Listen 4443
   AuthBasicProvider external
   AuthExternal pwauth
 
+  SetEnvIf Request_URI "^" noauth
+  SetEnvIf Request_URI "^index\\.php$" !noauth
+  SetEnvIf Request_URI "^/$" !noauth
+  SetEnvIf Request_URI "^/wizard/index.php$" !noauth
+  SetEnvIf Request_URI "^/wizard/$" !noauth
+
   <RequireAll>
 
    <RequireAny>
@@ -235,17 +149,15 @@ Listen 4443
       Require ip 10
    </RequireAny>
 
-   Require user pi
+   <RequireAny>
+      Require env noauth
+      Require user pi
+   </RequireAny>
 
   </RequireAll>
 
 </Directory>
 EOF
-    apt-get update
-    apt-get install -y --no-install-recommends libapache2-mod-authnz-external pwauth
-    a2enmod authnz_external authn_core auth_basic
-    bash -c "sleep 2 && systemctl restart apache2" &>/dev/null &
-  }
 
   # temporary workaround for bug https://github.com/certbot/certbot/issues/5138#issuecomment-333391771
     cat > /etc/pip.conf <<EOF

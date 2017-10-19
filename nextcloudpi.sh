@@ -54,6 +54,12 @@ Listen 4443
   AuthBasicProvider external
   AuthExternal pwauth
 
+  SetEnvIf Request_URI "^" noauth
+  SetEnvIf Request_URI "^index\.php$" !noauth
+  SetEnvIf Request_URI "^/$" !noauth
+  SetEnvIf Request_URI "^/wizard/index.php$" !noauth
+  SetEnvIf Request_URI "^/wizard/$" !noauth
+
   <RequireAll>
 
    <RequireAny>
@@ -63,12 +69,14 @@ Listen 4443
       Require ip 10
    </RequireAny>
 
-   Require user pi
+   <RequireAny>
+      Require env noauth
+      Require user pi
+   </RequireAny>
 
   </RequireAll>
 
 </Directory>
-
 EOF
   $APTINSTALL libapache2-mod-authnz-external pwauth
   a2enmod authnz_external authn_core auth_basic
