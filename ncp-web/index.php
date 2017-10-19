@@ -30,6 +30,9 @@
   ini_set('session.cookie_httponly', 1);
   if ( isset($_SERVER['HTTPS']) )
     ini_set('session.cookie_secure', 1); 
+
+  // HTTP2 push headers
+  header("Link: </minified.js>; rel=preload; as=script;,</ncp.js>; rel=preload; as=script;,</ncp.css>; rel=preload; as=style;,</ncp-logo.png>; rel=preload; as=image;, </loading-small.gif>; rel=preload; as=image;, rel=preconnect href=ncp-launcher.php;");
 ?>
 <link rel="icon" type="image/png" href="favicon.png" />
 <link rel="stylesheet" href="ncp.css">
