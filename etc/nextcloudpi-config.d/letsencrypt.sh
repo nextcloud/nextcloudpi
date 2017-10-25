@@ -81,8 +81,11 @@ configure()
 
     # delayed in bg so it does not kill the connection, and we get AJAX response
     bash -c "sleep 2 && systemctl restart apache2" &>/dev/null &
+    rm -rf $NCDIR/.well-known
+    return 0
   }
   rm -rf $NCDIR/.well-known
+  return 1
 }
 
 # License
