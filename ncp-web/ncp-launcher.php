@@ -99,6 +99,7 @@ else if ( $_POST['action'] == "launch" && $_POST['config'] )
 
   // Get new token
   echo '{ "token": "' . getCSRFToken() . '",';
+  echo ' "ref": "' . $_POST['ref']  . '",';
   echo ' "output": "" , ';
   echo ' "ret": ';
 

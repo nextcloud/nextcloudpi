@@ -2,31 +2,79 @@
 /*global $, jQuery, alert*/
 $(document).ready(function(){
 
+    function addNotification( txt, tclass )
+    {
+      // limit to 9 notifications
+      if ( $('#notifications').children().length > 8 )
+        $('#notifications').children().last().remove();
+
+      $('#notifications').prepend( '<div class="notification ' + tclass + '">' + txt + '</div>' );
+    }
+  
+    function logOutput( txt )
+    {
+      var textarea = $('#output-box');
+      textarea.val( textarea.val() + txt );
+      textarea[0].scrollTop = textarea[0].scrollHeight;
+    }
+
+    function showLog()
+    {
+      $('#output-wrapper').show();
+      var textarea = $('#output-box');
+      textarea[0].scrollTop = textarea[0].scrollHeight;
+    }
+
     // launch an request for launch action to the backend
-    function launch_action( action /* string */, args /* object */, next /* callback */ )
+    function launch_action( action /* string */, args /* object */, callback /* callback */ )
     {
       $('input').prop('disabled', true);
+      $('button').prop('disabled', true);
+      addNotification( action, 'gray-bg' ) ;
+
+      logOutput( '\n[ ' + action + ' ]' + '\n' );
+
       $.post('../ncp-launcher.php',
         { action:'launch', 
           ref: action,
           config: JSON.stringify( args ),
           csrf_token: document.getElementById( 'csrf-token' ).value
         } 
-      ).fail( errorMsg ).done( next );
+      ).fail( errorMsg ).done( callback );
     }
 
-    function nextTabOnSuccess( data )
-    { 
+    function nextOnSuccess( data, nextfunc, failfunc )
+    {
       $('input').prop('disabled', false);
+      $('button').prop('disabled', false);
+
       var res = JSON.parse( data );
-      if ( res.ret && res.ret == 0 )
-        $('#rootwizard').bootstrapWizard('next');
-      else
-        alert( 'error ' + res.output );
 
       // save next single use token
       if ( res.token )
         $('#csrf-token').val( res.token );
+
+      // remove gray (loading) notification
+      $('#notifications').children().first().remove();
+
+      // continue if ok
+      var msg = res.ref || res.output || 'error';
+      if ( res.ret && res.ret == 0 )
+      {
+        addNotification( msg, 'green-bg' );
+        nextfunc();
+      }
+      else
+      {
+        addNotification( msg, 'orange-bg' );
+        showLog();
+        failfunc && failfunc();
+      }
+    }
+
+    function nextTabOnSuccess( data )
+    {
+      nextOnSuccess( data, function(){ $('#rootwizard').bootstrapWizard('next') } );
     }
 
     function show_with_animation( elemid )
@@ -43,6 +91,46 @@ $(document).ready(function(){
       alert('There was an error with the request'); 
     }
 
+    function post_ddns_hook( data )
+    {
+      nextOnSuccess( data, function(){
+        launch_action( 'nc-autoupdate-ncp', { "ACTIVE":"yes" },
+
+        function( data ){
+          nextOnSuccess( data, function(){
+            launch_action( 'dnsmasq', { "ACTIVE":"yes", "DOMAIN":$("#ddns-domain").val() },
+
+        // keep this last, because it restarts the httpd server
+        function( data ){
+          nextOnSuccess( data, function(){
+            launch_action( 'letsencrypt', { "DOMAIN":$("#ddns-domain").val() },
+
+        nextTabOnSuccess
+
+      ) } ) }
+      ) } ) }
+      ) } )
+    }
+    // Event source to receive process output in real time
+    if (!!window.EventSource)
+      var source = new EventSource('../ncp-output.php');
+    else
+      $('#config-box-title').val( "Browser not supported" ); 
+
+    source.addEventListener('message', function(e) 
+      {
+        if ( e.origin != 'https://' + window.location.hostname + ':4443') 
+        {
+          $('#output-box').val( "Invalid origin" ); 
+          return;
+        }
+
+        logOutput( e.data + '\n' );
+      }, false);
+
+    // start wizard clicking logo
+    $('#ncp-welcome-logo ').on('click', function(){ $('#rootwizard').bootstrapWizard('next'); } );
+
 	// This must be first or it breaks
 	$('#rootwizard').bootstrapWizard({onTabShow: function(tab, navigation, index){
 		var $total = navigation.find('li').length - 1;
@@ -53,184 +141,157 @@ $(document).ready(function(){
 
 	// This is required or the tabs aren't styled
 	$('#rootwizard').bootstrapWizard({'tabClass': 'nav nav-pills'}); 
+
 	// Enable Automount step
-	$('#enable-Automount').on('click', function() {
-        show_with_animation( 'plug-usb' );
-		dataTable[0] = {
-			automount: 'yes'
-		};
+	$('#enable-automount').on('click', function() {
+        show_with_animation( 'plug-usb-pane' );
 	});
+
 	// Disable Automount step
-	$('#disable-Automount').on('click', function() {
-		$("#plug-usb").hide();
+	$('#disable-automount').on('click', function() {
+		$("#plug-usb-pane").hide();
 		$('#rootwizard').bootstrapWizard('next');
-		dataTable[0] = {
-			automount: 'no'
-		};
-		dataTable[1] = {
-			plugUSB: 'no'
-		};
 	});
+
 	// Enable format-usb step
 	$('#plugUSB').on('click', function() {
-		dataTable[1] = {
-			plugUSB: 'yes'
-		};
-
-        launch_action( 'nc-automount', {"ACTIVE":"yes"}, 
-          function ( data )
-          { 
-            $('input').prop('disabled', false);
-            var res = JSON.parse( data );
-            if ( res.ret && res.ret == 0 )         // action ran ok
-              show_with_animation( 'format-usb' );
-            else                                   // action failed
-              alert( 'error: ' + res.output );
-
-            // save next single use token
-            if ( res.token )
-              $('#csrf-token').val( res.token );
-          }
-        );
-
+      launch_action( 'nc-automount',
+        {"ACTIVE":"yes"}, 
+        function ( data ){ 
+          nextOnSuccess( data, function(){ show_with_animation( 'format-usb' ); } );
+        }
+      );
 	});
+
 	// Enable nextcloud-data step
-	$('#format-USB').on('click', function() {
-		dataTable[2] = {
-			format: 'yes',
-		};
-
-        launch_action( 'nc-format-USB', {"LABEL":"myCloudDrive"}, 
-          function ( data )
-          { 
-            $('input').prop('disabled', false);
-            var res = JSON.parse( data );
-            if ( res.ret && res.ret == 0 )         // action ran ok
-              show_with_animation( 'nc-datadir-pane' );
-            else                                   // action failed
-              alert( 'error: ' + res.output );
-
-            // save next single use token
-            if ( res.token )
-              $('#csrf-token').val( res.token );
-          }
-        );
+	$('#format-USB').on('click', function(){
+      launch_action( 'nc-format-USB',
+        {"LABEL":"myCloudDrive"}, 
+        function ( data ){
+          nextOnSuccess( data, function(){ show_with_animation( 'nc-datadir-pane' ); } );
+        }
+      );
 	});
 
 	// Enable nextcloud data tab on skip format.
-	$('#skip-format-USB').on('click', function() {
-        show_with_animation( 'nc-datadir-pane' );
-		dataTable[2] = {
-			format: 'no',
-		};
+	$('#skip-format-USB').on('click', function(){
+      show_with_animation( 'nc-datadir-pane' );
 	});
 
 	// Launch nc-datadir
 	$('#nc-datadir').on('click', function() {
-		dataTable[2] = {
-			format: 'no',
-		};
-        launch_action( 'nc-datadir', {"DATADIR":"/media/myCloudDrive/ncdata"}, nextTabOnSuccess );
+      launch_action( 'nc-datadir', {"DATADIR":"/media/USBdrive/ncdata"}, nextTabOnSuccess );
+	});
+
+	// Enable external access step
+	$('#enable-external').on('click', function(){
+      launch_action( 'fail2ban', 
+        { "ACTIVE":"yes" }, 
+        function ( data ){
+          nextOnSuccess( data, function(){ show_with_animation( 'forward-ports-pane' ) } );
+        }
+      );
+	});
+
+	// Skip external access step
+	$('#skip-external').on('click', function(){
+      $('#forward-ports-manual-pane').hide();
+      $('#forward-ports-pane'       ).hide();
+      $('#ddns-choose'              ).hide();
+      $("#ddns-account"             ).hide();
+      $("#noip"                     ).hide();
+      $("#freedns"                  ).hide();
+      $('#rootwizard').bootstrapWizard('next');
 	});
 
 	// Run port forwarding with UPnP step
-	$('#port-forward-run').on('click', function() {
+	$('#port-forward-run').on('click', function(){
 		// Run Port Forwarding and Test Port
-		dataTable[7] = {
-			portForwardRun: 'yes'
-		};
-      
-        launch_action( 'nc-forward-ports', {"HTTPSPORT":"443","HTTPPORT":"80"}, nextTabOnSuccess );
+        launch_action( 'nc-forward-ports',
+          {"HTTPSPORT":"443","HTTPPORT":"80"}, 
+          function ( data ){
+            nextOnSuccess( data, function(){ show_with_animation( 'ddns-choose' ) } );
+          }
+        );
 	});
 
-	// Skip port forwarding
-	$('#port-forward-skip').on('click', function() {
-		$("#port-forward-not-ok").hide();
-		dataTable[7] = {
-			portForwardRun: 'no'
-		};
-		$('#rootwizard').bootstrapWizard('next');
+	// Manual port forwarding
+	$('#port-forward-manual').on('click', function() {
+        show_with_animation( 'forward-ports-manual-pane' );
 	});
 
-	// If test after port forwarding is not ok, run this
-	$('#port-forward-error').on('click', function() {
-        show_with_animation( 'port-forward-not-ok' );
-		dataTable[8] = {
-			portForward: 'not-ok'
-		};
+	// Manual port forwarding done
+	$('#port-forward-done').on('click', function() {
+        show_with_animation( 'ddns-choose' );
 	});
+
 	// Skip DDNS setup
-	$('#ddns-skip').on('click', function() {
-		$("#choose-ddns").hide();
+	$('#ddns-skip').on('click', function(){
+		$("#domain" ).hide();
+		$("#noip"   ).hide();
+		$("#freedns").hide();
 		$('#rootwizard').bootstrapWizard('next');
-		dataTable[9] = {
-			ddns: 'no'
-		};
 	});
+
 	// Show FreeDNS step
-	$('#ddns-freedns').on('click', function() {
-		$("#noip").hide();
-        show_with_animation( 'freedns' );
-
-		dataTable[9] = {
-			ddns: 'yes',
-			service: 'freedns'
-		};
+	$('#ddns-freedns').on('click', function(){
+		$("#noip"   ).hide();
+		$("#freedns").show();
+        show_with_animation( 'ddns-account' );
 	});
-	// Enable FreeDNS step
-	$('#ddns-enable-freedns').on('click', function() {
-		dataTable[9] = {
-			ddns: 'yes',
-			service: 'freedns',
-			domain: $("freedns-domain").val(),
-			updateHash: $("freedns-hash").val(),
-		};
 
+	// Enable FreeDNS step
+	$('#ddns-enable-freedns').on('click', function(){
         launch_action( 'freeDNS', 
           {
             "ACTIVE":"yes",
-            "UPDATEHASH": $("freedns-hash").val(),
-            "DOMAIN": $("freedns-domain").val(),
+            "DOMAIN":     $("#ddns-domain" ).val(),
+            "UPDATEHASH": $("#freedns-hash").val(),
             "UPDATEINTERVAL": "30"
           },
-          nextTabOnSuccess
+          post_ddns_hook
         );
+        // prevent scroll up
+        return false;
 	});
+
 	// Show noip step
-	$('#ddns-noip').on('click', function() {
+	$('#ddns-noip').on('click', function(){
+		$("#noip"   ).show();
 		$("#freedns").hide();
-        show_with_animation( 'noip' );
-
-		dataTable[9] = {
-			ddns: 'yes',
-			service: 'noip'
-		};
+        show_with_animation( 'ddns-account' );
 	});
-	// Enable noip step
-	$('#ddns-enable-noip').on('click', function() {
-		dataTable[9] = {
-			ddns: 'yes',
-			service: 'noip',
-			user: $("#noip-user").val(),
-			password: $("#noip-password").val(),
-			domain: $("noip-domain").val(),
-			time: $("noip-time").val(),
-		};
 
-        launch_action( 'no-ip', 
+	// Enable noip step
+	$('#ddns-enable-noip').on('click', function(){
+          launch_action( 'no-ip', 
           {
             "ACTIVE":"yes",
-            "USER": $("#noip-user").val(),
-            "PASS": $("#noip-password").val(),
-            "DOMAIN": $("noip-domain").val(),
-            "TIME": "30"
+            "DOMAIN": $("#ddns-domain"  ).val(),
+            "USER":   $("#noip-user"    ).val(),
+            "PASS":   $("#noip-password").val(),
           },
-          nextTabOnSuccess
+          post_ddns_hook
         );
-	});
+        // prevent scroll up
+        return false;
+      }
+    );
+
+    // show log output
+	$('#output-btn').on('click', function(){
+      showLog();
+    } );
+
+    // close log output
+	$('.output-close').on('click', function(e){
+      if( e.target.id == 'output-wrapper' )
+        $('#output-wrapper').hide();
+    } );
+
+    // make sure log box starts empty
+    $('#output-box').val('');
 
     // click to nextcloud button
     $('#gotonextcloud').attr('href', window.location.protocol + '//' + window.location.hostname );
 });
-
-var dataTable = [];
