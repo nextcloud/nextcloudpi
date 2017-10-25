@@ -1,7 +1,19 @@
 
-[v0.31.15](https://github.com/nextcloud/nextcloudpi/commit/ca48e82) (2017-10-19) ncp-web: improve password prompt permissions
+[v0.31.22](https://github.com/nextcloud/nextcloudpi/commit/0c7a7b8) (2017-10-25) wizard: chain configurations and improved feedback
 
-[v0.31.14](https://github.com/nextcloud/nextcloudpi/commit/2217045) (2017-10-09) ncp-web: integrate ncp-wizard with ncp-web
+[v0.31.20](https://github.com/nextcloud/nextcloudpi/commit/df86a6f) (2017-10-26) nc-notify-updates: fix repeated lines
+
+[v0.31.19](https://github.com/nextcloud/nextcloudpi/commit/7fb7e07) (2017-10-25) samba: disable homes share by default
+
+[v0.31.18](https://github.com/nextcloud/nextcloudpi/commit/d958f0e) (2017-10-25) letsencrypt: fix return value
+
+[v0.31.17](https://github.com/nextcloud/nextcloudpi/commit/81e8066) (2017-10-25) noip: make possible to reconfigure while running
+
+[v0.31.16](https://github.com/nextcloud/nextcloudpi/commit/12e7a1d) (2017-10-22) freeDNS: fix periodic update typo
+
+[v0.31.15](https://github.com/nextcloud/nextcloudpi/commit/cfd99d6) (2017-10-19) ncp-web: improve password prompt permissions
+
+[v0.31.14](https://github.com/nextcloud/nextcloudpi/commit/5e8dba5) (2017-10-09) ncp-web: integrate ncp-wizard with ncp-web
 
 [v0.31.13](https://github.com/nextcloud/nextcloudpi/commit/583d1b6) (2017-10-07) letsencrypt: fix workaround for old images
 
@@ -15,7 +27,7 @@
 
 [v0.31.8 ](https://github.com/nextcloud/nextcloudpi/commit/03f39b2) (2017-09-30) ncp-web: small fixes
 
-[v0.31.7, tag: v0.31.17](https://github.com/nextcloud/nextcloudpi/commit/2601df3) (2017-10-03) letsencrypt: dont change config if not successful
+[v0.31.7 ](https://github.com/nextcloud/nextcloudpi/commit/2601df3) (2017-10-03) letsencrypt: dont change config if not successful
 
 [v0.31.6 ](https://github.com/nextcloud/nextcloudpi/commit/7a95cc1) (2017-10-03) letsencrypt: fix external bug (Closes #230)
 

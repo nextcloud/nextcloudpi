@@ -204,6 +204,9 @@ sudo -u www-data php /var/www/nextcloud/occ notification:generate \
      -l "Packages automatically upgraded \$PKGS"
 EOF
   chmod +x /usr/local/bin/ncp-notify-unattended-upgrade
+
+  # log adjustment for wizard
+  grep -q sleep /home/www/ncp-launcher.sh || echo "sleep 0.5 && echo \"\" > /run/ncp.log" >> /home/www/ncp-launcher.sh
 }
 
 # License

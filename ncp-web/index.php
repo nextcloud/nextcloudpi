@@ -66,10 +66,10 @@
         <h2 id="config-box-title">NextCloudPi First Run</h2>
         <p>Click to start the configuration wizard</p>
         <br>
-        <a href="wizard"><img id="ncp-welcome-logo" src="wizard/img/ncp-logo.png" class="wizard"></a>
+        <a href="wizard"><img class="wizard-btn" src="wizard/img/ncp-logo.png" class="wizard"></a>
         <br>
-        <a href="wizard"><button type="button" class="wizard">run</button></a>
-        <button type="button" class="first-run-close" id="skip-wizard">skip</button>
+        <button type="button" class="wizard-btn"      id="go-wizard"   >run  </button>
+        <button type="button" class="first-run-close" id="skip-wizard" >skip </button>
         <button type="button" class="first-run-close" id="close-wizard">close</button>
         <br><br>
       </div>
@@ -92,14 +92,14 @@ HTML;
       </a>
     </div>
     <div id="header-right">
-      <div id="wizard">
+      <div class="wizard-btn">
         <div id="expand">
-          <div id="expandDisplayName" class="icon-wizard-white"></div>
+          <div class="icon-wizard-white"></div>
         </div>
       </div>
       <div id="poweroff">
         <div id="expand">
-          <div id="expandDisplayName" class="icon-power-white"></div>
+          <div class="icon-power-white"></div>
         </div>
       </div>
     </div>

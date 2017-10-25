@@ -1,62 +1,63 @@
 body {
-	padding-top: 60px;
-	padding-bottom: 40px;
+  padding-top: 60px;
+  padding-bottom: 40px;
 }
+
+a:hover, a:active, a:link {
+  outline: 0px none;
+}
+
 .sidebar-nav {
-	padding: 9px 0;
+  padding: 9px 0;
 }
 #rootwizard {
-	width: 100%;
+  width: 100%;
 }
 #ncp-nav {
-	display: table;
-	margin: 0 auto;
+  display: table;
+  margin: 0 auto;
 }
 #bar {
-	margin: 5px 0 0 0;
+  margin: 5px 0 0 0;
 }
 .ncp-tab-pane {
-	display: table;
-	margin: 0 auto;
+  display: table;
+  margin: 0 auto;
 }
 .ncp-tab-pane p {
-	text-align: center;
+  text-align: center;
 }
-.ncp-tab-pane h1 {
-	text-align: center;
+.ncp-tab-pane h1, h3 {
+  text-align: center;
 }
 .tab-pane {
-	width: 100%;
+  width: 100%;
 }
 
 #ncp-pager {
-	width: 50%;
-	margin: 0 auto;
+  width: 50%;
+  margin: 0 auto;
 }
 .previous {
-	float: left;
+  float: left;
 }
 .next {
-	float: right;
+  float: right;
 }
 .ncp-hidden {
-	display: none;
+  display: none;
 }
 .instructions {
-	padding: 20px;
-	text-align: center;
+  padding: 20px;
+  text-align: center;
 }
 .buttons-area {
-	display: table;
-margin: 0 auto;
+  display: table;
+  margin: 0 auto;
 }
 
-.ddns-form form {
-	display: table;
-	text-align: center;
-}
 .btn {
-	margin:5px 0;
+  margin:5px 0;
 }
 
 div.linkbox {
@@ -65,7 +66,85 @@ div.linkbox {
   text-align: center;
 }
 
+.expand {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 7px 20px 6px 10px;
+  cursor: pointer;
+}
+
+.menu-icon {
+  background-repeat: no-repeat;
+  background-position: center;
+  min-width: 16px;
+  min-height: 16px;
+  background-image:url("../../../img/menu.svg");
+}
+
 #ncp-welcome-logo {
+  cursor: pointer;
   display: block;
   margin: 0 auto;
 }
+
+#notifications{
+  position: fixed;
+  bottom: 0;
+  right: 0;
+}
+
+.notification {
+  color: white;
+  padding: 10px 15px;
+  margin: 5px;
+  border-radius: 4px;
+  width: 20em;
+  text-align: center;
+}
+
+.green-bg {
+  background-color: green;
+}
+
+.orange-bg {
+  background-color: darkorange;
+}
+
+.gray-bg {
+  background-color: lightgray;
+}
+
+#output-wrapper {
+  position:fixed;
+  top:0;
+  bottom:0;
+  height:100%;
+  width:100%;
+  z-index:9000;
+  text-align:center;
+  cursor:pointer;
+}
+
+#output-box {
+  display:block;
+  background: white;
+  position:relative;
+  width:40em;
+  height:100%;
+}
+
+#output-btn {
+  position:fixed;
+  top:5px;
+  left:5px;
+}
+
+td {
+  width: 7em;
+}
+
+.buttons-area label{
+  margin: 0;
+  font-weight: 100;
+};

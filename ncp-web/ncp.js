@@ -169,7 +169,7 @@ $(function()
   } );
 
   // Wizard button
-  $( '#wizard' ).on('click', function(e)
+  $( '.wizard-btn' ).on('click', function(e)
   {
     window.location = 'wizard';
   } );

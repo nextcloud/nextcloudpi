@@ -96,6 +96,10 @@ touch /run/ncp.log
 chmod 640 /run/ncp.log
 chown root:www-data /run/ncp.log
 launch_script $1 &> /run/ncp.log
+
+# clean log for the next PHP backend call to start clean,
+# but wait until everything from current execution is read
+sleep 0.5 && echo "" > /run/ncp.log
 EOF
   chmod 700 /home/www/ncp-launcher.sh
   echo "www-data ALL = NOPASSWD: /home/www/ncp-launcher.sh , /sbin/halt" >> /etc/sudoers

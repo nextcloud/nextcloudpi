@@ -1193,3 +1193,7 @@ a#versionlink{
   text-indent: -9999px;
   border: none;
 }
+
+#wizard-btn {
+  cursor: pointer;
+}
