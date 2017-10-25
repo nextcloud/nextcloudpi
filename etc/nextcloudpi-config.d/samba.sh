@@ -37,6 +37,9 @@ install()
 
   # disable SMB1 and SMB2
   grep -q SMB3 /etc/samba/smb.conf || sed -i '/\[global\]/aprotocol = SMB3' /etc/samba/smb.conf
+
+  # disable the [homes] share by default
+  sed -i /\[homes\]/s/homes/homes_disabled_ncp/ /etc/samba/smb.conf
 }
 
 configure()
