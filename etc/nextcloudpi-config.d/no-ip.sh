@@ -85,9 +85,10 @@ EOF
 
 configure() 
 {
-  [[ $ACTIVE_ != "yes" ]] && { service noip2 stop; update-rc.d noip2 disable; return 0; }
+  service noip2 stop
+  [[ $ACTIVE_ != "yes" ]] && { update-rc.d noip2 disable; return 0; }
 
-  ping  -W 2 -w 1 -q github.com &>/dev/null || { echo "No internet connectivity"; return 1; }
+  ping  -W 2 -w 1 -q github.com &>/dev/null || { echo "No internet connectivity"; return 1; echo "noip DDNS disabled"; }
 
   /usr/local/bin/noip2 -C -c /usr/local/etc/no-ip2.conf -U "$TIME_" -u "$USER_" -p "$PASS_" || return 1
   update-rc.d noip2 enable
@@ -95,6 +96,8 @@ configure()
   cd /var/www/nextcloud
   sudo -u www-data php occ config:system:set trusted_domains 3 --value="$DOMAIN_"
   sudo -u www-data php occ config:system:set overwrite.cli.url --value=https://"$DOMAIN_"
+  echo "noip DDNS enabled"
+
 }
 
 # License
