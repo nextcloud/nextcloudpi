@@ -176,6 +176,34 @@ EOF
   grep -q actionstop_  "$F" || sed -i 's|actionstop|actionstop_|'   "$F"
   type whois &>/dev/null || { apt-get update; apt-get install --no-install-recommends -y whois; }
   
+  # fix notify unattended upgrades repeating lines
+  cat > /usr/local/bin/ncp-notify-unattended-upgrade <<EOF
+#!/bin/bash
+LOGFILE=/var/log/unattended-upgrades/unattended-upgrades.log
+STAMPFILE=/var/run/.ncp-notify-unattended-upgrades
+VERFILE=/usr/local/etc/ncp-version
+
+test -e "\$LOGFILE" || { echo "\$LOGFILE not found"; exit 1; }
+
+test -e "\$STAMPFILE" || touch "\$STAMPFILE"
+
+[ \$( date -r "\$LOGFILE" +'%y%m%d%H%M' ) -le \$( date -r "\$STAMPFILE" +'%y%m%d%H%M' ) ] && { echo "info is up to date"; exit 0; }
+
+LINE=\$( grep "INFO Packages that will be upgraded" "\$LOGFILE" | tail -1 )
+
+[[ "\$LINE" == "" ]] && { echo "no new upgrades"; touch "\$STAMPFILE"; exit 0; }
+
+PKGS=\$( sed 's|^.*Packages that will be upgraded: ||' <<< "\$LINE" )
+
+echo "Packages automatically upgraded: \$PKGS"
+
+touch "\$STAMPFILE"
+
+sudo -u www-data php /var/www/nextcloud/occ notification:generate \
+  $USER_ "NextCloudPi Unattended Upgrades" \
+     -l "Packages automatically upgraded \$PKGS"
+EOF
+  chmod +x /usr/local/bin/ncp-notify-unattended-upgrade
 }
 
 # License
