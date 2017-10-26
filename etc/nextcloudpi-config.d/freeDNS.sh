@@ -78,9 +78,9 @@ WantedBy=timers.target
 EOF
   systemctl daemon-reload
 
-  systemctl daemon-reload
   systemctl enable freedns.timer
   systemctl start  freedns.timer
+  systemctl start  freedns.service
   
   cd /var/www/nextcloud
   sudo -u www-data php occ config:system:set trusted_domains 3 --value="$DOMAIN_"
