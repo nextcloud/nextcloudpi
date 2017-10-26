@@ -96,7 +96,7 @@ test -e "\$STAMPFILE" || touch "\$STAMPFILE"
 
 [ \$( date -r "\$LOGFILE" +'%y%m%d%H%M' ) -le \$( date -r "\$STAMPFILE" +'%y%m%d%H%M' ) ] && { echo "info is up to date"; exit 0; }
 
-LINE=\$( grep "INFO Packages that will be upgraded" "\$LOGFILE" )
+LINE=\$( grep "INFO Packages that will be upgraded" "\$LOGFILE" | tail -1 )
 
 [[ "\$LINE" == "" ]] && { echo "no new upgrades"; touch "\$STAMPFILE"; exit 0; }
 
