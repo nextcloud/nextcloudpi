@@ -37,8 +37,10 @@ configure()
   local IP=$( ip a | grep "global $IFACE" | grep -oP '\d{1,3}(\.\d{1,3}){3}' | head -1 )
   upnpc -d "$HTTPSPORT_" TCP
   upnpc -d "$HTTPPORT_"  TCP
-  upnpc -a "$IP" 443 "$HTTPSPORT_" TCP | tee >(cat - >&2) | grep -q "is redirected to internal" || return 1
-  upnpc -a "$IP" 80  "$HTTPPORT_"  TCP | tee >(cat - >&2) | grep -q "is redirected to internal" || return 1
+  upnpc -a "$IP" 443 "$HTTPSPORT_" TCP | tee >(cat - >&2) | grep -q "is redirected to internal" || \
+    { echo -e "\nCould not forward ports automatically.\nDo it manually, or activate UPnP in your router and try again"; return 1; }
+  upnpc -a "$IP" 80  "$HTTPPORT_"  TCP | tee >(cat - >&2) | grep -q "is redirected to internal" || \
+    { echo -e "\nCould not forward ports automatically.\nDo it manually, or activate UPnP in your router and try again"; return 1; }
 }
 
 # License

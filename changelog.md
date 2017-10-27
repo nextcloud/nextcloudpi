@@ -1,5 +1,9 @@
 
-[v0.31.22](https://github.com/nextcloud/nextcloudpi/commit/0c7a7b8) (2017-10-25) wizard: chain configurations and improved feedback
+[v0.31.24](https://github.com/nextcloud/nextcloudpi/commit/95a7165) (2017-10-27) nc-forward-ports: more info in output
+
+[v0.31.23](https://github.com/nextcloud/nextcloudpi/commit/defba33) (2017-10-27) nc-format-USB: more info in output
+
+[v0.31.22](https://github.com/nextcloud/nextcloudpi/commit/1968d88) (2017-10-25) wizard: chain configurations and improved feedback
 
 [v0.31.20](https://github.com/nextcloud/nextcloudpi/commit/df86a6f) (2017-10-26) nc-notify-updates: fix repeated lines
 
