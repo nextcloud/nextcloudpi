@@ -56,6 +56,7 @@ configure()
 
   # enable nc-automount if enabled
   killall -CONT udiskie 2>/dev/null
+  echo "Drive $NAME formatted successfuly and labeled $LABEL_"
 }
 
 install() { :; }
