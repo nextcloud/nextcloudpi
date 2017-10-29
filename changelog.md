@@ -1,5 +1,7 @@
 
-[v0.31.24](https://github.com/nextcloud/nextcloudpi/commit/95a7165) (2017-10-27) nc-forward-ports: more info in output
+[v0.31.25](https://github.com/nextcloud/nextcloudpi/commit/6ab01cd) (2017-10-29) letsencrypt: remove workaround. fixed upstream
+
+[v0.31.24](https://github.com/nextcloud/nextcloudpi/commit/53943b4) (2017-10-27) nc-forward-ports: more info in output
 
 [v0.31.23](https://github.com/nextcloud/nextcloudpi/commit/defba33) (2017-10-27) nc-format-USB: more info in output
 

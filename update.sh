@@ -159,16 +159,6 @@ Listen 4443
 </Directory>
 EOF
 
-  # temporary workaround for bug https://github.com/certbot/certbot/issues/5138#issuecomment-333391771
-    cat > /etc/pip.conf <<EOF
-[global]
-extra-index-url=https://www.piwheels.hostedpi.com/simple
-extra-index-url=https://www.piwheels.hostedpi.com/simple/zope.components
-EOF
-  test -e /etc/pip.conf && grep -q zope /etc/pip.conf || { 
-    /etc/letsencrypt/letsencrypt-auto --help
-  }
-
   # tweak fail2ban email 
   F=/etc/fail2ban/action.d/sendmail-common.conf
   sed -i 's|Fail2Ban|NextCloudPi|' /etc/fail2ban/action.d/sendmail-whois-lines.conf
