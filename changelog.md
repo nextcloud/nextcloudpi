@@ -1,5 +1,9 @@
 
-[v0.31.26](https://github.com/nextcloud/nextcloudpi/commit/f9c5319) (2017-10-30) build: check ncp-launcher existence for old images
+[v0.31.28](https://github.com/nextcloud/nextcloudpi/commit/57f516e) (2017-10-31) nc-backup: check available sapace
+
+[v0.31.27](https://github.com/nextcloud/nextcloudpi/commit/2eda5f8) (2017-10-31) nc-restore: restore db password before occ command
+
+[v0.31.26](https://github.com/nextcloud/nextcloudpi/commit/f5ac88d) (2017-10-30) build: check ncp-launcher existence for old images
 
 [v0.31.25](https://github.com/nextcloud/nextcloudpi/commit/4d283f9) (2017-10-29) letsencrypt: remove workaround. fixed upstream
 
