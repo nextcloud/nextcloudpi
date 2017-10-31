@@ -198,7 +198,40 @@ cleanup()
   rm /var/lib/apt/lists/* -r
   rm -f /home/pi/.bash_history
 
-  rm /etc/udev/rules.d/90-qemu.rules
+  # remove QEMU specific rules
+  rm -f /etc/udev/rules.d/90-qemu.rules
+
+  # restore expand filesystem on first boot
+  cat > /etc/init.d/resize2fs_once <<'EOF'
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          resize2fs_once
+# Required-Start:
+# Required-Stop:
+# Default-Start: 3
+# Default-Stop:
+# Short-Description: Resize the root filesystem to fill partition
+# Description:
+### END INIT INFO
+
+. /lib/lsb/init-functions
+
+case "$1" in
+  start)
+    log_daemon_msg "Starting resize2fs_once" && \
+    resize2fs /dev/mmcblk0p2 && \
+    update-rc.d resize2fs_once remove && \
+    rm /etc/init.d/resize2fs_once && \
+    log_end_msg $?
+    ;;
+  *)
+    echo "Usage: $0 start" >&2
+    exit 3
+    ;;
+esac
+EOF
+  chmod +x /etc/init.d/resize2fs_once
+  systemctl enable resize2fs_once
 
   systemctl disable ssh
 }

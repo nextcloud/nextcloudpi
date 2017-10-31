@@ -1,7 +1,7 @@
 
-[v0.31.28](https://github.com/nextcloud/nextcloudpi/commit/57f516e) (2017-10-31) nc-backup: check available sapace
+[v0.31.28](https://github.com/nextcloud/nextcloudpi/commit/ce81f39) (2017-10-31) build: expand filesystem during first boot
 
-[v0.31.27](https://github.com/nextcloud/nextcloudpi/commit/2eda5f8) (2017-10-31) nc-restore: restore db password before occ command
+[v0.31.27](https://github.com/nextcloud/nextcloudpi/commit/6df5707) (2017-10-31) nc-backup: check available space
 
 [v0.31.26](https://github.com/nextcloud/nextcloudpi/commit/f5ac88d) (2017-10-30) build: check ncp-launcher existence for old images
 
