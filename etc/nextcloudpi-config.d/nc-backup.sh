@@ -31,6 +31,15 @@ configure()
     return 1;
   }
 
+  echo -e "check free space..."
+  local SIZE=$( du -s "$DATADIR" |           awk '{ print $1 }' )
+  local FREE=$( df    "$DATADIR" | tail -1 | awk '{ print $4 }' )
+
+  [ $SIZE -ge $FREE ] && { 
+    echo -e "free space check failed. Need $( du -sh "$DATADIR" | awk '{ print $1 }' )";
+    return 1; 
+  }
+
   sudo -u www-data php "$BASEDIR"/nextcloud/occ maintenance:mode --on
 
   # delete older backups
