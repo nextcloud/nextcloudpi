@@ -42,6 +42,9 @@ Listen 4443
   SSLCertificateFile      /etc/ssl/certs/ssl-cert-snakeoil.pem
   SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
 
+  # 2 days to avoid very big backups requests to timeout
+  TimeOut 172800
+
   <IfModule mod_authnz_external.c>
     DefineExternalAuth pwauth pipe /usr/sbin/pwauth
   </IfModule>

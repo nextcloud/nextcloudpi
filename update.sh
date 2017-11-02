@@ -198,6 +198,11 @@ EOF
   # log adjustment for wizard
   test -f /home/www/ncp-launcher.sh && \
     grep -q sleep /home/www/ncp-launcher.sh || echo "sleep 0.5 && echo \"\" > /run/ncp.log" >> /home/www/ncp-launcher.sh
+
+  # 2 days to avoid very big backups requests to timeout
+  grep -q TimeOut /etc/apache2/sites-enabled/ncp.conf || \
+    sed -i '/SSLCertificateKeyFile/aTimeOut 172800' /etc/apache2/sites-enabled/ncp.conf
+
 }
 
 # License
