@@ -1,5 +1,9 @@
 
-[v0.31.28](https://github.com/nextcloud/nextcloudpi/commit/ce81f39) (2017-10-31) build: expand filesystem during first boot
+[v0.32.0](https://github.com/nextcloud/nextcloudpi/commit/6d0651b) (2017-11-03) spDYN: initial adjustments
+
+[v0.31.29](https://github.com/nextcloud/nextcloudpi/commit/727e64f) (2017-11-02) ncp-web: fix timeout in long operations
+
+[v0.31.28](https://github.com/nextcloud/nextcloudpi/commit/0dcc51b) (2017-10-31) build: expand filesystem during first boot
 
 [v0.31.27](https://github.com/nextcloud/nextcloudpi/commit/6df5707) (2017-10-31) nc-backup: check available space
 

@@ -16,7 +16,7 @@ TOKEN_=your-spdns-token
 INSTALLDIR=spdnsupdater
 INSTALLPATH=/usr/local/etc/$INSTALLDIR
 CRONFILE=/etc/cron.d/spdnsupdater
-DESCRIPTION="Free Dynamic DNS provider (need account from https://spdyn.de)"
+DESCRIPTION="Free Dynamic DNS provider (need account from spdyn.de)"
 
 install() {
 
@@ -131,6 +131,7 @@ configure()
     rm -f "$CRONFILE"
     echo "spdnsUpdater is now disabled"
   fi
+  systemctl restart cron
 }
 
 # License
