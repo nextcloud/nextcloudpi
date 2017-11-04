@@ -184,10 +184,6 @@ EOF
 
   /usr/local/bin/ncp-update
 
-  # Optional packets for Nextcloud and Apps
-  $APTINSTALL -o "Dpkg::Options::=--force-confold" php-smbclient 
-  $APTINSTALL postfix
-
   # tag image
   echo "NextCloudPi_$( date  "+%m-%d-%y" )" > /usr/local/etc/ncp-baseimage
 }

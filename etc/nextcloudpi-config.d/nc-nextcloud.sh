@@ -21,6 +21,7 @@ MAXTRANSFERTIME_=3600
 DBADMIN=ncadmin
 DESCRIPTION="Install any NextCloud version"
 
+APTINSTALL="apt-get install -y --no-install-recommends"
 export DEBIAN_FRONTEND=noninteractive
 
 [ -d /var/www/nextcloud ] && {                        # don't show this during image build
@@ -35,7 +36,13 @@ You can later use nc-init to configure to NextCloudPi defaults
 You can use nc-backup "
 }
 
-install() { :; }
+install()
+{
+  # Optional packets for Nextcloud and Apps
+  apt-get update
+  $APTINSTALL -o "Dpkg::Options::=--force-confold" php-smbclient 
+  $APTINSTALL postfix
+}
 
 configure()
 {
