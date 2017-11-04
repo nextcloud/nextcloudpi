@@ -1,5 +1,7 @@
 
-[v0.32.0](https://github.com/nextcloud/nextcloudpi/commit/6d0651b) (2017-11-03) spDYN: initial adjustments
+[v0.32.1](https://github.com/nextcloud/nextcloudpi/commit/b9f5c95) (2017-11-04) build: replace user pi for user ncp
+
+[v0.32.0 ](https://github.com/nextcloud/nextcloudpi/commit/8c70198) (2017-11-03) spDYN: initial adjustments
 
 [v0.31.29](https://github.com/nextcloud/nextcloudpi/commit/727e64f) (2017-11-02) ncp-web: fix timeout in long operations
 

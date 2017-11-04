@@ -14,6 +14,9 @@
 # More at https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/
 #
 
+WEBADMIN=ncp
+WEBPASSWD=ownyourbits
+
 CONFDIR=/usr/local/etc/nextcloudpi-config.d/
 UPLOADTMPDIR=/var/www/nextcloud/data/tmp
 APTINSTALL="apt-get install -y --no-install-recommends"
@@ -34,7 +37,9 @@ install()
 
   # NEXTCLOUDPI-CONFIG WEB
   ##########################################
-  cat > /etc/apache2/sites-available/ncp.conf <<'EOF'
+
+  # VIRTUAL HOST
+  cat > /etc/apache2/sites-available/ncp.conf <<EOF
 Listen 4443
 <VirtualHost _default_:4443>
   DocumentRoot /var/www/ncp-web
@@ -74,7 +79,7 @@ Listen 4443
 
    <RequireAny>
       Require env noauth
-      Require user pi
+      Require user $WEBADMIN
    </RequireAny>
 
   </RequireAll>
@@ -85,6 +90,11 @@ EOF
   a2enmod authnz_external authn_core auth_basic
   a2ensite ncp
 
+  # NCP USER FOR AUTHENTICATION
+  useradd $WEBADMIN
+  echo -e "$WEBPASSWD\n$WEBPASSWD" | passwd $WEBADMIN
+
+  # NCP LAUNCHER
   mkdir /home/www -p
   chown www-data:www-data /home/www
   chmod 700 /home/www
