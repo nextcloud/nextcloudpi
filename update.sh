@@ -197,7 +197,24 @@ EOF
 
   # log adjustment for wizard
   test -f /home/www/ncp-launcher.sh && \
-    grep -q sleep /home/www/ncp-launcher.sh || echo "sleep 0.5 && echo \"\" > /run/ncp.log" >> /home/www/ncp-launcher.sh
+    cat > /home/www/ncp-launcher.sh <<'EOF'
+#!/bin/bash
+DIR=/usr/local/etc/nextcloudpi-config.d
+test -f $DIR/$1 || { echo "File not found"; exit 1; }
+source /usr/local/etc/library.sh
+cd $DIR
+touch /run/ncp.log
+chmod 640 /run/ncp.log
+chown root:www-data /run/ncp.log
+launch_script $1 &> /run/ncp.log
+RET=$?
+
+# clean log for the next PHP backend call to start clean,
+# but wait until everything from current execution is read
+sleep 0.5 && echo "" > /run/ncp.log
+
+exit $RET
+EOF
 
   # 2 days to avoid very big backups requests to timeout
   grep -q TimeOut /etc/apache2/sites-enabled/ncp.conf || \
