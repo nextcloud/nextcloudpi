@@ -26,19 +26,19 @@ export DEBIAN_FRONTEND=noninteractive
 install()
 {
   # NEXTCLOUDPI-CONFIG
-  ##########################################
   apt-get update
   $APTINSTALL dialog whiptail
   mkdir -p $CONFDIR
+
+  # include option in raspi-config (only Raspbian)
   test -f /usr/bin/raspi-config && {
     sed -i '/Change User Password/i"0 NextCloudPi Configuration" "Configuration of NextCloudPi" \\\\'  /usr/bin/raspi-config
     sed -i '/1\\\\ \*) do_change_pass ;;/i0\\\\ *) nextcloudpi-config ;;'                              /usr/bin/raspi-config
   }
 
   # NEXTCLOUDPI-CONFIG WEB
-  ##########################################
 
-  # VIRTUAL HOST
+  ## VIRTUAL HOST
   cat > /etc/apache2/sites-available/ncp.conf <<EOF
 Listen 4443
 <VirtualHost _default_:4443>
@@ -91,12 +91,12 @@ EOF
   a2enmod authnz_external authn_core auth_basic
   a2ensite ncp
 
-  # NCP USER FOR AUTHENTICATION
+  ## NCP USER FOR AUTHENTICATION
   useradd $WEBADMIN
   echo -e "$WEBPASSWD\n$WEBPASSWD" | passwd $WEBADMIN
 
-  # NCP LAUNCHER
-  mkdir /home/www -p
+  ## NCP LAUNCHER
+  mkdir -p /home/www
   chown www-data:www-data /home/www
   chmod 700 /home/www
 
@@ -121,32 +121,7 @@ EOF
   chmod 700 /home/www/ncp-launcher.sh
   echo "www-data ALL = NOPASSWD: /home/www/ncp-launcher.sh , /sbin/halt" >> /etc/sudoers
 
-  # NEXTCLOUDPI MOTD 
-  ##########################################
-  rm -rf /etc/update-motd.d
-  mkdir /etc/update-motd.d
-  rm /etc/motd
-  ln -s /var/run/motd /etc/motd
-
-cat > /etc/update-motd.d/10logo <<EOF
-#!/bin/sh
-echo
-cat /usr/local/etc/ncp-ascii.txt
-EOF
-
-  cat > /etc/update-motd.d/20updates <<'EOF'
-#!/bin/bash
-/usr/local/bin/ncp-check-updates
-EOF
-  chmod a+x /etc/update-motd.d/*
-
-  # HOSTNAME
-  ##########################################
-  echo nextcloudpi > /etc/hostname
-  sed -i '$c127.0.1.1 nextcloudpi' /etc/hosts
-
   # NEXTCLOUDPI AUTO TRUSTED DOMAIN
-  ##########################################
   mkdir -p /usr/lib/systemd/system
   cat > /usr/lib/systemd/system/nextcloud-domain.service <<'EOF'
 [Unit]
@@ -178,7 +153,6 @@ EOF
   [[ "$DOCKERBUILD" != 1 ]] && systemctl enable nextcloud-domain 
 
   # NEXTCLOUDPI UPDATES
-  ##########################################
   cat > /etc/cron.daily/ncp-check-version <<EOF
 #!/bin/sh
 /usr/local/bin/ncp-check-version
@@ -198,8 +172,34 @@ EOF
 
   /usr/local/bin/ncp-update
 
-  # tag image
-  echo "NextCloudPi_$( date  "+%m-%d-%y" )" > /usr/local/etc/ncp-baseimage
+  # ONLY FOR IMAGE BUILDS
+  [[ "$IMGBUILD" == 1 ]] && {
+
+    ## NEXTCLOUDPI MOTD 
+    rm -rf /etc/update-motd.d
+    mkdir /etc/update-motd.d
+    rm /etc/motd
+    ln -s /var/run/motd /etc/motd
+
+    cat > /etc/update-motd.d/10logo <<EOF
+#!/bin/sh
+echo
+cat /usr/local/etc/ncp-ascii.txt
+EOF
+
+    cat > /etc/update-motd.d/20updates <<'EOF'
+#!/bin/bash
+/usr/local/bin/ncp-check-updates
+EOF
+    chmod a+x /etc/update-motd.d/*
+
+    ## HOSTNAME
+    echo nextcloudpi > /etc/hostname
+    sed -i '$c127.0.1.1 nextcloudpi' /etc/hosts
+
+    ## tag image
+    echo "NextCloudPi_$( date  "+%m-%d-%y" )" > /usr/local/etc/ncp-baseimage
+  }
 }
 
 configure() { :; }
