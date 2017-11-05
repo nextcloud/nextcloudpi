@@ -56,7 +56,7 @@ EOF
 
   ## INITIALIZE NEXTCLOUD
 
-  echo "Setting up Nextcloud..."
+  echo "Setting up Nextcloud... wait until message 'NC init done'"
 
   cd /var/www/nextcloud/
   rm -f config/config.php
@@ -85,6 +85,8 @@ EOF
 
   # other
   sudo -u www-data php occ config:system:set overwriteprotocol --value=https
+
+  echo "NC init done"
 }
 
 install(){ :; }
