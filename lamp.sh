@@ -32,7 +32,7 @@ install()
     $APTINSTALL apt-utils 
     $APTINSTALL cron
     $APTINSTALL apache2
-    $APTINSTALL php7.0 php7.0-curl php7.0-gd php7.0-fpm php7.0-cli php7.0-opcache php7.0-mbstring php7.0-xml php7.0-zip php7.0-APC php7.0-fileinfo php7.0-mcrypt
+    $APTINSTALL php7.0 php7.0-curl php7.0-gd php7.0-fpm php7.0-cli php7.0-opcache php7.0-mbstring php7.0-xml php7.0-zip php7.0-fileinfo php7.0-mcrypt
     mkdir -p /run/php
 
     # Randomize mariaDB password
@@ -73,17 +73,6 @@ EOF
 
     # CONFIGURE PHP7
     ##########################################
-
-    cat > /etc/php/7.0/mods-available/apcu.ini <<EOF
-extension=apcu.so
-apc.enable_cli=0
-apc.shm_size=256M
-apc.ttl=7200
-apc.gc_ttl=3600
-apc.entries_hint=4096
-apc.slam_defense=1
-apc.serializer=igbinary
-EOF
 
     cat > /etc/php/7.0/mods-available/opcache.ini <<EOF
 zend_extension=opcache.so

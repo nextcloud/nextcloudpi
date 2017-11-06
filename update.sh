@@ -230,10 +230,54 @@ EOF
   grep -q TimeOut /etc/apache2/sites-enabled/ncp.conf || \
     sed -i '/SSLCertificateKeyFile/aTimeOut 172800' /etc/apache2/sites-enabled/ncp.conf
 
-# relocate noip2 config
-mkdir -p /usr/local/etc/noip2
+  # relocate noip2 config
+  mkdir -p /usr/local/etc/noip2
 
-  # fix unattended
+  # redis
+  grep -q APCu /var/www/nextcloud/config/config.php && {
+    echo "installing redis..."
+    apt-get update
+    apt-get install -y --no-install-recommends redis-server php7.0-redis
+
+    sed -i '/memcache/d' /var/www/nextcloud/config/config.php
+    sed -i '$d'          /var/www/nextcloud/config/config.php
+
+    cat >> /var/www/nextcloud/config/config.php <<'EOF'
+  'memcache.local' => '\OC\Memcache\Redis',
+  'memcache.locking' => '\OC\Memcache\Redis',
+  'redis' =>
+  array (
+    'host' => '/var/run/redis/redis.sock',
+    'port' => 0,
+    'timeout' => 0.0,
+  ),
+);
+EOF
+
+  REDIS_CONF=/etc/redis/redis.conf
+  REDIS_MEM=3gb
+  sed -i "s|# unixsocket.*|unixsocket /var/run/redis/redis.sock|" $REDIS_CONF
+  sed -i "s|# unixsocketperm.*|unixsocketperm 777|"               $REDIS_CONF
+  sed -i "s|port.*|port 0|"                                       $REDIS_CONF
+  echo "maxmemory ${REDIS_MEM}" >> $REDIS_CONF
+  echo 'vm.overcommit_memory = 1' >> /etc/sysctl.conf
+
+  sudo usermod -a -G redis www-data
+
+  systemctl restart redis-server
+  systemctl enable redis-server
+
+  # need to restart php
+  bash -c " sleep 3
+            systemctl stop php7.0-fpm
+            systemctl stop mysqld
+            sleep 0.5
+            systemctl start php7.0-fpm
+            systemctl start mysqld
+            " &>/dev/null &
+  }
+
+# fix unattended
   NUSER=$( grep USER_ /usr/local/etc/nextcloudpi-config.d/nc-notify-updates.sh | head -1 | cut -f2 -d= )
   cat > /usr/local/bin/ncp-notify-unattended-upgrade <<EOF
 #!/bin/bash
