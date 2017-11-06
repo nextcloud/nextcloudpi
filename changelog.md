@@ -1,7 +1,11 @@
 
-[v0.32.7](https://github.com/nextcloud/nextcloudpi/commit/ae1c47a) (2017-11-09) nc-notify-updates: fixes
+[v0.34.0](https://github.com/nextcloud/nextcloudpi/commit/d2f8ce2) (2017-11-06) added redis
 
-[v0.32.6](https://github.com/nextcloud/nextcloudpi/commit/455cb73) (2017-11-08) noip: manage many interfaces and fix return value
+[v0.33.0](https://github.com/nextcloud/nextcloudpi/commit/c3b35e1) (2017-11-07) added NCP custom theme with new logo
+
+[v0.32.7 ](https://github.com/nextcloud/nextcloudpi/commit/555d86b) (2017-11-09) nc-notify-updates: fixes
+
+[v0.32.6 ](https://github.com/nextcloud/nextcloudpi/commit/455cb73) (2017-11-08) noip: manage many interfaces and fix return value
 
 [v0.32.5 ](https://github.com/nextcloud/nextcloudpi/commit/3147047) (2017-11-08) update: wait running apt processes
 

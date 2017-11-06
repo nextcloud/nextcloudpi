@@ -19,6 +19,7 @@ MAXFILESIZE_=2G
 MEMORYLIMIT_=768M
 MAXTRANSFERTIME_=3600
 DBADMIN=ncadmin
+REDIS_MEM=3gb
 DESCRIPTION="Install any NextCloud version"
 
 APTINSTALL="apt-get install -y --no-install-recommends"
@@ -42,11 +43,25 @@ install()
   apt-get update
   $APTINSTALL -o "Dpkg::Options::=--force-confold" php-smbclient 
   $APTINSTALL postfix lbzip2 iputils-ping
+ 
+  # REDIS
+  $APTINSTALL redis-server php7.0-redis
+
+  local REDIS_CONF=/etc/redis/redis.conf
+  sed -i "s|# unixsocket.*|unixsocket /var/run/redis/redis.sock|" $REDIS_CONF
+  sed -i "s|# unixsocketperm.*|unixsocketperm 777|"               $REDIS_CONF
+  sed -i "s|port.*|port 0|"                                       $REDIS_CONF
+  echo "maxmemory ${REDIS_MEM}" >> $REDIS_CONF
+  echo 'vm.overcommit_memory = 1' >> /etc/sysctl.conf
+
+  sudo usermod -a -G redis www-data
+
+  systemctl enable redis-server
 }
 
 configure()
 {
-  ping  -W 2 -w 1 -q github.com &>/dev/null || { echo "No internet connectivity"; return 1; }
+  ping -W 2 -w 1 -q github.com &>/dev/null || { echo "No internet connectivity"; return 1; }
 
   ## RE-CREATE DATABASE TABLE 
   echo "Starting mariaDB"

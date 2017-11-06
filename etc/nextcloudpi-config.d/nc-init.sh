@@ -67,8 +67,19 @@ EOF
   # cron jobs
   sudo -u www-data php occ background:cron
 
-  # ACPu cache
-  sed -i '$i\ \ '\''memcache.local'\'' => '\''\\\\OC\\\\Memcache\\\\APCu'\'',' /var/www/nextcloud/config/config.php
+  # redis cache
+  sed -i '$d' config/config.php
+  cat >> config/config.php <<'EOF'
+  'memcache.local' => '\OC\Memcache\Redis',
+  'memcache.locking' => '\OC\Memcache\Redis',
+  'redis' =>
+  array (
+    'host' => '/var/run/redis/redis.sock',
+    'port' => 0,
+    'timeout' => 0.0,
+  ),
+);
+EOF
 
   # 4 Byte UTF8 support
   sudo -u www-data php occ config:system:set mysql.utf8mb4 --type boolean --value="true"
