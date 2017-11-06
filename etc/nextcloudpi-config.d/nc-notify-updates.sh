@@ -86,29 +86,28 @@ EOF
 
   cat > /usr/local/bin/ncp-notify-unattended-upgrade <<EOF
 #!/bin/bash
+
 LOGFILE=/var/log/unattended-upgrades/unattended-upgrades.log
 STAMPFILE=/var/run/.ncp-notify-unattended-upgrades
 VERFILE=/usr/local/etc/ncp-version
 
 test -e "\$LOGFILE" || { echo "\$LOGFILE not found"; exit 1; }
 
-test -e "\$STAMPFILE" || touch "\$STAMPFILE"
+# find lines with package updates
+LINE=\$( grep "INFO Packages that will be upgraded:" "\$LOGFILE" )
 
-[ \$( date -r "\$LOGFILE" +'%y%m%d%H%M' ) -le \$( date -r "\$STAMPFILE" +'%y%m%d%H%M' ) ] && { echo "info is up to date"; exit 0; }
+[[ "\$LINE" == "" ]] && { echo "no new upgrades"; exit 0; }
 
-LINE=\$( grep "INFO Packages that will be upgraded" "\$LOGFILE" | tail -1 )
+# extract package names
+PKGS=\$( sed 's|^.*Packages that will be upgraded: ||' <<< "\$LINE" | tr '\\n' ' ' )
 
-[[ "\$LINE" == "" ]] && { echo "no new upgrades"; touch "\$STAMPFILE"; exit 0; }
+# mark lines as read
+sed -i 's|INFO Packages that will be upgraded:|INFO Packages that will be upgraded :|' \$LOGFILE
 
-PKGS=\$( sed 's|^.*Packages that will be upgraded: ||' <<< "\$LINE" )
+echo -e "Packages automatically upgraded: \$PKGS\\n"
 
-echo "Packages automatically upgraded: \$PKGS"
-
-touch "\$STAMPFILE"
-
-sudo -u www-data php /var/www/nextcloud/occ notification:generate \
-  $USER_ "NextCloudPi Unattended Upgrades" \
-     -l "Packages automatically upgraded \$PKGS"
+# notify
+sudo -u www-data php /var/www/nextcloud/occ notification:generate    "NextCloudPi Unattended Upgrades"      -l "Packages automatically upgraded $PKGS"
 EOF
   chmod +x /usr/local/bin/ncp-notify-unattended-upgrade
 
