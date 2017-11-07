@@ -27,7 +27,6 @@ nc-init.sh
 # need to be fixed for this
 EXCL_DOCKER+="
 nc-webui.sh
-dnsmasq.sh
 fail2ban.sh
 "
 
