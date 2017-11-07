@@ -16,7 +16,7 @@
 ACTIVE_=no
 DOMAIN_=mycloud.ownyourbits.com
 DNSSERVER_=8.8.8.8
-CACHESIZE_=150 
+CACHESIZE_=150
 DESCRIPTION="DNS server with cache"
 
 INFO="Remember to point your PC and devices DNS to your Raspberry Pi IP" 
@@ -68,6 +68,9 @@ cache-size=$CACHESIZE_
 server=$DNSSERVER_
 address=/$DOMAIN_/$IP  # This is optional if we add it to /etc/hosts
 EOF
+
+  # required to run in container
+  test -d /data && echo "user=root" >> /etc/dnsmasq.conf
 
   sed -i 's|#\?IGNORE_RESOLVCONF=.*|IGNORE_RESOLVCONF=yes|' /etc/default/dnsmasq
 
