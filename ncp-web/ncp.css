@@ -424,7 +424,7 @@ input[type='checkbox'].checkbox--white:indeterminate:disabled + label:after,inpu
 }
 #header .logo-icon {
  display:inline-block;
- background-image:url('ncp-logo.png');
+ background-image:url('img/ncp-logo.svg');
  background-repeat:no-repeat;
  background-position:center center;
  background-size:contain;

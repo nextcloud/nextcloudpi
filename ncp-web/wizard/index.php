@@ -22,6 +22,7 @@
             if ( isset($_SERVER['HTTPS']) )
               ini_set('session.cookie_secure', 1); 
         ?>
+        <link rel="icon" type="image/png" href="../img/favicon.png" />
 	</head>
 <body>
 <div id="rootwizard">
@@ -39,7 +40,7 @@
 		<div class="tab-pane" id="tab1">
 			<div class="ncp-tab-pane">
 				<h1>Welcome to NextCloudPi</h1>
-                <img id="ncp-welcome-logo" src="img/ncp-logo.png">
+                <img id="ncp-welcome-logo" src="img/ncp-logo.svg">
 				<p>This wizard will help you configure your personal cloud.</p>
 			</div>
 		</div>
@@ -188,7 +189,7 @@
                     <br>go to your Nextcloud
                   </div>
                   <div class="linkbox">
-                    <a href=".."><img id="ncp-web" src="img/ncp-logo.png"></a>
+                    <a href=".."><img id="ncp-web" src="img/ncp-logo.svg"></a>
                     <br>go back to NextCloudPi web panel
                   </div>
 

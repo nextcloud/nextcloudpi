@@ -32,9 +32,9 @@
     ini_set('session.cookie_secure', 1); 
 
   // HTTP2 push headers
-  header("Link: </minified.js>; rel=preload; as=script;,</ncp.js>; rel=preload; as=script;,</ncp.css>; rel=preload; as=style;,</ncp-logo.png>; rel=preload; as=image;, </loading-small.gif>; rel=preload; as=image;, rel=preconnect href=ncp-launcher.php;");
+  header("Link: </minified.js>; rel=preload; as=script;,</ncp.js>; rel=preload; as=script;,</ncp.css>; rel=preload; as=style;,</img/ncp-logo.svg>; rel=preload; as=image;, </loading-small.gif>; rel=preload; as=image;, rel=preconnect href=ncp-launcher.php;");
 ?>
-<link rel="icon" type="image/png" href="favicon.png" />
+<link rel="icon" type="image/png" href="img/favicon.png" />
 <link rel="stylesheet" href="ncp.css">
 </head>
 <body id="body-user">
@@ -66,7 +66,7 @@
         <h2 id="config-box-title">NextCloudPi First Run</h2>
         <p>Click to start the configuration wizard</p>
         <br>
-        <a href="wizard"><img class="wizard-btn" src="wizard/img/ncp-logo.png" class="wizard"></a>
+        <a href="wizard"><img class="wizard-btn" src="wizard/img/ncp-logo.svg" class="wizard"></a>
         <br>
         <button type="button" class="wizard-btn"      id="go-wizard"   >run  </button>
         <button type="button" class="first-run-close" id="skip-wizard" >skip </button>

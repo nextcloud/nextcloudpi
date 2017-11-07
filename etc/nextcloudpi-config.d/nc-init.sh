@@ -94,6 +94,21 @@ EOF
   sudo -u www-data php occ config:system:set mail_from_address --value="admin"
   sudo -u www-data php occ config:system:set mail_domain       --value="ownyourbits.com"
 
+  # NCP theme
+  local ID=$( grep instanceid config/config.php | awk -F "=> " '{ print $2 }' | sed "s|[,']||g" )
+  [[ "$ID" == "" ]] && { echo "failed to get ID"; return 1; }
+  mkdir -p data/appdata_${ID}/theming/images
+  cp /usr/local/etc/logo /usr/local/etc/background data/appdata_${ID}/theming/images
+  chown -R www-data:www-data data/appdata_${ID}
+
+  mysql nextcloud <<EOF
+replace into  oc_appconfig values ( 'theming', 'name', "NextCloudPi" );
+replace into  oc_appconfig values ( 'theming', 'slogan', "keep your data close" );
+replace into  oc_appconfig values ( 'theming', 'url', "https://ownyourbits.com" );
+replace into  oc_appconfig values ( 'theming', 'logoMime', "image/svg+xml" );
+replace into  oc_appconfig values ( 'theming', 'backgroundMime', "image/png" );
+EOF
+
   # other
   sudo -u www-data php occ config:system:set overwriteprotocol --value=https
 
