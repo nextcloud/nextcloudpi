@@ -145,7 +145,7 @@ EOF
 
 configure() { :; }
 
-cleanup()   
+cleanup()
 { 
   apt-get autoremove -y
   apt-get clean
