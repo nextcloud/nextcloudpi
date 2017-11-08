@@ -70,6 +70,9 @@ configure()
   # opcache dir
   sed -i "s|^opcache.file_cache=.*|opcache.file_cache=$DATADIR_/.opcache|" /etc/php/7.0/mods-available/opcache.ini
 
+  # update fail2ban logpath
+  sed -i "s|logpath  =.*|logpath  = $DATADIR_/nextcloud.log|" /etc/fail2ban/jail.conf
+
   # datadir
   sudo -u www-data php occ config:system:set datadirectory --value="$DATADIR_"
   sudo -u www-data php occ maintenance:mode --off
