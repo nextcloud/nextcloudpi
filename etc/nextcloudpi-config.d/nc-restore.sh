@@ -87,6 +87,9 @@ EOF
     # Just in case we moved the opcache dir
     sed -i "s|^opcache.file_cache=.*|opcache.file_cache=$DATADIR/.opcache|" /etc/php/7.0/mods-available/opcache.ini
 
+    # update fail2ban logpath
+    sed -i "s|logpath  =.*|logpath  = $DATADIR/nextcloud.log|" /etc/fail2ban/jail.conf
+
     sudo -u www-data php occ maintenance:mode --off
 
   # INCLUDEDATA=no situation
@@ -97,6 +100,9 @@ EOF
 
     # Just in case we moved the opcache dir
     sed -i "s|^opcache.file_cache=.*|opcache.file_cache=$BASEDIR/nextcloud/data/.opcache|" /etc/php/7.0/mods-available/opcache.ini
+
+    # update fail2ban logpath
+    sed -i "s|logpath  =.*|logpath  = /var/www/nextcloud/data/nextcloud.log|" /etc/fail2ban/jail.conf
 
     sudo -u www-data php occ maintenance:mode --off
     sudo -u www-data php occ files:scan --all
@@ -111,6 +117,9 @@ EOF
               systemctl start mysqld
               " &>/dev/null &
   fi
+
+  service fail2ban restart
+
   rm -r "$TMPDIR"
 }
 
