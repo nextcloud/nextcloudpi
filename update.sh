@@ -49,6 +49,10 @@ EXCL_DOCKER+="
 nc-update.sh
 nc-autoupdate-ncp.sh
 "
+
+# wait for other apt processes
+test -f /var/lib/apt/lists/lock && { echo "apt is currently running. Try again later";  exit 1; }
+
 cp etc/library.sh /usr/local/etc/
 
 source /usr/local/etc/library.sh
