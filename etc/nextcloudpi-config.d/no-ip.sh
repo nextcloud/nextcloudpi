@@ -90,7 +90,12 @@ configure()
 
   ping  -W 2 -w 1 -q github.com &>/dev/null || { echo "No internet connectivity"; return 1; echo "noip DDNS disabled"; }
 
-  /usr/local/bin/noip2 -C -c /usr/local/etc/no-ip2.conf -U "$TIME_" -u "$USER_" -p "$PASS_" || return 1
+  local IF=$( ip -br l | awk '{ if ( $2 == "UP" ) print $1 }' | head -1 )
+  [[ "$IF" != "" ]] && IF="-I $IF"
+
+  /usr/local/bin/noip2 -C -c /usr/local/etc/no-ip2.conf $IF -U "$TIME_" -u "$USER_" -p "$PASS_" | tee >(cat - >&2) \
+    | grep -q "New configuration file .* created" || return 1
+
   update-rc.d noip2 enable
   service noip2 restart
   cd /var/www/nextcloud
