@@ -232,6 +232,37 @@ EOF
 
 # relocate noip2 config
 mkdir -p /usr/local/etc/noip2
+
+  # fix unattended
+  NUSER=$( grep USER_ /usr/local/etc/nextcloudpi-config.d/nc-notify-updates.sh | head -1 | cut -f2 -d= )
+  cat > /usr/local/bin/ncp-notify-unattended-upgrade <<EOF
+#!/bin/bash
+
+LOGFILE=/var/log/unattended-upgrades/unattended-upgrades.log
+STAMPFILE=/var/run/.ncp-notify-unattended-upgrades
+VERFILE=/usr/local/etc/ncp-version
+
+test -e "\$LOGFILE" || { echo "\$LOGFILE not found"; exit 1; }
+
+# find lines with package updates
+LINE=\$( grep "INFO Packages that will be upgraded:" "\$LOGFILE" )
+
+[[ "\$LINE" == "" ]] && { echo "no new upgrades"; exit 0; }
+
+# extract package names
+PKGS=\$( sed 's|^.*Packages that will be upgraded: ||' <<< "\$LINE" | tr '\\n' ' ' )
+
+# mark lines as read
+sed -i 's|INFO Packages that will be upgraded:|INFO Packages that will be upgraded :|' \$LOGFILE
+
+echo -e "Packages automatically upgraded: \$PKGS\\n"
+
+# notify
+sudo -u www-data php /var/www/nextcloud/occ notification:generate \
+  $NUSER "NextCloudPi Unattended Upgrades" \
+     -l "Packages automatically upgraded \$PKGS"
+EOF
+  chmod +x /usr/local/bin/ncp-notify-unattended-upgrade
 }
 
 # License
