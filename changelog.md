@@ -1,7 +1,9 @@
 
-[v0.34.0](https://github.com/nextcloud/nextcloudpi/commit/d2f8ce2) (2017-11-06) added redis
+[v0.34.1](https://github.com/nextcloud/nextcloudpi/commit/36d2ee5) (2017-11-09) nc-nextcloud: added more logging
 
-[v0.33.0](https://github.com/nextcloud/nextcloudpi/commit/c3b35e1) (2017-11-07) added NCP custom theme with new logo
+[v0.34.0](https://github.com/nextcloud/nextcloudpi/commit/bdf1b13) (2017-11-07) added NCP custom theme with new logo
+
+[v0.33.0 ](https://github.com/nextcloud/nextcloudpi/commit/d478a34) (2017-11-06) added redis
 
 [v0.32.7 ](https://github.com/nextcloud/nextcloudpi/commit/555d86b) (2017-11-09) nc-notify-updates: fixes
 

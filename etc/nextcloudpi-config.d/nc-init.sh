@@ -28,6 +28,8 @@ INFO="This action will configure NextCloud to NextCloudPi defaults.
 
 configure()
 {
+  echo "Setting up a clean Nextcloud instance... wait until message 'NC init done'"
+
   ## RE-CREATE DATABASE TABLE 
 
   echo "Setting up database..."
@@ -56,7 +58,7 @@ EOF
 
   ## INITIALIZE NEXTCLOUD
 
-  echo "Setting up Nextcloud... wait until message 'NC init done'"
+  echo "Setting up Nextcloud..."
 
   cd /var/www/nextcloud/
   rm -f config/config.php
