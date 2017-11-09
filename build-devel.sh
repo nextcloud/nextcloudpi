@@ -23,6 +23,7 @@ install()
     test -f /var/lib/apt/lists/lock && break
     sleep 1
   done
+  rm -f /etc/apt/apt.conf.d/20nextcloudpi-upgrades
 
   echo -e "Downloading updates"
   rm -rf /tmp/ncp-update-tmp
