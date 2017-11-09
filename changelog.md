@@ -1,7 +1,9 @@
 
-[v0.34.1](https://github.com/nextcloud/nextcloudpi/commit/36d2ee5) (2017-11-09) nc-nextcloud: added more logging
+[v0.34.2](https://github.com/nextcloud/nextcloudpi/commit/490c8fb) (2017-11-09) Revert "update: wait running apt processes"
 
-[v0.34.0](https://github.com/nextcloud/nextcloudpi/commit/bdf1b13) (2017-11-07) added NCP custom theme with new logo
+[v0.34.1](https://github.com/nextcloud/nextcloudpi/commit/343c406) (2017-11-09) nc-nextcloud: added more logging
+
+[v0.34.0 ](https://github.com/nextcloud/nextcloudpi/commit/bdf1b13) (2017-11-07) added NCP custom theme with new logo
 
 [v0.33.0 ](https://github.com/nextcloud/nextcloudpi/commit/d478a34) (2017-11-06) added redis
 
