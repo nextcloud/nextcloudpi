@@ -191,3 +191,19 @@ function generate_changelog()
     sed '/HEAD ->\|origin/s|\[.*\(tag: v[0-9]\+\.[0-9]\+\.[0-9]\+\).*\]|[\1]|' | \
     sed 's|* \[tag: |\n[|' > changelog.md
 }
+
+function deactivate_unattended_upgrades()
+{
+  local IMG=$1
+  local SECTOR
+  local OFFSET
+  SECTOR=$( fdisk -l "$IMG" | grep Linux | awk '{ print $2 }' )
+  OFFSET=$(( SECTOR * 512 ))
+
+  [ -f "$IMG" ] || { echo "no image"; return 1; }
+  mkdir -p tmpmnt
+  sudo mount "$IMG" -o offset="$OFFSET" tmpmnt || return 1
+  sudo rm -f tmpmnt/etc/apt/apt.conf.d/20nextcloudpi-upgrades
+  sudo umount -l tmpmnt
+  rmdir tmpmnt &>/dev/null
+}
