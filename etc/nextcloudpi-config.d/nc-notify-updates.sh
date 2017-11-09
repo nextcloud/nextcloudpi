@@ -107,7 +107,9 @@ sed -i 's|INFO Packages that will be upgraded:|INFO Packages that will be upgrad
 echo -e "Packages automatically upgraded: \$PKGS\\n"
 
 # notify
-sudo -u www-data php /var/www/nextcloud/occ notification:generate    "NextCloudPi Unattended Upgrades"      -l "Packages automatically upgraded $PKGS"
+sudo -u www-data php /var/www/nextcloud/occ notification:generate \
+  $USER_ "NextCloudPi Unattended Upgrades" \
+     -l "Packages automatically upgraded \$PKGS"
 EOF
   chmod +x /usr/local/bin/ncp-notify-unattended-upgrade
 

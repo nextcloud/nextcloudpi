@@ -1,9 +1,11 @@
 
-[v0.32.6](https://github.com/nextcloud/nextcloudpi/commit/83adc32) (2017-11-08) noip: manage many interfaces and fix return value
+[v0.32.7](https://github.com/nextcloud/nextcloudpi/commit/ae1c47a) (2017-11-09) nc-notify-updates: fixes
 
-[v0.32.5 ](https://github.com/nextcloud/nextcloudpi/commit/f192b20) (2017-11-08) update: wait running apt processes
+[v0.32.6](https://github.com/nextcloud/nextcloudpi/commit/455cb73) (2017-11-08) noip: manage many interfaces and fix return value
 
-[v0.32.4 ](https://github.com/nextcloud/nextcloudpi/commit/63e0f73) (2017-11-08) fail2ban: update logpath on nc-datadir or nc-restore
+[v0.32.5 ](https://github.com/nextcloud/nextcloudpi/commit/3147047) (2017-11-08) update: wait running apt processes
+
+[v0.32.4 ](https://github.com/nextcloud/nextcloudpi/commit/42cef25) (2017-11-08) fail2ban: update logpath on nc-datadir or nc-restore
 
 [v0.32.3 ](https://github.com/nextcloud/nextcloudpi/commit/bfe0b61) (2017-11-06) nc-notify-updates: rework for more accuracy
 
