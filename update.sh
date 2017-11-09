@@ -49,6 +49,10 @@ EXCL_DOCKER+="
 nc-update.sh
 nc-autoupdate-ncp.sh
 "
+
+# check running apt
+pgrep apt &>/dev/null && { echo "apt is currently running. Try again later";  exit 1; }
+
 cp etc/library.sh /usr/local/etc/
 
 source /usr/local/etc/library.sh
@@ -230,6 +234,7 @@ EOF
   mkdir -p /usr/local/etc/noip2
 
   # redis
+  REDIS_CONF=/etc/redis/redis.conf
   sysctl vm.overcommit_memory=1
   grep -q APCu /var/www/nextcloud/config/config.php && {
     echo "installing redis..."
@@ -251,7 +256,6 @@ EOF
 );
 EOF
 
-  REDIS_CONF=/etc/redis/redis.conf
   REDIS_MEM=3gb
   sed -i "s|# unixsocket.*|unixsocket /var/run/redis/redis.sock|" $REDIS_CONF
   sed -i "s|# unixsocketperm.*|unixsocketperm 777|"               $REDIS_CONF
@@ -273,6 +277,7 @@ EOF
             systemctl start mysqld
             " &>/dev/null &
   }
+  sed -i 's|^logfile.*|logfile /var/log/redis/redis-server.log|' $REDIS_CONF
 
 # fix unattended
   NUSER=$( grep USER_ /usr/local/etc/nextcloudpi-config.d/nc-notify-updates.sh | head -1 | cut -f2 -d= )
@@ -304,6 +309,39 @@ sudo -u www-data php /var/www/nextcloud/occ notification:generate \
      -l "Packages automatically upgraded \$PKGS"
 EOF
   chmod +x /usr/local/bin/ncp-notify-unattended-upgrade
+
+  # fix modsecurity uploads
+  sed -i 's|^SecRequestBodyLimit ^C|#SecRequestBodyLimit 13107200|' /etc/modsecurity/modsecurity.conf
+
+  # fix ramlogs
+  [[ $( grep "^ACTIVE_" /usr/local/etc/nextcloudpi-config.d/nc-ramlogs.sh | cut -f2 -d'=' ) == "yes" ]] && {
+    mkdir -p /usr/lib/systemd/system
+    cat > /usr/lib/systemd/system/ramlogs.service <<'EOF'
+[Unit]
+Description=Populate ramlogs dir
+Requires=network.target
+Before=redis-server apache2 mysqld
+
+[Service]
+ExecStart=/bin/bash /usr/local/bin/ramlog-dirs.sh
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+    cat > /usr/local/bin/ramlog-dirs.sh <<'EOF'
+#!/bin/bash
+mkdir -p /var/log/myslq
+chown mysql /var/log/mysql
+
+mkdir -p /var/log/apache2
+chown apache2 /var/log/apache2
+
+mkdir -p /var/log/redis
+chown redis /var/log/redis
+EOF
+    systemctl enable ramlogs
+  }
 }
 
 # License
