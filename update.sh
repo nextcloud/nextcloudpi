@@ -230,6 +230,7 @@ EOF
   mkdir -p /usr/local/etc/noip2
 
   # redis
+  sysctl vm.overcommit_memory=1
   grep -q APCu /var/www/nextcloud/config/config.php && {
     echo "installing redis..."
     apt-get update
