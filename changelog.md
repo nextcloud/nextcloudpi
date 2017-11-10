@@ -1,9 +1,15 @@
 
-[v0.34.2](https://github.com/nextcloud/nextcloudpi/commit/490c8fb) (2017-11-09) Revert "update: wait running apt processes"
+[v0.34.5](https://github.com/nextcloud/nextcloudpi/commit/e603de3) (2017-11-10) update: wait running apt processes (fix)
 
-[v0.34.1](https://github.com/nextcloud/nextcloudpi/commit/343c406) (2017-11-09) nc-nextcloud: added more logging
+[v0.34.4 ](https://github.com/nextcloud/nextcloudpi/commit/362211f) (2017-11-09) redis: fixes with ramlogs and modsecurity
 
-[v0.34.0 ](https://github.com/nextcloud/nextcloudpi/commit/bdf1b13) (2017-11-07) added NCP custom theme with new logo
+[v0.34.3 ](https://github.com/nextcloud/nextcloudpi/commit/cc82c7b) (2017-11-09) redis: change overcommit memory on update
+
+[v0.34.2 ](https://github.com/nextcloud/nextcloudpi/commit/6552310) (2017-11-09) Revert "update: wait running apt processes"
+
+[v0.34.1 ](https://github.com/nextcloud/nextcloudpi/commit/3501a9e) (2017-11-09) nc-nextcloud: added more logging
+
+[v0.34.0 ](https://github.com/nextcloud/nextcloudpi/commit/6917cac) (2017-11-07) added NCP custom theme with new logo
 
 [v0.33.0 ](https://github.com/nextcloud/nextcloudpi/commit/d478a34) (2017-11-06) added redis
 
