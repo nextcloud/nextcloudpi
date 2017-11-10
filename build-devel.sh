@@ -17,7 +17,14 @@
 # this is a replica of ncp-update, but from devel branch
 install() 
 {
-  test -f /etc/apt/apt.conf.d/20nextcloudpi-upgrades && { echo "deactivate unattended upgrades first"; return 1; }
+  # wait for other apt processes
+  pgrep apt &>/dev/null && echo "waiting for apt processes to finish..." && \
+  while :; do
+    pgrep apt &>/dev/null || break
+    sleep 1
+  done
+  rm -f /etc/apt/apt.conf.d/20nextcloudpi-upgrades
+
   echo -e "Downloading updates"
   rm -rf /tmp/ncp-update-tmp
   git clone --depth 20 -q -b devel https://github.com/nextcloud/nextcloudpi.git /tmp/ncp-update-tmp
