@@ -10,8 +10,15 @@ OCC="$NCDIR/occ"
 [[ "$1" == "stop" ]] && {
   echo "stopping cron..."
   killall cron
+  echo "stopping redis..."
+  killall redis-server
   exit 0
 }
+
+echo "Starting Redis"
+mkdir -p /var/run/redis
+chown redis /var/run/redis
+sudo -u redis redis-server /etc/redis/redis.conf
 
 echo "Starting cron"
 cron
