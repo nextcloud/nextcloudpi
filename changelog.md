@@ -1,7 +1,9 @@
 
-[v0.34.5](https://github.com/nextcloud/nextcloudpi/commit/e603de3) (2017-11-10) update: wait running apt processes (fix)
+[v0.34.6](https://github.com/nextcloud/nextcloudpi/commit/fc4ffc2) (2017-11-11) redis: fix socket permissions
 
-[v0.34.4 ](https://github.com/nextcloud/nextcloudpi/commit/362211f) (2017-11-09) redis: fixes with ramlogs and modsecurity
+[v0.34.5](https://github.com/nextcloud/nextcloudpi/commit/9e48e92) (2017-11-10) update: wait running apt processes (fix)
+
+[v0.34.4 ](https://github.com/nextcloud/nextcloudpi/commit/b6538b9) (2017-11-09) redis: fixes with ramlogs and modsecurity
 
 [v0.34.3 ](https://github.com/nextcloud/nextcloudpi/commit/cc82c7b) (2017-11-09) redis: change overcommit memory on update
 
