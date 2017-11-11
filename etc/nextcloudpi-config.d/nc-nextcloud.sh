@@ -50,7 +50,7 @@ install()
   local REDIS_CONF=/etc/redis/redis.conf
   sed -i "s|# unixsocket .*|unixsocket /var/run/redis/redis.sock|" $REDIS_CONF
   sed -i "s|# unixsocketperm .*|unixsocketperm 770|"               $REDIS_CONF
-  sed -i "s|port.*|port 0|"                                        $REDIS_CONF
+  sed -i "s|^port.*|port 0|"                                       $REDIS_CONF
   echo "maxmemory ${REDIS_MEM}" >> $REDIS_CONF
   echo 'vm.overcommit_memory = 1' >> /etc/sysctl.conf
 
