@@ -6,7 +6,7 @@ This is the build code for [NextCloudPi](https://ownyourbits.com/2017/02/13/next
 
 NextCloudPi is a ready to use image for Raspberry Pi.
 
-This code also generates the [NextCloudPi ARM docker image](https://hub.docker.com/r/ownyourbits/nextcloudpi/).
+This code also generates the [NextCloudPi docker images](https://hub.docker.com/r/ownyourbits/nextcloudpi/).
 
 ## Features
 
