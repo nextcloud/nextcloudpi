@@ -57,7 +57,14 @@ activate_script etc/nextcloudpi-config.d/nc-init.sh
 cd -
 rm -rf $TMPDIR
 
-echo "Done. Type 'sudo nextcoludpi-config' to configure NCP"
+echo "Done.
+
+Type 'sudo nextcloudpi-config' to configure NCP
+
+Access NextCloudPi panel on nextcloudpi.local:4443
+
+Access Nextcloud on nextcloudpi.local
+"
 
 # License
 #
