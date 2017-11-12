@@ -173,7 +173,7 @@ EOF
   /usr/local/bin/ncp-update
 
   # ONLY FOR IMAGE BUILDS
-  [[ "$IMGBUILD" == 1 ]] && {
+  if [[ "$IMGBUILD" == 1 ]]; then
 
     ## NEXTCLOUDPI MOTD 
     rm -rf /etc/update-motd.d
@@ -199,7 +199,7 @@ EOF
 
     ## tag image
     echo "NextCloudPi_$( date  "+%m-%d-%y" )" > /usr/local/etc/ncp-baseimage
-  }
+  fi
 }
 
 configure() { :; }

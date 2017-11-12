@@ -1,5 +1,9 @@
 
-[v0.34.6](https://github.com/nextcloud/nextcloudpi/commit/fc4ffc2) (2017-11-11) redis: fix socket permissions
+[v0.34.8 ](https://github.com/nextcloud/nextcloudpi/commit/78abdf1) (2017-11-12) nc-init: install notifications
+
+[v0.34.7 ](https://github.com/nextcloud/nextcloudpi/commit/638ff3c) (2017-11-12) redis: fix update bug
+
+[v0.34.6, devel](https://github.com/nextcloud/nextcloudpi/commit/c2f23ef) (2017-11-11) redis: fix socket permissions
 
 [v0.34.5](https://github.com/nextcloud/nextcloudpi/commit/9e48e92) (2017-11-10) update: wait running apt processes (fix)
 
