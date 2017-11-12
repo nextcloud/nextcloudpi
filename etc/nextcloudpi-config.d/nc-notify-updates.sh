@@ -22,16 +22,6 @@ NCDIR=/var/www/nextcloud
 
 install()
 {
-  # install app
-  local URL=$( curl -s https://api.github.com/repos/nextcloud/admin_notifications/releases | \
-                 grep browser_download_url | head -1 | cut -d '"' -f 4 )
-  cd /var/www/nextcloud/apps
-  wget "$URL" -O admin_notifications.tar.gz
-  tar -xf admin_notifications.tar.gz
-  rm *.tar.gz
-  chown -R www-data:www-data *
-  sudo -u www-data php /var/www/nextcloud/occ app:enable admin_notifications
-
   # timers
   cat > /etc/systemd/system/nc-notify-updates.service <<EOF
 [Unit]
