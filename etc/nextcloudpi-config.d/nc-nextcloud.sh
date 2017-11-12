@@ -58,6 +58,13 @@ install()
 
   [[ "$DOCKERBUILD" != 1 ]] && systemctl restart redis-server
   [[ "$DOCKERBUILD" != 1 ]] && systemctl enable  redis-server
+
+  # need to restart php
+  systemctl stop php7.0-fpm
+  systemctl stop mysqld
+  sleep 0.5
+  systemctl start php7.0-fpm
+  systemctl start mysqld
 }
 
 configure()
