@@ -56,7 +56,8 @@ install()
 
   sudo usermod -a -G redis www-data
 
-  systemctl enable redis-server
+  [[ "$DOCKERBUILD" != 1 ]] && systemctl restart redis-server
+  [[ "$DOCKERBUILD" != 1 ]] && systemctl enable  redis-server
 }
 
 configure()

@@ -40,14 +40,14 @@ git clone -q --depth 1 https://github.com/nextcloud/nextcloudpi.git "$TMPDIR" ||
 cd "$TMPDIR"
 
 # install NCP
-echo "Installing NextCloudPi"
+echo -e "\nInstalling NextCloudPi"
 source etc/library.sh
 
 install_script  lamp.sh
 install_script  etc/nextcloudpi-config.d/nc-nextcloud.sh
 activate_script etc/nextcloudpi-config.d/nc-nextcloud.sh
-activate_script etc/nextcloudpi-config.d/nc-init.sh
 install_script  nextcloudpi.sh
+activate_script etc/nextcloudpi-config.d/nc-init.sh
 
 # re-enable mods disabled during install, in case there's other shared services in apache2
 [[ "$APACHE_EXISTS" != "" ]] && \
