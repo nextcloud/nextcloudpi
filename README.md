@@ -1,6 +1,6 @@
 # NextCloudPi
 
-![NC Logo](https://ownyourbits.com/wp-content/uploads/2017/02/nextcloudpi-logo.png)
+![NC Logo](https://ownyourbits.com/wp-content/uploads/2017/11/ncp-square.png)
 
 This is the build code for [NextCloudPi](https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/).
 
@@ -15,6 +15,7 @@ This code also generates the [NextCloudPi ARM docker image](https://hub.docker.c
  * Apache 2.4.25, with HTTP2 enabled
  * PHP 7.0 (double the speed of PHP5!)
  * MariaDB 10
+ * Redis memory cache ( NEW 11-12-2017 )
  * 4.9 Linux Kernel ( NEW 03-13-2017 )
  * nextcloudpi-config for easy setup ( RAM logs, USB drive and more )
  * Automatic redirection to HTTPS
@@ -28,6 +29,7 @@ This code also generates the [NextCloudPi ARM docker image](https://hub.docker.c
 
 ## Extras
 
+ * Setup wizard ( NEW 09-27-2017 )
  * NextCloudPi Web Panel ( NEW 07-24-2017 )
  * Wi-Fi ready ( NEW 03-31-2017 )
  * Automatic security updates, activated by default. ( NEW 03-21-2017 )
@@ -35,6 +37,8 @@ This code also generates the [NextCloudPi ARM docker image](https://hub.docker.c
  * Fail2Ban protection against brute force attacks. ( NEW 02-24-2017 )
  * Dynamic DNS support for no-ip.org ( NEW 03-05-2017 )
  * Dynamic DNS support for freeDNS ( NEW 09-05-2017 )
+ * Dynamic DNS support for duckDNS ( NEW 09-27-2017 )
+ * Dynamic DNS support for spDYN ( NEW 11-12-2017 )
  * dnsmasq DNS server with DNS cache ( NEW 03-09-2017 )
  * ModSecurity Web Application Firewall ( NEW 03-23-2017 )
  * NFS ready to mount your files over LAN ( NEW 04-13-2017 )
@@ -66,7 +70,7 @@ sudo nextcloudpi-config
 
 ## How to build
 
-NextCloudPi is based on Raspbian and is automatically generated using QEMU.
+The NextCloudPi SD image is based on Raspbian and is automatically generated using QEMU.
 
 ```
 git clone https://github.com/nextcloud/nextcloudpi.git
@@ -74,11 +78,26 @@ cd nextcloudpi
 ./batch.sh 192.168.0.145 # change to your QEMU raspbian IP
 ```
 
-The docker image can be generated in an ARM environment with docker
+The docker armhf image can be generated in an ARM environment with docker
 
 ```
 git clone https://github.com/nextcloud/nextcloudpi.git
-make -C nextcloudpi
+cd nextcloudpi
+make
+```
+
+, and for an x86 image, on a x86 environment do
+
+```
+git clone https://github.com/nextcloud/nextcloudpi.git
+cd nextcloudpi
+make nextcloudpi-x86
+```
+
+NextCloudPi can be installed in any architecture running the latest Debian
+
+```
+# curl -sSL https://raw.githubusercontent.com/nextcloud/nextcloudpi/master/install.sh | bash
 ```
 
 ## Downloads
