@@ -23,7 +23,6 @@ sed -i 's|/media/USBdrive|/data/backups|' nextcloudpi-config.d/nc-backup.sh; \
 
 # specific cleanup
 rm /usr/local/etc/nextcloudpi.sh; \
-apt-get purge -y wget ca-certificates; \
 
 # letsencrypt build artifacts cleanup
 apt-get purge -y \
