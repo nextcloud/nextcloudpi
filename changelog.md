@@ -1,5 +1,7 @@
 
-[v0.34.9](https://github.com/nextcloud/nextcloudpi/commit/7e0e4e0) (2017-11-12) nc-nextcloud: restart php after redis
+[v0.34.10](https://github.com/nextcloud/nextcloudpi/commit/de8b961) (2017-11-14) noip: fix return value
+
+[v0.34.9 ](https://github.com/nextcloud/nextcloudpi/commit/e0dec54) (2017-11-12) nc-nextcloud: restart php after redis
 
 [v0.34.8 ](https://github.com/nextcloud/nextcloudpi/commit/d0782ed) (2017-11-12) nc-init: install notifications
 

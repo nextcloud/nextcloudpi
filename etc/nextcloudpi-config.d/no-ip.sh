@@ -93,7 +93,7 @@ configure()
   local IF=$( ip -br l | awk '{ if ( $2 == "UP" ) print $1 }' | head -1 )
   [[ "$IF" != "" ]] && IF="-I $IF"
 
-  /usr/local/bin/noip2 -C -c /usr/local/etc/no-ip2.conf $IF -U "$TIME_" -u "$USER_" -p "$PASS_" | tee >(cat - >&2) \
+  /usr/local/bin/noip2 -C -c /usr/local/etc/no-ip2.conf $IF -U "$TIME_" -u "$USER_" -p "$PASS_" 2>&1 | tee >(cat - >&2) \
     | grep -q "New configuration file .* created" || return 1
 
   update-rc.d noip2 enable
