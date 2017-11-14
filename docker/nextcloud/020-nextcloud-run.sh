@@ -8,10 +8,12 @@ NCDIR=/var/www/nextcloud
 OCC="$NCDIR/occ"
 
 [[ "$1" == "stop" ]] && {
-  echo "stopping cron..."
+  echo "stopping Cron..."
   killall cron
-  echo "stopping redis..."
+  echo "stopping Redis..."
   killall redis-server
+  echo "stopping Postfix..."
+  postfix stop
   exit 0
 }
 
@@ -20,8 +22,12 @@ mkdir -p /var/run/redis
 chown redis /var/run/redis
 sudo -u redis redis-server /etc/redis/redis.conf
 
-echo "Starting cron"
+echo "Starting Cron"
 cron
+
+echo "Starting Postfix"
+postfix start
+
 
 # INIT DATABASE AND NEXTCLOUD CONFIG (first run)
 test -f /data/app/config/config.php || {
