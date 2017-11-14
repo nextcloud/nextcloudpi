@@ -112,8 +112,8 @@ replace into  oc_appconfig values ( 'theming', 'backgroundMime', "image/png" );
 EOF
 
   # NCP notifications
-  local URL=$( curl -s https://api.github.com/repos/nextcloud/admin_notifications/releases | \
-                 grep browser_download_url | head -1 | cut -d '"' -f 4 )
+  local URL=$( wget -q -O - https://api.github.com/repos/nextcloud/admin_notifications/releases | \
+                grep browser_download_url | head -1 | cut -d '"' -f 4 )
   cd /var/www/nextcloud/apps
   wget "$URL" -O admin_notifications.tar.gz
   tar -xf admin_notifications.tar.gz
