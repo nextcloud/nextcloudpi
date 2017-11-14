@@ -28,6 +28,7 @@ nc-init.sh
 EXCL_DOCKER+="
 nc-webui.sh
 fail2ban.sh
+spDYN.sh
 "
 
 # better use a designated container
