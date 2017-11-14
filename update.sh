@@ -113,69 +113,6 @@ done
 
 [[ "$DOCKERBUILD" != 1 ]] && {
 
-# ncp-web password auth
-    CERTFILE=$( grep SSLCertificateFile    /etc/apache2/sites-available/ncp.conf| awk '{ print $2 }' )
-    KEYFILE=$(  grep SSLCertificateKeyFile /etc/apache2/sites-available/ncp.conf| awk '{ print $2 }' )
-
-  grep -q DefineExternalAuth /etc/apache2/sites-available/ncp.conf || {
-    apt-get update
-    apt-get install -y --no-install-recommends libapache2-mod-authnz-external pwauth
-    a2enmod authnz_external authn_core auth_basic
-    bash -c "sleep 2 && systemctl restart apache2" &>/dev/null &
-  }
-
-  cat > /etc/apache2/sites-available/ncp.conf <<EOF
-Listen 4443
-<VirtualHost _default_:4443>
-  DocumentRoot /var/www/ncp-web
-  SSLEngine on
-  SSLCertificateFile    $CERTFILE
-  SSLCertificateKeyFile $KEYFILE
-
-  <IfModule mod_authnz_external.c>
-    DefineExternalAuth pwauth pipe /usr/sbin/pwauth
-  </IfModule>
-
-</VirtualHost>
-<Directory /var/www/ncp-web/>
-
-  AuthType Basic
-  AuthName "ncp-web login"
-  AuthBasicProvider external
-  AuthExternal pwauth
-
-  SetEnvIf Request_URI "^" noauth
-  SetEnvIf Request_URI "^index\\.php$" !noauth
-  SetEnvIf Request_URI "^/$" !noauth
-  SetEnvIf Request_URI "^/wizard/index.php$" !noauth
-  SetEnvIf Request_URI "^/wizard/$" !noauth
-
-  <RequireAll>
-
-   <RequireAny>
-      Require host localhost
-      Require local
-      Require ip 192.168
-      Require ip 10
-   </RequireAny>
-
-   <RequireAny>
-      Require env noauth
-      Require user pi
-   </RequireAny>
-
-  </RequireAll>
-
-</Directory>
-EOF
-
-  # tweak fail2ban email 
-  F=/etc/fail2ban/action.d/sendmail-common.conf
-  sed -i 's|Fail2Ban|NextCloudPi|' /etc/fail2ban/action.d/sendmail-whois-lines.conf
-  grep -q actionstart_ "$F" || sed -i 's|actionstart|actionstart_|' "$F"
-  grep -q actionstop_  "$F" || sed -i 's|actionstop|actionstop_|'   "$F"
-  type whois &>/dev/null || { apt-get update; apt-get install --no-install-recommends -y whois; }
-  
   # fix notify unattended upgrades repeating lines
   cat > /usr/local/bin/ncp-notify-unattended-upgrade <<EOF
 #!/bin/bash
