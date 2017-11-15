@@ -33,4 +33,4 @@ rm -f /var/log/alternatives.log /var/log/apt/*; \
 apt-get purge -y wget ca-certificates; \
 rm /usr/local/etc/nc-nextcloud.sh
 
-COPY docker/nextcloud/020-nextcloud-run.sh /etc/services.d/
+COPY docker/nextcloud/020nextcloud /etc/services-enabled.d/

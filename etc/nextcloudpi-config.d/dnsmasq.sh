@@ -28,7 +28,7 @@ install()
   update-rc.d dnsmasq disable
 
   [[ "$DOCKERBUILD" == 1 ]] && {
-    cat > /etc/services.d/100-dnsmasq-run.sh <<EOF
+    cat > /etc/services-available.d/100dnsmasq <<EOF
 #!/bin/bash
 
 source /usr/local/etc/library.sh
@@ -46,7 +46,7 @@ service dnsmasq start
 
 exit 0
 EOF
-    chmod +x /etc/services.d/100-dnsmasq-run.sh
+    chmod +x /etc/services-available.d/100dnsmasq
   }
 }
 

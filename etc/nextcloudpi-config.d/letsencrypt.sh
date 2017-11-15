@@ -42,7 +42,7 @@ install()
   /etc/letsencrypt/letsencrypt-auto --help # do not actually run certbot, only install packages
 
   [[ "$DOCKERBUILD" == 1 ]] && {
-    cat > /etc/services.d/100-letsencrypt-run.sh <<EOF
+    cat > /etc/services-available.d/100letsencrypt <<EOF
 #!/bin/bash
 
 source /usr/local/etc/library.sh
@@ -50,7 +50,7 @@ persistent_cfg /etc/letsencrypt
 
 exit 0
 EOF
-    chmod +x /etc/services.d/100-letsencrypt-run.sh
+    chmod +x /etc/services-available.d/100letsencrypt
   }
 }
 

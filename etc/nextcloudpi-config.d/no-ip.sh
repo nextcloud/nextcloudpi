@@ -61,7 +61,7 @@ EOF
   mkdir -p /usr/local/etc/noip2
 
   [[ "$DOCKERBUILD" == 1 ]] && {
-    cat > /etc/services.d/100-noip-run.sh <<EOF
+    cat > /etc/services-available.d/100noip <<EOF
 #!/bin/bash
 
 source /usr/local/etc/library.sh
@@ -79,7 +79,7 @@ service noip2 start
 
 exit 0
 EOF
-    chmod +x /etc/services.d/100-noip-run.sh
+    chmod +x /etc/services-available.d/100noip
   }
 }
 
