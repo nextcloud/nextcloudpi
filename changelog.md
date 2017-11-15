@@ -1,5 +1,7 @@
 
-[v0.34.10](https://github.com/nextcloud/nextcloudpi/commit/de8b961) (2017-11-14) noip: fix return value
+[v0.34.11](https://github.com/nextcloud/nextcloudpi/commit/9b6a598) (2017-11-15) ncp-web: only show wizard button if it exists
+
+[v0.34.10](https://github.com/nextcloud/nextcloudpi/commit/de9eea5) (2017-11-14) noip: fix return value
 
 [v0.34.9 ](https://github.com/nextcloud/nextcloudpi/commit/e0dec54) (2017-11-12) nc-nextcloud: restart php after redis
 

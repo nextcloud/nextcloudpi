@@ -57,7 +57,7 @@
   </div>
 
 <?php
-  if ( !file_exists( 'wizard.cfg' ) )
+  if ( file_exists( 'wizard') && !file_exists( 'wizard.cfg' ) )
   {
     echo <<<HTML
     <div id="first-run-wizard">
@@ -92,11 +92,16 @@ HTML;
       </a>
     </div>
     <div id="header-right">
+<?php 
+  if ( file_exists( 'wizard' ) )
+    echo <<<HTML
       <div class="wizard-btn">
         <div id="expand">
           <div class="icon-wizard-white"></div>
         </div>
       </div>
+HTML;
+?>
       <div id="poweroff">
         <div id="expand">
           <div class="icon-power-white"></div>
