@@ -25,8 +25,11 @@ test -f $FILE || {
   exit 0
 }
 
-rm -f /etc/services-enabled.d/$( basename $FILE )
-echo "disabled $1"
+[[ "$2" == "disable" ]] && {
+  rm -f /etc/services-enabled.d/$( basename $FILE )
+  echo "disabled $1"
+  exit 0
+}
 EOF
 chmod +x /usr/local/sbin/update-rc.d
 

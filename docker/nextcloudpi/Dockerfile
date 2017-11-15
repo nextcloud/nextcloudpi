@@ -24,6 +24,9 @@ sed -i 's|/media/USBdrive|/data/backups|' nextcloudpi-config.d/nc-backup.sh; \
 # specific cleanup
 rm /usr/local/etc/nextcloudpi.sh; \
 
+# remove wizard for now
+rm -r /var/www/ncp-web/wizard; \
+
 # letsencrypt build artifacts cleanup
 apt-get purge -y \
     make \
