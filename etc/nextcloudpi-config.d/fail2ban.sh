@@ -38,8 +38,7 @@ install()
   update-rc.d fail2ban disable
   rm -f /etc/fail2ban/jail.d/defaults-debian.conf
 
-  [[ "$DOCKERBUILD" == 1 ]] && {
-    cat > /etc/services.d/100-fail2ban-run.sh <<EOF
+    cat > /etc/services-available.d/100fail2ban <<EOF
 #!/bin/bash
 
 source /usr/local/etc/library.sh
@@ -57,7 +56,7 @@ service fail2ban start
 
 exit 0
 EOF
-    chmod +x /etc/services.d/100-fail2ban-run.sh
+    chmod +x /etc/services-available.d/100fail2ban
   }
 
   # tweak fail2ban email 
