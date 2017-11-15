@@ -56,8 +56,8 @@ service fail2ban start
 
 exit 0
 EOF
-    chmod +x /etc/services-available.d/100fail2ban
-  }
+
+  chmod +x /etc/services-available.d/100fail2ban
 
   # tweak fail2ban email 
   local F=/etc/fail2ban/action.d/sendmail-common.conf
