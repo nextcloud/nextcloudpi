@@ -1,5 +1,7 @@
 
-[v0.34.14](https://github.com/nextcloud/nextcloudpi/commit/723d51b) (2017-11-16) update: check return code
+[v0.34.15](https://github.com/nextcloud/nextcloudpi/commit/97febf5) (2017-11-16) update: check existence ncp.conf
+
+[v0.34.14](https://github.com/nextcloud/nextcloudpi/commit/206b6de) (2017-11-16) update: check return code
 
 [v0.34.13](https://github.com/nextcloud/nextcloudpi/commit/29109ba) (2017-11-16) improve IP detection
 

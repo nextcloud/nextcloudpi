@@ -165,8 +165,10 @@ exit $RET
 EOF
 
   # 2 days to avoid very big backups requests to timeout
-  grep -q TimeOut /etc/apache2/sites-enabled/ncp.conf || \
-    sed -i '/SSLCertificateKeyFile/aTimeOut 172800' /etc/apache2/sites-enabled/ncp.conf
+  test -f /etc/apache2/sites-enabled/ncp.conf && {
+    grep -q TimeOut /etc/apache2/sites-enabled/ncp.conf || \
+      sed -i '/SSLCertificateKeyFile/aTimeOut 172800' /etc/apache2/sites-enabled/ncp.conf
+  } || true
 
   # relocate noip2 config
   mkdir -p /usr/local/etc/noip2
