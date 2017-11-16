@@ -1,5 +1,9 @@
 
-[v0.34.12](https://github.com/nextcloud/nextcloudpi/commit/58173ad) (2017-11-16) fail2ban: fix accidentally deleted line
+[v0.34.14](https://github.com/nextcloud/nextcloudpi/commit/723d51b) (2017-11-16) update: check return code
+
+[v0.34.13](https://github.com/nextcloud/nextcloudpi/commit/29109ba) (2017-11-16) improve IP detection
+
+[v0.34.12](https://github.com/nextcloud/nextcloudpi/commit/c4a0bba) (2017-11-16) fail2ban: fix accidentally deleted line
 
 [v0.34.11](https://github.com/nextcloud/nextcloudpi/commit/634bc33) (2017-11-15) ncp-web: only show wizard button if it exists, delete from  docker
 
@@ -11,9 +15,9 @@
 
 [v0.34.7 ](https://github.com/nextcloud/nextcloudpi/commit/638ff3c) (2017-11-12) redis: fix update bug
 
-[v0.34.6, devel](https://github.com/nextcloud/nextcloudpi/commit/c2f23ef) (2017-11-11) redis: fix socket permissions
+[v0.34.6 ](https://github.com/nextcloud/nextcloudpi/commit/c2f23ef) (2017-11-11) redis: fix socket permissions
 
-[v0.34.5](https://github.com/nextcloud/nextcloudpi/commit/9e48e92) (2017-11-10) update: wait running apt processes (fix)
+[v0.34.5 ](https://github.com/nextcloud/nextcloudpi/commit/9e48e92) (2017-11-10) update: wait running apt processes (fix)
 
 [v0.34.4 ](https://github.com/nextcloud/nextcloudpi/commit/b6538b9) (2017-11-09) redis: fixes with ramlogs and modsecurity
 
