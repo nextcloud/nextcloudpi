@@ -64,7 +64,7 @@ test -e \$NOTIFIED && [[ "\$( cat \$LATEST )" == "\$( cat \$NOTIFIED )" ]] && {
 echo "Found update from \$( cat \$VERFILE ) to \$( cat \$LATEST ). Sending notification..."
 
 IFACE=\$( ip r | grep "default via" | awk '{ print \$5 }' )
-IP=\$( ip a | grep "global \$IFACE" | grep -oP '\d{1,3}(\.\d{1,3}){3}' | head -1 )
+IP=\$( ip a show dev "\$IFACE" | grep global | grep -oP '\d{1,3}(\.\d{1,3}){3}' | head -1 )
 
 sudo -u www-data php /var/www/nextcloud/occ notification:generate \
   $USER_ "NextCloudPi update" \
