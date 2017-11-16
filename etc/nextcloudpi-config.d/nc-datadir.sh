@@ -52,8 +52,10 @@ configure()
 
   sudo -u www-data test -x "$BASEDIR" || { echo -e "ERROR: the user www-data does not have access permissions over $BASEDIR"; return 1; }
 
-  [[ $( stat -fc%d / ) == $( stat -fc%d "$BASEDIR" ) ]] && \
-    echo -e "INFO: moving data dir to another place in the same SD card\nIf you want to use an external mount, make sure it is properly set up"
+  [[ $( stat -fc%d / ) == $( stat -fc%d "$BASEDIR" ) ]] && {
+    echo "Refusing to move to the SD card. Abort"
+    return 1
+  }
 
   ## COPY
   cd /var/www/nextcloud
