@@ -38,6 +38,7 @@ install()
   update-rc.d fail2ban disable
   rm -f /etc/fail2ban/jail.d/defaults-debian.conf
 
+  [[ "$DOCKERBUILD" == 1 ]] && {
     cat > /etc/services-available.d/100fail2ban <<EOF
 #!/bin/bash
 
