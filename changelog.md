@@ -1,5 +1,7 @@
 
-[v0.34.11](https://github.com/nextcloud/nextcloudpi/commit/9b6a598) (2017-11-15) ncp-web: only show wizard button if it exists
+[v0.34.12](https://github.com/nextcloud/nextcloudpi/commit/58173ad) (2017-11-16) fail2ban: fix accidentally deleted line
+
+[v0.34.11](https://github.com/nextcloud/nextcloudpi/commit/634bc33) (2017-11-15) ncp-web: only show wizard button if it exists, delete from  docker
 
 [v0.34.10](https://github.com/nextcloud/nextcloudpi/commit/de9eea5) (2017-11-14) noip: fix return value
 
