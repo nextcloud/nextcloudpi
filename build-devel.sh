@@ -31,18 +31,19 @@ install()
   cd /tmp/ncp-update-tmp || return 1
 
   echo -e "Performing updates"
-  ./update.sh
+  ./update.sh && {
 
-  VER=$( git describe --always --tags | grep -oP "v\d+\.\d+\.\d+" )
-  grep -qP "v\d+\.\d+\.\d+" <<< $VER && {       # check format
-    echo "$VER" > /usr/local/etc/ncp-version
-    echo "$VER" > /var/run/.ncp-latest-version
+    VER=$( git describe --always --tags | grep -oP "v\d+\.\d+\.\d+" )
+    grep -qP "v\d+\.\d+\.\d+" <<< $VER && {       # check format
+      echo "$VER" > /usr/local/etc/ncp-version
+      echo "$VER" > /var/run/.ncp-latest-version
+    }
+    echo -e "NextCloudPi updated to version $VER"
   }
 
   cd / || return 1
   rm -rf /tmp/ncp-update-tmp
 
-  echo -e "NextCloudPi updated to version $VER"
 }
 
 cleanup()   { :; }
