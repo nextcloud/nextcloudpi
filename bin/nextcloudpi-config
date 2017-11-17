@@ -29,8 +29,8 @@ function nextcloud-config()
     ncp-test-updates && \
     whiptail --backtitle "$BACKTITLE $( cat /usr/local/etc/ncp-version )" \
       --title "NextCloudPi update available" \
-      --clear --yesno "Update to $( cat $VERFILE )?" \
-      10 40
+      --clear --yesno "Update to $( cat $VERFILE )?\n\n\n\nSee changes at\n\nhttps://github.com/nextcloud/nextcloudpi/blob/master/changelog.md" \
+      20 70
     [[ $? -eq $DIALOG_OK ]] && ncp-update
 
     while true; do
