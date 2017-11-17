@@ -37,12 +37,16 @@ configure()
   }
   [ -d "$SRCDIR" ] || { echo -e "data directory $SRCDIR not found"; return 1; }
 
+  [[ "$SRCDIR" == "$DATADIR_" ]] && { echo -e "INFO: data already there"; return 0; }
+
+  # check datadir empty
   [ -d $DATADIR_ ] && {
     [[ $( find "$DATADIR_" -maxdepth 0 -empty | wc -l ) == 0 ]] && {
-      echo "$DATADIR_ is not empty"
-      return 1
+      local BKP="${DATADIR_}-$( date "+%m-%d-%y" )" 
+      echo "INFO: $DATADIR_ is not empty. Creating backup $BKP"
+      mv "$DATADIR_" "$BKP"
     }
-    rmdir "$DATADIR_" 
+    rm -rf "$DATADIR_" 
   }
 
   local BASEDIR=$( dirname "$DATADIR_" )
