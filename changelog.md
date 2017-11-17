@@ -1,5 +1,7 @@
 
-[v0.34.16](https://github.com/nextcloud/nextcloudpi/commit/de92843) (2017-11-17) nc-datadir: refuse to move to SD card
+[v0.35.0](https://github.com/nextcloud/nextcloudpi/commit/bd698e5) (2017-11-17) added nc-passwd
+
+[v0.34.16](https://github.com/nextcloud/nextcloudpi/commit/d3bade5) (2017-11-17) nc-datadir: refuse to move to SD card
 
 [v0.34.15](https://github.com/nextcloud/nextcloudpi/commit/868924c) (2017-11-16) update: check existence ncp.conf
 
