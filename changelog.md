@@ -1,5 +1,7 @@
 
-[v0.35.0](https://github.com/nextcloud/nextcloudpi/commit/bd698e5) (2017-11-17) added nc-passwd
+[v0.35.1](https://github.com/nextcloud/nextcloudpi/commit/c3195c6) (2017-11-17) nc-datadir: make backup if non empty
+
+[v0.35.0 ](https://github.com/nextcloud/nextcloudpi/commit/05dd8e3) (2017-11-17) added nc-passwd
 
 [v0.34.16](https://github.com/nextcloud/nextcloudpi/commit/d3bade5) (2017-11-17) nc-datadir: refuse to move to SD card
 
