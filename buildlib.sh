@@ -223,3 +223,15 @@ function deactivate_unattended_upgrades()
   sudo umount -l tmpmnt
   rmdir tmpmnt &>/dev/null
 }
+
+function prepare_sshd()
+{
+  local IMG="$1"
+  local SECTOR1=$( fdisk -l $IMG | grep FAT32 | awk '{ print $2 }' )
+  local OFFSET1=$(( SECTOR1 * 512 ))
+  mkdir -p tmpmnt
+  sudo mount $IMG -o offset=$OFFSET1 tmpmnt
+  sudo touch tmpmnt/ssh   # this enables ssh
+  sudo umount tmpmnt
+  rmdir tmpmnt
+}
