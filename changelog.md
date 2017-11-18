@@ -1,5 +1,9 @@
 
-[v0.35.1](https://github.com/nextcloud/nextcloudpi/commit/c3195c6) (2017-11-17) nc-datadir: make backup if non empty
+[v0.36.0 ](https://github.com/nextcloud/nextcloudpi/commit/1b101b2) (2017-11-18) added ncp-diag and ncp-report
+
+[v0.35.2 ](https://github.com/nextcloud/nextcloudpi/commit/f23f307) (2017-11-17) nextcloudpi-config: inform changelog
+
+[v0.35.1 ](https://github.com/nextcloud/nextcloudpi/commit/61c5dc6) (2017-11-17) nc-datadir: make backup if non empty
 
 [v0.35.0 ](https://github.com/nextcloud/nextcloudpi/commit/05dd8e3) (2017-11-17) added nc-passwd
 
