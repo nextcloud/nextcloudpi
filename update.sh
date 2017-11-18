@@ -291,6 +291,7 @@ chown redis /var/log/redis
 EOF
     systemctl enable ramlogs
   }
+  exit 0
 }
 
 # License
