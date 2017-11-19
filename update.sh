@@ -165,10 +165,10 @@ exit $RET
 EOF
 
   # 2 days to avoid very big backups requests to timeout
-  test -f /etc/apache2/sites-enabled/ncp.conf && {
-    grep -q TimeOut /etc/apache2/sites-enabled/ncp.conf || \
-      sed -i '/SSLCertificateKeyFile/aTimeOut 172800' /etc/apache2/sites-enabled/ncp.conf
-  } || true
+  test -f /etc/apache2/sites-available/ncp.conf && {
+    grep -q TimeOut /etc/apache2/sites-available/ncp.conf || \
+      sed -i '/SSLCertificateKeyFile/aTimeOut 172800' /etc/apache2/sites-available/ncp.conf
+  } || echo "Warning. File /etc/apache2/sites-available/ncp.conf not found on your ncp."
 
   # relocate noip2 config
   mkdir -p /usr/local/etc/noip2
