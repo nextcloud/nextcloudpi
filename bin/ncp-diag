@@ -75,14 +75,14 @@ echo "interface|$IFACE"
 
 # Certificates
 LEOUT="$( /etc/letsencrypt/letsencrypt-auto certificates 2>/dev/null )"
-CERTS="$( echo -e "$LEOUT" | grep "Domains:" | awk '{ print $2 }' )"
-CDUE="$( echo -e "$LEOUT" | grep "VALID:"   | grep -oP "\d+ days" )"
+CERTS="$( echo -e "$LEOUT" | grep "Domains:" | awk '{ print $2 }' | tr '\n' ' ' )"
+CDUE="$( echo -e "$LEOUT" | grep "VALID:"   | grep -oP "\d+ days" | tr '\n' ' ' )"
 [[ "$CERTS" == "" ]] && CERTS=none
 [[ "$CDUE" == "" ]] && CDUE=none
 echo "certificates|$CERTS"
 echo "certs due|$CDUE"
 
-RESOLV="$( ping -c 1 "$CERTS" | head -1 | grep -oP '\d{1,3}(.\d{1,3}){3}' )"
+RESOLV="$( ping -c 1 "$CERTS" 2>/dev/null | head -1 | grep -oP '\d{1,3}(.\d{1,3}){3}' )"
 echo "NAT loopback|$( [[ "$RESOLV" == "$IP" ]] && echo yes || echo no )"
 
 # Other
