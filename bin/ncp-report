@@ -16,6 +16,7 @@ function open_summary()
   echo "
 <details>
 <summary>$@</summary>
+
 \`\`\`
 "
 }
