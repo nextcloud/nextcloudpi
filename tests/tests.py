@@ -39,7 +39,7 @@ class AdminWebTest(unittest.TestCase):
         driver = self.driver
         driver.implicitly_wait(150)  # first run can be really slow on QEMU
         driver.get("https://" + IP + "/index.php/settings/admin")
-        self.assertIn("Nextcloud", driver.title)
+        self.assertIn("NextCloudPi", driver.title)
         trusted_domain_str = "You are accessing the server from an untrusted domain"
         self.assertNotIn(trusted_domain_str, driver.page_source)
         driver.find_element_by_id("user").send_keys("admin")
@@ -84,9 +84,9 @@ class CreateUserTest(unittest.TestCase):
 
         # navigate a little bit
         driver.get("https://" + IP + "/index.php/settings/admin")
-        self.assertIn("Nextcloud", driver.title)
+        self.assertIn("NextCloudPi", driver.title)
         driver.get("https://" + IP + "/index.php/settings/apps")
-        self.assertIn("Nextcloud", driver.title)
+        self.assertIn("NextCloudPi", driver.title)
 
     def tearDown(self):
         self.driver.close()
@@ -107,7 +107,7 @@ class LoginNewUserTest(unittest.TestCase):
         driver.implicitly_wait(210)  # first run can be really slow on QEMU
         driver.get("https://" + IP)
 
-        self.assertIn("Nextcloud", driver.title)
+        self.assertIn("NextCloudPi", driver.title)
         driver.find_element_by_id("user").send_keys("test_user1")
         driver.find_element_by_id("password").send_keys("ownyourbits")
         driver.find_element_by_id("submit").click()
@@ -119,7 +119,7 @@ class LoginNewUserTest(unittest.TestCase):
 
         # navigate a little bit
         driver.get("https://" + IP + "/index.php/settings/personal")
-        self.assertIn("Nextcloud", driver.title)
+        self.assertIn("NextCloudPi", driver.title)
 
     def tearDown(self):
         self.driver.close()
