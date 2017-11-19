@@ -31,6 +31,8 @@ You can use nc-backup"
 
 configure()
 { 
+  local DBPASSWD=$( grep password /root/.my.cnf | cut -d= -f2 )
+
   [ -f $BACKUPFILE_       ] || { echo -e "$BACKUPFILE_ not found"; return 1;  }
   [ -d $BASEDIR           ] || { echo -e "$BASEDIR    not found"; return 1;   }
   [ -d $BASEDIR/nextcloud ] && { echo -e "INFO: overwriting old instance"; }
@@ -48,11 +50,10 @@ configure()
   mv "$TMPDIR"/nextcloud $BASEDIR || { echo -e "Error restoring base files"; return 1; }
 
   # update NC database password to this instance
-  sed -i "s|'dbpassword' =>.*|'dbpassword' => '$DBPASSWD',|" config/config.php
+  sed -i "s|'dbpassword' =>.*|'dbpassword' => '$DBPASSWD',|" $BASEDIR/nextcloud/config/config.php
 
   ## RE-CREATE DATABASE TABLE
 
-  local DBPASSWD=$( grep password /root/.my.cnf | cut -d= -f2 )
   echo -e "restore database..."
   mysql -u root <<EOF
 DROP DATABASE IF EXISTS nextcloud;
