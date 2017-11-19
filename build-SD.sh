@@ -32,7 +32,7 @@ NO_HALT_STEP=1 ./installer.sh prepare.sh     "$IP" "$IMGBASE"                   
 #              ./installer.sh build-devel.sh "$IP" "$( ls -1t *.img | head -1 )" || exit 1
 
 IMGFILE=$( ls -1t *.img | head -1 )
-IMGNAME=$( basename "$IMGFILE" _base_prepare_lamp_nc-nextcloud_nc-init_nextcloudpi.img )
+IMGNAME=$( basename "$IMGFILE" _base_prepare_lamp_nc-nextcloud_nextcloudpi_nc-init.img )
 
 [[ "$IMGNAME" != "" ]] || exit 1
 
