@@ -1,5 +1,9 @@
 
-[v0.36.1](https://github.com/nextcloud/nextcloudpi/commit/2685b0c) (2017-11-18) update: fix return value
+[v0.37.0 ](https://github.com/nextcloud/nextcloudpi/commit/fd5f04e) (2017-11-19) added nc-info
+
+[v0.36.2 ](https://github.com/nextcloud/nextcloudpi/commit/52ada6a) (2017-11-19) nc-diag: small fixes
+
+[v0.36.1, master](https://github.com/nextcloud/nextcloudpi/commit/eadfd72) (2017-11-18) update: fix return value
 
 [v0.36.0 ](https://github.com/nextcloud/nextcloudpi/commit/43813d6) (2017-11-18) added ncp-diag and ncp-report
 
