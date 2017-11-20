@@ -50,7 +50,8 @@ configure()
   }
 
   local BASEDIR=$( dirname "$DATADIR_" )
-  mkdir -p "$BASEDIR"
+
+  [ -d "$BASEDIR" ] || { echo "$BASEDIR does not exist"; return 1; }
 
   grep -q ext <( stat -fc%T "$BASEDIR" ) || { echo -e "Only ext filesystems can hold the data directory"; return 1; }
 
