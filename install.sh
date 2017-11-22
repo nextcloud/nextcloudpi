@@ -53,9 +53,17 @@ activate_script etc/nextcloudpi-config.d/nc-init.sh
 [[ "$APACHE_EXISTS" != "" ]] && \
   a2enmod status reqtimeout env autoindex access_compat auth_basic authn_file authn_core alias access_compat
 
-# cleanup
 cd -
 rm -rf $TMPDIR
+
+# extra cleanup only in image generation
+[[ -f /.ncp-image ]] && {
+  apt-get autoremove -y
+  apt-get clean
+  rm /var/lib/apt/lists/* -r
+  rm /.ncp-image
+}
+
 
 echo "Done.
 
@@ -65,6 +73,8 @@ Access NextCloudPi panel on nextcloudpi.local:4443
 
 Access Nextcloud on nextcloudpi.local
 "
+
+exit 0
 
 # License
 #

@@ -34,13 +34,20 @@ configure()
 
   echo "Setting up database..."
 
-  # wait for mariadb
+  # launch mariadb if not already running
+  if ! pgrep -c mysqld &>/dev/null; then
+    mysqld & 
+  fi
+
   pgrep -x mysqld &>/dev/null || { echo "mariaDB process not found"; return 1; }
 
-  while :; do
-    [[ -S /var/run/mysqld/mysqld.sock ]] && break
-    sleep 0.5
-  done
+  # wait for mariadb
+  # TODO FIXME armbian build
+  #while :; do
+    #[[ -S /run/mysqld/mysqld.sock ]] && break
+    #sleep 0.5
+  #done
+  sleep 10
 
   # workaround to emulate DROP USER IF EXISTS ..;)
   local DBPASSWD=$( grep password /root/.my.cnf | cut -d= -f2 )
@@ -57,6 +64,19 @@ EXIT
 EOF
 
   ## INITIALIZE NEXTCLOUD
+
+  # make sure redis is running first
+  if ! pgrep -c redis-server &>/dev/null; then
+    mkdir -p /var/run/redis
+    chown redis /var/run/redis
+    sudo -u redis redis-server /etc/redis/redis.conf &
+  fi
+
+  while :; do
+    [[ -S /run/redis/redis.sock ]] && break
+    sleep 0.5
+  done
+
 
   echo "Setting up Nextcloud..."
 
@@ -87,7 +107,7 @@ EOF
   sudo -u www-data php occ config:system:set mysql.utf8mb4 --type boolean --value="true"
 
   # Default trusted domain ( only from nextcloudpi-config )
-  test -f /usr/local/bin/nextcloud-domain.sh && bash /usr/local/bin/nextcloud-domain.sh
+  test -f /.ncp-image || bash /usr/local/bin/nextcloud-domain.sh
   sudo -u www-data php occ config:system:set trusted_domains 5 --value="nextcloudpi.local"
 
   # email
@@ -104,11 +124,11 @@ EOF
   chown -R www-data:www-data data/appdata_${ID}
 
   mysql nextcloud <<EOF
-replace into  oc_appconfig values ( 'theming', 'name', "NextCloudPi" );
-replace into  oc_appconfig values ( 'theming', 'slogan', "keep your data close" );
-replace into  oc_appconfig values ( 'theming', 'url', "https://ownyourbits.com" );
-replace into  oc_appconfig values ( 'theming', 'logoMime', "image/svg+xml" );
-replace into  oc_appconfig values ( 'theming', 'backgroundMime', "image/png" );
+replace into  oc_appconfig values ( 'theming', 'name'          , "NextCloudPi"             );
+replace into  oc_appconfig values ( 'theming', 'slogan'        , "keep your data close"    );
+replace into  oc_appconfig values ( 'theming', 'url'           , "https://ownyourbits.com" );
+replace into  oc_appconfig values ( 'theming', 'logoMime'      , "image/svg+xml"           );
+replace into  oc_appconfig values ( 'theming', 'backgroundMime', "image/png"               );
 EOF
 
   # NCP notifications

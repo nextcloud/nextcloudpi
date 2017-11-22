@@ -17,6 +17,9 @@ install()
   test -f $STATE_FILE && STATE=$( cat $STATE_FILE 2>/dev/null )
   if [ "$STATE" == "" ]; then
 
+    # MARK THE IMAGE AS AN IMAGE BUILD
+    touch /.ncp-image
+
     # RESIZE IMAGE
     ##########################################
 

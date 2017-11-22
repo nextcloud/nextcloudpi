@@ -111,14 +111,17 @@ EOF
     sed -i '/\[mysqld\]/ainnodb_file_per_table=1'      /etc/mysql/mariadb.conf.d/50-server.cnf 
     sed -i '/\[mysqld\]/ainnodb_file_format=barracuda' /etc/mysql/mariadb.conf.d/50-server.cnf
 
-  # launch mariadb if not already running (for docker build)
-  [[ "$DOCKERBUILD" == 1 ]] && { mysqld & }
+  # launch mariadb if not already running
+  if ! pgrep -c mysqld &>/dev/null; then
+    mysqld & 
+  fi
 
   # wait for mariadb
   while :; do
-    [[ -S /var/run/mysqld/mysqld.sock ]] && break
+    [[ -S /run/mysqld/mysqld.sock ]] && break
     sleep 0.5
   done
+
     mysql_secure_installation <<EOF
 $DBPASSWD
 n
