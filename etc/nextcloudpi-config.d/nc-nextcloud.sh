@@ -42,7 +42,7 @@ install()
   # Optional packets for Nextcloud and Apps
   apt-get update
   $APTINSTALL -o "Dpkg::Options::=--force-confold" php-smbclient 
-  $APTINSTALL postfix lbzip2 iputils-ping
+  $APTINSTALL postfix lbzip2 iputils-ping || true
  
   # REDIS
   $APTINSTALL redis-server php7.0-redis
@@ -54,7 +54,7 @@ install()
   echo "maxmemory ${REDIS_MEM}" >> $REDIS_CONF
   echo 'vm.overcommit_memory = 1' >> /etc/sysctl.conf
 
-  sudo usermod -a -G redis www-data
+  usermod -a -G redis www-data
 
   [[ "$DOCKERBUILD" != 1 ]] && {
     systemctl restart redis-server
@@ -77,7 +77,9 @@ configure()
   echo "Starting mariaDB"
 
   # launch mariadb if not already running (for docker build)
-  [[ "$DOCKERBUILD" == 1 ]] && { mysqld & }
+  if ! pgrep -c mysqld &>/dev/null; then
+    mysqld & 
+  fi
 
   # wait for mariadb
   pgrep -x mysqld &>/dev/null || { echo "mariaDB process not found"; return 1; }

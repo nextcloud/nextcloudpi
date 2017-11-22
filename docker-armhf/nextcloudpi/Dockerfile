@@ -9,6 +9,9 @@ ENV DOCKERBUILD 1
 COPY nextcloudpi.sh /usr/local/etc/
 
 RUN \
+# mark as image build
+touch /.ncp-image; \
+
 apt-get update; \
 apt-get install --no-install-recommends -y wget ca-certificates; \
       
@@ -23,6 +26,7 @@ sed -i 's|/media/USBdrive|/data/backups|' nextcloudpi-config.d/nc-backup.sh; \
 
 # specific cleanup
 rm /usr/local/etc/nextcloudpi.sh; \
+rm /.ncp-image; \
 
 # remove wizard for now
 rm -r /var/www/ncp-web/wizard; \

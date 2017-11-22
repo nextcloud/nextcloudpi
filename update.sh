@@ -112,7 +112,8 @@ done
 
 ## BACKWARD FIXES ( for older images )
 
-[[ "$DOCKERBUILD" != 1 ]] && {
+# only for image builds
+[[ ! -f /.ncp-image ]] && {
 
   # fix notify unattended upgrades repeating lines
   cat > /usr/local/bin/ncp-notify-unattended-upgrade <<EOF
@@ -291,8 +292,9 @@ chown redis /var/log/redis
 EOF
     systemctl enable ramlogs
   }
-  exit 0
 }
+
+exit 0
 
 # License
 #

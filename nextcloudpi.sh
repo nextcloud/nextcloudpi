@@ -173,7 +173,7 @@ EOF
   /usr/local/bin/ncp-update
 
   # ONLY FOR IMAGE BUILDS
-  if [[ "$IMGBUILD" == 1 ]]; then
+  if [[ -f /.ncp-image ]]; then
 
     ## NEXTCLOUDPI MOTD 
     rm -rf /etc/update-motd.d
@@ -245,6 +245,8 @@ esac
 EOF
   chmod +x /etc/init.d/resize2fs_once
   systemctl enable resize2fs_once
+
+  rm /.ncp-image
 
   systemctl disable ssh
 }
