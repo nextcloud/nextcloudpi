@@ -39,11 +39,8 @@ IMGNAME=$( basename "$IMGFILE" _base_prepare_lamp_nc-nextcloud_nextcloudpi_nc-in
 ## PACKING
 
 pack_image "$IMGFILE" "$IMGNAME.img" 
-md5sum "$IMGNAME.tar.bz2"
 
-rm -rf   torrent/"$IMGNAME"
-mkdir -p torrent/"$IMGNAME" && cp "$IMGNAME.tar.bz2" torrent/"$IMGNAME"
-create_torrent torrent/"$IMGNAME"
+create_torrent "${IMGNAME}.tar.bz2"
 
 mkdir -p partial && mv NextCloudPi*.bz2 partial
 

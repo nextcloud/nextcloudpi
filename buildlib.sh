@@ -191,12 +191,14 @@ function pack_image()
 
 function create_torrent()
 {
-  [[ "$1" == "" ]] && { echo "No directory specified"; exit 1; }                                 
-  test -d "$1" || { echo "$1 not found or is not a directory" ; exit 1; }                          
-
-  md5sum "$1"/*.bz2 > "$1"/md5sum
-
-  createtorrent -a udp://tracker.opentrackr.org -p 1337 -c "NextCloudPi. Nextcloud for Raspberry Pi image" "$1" "$1".torrent
+  local IMG="$1"
+  [[ -f "$IMG" ]] || { echo "image $IMG not found"; return 1; }
+  local IMGNAME="$( basename "$IMG" .tar.bz2 )"
+  local DIR="torrent/$IMGNAME"
+  [[ -d "$DIR" ]] && { echo "dir $DIR already exists"; return 1; }
+  mkdir -p torrent/"$IMGNAME" && cp "$IMG" torrent/"$IMGNAME"
+  md5sum "$DIR"/*.bz2 > "$DIR"/md5sum
+  createtorrent -a udp://tracker.opentrackr.org -p 1337 -c "NextCloudPi. Nextcloud for Raspberry Pi image" "$DIR" "$DIR".torrent
 }
 
 function generate_changelog()
