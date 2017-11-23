@@ -42,7 +42,11 @@ install()
   # Optional packets for Nextcloud and Apps
   apt-get update
   $APTINSTALL -o "Dpkg::Options::=--force-confold" php-smbclient 
-  $APTINSTALL postfix lbzip2 iputils-ping || true
+
+  debconf-set-selections <<< "postfix postfix/mailname string nextcloudpi"
+  debconf-set-selections <<< "postfix postfix/main_mailer_type string 'No configuration'"
+
+  $APTINSTALL postfix lbzip2 iputils-ping
  
   # REDIS
   $APTINSTALL redis-server php7.0-redis
