@@ -11,9 +11,16 @@
 
 install()
 {
-  git clone https://github.com/nextcloud/nextcloudpi.git
-  make -C nextcloudpi
-  # TODO docker push 
+  [[ -d nextcloudpi ]] || git clone --depth 1 https://github.com/nextcloud/nextcloudpi.git
+  cd nextcloudpi
+  git pull origin master
+  docker pull arm32v7/debian:stretch-slim
+  make && {
+    docker push ownyourbits/nextcloudpi-armhf 
+    docker push ownyourbits/nextcloud-armhf 
+    docker push ownyourbits/lamp-armhf
+    docker push ownyourbits/debian-ncp-armhf
+  }
 }
 
 configure(){ :; }

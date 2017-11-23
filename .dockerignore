@@ -1,0 +1,6 @@
+torrent/
+partial/
+qemu-raspbian-network/
+armbian/
+*.img
+*.tar.bz2
