@@ -34,6 +34,12 @@ Main() {
             # install NCP
             curl -sSL https://raw.githubusercontent.com/nextcloud/nextcloudpi/master/install.sh | bash
 
+            # cleanup
+            apt-get autoremove -y
+            apt-get clean
+            rm /var/lib/apt/lists/* -r
+            rm /.ncp-image
+
 			;;
 	esac
 } # Main

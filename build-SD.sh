@@ -24,15 +24,16 @@ export NO_CONFIG=1          # skip interactive configuration
 
 download_resize_raspbian_img 1G "$IMGBASE" || exit 1
 
-NO_HALT_STEP=1 ./installer.sh prepare.sh     "$IP" "$IMGBASE"                    || exit 1
-               ./installer.sh lamp.sh        "$IP" "$( ls -1t *.img | head -1 )" || exit 1
-               ./installer.sh $NC_INSTALL    "$IP" "$( ls -1t *.img | head -1 )" || exit 1
-               ./installer.sh nextcloudpi.sh "$IP" "$( ls -1t *.img | head -1 )" || exit 1
-               ./installer.sh $NC_CONFIG     "$IP" "$( ls -1t *.img | head -1 )" || exit 1
+NO_HALT_STEP=1 ./installer.sh prepare.sh        "$IP" "$IMGBASE"                    || exit 1
+               ./installer.sh lamp.sh           "$IP" "$( ls -1t *.img | head -1 )" || exit 1
+               ./installer.sh $NC_INSTALL       "$IP" "$( ls -1t *.img | head -1 )" || exit 1
+               ./installer.sh nextcloudpi.sh    "$IP" "$( ls -1t *.img | head -1 )" || exit 1
+               ./installer.sh $NC_CONFIG        "$IP" "$( ls -1t *.img | head -1 )" || exit 1
+               ./installer.sh raspbian-cleanup  "$IP" "$( ls -1t *.img | head -1 )" || exit 1
 #              ./installer.sh build-devel.sh "$IP" "$( ls -1t *.img | head -1 )" || exit 1
 
 IMGFILE=$( ls -1t *.img | head -1 )
-IMGNAME=$( basename "$IMGFILE" _base_prepare_lamp_nc-nextcloud_nextcloudpi_nc-init.img )
+IMGNAME=$( basename "$IMGFILE" _base_prepare_lamp_nc-nextcloud_nextcloudpi_nc-init_raspbian-cleanup.img )
 
 [[ "$IMGNAME" != "" ]] || exit 1
 

@@ -137,15 +137,6 @@ EOF
 
 configure() { :; }
 
-cleanup()
-{ 
-  apt-get autoremove -y
-  apt-get clean
-  rm /var/lib/apt/lists/* -r
-  rm -f /home/pi/.bash_history
-
-  systemctl disable ssh
-}
 
 # License
 #

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Updaterfor  NextCloudPi
+# Updater for NextCloudPi
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -114,35 +114,6 @@ done
 
 # only for image builds
 [[ ! -f /.ncp-image ]] && {
-
-  # fix notify unattended upgrades repeating lines
-  cat > /usr/local/bin/ncp-notify-unattended-upgrade <<EOF
-#!/bin/bash
-LOGFILE=/var/log/unattended-upgrades/unattended-upgrades.log
-STAMPFILE=/var/run/.ncp-notify-unattended-upgrades
-VERFILE=/usr/local/etc/ncp-version
-
-test -e "\$LOGFILE" || { echo "\$LOGFILE not found"; exit 1; }
-
-test -e "\$STAMPFILE" || touch "\$STAMPFILE"
-
-[ \$( date -r "\$LOGFILE" +'%y%m%d%H%M' ) -le \$( date -r "\$STAMPFILE" +'%y%m%d%H%M' ) ] && { echo "info is up to date"; exit 0; }
-
-LINE=\$( grep "INFO Packages that will be upgraded" "\$LOGFILE" | tail -1 )
-
-[[ "\$LINE" == "" ]] && { echo "no new upgrades"; touch "\$STAMPFILE"; exit 0; }
-
-PKGS=\$( sed 's|^.*Packages that will be upgraded: ||' <<< "\$LINE" )
-
-echo "Packages automatically upgraded: \$PKGS"
-
-touch "\$STAMPFILE"
-
-sudo -u www-data php /var/www/nextcloud/occ notification:generate \
-  $USER_ "NextCloudPi Unattended Upgrades" \
-     -l "Packages automatically upgraded \$PKGS"
-EOF
-  chmod +x /usr/local/bin/ncp-notify-unattended-upgrade
 
   # log adjustment for wizard
   test -f /home/www/ncp-launcher.sh && \
@@ -261,7 +232,7 @@ EOF
   chmod +x /usr/local/bin/ncp-notify-unattended-upgrade
 
   # fix modsecurity uploads
-  sed -i 's|^SecRequestBodyLimit ^C|#SecRequestBodyLimit 13107200|' /etc/modsecurity/modsecurity.conf
+  sed -i 's|^SecRequestBodyLimit .*|#SecRequestBodyLimit 13107200|' /etc/modsecurity/modsecurity.conf
 
   # fix ramlogs
   [[ $( grep "^ACTIVE_" /usr/local/etc/nextcloudpi-config.d/nc-ramlogs.sh | cut -f2 -d'=' ) == "yes" ]] && {
@@ -292,6 +263,13 @@ chown redis /var/log/redis
 EOF
     systemctl enable ramlogs
   }
+
+  # fix automount in latest images
+   test -f /etc/udev/rules.d/90-qemu.rules && {
+     rm -f /etc/udev/rules.d/90-qemu.rules
+     udevadm control --reload-rules && udevadm trigger
+     pgrep -c udiskie &>/dev/null && systemctl restart nc-automount
+   }
 }
 
 exit 0
