@@ -56,15 +56,6 @@ activate_script etc/nextcloudpi-config.d/nc-init.sh
 cd -
 rm -rf $TMPDIR
 
-# extra cleanup only in image generation
-[[ -f /.ncp-image ]] && {
-  apt-get autoremove -y
-  apt-get clean
-  rm /var/lib/apt/lists/* -r
-  rm /.ncp-image
-}
-
-
 echo "Done.
 
 Type 'sudo nextcloudpi-config' to configure NCP

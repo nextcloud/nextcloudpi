@@ -1,4 +1,6 @@
 
+[v0.37.3](https://github.com/nextcloud/nextcloudpi/commit/a9fcded) (2017-11-24) build: fix cleanup
+
 [v0.37.2 ](https://github.com/nextcloud/nextcloudpi/commit/529f9de) (2017-11-20) nc-datadir: dont create dir if not exists
 
 [v0.37.1 ](https://github.com/nextcloud/nextcloudpi/commit/a97bc07) (2017-11-19) nc-restore: fix restore passwod

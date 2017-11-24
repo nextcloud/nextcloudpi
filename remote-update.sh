@@ -25,7 +25,7 @@ cleanup()
   rm -rf /var/lib/apt/lists/* 
   rm -f  /home/pi/.bash_history
   systemctl disable ssh
-
+  rm -f /etc/udev/rules.d/90-qemu.rules
   sudo -u www-data php /var/www/nextcloud/occ config:system:delete trusted_domains 1
 }
 

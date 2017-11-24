@@ -47,12 +47,6 @@ configure(){ :; }
 cleanup()
 {
   [ "$STATE" != "0" ] && return
-  apt-get autoremove
-  apt-get clean
-  rm /var/lib/apt/lists/* -r
-  rm -f /home/pi/.bash_history
-
-  systemctl disable ssh
   rm $STATE_FILE
   nohup halt &>/dev/null &
 }

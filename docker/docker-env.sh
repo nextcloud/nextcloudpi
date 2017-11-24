@@ -23,8 +23,7 @@ cleanup()
   apt-get clean
   rm /var/lib/apt/lists/* -r
   rm -f /home/pi/.bash_history
-
-  systemctl disable ssh
+  rm -f /etc/udev/rules.d/90-qemu.rules
 }
 
 # License
