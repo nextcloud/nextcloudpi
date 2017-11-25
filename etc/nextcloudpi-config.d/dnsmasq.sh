@@ -52,7 +52,12 @@ EOF
 
 configure()
 {
-  [[ $ACTIVE_ != "yes" ]] && { service dnsmasq stop; update-rc.d dnsmasq disable; return; }
+  [[ $ACTIVE_ != "yes" ]] && { 
+    service dnsmasq stop
+    update-rc.d dnsmasq disable
+    echo "dnmasq disabled"
+    return
+  }
 
   local IFACE=$( ip r | grep "default via"   | awk '{ print $5 }' )
   local IP=$( ip a show dev "$IFACE" | grep global | grep -oP '\d{1,3}(.\d{1,3}){3}' | head -1 )
@@ -80,6 +85,7 @@ EOF
   cd /var/www/nextcloud
   sudo -u www-data php occ config:system:set trusted_domains 2 --value=$DOMAIN_
   sudo -u www-data php occ config:system:set overwrite.cli.url --value=https://$DOMAIN_
+  echo "dnsmasq enabled"
 }
 
 # License
