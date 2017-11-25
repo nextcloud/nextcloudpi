@@ -17,7 +17,33 @@ DESCRIPTION="Print NextCloudPi system info"
 
 configure() 
 {
-  ncp-diag | column  -t -s'|'
+  # info
+
+  local OUT="$( ncp-diag )"
+  echo "$OUT" | column -t -s'|'
+
+  # suggestions
+
+  DNSMASQ_ON="$( grep "^ACTIVE_=" /usr/local/etc/nextcloudpi-config.d/dnsmasq.sh | cut -d'=' -f2 )"
+  
+  [[ $DNSMASQ_ON != "yes" ]] && \
+    grep -q "NAT loopback|no" <<<"$OUT" && \
+      echo -e "\nYou should enable dnsmasq to use your domain inside home"
+
+  grep -q "certificates|none" <<<"$OUT" && \
+    echo -e "\nYou should run Lets Encrypt for trusted encrypted access"
+
+  grep -q "port check .*|closed" <<<"$OUT" && \
+      echo -e "\nYou should open your ports for Lets Encrypt and external access"
+
+  grep -q "USB devices|none" <<<"$OUT" || {
+    grep -q "data in SD|yes" <<<"$OUT" && \
+      echo -e "\nYou should use nc-datadir to move your files to your plugged in USB drive"
+
+    grep -q "automount|no" <<<"$OUT" && \
+      echo -e "\nYou should enable automount to uyyse your plugged in USB drive"
+  }
+  return 0
 }
 
 install() { :; }
