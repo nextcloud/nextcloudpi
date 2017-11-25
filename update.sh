@@ -147,7 +147,7 @@ EOF
 
   # redis
   REDIS_CONF=/etc/redis/redis.conf
-  sysctl vm.overcommit_memory=1
+  sysctl vm.overcommit_memory=1 &>/dev/null
   grep -q APCu /var/www/nextcloud/config/config.php && {
     echo "installing redis..."
     apt-get update
