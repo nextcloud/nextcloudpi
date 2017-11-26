@@ -24,12 +24,12 @@ export NO_CONFIG=1          # skip interactive configuration
 
 download_resize_raspbian_img 1G "$IMGBASE" || exit 1
 
-NO_HALT_STEP=1 ./installer.sh prepare.sh        "$IP" "$IMGBASE"                    || exit 1
-               ./installer.sh lamp.sh           "$IP" "$( ls -1t *.img | head -1 )" || exit 1
-               ./installer.sh $NC_INSTALL       "$IP" "$( ls -1t *.img | head -1 )" || exit 1
-               ./installer.sh nextcloudpi.sh    "$IP" "$( ls -1t *.img | head -1 )" || exit 1
-               ./installer.sh $NC_CONFIG        "$IP" "$( ls -1t *.img | head -1 )" || exit 1
-               ./installer.sh raspbian-cleanup  "$IP" "$( ls -1t *.img | head -1 )" || exit 1
+NO_HALT_STEP=1 ./installer.sh prepare.sh          "$IP" "$IMGBASE"                    || exit 1
+               ./installer.sh lamp.sh             "$IP" "$( ls -1t *.img | head -1 )" || exit 1
+               ./installer.sh $NC_INSTALL         "$IP" "$( ls -1t *.img | head -1 )" || exit 1
+               ./installer.sh nextcloudpi.sh      "$IP" "$( ls -1t *.img | head -1 )" || exit 1
+               ./installer.sh $NC_CONFIG          "$IP" "$( ls -1t *.img | head -1 )" || exit 1
+               ./installer.sh raspbian-cleanup.sh "$IP" "$( ls -1t *.img | head -1 )" || exit 1
 #              ./installer.sh build-devel.sh "$IP" "$( ls -1t *.img | head -1 )" || exit 1
 
 IMGFILE=$( ls -1t *.img | head -1 )
@@ -37,25 +37,33 @@ IMGNAME=$( basename "$IMGFILE" _base_prepare_lamp_nc-nextcloud_nextcloudpi_nc-in
 
 [[ "$IMGNAME" != "" ]] || exit 1
 
+## TESTING
+
+launch_qemu "$IMGNAME.img" &
+sleep 10
+wait_SSH "$IP"
+sleep 180                         # Wait for the services to start. Improve this ( wait HTTP && trusted domains )
+tests/tests.py "$IP" || exit 1
+
+ssh_pi "$IP" sudo halt
+
 ## PACKING
 
 pack_image "$IMGFILE" "$IMGNAME.img" 
 
 create_torrent "${IMGNAME}.tar.bz2"
 
-mkdir -p partial && mv NextCloudPi*.bz2 partial
+## UPLOADING
+
+upload_ftp "$IMGNAME"
 
 ## GENERATE CHANGELOG
+
 generate_changelog
 
-## TESTING
-launch_qemu "$IMGNAME.img" &
-sleep 10
-wait_SSH "$IP"
-sleep 180                         # Wait for the services to start. Improve this ( wait HTTP && trusted domains )
-tests/tests.py "$IP"
+## CLEANUP
 
-ssh_pi "$IP" sudo halt
+mkdir -p partial && mv NextCloudPi*.bz2 partial
 
 rm -f *.img
 
