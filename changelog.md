@@ -1,5 +1,11 @@
 
-[v0.37.5](https://github.com/nextcloud/nextcloudpi/commit/0a7850c) (2017-11-25) nc-info: provide suggestions
+[v0.39.0](https://github.com/nextcloud/nextcloudpi/commit/3bbd913) (2017-11-27) added nc-export-ncp and nc-import-ncp
+
+[v0.38.1 ](https://github.com/nextcloud/nextcloudpi/commit/0943d83) (2017-11-27) nc-info: warn distro
+
+[v0.38.0 ](https://github.com/nextcloud/nextcloudpi/commit/b05debc) (2017-11-27) added SSH
+
+[v0.37.5](https://github.com/nextcloud/nextcloudpi/commit/f28dcbc) (2017-11-25) nc-info: provide suggestions
 
 [v0.37.4 ](https://github.com/nextcloud/nextcloudpi/commit/a2b7a7a) (2017-11-25) dnsmasq: improve output
 
