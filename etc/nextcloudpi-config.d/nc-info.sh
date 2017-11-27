@@ -26,6 +26,9 @@ configure()
 
   DNSMASQ_ON="$( grep "^ACTIVE_=" /usr/local/etc/nextcloudpi-config.d/dnsmasq.sh | cut -d'=' -f2 )"
   
+  grep -q "distribution|.*bian GNU/Linux 9" <<<"$OUT" || \
+    echo -e "\nYou are using an unsupported distro release. Please upgrade to latest Debian/Raspbian"
+
   [[ $DNSMASQ_ON != "yes" ]] && \
     grep -q "NAT loopback|no" <<<"$OUT" && \
       echo -e "\nYou should enable dnsmasq to use your domain inside home"
