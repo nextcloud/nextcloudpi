@@ -96,8 +96,11 @@ function is_active_script()
     local SCRIPT=$1
     unset is_active
     source "$SCRIPT"
+    [[ $( type -t is_active ) == function ]] && {
+      is_active
+      return $?
+    }
     grep -q "^ACTIVE_=yes" "$SCRIPT" && return 0
-    [[ $( type -t is_active ) == function ]] && is_active
   )
 }
 
