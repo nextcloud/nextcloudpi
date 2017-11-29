@@ -24,6 +24,10 @@ configure()
   mkdir -p "$TMP"
   tar -xf "$FILE_" -C "$TMP"
 
+  # UGLY workaround to prevent apache from restarting upon activating some extras
+  # which leads to the operation appearing to fail in ncp-web
+  echo "invalid_op" >> /etc/apache2/sites-available/000-default.conf
+
   # restore configuration and activate
   for file in /"$TMP"/*; do
     local SCRIPT="$( basename "$file" .cfg ).sh"
@@ -41,9 +45,15 @@ configure()
     grep -q "^ACTIVE_=yes" "$SCRIPT" && echo && activate_script "$SCRIPT"
   done
 
+  # Fix invalid configuration
+  sed -i "/^invalid_op/d" /etc/apache2/sites-available/000-default.conf
+
   # cleanup
   rm -rf "$TMP"
   echo -e "\nconfiguration restored"
+
+  # delayed in bg so it does not kill the connection, and we get AJAX response
+  bash -c "sleep 2 && service apache2 reload" &>/dev/null &
 }
 
 install() { :; }
