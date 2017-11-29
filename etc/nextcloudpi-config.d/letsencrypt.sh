@@ -78,7 +78,7 @@ configure()
     sudo -u www-data php $OCC config:system:set overwrite.cli.url --value=https://$DOMAIN_
 
     # delayed in bg so it does not kill the connection, and we get AJAX response
-    bash -c "sleep 2 && service apache2 restart" &>/dev/null &
+    bash -c "sleep 2 && service apache2 reload" &>/dev/null &
     rm -rf $NCDIR/.well-known
     return 0
   }

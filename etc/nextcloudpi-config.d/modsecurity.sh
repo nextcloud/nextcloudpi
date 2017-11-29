@@ -102,7 +102,7 @@ EOF
   [[ $ACTIVE_ == "yes" ]] && a2enmod security2 &>/dev/null || a2dismod security2 &>/dev/null
 
   # delayed in bg so it does not kill the connection, and we get AJAX response
-  bash -c "sleep 2 && service apache2 restart" &>/dev/null &
+  bash -c "sleep 2 && service apache2 reload" &>/dev/null &
 }
 
 # License
