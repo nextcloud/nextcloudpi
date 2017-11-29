@@ -32,7 +32,7 @@ configure()
 
   tar -cf "$DESTFILE" *
 
-  cd -
+  cd $OLDPWD
   rm -rf /tmp/ncp-export
   echo -e "configuration exported to $DESTFILE"
 }
