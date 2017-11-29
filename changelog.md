@@ -1,5 +1,9 @@
 
-[v0.39.1](https://github.com/nextcloud/nextcloudpi/commit/0bc9893) (2017-11-28) motd: update logo
+[v0.39.3](https://github.com/nextcloud/nextcloudpi/commit/601f935) (2017-11-29) nc-export: silent cd
+
+[v0.39.2](https://github.com/nextcloud/nextcloudpi/commit/76d45cf) (2017-11-29) nc-import: fix ncp-web appearing to fail when activating options that restart httpd
+
+[v0.39.1 ](https://github.com/nextcloud/nextcloudpi/commit/6af40a9) (2017-11-28) motd: update logo
 
 [v0.39.0](https://github.com/nextcloud/nextcloudpi/commit/a3afa14) (2017-11-27) added nc-export-ncp and nc-import-ncp
 
