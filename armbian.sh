@@ -25,14 +25,23 @@ Main() {
 			# your code here
 			;;
 		stretch)
-            # Need sudo access that does not expire
-            echo -e "1234\n1234" | passwd root
 
-            # indicate that this will be an image build
+            # need sudo access that does not expire during build
+            chage -d -1 root
+
+            # indicate that this will be an Armbian image build
             touch /.ncp-image
+            export ARMBIANBUILD
 
             # install NCP
             curl -sSL https://raw.githubusercontent.com/nextcloud/nextcloudpi/master/install.sh | bash
+
+            # restore postfix package half-configured status
+            sed -i '/Package: postfix/{n;d}'                                 /var/lib/dpkg/status
+            sed -i '/Package: postfix/a;Status: install ok half-configured|' /var/lib/dpkg/status
+
+            # force change root password at first login (again)
+            chage -d 0 root
 
             # cleanup
             apt-get autoremove -y
