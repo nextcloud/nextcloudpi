@@ -42,11 +42,17 @@ install()
   # Optional packets for Nextcloud and Apps
   apt-get update
   $APTINSTALL -o "Dpkg::Options::=--force-confold" php-smbclient 
+  $APTINSTALL lbzip2 iputils-ping
 
-  debconf-set-selections <<< "postfix postfix/mailname string nextcloudpi"
-  debconf-set-selections <<< "postfix postfix/main_mailer_type string 'No configuration'"
-
-  $APTINSTALL postfix lbzip2 iputils-ping
+  [[ "$ARMBIANBUILD" != 1 ]] && {
+    $APTINSTALL postfix
+  } || {
+    # post installation script fails, so mark as no problem for the rest of the build
+    echo "[NCP] Please, ignore the following postfix installation errors ..."
+    $APTINSTALL postfix || true
+    sed -i '/Package: postfix/{n;d}'                           /var/lib/dpkg/status
+    sed -i '/Package: postfix/a;Status: install ok installed|' /var/lib/dpkg/status
+  }
  
   # REDIS
   $APTINSTALL redis-server php7.0-redis
@@ -71,6 +77,8 @@ install()
     systemctl start php7.0-fpm
     systemctl start mysqld
   }
+  
+  return 0
 }
 
 configure()
