@@ -241,7 +241,7 @@ function prepare_sshd()
 function upload_ftp()
 {
   local IMGNAME="$1"
-  [[ -f "$IMGNAME"    ]] || { echo "No image file found, abort";       return 1; }
+  [[ -f torrent/"$IMGNAME"/"$IMGNAME".tar.bz2 ]] || { echo "No image file found, abort";       return 1; }
   [[ "$FTPPASS" == "" ]] && { echo "No FTPPASS variable found, abort"; return 1; }
 
   cd torrent
@@ -255,13 +255,14 @@ put $IMGNAME.torrent
 bye
 EOF
   cd - 
-  cd $IMGNAME
+  cd torrent/$IMGNAME
 
   ftp -np ftp.ownyourbits.com <<EOF
 user root@ownyourbits.com $FTPPASS
 cd $IMGNAME
 binary
 put $IMGNAME.tar.bz2
+put md5sum
 bye
 EOF
   cd -
