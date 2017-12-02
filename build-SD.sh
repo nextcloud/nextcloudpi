@@ -22,6 +22,8 @@ IMGBASE="NextCloudPi_$( date  "+%m-%d-%y" )_base.img"
 
 export NO_CONFIG=1          # skip interactive configuration
 
+## BUILD
+
 download_resize_raspbian_img 1G "$IMGBASE" || exit 1
 
 NO_HALT_STEP=1 ./installer.sh prepare.sh          "$IP" "$IMGBASE"                    || exit 1
@@ -32,10 +34,14 @@ NO_HALT_STEP=1 ./installer.sh prepare.sh          "$IP" "$IMGBASE"              
                ./installer.sh raspbian-cleanup.sh "$IP" "$( ls -1t *.img | head -1 )" || exit 1
 #              ./installer.sh build-devel.sh "$IP" "$( ls -1t *.img | head -1 )" || exit 1
 
+## PACKING
+ 
 IMGFILE=$( ls -1t *.img | head -1 )
 IMGNAME=$( basename "$IMGFILE" _base_prepare_lamp_nc-nextcloud_nextcloudpi_nc-init_raspbian-cleanup.img )
 
 [[ "$IMGNAME" != "" ]] || exit 1
+
+pack_image "$IMGFILE" "$IMGNAME.img" 
 
 ## TESTING
 
@@ -47,24 +53,14 @@ tests/tests.py "$IP" || exit 1
 
 ssh_pi "$IP" sudo halt
 
-## PACKING
-
-pack_image "$IMGFILE" "$IMGNAME.img" 
-
-create_torrent "${IMGNAME}.tar.bz2"
-
 ## UPLOADING
 
+create_torrent "${IMGNAME}.tar.bz2"
 upload_ftp "$IMGNAME"
-
-## GENERATE CHANGELOG
-
-generate_changelog
 
 ## CLEANUP
 
 mkdir -p partial && mv NextCloudPi*.bz2 partial
-
 rm -f *.img
 
 # License
