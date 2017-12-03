@@ -27,6 +27,12 @@ is_active()
   [[ "$SRCDIR" != "/var/www/nextcloud/data" ]]
 }
 
+install() 
+{ 
+  apt-get update 
+  apt-get install -y --no-install-recommends btrfs-tools
+}
+
 configure()
 {
   ## CHECKS
@@ -39,21 +45,18 @@ configure()
 
   [[ "$SRCDIR" == "$DATADIR_" ]] && { echo -e "INFO: data already there"; return 0; }
 
-  # check datadir empty
+  # check datadir exists
   [ -d $DATADIR_ ] && {
-    [[ $( find "$DATADIR_" -maxdepth 0 -empty | wc -l ) == 0 ]] && {
-      local BKP="${DATADIR_}-$( date "+%m-%d-%y" )" 
-      echo "INFO: $DATADIR_ is not empty. Creating backup $BKP"
-      mv "$DATADIR_" "$BKP"
-    }
-    rm -rf "$DATADIR_" 
+    local BKP="${DATADIR_}-$( date "+%m-%d-%y" )" 
+    echo "INFO: $DATADIR_ is not empty. Creating backup $BKP"
+    mv "$DATADIR_" "$BKP"
   }
 
   local BASEDIR=$( dirname "$DATADIR_" )
 
   [ -d "$BASEDIR" ] || { echo "$BASEDIR does not exist"; return 1; }
 
-  grep -q ext <( stat -fc%T "$BASEDIR" ) || { echo -e "Only ext filesystems can hold the data directory"; return 1; }
+  grep -q -e ext -e btrfs <( stat -fc%T "$BASEDIR" ) || { echo -e "Only ext/btrfs filesystems can hold the data directory"; return 1; }
 
   sudo -u www-data test -x "$BASEDIR" || { echo -e "ERROR: the user www-data does not have access permissions over $BASEDIR"; return 1; }
 
@@ -67,8 +70,15 @@ configure()
   sudo -u www-data php occ maintenance:mode --on
 
   echo "moving data dir from $SRCDIR to $DATADIR_..."
-  cp -ra "$SRCDIR" "$DATADIR_" || return 1
-  
+
+  # use subvolumes, if BTRFS
+  [[ "$( stat -fc%T "$BASEDIR" )" == "btrfs" ]] && {
+    echo "BTRFS filesystem detected"
+    btrfs subvolume create "$DATADIR_" || return 1
+  }
+
+  cp -raT "$SRCDIR" "$DATADIR_" || return 1
+ 
   # tmp upload dir
   mkdir -p "$DATADIR_/tmp" 
   chown www-data:www-data "$DATADIR_/tmp"
@@ -84,8 +94,6 @@ configure()
   sudo -u www-data php occ config:system:set datadirectory --value="$DATADIR_"
   sudo -u www-data php occ maintenance:mode --off
 }
-
-install() { :; }
 
 # License
 #

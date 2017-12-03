@@ -270,6 +270,12 @@ EOF
      udevadm control --reload-rules && udevadm trigger
      pgrep -c udiskie &>/dev/null && systemctl restart nc-automount
    }
+
+   # btrfs tools
+   type btrfs &>/dev/null || {
+    apt-get update 
+    apt-get install -y --no-install-recommends btrfs-tools
+  }
 }
 
 exit 0

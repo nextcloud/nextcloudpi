@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Format a USB external drive as a unique ext4 partition
+# Format a USB external drive as a unique BTRFS partition
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -14,7 +14,7 @@
 #
 
 LABEL_=myCloudDrive
-DESCRIPTION="Format an external USB drive as a ext4 partition (dangerous)"
+DESCRIPTION="Format an external USB drive as a BTRFS partition (dangerous)"
 
 INFOTITLE="Instructions for USB drive formatting" 
 INFO="Make sure that ONLY the USB drive that you want to format is plugged in.
@@ -29,7 +29,7 @@ configure()
 
   # only one plugged in
   [[ $NUM != 1 ]] && { 
-    echo "ERROR: counted $NUM devices. Please, only plug in the USB drive you want to format to ext4";
+    echo "ERROR: counted $NUM devices. Please, only plug in the USB drive you want to format";
     return 1; 
   }
 
@@ -52,11 +52,13 @@ configure()
   parted /dev/"$NAME" --script -- mklabel gpt            || return 2
   parted /dev/"$NAME" --script -- mkpart primary 0% 100% || return 3
   sleep 0.5
-  mkfs.ext4 -q -E lazy_itable_init=0,lazy_journal_init=0 -F /dev/"${NAME}1" -L "$LABEL_"
+  mkfs.btrfs -q /dev/"${NAME}1" -f -L "$LABEL_"
+  local RET=$?
 
   # enable nc-automount if enabled
   killall -CONT udiskie 2>/dev/null
-  echo "Drive $NAME formatted successfuly and labeled $LABEL_"
+  [ $RET -eq 0 ] && echo "Drive $NAME formatted successfuly and labeled $LABEL_"
+  return $RET
 }
 
 install() { :; }
