@@ -1,5 +1,7 @@
 
-[v0.41.0](https://github.com/nextcloud/nextcloudpi/commit/a97fb59) (2017-12-04) updated to NC12.0.4
+[v0.41.1](https://github.com/nextcloud/nextcloudpi/commit/d472c6c) (2017-12-04) nc-info: warn of long operation
+
+[v0.41.0](https://github.com/nextcloud/nextcloudpi/commit/d191176) (2017-12-04) updated to NC12.0.4
 
 [v0.40.0 ](https://github.com/nextcloud/nextcloudpi/commit/3b799fa) (2017-12-03) added btrfs snapshots
 

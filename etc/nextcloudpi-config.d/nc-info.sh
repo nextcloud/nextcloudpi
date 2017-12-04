@@ -20,6 +20,7 @@ configure()
   # info
 
   local OUT="$( ncp-diag )"
+  echo "Gathering information..."
   echo "$OUT" | column -t -s'|'
 
   # suggestions
