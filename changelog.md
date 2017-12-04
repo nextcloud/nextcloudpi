@@ -1,7 +1,9 @@
 
-[v0.40.0](https://github.com/nextcloud/nextcloudpi/commit/1aa59f9) (2017-12-03) added btrfs snapshots
+[v0.41.0](https://github.com/nextcloud/nextcloudpi/commit/a97fb59) (2017-12-04) updated to NC12.0.4
 
-[v0.39.3](https://github.com/nextcloud/nextcloudpi/commit/fbf2079) (2017-11-29) nc-export: silent cd
+[v0.40.0 ](https://github.com/nextcloud/nextcloudpi/commit/3b799fa) (2017-12-03) added btrfs snapshots
+
+[v0.39.3 ](https://github.com/nextcloud/nextcloudpi/commit/fbf2079) (2017-11-29) nc-export: silent cd
 
 [v0.39.2 ](https://github.com/nextcloud/nextcloudpi/commit/76d45cf) (2017-11-29) nc-import: fix ncp-web appearing to fail when activating options that restart httpd
 
