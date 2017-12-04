@@ -74,9 +74,9 @@ ls -d /media/* &>/dev/null && {
   i=0
   for d in $( ls -d /media/* 2>/dev/null ); do
     if [ $i -eq 0 ]; then
-      mountpoint -q "$d" && ln -sT "$d" /media/USBdrive
+      [[ -e /media/USBdrive   ]] || mountpoint -q "$d" && ln -sT "$d" /media/USBdrive
     else
-      mountpoint -q "$d" && ln -sT "$d" /media/USBdrive$i
+      [[ -e /media/USBdrive$i ]] || mountpoint -q "$d" && ln -sT "$d" /media/USBdrive$i
     fi
     i=$(( i + 1 ))
   done

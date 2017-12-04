@@ -1,5 +1,7 @@
 
-[v0.41.1](https://github.com/nextcloud/nextcloudpi/commit/d472c6c) (2017-12-04) nc-info: warn of long operation
+[v0.41.2](https://github.com/nextcloud/nextcloudpi/commit/f4dd242) (2017-12-04) nc-automount: check for USBdrive labeled drive case
+
+[v0.41.1 ](https://github.com/nextcloud/nextcloudpi/commit/9ef8bc1) (2017-12-04) nc-info: warn of long operation
 
 [v0.41.0](https://github.com/nextcloud/nextcloudpi/commit/d191176) (2017-12-04) updated to NC12.0.4
 
