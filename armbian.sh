@@ -49,6 +49,13 @@ Main() {
             rm /var/lib/apt/lists/* -r
             rm /.ncp-image
 
+            # cleanup all NCP options
+            source /usr/local/etc/library.sh
+            cd /usr/local/etc/nextcloudpi-config.d/
+            for script in *.sh; do
+              cleanup_script $script
+            done
+
 			;;
 	esac
 } # Main

@@ -19,6 +19,13 @@ configure() { :; }
 
 cleanup()   
 { 
+  # cleanup all NCP extras
+  source /usr/local/etc/library.sh
+  cd /usr/local/etc/nextcloudpi-config.d/
+  for script in *.sh; do
+    cleanup_script $script
+  done
+
   # clean packages
   apt-get autoremove -y
   apt-get clean

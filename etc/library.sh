@@ -144,6 +144,20 @@ function configure_script()
   )
 }
 
+function cleanup_script()
+{
+  (
+    local SCRIPT=$1
+    cd /usr/local/etc/nextcloudpi-config.d/ || return 1
+    unset cleanup
+    source ./"$SCRIPT"
+    [[ $( type -t cleanup ) == function ]] && {
+      cleanup
+      return $?
+    }
+  )
+}
+
 function persistent_cfg()
 {
   local SRC="$1"
