@@ -11,7 +11,7 @@ This code also generates the [NextCloudPi docker images](https://hub.docker.com/
 ## Features
 
  * Raspbian 9 stretch
- * Nextcloud 12.0.3
+ * Nextcloud 12.0.4
  * Apache 2.4.25, with HTTP2 enabled
  * PHP 7.0 (double the speed of PHP5!)
  * MariaDB 10
@@ -25,6 +25,7 @@ This code also generates the [NextCloudPi docker images](https://hub.docker.com/
  * Cron jobs for Nextcloud
  * Sane configuration defaults
  * Full emoji support ( NEW 05-24-2017 )
+ * Postfix email
  * Secure
 
 ## Extras
@@ -49,7 +50,8 @@ This code also generates the [NextCloudPi docker images](https://hub.docker.com/
  * Update notifications ( NEW 08-16-2017 )
  * NextCloud backup and restore ( NEW 05-24-2017 )
  * NextCloud online installation ( NEW 05-24-2017 )
- * Format USB drive to ext4 ( NEW 07-03-2017 )
+ * Format USB drive to BTRFS ( NEW 07-03-2017 )
+ * BTRFS snapshots ( NEW 04-12-2017 )
  * UPnP automatic port forwarding ( NEW 07-03-2017 )
 
 Any extra can be installed independently in a running Raspbian instance through SSH. See `installer.sh`

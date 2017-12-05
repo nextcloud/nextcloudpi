@@ -6,7 +6,7 @@
 
 
 nextcloudpi-armhf: nextcloud-armhf
-	docker build . -f docker-armhf/nextcloudpi/Dockerfile   -t ownyourbits/nextcloudpi-armhf:latest
+	docker build . -f docker-armhf/nextcloudpi/Dockerfile   -t ownyourbits/nextcloudpi-armhf:latest --no-cache
 
 nextcloud-armhf: lamp-armhf
 	docker build . -f docker-armhf/nextcloud/Dockerfile     -t ownyourbits/nextcloud-armhf:latest
@@ -19,7 +19,7 @@ debian-ncp-armhf:
 
 
 nextcloudpi-x86: nextcloud-x86
-	docker build . -f docker/nextcloudpi/Dockerfile       -t ownyourbits/nextcloudpi-x86:latest
+	docker build . -f docker/nextcloudpi/Dockerfile       -t ownyourbits/nextcloudpi-x86:latest --no-cache
 
 nextcloud-x86: lamp-x86
 	docker build . -f docker/nextcloud/Dockerfile         -t ownyourbits/nextcloud-x86:latest
