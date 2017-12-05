@@ -26,11 +26,14 @@ function nextcloud-config()
     test -f $VERFILE || ncp-check-version
 
     # ask for update if outdated
+    
+    test -f /usr/local/etc/ncp-changelog && \
+      local CHANGELOG=$( head -4 /usr/local/etc/ncp-changelog )
     ncp-test-updates && \
     whiptail --backtitle "$BACKTITLE $( cat /usr/local/etc/ncp-version )" \
       --title "NextCloudPi update available" \
-      --clear --yesno "Update to $( cat $VERFILE )?\n\n\n\nSee changes at\n\nhttps://github.com/nextcloud/nextcloudpi/blob/master/changelog.md" \
-      20 70
+      --clear --yesno "Update to $( cat $VERFILE )?\n\n$CHANGELOG" \
+      15 70
     [[ $? -eq $DIALOG_OK ]] && ncp-update
 
     while true; do

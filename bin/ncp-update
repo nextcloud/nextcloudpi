@@ -17,6 +17,13 @@
     grep -qP "v\d+\.\d+\.\d+" <<< "$VER" && {       # check format
       echo "$VER" > /usr/local/etc/ncp-version
       echo "$VER" > /var/run/.ncp-latest-version
+
+      # write changelog
+      git log --graph --oneline --decorate \
+        --pretty=format:"[%D] %s" --date=short | \
+        grep 'tag: v' | \
+        sed '/HEAD ->\|origin/s|\[.*\(tag: v[0-9]\+\.[0-9]\+\.[0-9]\+\).*\]|[\1]|' | \
+        sed 's|* \[tag: |[|' > /usr/local/etc/ncp-changelog
     }
     echo -e "NextCloudPi updated to version $VER"
   }
