@@ -47,7 +47,7 @@ configure()
   local BASEDIR=$( dirname "$DBDIR_" )
   mkdir -p "$BASEDIR"
 
-  grep -q ext <( stat -fc%T "$BASEDIR" ) || { echo -e "Only ext filesystems can hold the database"; return 1; }
+  grep -q -e ext -e btrfs <( stat -fc%T "$BASEDIR" ) || { echo -e "Only ext/btrfs filesystems can hold the data directory"; return 1; }
   
   sudo -u mysql test -x "$BASEDIR" || { echo -e "ERROR: the user mysql does not have access permissions over $BASEDIR"; return 1; }
 
