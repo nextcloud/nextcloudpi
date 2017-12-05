@@ -22,7 +22,6 @@ cleanup()
   apt-get autoremove
   apt-get clean
   rm /var/lib/apt/lists/* -r
-  rm -f /home/pi/.bash_history
   rm -f /etc/udev/rules.d/90-qemu.rules
 }
 
