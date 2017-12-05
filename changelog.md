@@ -1,9 +1,11 @@
 
-[v0.41.5](https://github.com/nextcloud/nextcloudpi/commit/b174061) (2017-12-05) nc-database: accept BTRFS filesystems
+[v0.41.6](https://github.com/nextcloud/nextcloudpi/commit/c7c709a) (2017-12-05) ncp-config: show changelog on updates
+
+[v0.41.5](https://github.com/nextcloud/nextcloudpi/commit/0fe56d8) (2017-12-05) nc-database: accept BTRFS filesystems
 
 [v0.41.4 ](https://github.com/nextcloud/nextcloudpi/commit/231ede0) (2017-11-29) nc-limits: added PHP threads and Redis mem limits
 
-[v0.41.3](https://github.com/nextcloud/nextcloudpi/commit/1014845) (2017-12-05) SSH: enhance security
+[v0.41.3 ](https://github.com/nextcloud/nextcloudpi/commit/1014845) (2017-12-05) SSH: enhance security
 
 [v0.41.2 ](https://github.com/nextcloud/nextcloudpi/commit/a2c5de7) (2017-12-04) nc-automount: check for USBdrive labeled drive case
 
