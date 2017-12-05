@@ -23,7 +23,6 @@ cleanup()
   apt-get autoremove -y
   apt-get clean
   rm /var/lib/apt/lists/* -r
-  rm -f /home/pi/.bash_history
 
   # restore expand filesystem on first boot
   cat > /etc/init.d/resize2fs_once <<'EOF'

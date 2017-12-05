@@ -22,7 +22,6 @@ cleanup()
   apt-get autoremove
   apt-get clean
   rm /var/lib/apt/lists/* -r
-  rm -f /home/pi/.bash_history
 
   systemctl disable ssh
 }
