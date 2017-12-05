@@ -39,7 +39,7 @@ configure()
   id "$USER_" &>/dev/null || useradd "$USER_"
   echo -e "$PASS_\n$CONFIRM_" | passwd "$USER_" || return 1
 
-  # Check for insecure default password ( taken from old jessie method )
+  # Check for insecure default pi password ( taken from old jessie method )
   local SHADOW="$( grep -E '^pi:' /etc/shadow )"
   test -n "${SHADOW}" && {
     local SALT=$(echo "${SHADOW}" | sed -n 's/pi:\$6\$//;s/\$.*//p')
@@ -54,7 +54,23 @@ configure()
     }
   }
 
+  # Check for insecure default ncp password ( taken from old jessie method )
+  local SHADOW="$( grep -E '^ncp:' /etc/shadow )"
+  test -n "${SHADOW}" && {
+    local SALT=$(echo "${SHADOW}" | sed -n 's/ncp:\$6\$//;s/\$.*//p')
+    local HASH=$(mkpasswd -msha-512 ownyourbits "$SALT")
+
+    grep -q "${HASH}" <<< "${SHADOW}" && {
+      systemctl stop    ssh
+      systemctl disable ssh
+      echo "The user ncp is using the default password. Refusing to activate SSH"
+      echo "SSH disabled"
+      return 1
+    }
+  }
+
   # Enable
+  chage -d 0 "$USER_"
   systemctl enable ssh
   systemctl start  ssh
   echo "SSH enabled"

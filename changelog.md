@@ -1,5 +1,7 @@
 
-[v0.41.2](https://github.com/nextcloud/nextcloudpi/commit/f4dd242) (2017-12-04) nc-automount: check for USBdrive labeled drive case
+[v0.41.3](https://github.com/nextcloud/nextcloudpi/commit/bf1ff0e) (2017-12-05) SSH: enhance security
+
+[v0.41.2 ](https://github.com/nextcloud/nextcloudpi/commit/a2c5de7) (2017-12-04) nc-automount: check for USBdrive labeled drive case
 
 [v0.41.1 ](https://github.com/nextcloud/nextcloudpi/commit/9ef8bc1) (2017-12-04) nc-info: warn of long operation
 
