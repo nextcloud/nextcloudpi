@@ -88,7 +88,7 @@ configure()
   service noip2 stop
   [[ $ACTIVE_ != "yes" ]] && { update-rc.d noip2 disable; return 0; }
 
-  ping  -W 2 -w 1 -q github.com &>/dev/null || { echo "No internet connectivity"; return 1; echo "noip DDNS disabled"; }
+  ping  -W 2 -w 1 -q google.com &>/dev/null || { echo "No internet connectivity"; return 1; echo "noip DDNS disabled"; }
 
   local IF=$( ip -br l | awk '{ if ( $2 == "UP" ) print $1 }' | head -1 )
   [[ "$IF" != "" ]] && IF="-I $IF"

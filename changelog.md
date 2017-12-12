@@ -1,5 +1,7 @@
 
-[v0.41.6](https://github.com/nextcloud/nextcloudpi/commit/c7c709a) (2017-12-05) ncp-config: show changelog on updates
+[v0.41.7](https://github.com/nextcloud/nextcloudpi/commit/6bb9c0c) (2017-12-12) replace ping to github.com to google.com
+
+[v0.41.6](https://github.com/nextcloud/nextcloudpi/commit/4f63c34) (2017-12-05) ncp-config: show changelog on updates
 
 [v0.41.5](https://github.com/nextcloud/nextcloudpi/commit/0fe56d8) (2017-12-05) nc-database: accept BTRFS filesystems
 
