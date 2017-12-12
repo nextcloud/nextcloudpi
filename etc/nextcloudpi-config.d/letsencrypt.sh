@@ -57,7 +57,7 @@ EOF
 # tested with git version v0.11.0-71-g018a304
 configure() 
 {
-  ping  -W 2 -w 1 -q github.com &>/dev/null || { echo "No internet connectivity"; return 1; }
+  ping  -W 2 -w 1 -q google.com &>/dev/null || { echo "No internet connectivity"; return 1; }
 
   local DOMAIN_LOWERCASE="${DOMAIN_,,}"
 
