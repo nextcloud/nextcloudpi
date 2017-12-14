@@ -45,7 +45,7 @@ close_summary
 ##
 
 open_summary "Nextcloud configuration"
-sudo -u www-data /var/www/nextcloud/occ config:list system
+sudo -u www-data php /var/www/nextcloud/occ config:list system
 close_summary
 
 ##
