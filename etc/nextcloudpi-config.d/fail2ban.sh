@@ -77,7 +77,7 @@ configure()
   }
 
   local NCLOG="/var/www/nextcloud/data/nextcloud.log"
-  local NCLOG1="$( sudo -u www-data /var/www/nextcloud/occ config:system:get logfile )"
+  local NCLOG1="$( sudo -u www-data php /var/www/nextcloud/occ config:system:get logfile )"
 
   [[ "$NCLOG1" != "" ]] && NCLOG="$NCLOG1"
 
