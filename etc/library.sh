@@ -151,10 +151,11 @@ function cleanup_script()
     cd /usr/local/etc/nextcloudpi-config.d/ || return 1
     unset cleanup
     source ./"$SCRIPT"
-    [[ $( type -t cleanup ) == function ]] && {
+    if [[ $( type -t cleanup ) == function ]]; then
       cleanup
       return $?
-    }
+    fi
+    return 0
   )
 }
 
