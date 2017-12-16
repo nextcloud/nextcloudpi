@@ -1,9 +1,11 @@
 
-[v0.41.10](https://github.com/nextcloud/nextcloudpi/commit/72785d5) (2017-12-16) dnsmasq: added interface
+[v0.41.11](https://github.com/nextcloud/nextcloudpi/commit/17af1ab) (2017-12-16) security hardening
 
-[v0.41.9](https://github.com/nextcloud/nextcloudpi/commit/e4e205f) (2017-12-14) fix occ command without execute permissions
+[v0.41.10](https://github.com/nextcloud/nextcloudpi/commit/330df57) (2017-12-16) dnsmasq: added interface
 
-[v0.41.8](https://github.com/nextcloud/nextcloudpi/commit/26d6f66) (2017-12-13) Fixed configuration interoperability between nc-datadit and fail2ban. (#323)
+[v0.41.9 ](https://github.com/nextcloud/nextcloudpi/commit/e4e205f) (2017-12-14) fix occ command without execute permissions
+
+[v0.41.8 ](https://github.com/nextcloud/nextcloudpi/commit/26d6f66) (2017-12-13) Fixed configuration interoperability between nc-datadit and fail2ban. (#323)
 
 [v0.41.7 ](https://github.com/nextcloud/nextcloudpi/commit/ce92a4f) (2017-12-12) replace ping to github.com to google.com
 

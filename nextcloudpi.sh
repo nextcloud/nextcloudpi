@@ -199,6 +199,34 @@ EOF
 
     ## tag image
     echo "NextCloudPi_$( date  "+%m-%d-%y" )" > /usr/local/etc/ncp-baseimage
+
+    ## SSH hardening
+    sed -i 's|^#AllowTcpForwarding .*|AllowTcpForwarding no|'     /etc/ssh/sshd_config
+    sed -i 's|^#ClientAliveCountMax .*|ClientAliveCountMax 2|'    /etc/ssh/sshd_config
+    sed -i 's|^#MaxAuthTries .*|MaxAuthTries 2|'                  /etc/ssh/sshd_config
+    sed -i 's|^#MaxSessions .*|MaxSessions 2|'                    /etc/ssh/sshd_config
+    sed -i 's|^#PermitRootLogin .*|PermitRootLogin no|'           /etc/ssh/sshd_config
+    sed -i 's|^#TCPKeepAlive .*|TCPKeepAlive no|'                 /etc/ssh/sshd_config
+    sed -i 's|^#X11Forwarding .*|X11Forwarding no|'               /etc/ssh/sshd_config
+    sed -i 's|^#AllowAgentForwarding .*|AllowAgentForwarding no|' /etc/ssh/sshd_config
+
+    ## kernel hardening
+    cat >> /etc/sysctl.conf <<EOF
+sysctl fs.protected_hardlinks=1
+sysctl fs.protected_symlinks=1
+sysctl kernel.core_uses_pid=1
+sysctl kernel.dmesg_restrict=1
+sysctl kernel.kptr_restrict=2
+sysctl kernel.sysrq=0
+sysctl net.ipv4.conf.all.accept_redirects=0
+sysctl net.ipv4.conf.all.log_martians=1
+sysctl net.ipv4.conf.all.rp_filter=1
+sysctl net.ipv4.conf.all.send_redirects=0
+sysctl net.ipv4.conf.default.accept_redirects=0
+sysctl net.ipv4.conf.default.accept_source_route=0
+sysctl net.ipv4.conf.default.log_martians=1
+sysctl net.ipv4.tcp_timestamps=0
+EOF
   fi
 }
 

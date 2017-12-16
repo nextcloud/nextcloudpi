@@ -37,7 +37,7 @@ install()
 
     # Randomize mariaDB password
     # Suggested by @enoch85 and taken from the nextcloud vm ( https://github.com/nextcloud/vm/blob/master/lib.sh#L46 )
-    DBPASSWD=$(tr -dc "a-zA-Z0-9@#*=" < /dev/urandom | fold -w "$(shuf -i 30-35 -n 1)" | head -n 1)
+    DBPASSWD=$( openssl rand -base64 32 )
     echo -e "[client]\npassword=$DBPASSWD" > /root/.my.cnf
     chmod 600 /root/.my.cnf
 
