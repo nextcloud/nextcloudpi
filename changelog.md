@@ -1,9 +1,15 @@
 
-[v0.41.7](https://github.com/nextcloud/nextcloudpi/commit/6bb9c0c) (2017-12-12) replace ping to github.com to google.com
+[v0.41.10](https://github.com/nextcloud/nextcloudpi/commit/72785d5) (2017-12-16) dnsmasq: added interface
 
-[v0.41.6](https://github.com/nextcloud/nextcloudpi/commit/4f63c34) (2017-12-05) ncp-config: show changelog on updates
+[v0.41.9](https://github.com/nextcloud/nextcloudpi/commit/e4e205f) (2017-12-14) fix occ command without execute permissions
 
-[v0.41.5](https://github.com/nextcloud/nextcloudpi/commit/0fe56d8) (2017-12-05) nc-database: accept BTRFS filesystems
+[v0.41.8](https://github.com/nextcloud/nextcloudpi/commit/26d6f66) (2017-12-13) Fixed configuration interoperability between nc-datadit and fail2ban. (#323)
+
+[v0.41.7 ](https://github.com/nextcloud/nextcloudpi/commit/ce92a4f) (2017-12-12) replace ping to github.com to google.com
+
+[v0.41.6 ](https://github.com/nextcloud/nextcloudpi/commit/4f63c34) (2017-12-05) ncp-config: show changelog on updates
+
+[v0.41.5 ](https://github.com/nextcloud/nextcloudpi/commit/0fe56d8) (2017-12-05) nc-database: accept BTRFS filesystems
 
 [v0.41.4 ](https://github.com/nextcloud/nextcloudpi/commit/231ede0) (2017-11-29) nc-limits: added PHP threads and Redis mem limits
 
