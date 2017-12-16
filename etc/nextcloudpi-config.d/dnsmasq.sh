@@ -19,7 +19,8 @@ DNSSERVER_=8.8.8.8
 CACHESIZE_=150
 DESCRIPTION="DNS server with cache"
 
-INFO="Remember to point your PC and devices DNS to your Raspberry Pi IP" 
+INFO="Remember to point your PC and devices DNS or
+you router DNS to your Raspberry Pi IP" 
 
 install()
 {
@@ -65,6 +66,7 @@ configure()
   [[ "$IP" == "" ]] && { echo "could not detect IP"; return 1; }
   
   cat > /etc/dnsmasq.conf <<EOF
+interface=$IFACE
 domain-needed         # Never forward plain names (without a dot or domain part)
 bogus-priv            # Never forward addresses in the non-routed address spaces.
 no-poll               # Don't poll for changes in /etc/resolv.conf
