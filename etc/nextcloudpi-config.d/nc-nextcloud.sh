@@ -44,6 +44,7 @@ install()
   $APTINSTALL -o "Dpkg::Options::=--force-confold" php-smbclient 
   $APTINSTALL lbzip2 iputils-ping
 
+  # POSTFIX
   [[ "$ARMBIANBUILD" != 1 ]] && {
     $APTINSTALL postfix
   } || {
@@ -53,15 +54,20 @@ install()
     sed -i '/Package: postfix/{n;d}'                           /var/lib/dpkg/status
     sed -i '/Package: postfix/a;Status: install ok installed|' /var/lib/dpkg/status
   }
+  sed -i 's|^smtpd_banner .*|smtpd_banner = $myhostname ESMTP|'    /etc/postfix/main.cf
+  sed -i 's|^disable_vrfy_command .*|disable_vrfy_command = yes|'  /etc/postfix/main.cf
  
   # REDIS
   $APTINSTALL redis-server php7.0-redis
 
   local REDIS_CONF=/etc/redis/redis.conf
+  local REDISPASS=$( openssl rand -base64 32 )
   sed -i "s|# unixsocket .*|unixsocket /var/run/redis/redis.sock|" $REDIS_CONF
   sed -i "s|# unixsocketperm .*|unixsocketperm 770|"               $REDIS_CONF
+  sed -i "s|# requirepass .*|requirepass $REDISPASS|"              $REDIS_CONF
+  sed -i 's|# rename-command CONFIG ""|rename-command CONFIG ""|'  $REDIS_CONF
   sed -i "s|^port.*|port 0|"                                       $REDIS_CONF
-  echo "maxmemory ${REDIS_MEM}" >> $REDIS_CONF
+  echo "maxmemory $REDIS_MEM" >> $REDIS_CONF
   echo 'vm.overcommit_memory = 1' >> /etc/sysctl.conf
 
   usermod -a -G redis www-data

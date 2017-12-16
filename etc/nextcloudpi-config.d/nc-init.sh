@@ -30,6 +30,10 @@ configure()
 {
   echo "Setting up a clean Nextcloud instance... wait until message 'NC init done'"
 
+  # checks
+  local REDISPASS=$( grep "^requirepass" /etc/redis/redis.conf  | cut -d' ' -f2 )
+  [[ "$REDISPASS" == "" ]] && { echo "redis server without a password. Abort"; return 1; }
+
   ## RE-CREATE DATABASE TABLE 
 
   echo "Setting up database..."
@@ -91,14 +95,15 @@ EOF
 
   # redis cache
   sed -i '$d' config/config.php
-  cat >> config/config.php <<'EOF'
-  'memcache.local' => '\OC\Memcache\Redis',
-  'memcache.locking' => '\OC\Memcache\Redis',
+  cat >> config/config.php <<EOF
+  'memcache.local' => '\\OC\\Memcache\\Redis',
+  'memcache.locking' => '\\OC\\Memcache\\Redis',
   'redis' =>
   array (
     'host' => '/var/run/redis/redis.sock',
     'port' => 0,
     'timeout' => 0.0,
+    'password' => '$REDISPASS',
   ),
 );
 EOF

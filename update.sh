@@ -115,155 +115,6 @@ done
 # only for image builds
 [[ ! -f /.ncp-image ]] && {
 
-  # log adjustment for wizard
-  test -f /home/www/ncp-launcher.sh && \
-    cat > /home/www/ncp-launcher.sh <<'EOF'
-#!/bin/bash
-DIR=/usr/local/etc/nextcloudpi-config.d
-test -f $DIR/$1 || { echo "File not found"; exit 1; }
-source /usr/local/etc/library.sh
-cd $DIR
-touch /run/ncp.log
-chmod 640 /run/ncp.log
-chown root:www-data /run/ncp.log
-launch_script $1 &> /run/ncp.log
-RET=$?
-
-# clean log for the next PHP backend call to start clean,
-# but wait until everything from current execution is read
-sleep 0.5 && echo "" > /run/ncp.log
-
-exit $RET
-EOF
-
-  # 2 days to avoid very big backups requests to timeout
-  test -f /etc/apache2/sites-available/ncp.conf && {
-    grep -q TimeOut /etc/apache2/sites-available/ncp.conf || \
-      sed -i '/SSLCertificateKeyFile/aTimeOut 172800' /etc/apache2/sites-available/ncp.conf
-  } || echo "Warning. File /etc/apache2/sites-available/ncp.conf not found on your ncp."
-
-  # relocate noip2 config
-  mkdir -p /usr/local/etc/noip2
-
-  # redis
-  REDIS_CONF=/etc/redis/redis.conf
-  sysctl vm.overcommit_memory=1 &>/dev/null
-  grep -q APCu /var/www/nextcloud/config/config.php && {
-    echo "installing redis..."
-    apt-get update
-    apt-get install -y --no-install-recommends redis-server php7.0-redis
-
-    sed -i '/memcache/d' /var/www/nextcloud/config/config.php
-    sed -i '$d'          /var/www/nextcloud/config/config.php
-
-    cat >> /var/www/nextcloud/config/config.php <<'EOF'
-  'memcache.local' => '\OC\Memcache\Redis',
-  'memcache.locking' => '\OC\Memcache\Redis',
-  'redis' =>
-  array (
-    'host' => '/var/run/redis/redis.sock',
-    'port' => 0,
-    'timeout' => 0.0,
-  ),
-);
-EOF
-
-  REDIS_MEM=3gb
-  sed -i "s|# unixsocket .*|unixsocket /var/run/redis/redis.sock|" $REDIS_CONF
-  sed -i "s|# unixsocketperm .*|unixsocketperm 770|"               $REDIS_CONF
-  sed -i "s|port.*|port 0|"                                        $REDIS_CONF
-  echo "maxmemory ${REDIS_MEM}" >> $REDIS_CONF
-  echo 'vm.overcommit_memory = 1' >> /etc/sysctl.conf
-
-  sudo usermod -a -G redis www-data
-
-  systemctl restart redis-server
-  systemctl enable redis-server
-
-  # need to restart php
-  bash -c " sleep 3
-            systemctl stop php7.0-fpm
-            systemctl stop mysqld
-            sleep 0.5
-            systemctl start php7.0-fpm
-            systemctl start mysqld
-            " &>/dev/null &
-  }
-  sed -i 's|^logfile.*|logfile /var/log/redis/redis-server.log|' $REDIS_CONF
-
-  # fix redis update bug
-  grep -q sock700 $REDIS_CONF && {
-    sed -i '/unixsocket/d' $REDIS_CONF
-    echo "unixsocket /var/run/redis/redis.sock" >> $REDIS_CONF
-    echo "unixsocketperm 770"                   >> $REDIS_CONF
-    systemctl restart redis-server
-  }
-  grep -q unixsocketperm $REDIS_CONF || echo unixsocketperm 770 >> $REDIS_CONF
-
-# fix unattended
-  NUSER=$( grep USER_ /usr/local/etc/nextcloudpi-config.d/nc-notify-updates.sh | head -1 | cut -f2 -d= )
-  cat > /usr/local/bin/ncp-notify-unattended-upgrade <<EOF
-#!/bin/bash
-
-LOGFILE=/var/log/unattended-upgrades/unattended-upgrades.log
-STAMPFILE=/var/run/.ncp-notify-unattended-upgrades
-VERFILE=/usr/local/etc/ncp-version
-
-test -e "\$LOGFILE" || { echo "\$LOGFILE not found"; exit 1; }
-
-# find lines with package updates
-LINE=\$( grep "INFO Packages that will be upgraded:" "\$LOGFILE" )
-
-[[ "\$LINE" == "" ]] && { echo "no new upgrades"; exit 0; }
-
-# extract package names
-PKGS=\$( sed 's|^.*Packages that will be upgraded: ||' <<< "\$LINE" | tr '\\n' ' ' )
-
-# mark lines as read
-sed -i 's|INFO Packages that will be upgraded:|INFO Packages that will be upgraded :|' \$LOGFILE
-
-echo -e "Packages automatically upgraded: \$PKGS\\n"
-
-# notify
-sudo -u www-data php /var/www/nextcloud/occ notification:generate \
-  $NUSER "NextCloudPi Unattended Upgrades" \
-     -l "Packages automatically upgraded \$PKGS"
-EOF
-  chmod +x /usr/local/bin/ncp-notify-unattended-upgrade
-
-  # fix modsecurity uploads
-  sed -i 's|^SecRequestBodyLimit .*|#SecRequestBodyLimit 13107200|' /etc/modsecurity/modsecurity.conf
-
-  # fix ramlogs
-  [[ $( grep "^ACTIVE_" /usr/local/etc/nextcloudpi-config.d/nc-ramlogs.sh | cut -f2 -d'=' ) == "yes" ]] && {
-    mkdir -p /usr/lib/systemd/system
-    cat > /usr/lib/systemd/system/ramlogs.service <<'EOF'
-[Unit]
-Description=Populate ramlogs dir
-Requires=network.target
-Before=redis-server apache2 mysqld
-
-[Service]
-ExecStart=/bin/bash /usr/local/bin/ramlog-dirs.sh
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-    cat > /usr/local/bin/ramlog-dirs.sh <<'EOF'
-#!/bin/bash
-mkdir -p /var/log/myslq
-chown mysql /var/log/mysql
-
-mkdir -p /var/log/apache2
-chown apache2 /var/log/apache2
-
-mkdir -p /var/log/redis
-chown redis /var/log/redis
-EOF
-    systemctl enable ramlogs
-  }
-
   # fix automount in latest images
    test -f /etc/udev/rules.d/90-qemu.rules && {
      rm -f /etc/udev/rules.d/90-qemu.rules
@@ -276,6 +127,50 @@ EOF
     apt-get update 
     apt-get install -y --no-install-recommends btrfs-tools
   }
+
+  # harden security
+
+  ## harden redis
+  REDIS_CONF=/etc/redis/redis.conf
+  REDISPASS=$( grep "^requirepass" /etc/redis/redis.conf  | cut -d' ' -f2 )
+  [[ "$REDISPASS" == "" ]] && REDISPASS=$( openssl rand -base64 32 )
+  sed -i 's|# rename-command CONFIG ""|rename-command CONFIG ""|'  $REDIS_CONF
+  sed -i "s|# requirepass .*|requirepass $REDISPASS|"              $REDIS_CONF
+
+  grep -q "'password'" /var/www/nextcloud/config/config.php || \
+    sed -i "/timeout/a'password' => '$REDISPASS'," /var/www/nextcloud/config/config.php
+
+  ## harden postfix
+  sed -i 's|^smtpd_banner .*|smtpd_banner = $myhostname ESMTP|'    /etc/postfix/main.cf
+  sed -i 's|^disable_vrfy_command .*|disable_vrfy_command = yes|'  /etc/postfix/main.cf
+
+  ## harden SSH
+  sed -i 's|^#AllowTcpForwarding .*|AllowTcpForwarding no|'     /etc/ssh/sshd_config
+  sed -i 's|^#ClientAliveCountMax .*|ClientAliveCountMax 2|'    /etc/ssh/sshd_config
+  sed -i 's|^#MaxAuthTries .*|MaxAuthTries 2|'                  /etc/ssh/sshd_config
+  sed -i 's|^#MaxSessions .*|MaxSessions 2|'                    /etc/ssh/sshd_config
+  sed -i 's|^#PermitRootLogin .*|PermitRootLogin no|'           /etc/ssh/sshd_config
+  sed -i 's|^#TCPKeepAlive .*|TCPKeepAlive no|'                 /etc/ssh/sshd_config
+  sed -i 's|^#X11Forwarding .*|X11Forwarding no|'               /etc/ssh/sshd_config
+  sed -i 's|^#AllowAgentForwarding .*|AllowAgentForwarding no|' /etc/ssh/sshd_config
+
+  ## harden kernel
+  grep -q protected_hardlinks=1 /etc/sysctl.conf || cat >> /etc/sysctl.conf <<EOF
+fs.protected_hardlinks=1
+fs.protected_symlinks=1
+kernel.core_uses_pid=1
+kernel.dmesg_restrict=1
+kernel.kptr_restrict=2
+kernel.sysrq=0
+net.ipv4.conf.all.accept_redirects=0
+net.ipv4.conf.all.log_martians=1
+net.ipv4.conf.all.rp_filter=1
+net.ipv4.conf.all.send_redirects=0
+net.ipv4.conf.default.accept_redirects=0
+net.ipv4.conf.default.accept_source_route=0
+net.ipv4.conf.default.log_martians=1
+net.ipv4.tcp_timestamps=0
+EOF
 }
 
 exit 0
