@@ -214,21 +214,26 @@ EOF
 
     ## kernel hardening
     cat >> /etc/sysctl.conf <<EOF
-sysctl fs.protected_hardlinks=1
-sysctl fs.protected_symlinks=1
-sysctl kernel.core_uses_pid=1
-sysctl kernel.dmesg_restrict=1
-sysctl kernel.kptr_restrict=2
-sysctl kernel.sysrq=0
-sysctl net.ipv4.conf.all.accept_redirects=0
-sysctl net.ipv4.conf.all.log_martians=1
-sysctl net.ipv4.conf.all.rp_filter=1
-sysctl net.ipv4.conf.all.send_redirects=0
-sysctl net.ipv4.conf.default.accept_redirects=0
-sysctl net.ipv4.conf.default.accept_source_route=0
-sysctl net.ipv4.conf.default.log_martians=1
-sysctl net.ipv4.tcp_timestamps=0
+fs.protected_hardlinks=1
+fs.protected_symlinks=1
+kernel.core_uses_pid=1
+kernel.dmesg_restrict=1
+kernel.kptr_restrict=2
+kernel.sysrq=0
+net.ipv4.conf.all.accept_redirects=0
+net.ipv4.conf.all.log_martians=1
+net.ipv4.conf.all.rp_filter=1
+net.ipv4.conf.all.send_redirects=0
+net.ipv4.conf.default.accept_redirects=0
+net.ipv4.conf.default.accept_source_route=0
+net.ipv4.conf.default.log_martians=1
+net.ipv4.tcp_timestamps=0
+net.ipv6.conf.all.accept_redirects=0
+net.ipv6.conf.default.accept_redirects=0
 EOF
+
+    ## other tweaks
+    sed -i "s|^UMASK.*|UMASK           027|" /etc/login.defs
   fi
 }
 
