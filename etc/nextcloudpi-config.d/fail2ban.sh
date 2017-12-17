@@ -155,6 +155,7 @@ filter   = nextcloud
 logpath  = $NCLOG
 maxretry = $MAXRETRY_
 EOF
+  cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
   update-rc.d fail2ban defaults
   update-rc.d fail2ban enable
   service fail2ban restart

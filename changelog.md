@@ -1,5 +1,7 @@
 
-[v0.41.11](https://github.com/nextcloud/nextcloudpi/commit/17af1ab) (2017-12-16) security hardening
+[v0.41.12](https://github.com/nextcloud/nextcloudpi/commit/392ac9c) (2017-12-17) security hardening part 2
+
+[v0.41.11](https://github.com/nextcloud/nextcloudpi/commit/b817b90) (2017-12-16) security hardening
 
 [v0.41.10](https://github.com/nextcloud/nextcloudpi/commit/330df57) (2017-12-16) dnsmasq: added interface
 

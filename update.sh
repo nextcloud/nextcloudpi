@@ -147,11 +147,13 @@ done
   ## harden SSH
   sed -i 's|^#AllowTcpForwarding .*|AllowTcpForwarding no|'     /etc/ssh/sshd_config
   sed -i 's|^#ClientAliveCountMax .*|ClientAliveCountMax 2|'    /etc/ssh/sshd_config
-  sed -i 's|^#MaxAuthTries .*|MaxAuthTries 2|'                  /etc/ssh/sshd_config
+  sed -i 's|^MaxAuthTries .*|MaxAuthTries 1|'                   /etc/ssh/sshd_config
   sed -i 's|^#MaxSessions .*|MaxSessions 2|'                    /etc/ssh/sshd_config
   sed -i 's|^#PermitRootLogin .*|PermitRootLogin no|'           /etc/ssh/sshd_config
   sed -i 's|^#TCPKeepAlive .*|TCPKeepAlive no|'                 /etc/ssh/sshd_config
-  sed -i 's|^#X11Forwarding .*|X11Forwarding no|'               /etc/ssh/sshd_config
+  sed -i 's|^X11Forwarding .*|X11Forwarding no|'                /etc/ssh/sshd_config
+  sed -i 's|^#LogLevel .*|LogLevel VERBOSE|'                    /etc/ssh/sshd_config
+  sed -i 's|^#Compression .*|Compression no|'                   /etc/ssh/sshd_config
   sed -i 's|^#AllowAgentForwarding .*|AllowAgentForwarding no|' /etc/ssh/sshd_config
 
   ## harden kernel
@@ -170,6 +172,22 @@ net.ipv4.conf.default.accept_redirects=0
 net.ipv4.conf.default.accept_source_route=0
 net.ipv4.conf.default.log_martians=1
 net.ipv4.tcp_timestamps=0
+EOF
+
+  # small tweaks
+  cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
+
+  # secure mysql
+  DBPASSWD=$( grep password /root/.my.cnf | cut -d= -f2 )
+    mysql_secure_installation &>/dev/null <<EOF
+$DBPASSWD
+y
+$DBPASSWD
+$DBPASSWD
+y
+y
+y
+y
 EOF
 }
 
