@@ -124,7 +124,9 @@ EOF
 
     mysql_secure_installation <<EOF
 $DBPASSWD
-n
+y
+$DBPASSWD
+$DBPASSWD
 y
 y
 y
