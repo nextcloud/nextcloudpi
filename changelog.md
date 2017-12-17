@@ -1,5 +1,7 @@
 
-[v0.41.12](https://github.com/nextcloud/nextcloudpi/commit/392ac9c) (2017-12-17) security hardening part 2
+[v0.41.13](https://github.com/nextcloud/nextcloudpi/commit/4daac1b) (2017-12-17) security hardening part 3
+
+[v0.41.12](https://github.com/nextcloud/nextcloudpi/commit/672d233) (2017-12-17) security hardening part 2
 
 [v0.41.11](https://github.com/nextcloud/nextcloudpi/commit/b817b90) (2017-12-16) security hardening
 

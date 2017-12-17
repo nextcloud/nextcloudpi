@@ -172,10 +172,15 @@ net.ipv4.conf.default.accept_redirects=0
 net.ipv4.conf.default.accept_source_route=0
 net.ipv4.conf.default.log_martians=1
 net.ipv4.tcp_timestamps=0
+net.ipv6.conf.all.accept_redirects=0
+net.ipv6.conf.default.accept_redirects=0
 EOF
+  sysctl -p /etc/sysctl.conf
 
   # small tweaks
   cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
+  chmod go-x /usr/bin/arm-linux-gnueabihf-* &>/dev/null
+  sed -i "s|^UMASK.*|UMASK           027|" /etc/login.defs
 
   # secure mysql
   DBPASSWD=$( grep password /root/.my.cnf | cut -d= -f2 )
