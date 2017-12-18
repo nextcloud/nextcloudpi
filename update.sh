@@ -175,7 +175,7 @@ net.ipv4.tcp_timestamps=0
 net.ipv6.conf.all.accept_redirects=0
 net.ipv6.conf.default.accept_redirects=0
 EOF
-  sysctl -p /etc/sysctl.conf
+  sysctl -p /etc/sysctl.conf &>/dev/null
 
   # small tweaks
   cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local

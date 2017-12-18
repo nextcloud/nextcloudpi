@@ -1,5 +1,7 @@
 
-[v0.41.13](https://github.com/nextcloud/nextcloudpi/commit/4daac1b) (2017-12-17) security hardening part 3
+[v0.42.0](https://github.com/nextcloud/nextcloudpi/commit/9e11b7f) (2017-12-18) added UFW
+
+[v0.41.13](https://github.com/nextcloud/nextcloudpi/commit/d5e90a6) (2017-12-17) security hardening part 3
 
 [v0.41.12](https://github.com/nextcloud/nextcloudpi/commit/672d233) (2017-12-17) security hardening part 2
 
