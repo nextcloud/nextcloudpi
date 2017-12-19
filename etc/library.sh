@@ -49,8 +49,9 @@ function config()
       $DIALOG_OK)
         local RET=( $value )
         for i in $( seq 0 1 $(( ${#RET[@]} - 1 )) ); do
+          # check for invalid characters
+          grep -q "[&]" <<< "${RET[$i]}" && { echo "Invalid characters in field ${VARS[$i]}"; return 1; }
           local SEDRULE+="s|^${VARS[$i]}_=.*|${VARS[$i]}_=${RET[$i]}|;"
-          local CONFIG+="${VARS[$i]}=${RET[$i]}\n"
         done
         break
         ;;
