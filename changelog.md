@@ -1,5 +1,7 @@
 
-[v0.43.1](https://github.com/nextcloud/nextcloudpi/commit/c3205f9) (2017-12-19) ncp-config: validate input
+[v0.43.2](https://github.com/nextcloud/nextcloudpi/commit/113a1ab) (2017-12-19) UFW: prettier output
+
+[v0.43.1](https://github.com/nextcloud/nextcloudpi/commit/114ea18) (2017-12-19) ncp-config: validate input
 
 [v0.43.0 ](https://github.com/nextcloud/nextcloudpi/commit/9eeb221) (2017-12-18) added nc-audit
 

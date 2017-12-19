@@ -42,24 +42,24 @@ configure()
   systemctl enable ufw
   systemctl start ufw
 
-  echo "# web server rules"
+  echo -e "\n# web server rules"
   ufw allow $HTTP_/tcp
   ufw allow $HTTPS_/tcp
   ufw allow 4443/tcp
 
-  echo "# SSH rules"
+  echo -e "\n# SSH rules"
   ufw allow $SSH_
 
-  echo "# DNS rules"
+  echo -e "\n# DNS rules"
   ufw allow dns
 
-  echo "# SAMBA rules"
+  echo -e "\n# SAMBA rules"
   ufw allow samba
 
-  echo "# NFS rules"
+  echo -e "\n# NFS rules"
   ufw allow nfs
 
-  echo "# UFW enabled"
+  echo "UFW enabled"
 }
 
 # License
