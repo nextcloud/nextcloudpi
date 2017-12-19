@@ -1,5 +1,9 @@
 
-[v0.42.0](https://github.com/nextcloud/nextcloudpi/commit/9e11b7f) (2017-12-18) added UFW
+[v0.43.1](https://github.com/nextcloud/nextcloudpi/commit/c3205f9) (2017-12-19) ncp-config: validate input
+
+[v0.43.0 ](https://github.com/nextcloud/nextcloudpi/commit/9eeb221) (2017-12-18) added nc-audit
+
+[v0.42.0 ](https://github.com/nextcloud/nextcloudpi/commit/aaac71f) (2017-12-18) added UFW
 
 [v0.41.13](https://github.com/nextcloud/nextcloudpi/commit/d5e90a6) (2017-12-17) security hardening part 3
 
