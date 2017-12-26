@@ -77,7 +77,7 @@ configure()
     btrfs subvolume create "$DATADIR_" || return 1
   }
 
-  cp -raT "$SRCDIR" "$DATADIR_" || return 1
+  cp --reflink=auto -raT "$SRCDIR" "$DATADIR_" || return 1
  
   # tmp upload dir
   mkdir -p "$DATADIR_/tmp" 
