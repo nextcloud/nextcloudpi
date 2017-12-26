@@ -1,7 +1,9 @@
 
-[v0.43.2](https://github.com/nextcloud/nextcloudpi/commit/113a1ab) (2017-12-19) UFW: prettier output
+[v0.43.3](https://github.com/nextcloud/nextcloudpi/commit/de97104) (2017-12-26) nc-datadir: use clone on btrfs systems
 
-[v0.43.1](https://github.com/nextcloud/nextcloudpi/commit/114ea18) (2017-12-19) ncp-config: validate input
+[v0.43.2](https://github.com/nextcloud/nextcloudpi/commit/ae8d30b) (2017-12-19) UFW: prettier output
+
+[v0.43.1 ](https://github.com/nextcloud/nextcloudpi/commit/114ea18) (2017-12-19) ncp-config: validate input
 
 [v0.43.0 ](https://github.com/nextcloud/nextcloudpi/commit/9eeb221) (2017-12-18) added nc-audit
 
