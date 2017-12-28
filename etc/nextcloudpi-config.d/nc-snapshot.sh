@@ -21,48 +21,33 @@ to the next are saved. This requires the datadir to be in a BTRFS filesystem"
 
 BASEDIR=/var/www
 
+install()
+{
+  wget https://raw.githubusercontent.com/nachoparker/btrfs-snp/master/btrfs-snp -O /usr/local/bin/btrfs-snp
+  chmod +x /usr/local/bin/btrfs-snp
+}
+
 configure()
 {
-  local DATADIR
-  DATADIR=$( cd "$BASEDIR"/nextcloud; sudo -u www-data php occ config:system:get datadirectory ) || {
+  sudo -u www-data php "$BASEDIR"/nextcloud/occ maintenance:mode --on
+
+  local DATADIR MOUNTPOINT
+  DATADIR=$( sudo -u www-data php /var/www/nextcloud/occ config:system:get datadirectory ) || {
     echo -e "Error reading data directory. Is NextCloud running and configured?";
     return 1;
   }
-  local SNAPSHOT=${DATADIR}_$( date +"%F" )
 
   # file system check
-  [[ "$( stat -fc%T "$DATADIR" )" != "btrfs" ]] && {
-    echo "The datadir is not in a BTRFS filesystem"
+  MOUNTPOINT="$( stat -c "%m" "$DATADIR" )" || return 1
+  [[ "$( stat -fc%T "$MOUNTPOINT" )" != "btrfs" ]] && {
+    echo "$MOUNTPOINT is not in a BTRFS filesystem"
     return 1
   }
-  local DESTDIR="$( dirname "$DATADIR" )"
 
-  # do it
-  sudo -u www-data php "$BASEDIR"/nextcloud/occ maintenance:mode --on
-
-  [[ -d "$SNAPSHOT" ]] && {
-    btrfs subvolume delete "$SNAPSHOT" &>/dev/null
-    rm -rf "$SNAPSHOT"                 &>/dev/null
-  }
-  btrfs subvolume snapshot -r "$DATADIR" "$SNAPSHOT" || return 1
-
-  # prune older backups
-  [[ $LIMIT_ != 0 ]] && {
-
-    local SNAPS=( $( btrfs subvolume list -s --sort=gen "$DESTDIR" | awk '{ print $14 }' ) )
-    cd "$DESTDIR" || return 1
-    [[ ${#SNAPS[@]} -gt $LIMIT_ ]] && \
-      echo "Pruning old snapshots..." && \
-      for (( i=0; i < $(( ${#SNAPS[@]} - LIMIT_ )); i++ ));do 
-        btrfs subvolume delete "${SNAPS[$i]}"
-      done
-  }
+  btrfs-snp $MOUNTPOINT manual $LIMIT_ 0 ../ncp-snapshots
 
   sudo -u www-data php "$BASEDIR"/nextcloud/occ maintenance:mode --off
-  echo -e "snapshot $SNAPSHOT generated"
 }
-
-install() { :; }
 
 # License
 #
