@@ -1,5 +1,7 @@
 
-[v0.43.3](https://github.com/nextcloud/nextcloudpi/commit/de97104) (2017-12-26) nc-datadir: use clone on btrfs systems
+[v0.44.0](https://github.com/nextcloud/nextcloudpi/commit/186639f) (2017-12-28) added nc-snapshot-auto
+
+[v0.43.3 ](https://github.com/nextcloud/nextcloudpi/commit/f6ab161) (2017-12-26) nc-datadir: use clone on btrfs systems
 
 [v0.43.2](https://github.com/nextcloud/nextcloudpi/commit/ae8d30b) (2017-12-19) UFW: prettier output
 
