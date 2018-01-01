@@ -112,7 +112,7 @@ done
 
 ## BACKWARD FIXES ( for older images )
 
-# only for image builds
+# not for image builds, only live updates
 [[ ! -f /.ncp-image ]] && {
 
   # fix automount in latest images
@@ -194,7 +194,13 @@ y
 y
 y
 EOF
-}
+
+  # update btrfs-snp
+  grep -q "btrfs subvolume list" /usr/local/bin/btrfs-snp && {
+    wget https://raw.githubusercontent.com/nachoparker/btrfs-snp/master/btrfs-snp -O /usr/local/bin/btrfs-snp
+    chmod +x /usr/local/bin/btrfs-snp
+  }
+} # end - only live updates
 
 exit 0
 
