@@ -105,6 +105,11 @@ EOF
     # update fail2ban logpath
     sed -i "s|logpath  =.*|logpath  = /var/www/nextcloud/data/nextcloud.log|" /etc/fail2ban/jail.conf
 
+    # update redis credentials
+    local REDISPASS="$( grep "^requirepass" /etc/redis/redis.conf | cut -f2 -d' ' )"
+    [[ "$REDISPASS" != "" ]] && \
+      sed -i "s|'password'.*|'password' => '$REDISPASS',|" config/config.php
+
     sudo -u www-data php occ maintenance:mode --off
     sudo -u www-data php occ files:scan --all
 
