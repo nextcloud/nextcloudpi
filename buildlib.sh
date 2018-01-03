@@ -27,7 +27,7 @@ function launch_install_qemu()
   while [[ $NUM_REBOOTS != -1 ]]; do
     NUM=$(( NUM+1 ))
     IMGOUT="$BASE-stage$NUM"
-    cp -v "$IMG" "$IMGOUT" || return 1 # take a copy of the input image for processing ( append "-stage1" )
+    cp --reflink=auto -v "$IMG" "$IMGOUT" || return 1 # take a copy of the input image for processing ( append "-stage1" )
 
     pgrep qemu-system-arm &>/dev/null && { echo -e "QEMU instance already running. Abort..."; return 1; }
     launch_qemu "$IMGOUT" &
@@ -138,7 +138,8 @@ function copy_to_image()
   [ -f "$IMG" ] || { echo "no image"; return 1; }
   mkdir -p tmpmnt
   sudo mount "$IMG" -o offset="$OFFSET" tmpmnt || return 1
-  sudo cp -v "$SRC" tmpmnt/"$DST" || return 1
+  sudo cp --reflink=auto -v "$SRC" tmpmnt/"$DST" || return 1
+  sync
   sudo umount -l tmpmnt
   rmdir tmpmnt &>/dev/null
 }
@@ -183,7 +184,7 @@ function pack_image()
   local IMGNAME="$2"
   local TARNAME=$( basename $IMGNAME .img ).tar.bz2
   echo "copying $IMGOUT → $IMGNAME"
-  cp "$IMGOUT" "$IMGNAME" || return 1
+  cp --reflink=auto "$IMGOUT" "$IMGNAME" || return 1
   echo "packing $IMGNAME → $TARNAME"
   tar -I pbzip2 -cvf "$TARNAME" "$IMGNAME" &>/dev/null && \
     echo -e "$TARNAME packed successfully"
@@ -196,7 +197,7 @@ function create_torrent()
   local IMGNAME="$( basename "$IMG" .tar.bz2 )"
   local DIR="torrent/$IMGNAME"
   [[ -d "$DIR" ]] && { echo "dir $DIR already exists"; return 1; }
-  mkdir -p torrent/"$IMGNAME" && cp "$IMG" torrent/"$IMGNAME"
+  mkdir -p torrent/"$IMGNAME" && cp --reflink=auto "$IMG" torrent/"$IMGNAME"
   md5sum "$DIR"/*.bz2 > "$DIR"/md5sum
   createtorrent -a udp://tracker.opentrackr.org -p 1337 -c "NextCloudPi. Nextcloud for Raspberry Pi image" "$DIR" "$DIR".torrent
 }
