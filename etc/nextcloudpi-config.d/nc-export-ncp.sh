@@ -31,6 +31,7 @@ configure()
   done
 
   tar -cf "$DESTFILE" *
+  chmod 600 "$DESTFILE"
 
   cd $OLDPWD
   rm -rf /tmp/ncp-export
