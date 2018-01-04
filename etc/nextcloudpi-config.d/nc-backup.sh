@@ -14,82 +14,104 @@
 #
 
 
-DESTDIR_=/media/USBdrive
+DESTDIR_=/media/USBdrive/ncp-backups
 INCLUDEDATA_=no
+COMPRESS_=no
 BACKUPLIMIT_=4
 DESCRIPTION="Backup this NC instance to a file"
 
-DESTFILE="$DESTDIR_"/nextcloud-bkp_$( date +"%Y%m%d" ).tar 
+install()
+{
+  cat > /usr/local/bin/ncp-backup <<'EOF'
+#!/bin/bash
+
+DESTDIR="$1"
+INCLUDEDATA="$2"
+COMPRESS="$3"
+BACKUPLIMIT="$4"
+
+DESTFILE="$DESTDIR"/nextcloud-bkp_$( date +"%Y%m%d" ).tar 
 DBBACKUP=nextcloud-sqlbkp_$( date +"%Y%m%d" ).bak
 BASEDIR=/var/www
 
-configure()
-{
-  local DATADIR
-  DATADIR=$( cd "$BASEDIR"/nextcloud; sudo -u www-data php occ config:system:get datadirectory ) || {
-    echo -e "Error reading data directory. Is NextCloud running and configured?";
-    return 1;
-  }
-
-  echo -e "check free space..."
-  local SIZE=$( du -s "$DATADIR" |           awk '{ print $1 }' )
-  local FREE=$( df    "$DATADIR" | tail -1 | awk '{ print $4 }' )
-
-  [ $SIZE -ge $FREE ] && { 
-    echo -e "free space check failed. Need $( du -sh "$DATADIR" | awk '{ print $1 }' )";
-    return 1; 
-  }
-
-  sudo -u www-data php "$BASEDIR"/nextcloud/occ maintenance:mode --on
-
-  # delete older backups
-  [[ $BACKUPLIMIT_ != 0 ]] && {
-    local NUMBKPS=$( ls "$DESTDIR_"/nextcloud-bkp_* 2>/dev/null | wc -l )
-    [[ $NUMBKPS -ge $BACKUPLIMIT_ ]] && \
-      ls -t $DESTDIR_/nextcloud-bkp_* | tail -$(( NUMBKPS - BACKUPLIMIT_ + 1 )) | while read -r f; do
-        echo -e "clean up old backup $f"
-        rm "$f"
-      done
-  }
-
-  # database
-  cd "$BASEDIR" || return 1
-  echo -e "backup database..."
-  mysqldump -u root --single-transaction nextcloud > "$DBBACKUP"
-
-  # files
-  echo -e "backup base files..."
-  mkdir -p "$DESTDIR_"
-  tar --exclude "nextcloud/data/*/files/*" \
-      --exclude "nextcloud/data/.opcache" \
-      --exclude "nextcloud/data/{access,error,nextcloud}.log" \
-      --exclude "nextcloud/data/access.log" \
-      -cf "$DESTFILE" "$DBBACKUP" nextcloud/ \
-    || {
-          echo -e "error generating backup"
-          sudo -u www-data php "$BASEDIR"/nextcloud/occ maintenance:mode --off
-          return 1
-        }
-  rm "$DBBACKUP"
-
-  [[ "$INCLUDEDATA_" == "yes" ]] && {
-    echo -e "backup data files..."
-    tar --exclude "data/.opcache" \
-        --exclude "data/{access,error,nextcloud}.log" \
-        --exclude "data/access.log" \
-        -rf "$DESTFILE" -C "$DATADIR"/.. "$( basename "$DATADIR" )" \
-    || {
-          echo -e "error generating backup"
-          sudo -u www-data php "$BASEDIR"/nextcloud/occ maintenance:mode --off
-          return 1
-        }
-  } 
-  echo -e "backup $DESTFILE generated"
-
-  sudo -u www-data php "$BASEDIR"/nextcloud/occ maintenance:mode --off
+DATADIR=$( cd "$BASEDIR"/nextcloud; sudo -u www-data php occ config:system:get datadirectory ) || {
+  echo "Error reading data directory. Is NextCloud running and configured?";
+  exit 1;
 }
 
-install() { :; }
+echo "check free space..."
+SIZE=$( du -s "$DATADIR" |           awk '{ print $1 }' )
+FREE=$( df    "$DATADIR" | tail -1 | awk '{ print $4 }' )
+
+[ $SIZE -ge $FREE ] && { 
+  echo "free space check failed. Need $( du -sh "$DATADIR" | awk '{ print $1 }' )";
+  exit 1; 
+}
+
+# delete older backups
+[[ $BACKUPLIMIT != 0 ]] && {
+  NUMBKPS=$( ls "$DESTDIR"/nextcloud-bkp_* 2>/dev/null | wc -l )
+  [[ $NUMBKPS -ge $BACKUPLIMIT ]] && \
+    ls -t $DESTDIR/nextcloud-bkp_* | tail -$(( NUMBKPS - BACKUPLIMIT + 1 )) | while read -r f; do
+      echo "clean up old backup $f"
+      rm "$f"
+    done
+}
+
+# database
+cd "$BASEDIR" || exit 1
+echo "backup database..."
+mysqldump -u root --single-transaction nextcloud > "$DBBACKUP"
+
+# files
+echo "backup base files..."
+mkdir -p "$DESTDIR"
+tar --exclude "nextcloud/data/*/files/*" \
+    --exclude "nextcloud/data/.opcache" \
+    --exclude "nextcloud/data/{access,error,nextcloud}.log" \
+    --exclude "nextcloud/data/access.log" \
+    -cf "$DESTFILE" "$DBBACKUP" nextcloud/ \
+  || {
+        echo "error generating backup"
+        exit 1
+      }
+rm "$DBBACKUP"
+
+[[ "$INCLUDEDATA" == "yes" ]] && {
+  echo "backup data files..."
+  tar --exclude "data/.opcache" \
+      --exclude "data/{access,error,nextcloud}.log" \
+      --exclude "data/access.log" \
+      -rf "$DESTFILE" -C "$DATADIR"/.. "$( basename "$DATADIR" )" \
+  || {
+        echo "error generating backup"
+        exit 1
+      }
+} 
+
+[[ "$COMPRESS" == "yes" ]] && {
+  echo "compressing backup file..."
+  tar -czf "${DESTFILE}.gz" -C "$( dirname "$DESTFILE" )" "$( basename "$DESTFILE" )"
+  rm "$DESTFILE"
+  DESTFILE="${DESTFILE}.gz"
+}
+
+echo "backup $DESTFILE generated"
+EOF
+  chmod +x /usr/local/bin/ncp-backup
+}
+
+configure()
+{
+  sudo -u www-data php /var/www/nextcloud/occ maintenance:mode --on
+
+  ncp-backup "$DESTDIR_" "$INCLUDEDATA_" "$COMPRESS_" "$BACKUPLIMIT_"
+  local RET=$?
+
+  sudo -u www-data php /var/www/nextcloud/occ maintenance:mode --off
+
+  return $RET
+}
 
 # License
 #
