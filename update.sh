@@ -200,6 +200,12 @@ EOF
     wget https://raw.githubusercontent.com/nachoparker/btrfs-snp/master/btrfs-snp -O /usr/local/bin/btrfs-snp
     chmod +x /usr/local/bin/btrfs-snp
   }
+
+  # update ncp-backup
+  cd /usr/local/etc/nextcloudpi-config.d &>/dev/null
+  install_script nc-backup.sh
+  cd - &>/dev/null
+
 } # end - only live updates
 
 exit 0
