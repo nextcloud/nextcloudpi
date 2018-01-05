@@ -1,5 +1,7 @@
 
-[v0.44.5](https://github.com/nextcloud/nextcloudpi/commit/0ab0c5a) (2018-01-04) nc-backup: compress backups and refactoring
+[v0.44.6](https://github.com/nextcloud/nextcloudpi/commit/1b20f3d) (2018-01-05) nc-restore: restore compressed backups
+
+[v0.44.5](https://github.com/nextcloud/nextcloudpi/commit/10fd204) (2018-01-04) nc-backup: compress backups and refactoring
 
 [v0.44.4 ](https://github.com/nextcloud/nextcloudpi/commit/56576da) (2018-01-03) nc-restore: update redis password
 
