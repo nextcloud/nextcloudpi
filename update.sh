@@ -206,6 +206,11 @@ EOF
   install_script nc-backup.sh
   cd - &>/dev/null
 
+  # refresh nc-backup-auto
+  cd /usr/local/etc/nextcloudpi-config.d &>/dev/null
+  grep -q '^ACTIVE_=yes$' nc-backup-auto.sh && activate_script nc-backup-auto.sh 
+  cd - &>/dev/null
+
 } # end - only live updates
 
 exit 0
