@@ -25,10 +25,10 @@ install()
   cat > /usr/local/bin/ncp-backup <<'EOF'
 #!/bin/bash
 
-DESTDIR="$1"
-INCLUDEDATA="$2"
-COMPRESS="$3"
-BACKUPLIMIT="$4"
+DESTDIR="${1:-/media/USBdrive/ncp-backups}"
+INCLUDEDATA="${2:-no}"
+COMPRESS="${3:-no}"
+BACKUPLIMIT="${4:-4}"
 
 DESTFILE="$DESTDIR"/nextcloud-bkp_$( date +"%Y%m%d" ).tar 
 DBBACKUP=nextcloud-sqlbkp_$( date +"%Y%m%d" ).bak
