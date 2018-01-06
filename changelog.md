@@ -1,13 +1,17 @@
 
-[v0.44.6](https://github.com/nextcloud/nextcloudpi/commit/1b20f3d) (2018-01-05) nc-restore: restore compressed backups
+[v0.44.8](https://github.com/nextcloud/nextcloudpi/commit/e6fe1b6) (2018-01-06) nc-restore: restore to a btrfs subvolume
 
-[v0.44.5](https://github.com/nextcloud/nextcloudpi/commit/10fd204) (2018-01-04) nc-backup: compress backups and refactoring
+[v0.44.7 ](https://github.com/nextcloud/nextcloudpi/commit/50513f6) (2018-01-06) nc-backup: make binary work standalone
+
+[v0.44.6](https://github.com/nextcloud/nextcloudpi/commit/a4f27a2) (2018-01-05) nc-restore: restore compressed backups
+
+[v0.44.5 ](https://github.com/nextcloud/nextcloudpi/commit/10fd204) (2018-01-04) nc-backup: compress backups and refactoring
 
 [v0.44.4 ](https://github.com/nextcloud/nextcloudpi/commit/56576da) (2018-01-03) nc-restore: update redis password
 
 [v0.44.3 ](https://github.com/nextcloud/nextcloudpi/commit/2a91f86) (2018-01-03) nc-export: protect file from read
 
-[v0.44.2](https://github.com/nextcloud/nextcloudpi/commit/9a18925) (2018-01-01) nc-snapshot: update btrfs-snp
+[v0.44.2 ](https://github.com/nextcloud/nextcloudpi/commit/9a18925) (2018-01-01) nc-snapshot: update btrfs-snp
 
 [v0.44.1 ](https://github.com/nextcloud/nextcloudpi/commit/5a80299) (2017-12-28) nc-snapshot: use btrfs-snp
 

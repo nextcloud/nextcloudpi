@@ -95,11 +95,18 @@ EOF
 
     [[ -e "$DATADIR" ]] && { 
       echo "backing up existing $DATADIR"
-      mv "$DATADIR" "$DATADIR-$( date "+%m-%d-%y" )" 
+      mv "$DATADIR" "$DATADIR-$( date "+%m-%d-%y" )" || return 1
     }
 
-    mkdir -p "$( dirname "$DATADIR" )"
-    mv "$TMPDIR/$( basename "$DATADIR" )" "$DATADIR"
+    mkdir -p "$DATADIR"
+    [[ "$( stat -fc%T "$DATADIR" )" == "btrfs" ]] && {
+      rmdir "$DATADIR"                  || return 1
+      btrfs subvolume create "$DATADIR" || return 1
+    }
+    chown www-data:www-data "$DATADIR"
+    local TMPDATA="$TMPDIR/$( basename "$DATADIR" )"
+    mv "$TMPDATA"/* "$TMPDATA"/.[!.]* "$DATADIR" || return 1
+    rmdir "$TMPDATA"                             || return 1
 
     sudo -u www-data php occ maintenance:mode --off
 
