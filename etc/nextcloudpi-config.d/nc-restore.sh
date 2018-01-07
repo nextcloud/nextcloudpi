@@ -39,9 +39,10 @@ configure()
   rm -rf "$TMPDIR" && mkdir -p "$TMPDIR"
 
   # EXTRACT FILES
-  [[ "$BACKUPFILE_" =~ ".tar.gz" ]] && {
+  [[ "$BACKUPFILE_" =~ ".tar.gz" ]] && local COMPRESSED=1 || local COMPRESSED=0
+  [[ "$COMPRESSED" == "1" ]] && {
     echo "decompressing backup file $BACKUPFILE_..."
-    tar -xzf "$BACKUPFILE_" -C "$TMPDIR"      || return 1
+    tar -xzf "$BACKUPFILE_" -C "$TMPDIR" || return 1
     BACKUPFILE_="$( ls "$TMPDIR"/*.tar 2>/dev/null )"
     [[ -f "$BACKUPFILE_" ]] || { echo "$BACKUPFILE_ not found"; return 1; }
   }
@@ -86,7 +87,8 @@ EOF
 
   ### INCLUDEDATA=yes situation
 
-  if [[ $( ls "$TMPDIR" | wc -l ) == 2 ]]; then
+  local NUMFILES=$(( 2 + COMPRESSED ))
+  if [[ $( ls "$TMPDIR" | wc -l ) -eq $NUMFILES ]]; then
 
     local DATADIR=$( grep datadirectory /var/www/nextcloud/config/config.php | awk '{ print $3 }' | grep -oP "[^']*[^']" | head -1 ) 
     [[ "$DATADIR" == "" ]] && { echo "Error reading data directory"; return 1; }
@@ -138,6 +140,9 @@ EOF
   # update fail2ban logpath
   sed -i "s|logpath  =.*|logpath  = $DATADIR/nextcloud.log|" /etc/fail2ban/jail.conf
   pgrep fail2ban &>/dev/null && service fail2ban restart
+
+  # refresh nextcloud trusted domains
+  bash /usr/local/bin/nextcloud-domain.sh
 
   rm -r "$TMPDIR"
 }

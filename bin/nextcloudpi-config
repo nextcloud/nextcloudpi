@@ -42,7 +42,7 @@ function nextcloud-config()
       local LIST=()
       for item in $CONFDIR/*.sh; do
         DESC=$( grep "DESCRIPTION=" "$item" | sed 's|^DESCRIPTION="||;s|"$||' )
-        is_active_script "$item" && local ON="✓" || local ON=" "
+        is_active_script "$item" &>/dev/null && local ON="✓" || local ON=" "
         LIST+=( "$ON $( basename "$item" .sh )" "$DESC" )
       done
 
