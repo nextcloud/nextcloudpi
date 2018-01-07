@@ -1,9 +1,11 @@
 
-[v0.44.8](https://github.com/nextcloud/nextcloudpi/commit/e6fe1b6) (2018-01-06) nc-restore: restore to a btrfs subvolume
+[v0.44.9](https://github.com/nextcloud/nextcloudpi/commit/e37978b) (2018-01-07) nc-restore: fix bug detecting data
+
+[v0.44.8](https://github.com/nextcloud/nextcloudpi/commit/c42993d) (2018-01-06) nc-restore: restore to a btrfs subvolume
 
 [v0.44.7 ](https://github.com/nextcloud/nextcloudpi/commit/50513f6) (2018-01-06) nc-backup: make binary work standalone
 
-[v0.44.6](https://github.com/nextcloud/nextcloudpi/commit/a4f27a2) (2018-01-05) nc-restore: restore compressed backups
+[v0.44.6 ](https://github.com/nextcloud/nextcloudpi/commit/a4f27a2) (2018-01-05) nc-restore: restore compressed backups
 
 [v0.44.5 ](https://github.com/nextcloud/nextcloudpi/commit/10fd204) (2018-01-04) nc-backup: compress backups and refactoring
 

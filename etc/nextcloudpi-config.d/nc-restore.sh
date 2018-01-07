@@ -86,7 +86,7 @@ EOF
 
   ### INCLUDEDATA=yes situation
 
-  if [[ $( ls "$TMPDIR" | wc -l ) == 3 ]]; then
+  if [[ $( ls "$TMPDIR" | wc -l ) == 2 ]]; then
 
     local DATADIR=$( grep datadirectory /var/www/nextcloud/config/config.php | awk '{ print $3 }' | grep -oP "[^']*[^']" | head -1 ) 
     [[ "$DATADIR" == "" ]] && { echo "Error reading data directory"; return 1; }
