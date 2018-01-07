@@ -50,6 +50,12 @@ configure()
   echo "extracting backup file $BACKUPFILE_..."
   tar -xf "$BACKUPFILE_" -C "$TMPDIR" || return 1
 
+  ## SANITY CHECKS
+  [[ -d "$TMPDIR"/nextcloud ]] && [[ -f "$( ls "$TMPDIR"/nextcloud-sqlbkp_*.bak 2>/dev/null )" ]] || {
+    echo "invalid backup file. Abort"
+    return 1
+  }
+
   ## RESTORE FILES
 
   echo "restore files..."
