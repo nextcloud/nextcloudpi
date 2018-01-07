@@ -1,7 +1,9 @@
 
-[v0.44.9](https://github.com/nextcloud/nextcloudpi/commit/e37978b) (2018-01-07) nc-restore: fix bug detecting data
+[v0.44.10](https://github.com/nextcloud/nextcloudpi/commit/b1db925) (2018-01-07) nc-restore: refresh trusted domains
 
-[v0.44.8](https://github.com/nextcloud/nextcloudpi/commit/c42993d) (2018-01-06) nc-restore: restore to a btrfs subvolume
+[v0.44.9](https://github.com/nextcloud/nextcloudpi/commit/7dce423) (2018-01-07) nc-restore: fix bug detecting data
+
+[v0.44.8 ](https://github.com/nextcloud/nextcloudpi/commit/c42993d) (2018-01-06) nc-restore: restore to a btrfs subvolume
 
 [v0.44.7 ](https://github.com/nextcloud/nextcloudpi/commit/50513f6) (2018-01-06) nc-backup: make binary work standalone
 
