@@ -31,8 +31,8 @@ configure()
   }
 
   grep -q "Logs in RAM" /etc/fstab || cat >> /etc/fstab <<EOF
-tmpfs /var/log tmpfs defaults,noatime,mode=1777 0 0 # Logs in RAM
-tmpfs /tmp     tmpfs defaults,noatime,mode=1777 0 0 # /tmp in RAM
+tmpfs /var/log tmpfs defaults,noatime,mode=1777,size=100M 0 0 # Logs in RAM
+tmpfs /tmp     tmpfs defaults,noatime,mode=1777           0 0 # /tmp in RAM
 EOF
 
   # unit to recreate required logdirs
