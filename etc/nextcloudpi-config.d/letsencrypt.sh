@@ -66,7 +66,11 @@ configure()
     sed -i "/DocumentRoot/aServerName $DOMAIN_" $VHOSTCFG 
 
   /etc/letsencrypt/letsencrypt-auto certonly -n --no-self-upgrade --webroot -w $NCDIR --hsts --agree-tos -m $EMAIL_ -d $DOMAIN_ && {
-    echo "* 1 * * 1 root /etc/letsencrypt/certbot-auto renew --quiet" > /etc/cron.d/letsencrypt-ncp
+    cat > /etc/cron.weekly/letsencrypt-ncp <<EOF
+#!/bin/bash
+/etc/letsencrypt/certbot-auto renew --quiet
+EOF
+    chmod +x /etc/cron.weekly/letsencrypt-ncp
 
     sed -i "s|SSLCertificateFile.*|SSLCertificateFile /etc/letsencrypt/live/$DOMAIN_LOWERCASE/fullchain.pem|" $VHOSTCFG
     sed -i "s|SSLCertificateKeyFile.*|SSLCertificateKeyFile /etc/letsencrypt/live/$DOMAIN_LOWERCASE/privkey.pem|" $VHOSTCFG
