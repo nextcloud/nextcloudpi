@@ -32,6 +32,7 @@ echo "datadir|$DATADIR$DIRINFO"
   echo "data disk usage|$( df -h "$DATADIR" | tail -1 | awk '{ print $3"/"$2 }')"
 }
 echo "rootfs usage|$( df -h / | tail -1 | awk '{ print $3"/"$2 }')"
+echo "swapfile|$( swapon | tail -1 | awk '{ print $1 }' )"
 
 # Nextcloud
 VERSION="$( sudo -u www-data php /var/www/nextcloud/occ status | grep "version:" | awk '{ print $3 }' )"

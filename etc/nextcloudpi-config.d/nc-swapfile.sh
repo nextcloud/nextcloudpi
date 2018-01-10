@@ -26,21 +26,34 @@ is_active()
 
 configure()
 {
-  local ORIG=$( grep -oP "CONF_SWAPFILE=.*" /etc/dphys-swapfile | cut -f2 -d= )
-  [[ "$ORIG" == "$SWAPFILE_" ]] && return
-  test -d "$SWAPFILE_" && { echo "$SWAPFILE_ is a directory. Abort"; return 1; }
+  local ORIG="$( swapon | tail -1 | awk '{ print $1 }' )"
+  local DSTDIR="$( dirname "$SWAPFILE_" )"
+  [[ "$ORIG" == "$SWAPFILE_" ]] && { echo "nothing to do";                    return 0; }
+  [[ -d "$SWAPFILE_"         ]] && { echo "$SWAPFILE_ is a directory. Abort"; return 1; }
+  [[ -d "$DSTDIR"            ]] || { echo "$DSTDIR Doesn't exist. Abort";     return 1; }
 
-  [[ $( stat -fc%d / ) == $( stat -fc%d $( dirname "$SWAPFILE_" ) ) ]] && \
+  [[ "$( stat -fc%T "$DSTDIR" )" == "btrfs" ]] && {
+    echo "BTRFS doesn't support swapfiles"
+    return 1
+  }
+
+  [[ $( stat -fc%d / ) == $( stat -fc%d "$DSTDIR" ) ]] && \
     echo -e "INFO: moving swapfile to another place in the same SD card\nIf you want to use an external mount, make sure it is properly set up"
 
   sed -i "s|#\?CONF_SWAPFILE=.*|CONF_SWAPFILE=$SWAPFILE_|" /etc/dphys-swapfile
   sed -i "s|#\?CONF_SWAPSIZE=.*|CONF_SWAPSIZE=$SWAPSIZE_|" /etc/dphys-swapfile
-  grep -q vm.swappiness /etc/sysctl.conf || echo "vm.swappiness = 10" >> /etc/sysctl.conf && sysctl --load
+  grep -q vm.swappiness /etc/sysctl.conf || echo "vm.swappiness = 10" >> /etc/sysctl.conf && sysctl --load &>/dev/null
 
   # workaround for automount, systemd doesn't get the order right
   grep -q sleep /etc/init.d/dphys-swapfile || sed -i "/\<start)/asleep 15" /etc/init.d/dphys-swapfile
 
-  service dphys-swapfile restart && swapoff "$ORIG" && rm -f "$ORIG"
+  dphys-swapfile setup && dphys-swapfile swapon && {
+    [[ -f "$ORIG" ]] && swapoff "$ORIG" && rm -f "$ORIG"
+    echo "swapfile moved successfully"
+    return 0
+  }
+  echo "moving swapfile failed"
+  return 1
 }
 
 install() { :; }
