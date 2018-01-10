@@ -14,7 +14,7 @@
 # More at https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/
 #
 
-ADMINUSER_=admin
+ADMINUSER_=ncp
 ADMINPASS_=ownyourbits
 DBADMIN=ncadmin
 DESCRIPTION="(Re)initiate Nextcloud to a clean configuration"

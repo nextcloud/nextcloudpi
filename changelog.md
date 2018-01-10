@@ -1,7 +1,17 @@
 
-[v0.44.10](https://github.com/nextcloud/nextcloudpi/commit/b1db925) (2018-01-07) nc-restore: refresh trusted domains
+[v0.44.15](https://github.com/nextcloud/nextcloudpi/commit/e07e9b3) (2018-01-10) nc-init and samba: default to ncp user
 
-[v0.44.9](https://github.com/nextcloud/nextcloudpi/commit/7dce423) (2018-01-07) nc-restore: fix bug detecting data
+[v0.44.14](https://github.com/nextcloud/nextcloudpi/commit/cd79cb3) (2018-01-10) nc-ramlogs: limit tmpfs to 100M
+
+[v0.44.13](https://github.com/nextcloud/nextcloudpi/commit/4ba8965) (2018-01-10) letsencrypt: revert pip.conf pre-workaround, tweak cron
+
+[v0.44.12](https://github.com/nextcloud/nextcloudpi/commit/fa75ba1) (2018-01-10) nc-swapfile: improved, and take BTRFS into account
+
+[v0.44.11](https://github.com/nextcloud/nextcloudpi/commit/9fea4f7) (2018-01-07) nc-restore: check validity of backup file
+
+[v0.44.10](https://github.com/nextcloud/nextcloudpi/commit/76d4b3d) (2018-01-07) nc-restore: refresh trusted domains
+
+[v0.44.9 ](https://github.com/nextcloud/nextcloudpi/commit/7dce423) (2018-01-07) nc-restore: fix bug detecting data
 
 [v0.44.8 ](https://github.com/nextcloud/nextcloudpi/commit/c42993d) (2018-01-06) nc-restore: restore to a btrfs subvolume
 

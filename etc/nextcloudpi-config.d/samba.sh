@@ -15,8 +15,8 @@
 
 ACTIVE_=no
 NCUSER_=admin
-USER_=pi
-PWD_=raspberry
+USER_=ncp
+PWD_=ownyourbits
 DESCRIPTION="SMB/CIFS file server (for Mac/Linux/Windows)"
 
 INFOTITLE="Instructions for external synchronization"
