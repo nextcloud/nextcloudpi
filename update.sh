@@ -211,6 +211,21 @@ EOF
   grep -q '^ACTIVE_=yes$' nc-backup-auto.sh && activate_script nc-backup-auto.sh 
   cd - &>/dev/null
 
+  # restore pip.conf after workaround
+  cat > /etc/pip.conf <<EOF
+[global]
+extra-index-url=https://www.piwheels.hostedpi.com/simple
+EOF
+
+  # update cron letsencrypt
+  [[ -f /etc/cron.d/letsencrypt-ncp ]] && rm -f /etc/cron.d/letsencrypt-ncp && {
+    cat > /etc/cron.weekly/letsencrypt-ncp <<EOF
+#!/bin/bash
+/etc/letsencrypt/certbot-auto renew --quiet
+EOF
+    chmod +x /etc/cron.weekly/letsencrypt-ncp
+  }
+
 } # end - only live updates
 
 exit 0
