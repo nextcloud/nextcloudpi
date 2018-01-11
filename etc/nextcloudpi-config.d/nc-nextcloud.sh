@@ -123,11 +123,15 @@ GRANT ALL PRIVILEGES ON nextcloud.* TO $DBADMIN@localhost;
 EXIT
 EOF
 
+  ## IF BETA SELECTED ADD "pre" to DOWNLOAD PATH
+if [[ "BETA_" == yes ]]; then
+    local PREFIX="pre"
+    
   ## DOWNLOAD AND (OVER)WRITE NEXTCLOUD
   cd /var/www/
 
   echo "Downloading Nextcloud $VER_..."
-  wget -q https://download.nextcloud.com/server/releases/nextcloud-$VER_.tar.bz2 -O nextcloud.tar.bz2 || return 1
+  wget -q https://download.nextcloud.com/server/${PREFIX}releases/nextcloud-$VER_.tar.bz2 -O nextcloud.tar.bz2 || return 1
   rm -rf nextcloud
 
   echo "Installing  Nextcloud $VER_..."
