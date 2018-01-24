@@ -16,8 +16,11 @@
   <meta name="referrer" content="never">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
   <meta name="mobile-web-app-capable" content="yes">
-<?php 
+<?php
     session_start();
+
+  $LANG = "en_us";
+  $l10nDir = "l10n";
 
   // security headers
   header("Content-Security-Policy: default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self'; object-src 'self';");
@@ -33,13 +36,22 @@
 
   // HTTP2 push headers
   header("Link: </minified.js>; rel=preload; as=script;,</ncp.js>; rel=preload; as=script;,</ncp.css>; rel=preload; as=style;,</img/ncp-logo.svg>; rel=preload; as=image;, </loading-small.gif>; rel=preload; as=image;, rel=preconnect href=ncp-launcher.php;");
+
+  require ("L10N.php");
+  $l = new L10N($LANG, $l10nDir);
+  try {
+      $l = new L10N($LANG, $l10nDir);
+  } catch( Exception $e) { }
 ?>
 <link rel="icon" type="image/png" href="img/favicon.png" />
 <link rel="stylesheet" href="ncp.css">
 </head>
 <body id="body-user">
   <noscript>
-  <div id="nojavascript"> <div>This application requires JavaScript for correct operation. Please <a href="http://enable-javascript.com/" target="_blank" rel="noreferrer">enable JavaScript</a> and reload the page.		</div> </div>
+  <div id="nojavascript"> <div>
+          <?php sprintf($l->__("This application requires JavaScript for correct operation. Please %s enable JavaScript %s and reload the page."),
+              "<a href=\"http://enable-javascript.com/\" target=\"_blank\" rel=\"noreferrer\">", "</a>"); ?>
+      </div> </div>
   </noscript>
   <div id="notification-container">
     <?php 
@@ -48,7 +60,7 @@
       {
         echo '<div id="notification">';
         echo '<div id="update-notification" class="row type-error closeable">';
-        echo "version " . file_get_contents( "/var/run/.ncp-latest-version" ) . " is available";
+        sprintf( $l->__("version %s is available"), file_get_contents( "/var/run/.ncp-latest-version" ));
         echo '<a class="action close icon-close" href="#" alt="Dismiss"></a>';
         echo '</div>';
         echo '</div>';
@@ -68,9 +80,9 @@
         <br>
         <a href="wizard"><img class="wizard-btn" src="wizard/img/ncp-logo.svg" class="wizard"></a>
         <br>
-        <button type="button" class="wizard-btn"      id="go-wizard"   >run  </button>
-        <button type="button" class="first-run-close" id="skip-wizard" >skip </button>
-        <button type="button" class="first-run-close" id="close-wizard">close</button>
+        <button type="button" class="wizard-btn"      id="go-wizard"   >{$l->__("run")}  </button>
+        <button type="button" class="first-run-close" id="skip-wizard" >{$l->__("skip")} </button>
+        <button type="button" class="first-run-close" id="close-wizard">{$l->__("close")}</button>
         <br><br>
       </div>
     </div>
@@ -130,7 +142,7 @@ HTML;
                   $active = " ✓";
 
                 echo "<li id=\"$script\" class=\"nav-recent\">";
-                echo "<a href=\"#\"> $script$active </a>";
+                echo "<a href=\"#\"> {$l->__($script)}$active </a>";
 
                 if ( preg_match('/^DESCRIPTION="(.*)"$/m', $txt, $matches) )
                   echo "<input id=\"$script-desc\" type=\"hidden\" value=\"$matches[1]\" />";
