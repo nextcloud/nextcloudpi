@@ -11,7 +11,7 @@ class L10N {
             $desired_languages = "";
         }
 
-        $l10n_dir = trim($l10n_dir, '/');
+        $l10n_dir = rtrim($l10n_dir, '/');
         $available_languages = array_filter(scandir($l10n_dir),
             function ($s) {
                 return pathinfo($s, PATHINFO_EXTENSION) == "json";
@@ -30,7 +30,7 @@ class L10N {
 
     function load($lang, $l10n_dir, $modules_path)
     {
-      $modules_path = join('/', [trim($modules_path, '/'), "l10n"]);
+      $modules_path = join('/', [rtrim($modules_path, '/'), "l10n"]);
       $files = [join('/', [$l10n_dir, $lang . ".json"])];
       if (is_dir($modules_path)) {
         foreach (scandir($modules_path) as $dir) {
@@ -43,7 +43,7 @@ class L10N {
 
       $jsonError = null;
       foreach ($files as $file) {
-        $module_name = pathinfo($file, PATHINFO_DIRNAME);
+        $module_name = pathinfo(pathinfo($file, PATHINFO_DIRNAME), PATHINFO_BASENAME);
         if( $module_name == pathinfo($l10n_dir, PATHINFO_BASENAME)) {
           $module_name = "__core__";
         }
