@@ -103,7 +103,7 @@ $(function()
         'value': []
       };
       $("#" + item.id + '>option').each(function(option) {
-        select.value.push(option.hasAttribute('selected') ? "*" + option.value + "*" : "" + option.value);
+        select.value.push(option.selected ? "*" + option.value + "*" : "" + option.value);
       });
       cfg[select.id] = select.value;
     });

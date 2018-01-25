@@ -56,10 +56,10 @@ if ( $_POST['action'] == "cfgreq" )
       $output .= "<td><select id=\"$matches[1]\" name=\"$matches[1]\">";
       foreach($options as $option)
       {
-        $output .= "<option ". trim($option, "*") ." ";
+        $output .= "<option value='". trim($option, "*") ."' ";
         if( $option[0] == "*" && $option[count($option) - 1] == "*" )
         {
-          $output .="selected";
+          $output .="selected='selected'";
         }
         $output .= ">". trim($option, "*") ."</option>";
       }
@@ -103,7 +103,11 @@ else if ( $_POST['action'] == "launch" && $_POST['config'] )
 
   foreach( $params as $name => $value) 
   {
-    preg_match( '/^[\w.,@_\/-]+$/' , $value , $matches )
+    if( is_array($value))
+    {
+      $value = "[". join(",", $value) ."]";
+    }
+    preg_match( '/^[\[\]\w.*,@_\/-]+$/' , $value , $matches )
       or exit( '{ "output": "Invalid input" , "token": "' . getCSRFToken() . '" }' );
     $code = preg_replace( '/\n' . $name . '_=.*' . PHP_EOL . '/'  ,
                         PHP_EOL . $name . '_=' . $value . PHP_EOL ,
