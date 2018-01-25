@@ -16,8 +16,8 @@ class L10N {
 
         $l10nDir = trim($l10nDir, '/');
         $availableLanguages = array_filter(scandir($l10nDir),
-            function($s) use ($l10nDir) {
-                return pathinfo($s, PATHINFO_EXTENSION) == ".json";
+            function($s) {
+                return pathinfo($s, PATHINFO_EXTENSION) == "json";
             });
         $availableLanguages = array_map(
                 function($s) {
@@ -25,7 +25,7 @@ class L10N {
                 },
                 $availableLanguages);
         $lang = $this->find_language($availableLanguages, $desiredLanguages);
-        $full_path = join('/', [$l10nDir, trim($lang, '/') . ".json"]);
+        $full_path = join('/', [$l10nDir, $lang.".json"]);
         $this->language = $lang;
         if( !file_exists($full_path) || !$this->load($full_path) ) {
             $this->language = L10N::defaultLanguage;
@@ -76,6 +76,6 @@ class L10N {
         if(count($langs) == 0) {
             return L10N::defaultLanguage;
         }
-        return $langs[0];
+        return array_keys($langs)[0];
     }
 }
