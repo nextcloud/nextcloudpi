@@ -21,6 +21,12 @@ class L10N {
                 return basename($s, ".json");
             },
             $available_languages);
+
+        $desired_lang = $this->load_language_setting($modules_path);
+        if($desired_lang != "auto")
+        {
+          $desired_languages = $desired_lang;
+        }
         $lang = $this->find_language($available_languages, $desired_languages);
         $this->language = $lang;
         if ($lang === L10N::default_language || !file_exists(join('/', [$l10n_dir, $lang . ".json"])) || !$this->load($lang, $l10n_dir, $modules_path)) {
@@ -67,9 +73,9 @@ class L10N {
     function find_language(array $available_languages, $desired_language) {
 
         $available_languages = array_flip($available_languages);
-
         $langs = [];
         preg_match_all('~([\w-]+)(?:[^,\d]+([\d.]+))?~', strtolower($desired_language), $matches, PREG_SET_ORDER);
+
         foreach($matches as $match) {
 
             list($a, $b) = explode('-', $match[1]) + array('', '');
@@ -91,5 +97,31 @@ class L10N {
             return L10N::default_language;
         }
         return array_keys($langs)[0];
+    }
+
+    function load_language_setting($modules_path) {
+      $webui_config_file = join('/', [rtrim($modules_path, '/'), 'nc-webui.sh']);
+      $fh    = fopen( $webui_config_file ,'r')
+        or exit( '{ "output": "' . $webui_config_file . ' read error" }' );
+      $lang = "auto";
+      while ( $line = fgets($fh) )
+      {
+        // drop down menu
+        if(preg_match('/^LANGUAGE_=\[(([*\w]+,)*[*\w]+)\]$/', $line, $matches))
+        {
+          $options = explode(',', $matches[2]);
+          foreach($options as $option)
+          {
+            if($option[0] == "*" && $option[count($option) - 1] == "*")
+            {
+              fclose($fh);
+              $lang = trim($option,'*');
+            }
+          }
+          fclose($fh);
+          return $lang;
+        }
+      }
+
     }
 }
