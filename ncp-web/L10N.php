@@ -5,7 +5,7 @@ class L10N {
     const default_language = "en_US";
     private $language;
 
-    public function __construct($desired_languages, $l10n_dir)
+    public function __construct($desired_languages, $l10n_dir, $modules_path=null)
     {
         if (!isset($desired_languages)) {
             $desired_languages = "";
@@ -22,27 +22,44 @@ class L10N {
             },
             $available_languages);
         $lang = $this->find_language($available_languages, $desired_languages);
-        $full_path = join('/', [$l10n_dir, $lang . ".json"]);
         $this->language = $lang;
-        if ($lang === L10N::default_language || !file_exists($full_path) || !$this->load($full_path)) {
+        if ($lang === L10N::default_language || !file_exists(join('/', [$l10n_dir, $lang . ".json"])) || !$this->load($lang, $l10n_dir, $modules_path)) {
             $this->language = L10N::default_language;
         }
     }
 
-    function load($translationFile)
+    function load($lang, $l10n_dir, $modules_path)
     {
-        $json = json_decode(file_get_contents($translationFile), true);
-        if (!is_array($json)) {
-            $jsonError = json_last_error();
-            return false;
+      $files = [join('/', [$l10n_dir, $lang . ".json"])];
+      if (is_dir($modules_path)) {
+        foreach (scandir($modules_path) as $dir) {
+          $file_path = join('/', [trim($modules_path, '/'), trim($dir, '/'), $lang . ".json"]);
+          if (is_file($file_path)) {
+            array_push($files, $file_path);
+          }
         }
-        $this->translations = array_merge($this->translations, $json['translations']);
-        return true;
+      }
+
+
+      $jsonError = null;
+      foreach ($files as $file) {
+        $module_name = pathinfo($file, PATHINFO_DIRNAME);
+        if( $module_name == pathinfo($l10n_dir, PATHINFO_DIRNAME)) {
+          $module_name = "__core__";
+        }
+        $json = json_decode(file_get_contents($file), true);
+        if (!is_array($json)) {
+          $jsonError = json_last_error();
+          continue;
+        }
+        $this->translations[$module_name] = $json['translations'];
+      }
+      return ($jsonError == null);
     }
 
-    public function __($text) {
-        if( isset($this->translations[$text])) {
-            return $this->translations[$text];
+    public function __($text, $module="__core__") {
+        if( isset($this->translations[$module]) && isset($this->translations[$module][$text])) {
+            return $this->translations[$module][$text];
         }
         return $text;
     }
