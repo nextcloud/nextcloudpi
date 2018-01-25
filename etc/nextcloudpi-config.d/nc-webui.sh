@@ -14,6 +14,7 @@
 #
 
 ACTIVE_=yes
+LANGUAGE_=[*auto*,en,de]
 DESCRIPTION="Enable or disable the NCP web interface"
 
 configure() 

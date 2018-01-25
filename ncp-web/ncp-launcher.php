@@ -47,7 +47,24 @@ if ( $_POST['action'] == "cfgreq" )
       $output = $output . "<td><input type=\"checkbox\" id=\"$matches[1]\" name=\"$matches[1]\" value=\"$matches[2]\" $checked></td>";
       $output = $output . "</tr>";
     }
-
+    // drop down menu
+    else if(preg_match('/^(\w+)_=\[((\w+,)*)\]$/', $line, $matches))
+    {
+      $options = explode(",", $matches[2]);
+      $output .= "<tr>";
+      $output .= "<td><label for=\"$matches[1]\">$matches[1]</label></td>";
+      $output .= "<td><select id=\"$matches[1]\" name=\"$matches[1]\">";
+      foreach($options as $option)
+      {
+        $option .= "<option ". trim($option, "*") ." ";
+        if( $option[0] == "*" && $option[count($option) - 1] == "*" )
+        {
+          $option .="selected";
+        }
+        $option .= ">". trim($option, "*") ."</option>";
+      }
+      $output .= "</select>";
+    }
     // text field
     else if ( preg_match('/^(\w+)_=(.*)$/', $line, $matches) )
     {
