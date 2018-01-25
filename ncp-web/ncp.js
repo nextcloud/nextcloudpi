@@ -90,11 +90,24 @@ $(function()
 
     // create configuration object
     var cfg = {};
-    $( 'input' , '#config-box' ).each( function(item){ 
+    $( 'input' , '#config-box' ).each( function(item){
       if( item.getAttribute('type') == 'checkbox' )
         item.value = item.checked ? 'yes' : 'no';
+
       cfg[item.name] = item.value;
     } );
+
+    $( 'select', '#config-box' ).each( function(item) {
+      var select = {
+        'id': item.name,
+        'value': []
+      };
+      $(item).find('option').each(function(option) {
+        select.value.push(option.hasAttribute('selected') ? "*" + option.value + "*" : option.value);
+      });
+      cfg[select.id] = select.value;
+    });
+
 
     // reset box
     $('#details-box').fill();
