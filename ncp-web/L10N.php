@@ -44,7 +44,7 @@ class L10N {
       $jsonError = null;
       foreach ($files as $file) {
         $module_name = pathinfo($file, PATHINFO_DIRNAME);
-        if( $module_name == pathinfo($l10n_dir, PATHINFO_DIRNAME)) {
+        if( $module_name == pathinfo($l10n_dir, PATHINFO_BASENAME)) {
           $module_name = "__core__";
         }
         $json = json_decode(file_get_contents($file), true);
