@@ -102,8 +102,8 @@ $(function()
         'id': item.name,
         'value': []
       };
-      $(item).find('option').each(function(option) {
-        select.value.push(option.hasAttribute('selected') ? "*" + option.value + "*" : option.value);
+      $("#" + item.id + '>option').each(function(option) {
+        select.value.push(option.hasAttribute('selected') ? "*" + option.value + "*" : "" + option.value);
       });
       cfg[select.id] = select.value;
     });
