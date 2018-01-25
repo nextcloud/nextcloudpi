@@ -36,16 +36,19 @@
   // HTTP2 push headers
   header("Link: </minified.js>; rel=preload; as=script;,</ncp.js>; rel=preload; as=script;,</ncp.css>; rel=preload; as=style;,</img/ncp-logo.svg>; rel=preload; as=image;, </loading-small.gif>; rel=preload; as=image;, rel=preconnect href=ncp-launcher.php;");
 
-  require ("L10N.php");
-  $l = new L10N($_SERVER["HTTP_ACCEPT_LANGUAGE"], $l10nDir);
-  /*try {
-      $l = new L10N($_SERVER["HTTP_ACCEPT_LANGUAGE"], $l10nDir);
-  } catch( Exception $e) { }*/
 ?>
 <link rel="icon" type="image/png" href="img/favicon.png" />
 <link rel="stylesheet" href="ncp.css">
 </head>
 <body id="body-user">
+<?php
+  require ("L10N.php");
+  try {
+      $l = new L10N($_SERVER["HTTP_ACCEPT_LANGUAGE"], $l10nDir);
+  } catch( Exception $e) {
+      die("<p class='error'>Error while loading localizations!</p>");
+  }
+?>
   <noscript>
   <div id="nojavascript"> <div>
           <?php sprintf($l->__("This application requires JavaScript for correct operation. Please %s enable JavaScript %s and reload the page."),

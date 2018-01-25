@@ -5,9 +5,6 @@ class L10N {
     const default_language = "en_US";
     private $language;
 
-    /**
-     * @throws Exception
-     **/
     public function __construct($desired_languages, $l10n_dir)
     {
         if (!isset($desired_languages)) {
