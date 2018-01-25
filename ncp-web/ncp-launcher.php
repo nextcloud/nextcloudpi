@@ -48,7 +48,7 @@ if ( $_POST['action'] == "cfgreq" )
       $output = $output . "</tr>";
     }
     // drop down menu
-    else if(preg_match('/^(\w+)_=\[((\w+,)*)\]$/', $line, $matches))
+    else if(preg_match('/^(\w+)_=\[((\w+,)*\w+)\]$/', $line, $matches))
     {
       $options = explode(",", $matches[2]);
       $output .= "<tr>";
