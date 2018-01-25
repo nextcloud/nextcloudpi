@@ -30,16 +30,16 @@ class L10N {
 
     function load($lang, $l10n_dir, $modules_path)
     {
+      $modules_path = join('/', [trim($modules_path, '/'), "l10n"]);
       $files = [join('/', [$l10n_dir, $lang . ".json"])];
       if (is_dir($modules_path)) {
         foreach (scandir($modules_path) as $dir) {
-          $file_path = join('/', [trim($modules_path, '/'), trim($dir, '/'), $lang . ".json"]);
+          $file_path = join('/', [$modules_path, trim($dir, '/'), $lang . ".json"]);
           if (is_file($file_path)) {
             array_push($files, $file_path);
           }
         }
       }
-
 
       $jsonError = null;
       foreach ($files as $file) {
