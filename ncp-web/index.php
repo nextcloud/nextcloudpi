@@ -19,7 +19,6 @@
 <?php
     session_start();
 
-  $LANG = "en_us";
   $l10nDir = "l10n";
 
   // security headers
@@ -38,10 +37,10 @@
   header("Link: </minified.js>; rel=preload; as=script;,</ncp.js>; rel=preload; as=script;,</ncp.css>; rel=preload; as=style;,</img/ncp-logo.svg>; rel=preload; as=image;, </loading-small.gif>; rel=preload; as=image;, rel=preconnect href=ncp-launcher.php;");
 
   require ("L10N.php");
-  $l = new L10N($LANG, $l10nDir);
-  try {
-      $l = new L10N($LANG, $l10nDir);
-  } catch( Exception $e) { }
+  $l = new L10N($_SERVER["HTTP_ACCEPT_LANGUAGE"], $l10nDir);
+  /*try {
+      $l = new L10N($_SERVER["HTTP_ACCEPT_LANGUAGE"], $l10nDir);
+  } catch( Exception $e) { }*/
 ?>
 <link rel="icon" type="image/png" href="img/favicon.png" />
 <link rel="stylesheet" href="ncp.css">
