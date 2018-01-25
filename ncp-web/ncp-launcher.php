@@ -56,14 +56,14 @@ if ( $_POST['action'] == "cfgreq" )
       $output .= "<td><select id=\"$matches[1]\" name=\"$matches[1]\">";
       foreach($options as $option)
       {
-        $option .= "<option ". trim($option, "*") ." ";
+        $output .= "<option ". trim($option, "*") ." ";
         if( $option[0] == "*" && $option[count($option) - 1] == "*" )
         {
-          $option .="selected";
+          $output .="selected";
         }
-        $option .= ">". trim($option, "*") ."</option>";
+        $output .= ">". trim($option, "*") ."</option>";
       }
-      $output .= "</select>";
+      $output .= "</select></td></tr>";
     }
     // text field
     else if ( preg_match('/^(\w+)_=(.*)$/', $line, $matches) )
