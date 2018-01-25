@@ -17,15 +17,11 @@ class L10N {
         $l10nDir = trim($l10nDir, '/');
         $availableLanguages = array_filter(scandir($l10nDir),
             function($s) use ($l10nDir) {
-                $ext = pathinfo($l10nDir."/".$s);
-                return (
-                    is_file($l10nDir."/".$s)
-                    && $ext != 'html'
-                    && $ext != 'php');
+                return pathinfo($s, PATHINFO_EXTENSION) == ".json";
             });
         $availableLanguages = array_map(
-                function($s) use ($l10nDir) {
-                    return pathinfo($l10nDir.'/'.$s)['basename'];
+                function($s) {
+                    return basename($s, ".json");
                 },
                 $availableLanguages);
         $lang = $this->find_language($availableLanguages, $desiredLanguages);
@@ -65,12 +61,12 @@ class L10N {
             list($a, $b) = explode('-', $match[1]) + array('', '');
             $value = isset($match[2]) ? (float) $match[2] : 1.0;
 
-            if(isset($available_languages[$match[1]])) {
+            if(isset($availableLanguages[$match[1]])) {
                 $langs[$match[1]] = $value;
                 continue;
             }
 
-            if(isset($available_languages[$a])) {
+            if(isset($availableLanguages[$a])) {
                 $langs[$a] = $value - 0.1;
             }
 
