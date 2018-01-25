@@ -11,14 +11,22 @@ class L10N {
     public function __construct($desiredLanguages, $l10nDir)
     {
         if(!isset($desiredLanguages)) {
-            $desiredLanguages = [];
+            $desiredLanguages = "";
         }
 
         $l10nDir = trim($l10nDir, '/');
         $availableLanguages = array_filter(scandir($l10nDir),
-            function($s) use ($l10nDir) { return is_file($l10nDir."/".$s); });
+            function($s) use ($l10nDir) {
+                $ext = pathinfo($l10nDir."/".$s);
+                return (
+                    is_file($l10nDir."/".$s)
+                    && $ext != 'html'
+                    && $ext != 'php');
+            });
         $availableLanguages = array_map(
-                function($s) { return pathinfo($s)['basename']; },
+                function($s) use ($l10nDir) {
+                    return pathinfo($l10nDir.'/'.$s)['basename'];
+                },
                 $availableLanguages);
         $lang = $this->find_language($availableLanguages, $desiredLanguages);
         $full_path = join('/', [$l10nDir, trim($lang, '/') . ".json"]);
