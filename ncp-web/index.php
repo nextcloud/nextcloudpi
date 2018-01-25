@@ -144,13 +144,13 @@ HTML;
                 echo "<a href=\"#\"> {$l->__($script)}$active </a>";
 
                 if ( preg_match('/^DESCRIPTION="(.*)"$/m', $txt, $matches) )
-                  echo "<input id=\"$script-desc\" type=\"hidden\" value=\"$matches[1]\" />";
+                  echo "<input id=\"$script-desc\" type=\"hidden\" value=\"{$l->__($matches[1])}\" />";
 
                 if ( preg_match('/^INFO="(.*)"/msU', $txt, $matches) )
-                  echo "<input id=\"$script-info\" type=\"hidden\" value=\"$matches[1]\" />";
+                  echo "<input id=\"$script-info\" type=\"hidden\" value=\"{$l->__($matches[1])}\" />";
 
                 if ( preg_match('/^INFOTITLE="(.*)"/msU', $txt, $matches) )
-                  echo "<input id=\"$script-infotitle\" type=\"hidden\" value=\"$matches[1]\" />";
+                  echo "<input id=\"$script-infotitle\" type=\"hidden\" value=\"{$l->__($matches[1])}\" />";
 
                 echo "</li>";
               }
@@ -159,7 +159,7 @@ HTML;
           </div>
 
       <div id="app-content">
-        <h2 id="config-box-title">Configure NextCloudPi features</h2>
+        <h2 id="config-box-title"><?php echo $l->__("Configure NextCloudPi features"); ?></h2>
         <a href="#" target="_blank">
           <div id="config-extra-info" class="icon-info"></div>
         </a>
