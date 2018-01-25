@@ -132,7 +132,7 @@ HTML;
               <?php
 
                 // fill options with contents from directory
-                $files = array_diff(scandir($modules_path), array('.', '..', 'nc-wifi.sh'));
+                $files = array_diff(scandir($modules_path), array('.', '..', 'nc-wifi.sh', 'l10n'));
 
                 foreach ($files as $file) {
                   $script = pathinfo($file, PATHINFO_FILENAME);
