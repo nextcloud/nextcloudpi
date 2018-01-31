@@ -89,7 +89,7 @@ install()
 
 configure()
 {
-  ping -W 2 -w 1 -q google.com &>/dev/null || { echo "No internet connectivity"; return 1; }
+  ping -W 2 -w 1 -q nextcloud.com &>/dev/null || { echo "No internet connectivity"; return 1; }
 
   ## RE-CREATE DATABASE TABLE 
   echo "Starting mariaDB"
