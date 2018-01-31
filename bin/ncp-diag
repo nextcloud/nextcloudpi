@@ -51,7 +51,7 @@ echo "Redis service|$( pgrep -c redis-server &>/dev/null && echo up || echo down
 echo "Postfix service|$( postfix status &>/dev/null && echo up || echo down )"
 
 # WAN
-echo "internet check|$( ping -W 2 -w 1 -q github.com &>/dev/null && echo ok || echo no } )"
+echo "internet check|$( ping -W 2 -w 1 -q nextcloud.com &>/dev/null && echo ok || echo no } )"
 
 function is_port_open()
 {
