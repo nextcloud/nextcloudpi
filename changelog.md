@@ -1,5 +1,7 @@
 
-[v0.44.15](https://github.com/nextcloud/nextcloudpi/commit/e07e9b3) (2018-01-10) nc-init and samba: default to ncp user
+[v0.45.0](https://github.com/nextcloud/nextcloudpi/commit/645375f) (2018-02-03) update to NC 12.0.5
+
+[v0.44.15](https://github.com/nextcloud/nextcloudpi/commit/3124d68) (2018-01-10) nc-init and samba: default to ncp user
 
 [v0.44.14](https://github.com/nextcloud/nextcloudpi/commit/cd79cb3) (2018-01-10) nc-ramlogs: limit tmpfs to 100M
 
