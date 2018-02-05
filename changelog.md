@@ -1,7 +1,9 @@
 
-[v0.45.2](https://github.com/nextcloud/nextcloudpi/commit/90143ae) (2018-02-05) nc-nextcloud: fixes for beta versions
+[v0.45.3](https://github.com/nextcloud/nextcloudpi/commit/641ece7) (2018-02-05) lamp: add ldap support (#377)
 
-[v0.45.1](https://github.com/nextcloud/nextcloudpi/commit/3a525c1) (2018-02-05) nc-backup: fixes in checking space and auto
+[v0.45.2](https://github.com/nextcloud/nextcloudpi/commit/010c02f) (2018-02-05) nc-nextcloud: fixes for beta versions
+
+[v0.45.1 ](https://github.com/nextcloud/nextcloudpi/commit/3a525c1) (2018-02-05) nc-backup: fixes in checking space and auto
 
 [v0.45.0 ](https://github.com/nextcloud/nextcloudpi/commit/e229cba) (2018-02-03) update to NC 12.0.5
 
