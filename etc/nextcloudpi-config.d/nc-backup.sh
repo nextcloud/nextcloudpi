@@ -41,7 +41,7 @@ DATADIR=$( cd "$BASEDIR"/nextcloud; sudo -u www-data php occ config:system:get d
 
 echo "check free space..."
 SIZE=$( du -s "$DATADIR" |           awk '{ print $1 }' )
-FREE=$( df    "$DATADIR" | tail -1 | awk '{ print $4 }' )
+FREE=$( df    "$DESTDIR" | tail -1 | awk '{ print $4 }' )
 
 [ $SIZE -ge $FREE ] && { 
   echo "free space check failed. Need $( du -sh "$DATADIR" | awk '{ print $1 }' )";
