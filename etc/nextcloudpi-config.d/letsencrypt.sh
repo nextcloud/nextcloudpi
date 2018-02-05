@@ -93,37 +93,13 @@ EOF
 cleanup()
 {
   apt-get purge -y \
-    make \
     git \
     augeas-lenses \
-    binutils \
-    cpp \
-    cpp-6 \
-    gcc \
-    gcc-6 \
-    libasan3 \
-    libaugeas0 \
-    libc-dev-bin \
-    libc6-dev \
-    libcc1-0 \
-    libexpat1-dev \
-    libffi-dev \
-    libgcc-6-dev \
-    libgomp1 \
-    libisl15 \
-    libmpc3 \
     libpython-dev \
     libpython2.7-dev \
     libssl-dev \
-    libubsan0 \
-    linux-libc-dev \
     python-dev \
-    python-virtualenv \
     python2.7-dev \
-    python-pkg-resources \
-    python3-pkg-resources \
-    python3-virtualenv \
-    virtualenv \
     python-pip-whl
 }
 

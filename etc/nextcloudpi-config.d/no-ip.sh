@@ -105,11 +105,6 @@ configure()
 
 }
 
-cleanup()
-{
-  apt-get purge -y make
-  apt-get autoremove -y
-}
 # License
 #
 # This script is free software; you can redistribute it and/or modify it
