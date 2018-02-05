@@ -195,15 +195,14 @@ y
 y
 EOF
 
-  # update btrfs-snp
-  grep -q "btrfs subvolume list" /usr/local/bin/btrfs-snp && {
-    wget https://raw.githubusercontent.com/nachoparker/btrfs-snp/master/btrfs-snp -O /usr/local/bin/btrfs-snp
-    chmod +x /usr/local/bin/btrfs-snp
-  }
-
   # update ncp-backup
   cd /usr/local/etc/nextcloudpi-config.d &>/dev/null
   install_script nc-backup.sh
+  cd - &>/dev/null
+
+  # update ncp-backup-auto
+  cd /usr/local/etc/nextcloudpi-config.d &>/dev/null
+  install_script nc-backup-auto.sh
   cd - &>/dev/null
 
   # refresh nc-backup-auto

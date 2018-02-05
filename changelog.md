@@ -1,5 +1,7 @@
 
-[v0.45.0](https://github.com/nextcloud/nextcloudpi/commit/645375f) (2018-02-03) update to NC 12.0.5
+[v0.45.1](https://github.com/nextcloud/nextcloudpi/commit/4cea878) (2018-02-05) nc-backup: fixes in checking space and auto
+
+[v0.45.0](https://github.com/nextcloud/nextcloudpi/commit/e229cba) (2018-02-03) update to NC 12.0.5
 
 [v0.44.15](https://github.com/nextcloud/nextcloudpi/commit/3124d68) (2018-01-10) nc-init and samba: default to ncp user
 
