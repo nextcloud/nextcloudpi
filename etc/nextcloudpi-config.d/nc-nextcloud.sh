@@ -15,6 +15,7 @@
 #
 
 VER_=12.0.5
+BETA_=no
 MAXFILESIZE_=2G
 MEMORYLIMIT_=768M
 MAXTRANSFERTIME_=3600
@@ -91,47 +92,18 @@ configure()
 {
   ping -W 2 -w 1 -q google.com &>/dev/null || { echo "No internet connectivity"; return 1; }
 
-  ## RE-CREATE DATABASE TABLE 
-  echo "Starting mariaDB"
-
-  # launch mariadb if not already running (for docker build)
-  if ! pgrep -c mysqld &>/dev/null; then
-    mysqld & 
-  fi
-
-  # wait for mariadb
-  pgrep -x mysqld &>/dev/null || { echo "mariaDB process not found"; return 1; }
-
-  while :; do
-    [[ -S /var/run/mysqld/mysqld.sock ]] && break
-    sleep 0.5
-  done
-
-  echo "Setting up database..."
-
-  # workaround to emulate DROP USER IF EXISTS ..;)
-  local DBPASSWD=$( grep password /root/.my.cnf | cut -d= -f2 )
-  mysql <<EOF
-DROP DATABASE IF EXISTS nextcloud;
-CREATE DATABASE nextcloud
-    CHARACTER SET utf8mb4
-    COLLATE utf8mb4_unicode_ci;
-GRANT USAGE ON *.* TO '$DBADMIN'@'localhost' IDENTIFIED BY '$DBPASSWD';
-DROP USER '$DBADMIN'@'localhost';
-CREATE USER '$DBADMIN'@'localhost' IDENTIFIED BY '$DBPASSWD';
-GRANT ALL PRIVILEGES ON nextcloud.* TO $DBADMIN@localhost;
-EXIT
-EOF
-
   ## IF BETA SELECTED ADD "pre" to DOWNLOAD PATH
-if [[ "BETA_" == yes ]]; then
-    local PREFIX="pre"
+  [[ "$BETA_" == yes ]] && local PREFIX="pre"
     
   ## DOWNLOAD AND (OVER)WRITE NEXTCLOUD
   cd /var/www/
 
+  local URL="https://download.nextcloud.com/server/${PREFIX}releases/nextcloud-$VER_.tar.bz2"
   echo "Downloading Nextcloud $VER_..."
-  wget -q https://download.nextcloud.com/server/${PREFIX}releases/nextcloud-$VER_.tar.bz2 -O nextcloud.tar.bz2 || return 1
+  wget -q "$URL" -O nextcloud.tar.bz2 || {
+    echo "couldn't download $URL"
+    return 1
+  }
   rm -rf nextcloud
 
   echo "Installing  Nextcloud $VER_..."
@@ -178,6 +150,38 @@ if [[ "BETA_" == yes ]]; then
   sed -i "s|^opcache.file_cache=.*|opcache.file_cache=$OPCACHEDIR|" /etc/php/7.0/mods-available/opcache.ini 
   mkdir -p $OPCACHEDIR
   chown -R www-data:www-data $OPCACHEDIR
+
+  ## RE-CREATE DATABASE TABLE 
+  echo "Starting mariaDB"
+
+  # launch mariadb if not already running (for docker build)
+  if ! pgrep -c mysqld &>/dev/null; then
+    mysqld & 
+  fi
+
+  # wait for mariadb
+  pgrep -x mysqld &>/dev/null || { echo "mariaDB process not found"; return 1; }
+
+  while :; do
+    [[ -S /var/run/mysqld/mysqld.sock ]] && break
+    sleep 0.5
+  done
+
+  echo "Setting up database..."
+
+  # workaround to emulate DROP USER IF EXISTS ..;)
+  local DBPASSWD=$( grep password /root/.my.cnf | cut -d= -f2 )
+  mysql <<EOF
+DROP DATABASE IF EXISTS nextcloud;
+CREATE DATABASE nextcloud
+    CHARACTER SET utf8mb4
+    COLLATE utf8mb4_unicode_ci;
+GRANT USAGE ON *.* TO '$DBADMIN'@'localhost' IDENTIFIED BY '$DBPASSWD';
+DROP USER '$DBADMIN'@'localhost';
+CREATE USER '$DBADMIN'@'localhost' IDENTIFIED BY '$DBPASSWD';
+GRANT ALL PRIVILEGES ON nextcloud.* TO $DBADMIN@localhost;
+EXIT
+EOF
 
 ## SET APACHE VHOST
   cat > /etc/apache2/sites-available/nextcloud.conf <<'EOF'
