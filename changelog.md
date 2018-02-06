@@ -1,7 +1,9 @@
 
-[v0.45.4](https://github.com/nextcloud/nextcloudpi/commit/9778446) (2018-02-06) added ncp-config link to nextcloudpi-config
+[v0.46.0](https://github.com/nextcloud/nextcloudpi/commit/73d181a) (2018-02-06) update to NC 13.0.0
 
-[v0.45.3](https://github.com/nextcloud/nextcloudpi/commit/2b178ab) (2018-02-05) lamp: add ldap support (#377)
+[v0.45.4](https://github.com/nextcloud/nextcloudpi/commit/f09e195) (2018-02-06) added ncp-config link to nextcloudpi-config
+
+[v0.45.3 ](https://github.com/nextcloud/nextcloudpi/commit/2b178ab) (2018-02-05) lamp: add ldap support (#377)
 
 [v0.45.2 ](https://github.com/nextcloud/nextcloudpi/commit/010c02f) (2018-02-05) nc-nextcloud: fixes for beta versions
 
