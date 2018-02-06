@@ -225,6 +225,9 @@ EOF
     chmod +x /etc/cron.weekly/letsencrypt-ncp
   }
 
+  # add ncp-config link
+  [[ -e /usr/local/bin/ncp-config ]] || ln -s /usr/local/bin/nextcloudpi-config /usr/local/bin/ncp-config
+
 } # end - only live updates
 
 exit 0
