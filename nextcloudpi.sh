@@ -29,6 +29,7 @@ install()
   apt-get update
   $APTINSTALL dialog whiptail
   mkdir -p $CONFDIR
+  ln -s /usr/local/bin/nextcloudpi-config /usr/local/bin/ncp-config
 
   # include option in raspi-config (only Raspbian)
   test -f /usr/bin/raspi-config && {
