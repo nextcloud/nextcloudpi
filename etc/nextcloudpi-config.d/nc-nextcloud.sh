@@ -14,7 +14,7 @@
 # More at https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/
 #
 
-VER_=12.0.5
+VER_=13.0.0
 BETA_=no
 MAXFILESIZE_=2G
 MEMORYLIMIT_=768M
