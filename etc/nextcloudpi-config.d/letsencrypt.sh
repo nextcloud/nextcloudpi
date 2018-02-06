@@ -93,7 +93,6 @@ EOF
 cleanup()
 {
   apt-get purge -y \
-    git \
     augeas-lenses \
     libpython-dev \
     libpython2.7-dev \
