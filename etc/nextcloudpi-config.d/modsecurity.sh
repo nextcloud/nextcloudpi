@@ -42,6 +42,9 @@ EOF
   sed -i 's|SecDataDir .*|SecDataDir /var/cache/modsecurity/|' /etc/modsecurity/modsecurity.conf
   sed -i 's|^SecRequestBodyLimit .*|#SecRequestBodyLimit 13107200|' /etc/modsecurity/modsecurity.conf
 
+  # turn modsecurity logs off, too spammy
+  sed -i 's|SecAuditEngine .*|SecAuditEngine Off|' /etc/modsecurity/modsecurity.conf
+
   cat >> /etc/apache2/apache2.conf <<EOF
 <IfModule mod_security2.c>
   SecServerSignature " "

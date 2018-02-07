@@ -228,6 +228,9 @@ EOF
   # add ncp-config link
   [[ -e /usr/local/bin/ncp-config ]] || ln -s /usr/local/bin/nextcloudpi-config /usr/local/bin/ncp-config
 
+  # turn modsecurity logs off, too spammy
+  sed -i 's|SecAuditEngine .*|SecAuditEngine Off|' /etc/modsecurity/modsecurity.conf
+
 } # end - only live updates
 
 exit 0
