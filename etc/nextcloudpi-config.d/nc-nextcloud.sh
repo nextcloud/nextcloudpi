@@ -90,7 +90,7 @@ install()
 
 configure()
 {
-  ping -W 2 -w 1 -q google.com &>/dev/null || { echo "No internet connectivity"; return 1; }
+  ping -W 2 -w 1 -q 4.2.2.2 &>/dev/null || { echo "No internet connectivity"; return 1; }
 
   ## IF BETA SELECTED ADD "pre" to DOWNLOAD PATH
   [[ "$BETA_" == yes ]] && local PREFIX="pre"

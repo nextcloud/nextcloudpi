@@ -4,7 +4,7 @@
 
 {
   [ "$(id -u)" -ne 0 ] && { printf "Must be run as root. Try 'sudo $0'\n"; exit 1; }
-  ping  -W 2 -w 1 -q google.com &>/dev/null || { echo "No internet connectivity"; exit 1; }
+  ping  -W 2 -w 1 -q 4.2.2.2 &>/dev/null || { echo "No internet connectivity"; exit 1; }
   echo -e "Downloading updates"
   rm -rf /tmp/ncp-update-tmp
   git clone --depth 20 -q https://github.com/nextcloud/nextcloudpi.git /tmp/ncp-update-tmp || exit 1
