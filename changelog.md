@@ -1,5 +1,7 @@
 
-[v0.46.2](https://github.com/nextcloud/nextcloudpi/commit/3fbc8be) (2018-02-07) modsecurity: turn off logging, its too spammy for ramlogs
+[v0.46.3](https://github.com/nextcloud/nextcloudpi/commit/865d622) (2018-02-07) unattended upgrades: fix unattended upgrades not working because of modified files
+
+[v0.46.2 ](https://github.com/nextcloud/nextcloudpi/commit/1615589) (2018-02-07) modsecurity: turn off logging, its too spammy for ramlogs
 
 [v0.46.1, master](https://github.com/nextcloud/nextcloudpi/commit/fe57d03) (2018-02-07) ping to 4.4.4.2 because google is blocked in china
 
