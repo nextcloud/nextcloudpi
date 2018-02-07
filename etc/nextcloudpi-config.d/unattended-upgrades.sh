@@ -41,6 +41,10 @@ Unattended-Upgrade::Automatic-Reboot-Time "04:00";
 Unattended-Upgrade::Origins-Pattern {
 o=Raspbian,n=stretch,l=Raspbian;
 }
+Dpkg::Options {
+   "--force-confdef";
+   "--force-confold";
+};
 EOF
   echo "Unattended upgrades active: $ACTIVE_ (autoreboot $AUTOREBOOT_)"
 }

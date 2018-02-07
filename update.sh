@@ -231,6 +231,15 @@ EOF
   # turn modsecurity logs off, too spammy
   sed -i 's|SecAuditEngine .*|SecAuditEngine Off|' /etc/modsecurity/modsecurity.conf
 
+  # fix unattended upgrades failing on modified files
+  grep -q Dpkg::Options /etc/apt/apt.conf.d/20nextcloudpi-upgrades || \
+    cat >> /etc/apt/apt.conf.d/20nextcloudpi-upgrades <<EOF
+Dpkg::Options {
+   "--force-confdef";
+   "--force-confold";
+};
+EOF
+
 } # end - only live updates
 
 exit 0
