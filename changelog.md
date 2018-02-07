@@ -1,7 +1,9 @@
 
-[v0.46.0](https://github.com/nextcloud/nextcloudpi/commit/73d181a) (2018-02-06) update to NC 13.0.0
+[v0.46.1](https://github.com/nextcloud/nextcloudpi/commit/94224c9) (2018-02-07) ping to 4.4.4.2 because google is blocked in china
 
-[v0.45.4](https://github.com/nextcloud/nextcloudpi/commit/f09e195) (2018-02-06) added ncp-config link to nextcloudpi-config
+[v0.46.0 ](https://github.com/nextcloud/nextcloudpi/commit/4c9dab6) (2018-02-06) update to NC 13.0.0
+
+[v0.45.4 ](https://github.com/nextcloud/nextcloudpi/commit/f09e195) (2018-02-06) added ncp-config link to nextcloudpi-config
 
 [v0.45.3 ](https://github.com/nextcloud/nextcloudpi/commit/2b178ab) (2018-02-05) lamp: add ldap support (#377)
 

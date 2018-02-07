@@ -4,7 +4,7 @@
 
 [ $(id -u) -ne 0 ] && exit 1
 
-ping  -W 2 -w 1 -q google.com &>/dev/null || { echo "No internet connectivity"; exit 1; }
+ping  -W 2 -w 1 -q 4.2.2.2 &>/dev/null || { echo "No internet connectivity"; exit 1; }
 
 rm -rf /tmp/ncp-check-tmp
 
