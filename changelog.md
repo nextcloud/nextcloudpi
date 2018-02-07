@@ -1,5 +1,7 @@
 
-[v0.46.1](https://github.com/nextcloud/nextcloudpi/commit/94224c9) (2018-02-07) ping to 4.4.4.2 because google is blocked in china
+[v0.46.2](https://github.com/nextcloud/nextcloudpi/commit/3fbc8be) (2018-02-07) modsecurity: turn off logging, its too spammy for ramlogs
+
+[v0.46.1, master](https://github.com/nextcloud/nextcloudpi/commit/fe57d03) (2018-02-07) ping to 4.4.4.2 because google is blocked in china
 
 [v0.46.0 ](https://github.com/nextcloud/nextcloudpi/commit/4c9dab6) (2018-02-06) update to NC 13.0.0
 
