@@ -29,7 +29,7 @@ install()
     # INSTALL 
     ##########################################
 
-    $APTINSTALL apt-utils 
+    $APTINSTALL apt-utils openssl
     $APTINSTALL cron
     $APTINSTALL apache2
     $APTINSTALL php7.0 php7.0-curl php7.0-gd php7.0-fpm php7.0-cli php7.0-opcache php7.0-mbstring php7.0-xml php7.0-zip php7.0-fileinfo php7.0-mcrypt php7.0-ldap

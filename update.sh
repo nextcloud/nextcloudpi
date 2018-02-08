@@ -22,6 +22,11 @@ nc-static-IP.sh
 nc-wifi.sh
 nc-nextcloud.sh
 nc-init.sh
+UFW.sh
+nc-snapshot.sh
+nc-snapshot-auto.sh
+nc-audit.sh
+SSH.sh
 "
 
 # need to be fixed for this
