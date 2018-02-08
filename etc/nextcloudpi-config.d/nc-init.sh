@@ -43,7 +43,8 @@ configure()
     mysqld & 
   fi
 
-  pgrep -x mysqld &>/dev/null || { echo "mariaDB process not found"; return 1; }
+  pgrep -x mysqld &>/dev/null || { 
+    echo "mariaDB process not found. Waiting..."
 
   # wait for mariadb
   # TODO FIXME armbian build
@@ -51,7 +52,8 @@ configure()
     #[[ -S /run/mysqld/mysqld.sock ]] && break
     #sleep 0.5
   #done
-  sleep 10
+    sleep 10
+  }
 
   # workaround to emulate DROP USER IF EXISTS ..;)
   local DBPASSWD=$( grep password /root/.my.cnf | cut -d= -f2 )
@@ -112,7 +114,9 @@ EOF
   sudo -u www-data php occ config:system:set mysql.utf8mb4 --type boolean --value="true"
 
   # Default trusted domain ( only from nextcloudpi-config )
-  test -f /.ncp-image || bash /usr/local/bin/nextcloud-domain.sh
+  test -f /usr/local/bin/nextcloud-domain.sh && {
+    test -f /.ncp-image || bash /usr/local/bin/nextcloud-domain.sh
+  }
   sudo -u www-data php occ config:system:set trusted_domains 5 --value="nextcloudpi.local"
 
   # email
@@ -122,11 +126,13 @@ EOF
   sudo -u www-data php occ config:system:set mail_domain       --value="ownyourbits.com"
 
   # NCP theme
-  local ID=$( grep instanceid config/config.php | awk -F "=> " '{ print $2 }' | sed "s|[,']||g" )
-  [[ "$ID" == "" ]] && { echo "failed to get ID"; return 1; }
-  mkdir -p data/appdata_${ID}/theming/images
-  cp /usr/local/etc/logo /usr/local/etc/background data/appdata_${ID}/theming/images
-  chown -R www-data:www-data data/appdata_${ID}
+  [[ -e /usr/local/etc/logo ]] && {
+    local ID=$( grep instanceid config/config.php | awk -F "=> " '{ print $2 }' | sed "s|[,']||g" )
+    [[ "$ID" == "" ]] && { echo "failed to get ID"; return 1; }
+    mkdir -p data/appdata_${ID}/theming/images
+    cp /usr/local/etc/logo /usr/local/etc/background data/appdata_${ID}/theming/images
+    chown -R www-data:www-data data/appdata_${ID}
+  }
 
   mysql nextcloud <<EOF
 replace into  oc_appconfig values ( 'theming', 'name'          , "NextCloudPi"             );

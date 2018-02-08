@@ -9,6 +9,7 @@ ENV DOCKERBUILD 1
 COPY nextcloudpi.sh /usr/local/etc/
 
 RUN \
+
 # mark as image build
 touch /.ncp-image; \
 
@@ -34,7 +35,34 @@ rm -r /var/www/ncp-web/wizard; \
 # cleanup all NCP extras
 source /usr/local/etc/library.sh; \
 cd /usr/local/etc/nextcloudpi-config.d/; \
-for script in *.sh; do cleanup_script $script done; \
+for script in *.sh; do cleanup_script $script; done; \
+
+apt-get purge -y \
+  make \
+  git \
+  binutils \
+  cpp \
+  cpp-6 \
+  gcc \
+  gcc-6 \
+  libasan3 \
+  libaugeas0 \
+  libc-dev-bin \
+  libc6-dev \
+  libcc1-0 \
+  libexpat1-dev \
+  libffi-dev \
+  libgcc-6-dev \
+  libgomp1 \
+  libisl15 \
+  libmpc3 \
+  libubsan0 \
+  linux-libc-dev \
+  python-virtualenv \
+  python-pkg-resources \
+  python3-pkg-resources \
+  python3-virtualenv \
+  virtualenv; \
 
 # package clean up
 apt-get autoremove -y; \
