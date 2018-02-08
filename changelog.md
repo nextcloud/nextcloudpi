@@ -1,5 +1,7 @@
 
-[v0.46.5](https://github.com/nextcloud/nextcloudpi/commit/2852176) (2018-02-09) nc-backup: stronger permissions for backup file
+[v0.46.6](https://github.com/nextcloud/nextcloudpi/commit/ea0eaa3) (2018-02-08) Update ncp-check-version
+
+[v0.46.5 ](https://github.com/nextcloud/nextcloudpi/commit/69242d0) (2018-02-09) nc-backup: stronger permissions for backup file
 
 [v0.46.4 ](https://github.com/nextcloud/nextcloudpi/commit/ae79b42) (2018-02-08) do not rely on pings, just return value of operations
 
