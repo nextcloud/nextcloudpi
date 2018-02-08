@@ -4,11 +4,12 @@
 
 [ $(id -u) -ne 0 ] && exit 1
 
-ping  -W 2 -w 1 -q 4.2.2.2 &>/dev/null || { echo "No internet connectivity"; exit 1; }
-
 rm -rf /tmp/ncp-check-tmp
 
-git clone --depth 20 -q --bare https://github.com/nextcloud/nextcloudpi.git /tmp/ncp-check-tmp || exit 1
+git clone --depth 20 -q --bare https://github.com/nextcloud/nextcloudpi.git /tmp/ncp-check-tmp {
+  echo "No internet connectivity"
+  exit 1
+}
 
 cd /tmp/ncp-check-tmp || exit 1
 VER=$( git describe --always --tags | grep -oP "v\d+\.\d+\.\d+" )
