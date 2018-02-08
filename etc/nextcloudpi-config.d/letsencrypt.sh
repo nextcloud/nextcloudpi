@@ -57,8 +57,6 @@ EOF
 # tested with git version v0.11.0-71-g018a304
 configure() 
 {
-  ping  -W 2 -w 1 -q 4.2.2.2 &>/dev/null || { echo "No internet connectivity"; return 1; }
-
   local DOMAIN_LOWERCASE="${DOMAIN_,,}"
 
   grep -q ServerName $VHOSTCFG && \

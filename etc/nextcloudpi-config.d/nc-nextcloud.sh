@@ -90,8 +90,6 @@ install()
 
 configure()
 {
-  ping -W 2 -w 1 -q 4.2.2.2 &>/dev/null || { echo "No internet connectivity"; return 1; }
-
   ## IF BETA SELECTED ADD "pre" to DOWNLOAD PATH
   [[ "$BETA_" == yes ]] && local PREFIX="pre"
     
@@ -160,7 +158,7 @@ configure()
   fi
 
   # wait for mariadb
-  pgrep -x mysqld &>/dev/null || { echo "mariaDB process not found"; return 1; }
+  pgrep -x mysqld &>/dev/null || echo "mariaDB process not found"
 
   while :; do
     [[ -S /var/run/mysqld/mysqld.sock ]] && break
@@ -184,6 +182,7 @@ EXIT
 EOF
 
 ## SET APACHE VHOST
+  echo "Setting up Apache..."
   cat > /etc/apache2/sites-available/nextcloud.conf <<'EOF'
 <IfModule mod_ssl.c>
   <VirtualHost _default_:443>
@@ -206,7 +205,6 @@ EOF
 </IfModule>
 EOF
   a2ensite nextcloud
-  echo "Setting up Apache..."
 
   cat > /etc/apache2/sites-available/000-default.conf <<'EOF'
 <VirtualHost _default_:80>
