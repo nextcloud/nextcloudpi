@@ -14,8 +14,6 @@
 #
 
 ACTIVE_=no
-NCUSER_=admin
-USER_=ncp
 PWD_=ownyourbits
 DESCRIPTION="SMB/CIFS file server (for Mac/Linux/Windows)"
 
@@ -40,6 +38,11 @@ install()
 
   # disable the [homes] share by default
   sed -i /\[homes\]/s/homes/homes_disabled_ncp/ /etc/samba/smb.conf
+
+  cat >> /etc/samba/smb.conf <<EOF
+
+# NextCloudPi automatically generated from here. Do not remove this comment
+EOF
 }
 
 configure()
@@ -55,32 +58,55 @@ configure()
   }
   [ -d "$DATADIR" ] || { echo -e "data directory $DATADIR not found"   ; return 1; }
 
-  local DIR="$DATADIR/$NCUSER_/files"
-  [ -d "$DIR"     ] || { echo -e "INFO: directory $DIR does not exist."; return 1; }
-
   # CONFIG
   ################################
-  sed -i '/\[NextCloudPi\]/,+10d' /etc/samba/smb.conf
+  
+  # remove files from this line to the end
+  sed -i '/# NextCloudPi automatically/,/\$/d' /etc/samba/smb.conf
+
+  # restore this line
   cat >> /etc/samba/smb.conf <<EOF
-[NextCloudPi]
-	path = $DIR
-	writeable = yes
+# NextCloudPi automatically generated from here. Do not remove this comment
+EOF
+
+  # create a share per Nextcloud user
+  local USERS=()
+  while read -r path; do 
+    USERS+=( "$( basename $( dirname "$path" ) )" )
+  done < <( ls -d "$DATADIR"/*/files )
+
+  for user in ${USERS[@]}; do
+    echo "adding SAMBA share for user $user"
+    local DIR="$DATADIR/$user/files"
+    [ -d "$DIR" ] || { echo -e "INFO: directory $DIR does not exist."; return 1; }
+
+    cat >> /etc/samba/smb.conf <<EOF
+
+[ncp-$user]
+    path = $DIR
+    writeable = yes
 ;	browseable = yes
-	valid users = $USER_
+    valid users = $user
     force group = www-data
     create mask = 0770
     directory mask = 0771
     force create mode = 0660
     force directory mode = 0770
+
 EOF
+
+    ## create user with no login if it doesn't exist
+    id "$user" &>/dev/null || adduser --disabled-password --gecos "" "$user"
+    echo -e "$PWD_\n$PWD_" | smbpasswd -s -a $user
+
+    usermod -aG www-data $user
+    sudo chmod g+w $DIR
+  done
 
   update-rc.d smbd defaults
   update-rc.d smbd enable
   service smbd start
 
-  usermod -aG www-data $USER_
-  echo -e "$PWD_\n$PWD_" | smbpasswd -s -a $USER_
-  sudo chmod g+w $DIR
   echo "SMB enabled"
 }
 
