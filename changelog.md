@@ -1,7 +1,9 @@
 
+[v0.46.5](https://github.com/nextcloud/nextcloudpi/commit/2852176) (2018-02-09) nc-backup: stronger permissions for backup file
+
 [v0.46.4 ](https://github.com/nextcloud/nextcloudpi/commit/ae79b42) (2018-02-08) do not rely on pings, just return value of operations
 
-[v0.46.3](https://github.com/nextcloud/nextcloudpi/commit/4c12769) (2018-02-07) unattended upgrades: fix unattended upgrades not working because of modified files
+[v0.46.3 ](https://github.com/nextcloud/nextcloudpi/commit/4c12769) (2018-02-07) unattended upgrades: fix unattended upgrades not working because of modified files
 
 [v0.46.2 ](https://github.com/nextcloud/nextcloudpi/commit/e649f47) (2018-02-07) modsecurity: turn off logging, its too spammy for ramlogs
 
