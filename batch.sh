@@ -12,7 +12,6 @@ source buildlib.sh          # initializes $IMGNAME
 
 IP=$1                       # First argument is the QEMU Raspbian IP address
 
-
 ## BUILDING
 
 # Raspbian
@@ -32,19 +31,8 @@ make nextcloudpi-x86 && {
   ./installer.sh docker-armhf/docker-env.sh "$IP" raspbian_lite.img # && mv
 ./installer.sh docker-armhf/build-container.sh "$IP" docker-armhf/raspbian_docker.img
 
-# Armbian
-git clone https://github.com/armbian/build armbian
-wget https://raw.githubusercontent.com/nextcloud/nextcloudpi/master/armbian.sh \
-  -O armbian/userpatches/customize-image.sh
-armbian/compile.sh docker \
-  BOARD=odroidxu4\
-  BRANCH=next\
-  KERNEL_ONLY=no\
-  KERNEL_CONFIGURE=no\
-  RELEASE=stretch\
-  BUILD_DESKTOP=no\
-  CLEAN_LEVEL=""\
-  NO_APT_CACHER=no
+# armbian
+./build-SD-odroid.sh
 
 # License
 #
