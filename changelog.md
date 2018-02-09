@@ -1,7 +1,13 @@
 
-[v0.46.7](https://github.com/nextcloud/nextcloudpi/commit/5eba8d6) (2018-02-12) update: fix typo in check version
+[v0.46.10](https://github.com/nextcloud/nextcloudpi/commit/b2c809c) (2018-02-09) samba: create share per NC user
 
-[v0.46.6](https://github.com/nextcloud/nextcloudpi/commit/9101b0d) (2018-02-08) Update ncp-check-version
+[v0.46.9](https://github.com/nextcloud/nextcloudpi/commit/19ccdb4) (2018-02-13) letsencrypt: only call update-rc.d in docker builds
+
+[v0.46.8 ](https://github.com/nextcloud/nextcloudpi/commit/354c767) (2018-02-12) preactivate useful apps for a selfhosted instance
+
+[v0.46.7 ](https://github.com/nextcloud/nextcloudpi/commit/5fd3cfa) (2018-02-12) update: fix typo in check version
+
+[v0.46.6 ](https://github.com/nextcloud/nextcloudpi/commit/9101b0d) (2018-02-08) Update ncp-check-version
 
 [v0.46.5 ](https://github.com/nextcloud/nextcloudpi/commit/69242d0) (2018-02-09) nc-backup: stronger permissions for backup file
 
