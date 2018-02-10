@@ -167,15 +167,14 @@ HTML;
         </div>
       </div>
 
-      <div id="poweroff-dialog" class='dialog primary' style='display:none;'>
-        <input type='submit' id='poweroff-option_shutdown' class='primary' value='shut down' />
-        <input type='submit' id='poweroff-option_reboot' class='primary' value='reboot' />
-        <input type='submit' id='poweroff-option_cancel' class='primary' value='cancel' />
-      </div>
-
-      <div id='overlay' style="display:none;"></div>
-
   </div>
+
+  <div id="poweroff-dialog" class='dialog primary' style='display:none;'>
+      <button id='poweroff-option_shutdown' class='primary'>shut down</button>
+      <button id='poweroff-option_reboot' class='primary'>reboot</button>
+  </div>
+
+  <div id='overlay' style="display:none;"></div>
 
   <?php
     include ('csrf.php');

@@ -37,7 +37,10 @@ $(function()
   if (!!window.EventSource)
     var source = new EventSource('ncp-output.php');
   else
-    $('#config-box-title').fill( "Browser not supported" ); 
+    $('#config-box-title').fill( "Browser not supported" );
+
+  $('#poweroff-dialog').hide();
+  $('#overlay').hide();
 
   source.addEventListener('message', function(e) 
     {
@@ -157,13 +160,22 @@ $(function()
 
   // Power-off button
   $( '#poweroff' ).on('click', function(e)
-  { 
+  {
+    //e.preventBubble = true;
+    $('#overlay').show();
     $('#poweroff-dialog').show();
+    $('#overlay').on('click', function(ev)
+    {
+       $('#poweroff-dialog').hide();
+       $('#overlay').hide();
+       $('#overlay').off('click');
+    });
   });
   
   $( '#poweroff-option_shutdown' ).on('click', function(e)
   {
     $('#poweroff-dialog').hide();
+    $('#overlay').hide();
     // request
     $.request('post', 'ncp-launcher.php', { action:'poweroff', 
                                             csrf_token: $( '#csrf-token' ).get( '.value' ) }).then( 
@@ -177,6 +189,7 @@ $(function()
   $( '#poweroff-option_reboot' ).on('click', function(e)
   {
     $('#poweroff-dialog').hide();
+    $('#overlay').hide();
     // request
     $.request('post', 'ncp-launcher.php', { action:'reboot', 
                                             csrf_token: $( '#csrf-token' ).get( '.value' ) }).then( 
@@ -185,12 +198,6 @@ $(function()
         $('#config-box-wrapper').hide();
         $('#config-box-title').fill( "Rebooting..." ); 
       }).error( errorMsg );
-  } );
-
-  $( '#poweroff-option_cancel' ).on('click', function(e)
-  {
-    $('#poweroff-dialog').hide();
-    // request
   } );
 
   // Wizard button

@@ -1199,9 +1199,13 @@ a#versionlink{
 }
 
 #poweroff-dialog {
-  display: block;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-around;
+  align-items: center;
   width: 300px;
-  height: 200px;
+  height: 60px;
   background-color: white;
   border-style: solid;
   border-width: 4px;
@@ -1209,15 +1213,22 @@ a#versionlink{
   position: fixed;
   top: 50%;
   left: 50%;
-  margin-top: -100px;
-  margin-left: -150px;
+  transform: translate(-50%, -50%);
+  text-align: center;
   z-index: 1;
+  line-height: 60px;
+}
+
+#poweroff-dialog button {
+   font-size: 2em;
 }
 
 #overlay {
   display: block;
-  background-color: rgba(128, 128, 128, 0.5);
+  background-color: rgba(0, 0, 0, 0.5);
   position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   z-index: 0;

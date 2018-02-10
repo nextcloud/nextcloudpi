@@ -107,13 +107,21 @@ else if ( $_POST['action'] == "launch" && $_POST['config'] )
   echo '"' . $ret . '" }';
 }
 
-else if ( $_POST['action'] == "poweroff" )
+else
 {
   // CSRF check
   $token = isset($_POST['csrf_token']) ? $_POST['csrf_token'] : '';
   if ( empty($token) || !validateCSRFToken($token) )
     exit( '{ "output": "Unauthorized request. Try reloading the page" }' );
-  shell_exec( 'bash -c "( sleep 2 && sudo halt ) 2>/dev/null >/dev/null &"' );
+
+  if ( $_POST['action'] == "poweroff" )
+  {
+    shell_exec( 'bash -c "( sleep 2 && sudo halt ) 2>/dev/null >/dev/null &"' );
+  }
+  else if ( $_POST['action'] == "reboot" )
+  {
+    shell_exec('bash -c "( sleep 2 && sudo reboot ) 2>/dev/null >/dev/null &"');
+  }
 }
 
 // License
