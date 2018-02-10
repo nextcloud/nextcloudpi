@@ -1,5 +1,7 @@
 
-[v0.46.16](https://github.com/nextcloud/nextcloudpi/commit/93d58f2) (2018-02-16) remove redundant configuration from unattended upgrades
+[v0.46.17](https://github.com/nextcloud/nextcloudpi/commit/fbe639a) (2018-02-10) Add dialog for shutdown.
+
+[v0.46.16](https://github.com/nextcloud/nextcloudpi/commit/2d3fc6f) (2018-02-16) remove redundant configuration from unattended upgrades
 
 [v0.46.15](https://github.com/nextcloud/nextcloudpi/commit/45c5608) (2018-02-16) lamp: enhance SSL security (chacha cypher), and OCSP stapling
 

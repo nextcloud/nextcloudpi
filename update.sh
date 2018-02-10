@@ -264,6 +264,10 @@ launch_script $1
 EOF
   chmod 700 /home/www/ncp-launcher.sh
 
+  # update sudoers permissions for the reboot command
+  grep -q reboot /etc/sudoers || \
+    sed -i 's|www-data.*|www-data ALL = NOPASSWD: /home/www/ncp-launcher.sh , /sbin/halt, /sbin/reboot|' /etc/sudoers
+
 } # end - only live updates
 
 exit 0

@@ -110,7 +110,7 @@ cd $DIR
 launch_script $1
 EOF
   chmod 700 /home/www/ncp-launcher.sh
-  echo "www-data ALL = NOPASSWD: /home/www/ncp-launcher.sh , /sbin/halt" >> /etc/sudoers
+  echo "www-data ALL = NOPASSWD: /home/www/ncp-launcher.sh , /sbin/halt, /sbin/reboot" >> /etc/sudoers
 
   # NEXTCLOUDPI AUTO TRUSTED DOMAIN
   mkdir -p /usr/lib/systemd/system
