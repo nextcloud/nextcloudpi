@@ -61,7 +61,7 @@
   {
     echo <<<HTML
     <div id="first-run-wizard">
-      <div>
+      <div class='dialog'>
         <br>
         <h2 id="config-box-title">NextCloudPi First Run</h2>
         <p>Click to start the configuration wizard</p>
@@ -168,6 +168,13 @@ HTML;
       </div>
 
   </div>
+
+  <div id="poweroff-dialog" class='dialog primary hidden'>
+      <button id='poweroff-option_shutdown' class='primary'>shut down</button>
+      <button id='poweroff-option_reboot' class='primary'>reboot</button>
+  </div>
+
+  <div id='overlay' class="hidden"></div>
 
   <?php
     include ('csrf.php');
