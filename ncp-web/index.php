@@ -61,7 +61,7 @@
   {
     echo <<<HTML
     <div id="first-run-wizard">
-      <div>
+      <div class='dialog'>
         <br>
         <h2 id="config-box-title">NextCloudPi First Run</h2>
         <p>Click to start the configuration wizard</p>
@@ -166,6 +166,14 @@ HTML;
           <textarea readonly id="details-box" rows="25" cols="60"></textarea>
         </div>
       </div>
+
+      <div id="poweroff-dialog" class='dialog primary' style='display:none;'>
+        <input type='submit' id='poweroff-option_shutdown' class='primary' value='shut down' />
+        <input type='submit' id='poweroff-option_reboot' class='primary' value='reboot' />
+        <input type='submit' id='poweroff-option_cancel' class='primary' value='cancel' />
+      </div>
+
+      <div id='overlay' style="display:none;"></div>
 
   </div>
 

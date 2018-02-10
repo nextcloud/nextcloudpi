@@ -157,7 +157,13 @@ $(function()
 
   // Power-off button
   $( '#poweroff' ).on('click', function(e)
+  { 
+    $('#poweroff-dialog').show();
+  });
+  
+  $( '#poweroff-option_shutdown' ).on('click', function(e)
   {
+    $('#poweroff-dialog').hide();
     // request
     $.request('post', 'ncp-launcher.php', { action:'poweroff', 
                                             csrf_token: $( '#csrf-token' ).get( '.value' ) }).then( 
@@ -166,6 +172,25 @@ $(function()
         $('#config-box-wrapper').hide();
         $('#config-box-title').fill( "Shutting down..." ); 
       }).error( errorMsg );
+  } );
+
+  $( '#poweroff-option_reboot' ).on('click', function(e)
+  {
+    $('#poweroff-dialog').hide();
+    // request
+    $.request('post', 'ncp-launcher.php', { action:'reboot', 
+                                            csrf_token: $( '#csrf-token' ).get( '.value' ) }).then( 
+      function success( result ) 
+      {
+        $('#config-box-wrapper').hide();
+        $('#config-box-title').fill( "Rebooting..." ); 
+      }).error( errorMsg );
+  } );
+
+  $( '#poweroff-option_cancel' ).on('click', function(e)
+  {
+    $('#poweroff-dialog').hide();
+    // request
   } );
 
   // Wizard button

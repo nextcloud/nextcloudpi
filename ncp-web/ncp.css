@@ -1172,7 +1172,7 @@ a#versionlink{
   cursor:pointer;
 }
 
-#first-run-wizard div {
+.dialog {
   display:block;
   background: white;
   position:relative;
@@ -1196,4 +1196,29 @@ a#versionlink{
 
 #wizard-btn {
   cursor: pointer;
+}
+
+#poweroff-dialog {
+  display: block;
+  width: 300px;
+  height: 200px;
+  background-color: white;
+  border-style: solid;
+  border-width: 4px;
+  border-color:#0082c9;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  margin-top: -100px;
+  margin-left: -150px;
+  z-index: 1;
+}
+
+#overlay {
+  display: block;
+  background-color: rgba(128, 128, 128, 0.5);
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
 }
