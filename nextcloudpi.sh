@@ -120,7 +120,7 @@ sleep 0.5 && echo "" > /run/ncp.log
 exit $RET
 EOF
   chmod 700 /home/www/ncp-launcher.sh
-  echo "www-data ALL = NOPASSWD: /home/www/ncp-launcher.sh , /sbin/halt" >> /etc/sudoers
+  echo "www-data ALL = NOPASSWD: /home/www/ncp-launcher.sh , /sbin/halt, /sbin/reboot" >> /etc/sudoers
 
   # NEXTCLOUDPI AUTO TRUSTED DOMAIN
   mkdir -p /usr/lib/systemd/system
