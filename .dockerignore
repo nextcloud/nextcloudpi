@@ -2,6 +2,5 @@ torrent/
 partial/
 qemu-raspbian-network/
 armbian/
-docker-armhf/
 *.img
 *.tar.bz2
