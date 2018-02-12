@@ -42,15 +42,23 @@ install()
   /etc/letsencrypt/letsencrypt-auto --help # do not actually run certbot, only install packages
 
   [[ "$DOCKERBUILD" == 1 ]] && {
-    cat > /etc/services-available.d/100letsencrypt <<EOF
+    # execute before lamp stack
+    cat > /etc/services-available.d/009letsencrypt <<EOF
 #!/bin/bash
 
 source /usr/local/etc/library.sh
 persistent_cfg /etc/letsencrypt
 
+cat > /etc/cron.weekly/letsencrypt-ncp <<EOFCRON
+#!/bin/bash
+/etc/letsencrypt/certbot-auto renew --quiet
+EOFCRON
+
+chmod +x /etc/cron.weekly/letsencrypt-ncp
+
 exit 0
 EOF
-    chmod +x /etc/services-available.d/100letsencrypt
+    chmod +x /etc/services-available.d/009letsencrypt
   }
 }
 
@@ -82,6 +90,10 @@ EOF
     # delayed in bg so it does not kill the connection, and we get AJAX response
     bash -c "sleep 2 && service apache2 reload" &>/dev/null &
     rm -rf $NCDIR/.well-known
+    
+    # update configuration
+    /usr/local/sbin/update-rc.d letsencrypt enable
+
     return 0
   }
   rm -rf $NCDIR/.well-known
