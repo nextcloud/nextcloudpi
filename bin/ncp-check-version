@@ -6,7 +6,7 @@
 
 rm -rf /tmp/ncp-check-tmp
 
-git clone --depth 20 -q --bare https://github.com/nextcloud/nextcloudpi.git /tmp/ncp-check-tmp {
+git clone --depth 20 -q --bare https://github.com/nextcloud/nextcloudpi.git /tmp/ncp-check-tmp || {
   echo "The git clone command failed: No connectivity to https://github.com ?"
   exit 1
 }
