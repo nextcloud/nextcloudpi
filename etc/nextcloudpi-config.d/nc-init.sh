@@ -142,14 +142,19 @@ replace into  oc_appconfig values ( 'theming', 'logoMime'      , "image/svg+xml"
 replace into  oc_appconfig values ( 'theming', 'backgroundMime', "image/png"               );
 EOF
 
-  # NCP notifications
-  local URL=$( wget -q -O - https://api.github.com/repos/nextcloud/admin_notifications/releases | \
-                grep browser_download_url | head -1 | cut -d '"' -f 4 )
-  cd /var/www/nextcloud/apps
-  wget "$URL" -O admin_notifications.tar.gz
-  tar -xf admin_notifications.tar.gz
-  rm *.tar.gz
-  chown -R www-data:www-data *
+  # enable some apps by default
+  sudo -u www-data php /var/www/nextcloud/occ app:install calendar
+  sudo -u www-data php /var/www/nextcloud/occ app:install contacts
+  sudo -u www-data php /var/www/nextcloud/occ app:install notes
+  sudo -u www-data php /var/www/nextcloud/occ app:install tasks
+  sudo -u www-data php /var/www/nextcloud/occ app:install news
+  sudo -u www-data php /var/www/nextcloud/occ app:install admin_notifications
+
+  sudo -u www-data php /var/www/nextcloud/occ app:enable calendar
+  sudo -u www-data php /var/www/nextcloud/occ app:enable contacts
+  sudo -u www-data php /var/www/nextcloud/occ app:enable notes
+  sudo -u www-data php /var/www/nextcloud/occ app:enable tasks
+  sudo -u www-data php /var/www/nextcloud/occ app:enable news
   sudo -u www-data php /var/www/nextcloud/occ app:enable admin_notifications
 
   # other
