@@ -20,7 +20,7 @@ test -f $FILE || {
 }
 
 [[ "$2" == "enable" ]] && {
-  ln -s $FILE /etc/services-enabled.d/$( basename $FILE )
+  ln -sf $FILE /etc/services-enabled.d/$( basename $FILE )
   echo "enabled $1"
   exit 0
 }

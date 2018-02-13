@@ -92,7 +92,7 @@ EOF
     rm -rf $NCDIR/.well-known
     
     # update configuration
-    /usr/local/sbin/update-rc.d letsencrypt enable
+    [[ "$DOCKERBUILD" == 1 ]] && update-rc.d letsencrypt enable
 
     return 0
   }
