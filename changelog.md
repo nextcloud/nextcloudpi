@@ -1,5 +1,9 @@
 
-[v0.46.18](https://github.com/nextcloud/nextcloudpi/commit/a3b8829) (2018-02-18) ncp-web: disable event handler after poweroff
+[v0.46.20](https://github.com/nextcloud/nextcloudpi/commit/494bb10) (2018-02-15) random password provisioning on boot/startup
+
+[v0.46.19](https://github.com/nextcloud/nextcloudpi/commit/a57bedb) (2018-02-18) ncp-web: re-style poweroff menu
+
+[v0.46.18](https://github.com/nextcloud/nextcloudpi/commit/9b78cd6) (2018-02-18) ncp-web: disable event handler after poweroff
 
 [v0.46.17](https://github.com/nextcloud/nextcloudpi/commit/91686f2) (2018-02-10) Add dialog for shutdown.
 
