@@ -1,7 +1,11 @@
 
-[v0.46.10](https://github.com/nextcloud/nextcloudpi/commit/b2c809c) (2018-02-09) samba: create share per NC user
+[v0.46.12](https://github.com/nextcloud/nextcloudpi/commit/2eda867) (2018-02-15) lamp: protect apache fingerprinting
 
-[v0.46.9](https://github.com/nextcloud/nextcloudpi/commit/19ccdb4) (2018-02-13) letsencrypt: only call update-rc.d in docker builds
+[v0.46.11](https://github.com/nextcloud/nextcloudpi/commit/04ebdea) (2018-02-15) SSH: dont create user if it doesnt exist
+
+[v0.46.10](https://github.com/nextcloud/nextcloudpi/commit/0440d9f) (2018-02-09) samba: create share per NC user
+
+[v0.46.9 ](https://github.com/nextcloud/nextcloudpi/commit/19ccdb4) (2018-02-13) letsencrypt: only call update-rc.d in docker builds
 
 [v0.46.8 ](https://github.com/nextcloud/nextcloudpi/commit/354c767) (2018-02-12) preactivate useful apps for a selfhosted instance
 
