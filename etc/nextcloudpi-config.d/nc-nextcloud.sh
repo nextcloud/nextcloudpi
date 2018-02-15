@@ -217,6 +217,10 @@ EOF
 </VirtualHost>
 EOF
 
+  # some added security
+  sed -i 's|^ServerSignature .*|ServerSignature Off|' /etc/apache2/conf-enabled/security.conf
+  sed -i 's|^ServerTokens .*|ServerTokens Prod|'      /etc/apache2/conf-enabled/security.conf
+
   echo "Setting up system..."
 
   ## SET LIMITS
