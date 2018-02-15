@@ -73,7 +73,7 @@ rm -rf /usr/share/doc/*; \
 rm -f /var/log/alternatives.log /var/log/apt/*; \
 rm /var/cache/debconf/*-old; 
 
-COPY docker-armhf/nextcloudpi/000ncp /etc/services-enabled.d/
+COPY docker-common/nextcloudpi/000ncp /etc/services-enabled.d/
 
 # 4443 - ncp-web
 EXPOSE 80 443 4443
