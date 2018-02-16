@@ -105,13 +105,26 @@ function is_active_script()
   )
 }
 
+function run_and_log()
+{
+  local SCRIPT=$1
+  touch /var/log/ncp.log
+  chmod 640 /var/log/ncp.log
+  chown root:www-data /var/log/ncp.log
+  echo -e "[ $( basename "$SCRIPT" .sh ) ]" >> /var/log/ncp.log
+  configure 2>&1 | tee -a /var/log/ncp.log
+  local RET="${PIPESTATUS[0]}"
+  echo "" >> /var/log/ncp.log
+  return "$RET"
+}
+
 function launch_script()
 {
   (
     local SCRIPT=$1
     source ./"$SCRIPT"
     set +x
-    configure
+    run_and_log "$SCRIPT"
   )
 }
 
@@ -140,7 +153,7 @@ function configure_script()
     printf '\033[2J' && tput cup 0 0             # clear screen, don't clear scroll, cursor on top
     echo -e "Launching $( basename "$SCRIPT" .sh )"
     set +x
-    configure
+    run_and_log "$SCRIPT"
     return 0
   )
 }
