@@ -1,5 +1,13 @@
 
-[v0.46.12](https://github.com/nextcloud/nextcloudpi/commit/2eda867) (2018-02-15) lamp: protect apache fingerprinting
+[v0.46.16](https://github.com/nextcloud/nextcloudpi/commit/93d58f2) (2018-02-16) remove redundant configuration from unattended upgrades
+
+[v0.46.15](https://github.com/nextcloud/nextcloudpi/commit/45c5608) (2018-02-16) lamp: enhance SSL security (chacha cypher), and OCSP stapling
+
+[v0.46.14](https://github.com/nextcloud/nextcloudpi/commit/90dc944) (2018-02-16) log all NCP actions to /var/log/ncp.log
+
+[v0.46.13](https://github.com/nextcloud/nextcloudpi/commit/19b0609) (2018-02-16) update: accept github branch as an argument to ncp-update to test development branch
+
+[v0.46.12](https://github.com/nextcloud/nextcloudpi/commit/629ba33) (2018-02-15) lamp: protect apache fingerprinting
 
 [v0.46.11](https://github.com/nextcloud/nextcloudpi/commit/04ebdea) (2018-02-15) SSH: dont create user if it doesnt exist
 
