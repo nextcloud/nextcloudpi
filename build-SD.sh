@@ -13,6 +13,11 @@ source buildlib.sh          # initializes $IMGNAME
 IP=$1                       # First argument is the QEMU Raspbian IP address
 
 
+[[ "$FTPPASS" == "" ]] && { 
+  echo -e "\e[1mNo FTPPASS variable found, FTP won't work.\nYou probably want to cancel now"
+  sleep 5
+}
+
 ## BUILDING
 
 NC_INSTALL=etc/nextcloudpi-config.d/nc-nextcloud.sh
@@ -56,7 +61,7 @@ ssh_pi "$IP" sudo halt
 ## UPLOADING
 
 create_torrent "${IMGNAME}.tar.bz2"
-upload_ftp "$IMGNAME"
+upload_ftp "$IMGNAME" || true
 
 ## CLEANUP
 
