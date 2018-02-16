@@ -249,6 +249,10 @@ EOF
   sed -i 's|^ServerSignature .*|ServerSignature Off|' /etc/apache2/conf-enabled/security.conf
   sed -i 's|^ServerTokens .*|ServerTokens Prod|'      /etc/apache2/conf-enabled/security.conf
 
+  # remove redundant configuration from unattended upgrades
+  [[ "$( ls -l /etc/php/7.0/fpm/conf.d/*-opcache.ini |  wc -l )" -gt 1 ]] && rm "$( ls /etc/php/7.0/fpm/conf.d/*-opcache.ini | tail -1 )"
+  [[ "$( ls -l /etc/php/7.0/cli/conf.d/*-opcache.ini |  wc -l )" -gt 1 ]] && rm "$( ls /etc/php/7.0/cli/conf.d/*-opcache.ini | tail -1 )"
+
   # upgrade launcher after logging improvements
   cat > /home/www/ncp-launcher.sh <<'EOF'
 #!/bin/bash
