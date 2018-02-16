@@ -249,6 +249,17 @@ EOF
   sed -i 's|^ServerSignature .*|ServerSignature Off|' /etc/apache2/conf-enabled/security.conf
   sed -i 's|^ServerTokens .*|ServerTokens Prod|'      /etc/apache2/conf-enabled/security.conf
 
+  # upgrade launcher after logging improvements
+  cat > /home/www/ncp-launcher.sh <<'EOF'
+#!/bin/bash
+DIR=/usr/local/etc/nextcloudpi-config.d
+test -f $DIR/$1 || { echo "File not found"; exit 1; }
+source /usr/local/etc/library.sh
+cd $DIR
+launch_script $1
+EOF
+  chmod 700 /home/www/ncp-launcher.sh
+
 } # end - only live updates
 
 exit 0

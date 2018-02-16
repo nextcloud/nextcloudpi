@@ -32,8 +32,6 @@ $(document).ready(function(){
       $('button').prop('disabled', true);
       addNotification( action, 'gray-bg' ) ;
 
-      logOutput( '\n[ ' + action + ' ]' + '\n' );
-
       $.post('../ncp-launcher.php',
         { action:'launch', 
           ref: action,

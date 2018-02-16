@@ -45,7 +45,7 @@ function pingClient()
  */
 function follow($file)
 {
-  $size = 0;
+  $size = filesize($file);
   while (true) 
   {
     if ( !file_exists($file) )
@@ -78,7 +78,8 @@ function follow($file)
 
 session_write_close();
 echo str_pad('',1024*1024*4); // make sure the browser buffer becomes full
-follow( '/run/ncp.log' );
+touch(  '/var/log/ncp.log' );
+follow( '/var/log/ncp.log' );
 
 // License
 //
