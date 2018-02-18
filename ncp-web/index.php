@@ -170,8 +170,12 @@ HTML;
   </div>
 
   <div id="poweroff-dialog" class='dialog primary hidden'>
-      <button id='poweroff-option_shutdown' class='primary'>shut down</button>
-      <button id='poweroff-option_reboot' class='primary'>reboot</button>
+      <div id='poweroff-option_shutdown' class='button big-button'>
+         <img class="wizard-btn" src="img/poweroff.svg">&nbsp;&nbsp;shut down
+      </div>
+      <div id='poweroff-option_reboot'   class='button big-button'>
+         <img class="wizard-btn" src="img/reboot.svg">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reboot&nbsp;&nbsp;&nbsp;
+      </div>
   </div>
 
   <div id='overlay' class="hidden"></div>
