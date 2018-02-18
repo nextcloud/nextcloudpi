@@ -159,7 +159,7 @@ $(function()
   } );
 
   // Power-off button
-  $( '#poweroff' ).on('click', function(e)
+  function poweroff_event_handler(e)
   {
     //e.preventBubble = true;
     $('#overlay').show();
@@ -170,7 +170,8 @@ $(function()
        $('#overlay').hide();
        $('#overlay').off('click');
     });
-  });
+  }
+  $( '#poweroff' ).on('click', poweroff_event_handler );
   
   $( '#poweroff-option_shutdown' ).on('click', function(e)
   {
@@ -182,6 +183,7 @@ $(function()
       function success( result ) 
       {
         $('#config-box-wrapper').hide();
+        $.off( poweroff_event_handler );
         $('#config-box-title').fill( "Shutting down..." ); 
       }).error( errorMsg );
   } );
@@ -196,6 +198,7 @@ $(function()
       function success( result ) 
       {
         $('#config-box-wrapper').hide();
+        $.off( poweroff_event_handler );
         $('#config-box-title').fill( "Rebooting..." ); 
       }).error( errorMsg );
   } );
