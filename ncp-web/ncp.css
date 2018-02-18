@@ -1118,6 +1118,10 @@ select {
   background-image: url('img/poweroff.svg');
 }
 
+.icon-reboot-white {
+  background-image: url('img/reboot.svg');
+}
+
 .icon-wizard-white {
   background-image: url('img/wizard.svg');
 }
@@ -1181,6 +1185,22 @@ a#versionlink{
   margin:0px auto;
 }
 
+.big-button {
+  display:block;
+  background: #0082c9;
+  width:100%;
+  margin:0px auto;
+  color: white;
+  cursor: pointer;
+  -ms-filter:'progid:DXImageTransform.Microsoft.Alpha(Opacity=100)';
+  opacity:1
+}
+.big-button:hover {
+  border-color: white !important;
+  -ms-filter:'progid:DXImageTransform.Microsoft.Alpha(Opacity=75)';
+  opacity:0.75
+}
+
 #close-wizard {
   position: absolute;
   top: 5px;
@@ -1200,12 +1220,11 @@ a#versionlink{
 
 #poweroff-dialog {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   flex-wrap: nowrap;
   justify-content: space-around;
   align-items: center;
-  width: 300px;
-  height: 60px;
+  width: 200px;
   background-color: white;
   position: fixed;
   top: 50%;
@@ -1214,6 +1233,7 @@ a#versionlink{
   text-align: center;
   z-index: 1;
   line-height: 60px;
+  border-radius: 3px;
 }
 
 #poweroff-dialog button {
