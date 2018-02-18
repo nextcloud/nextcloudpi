@@ -1,11 +1,13 @@
 
-[v0.46.17](https://github.com/nextcloud/nextcloudpi/commit/fbe639a) (2018-02-10) Add dialog for shutdown.
+[v0.46.18](https://github.com/nextcloud/nextcloudpi/commit/a3b8829) (2018-02-18) ncp-web: disable event handler after poweroff
 
-[v0.46.16](https://github.com/nextcloud/nextcloudpi/commit/2d3fc6f) (2018-02-16) remove redundant configuration from unattended upgrades
+[v0.46.17](https://github.com/nextcloud/nextcloudpi/commit/91686f2) (2018-02-10) Add dialog for shutdown.
 
-[v0.46.15](https://github.com/nextcloud/nextcloudpi/commit/45c5608) (2018-02-16) lamp: enhance SSL security (chacha cypher), and OCSP stapling
+[v0.46.16](https://github.com/nextcloud/nextcloudpi/commit/4bdbf93) (2018-02-16) remove redundant configuration from unattended upgrades
 
-[v0.46.14](https://github.com/nextcloud/nextcloudpi/commit/90dc944) (2018-02-16) log all NCP actions to /var/log/ncp.log
+[v0.46.15](https://github.com/nextcloud/nextcloudpi/commit/e965c1a) (2018-02-16) lamp: enhance SSL security (chacha cypher), and OCSP stapling
+
+[v0.46.14](https://github.com/nextcloud/nextcloudpi/commit/ff33be9) (2018-02-16) log all NCP actions to /var/log/ncp.log
 
 [v0.46.13](https://github.com/nextcloud/nextcloudpi/commit/19b0609) (2018-02-16) update: accept github branch as an argument to ncp-update to test development branch
 
