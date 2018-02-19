@@ -3,9 +3,12 @@ services:
   nextcloudpi:
     image: ownyourbits/nextcloudpi-x86
     command: "${IP}"
+    ports:
+     - "80:80"
+     - "443:443"
+     - "4443:4443"
     volumes:
      - ncdata:/data
-    network_mode: "host"
 
 volumes:
   ncdata:
