@@ -1,5 +1,9 @@
 
-[v0.46.20](https://github.com/nextcloud/nextcloudpi/commit/494bb10) (2018-02-15) random password provisioning on boot/startup
+[v0.46.22](https://github.com/nextcloud/nextcloudpi/commit/37b396a) (2018-02-19) UFW: make it work with nc-forward-ports
+
+[v0.46.21](https://github.com/nextcloud/nextcloudpi/commit/4183052) (2018-02-19) docker: use docker networks for x86
+
+[v0.46.20](https://github.com/nextcloud/nextcloudpi/commit/ce650f5) (2018-02-15) random password provisioning on boot/startup
 
 [v0.46.19](https://github.com/nextcloud/nextcloudpi/commit/a57bedb) (2018-02-18) ncp-web: re-style poweroff menu
 
