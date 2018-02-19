@@ -148,6 +148,7 @@ HTML;
           </div>
 
       <div id="app-content">
+        <div id="app-navigation-toggle" class="icon-menu hidden"></div>
         <h2 id="config-box-title">Configure NextCloudPi features</h2>
         <a href="#" target="_blank">
           <div id="config-extra-info" class="icon-info"></div>
@@ -163,7 +164,7 @@ HTML;
                 <div id="circle-retstatus" class="icon-red-circle"></div>
               </div>
           </form>
-          <textarea readonly id="details-box" rows="25" cols="60"></textarea>
+          <textarea readonly id="details-box" rows="12"></textarea>
         </div>
       </div>
 

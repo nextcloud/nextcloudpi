@@ -1,5 +1,7 @@
 
-[v0.46.22](https://github.com/nextcloud/nextcloudpi/commit/37b396a) (2018-02-19) UFW: make it work with nc-forward-ports
+[v0.46.23](https://github.com/nextcloud/nextcloudpi/commit/d0d6159) (2018-02-19) ncp-web: support for small screens
+
+[v0.46.22](https://github.com/nextcloud/nextcloudpi/commit/44f00b6) (2018-02-19) UFW: make it work with nc-forward-ports
 
 [v0.46.21](https://github.com/nextcloud/nextcloudpi/commit/4183052) (2018-02-19) docker: use docker networks for x86
 

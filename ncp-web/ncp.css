@@ -38,7 +38,8 @@ caption,th,td {
  font-weight:normal
 }
 table,td,th {
- vertical-align:middle
+ vertical-align:middle;
+ padding-right: 5px;
 }
 a {
  border:0;
@@ -589,6 +590,7 @@ kbd {
  border-right:1px solid #ebebeb;
  display:flex;
  flex-direction:column;
+ z-index: 2000;
 }
 #app-navigation > ul {
  position:relative;
@@ -891,22 +893,20 @@ select {
  visibility:hidden
 }
 @media only screen and (max-width:768px) {
- #app-navigation,#app-content {
+ #app-content {
   position:absolute !important;
   top:0;
   left:0;
   right:0;
-  bottom:0
- }
- #app-navigation {
-  width:250px !important
- }
- #app-content {
-  width:100% !important;
-  left:0 !important;
+  bottom:0;
+  width: 80% !important;
+  margin: auto !important;
   background-color:#fff;
   overflow-x:hidden !important;
   z-index:1000
+ }
+ #app-navigation {
+  width:0px;
  }
  #body-settings #app-content {
   overflow-x:auto !important
@@ -1050,9 +1050,10 @@ select {
 }
 
 #config-box-wrapper {
-  width: 450px ;
-  margin-left: auto ;
-  margin-right: auto ;
+  width: 80%;
+  max-width: 450px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 #config-box-wrapper table {
@@ -1064,7 +1065,7 @@ select {
 }
 
 #details-box {
-  width: auto;
+  width: 100%;
 }
 
 #loading-gif {
@@ -1076,7 +1077,7 @@ select {
 }
 
 #config-box-info {
-  white-space: pre;
+  white-space: pre-wrap;
   text-align: center;
 }
 
@@ -1087,7 +1088,11 @@ select {
 }
 
 .icon-close {
- background-image:url('close.svg')
+ background-image:url('img/close.svg')
+}
+
+.icon-menu {
+  background-image: url('img/menu.svg');
 }
 
 #power {
@@ -1126,18 +1131,18 @@ select {
   background-image: url('img/wizard.svg');
 }
 .icon-red-circle {
-  background-image: url('red-circle.svg');
+  background-image: url('img/red-circle.svg');
   padding: 8px;
   display: none;
 }
 
 .icon-green-circle {
-  background-image: url('green-circle.svg');
+  background-image: url('img/green-circle.svg');
   padding: 8px;
 }
 
 .icon-info {
-  background-image: url('info.svg');
+  background-image: url('img/info.svg');
   padding: 8px;
   float: right;
   display: none;
@@ -1153,6 +1158,10 @@ a#versionlink{
  color:white;
  text-decoration:none;
  cursor:pointer
+}
+
+a#versionlink:hover {
+  opacity: 0.8;
 }
 
 #update-notification {
@@ -1242,11 +1251,11 @@ a#versionlink{
 
 #overlay {
   display: block;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.2);
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 0;
+  z-index: 1500;
 }
