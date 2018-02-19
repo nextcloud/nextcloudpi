@@ -64,6 +64,9 @@ $(function()
     if ( confLock ) return;
     confLock = true;
 
+    if ( window.innerWidth < 768 )
+      close_menu();
+
     $( '#' + selectedID ).set('-active');
     var that = this;
     $.request('post', 'ncp-launcher.php', { action:'cfgreq', 
@@ -158,21 +161,80 @@ $(function()
     $('#details-box').hide( '' );
   } );
 
+  // slide menu
+  var slide_menu_enabled = false;
+
+  function hide_overlay(e) { $('#overlay').hide() }
+
+  function open_menu()
+  {
+    if ( $('#app-navigation').get('$width') != '250px' )
+    {
+      $('#overlay').show();
+      $('#overlay').on('|click', close_menu );
+      $('#app-navigation').animate( {$width: '250px'}, 150 );
+    }
+  }
+
+  function close_menu()
+  {
+    if ( $('#app-navigation').get('$width') == '250px' )
+    {
+      $('#app-navigation').animate( {$width: '0px'}, 150 );
+      $('#overlay').hide();
+      $.off( close_menu );
+    }
+  }
+
+  function close_menu_on_click_out(e) { close_menu(); }
+
+  function enable_slide_menu()
+  {
+    if ( slide_menu_enabled ) return;
+    $( '#app-navigation' ).set( { $width: '0px' } );
+    $( '#app-navigation' ).set( { $position: 'absolute' } );
+    $( '#app-navigation-toggle' ).on('click', open_menu );
+    $( '#app-content' ).on('|click', close_menu_on_click_out );
+    slide_menu_enabled = true;
+  }
+
+  function disable_slide_menu()
+  {
+    if ( !slide_menu_enabled ) return;
+    $.off( open_menu );
+    $.off( close_menu );
+    $.off( close_menu_on_click_out );
+    $( '#app-navigation' ).set( { $width: '250px' } );
+    $( '#app-navigation' ).set( { $position: 'unset' } );
+    $('#overlay').hide();
+    slide_menu_enabled = false;
+  }
+
+  if ( window.innerWidth < 768 ) 
+    enable_slide_menu();
+
+  window.addEventListener('resize', function(){ 
+    if ( window.innerWidth < 768 ) 
+      enable_slide_menu();
+    else
+      disable_slide_menu();
+  } );
+
   // Power-off button
+  function hide_poweroff_dialog(ev)
+  {
+    $('#poweroff-dialog').hide();
+    $('#overlay').hide();
+    $('#overlay').off('click');
+  }
   function poweroff_event_handler(e)
   {
-    //e.preventBubble = true;
     $('#overlay').show();
     $('#poweroff-dialog').show();
-    $('#overlay').on('click', function(ev)
-    {
-       $('#poweroff-dialog').hide();
-       $('#overlay').hide();
-       $('#overlay').off('click');
-    });
+    $('#overlay').on('click', hide_poweroff_dialog );
   }
   $( '#poweroff' ).on('click', poweroff_event_handler );
-  
+
   $( '#poweroff-option_shutdown' ).on('click', function(e)
   {
     $('#poweroff-dialog').hide();
