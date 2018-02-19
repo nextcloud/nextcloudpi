@@ -17,6 +17,9 @@ OCC="$NCDIR/occ"
   exit 0
 }
 
+echo "Provisioning"
+/usr/local/bin/ncp-provisioning.sh
+
 echo "Starting Redis"
 mkdir -p /var/run/redis
 chown redis /var/run/redis
