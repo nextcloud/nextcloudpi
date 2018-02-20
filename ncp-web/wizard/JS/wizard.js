@@ -23,6 +23,8 @@ $(document).ready(function(){
       $('#output-wrapper').show();
       var textarea = $('#output-box');
       textarea[0].scrollTop = textarea[0].scrollHeight;
+      textarea.animate({ width: "40em" });
+      $('#overlay').show();
     }
 
     // launch an request for launch action to the backend
@@ -284,7 +286,15 @@ $(document).ready(function(){
     // close log output
 	$('.output-close').on('click', function(e){
       if( e.target.id == 'output-wrapper' )
-        $('#output-wrapper').hide();
+      {
+        $('#output-box').animate(
+          { width: "0em" },
+          { complete: function() {
+              $('#output-wrapper').hide();
+              $('#overlay').hide();
+            }
+          } );
+      }
     } );
 
     // make sure log box starts empty

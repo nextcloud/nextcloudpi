@@ -25,6 +25,7 @@
         <link rel="icon" type="image/png" href="../img/favicon.png" />
 	</head>
 <body>
+<div id='overlay' class="ncp-hidden"></div>
 <div id="rootwizard">
 	<ul id="ncp-nav">
 		<li><a href="#tab1" data-toggle="tab">Welcome</a></li>

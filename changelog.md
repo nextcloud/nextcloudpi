@@ -1,5 +1,13 @@
 
-[v0.46.23](https://github.com/nextcloud/nextcloudpi/commit/d0d6159) (2018-02-19) ncp-web: support for small screens
+[v0.46.27](https://github.com/nextcloud/nextcloudpi/commit/fe3b78a) (2018-02-20) wizard: animate side logs
+
+[v0.46.26](https://github.com/nextcloud/nextcloudpi/commit/c25a130) (2018-02-21) ncp-web: animate script textbox
+
+[v0.46.25](https://github.com/nextcloud/nextcloudpi/commit/7b61539) (2018-02-21) ncp-web: fix backend request without arguments
+
+[v0.46.24](https://github.com/nextcloud/nextcloudpi/commit/9846f23) (2018-02-21) ncp-web: link to wizard and Nextcloud instance
+
+[v0.46.23](https://github.com/nextcloud/nextcloudpi/commit/6fdd1ea) (2018-02-19) ncp-web: support for small screens
 
 [v0.46.22](https://github.com/nextcloud/nextcloudpi/commit/44f00b6) (2018-02-19) UFW: make it work with nc-forward-ports
 

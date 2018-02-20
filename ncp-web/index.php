@@ -112,6 +112,7 @@ HTML;
     </div>
   </header>
 
+  <div id='overlay' class="hidden"></div>
   <div id="content-wrapper">
 	<div id="content" class="app-files" role="main">
 		<div id="app-navigation">
@@ -180,8 +181,6 @@ HTML;
          <img class="wizard-btn" src="img/reboot.svg">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reboot&nbsp;&nbsp;&nbsp;
       </div>
   </div>
-
-  <div id='overlay' class="hidden"></div>
 
   <?php
     include ('csrf.php');
