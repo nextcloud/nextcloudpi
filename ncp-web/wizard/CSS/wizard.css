@@ -80,6 +80,20 @@ div.linkbox {
   min-width: 16px;
   min-height: 16px;
   background-image:url("../../../img/menu.svg");
+
+  position:fixed;
+  display:inline-block !important;
+  top:45px;
+  left:0;
+  width:44px;
+  height:44px;
+  z-index:2000;
+  cursor:pointer;
+  opacity:0.6
+}
+
+.menu-icon:hover,.menu-icon:focus {
+  opacity:1
 }
 
 #ncp-welcome-logo {
@@ -121,7 +135,7 @@ div.linkbox {
   bottom:0;
   height:100%;
   width:100%;
-  z-index:9000;
+  z-index:2000;
   text-align:center;
   cursor:pointer;
 }
@@ -130,14 +144,8 @@ div.linkbox {
   display:block;
   background: white;
   position:relative;
-  width:40em;
+  width:0em;
   height:100%;
-}
-
-#output-btn {
-  position:fixed;
-  top:5px;
-  left:5px;
 }
 
 td {
@@ -147,4 +155,14 @@ td {
 .buttons-area label{
   margin: 0;
   font-weight: 100;
-};
+}
+
+#overlay {
+  background-color: rgba(0, 0, 0, 0.2);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1500;
+}
