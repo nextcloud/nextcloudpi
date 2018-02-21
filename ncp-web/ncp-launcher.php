@@ -84,15 +84,16 @@ else if ( $_POST['action'] == "launch" && $_POST['config'] )
   $code = file_get_contents( $file )
             or exit( '{ "output": "' . $file . ' read error" }' );
 
-  foreach( $params as $name => $value) 
-  {
-    preg_match( '/^[\w.,@_\/-]+$/' , $value , $matches )
-      or exit( '{ "output": "Invalid input" , "token": "' . getCSRFToken() . '" }' );
-    $code = preg_replace( '/\n' . $name . '_=.*' . PHP_EOL . '/'  ,
-                        PHP_EOL . $name . '_=' . $value . PHP_EOL ,
-                        $code )
-              or exit();
-  }
+  if ( !empty( $params ) )
+    foreach( $params as $name => $value ) 
+    {
+      preg_match( '/^[\w.,@_\/-]+$/' , $value , $matches )
+        or exit( '{ "output": "Invalid input" , "token": "' . getCSRFToken() . '" }' );
+      $code = preg_replace( '/\n' . $name . '_=.*' . PHP_EOL . '/'  ,
+                          PHP_EOL . $name . '_=' . $value . PHP_EOL ,
+                          $code )
+                or exit();
+    }
 
   file_put_contents($file, $code )
     or exit( '{ "output": "' . $file . ' write error" }' );
