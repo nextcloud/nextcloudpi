@@ -265,12 +265,6 @@ $(function()
       }).error( errorMsg );
   } );
 
-  // Wizard button
-  $( '.wizard-btn' ).on('click', function(e)
-  {
-    window.location = 'wizard';
-  } );
- 
   // close notification icon
   $( '.icon-close' ).on('click', function(e)
   {
@@ -287,6 +281,9 @@ $(function()
     if( e.target.id == 'first-run-wizard' )
       $( '#first-run-wizard' ).hide();
   } );
+
+  // click to nextcloud button
+  $('#nextcloudpi').set( '@href', window.location.protocol + '//' + window.location.hostname );
 });
 
 // License
