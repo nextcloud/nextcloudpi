@@ -105,6 +105,8 @@ $(function()
     // reset box
     $('#details-box').fill();
     $('#details-box').show();
+    $('#details-box').set( {$height: '0px'} );
+    $('#details-box').animate( {$height: '500px'}, 150 );
     $('#circle-retstatus').hide();
 
     $( 'input' , '#config-box-wrapper' ).set('@disabled',true);
