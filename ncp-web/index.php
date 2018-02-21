@@ -82,7 +82,7 @@ HTML;
   <header role="banner"><div id="header">
     <div id="header-left">
       <a href="https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/"
-           id="nextcloudpi" tabindex="1" target="_blank">
+           id="nextcloudpi" tabindex="1">
         <div class="logo-icon">
            <h1 class="hidden-visually">NextCloudPi</h1>
         </div>
@@ -95,11 +95,13 @@ HTML;
 <?php 
   if ( file_exists( 'wizard' ) )
     echo <<<HTML
-      <div class="wizard-btn">
-        <div id="expand">
-          <div class="icon-wizard-white"></div>
+      <a href="wizard">
+        <div class="wizard-btn">
+          <div id="expand">
+            <div class="icon-wizard-white"></div>
+          </div>
         </div>
-      </div>
+      </a>
 HTML;
 ?>
       <div id="poweroff">
