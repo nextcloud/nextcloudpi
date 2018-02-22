@@ -1,5 +1,7 @@
 
-[v0.46.30](https://github.com/nextcloud/nextcloudpi/commit/b6ba190) (2018-02-22) add ncp-provisioning to SD card images
+[v0.46.31](https://github.com/nextcloud/nextcloudpi/commit/01090ea) (2018-02-23) update: print info first
+
+[v0.46.30](https://github.com/nextcloud/nextcloudpi/commit/75dc2e6) (2018-02-22) add ncp-provisioning to SD card images
 
 [v0.46.29](https://github.com/nextcloud/nextcloudpi/commit/970a256) (2018-02-22) ncp-web: fix overlay z-index
 
