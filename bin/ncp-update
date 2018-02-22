@@ -5,11 +5,11 @@
 {
   [ "$(id -u)" -ne 0 ] && { printf "Must be run as root. Try 'sudo $0'\n"; exit 1; }
 
+  BRANCH="${1:-master}"
+  [[ "$BRANCH" != "master" ]] && echo "INFO: updating to development branch '$BRANCH'"
+
   echo -e "Downloading updates"
   rm -rf /tmp/ncp-update-tmp
-
-  BRANCH="${1:-master}"
-  [[ "$BRANCH" != "master" ]] && echo "INFO: updating to development branch $BRANCH"
 
   git clone --depth 20 -b "$BRANCH" -q https://github.com/nextcloud/nextcloudpi.git /tmp/ncp-update-tmp || {
     echo "No internet connectivity"
