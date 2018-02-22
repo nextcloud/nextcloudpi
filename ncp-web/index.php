@@ -112,9 +112,9 @@ HTML;
     </div>
   </header>
 
-  <div id='overlay' class="hidden"></div>
   <div id="content-wrapper">
 	<div id="content" class="app-files" role="main">
+        <div id='overlay' class="hidden"></div>
 		<div id="app-navigation">
         	<ul id="ncp-options">
               <?php
