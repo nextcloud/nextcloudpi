@@ -37,5 +37,4 @@ echo -e "[client]\npassword=default" > /root/.my.cnf; \
 chmod 600 /root/.my.cnf
 
 COPY docker-common/nextcloud/020nextcloud /etc/services-enabled.d/
-COPY docker-common/nextcloud/ncp-provisioning.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/ncp-provisioning.sh
+COPY bin/ncp-provisioning.sh /usr/local/bin/

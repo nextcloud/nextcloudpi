@@ -62,7 +62,7 @@ install()
   $APTINSTALL redis-server php7.0-redis
 
   local REDIS_CONF=/etc/redis/redis.conf
-  local REDISPASS=$( openssl rand -base64 32 )
+  local REDISPASS="default"
   sed -i "s|# unixsocket .*|unixsocket /var/run/redis/redis.sock|" $REDIS_CONF
   sed -i "s|# unixsocketperm .*|unixsocketperm 770|"               $REDIS_CONF
   sed -i "s|# requirepass .*|requirepass $REDISPASS|"              $REDIS_CONF
@@ -85,6 +85,21 @@ install()
     systemctl start mysqld
   }
   
+  # service to randomize passwords on first boot
+  cat > /usr/lib/systemd/system/nc-provisioning.service <<'EOF'
+[Unit]
+Description=Randomize passwords on first boot
+Requires=network.target
+After=mysql.service
+
+[Service]
+ExecStart=/bin/bash /usr/local/bin/ncp-provisioning.sh
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+  [[ "$DOCKERBUILD" != 1 ]] && systemctl enable nc-provisioning
   return 0
 }
 
@@ -168,7 +183,7 @@ configure()
   echo "Setting up database..."
 
   # workaround to emulate DROP USER IF EXISTS ..;)
-  local DBPASSWD=$( grep password /root/.my.cnf | cut -d= -f2 )
+  local DBPASSWD=$( grep password /root/.my.cnf | sed 's|password=||' )
   mysql <<EOF
 DROP DATABASE IF EXISTS nextcloud;
 CREATE DATABASE nextcloud
