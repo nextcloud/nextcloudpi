@@ -268,6 +268,21 @@ EOF
   grep -q reboot /etc/sudoers || \
     sed -i 's|www-data.*|www-data ALL = NOPASSWD: /home/www/ncp-launcher.sh , /sbin/halt, /sbin/reboot|' /etc/sudoers
 
+  # ncp redirect to HTTPS
+  [[ -f /etc/apache2/sites-available/ncp-http-redirect.conf ]] || {
+    cat > /etc/apache2/sites-available/ncp-http-redirect.conf <<'EOF'
+<VirtualHost _default_:4443>
+  DocumentRoot /var/www/nextcloud
+  <IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{HTTPS} !=on
+    RewriteRule ^/?(.*) https://%{SERVER_NAME}/$1 [R,L]
+  </IfModule>
+</VirtualHost>
+EOF
+    a2ensite ncp-http-redirect
+    apache2ctl graceful
+  }
 } # end - only live updates
 
 exit 0

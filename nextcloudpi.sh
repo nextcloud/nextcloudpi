@@ -88,9 +88,22 @@ Listen 4443
 
 </Directory>
 EOF
+
+  cat > /etc/apache2/sites-available/ncp-http-redirect.conf <<'EOF'
+<VirtualHost _default_:4443>
+  DocumentRoot /var/www/nextcloud
+  <IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{HTTPS} !=on
+    RewriteRule ^/?(.*) https://%{SERVER_NAME}/$1 [R,L]
+  </IfModule>
+</VirtualHost>
+EOF
+
   $APTINSTALL libapache2-mod-authnz-external pwauth
   a2enmod authnz_external authn_core auth_basic
   a2ensite ncp
+  a2ensite ncp-http-redirect
 
   ## NCP USER FOR AUTHENTICATION
   useradd $WEBADMIN

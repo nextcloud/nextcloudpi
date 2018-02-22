@@ -1,5 +1,7 @@
 
-[v0.46.28](https://github.com/nextcloud/nextcloudpi/commit/018c241) (2018-02-22) wizard: fix logbox overflow
+[v0.46.29](https://github.com/nextcloud/nextcloudpi/commit/360259c) (2018-02-22) ncp-web: HTTP to HTTPS redirection
+
+[v0.46.28](https://github.com/nextcloud/nextcloudpi/commit/c78cf60) (2018-02-22) wizard: fix logbox overflow
 
 [v0.46.27](https://github.com/nextcloud/nextcloudpi/commit/7a68af0) (2018-02-20) wizard: animate side logs
 
