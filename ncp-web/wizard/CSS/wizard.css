@@ -146,6 +146,9 @@ div.linkbox {
   position:relative;
   width:0em;
   height:100%;
+  white-space: pre;
+  overflow: hidden;
+  text-overflow: clip;
 }
 
 td {

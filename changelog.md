@@ -1,5 +1,7 @@
 
-[v0.46.27](https://github.com/nextcloud/nextcloudpi/commit/fe3b78a) (2018-02-20) wizard: animate side logs
+[v0.46.28](https://github.com/nextcloud/nextcloudpi/commit/018c241) (2018-02-22) wizard: fix logbox overflow
+
+[v0.46.27](https://github.com/nextcloud/nextcloudpi/commit/7a68af0) (2018-02-20) wizard: animate side logs
 
 [v0.46.26](https://github.com/nextcloud/nextcloudpi/commit/c25a130) (2018-02-21) ncp-web: animate script textbox
 
