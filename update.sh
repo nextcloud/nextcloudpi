@@ -120,86 +120,6 @@ done
 # not for image builds, only live updates
 [[ ! -f /.ncp-image ]] && {
 
-  # fix automount in latest images
-   test -f /etc/udev/rules.d/90-qemu.rules && {
-     rm -f /etc/udev/rules.d/90-qemu.rules
-     udevadm control --reload-rules && udevadm trigger
-     pgrep -c udiskie &>/dev/null && systemctl restart nc-automount
-   }
-
-   # btrfs tools
-   type btrfs &>/dev/null || {
-    apt-get update 
-    apt-get install -y --no-install-recommends btrfs-tools
-  }
-
-  # harden security
-
-  ## harden redis
-  REDIS_CONF=/etc/redis/redis.conf
-  REDISPASS=$( grep "^requirepass" /etc/redis/redis.conf  | cut -d' ' -f2 )
-  [[ "$REDISPASS" == "" ]] && REDISPASS=$( openssl rand -base64 32 )
-  sed -i 's|# rename-command CONFIG ""|rename-command CONFIG ""|'  $REDIS_CONF
-  sed -i "s|# requirepass .*|requirepass $REDISPASS|"              $REDIS_CONF
-
-  grep -q "'password'" /var/www/nextcloud/config/config.php || \
-    sed -i "/timeout/a'password' => '$REDISPASS'," /var/www/nextcloud/config/config.php
-
-  ## harden postfix
-  sed -i 's|^smtpd_banner .*|smtpd_banner = $myhostname ESMTP|'    /etc/postfix/main.cf
-  sed -i 's|^disable_vrfy_command .*|disable_vrfy_command = yes|'  /etc/postfix/main.cf
-
-  ## harden SSH
-  sed -i 's|^#AllowTcpForwarding .*|AllowTcpForwarding no|'     /etc/ssh/sshd_config
-  sed -i 's|^#ClientAliveCountMax .*|ClientAliveCountMax 2|'    /etc/ssh/sshd_config
-  sed -i 's|^MaxAuthTries .*|MaxAuthTries 1|'                   /etc/ssh/sshd_config
-  sed -i 's|^#MaxSessions .*|MaxSessions 2|'                    /etc/ssh/sshd_config
-  sed -i 's|^#PermitRootLogin .*|PermitRootLogin no|'           /etc/ssh/sshd_config
-  sed -i 's|^#TCPKeepAlive .*|TCPKeepAlive no|'                 /etc/ssh/sshd_config
-  sed -i 's|^X11Forwarding .*|X11Forwarding no|'                /etc/ssh/sshd_config
-  sed -i 's|^#LogLevel .*|LogLevel VERBOSE|'                    /etc/ssh/sshd_config
-  sed -i 's|^#Compression .*|Compression no|'                   /etc/ssh/sshd_config
-  sed -i 's|^#AllowAgentForwarding .*|AllowAgentForwarding no|' /etc/ssh/sshd_config
-
-  ## harden kernel
-  grep -q protected_hardlinks=1 /etc/sysctl.conf || cat >> /etc/sysctl.conf <<EOF
-fs.protected_hardlinks=1
-fs.protected_symlinks=1
-kernel.core_uses_pid=1
-kernel.dmesg_restrict=1
-kernel.kptr_restrict=2
-kernel.sysrq=0
-net.ipv4.conf.all.accept_redirects=0
-net.ipv4.conf.all.log_martians=1
-net.ipv4.conf.all.rp_filter=1
-net.ipv4.conf.all.send_redirects=0
-net.ipv4.conf.default.accept_redirects=0
-net.ipv4.conf.default.accept_source_route=0
-net.ipv4.conf.default.log_martians=1
-net.ipv4.tcp_timestamps=0
-net.ipv6.conf.all.accept_redirects=0
-net.ipv6.conf.default.accept_redirects=0
-EOF
-  sysctl -p /etc/sysctl.conf &>/dev/null
-
-  # small tweaks
-  cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
-  chmod go-x /usr/bin/arm-linux-gnueabihf-* &>/dev/null
-  sed -i "s|^UMASK.*|UMASK           027|" /etc/login.defs
-
-  # secure mysql
-  DBPASSWD=$( grep password /root/.my.cnf | cut -d= -f2 )
-    mysql_secure_installation &>/dev/null <<EOF
-$DBPASSWD
-y
-$DBPASSWD
-$DBPASSWD
-y
-y
-y
-y
-EOF
-
   # update ncp-backup
   cd /usr/local/etc/nextcloudpi-config.d &>/dev/null
   install_script nc-backup.sh
@@ -214,21 +134,6 @@ EOF
   cd /usr/local/etc/nextcloudpi-config.d &>/dev/null
   grep -q '^ACTIVE_=yes$' nc-backup-auto.sh && activate_script nc-backup-auto.sh 
   cd - &>/dev/null
-
-  # restore pip.conf after workaround
-  cat > /etc/pip.conf <<EOF
-[global]
-extra-index-url=https://www.piwheels.hostedpi.com/simple
-EOF
-
-  # update cron letsencrypt
-  [[ -f /etc/cron.d/letsencrypt-ncp ]] && rm -f /etc/cron.d/letsencrypt-ncp && {
-    cat > /etc/cron.weekly/letsencrypt-ncp <<EOF
-#!/bin/bash
-/etc/letsencrypt/certbot-auto renew --quiet
-EOF
-    chmod +x /etc/cron.weekly/letsencrypt-ncp
-  }
 
   # add ncp-config link
   [[ -e /usr/local/bin/ncp-config ]] || ln -s /usr/local/bin/nextcloudpi-config /usr/local/bin/ncp-config
@@ -267,6 +172,47 @@ EOF
   # update sudoers permissions for the reboot command
   grep -q reboot /etc/sudoers || \
     sed -i 's|www-data.*|www-data ALL = NOPASSWD: /home/www/ncp-launcher.sh , /sbin/halt, /sbin/reboot|' /etc/sudoers
+
+  # randomize passwords for old images ( older than v0.46.30 )
+  cat > /usr/lib/systemd/system/nc-provisioning.service <<'EOF'
+[Unit]
+Description=Randomize passwords on first boot
+Requires=network.target
+After=mysql.service
+
+[Service]
+ExecStart=/bin/bash /usr/local/bin/ncp-provisioning.sh
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+  systemctl enable nc-provisioning
+
+  NEED_UPDATE=false
+
+  MAJOR=0 MINOR=46 PATCH=30
+
+  MAJ=$( grep -oP "\d+\.\d+\.\d+" /usr/local/etc/ncp-version | cut -d. -f1 )
+  MIN=$( grep -oP "\d+\.\d+\.\d+" /usr/local/etc/ncp-version | cut -d. -f2 )
+  PAT=$( grep -oP "\d+\.\d+\.\d+" /usr/local/etc/ncp-version | cut -d. -f3 )
+
+  if [ "$MAJOR" -gt "$MAJ" ]; then
+    NEED_UPDATE=true
+  elif [ "$MAJOR" -eq "$MAJ" ] && [ "$MINOR" -gt "$MIN" ]; then
+    NEED_UPDATE=true
+  elif [ "$MAJOR" -eq "$MAJ" ] && [ "$MINOR" -eq "$MIN" ] && [ "$PATCH" -gt "$PAT" ]; then
+    NEED_UPDATE=true
+  fi
+
+  [[ "$NEED_UPDATE" == "true" ]] && {
+    REDISPASS="default"
+    DBPASSWD="default"
+    sed -i -E "s|^requirepass .*|requirepass $REDISPASS|" /etc/redis/redis.conf
+    echo -e "[client]\npassword=$DBPASSWD" > /root/.my.cnf
+    chmod 600 /root/.my.cnf
+    systemctl start nc-provisioning
+  }
 
 } # end - only live updates
 

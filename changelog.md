@@ -1,5 +1,7 @@
 
-[v0.46.29](https://github.com/nextcloud/nextcloudpi/commit/1804c51) (2018-02-22) ncp-web: fix overlay z-index
+[v0.46.30](https://github.com/nextcloud/nextcloudpi/commit/b6ba190) (2018-02-22) add ncp-provisioning to SD card images
+
+[v0.46.29](https://github.com/nextcloud/nextcloudpi/commit/970a256) (2018-02-22) ncp-web: fix overlay z-index
 
 [v0.46.28](https://github.com/nextcloud/nextcloudpi/commit/c78cf60) (2018-02-22) wizard: fix logbox overflow
 

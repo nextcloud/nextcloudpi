@@ -18,7 +18,7 @@ OCC="$NCDIR/occ"
 }
 
 echo "Provisioning"
-/usr/local/bin/ncp-provisioning.sh
+bash /usr/local/bin/ncp-provisioning.sh
 
 echo "Starting Redis"
 mkdir -p /var/run/redis
