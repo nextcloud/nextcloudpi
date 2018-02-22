@@ -4,6 +4,7 @@
 
 ## redis provisioning
 
+CFG=/var/www/nextcloud/config/config.php
 REDISPASS="$( grep "^requirepass" /etc/redis/redis.conf | cut -f2 -d' ' )"
 
 ### IF redis password is the default one, generate a new one
@@ -15,9 +16,9 @@ REDISPASS="$( grep "^requirepass" /etc/redis/redis.conf | cut -f2 -d' ' )"
 }
 
 ### If there exists already a configuration adjust the password
-test -f /data/app/config/config.php && {
-  echo Updating NextCloud config with Redis password $REDISPASS
-  sed -i "s|'password'.*|'password' => '$REDISPASS',|" /data/app/config/config.php
+[[ -f "$CFG" ]] && {
+  echo "Updating NextCloud config with Redis password"
+  sed -i "s|'password'.*|'password' => '$REDISPASS',|" "$CFG"
 }
 
 ## mariaDB provisioning
@@ -38,9 +39,18 @@ EXIT
 EOF
 }
 
-test -f /data/app/config/config.php && {
-  echo Updating NextCloud config with MariaDB password $DBPASSWD
-  sed -i "s|'dbpassword' =>.*|'dbpassword' => '$DBPASSWD',|" /data/app/config/config.php
+[[ -f "$CFG" ]] && {
+  echo "Updating NextCloud config with MariaDB password"
+  sed -i "s|'dbpassword' =>.*|'dbpassword' => '$DBPASSWD',|" "$CFG"
 }
+
+## CPU core adjustment
+PHPTHREADS=0
+CFG=/usr/local/etc/nextcloudpi-config.d/nc-limits.sh
+[[ -f "$CFG" ]] && PHPTHREADS=$( grep "^PHPTHREADS_" "$CFG"  | cut -d= -f2 )
+[[ $PHPTHREADS -eq 0 ]] && PHPTHREADS=$( nproc ) && echo "PHP threads set to $PHPTHREADS"
+sed -i "s|pm.max_children =.*|pm.max_children = $PHPTHREADS|"           /etc/php/7.0/fpm/pool.d/www.conf
+sed -i "s|pm.max_spare_servers =.*|pm.max_spare_servers = $PHPTHREADS|" /etc/php/7.0/fpm/pool.d/www.conf
+sed -i "s|pm.start_servers =.*|pm.start_servers = $PHPTHREADS|"         /etc/php/7.0/fpm/pool.d/www.conf
 
 exit 0

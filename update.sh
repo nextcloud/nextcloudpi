@@ -283,6 +283,45 @@ EOF
     a2ensite ncp-http-redirect
     apache2ctl graceful
   }
+
+  # randomize passwords for old images
+  cat > /usr/lib/systemd/system/nc-provisioning.service <<'EOF'
+[Unit]
+Description=Randomize passwords on first boot
+Requires=network.target
+After=mysql.service
+
+[Service]
+ExecStart=/bin/bash /usr/local/bin/ncp-provisioning.sh
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+  systemctl enable nc-provisioning
+
+  local NEED_UPDATE=false
+
+  local MAJOR=0
+  local MINOR=46
+  local PATCH=30
+
+  local MAJ=$( grep -oP "\d+\.\d+\.\d+" /usr/local/etc/ncp-version | cut -d. -f1 )
+  local MIN=$( grep -oP "\d+\.\d+\.\d+" /usr/local/etc/ncp-version | cut -d. -f2 )
+  local PAT=$( grep -oP "\d+\.\d+\.\d+" /usr/local/etc/ncp-version | cut -d. -f3 )
+
+  if [ "$MAJOR" -gt "$MAJ" ]; then
+    NEED_UPDATE=true
+  elif [ "$MAJOR" -eq "$MAJ" ] && [ "$MINOR" -gt "$MIN" ]; then
+    NEED_UPDATE=true
+  elif [ "$MAJOR" -eq "$MAJ" ] && [ "$MINOR" -eq "$MIN" ] && [ "$PATCH" -gt "$PAT" ]; then
+    NEED_UPDATE=true
+  fi
+
+  [[ "$NEED_UPDATE" == "true" ]] && {
+    systemctl start nc-provisioning
+  }
+
 } # end - only live updates
 
 exit 0
