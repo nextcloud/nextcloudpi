@@ -29,6 +29,7 @@ install()
   apt-get update
   apt-get install --no-install-recommends -y samba
   update-rc.d smbd disable
+  update-rc.d nmbd disable
 
   # the directory needs to be recreated if we are using nc-ramlogs
   grep -q mkdir /etc/init.d/smbd || sed -i "/\<start)/amkdir -p /var/log/samba" /etc/init.d/smbd
@@ -47,7 +48,13 @@ EOF
 
 configure()
 {
-  [[ $ACTIVE_ != "yes" ]] && { service smbd stop; update-rc.d smbd disable; echo "SMB disabled"; return; } 
+  [[ $ACTIVE_ != "yes" ]] && { 
+    service smbd stop
+    update-rc.d smbd disable
+    update-rc.d nmbd disable
+    echo "SMB disabled"
+    return
+  } 
 
   # CHECKS
   ################################
@@ -106,6 +113,9 @@ EOF
   update-rc.d smbd defaults
   update-rc.d smbd enable
   service smbd start
+
+  update-rc.d nmbd enable
+  service nmbd start
 
   echo "SMB enabled"
 }
