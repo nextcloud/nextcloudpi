@@ -214,6 +214,11 @@ EOF
     systemctl start nc-provisioning
   }
 
+  # adjust services
+  systemctl mask nfs-blkmap
+  grep -q '^ACTIVE_=yes$' /usr/local/etc/nextcloudpi-config.d/samba.sh || \
+    update-rc.d nmbd disable
+
 } # end - only live updates
 
 exit 0
