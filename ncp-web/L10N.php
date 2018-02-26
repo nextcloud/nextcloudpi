@@ -36,15 +36,15 @@ class L10N {
 
     function load($lang, $l10n_dir, $modules_path)
     {
-      $modules_path = join('/', [rtrim($modules_path, '/'), "l10n"]);
+      $modules_path = join('/', [rtrim($modules_path, '/'), $l10n_dir]);
       $files = [join('/', [$l10n_dir, $lang . ".json"])];
       if (is_dir($modules_path)) {
-        foreach (scandir($modules_path) as $dir) {
-          $file_path = join('/', [$modules_path, trim($dir, '/'), $lang . ".json"]);
-          if (is_file($file_path)) {
+	foreach (scandir($modules_path) as $dir) {
+	  $file_path = join('/', [$modules_path, trim($dir, '/'), $lang . ".json"]);
+	  if (is_file($file_path)) {
             array_push($files, $file_path);
-          }
-        }
+	  }
+	}
       }
 
       $jsonError = null;
@@ -57,16 +57,16 @@ class L10N {
         if (!is_array($json)) {
           $jsonError = json_last_error();
           continue;
-        }
+	    }
         $this->translations[$module_name] = $json['translations'];
       }
       return ($jsonError == null);
     }
 
     public function __($text, $module="__core__") {
-        if( isset($this->translations[$module]) && isset($this->translations[$module][$text])) {
-            return $this->translations[$module][$text];
-        }
+	if( isset($this->translations[$module]) && isset($this->translations[$module][$text])) {
+      return $this->translations[$module][$text];
+	}
         return $text;
     }
 
@@ -109,7 +109,7 @@ class L10N {
         // drop down menu
         if(preg_match('/^LANGUAGE_=\[(([*\w]+,)*[*\w]+)\]$/', $line, $matches))
         {
-          $options = explode(',', $matches[2]);
+          $options = explode(',', $matches[1]);
           foreach($options as $option)
           {
             if($option[0] == "*" && $option[count($option) - 1] == "*")
