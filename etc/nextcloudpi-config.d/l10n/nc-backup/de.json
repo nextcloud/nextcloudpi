@@ -2,6 +2,6 @@
     "nc-backup": "Backup erstellen",
     "DESTDIR": "Zielverzeichnis",
     "INCLUDEDATA": "Inkl. Dateien",
-    "COMPRESS:": "Komprimieren",
+    "COMPRESS": "Komprimieren",
     "BACKUPLIMIT": "Maximale Anzahl"
 }}
