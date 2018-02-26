@@ -64,7 +64,7 @@ $(function()
     if ( confLock ) return;
     confLock = true;
 
-    if ( window.innerWidth < 768 )
+    if ( window.innerWidth <= 768 )
       close_menu();
 
     $( '#' + selectedID ).set('-active');
@@ -212,11 +212,11 @@ $(function()
     slide_menu_enabled = false;
   }
 
-  if ( window.innerWidth < 768 ) 
+  if ( window.innerWidth <= 768 ) 
     enable_slide_menu();
 
   window.addEventListener('resize', function(){ 
-    if ( window.innerWidth < 768 ) 
+    if ( window.innerWidth <= 768 ) 
       enable_slide_menu();
     else
       disable_slide_menu();

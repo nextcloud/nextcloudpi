@@ -1,5 +1,11 @@
 
-[v0.46.31](https://github.com/nextcloud/nextcloudpi/commit/01090ea) (2018-02-23) update: print info first
+[v0.46.34](https://github.com/nextcloud/nextcloudpi/commit/2694914) (2018-02-26) ncp-web: fix responsive in iPad
+
+[v0.46.33](https://github.com/nextcloud/nextcloudpi/commit/dea4836) (2018-02-23) Added some useful comments for first time users
+
+[v0.46.32](https://github.com/nextcloud/nextcloudpi/commit/30d56ea) (2018-02-23) disable unused services for SMB and NFS
+
+[v0.46.31](https://github.com/nextcloud/nextcloudpi/commit/d288358) (2018-02-23) update: print info first
 
 [v0.46.30](https://github.com/nextcloud/nextcloudpi/commit/75dc2e6) (2018-02-22) add ncp-provisioning to SD card images
 
