@@ -1,7 +1,9 @@
 
-[v0.46.30](https://github.com/nextcloud/nextcloudpi/commit/42074a2) (2018-02-22) add ncp-provisioning to SD card images
+[v0.46.31](https://github.com/nextcloud/nextcloudpi/commit/01090ea) (2018-02-23) update: print info first
 
-[v0.46.29, master](https://github.com/nextcloud/nextcloudpi/commit/e589cd1) (2018-02-22) ncp-web: HTTP to HTTPS redirection
+[v0.46.30](https://github.com/nextcloud/nextcloudpi/commit/75dc2e6) (2018-02-22) add ncp-provisioning to SD card images
+
+[v0.46.29](https://github.com/nextcloud/nextcloudpi/commit/970a256) (2018-02-22) ncp-web: fix overlay z-index
 
 [v0.46.28](https://github.com/nextcloud/nextcloudpi/commit/c78cf60) (2018-02-22) wizard: fix logbox overflow
 

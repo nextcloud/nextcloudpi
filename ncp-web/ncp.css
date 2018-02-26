@@ -339,7 +339,7 @@ input[type='checkbox'].checkbox--white:indeterminate:disabled + label:after,inpu
  top:0;
  left:0;
  right:0;
- z-index:2000;
+ z-index:5000;
  height:45px;
  background-color:#0082c9;
  box-sizing:border-box;
@@ -590,7 +590,7 @@ kbd {
  border-right:1px solid #ebebeb;
  display:flex;
  flex-direction:column;
- z-index: 2000;
+ z-index: 3000;
 }
 #app-navigation > ul {
  position:relative;

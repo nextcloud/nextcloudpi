@@ -56,7 +56,7 @@ configure()
   }
 
   # workaround to emulate DROP USER IF EXISTS ..;)
-  local DBPASSWD=$( grep password /root/.my.cnf | cut -d= -f2 )
+  local DBPASSWD=$( grep password /root/.my.cnf | sed 's|password=||' )
   mysql <<EOF
 DROP DATABASE IF EXISTS nextcloud;
 CREATE DATABASE nextcloud

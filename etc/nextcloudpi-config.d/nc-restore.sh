@@ -30,7 +30,7 @@ You can use nc-backup"
 
 configure()
 { 
-  local DBPASSWD=$( grep password /root/.my.cnf | cut -d= -f2 )
+  local DBPASSWD=$( grep password /root/.my.cnf | sed 's|password=||' )
 
   [ -f $BACKUPFILE_       ] || { echo "$BACKUPFILE_ not found"; return 1; }
   [ -d /var/www/nextcloud ] && { echo "INFO: overwriting old instance"  ; }
