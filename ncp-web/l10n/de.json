@@ -1,0 +1,9 @@
+{"translations": {
+  "This application requires JavaScript for correct operation. Please %s enable JavaScript %s and reload the page.":
+  "Diese Anwendung ben&ouml;tigt Javascript um richtig zu funktionieren. Bitte %s aktivieren Sie JavaScript %s und laden die Seite dann neu.",
+  "version %s is available": "Eine neue Version ist verf&uuml;gbar: %s.",
+  "run": "Ausführen",
+  "skip": "&Uuml;berspringen",
+  "close": "Schlie&szlig;en",
+  "Configure NextCloudPi features": "NextCloudPi Funktionen konfigurieren"
+}}

@@ -99,6 +99,8 @@ for file in etc/nextcloudpi-config.d/*; do
   cp "$file" /usr/local/"$file"
 done
 
+cp -rT etc/nextcloudpi-config.d/l10n /usr/local/etc/nextcloudpi-config.d/l10n
+
 # these files can contain sensitive information, such as passwords
 chown -R root:www-data /usr/local/etc/nextcloudpi-config.d
 chmod 660 /usr/local/etc/nextcloudpi-config.d/*

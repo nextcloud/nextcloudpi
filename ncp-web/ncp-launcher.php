@@ -11,7 +11,17 @@
 include ('csrf.php');
 
 session_start();
+$modules_path = '/usr/local/etc/nextcloudpi-config.d/';
+$l10nDir = "l10n";
 ignore_user_abort( true );
+
+
+require("L10N.php");
+try {
+  $l = new L10N($_SERVER["HTTP_ACCEPT_LANGUAGE"], $l10nDir, $modules_path);
+} catch (Exception $e) {
+  die(json_encode("<p class='error'>Error while loading localizations!</p>"));
+}
 
 if ( $_POST['action'] == "cfgreq" ) 
 {
@@ -43,16 +53,33 @@ if ( $_POST['action'] == "cfgreq" )
       if ( $matches[2] == "yes" )
         $checked = "checked";
       $output = $output . "<tr>";
-      $output = $output . "<td><label for=\"$matches[1]\">$matches[1]</label></td>";
+      $output = $output . "<td><label for=\"$matches[1]\">". $l->__($matches[1], $_POST['ref']) ."</label></td>";
       $output = $output . "<td><input type=\"checkbox\" id=\"$matches[1]\" name=\"$matches[1]\" value=\"$matches[2]\" $checked></td>";
       $output = $output . "</tr>";
     }
-
+    // drop down menu
+    else if(preg_match('/^(\w+)_=\[(([_\w]+,)*[_\w]+)\]$/', $line, $matches))
+    {
+      $options = explode(",", $matches[2]);
+      $output .= "<tr>";
+      $output .= "<td><label for=\"$matches[1]\">". $l->__($matches[1], $_POST['ref']) ."</label></td>";
+      $output .= "<td><select id=\"$matches[1]\" name=\"$matches[1]\">";
+      foreach($options as $option)
+      {
+        $output .= "<option value='". trim($option, "_") ."' ";
+        if( $option[0] == "_" && $option[count($option) - 1] == "_" )
+        {
+          $output .="selected='selected'";
+        }
+        $output .= ">". $l->__(trim($option, "_"), $_POST['ref']) ."</option>";
+      }
+      $output .= "</select></td></tr>";
+    }
     // text field
     else if ( preg_match('/^(\w+)_=(.*)$/', $line, $matches) )
     {
       $output = $output . "<tr>";
-      $output = $output . "<td><label for=\"$matches[1]\">$matches[1]</label></td>";
+      $output = $output . "<td><label for=\"$matches[1]\">". $l->__($matches[1], $_POST['ref']) ."</label></td>";
       $output = $output . "<td><input type=\"text\" name=\"$matches[1]\" id=\"$matches[1]\" value=\"$matches[2]\" size=\"40\"></td>";
       $output = $output . "</tr>";
     }
@@ -87,7 +114,11 @@ else if ( $_POST['action'] == "launch" && $_POST['config'] )
   if ( !empty( $params ) )
     foreach( $params as $name => $value ) 
     {
-      preg_match( '/^[\w.,@_\/-]+$/' , $value , $matches )
+      if( is_array($value))
+      {
+        $value = "[". join(",", $value) ."]";
+      }
+      preg_match( '/^[\[\]\w.,@_\/-]+$/' , $value , $matches )
         or exit( '{ "output": "Invalid input" , "token": "' . getCSRFToken() . '" }' );
       $code = preg_replace( '/\n' . $name . '_=.*' . PHP_EOL . '/'  ,
                           PHP_EOL . $name . '_=' . $value . PHP_EOL ,
