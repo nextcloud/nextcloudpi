@@ -48,7 +48,7 @@ if ( $_POST['action'] == "cfgreq" )
       $output = $output . "</tr>";
     }
     // drop down menu
-    else if(preg_match('/^(\w+)_=\[(([*\w]+,)*[*\w]+)\]$/', $line, $matches))
+    else if(preg_match('/^(\w+)_=\[(([_\w]+,)*[_\w]+)\]$/', $line, $matches))
     {
       $options = explode(",", $matches[2]);
       $output .= "<tr>";
@@ -56,12 +56,12 @@ if ( $_POST['action'] == "cfgreq" )
       $output .= "<td><select id=\"$matches[1]\" name=\"$matches[1]\">";
       foreach($options as $option)
       {
-        $output .= "<option value='". trim($option, "*") ."' ";
-        if( $option[0] == "*" && $option[count($option) - 1] == "*" )
+        $output .= "<option value='". trim($option, "_") ."' ";
+        if( $option[0] == "_" && $option[count($option) - 1] == "_" )
         {
           $output .="selected='selected'";
         }
-        $output .= ">". trim($option, "*") ."</option>";
+        $output .= ">". trim($option, "_") ."</option>";
       }
       $output .= "</select></td></tr>";
     }

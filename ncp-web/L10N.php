@@ -107,15 +107,15 @@ class L10N {
       while ( $line = fgets($fh) )
       {
         // drop down menu
-        if(preg_match('/^LANGUAGE_=\[(([*\w]+,)*[*\w]+)\]$/', $line, $matches))
+        if(preg_match('/^LANGUAGE_=\[(([_\w]+,)*[_\w]+)\]$/', $line, $matches))
         {
           $options = explode(',', $matches[1]);
           foreach($options as $option)
           {
-            if($option[0] == "*" && $option[count($option) - 1] == "*")
+            if($option[0] == "_" && $option[count($option) - 1] == "_")
             {
               fclose($fh);
-              $lang = trim($option,'*');
+              $lang = trim($option,'_');
             }
           }
           fclose($fh);
