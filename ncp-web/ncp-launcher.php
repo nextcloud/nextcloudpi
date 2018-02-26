@@ -11,7 +11,17 @@
 include ('csrf.php');
 
 session_start();
+$modules_path = '/usr/local/etc/nextcloudpi-config.d/';
+$l10nDir = "l10n";
 ignore_user_abort( true );
+
+
+require("L10N.php");
+try {
+  $l = new L10N($_SERVER["HTTP_ACCEPT_LANGUAGE"], $l10nDir, $modules_path);
+} catch (Exception $e) {
+  die(json_encode("<p class='error'>Error while loading localizations!</p>"));
+}
 
 if ( $_POST['action'] == "cfgreq" ) 
 {
@@ -43,8 +53,10 @@ if ( $_POST['action'] == "cfgreq" )
       if ( $matches[2] == "yes" )
         $checked = "checked";
       $output = $output . "<tr>";
-      $output = $output . "<td><label for=\"$matches[1]\">$matches[1]</label></td>";
-      $output = $output . "<td><input type=\"checkbox\" id=\"$matches[1]\" name=\"$matches[1]\" value=\"$matches[2]\" $checked></td>";
+      $output = $output . "<td><label for=\"$matches[1]\">". $l->__($matches[1], $_POST['ref']) ."</label></td>";
+      $output = $output . "<td><input type=\"checkbox\" id=\"$matches[1]\" name=\"$matches[1]\" value=\""
+          . $l->__($matches[2], $_POST['ref'])
+          ."\" $checked></td>";
       $output = $output . "</tr>";
     }
     // drop down menu
@@ -52,7 +64,7 @@ if ( $_POST['action'] == "cfgreq" )
     {
       $options = explode(",", $matches[2]);
       $output .= "<tr>";
-      $output .= "<td><label for=\"$matches[1]\">$matches[1]</label></td>";
+      $output .= "<td><label for=\"$matches[1]\">". $l->__($matches[1], $_POST['ref']) ."</label></td>";
       $output .= "<td><select id=\"$matches[1]\" name=\"$matches[1]\">";
       foreach($options as $option)
       {
@@ -61,7 +73,7 @@ if ( $_POST['action'] == "cfgreq" )
         {
           $output .="selected='selected'";
         }
-        $output .= ">". trim($option, "_") ."</option>";
+        $output .= ">". $l->__(trim($option, "_"), $_POST['ref']) ."</option>";
       }
       $output .= "</select></td></tr>";
     }
@@ -69,8 +81,10 @@ if ( $_POST['action'] == "cfgreq" )
     else if ( preg_match('/^(\w+)_=(.*)$/', $line, $matches) )
     {
       $output = $output . "<tr>";
-      $output = $output . "<td><label for=\"$matches[1]\">$matches[1]</label></td>";
-      $output = $output . "<td><input type=\"text\" name=\"$matches[1]\" id=\"$matches[1]\" value=\"$matches[2]\" size=\"40\"></td>";
+      $output = $output . "<td><label for=\"$matches[1]\">". $l->__($matches[1], $_POST['ref']) ."</label></td>";
+      $output = $output . "<td><input type=\"text\" name=\"$matches[1]\" id=\"$matches[1]\" value=\""
+          . $l->__($matches[2], $_POST['ref'])
+          ."\" size=\"40\"></td>";
       $output = $output . "</tr>";
     }
   }
