@@ -1,6 +1,7 @@
 .*.swp
 *.img
 *.bz2
+.idea/
 qemu-raspbian-network/
 torrent/
 armbian/

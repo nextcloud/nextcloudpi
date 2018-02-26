@@ -1,5 +1,7 @@
 
-[v0.46.34](https://github.com/nextcloud/nextcloudpi/commit/2694914) (2018-02-26) ncp-web: fix responsive in iPad
+[v0.46.35](https://github.com/nextcloud/nextcloudpi/commit/e417926) (2018-02-26) ncp-web: add localization (#372)
+
+[v0.46.34](https://github.com/nextcloud/nextcloudpi/commit/3fc902b) (2018-02-26) ncp-web: fix responsive in iPad
 
 [v0.46.33](https://github.com/nextcloud/nextcloudpi/commit/dea4836) (2018-02-23) Added some useful comments for first time users
 

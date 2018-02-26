@@ -88,6 +88,7 @@ Listen 4443
 
 </Directory>
 EOF
+
   $APTINSTALL libapache2-mod-authnz-external pwauth
   a2enmod authnz_external authn_core auth_basic
   a2ensite ncp

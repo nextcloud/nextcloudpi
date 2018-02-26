@@ -628,7 +628,7 @@ kbd {
 }
 #app-navigation li > a {
  display:block;
- width:100%;
+ width:90%;
  line-height:44px;
  min-height:44px;
  padding:0 12px;

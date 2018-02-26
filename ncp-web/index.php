@@ -8,57 +8,71 @@
 -->
 
 <!DOCTYPE html>
-<html class="ng-csp" data-placeholder-focus="false" lang="en" >
+<html class="ng-csp" data-placeholder-focus="false" lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>NextCloudPi Panel</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <meta name="referrer" content="never">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
-  <meta name="mobile-web-app-capable" content="yes">
-<?php 
+    <meta charset="utf-8">
+    <title>NextCloudPi Panel</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="referrer" content="never">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="mobile-web-app-capable" content="yes">
+  <?php
     session_start();
+    $modules_path = '/usr/local/etc/nextcloudpi-config.d/';
+    $l10nDir = "l10n";
 
-  // security headers
-  header("Content-Security-Policy: default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self'; object-src 'self';");
-  header("X-XSS-Protection: 1; mode=block");
-  header("X-Content-Type-Options: nosniff");
-  header("X-Robots-Tag: none");
-  header("X-Permitted-Cross-Domain-Policies: none");
-  header("X-Frame-Options: DENY");
-  header("Cache-Control: max-age=15778463");
-  ini_set('session.cookie_httponly', 1);
-  if ( isset($_SERVER['HTTPS']) )
-    ini_set('session.cookie_secure', 1); 
+    // security headers
+    header("Content-Security-Policy: default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self'; object-src 'self';");
+    header("X-XSS-Protection: 1; mode=block");
+    header("X-Content-Type-Options: nosniff");
+    header("X-Robots-Tag: none");
+    header("X-Permitted-Cross-Domain-Policies: none");
+    header("X-Frame-Options: DENY");
+    header("Cache-Control: max-age=15778463");
+    ini_set('session.cookie_httponly', 1);
+    if (isset($_SERVER['HTTPS']))
+      ini_set('session.cookie_secure', 1);
 
-  // HTTP2 push headers
-  header("Link: </minified.js>; rel=preload; as=script;,</ncp.js>; rel=preload; as=script;,</ncp.css>; rel=preload; as=style;,</img/ncp-logo.svg>; rel=preload; as=image;, </loading-small.gif>; rel=preload; as=image;, rel=preconnect href=ncp-launcher.php;");
-?>
-<link rel="icon" type="image/png" href="img/favicon.png" />
-<link rel="stylesheet" href="ncp.css">
+    // HTTP2 push headers
+    header("Link: </minified.js>; rel=preload; as=script;,</ncp.js>; rel=preload; as=script;,</ncp.css>; rel=preload; as=style;,</img/ncp-logo.svg>; rel=preload; as=image;, </loading-small.gif>; rel=preload; as=image;, rel=preconnect href=ncp-launcher.php;");
+
+  ?>
+    <link rel="icon" type="image/png" href="img/favicon.png"/>
+    <link rel="stylesheet" href="ncp.css">
 </head>
 <body id="body-user">
-  <noscript>
-  <div id="nojavascript"> <div>This application requires JavaScript for correct operation. Please <a href="http://enable-javascript.com/" target="_blank" rel="noreferrer">enable JavaScript</a> and reload the page.		</div> </div>
-  </noscript>
-  <div id="notification-container">
-    <?php 
-      exec( "ncp-test-updates" , $output, $ret );
-      if ( $ret == 0 ) 
-      {
-        echo '<div id="notification">';
-        echo '<div id="update-notification" class="row type-error closeable">';
-        echo "version " . file_get_contents( "/var/run/.ncp-latest-version" ) . " is available";
-        echo '<a class="action close icon-close" href="#" alt="Dismiss"></a>';
-        echo '</div>';
-        echo '</div>';
-      }
-    ?>
-  </div>
+<?php
+  require("L10N.php");
+  try {
+    $l = new L10N($_SERVER["HTTP_ACCEPT_LANGUAGE"], $l10nDir, $modules_path);
+  } catch (Exception $e) {
+    die("<p class='error'>Error while loading localizations!</p>");
+  }
+?>
+<noscript>
+    <div id="nojavascript">
+        <div>
+          <?php sprintf($l->__("This application requires JavaScript for correct operation. Please %s enable JavaScript %s and reload the page."),
+              "<a href=\"http://enable-javascript.com/\" target=\"_blank\" rel=\"noreferrer\">", "</a>"); ?>
+        </div>
+    </div>
+</noscript>
+<div id="notification-container">
+  <?php
+    exec("ncp-test-updates", $output, $ret);
+    if ($ret == 0) {
+      echo '<div id="notification">';
+      echo '<div id="update-notification" class="row type-error closeable">';
+      sprintf($l->__("version %s is available"), file_get_contents("/var/run/.ncp-latest-version"));
+      echo '<a class="action close icon-close" href="#" alt="Dismiss"></a>';
+      echo '</div>';
+      echo '</div>';
+    }
+  ?>
+</div>
 
 <?php
-  if ( file_exists( 'wizard') && !file_exists( 'wizard.cfg' ) )
-  {
+  if (file_exists('wizard') && !file_exists('wizard.cfg')) {
     echo <<<HTML
     <div id="first-run-wizard">
       <div class='dialog'>
@@ -68,14 +82,14 @@
         <br>
         <a href="wizard"><img class="wizard-btn" src="wizard/img/ncp-logo.svg" class="wizard"></a>
         <br>
-        <button type="button" class="wizard-btn"      id="go-wizard"   >run  </button>
-        <button type="button" class="first-run-close" id="skip-wizard" >skip </button>
-        <button type="button" class="first-run-close" id="close-wizard">close</button>
+        <button type="button" class="wizard-btn"      id="go-wizard"   >{$l->__("run")}  </button>
+        <button type="button" class="first-run-close" id="skip-wizard" >{$l->__("skip")} </button>
+        <button type="button" class="first-run-close" id="close-wizard">{$l->__("close")}</button>
         <br><br>
       </div>
     </div>
 HTML;
-    touch( 'wizard.cfg' );
+    touch('wizard.cfg');
   }
 ?>
 
@@ -103,14 +117,14 @@ HTML;
         </div>
       </a>
 HTML;
-?>
-      <div id="poweroff">
-        <div id="expand">
-          <div class="icon-power-white"></div>
+          ?>
+            <div id="poweroff">
+                <div id="expand">
+                    <div class="icon-power-white"></div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  </header>
+</header>
 
   <div id="content-wrapper">
 	<div id="content" class="app-files" role="main">
@@ -119,40 +133,38 @@ HTML;
         	<ul id="ncp-options">
               <?php
 
-              // fill options with contents from directory
-              $path  = '/usr/local/etc/nextcloudpi-config.d/';
-              $files = array_diff(scandir($path), array('.', '..','nc-wifi.sh'));
+                // fill options with contents from directory
+                $files = array_diff(scandir($modules_path), array('.', '..', 'nc-wifi.sh', 'l10n'));
 
-              foreach($files as $file) 
-              {
-                $script = pathinfo( $file , PATHINFO_FILENAME );
-                $txt = file_get_contents( $path . $file );
+                foreach ($files as $file) {
+                  $script = pathinfo($file, PATHINFO_FILENAME);
+                  $txt = file_get_contents($modules_path . $file);
 
-                $active = "";
-                if ( preg_match('/^ACTIVE_=yes$/m', $txt, $matches) )
-                  $active = " ✓";
+                  $active = "";
+                  if (preg_match('/^ACTIVE_=yes$/m', $txt, $matches))
+                    $active = " ✓";
 
-                echo "<li id=\"$script\" class=\"nav-recent\">";
-                echo "<a href=\"#\"> $script$active </a>";
+                  echo "<li id=\"$script\" class=\"nav-recent\">";
+                  echo "<a href=\"#\"> {$l->__($script, $script)}$active </a>";
 
-                if ( preg_match('/^DESCRIPTION="(.*)"$/m', $txt, $matches) )
-                  echo "<input id=\"$script-desc\" type=\"hidden\" value=\"$matches[1]\" />";
+                  if (preg_match('/^DESCRIPTION="(.*)"$/m', $txt, $matches))
+                    echo "<input id=\"$script-desc\" type=\"hidden\" value=\"{$l->__($matches[1], $script)}\" />";
 
-                if ( preg_match('/^INFO="(.*)"/msU', $txt, $matches) )
-                  echo "<input id=\"$script-info\" type=\"hidden\" value=\"$matches[1]\" />";
+                  if (preg_match('/^INFO="(.*)"/msU', $txt, $matches))
+                    echo "<input id=\"$script-info\" type=\"hidden\" value=\"{$l->__($matches[1], $script)}\" />";
 
-                if ( preg_match('/^INFOTITLE="(.*)"/msU', $txt, $matches) )
-                  echo "<input id=\"$script-infotitle\" type=\"hidden\" value=\"$matches[1]\" />";
+                  if (preg_match('/^INFOTITLE="(.*)"/msU', $txt, $matches))
+                    echo "<input id=\"$script-infotitle\" type=\"hidden\" value=\"{$l->__($matches[1], $script)}\" />";
 
-                echo "</li>";
-              }
+                  echo "</li>";
+                }
               ?>
             </ul>
           </div>
 
       <div id="app-content">
         <div id="app-navigation-toggle" class="icon-menu hidden"></div>
-        <h2 id="config-box-title">Configure NextCloudPi features</h2>
+        <h2 id="config-box-title"><?php echo $l->__("Configure NextCloudPi features"); ?></h2>
         <a href="#" target="_blank">
           <div id="config-extra-info" class="icon-info"></div>
         </a>
@@ -162,16 +174,15 @@ HTML;
           <form>
             <div id="config-box"></div>
               <div id="config-button-wrapper">
-                <button id="config-button">Run</button>
+                <button id="config-button"><?php echo $l->__("Run"); ?></button>
                 <img id="loading-gif" src="loading-small.gif">
                 <div id="circle-retstatus" class="icon-red-circle"></div>
               </div>
           </form>
           <textarea readonly id="details-box" rows="12"></textarea>
         </div>
-      </div>
 
-  </div>
+    </div>
 
   <div id="poweroff-dialog" class='dialog primary hidden'>
       <div id='poweroff-option_shutdown' class='button big-button'>
@@ -183,11 +194,11 @@ HTML;
   </div>
 
   <?php
-    include ('csrf.php');
+    include('csrf.php');
     echo '<input type="hidden" id="csrf-token" name="csrf-token" value="' . getCSRFToken() . '"/>';
   ?>
-  <script src="minified.js"></script>
-  <script src="ncp.js"></script>
+    <script src="minified.js"></script>
+    <script src="ncp.js"></script>
 </body>
 </html>
 

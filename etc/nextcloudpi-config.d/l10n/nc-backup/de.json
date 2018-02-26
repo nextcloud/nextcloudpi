@@ -1,0 +1,7 @@
+{"translations": {
+    "nc-backup": "Backup erstellen",
+    "DESTDIR": "Zielverzeichnis",
+    "INCLUDEDATA": "Inkl. Dateien",
+    "COMPRESS": "Komprimieren",
+    "BACKUPLIMIT": "Maximale Anzahl"
+}}
