@@ -54,9 +54,7 @@ if ( $_POST['action'] == "cfgreq" )
         $checked = "checked";
       $output = $output . "<tr>";
       $output = $output . "<td><label for=\"$matches[1]\">". $l->__($matches[1], $_POST['ref']) ."</label></td>";
-      $output = $output . "<td><input type=\"checkbox\" id=\"$matches[1]\" name=\"$matches[1]\" value=\""
-          . $l->__($matches[2], $_POST['ref'])
-          ."\" $checked></td>";
+      $output = $output . "<td><input type=\"checkbox\" id=\"$matches[1]\" name=\"$matches[1]\" value=\"$matches[2]\" $checked></td>";
       $output = $output . "</tr>";
     }
     // drop down menu
@@ -82,9 +80,7 @@ if ( $_POST['action'] == "cfgreq" )
     {
       $output = $output . "<tr>";
       $output = $output . "<td><label for=\"$matches[1]\">". $l->__($matches[1], $_POST['ref']) ."</label></td>";
-      $output = $output . "<td><input type=\"text\" name=\"$matches[1]\" id=\"$matches[1]\" value=\""
-          . $l->__($matches[2], $_POST['ref'])
-          ."\" size=\"40\"></td>";
+      $output = $output . "<td><input type=\"text\" name=\"$matches[1]\" id=\"$matches[1]\" value=\"$matches[2]\" size=\"40\"></td>";
       $output = $output . "</tr>";
     }
   }
