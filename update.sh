@@ -245,6 +245,83 @@ Dpkg::Options {
 };
 EOF
 
+  # some added security
+  sed -i 's|^ServerSignature .*|ServerSignature Off|' /etc/apache2/conf-enabled/security.conf
+  sed -i 's|^ServerTokens .*|ServerTokens Prod|'      /etc/apache2/conf-enabled/security.conf
+
+  # remove redundant configuration from unattended upgrades
+  [[ "$( ls -l /etc/php/7.0/fpm/conf.d/*-opcache.ini |  wc -l )" -gt 1 ]] && rm "$( ls /etc/php/7.0/fpm/conf.d/*-opcache.ini | tail -1 )"
+  [[ "$( ls -l /etc/php/7.0/cli/conf.d/*-opcache.ini |  wc -l )" -gt 1 ]] && rm "$( ls /etc/php/7.0/cli/conf.d/*-opcache.ini | tail -1 )"
+
+  # upgrade launcher after logging improvements
+  cat > /home/www/ncp-launcher.sh <<'EOF'
+#!/bin/bash
+DIR=/usr/local/etc/nextcloudpi-config.d
+test -f $DIR/$1 || { echo "File not found"; exit 1; }
+source /usr/local/etc/library.sh
+cd $DIR
+launch_script $1
+EOF
+  chmod 700 /home/www/ncp-launcher.sh
+
+  # update sudoers permissions for the reboot command
+  grep -q reboot /etc/sudoers || \
+    sed -i 's|www-data.*|www-data ALL = NOPASSWD: /home/www/ncp-launcher.sh , /sbin/halt, /sbin/reboot|' /etc/sudoers
+
+  # ncp redirect to HTTPS
+  [[ -f /etc/apache2/sites-available/ncp-http-redirect.conf ]] || {
+    cat > /etc/apache2/sites-available/ncp-http-redirect.conf <<'EOF'
+<VirtualHost _default_:4443>
+  DocumentRoot /var/www/nextcloud
+  <IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{HTTPS} !=on
+    RewriteRule ^/?(.*) https://%{SERVER_NAME}/$1 [R,L]
+  </IfModule>
+</VirtualHost>
+EOF
+    a2ensite ncp-http-redirect
+    apache2ctl graceful
+  }
+
+  # randomize passwords for old images
+  cat > /usr/lib/systemd/system/nc-provisioning.service <<'EOF'
+[Unit]
+Description=Randomize passwords on first boot
+Requires=network.target
+After=mysql.service
+
+[Service]
+ExecStart=/bin/bash /usr/local/bin/ncp-provisioning.sh
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+  systemctl enable nc-provisioning
+
+  local NEED_UPDATE=false
+
+  local MAJOR=0
+  local MINOR=46
+  local PATCH=30
+
+  local MAJ=$( grep -oP "\d+\.\d+\.\d+" /usr/local/etc/ncp-version | cut -d. -f1 )
+  local MIN=$( grep -oP "\d+\.\d+\.\d+" /usr/local/etc/ncp-version | cut -d. -f2 )
+  local PAT=$( grep -oP "\d+\.\d+\.\d+" /usr/local/etc/ncp-version | cut -d. -f3 )
+
+  if [ "$MAJOR" -gt "$MAJ" ]; then
+    NEED_UPDATE=true
+  elif [ "$MAJOR" -eq "$MAJ" ] && [ "$MINOR" -gt "$MIN" ]; then
+    NEED_UPDATE=true
+  elif [ "$MAJOR" -eq "$MAJ" ] && [ "$MINOR" -eq "$MIN" ] && [ "$PATCH" -gt "$PAT" ]; then
+    NEED_UPDATE=true
+  fi
+
+  [[ "$NEED_UPDATE" == "true" ]] && {
+    systemctl start nc-provisioning
+  }
+
 } # end - only live updates
 
 exit 0

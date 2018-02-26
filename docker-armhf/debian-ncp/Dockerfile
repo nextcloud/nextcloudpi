@@ -6,4 +6,4 @@ CMD /bin/bash
 
 RUN mkdir -p /etc/services-available.d  /etc/services-enabled.d
 
-COPY docker/debian-ncp/run-parts.sh /
+COPY docker-common/debian-ncp/run-parts.sh /

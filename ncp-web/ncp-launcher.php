@@ -101,19 +101,20 @@ else if ( $_POST['action'] == "launch" && $_POST['config'] )
   $code = file_get_contents( $file )
             or exit( '{ "output": "' . $file . ' read error" }' );
 
-  foreach( $params as $name => $value) 
-  {
-    if( is_array($value))
+  if ( !empty( $params ) )
+    foreach( $params as $name => $value ) 
     {
-      $value = "[". join(",", $value) ."]";
+      if( is_array($value))
+      {
+        $value = "[". join(",", $value) ."]";
+      }
+      preg_match( '/^[\[\]\w.,@_\/-]+$/' , $value , $matches )
+        or exit( '{ "output": "Invalid input" , "token": "' . getCSRFToken() . '" }' );
+      $code = preg_replace( '/\n' . $name . '_=.*' . PHP_EOL . '/'  ,
+                          PHP_EOL . $name . '_=' . $value . PHP_EOL ,
+                          $code )
+                or exit();
     }
-    preg_match( '/^[\[\]\w.*,@_\/-]+$/' , $value , $matches )
-      or exit( '{ "output": "Invalid input" , "token": "' . getCSRFToken() . '" }' );
-    $code = preg_replace( '/\n' . $name . '_=.*' . PHP_EOL . '/'  ,
-                        PHP_EOL . $name . '_=' . $value . PHP_EOL ,
-                        $code )
-              or exit();
-  }
 
   file_put_contents($file, $code )
     or exit( '{ "output": "' . $file . ' write error" }' );
@@ -128,13 +129,21 @@ else if ( $_POST['action'] == "launch" && $_POST['config'] )
   echo '"' . $ret . '" }';
 }
 
-else if ( $_POST['action'] == "poweroff" )
+else
 {
   // CSRF check
   $token = isset($_POST['csrf_token']) ? $_POST['csrf_token'] : '';
   if ( empty($token) || !validateCSRFToken($token) )
     exit( '{ "output": "Unauthorized request. Try reloading the page" }' );
-  shell_exec( 'bash -c "( sleep 2 && sudo halt ) 2>/dev/null >/dev/null &"' );
+
+  if ( $_POST['action'] == "poweroff" )
+  {
+    shell_exec( 'bash -c "( sleep 2 && sudo halt ) 2>/dev/null >/dev/null &"' );
+  }
+  else if ( $_POST['action'] == "reboot" )
+  {
+    shell_exec('bash -c "( sleep 2 && sudo reboot ) 2>/dev/null >/dev/null &"');
+  }
 }
 
 // License

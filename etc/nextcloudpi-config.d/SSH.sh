@@ -36,7 +36,7 @@ configure()
   }
 
   # Change credentials
-  id "$USER_" &>/dev/null || useradd "$USER_"
+  id "$USER_" &>/dev/null || { echo "$USER_ doesn't exist"; return 1; }
   echo -e "$PASS_\n$CONFIRM_" | passwd "$USER_" || return 1
 
   # Check for insecure default pi password ( taken from old jessie method )
@@ -64,6 +64,7 @@ configure()
       systemctl stop    ssh
       systemctl disable ssh
       echo "The user ncp is using the default password. Refusing to activate SSH"
+      echo "You can change this password from nc-passwd"
       echo "SSH disabled"
       return 1
     }

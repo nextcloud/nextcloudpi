@@ -75,7 +75,7 @@
   if (file_exists('wizard') && !file_exists('wizard.cfg')) {
     echo <<<HTML
     <div id="first-run-wizard">
-      <div>
+      <div class='dialog'>
         <br>
         <h2 id="config-box-title">NextCloudPi First Run</h2>
         <p>Click to start the configuration wizard</p>
@@ -93,28 +93,29 @@ HTML;
   }
 ?>
 
-<header role="banner">
-    <div id="header">
-        <div id="header-left">
-            <a href="https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/"
-               id="nextcloudpi" tabindex="1" target="_blank">
-                <div class="logo-icon">
-                    <h1 class="hidden-visually">NextCloudPi</h1>
-                </div>
-            </a>
-            <a id=versionlink target="_blank" href="https://github.com/nextcloud/nextcloudpi/blob/master/changelog.md">
-              <?php echo file_get_contents("/usr/local/etc/ncp-version") ?>
-            </a>
+  <header role="banner"><div id="header">
+    <div id="header-left">
+      <a href="https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/"
+           id="nextcloudpi" tabindex="1">
+        <div class="logo-icon">
+           <h1 class="hidden-visually">NextCloudPi</h1>
         </div>
-        <div id="header-right">
-          <?php
-            if (file_exists('wizard'))
-              echo <<<HTML
-      <div class="wizard-btn">
-        <div id="expand">
-          <div class="icon-wizard-white"></div>
+      </a>
+      <a id=versionlink target="_blank" href="https://github.com/nextcloud/nextcloudpi/blob/master/changelog.md">
+        <?php echo file_get_contents( "/usr/local/etc/ncp-version" ) ?>
+      </a>
+    </div>
+    <div id="header-right">
+<?php 
+  if ( file_exists( 'wizard' ) )
+    echo <<<HTML
+      <a href="wizard">
+        <div class="wizard-btn">
+          <div id="expand">
+            <div class="icon-wizard-white"></div>
+          </div>
         </div>
-      </div>
+      </a>
 HTML;
           ?>
             <div id="poweroff">
@@ -125,10 +126,11 @@ HTML;
         </div>
 </header>
 
-<div id="content-wrapper">
-    <div id="content" class="app-files" role="main">
-        <div id="app-navigation">
-            <ul id="ncp-options">
+  <div id='overlay' class="hidden"></div>
+  <div id="content-wrapper">
+	<div id="content" class="app-files" role="main">
+		<div id="app-navigation">
+        	<ul id="ncp-options">
               <?php
 
                 // fill options with contents from directory
@@ -158,29 +160,38 @@ HTML;
                 }
               ?>
             </ul>
-        </div>
+          </div>
 
-        <div id="app-content">
-            <h2 id="config-box-title"><?php echo $l->__("Configure NextCloudPi features"); ?></h2>
-            <a href="#" target="_blank">
-                <div id="config-extra-info" class="icon-info"></div>
-            </a>
-            <div id="config-box-info"></div>
-            <br/>
-            <div id="config-box-wrapper" class="hidden">
-                <form>
-                    <div id="config-box"></div>
-                    <div id="config-button-wrapper">
-                        <button id="config-button">Run</button>
-                        <img id="loading-gif" src="loading-small.gif">
-                        <div id="circle-retstatus" class="icon-red-circle"></div>
-                    </div>
-                </form>
-                <textarea readonly id="details-box" rows="25" cols="60"></textarea>
-            </div>
+      <div id="app-content">
+        <div id="app-navigation-toggle" class="icon-menu hidden"></div>
+        <h2 id="config-box-title"><?php echo $l->__("Configure NextCloudPi features"); ?></h2>
+        <a href="#" target="_blank">
+          <div id="config-extra-info" class="icon-info"></div>
+        </a>
+        <div id="config-box-info"></div>
+        <br/>
+        <div id="config-box-wrapper" class="hidden">
+          <form>
+            <div id="config-box"></div>
+              <div id="config-button-wrapper">
+                <button id="config-button"><?php echo $l->__("Run"); ?></button>
+                <img id="loading-gif" src="loading-small.gif">
+                <div id="circle-retstatus" class="icon-red-circle"></div>
+              </div>
+          </form>
+          <textarea readonly id="details-box" rows="12"></textarea>
         </div>
 
     </div>
+
+  <div id="poweroff-dialog" class='dialog primary hidden'>
+      <div id='poweroff-option_shutdown' class='button big-button'>
+         <img class="wizard-btn" src="img/poweroff.svg">&nbsp;&nbsp;shut down
+      </div>
+      <div id='poweroff-option_reboot'   class='button big-button'>
+         <img class="wizard-btn" src="img/reboot.svg">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reboot&nbsp;&nbsp;&nbsp;
+      </div>
+  </div>
 
   <?php
     include('csrf.php');

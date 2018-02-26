@@ -1,7 +1,59 @@
 
+[v0.46.30](https://github.com/nextcloud/nextcloudpi/commit/42074a2) (2018-02-22) add ncp-provisioning to SD card images
+
+[v0.46.29, master](https://github.com/nextcloud/nextcloudpi/commit/e589cd1) (2018-02-22) ncp-web: HTTP to HTTPS redirection
+
+[v0.46.28](https://github.com/nextcloud/nextcloudpi/commit/c78cf60) (2018-02-22) wizard: fix logbox overflow
+
+[v0.46.27](https://github.com/nextcloud/nextcloudpi/commit/7a68af0) (2018-02-20) wizard: animate side logs
+
+[v0.46.26](https://github.com/nextcloud/nextcloudpi/commit/c25a130) (2018-02-21) ncp-web: animate script textbox
+
+[v0.46.25](https://github.com/nextcloud/nextcloudpi/commit/7b61539) (2018-02-21) ncp-web: fix backend request without arguments
+
+[v0.46.24](https://github.com/nextcloud/nextcloudpi/commit/9846f23) (2018-02-21) ncp-web: link to wizard and Nextcloud instance
+
+[v0.46.23](https://github.com/nextcloud/nextcloudpi/commit/6fdd1ea) (2018-02-19) ncp-web: support for small screens
+
+[v0.46.22](https://github.com/nextcloud/nextcloudpi/commit/44f00b6) (2018-02-19) UFW: make it work with nc-forward-ports
+
+[v0.46.21](https://github.com/nextcloud/nextcloudpi/commit/4183052) (2018-02-19) docker: use docker networks for x86
+
+[v0.46.20](https://github.com/nextcloud/nextcloudpi/commit/ce650f5) (2018-02-15) random password provisioning on boot/startup
+
+[v0.46.19](https://github.com/nextcloud/nextcloudpi/commit/a57bedb) (2018-02-18) ncp-web: re-style poweroff menu
+
+[v0.46.18](https://github.com/nextcloud/nextcloudpi/commit/9b78cd6) (2018-02-18) ncp-web: disable event handler after poweroff
+
+[v0.46.17](https://github.com/nextcloud/nextcloudpi/commit/91686f2) (2018-02-10) Add dialog for shutdown.
+
+[v0.46.16](https://github.com/nextcloud/nextcloudpi/commit/4bdbf93) (2018-02-16) remove redundant configuration from unattended upgrades
+
+[v0.46.15](https://github.com/nextcloud/nextcloudpi/commit/e965c1a) (2018-02-16) lamp: enhance SSL security (chacha cypher), and OCSP stapling
+
+[v0.46.14](https://github.com/nextcloud/nextcloudpi/commit/ff33be9) (2018-02-16) log all NCP actions to /var/log/ncp.log
+
+[v0.46.13](https://github.com/nextcloud/nextcloudpi/commit/19b0609) (2018-02-16) update: accept github branch as an argument to ncp-update to test development branch
+
+[v0.46.12](https://github.com/nextcloud/nextcloudpi/commit/629ba33) (2018-02-15) lamp: protect apache fingerprinting
+
+[v0.46.11](https://github.com/nextcloud/nextcloudpi/commit/04ebdea) (2018-02-15) SSH: dont create user if it doesnt exist
+
+[v0.46.10](https://github.com/nextcloud/nextcloudpi/commit/0440d9f) (2018-02-09) samba: create share per NC user
+
+[v0.46.9 ](https://github.com/nextcloud/nextcloudpi/commit/19ccdb4) (2018-02-13) letsencrypt: only call update-rc.d in docker builds
+
+[v0.46.8 ](https://github.com/nextcloud/nextcloudpi/commit/354c767) (2018-02-12) preactivate useful apps for a selfhosted instance
+
+[v0.46.7 ](https://github.com/nextcloud/nextcloudpi/commit/5fd3cfa) (2018-02-12) update: fix typo in check version
+
+[v0.46.6 ](https://github.com/nextcloud/nextcloudpi/commit/9101b0d) (2018-02-08) Update ncp-check-version
+
+[v0.46.5 ](https://github.com/nextcloud/nextcloudpi/commit/69242d0) (2018-02-09) nc-backup: stronger permissions for backup file
+
 [v0.46.4 ](https://github.com/nextcloud/nextcloudpi/commit/ae79b42) (2018-02-08) do not rely on pings, just return value of operations
 
-[v0.46.3](https://github.com/nextcloud/nextcloudpi/commit/4c12769) (2018-02-07) unattended upgrades: fix unattended upgrades not working because of modified files
+[v0.46.3 ](https://github.com/nextcloud/nextcloudpi/commit/4c12769) (2018-02-07) unattended upgrades: fix unattended upgrades not working because of modified files
 
 [v0.46.2 ](https://github.com/nextcloud/nextcloudpi/commit/e649f47) (2018-02-07) modsecurity: turn off logging, its too spammy for ramlogs
 

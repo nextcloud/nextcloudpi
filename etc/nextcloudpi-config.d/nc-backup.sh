@@ -95,6 +95,7 @@ rm "$DBBACKUP"
   rm "$DESTFILE"
   DESTFILE="${DESTFILE}.gz"
 }
+chmod 600 "$DESTFILE"
 
 echo "backup $DESTFILE generated"
 EOF

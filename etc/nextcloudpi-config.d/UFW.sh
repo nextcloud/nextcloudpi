@@ -59,6 +59,9 @@ configure()
   echo -e "\n# NFS rules"
   ufw allow nfs
 
+  echo -e "\n# UPnP rules"
+  ufw allow proto udp from 192.168.0.0/16
+
   echo "UFW enabled"
 }
 

@@ -37,7 +37,10 @@ $(function()
   if (!!window.EventSource)
     var source = new EventSource('ncp-output.php');
   else
-    $('#config-box-title').fill( "Browser not supported" ); 
+    $('#config-box-title').fill( "Browser not supported" );
+
+  $('#poweroff-dialog').hide();
+  $('#overlay').hide();
 
   source.addEventListener('message', function(e) 
     {
@@ -60,6 +63,9 @@ $(function()
 
     if ( confLock ) return;
     confLock = true;
+
+    if ( window.innerWidth < 768 )
+      close_menu();
 
     $( '#' + selectedID ).set('-active');
     var that = this;
@@ -112,6 +118,8 @@ $(function()
     // reset box
     $('#details-box').fill();
     $('#details-box').show();
+    $('#details-box').set( {$height: '0px'} );
+    $('#details-box').animate( {$height: '500px'}, 150 );
     $('#circle-retstatus').hide();
 
     $( 'input' , '#config-box-wrapper' ).set('@disabled',true);
@@ -168,25 +176,110 @@ $(function()
     $('#details-box').hide( '' );
   } );
 
-  // Power-off button
-  $( '#poweroff' ).on('click', function(e)
+  // slide menu
+  var slide_menu_enabled = false;
+
+  function hide_overlay(e) { $('#overlay').hide() }
+
+  function open_menu()
   {
+    if ( $('#app-navigation').get('$width') != '250px' )
+    {
+      $('#overlay').show();
+      $('#overlay').on('|click', close_menu );
+      $('#app-navigation').animate( {$width: '250px'}, 150 );
+    }
+  }
+
+  function close_menu()
+  {
+    if ( $('#app-navigation').get('$width') == '250px' )
+    {
+      $('#app-navigation').animate( {$width: '0px'}, 150 );
+      $('#overlay').hide();
+      $.off( close_menu );
+    }
+  }
+
+  function close_menu_on_click_out(e) { close_menu(); }
+
+  function enable_slide_menu()
+  {
+    if ( slide_menu_enabled ) return;
+    $( '#app-navigation' ).set( { $width: '0px' } );
+    $( '#app-navigation' ).set( { $position: 'absolute' } );
+    $( '#app-navigation-toggle' ).on('click', open_menu );
+    $( '#app-content' ).on('|click', close_menu_on_click_out );
+    slide_menu_enabled = true;
+  }
+
+  function disable_slide_menu()
+  {
+    if ( !slide_menu_enabled ) return;
+    $.off( open_menu );
+    $.off( close_menu );
+    $.off( close_menu_on_click_out );
+    $( '#app-navigation' ).set( { $width: '250px' } );
+    $( '#app-navigation' ).set( { $position: 'unset' } );
+    $('#overlay').hide();
+    slide_menu_enabled = false;
+  }
+
+  if ( window.innerWidth < 768 ) 
+    enable_slide_menu();
+
+  window.addEventListener('resize', function(){ 
+    if ( window.innerWidth < 768 ) 
+      enable_slide_menu();
+    else
+      disable_slide_menu();
+  } );
+
+  // Power-off button
+  function hide_poweroff_dialog(ev)
+  {
+    $('#poweroff-dialog').hide();
+    $('#overlay').hide();
+    $('#overlay').off('click');
+  }
+  function poweroff_event_handler(e)
+  {
+    $('#overlay').show();
+    $('#poweroff-dialog').show();
+    $('#overlay').on('click', hide_poweroff_dialog );
+  }
+  $( '#poweroff' ).on('click', poweroff_event_handler );
+
+  $( '#poweroff-option_shutdown' ).on('click', function(e)
+  {
+    $('#poweroff-dialog').hide();
+    $('#overlay').hide();
     // request
     $.request('post', 'ncp-launcher.php', { action:'poweroff', 
                                             csrf_token: $( '#csrf-token' ).get( '.value' ) }).then( 
       function success( result ) 
       {
         $('#config-box-wrapper').hide();
+        $.off( poweroff_event_handler );
         $('#config-box-title').fill( "Shutting down..." ); 
       }).error( errorMsg );
   } );
 
-  // Wizard button
-  $( '.wizard-btn' ).on('click', function(e)
+  $( '#poweroff-option_reboot' ).on('click', function(e)
   {
-    window.location = 'wizard';
+    $('#poweroff-dialog').hide();
+    $('#overlay').hide();
+    // request
+    $.request('post', 'ncp-launcher.php', { action:'reboot', 
+                                            csrf_token: $( '#csrf-token' ).get( '.value' ) }).then( 
+      function success( result ) 
+      {
+        $('#config-box-wrapper').hide();
+        $.off( poweroff_event_handler );
+        $('#config-box-title').fill( "Rebooting..." ); 
+      }).error( errorMsg );
   } );
- 
+
   // close notification icon
   $( '.icon-close' ).on('click', function(e)
   {
@@ -203,6 +296,9 @@ $(function()
     if( e.target.id == 'first-run-wizard' )
       $( '#first-run-wizard' ).hide();
   } );
+
+  // click to nextcloud button
+  $('#nextcloudpi').set( '@href', window.location.protocol + '//' + window.location.hostname );
 });
 
 // License
