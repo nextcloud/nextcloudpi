@@ -19,10 +19,10 @@ ACTIVE_=no
 BANTIME_=600
 
 # cooldown time for incorrect passwords
-FINDTIME_=600                                    
+FINDTIME_=600
 
 # bad attempts before banning an IP
-MAXRETRY_=6                                      
+MAXRETRY_=6
 
 # email to send notifications to
 EMAIL_=optional@email.com
@@ -65,6 +65,10 @@ EOF
   sed -i 's|Fail2Ban|NextCloudPi|' /etc/fail2ban/action.d/sendmail-whois-lines.conf
   grep -q actionstart_ "$F" || sed -i 's|actionstart|actionstart_|' "$F"
   grep -q actionstop_  "$F" || sed -i 's|actionstop|actionstop_|'   "$F"
+
+  # delay init because of automount
+  sed -i "/^ExecStart=/iExecStartPre=/bin/sleep 10" /lib/systemd/system/fail2ban.service
+
 }
 
 configure()

@@ -38,7 +38,7 @@ EOF
   cat > /usr/lib/systemd/system/nc-automount.service <<'EOF'
 [Unit]
 Description=Automount USB drives
-Before=mysqld.service
+Before=mysqld.service dphys-swapfile.service fail2ban.service smbd.service nfs-server.service
 
 [Service]
 Restart=always
@@ -51,6 +51,7 @@ EOF
   cat > /usr/lib/systemd/system/nc-automount-links.service <<'EOF'
 [Unit]
 Description=Monitor /media for mountpoints and create USBdrive* symlinks
+Before=nc-automount.service
 
 [Service]
 Restart=always
@@ -96,11 +97,8 @@ done
 EOF
   chmod +x /usr/local/etc/nc-automount-links-mon
 
-  # adjust when mariaDB starts
-  local DBUNIT=/lib/systemd/system/mariadb.service
-  grep -q sleep $DBUNIT  || sed -i "/^ExecStart=/iExecStartPre=/bin/sleep 10" $DBUNIT
-
-  systemctl daemon-reload
+  # delay init because of automount
+  sed -i "/^ExecStart=/iExecStartPre=/bin/sleep 10" /lib/systemd/system/mariadb.service
 }
 
 configure()
