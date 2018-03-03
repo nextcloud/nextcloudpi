@@ -41,7 +41,7 @@ EOF
 [Unit]
 Description=Populate ramlogs dir
 Requires=network.target
-Before=redis-server apache2 mysqld
+Before=redis-server.service apache2.service mysqld.service
 
 [Service]
 ExecStart=/bin/bash /usr/local/bin/ramlog-dirs.sh

@@ -44,19 +44,22 @@ configure()
   sed -i "s|#\?CONF_SWAPSIZE=.*|CONF_SWAPSIZE=$SWAPSIZE_|" /etc/dphys-swapfile
   grep -q vm.swappiness /etc/sysctl.conf || echo "vm.swappiness = 10" >> /etc/sysctl.conf && sysctl --load &>/dev/null
 
-  # workaround for automount, systemd doesn't get the order right
-  grep -q sleep /etc/init.d/dphys-swapfile || sed -i "/\<start)/asleep 15" /etc/init.d/dphys-swapfile
-
   dphys-swapfile setup && dphys-swapfile swapon && {
     [[ -f "$ORIG" ]] && swapoff "$ORIG" && rm -f "$ORIG"
     echo "swapfile moved successfully"
     return 0
   }
+
   echo "moving swapfile failed"
   return 1
 }
 
-install() { :; }
+install()
+{
+  # delay init because of automount
+  sed -i "/\<start)/asleep 30" /etc/init.d/dphys-swapfile 
+}
+
 
 # License
 #

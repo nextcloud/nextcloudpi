@@ -14,7 +14,7 @@ IP=$1                       # First argument is the QEMU Raspbian IP address
 
 
 [[ "$FTPPASS" == "" ]] && { 
-  echo -e "\e[1mNo FTPPASS variable found, FTP won't work.\nYou probably want to cancel now"
+  echo -e "\e[1mNo FTPPASS variable found, FTP won't work.\nYou probably want to cancel now\e[0m"
   sleep 5
 }
 

@@ -1,5 +1,7 @@
 
-[v0.46.36](https://github.com/nextcloud/nextcloudpi/commit/b071266) (2018-03-03) build: fix systemd dir not existing
+[v0.46.37](https://github.com/nextcloud/nextcloudpi/commit/1044dbb) (2018-03-03) nc-automount: fix dependencies
+
+[v0.46.36](https://github.com/nextcloud/nextcloudpi/commit/33fae1f) (2018-03-03) build: fix systemd dir not existing
 
 [v0.46.35](https://github.com/nextcloud/nextcloudpi/commit/6aa39ed) (2018-02-26) ncp-web: add localization (#372)
 

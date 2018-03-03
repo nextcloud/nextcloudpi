@@ -222,6 +222,28 @@ EOF
   grep -q '^ACTIVE_=yes$' /usr/local/etc/nextcloudpi-config.d/samba.sh || \
     update-rc.d nmbd disable
 
+  # fix automount dependencies with other ncp-apps
+  sed -i \
+    's|^Before=.*|Before=mysqld.service dphys-swapfile.service fail2ban.service smbd.service nfs-server.service|' \
+    /usr/lib/systemd/system/nc-automount.service
+
+  sed -i \
+    's|^Before=.*|Before=nc-automount.service|' \
+    /usr/lib/systemd/system/nc-automount-links.service
+
+  # fix ramlogs dependencies with other ncp-apps
+  sed -i \
+    's|^Before=.*|Before=redis-server.service apache2.service mysqld.service|' \
+    /usr/lib/systemd/system/ramlogs.service
+
+  # adjust when other services start
+  DBUNIT=/lib/systemd/system/mariadb.service
+  F2BUNIT=/lib/systemd/system/fail2ban.service
+  SWPUNIT=/etc/init.d/dphys-swapfile 
+  grep -q sleep "$DBUNIT"  || sed -i "/^ExecStart=/iExecStartPre=/bin/sleep 10" "$DBUNIT"
+  grep -q sleep "$F2BUNIT" || sed -i "/^ExecStart=/iExecStartPre=/bin/sleep 10" "$F2BUNIT"
+  grep -q sleep "$SWPUNIT" || sed -i "/\<start)/asleep 30" "$SWPUNIT"
+
 } # end - only live updates
 
 exit 0
