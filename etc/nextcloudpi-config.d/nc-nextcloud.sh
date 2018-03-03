@@ -86,6 +86,7 @@ install()
   }
   
   # service to randomize passwords on first boot
+  mkdir -p /usr/lib/systemd/system
   cat > /usr/lib/systemd/system/nc-provisioning.service <<'EOF'
 [Unit]
 Description=Randomize passwords on first boot

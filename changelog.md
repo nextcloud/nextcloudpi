@@ -1,5 +1,7 @@
 
-[v0.46.35](https://github.com/nextcloud/nextcloudpi/commit/e417926) (2018-02-26) ncp-web: add localization (#372)
+[v0.46.36](https://github.com/nextcloud/nextcloudpi/commit/b071266) (2018-03-03) build: fix systemd dir not existing
+
+[v0.46.35](https://github.com/nextcloud/nextcloudpi/commit/6aa39ed) (2018-02-26) ncp-web: add localization (#372)
 
 [v0.46.34](https://github.com/nextcloud/nextcloudpi/commit/3fc902b) (2018-02-26) ncp-web: fix responsive in iPad
 
