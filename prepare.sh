@@ -35,10 +35,14 @@ install()
     resize2fs /dev/sda2
 
     apt-get update
+    sleep 30
     apt-get upgrade -y
     apt-get dist-upgrade -y
-    $APTINSTALL rpi-update 
-    echo -e "y\n" | PRUNE_MODULES=1 rpi-update
+
+    # As of 03-2018, you dont get a big kernel update by doing
+    # this, so better be safe. Might uncomment again in the future
+    # $APTINSTALL rpi-update
+    echo -e "y\n" #| PRUNE_MODULES=1 rpi-update
   fi
 }
 
