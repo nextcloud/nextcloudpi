@@ -100,11 +100,11 @@ for file in etc/nextcloudpi-config.d/*; do
 done
 
 # install localization files
-cp -rT etc/nextcloudpi-config.d/l10n /usr/local/etc/nextcloudpi-config.d/l10n
+cp -rT etc/nextcloudpi-config.d/l10n "$CONFDIR"/l10n
 
 # these files can contain sensitive information, such as passwords
-chown -R root:www-data /usr/local/etc/nextcloudpi-config.d
-chmod 660 /usr/local/etc/nextcloudpi-config.d/*
+chown -R root:www-data "$CONFDIR"
+chmod 660 "$CONFDIR"/*
 
 # install web interface
 cp -r ncp-web /var/www/
@@ -124,17 +124,17 @@ done
 [[ ! -f /.ncp-image ]] && {
 
   # update ncp-backup
-  cd /usr/local/etc/nextcloudpi-config.d &>/dev/null
+  cd "$CONFDIR" &>/dev/null
   install_script nc-backup.sh
   cd - &>/dev/null
 
   # update ncp-backup-auto
-  cd /usr/local/etc/nextcloudpi-config.d &>/dev/null
+  cd "$CONFDIR" &>/dev/null
   install_script nc-backup-auto.sh
   cd - &>/dev/null
 
   # refresh nc-backup-auto
-  cd /usr/local/etc/nextcloudpi-config.d &>/dev/null
+  cd "$CONFDIR" &>/dev/null
   grep -q '^ACTIVE_=yes$' nc-backup-auto.sh && activate_script nc-backup-auto.sh 
   cd - &>/dev/null
 
@@ -189,7 +189,6 @@ ExecStart=/bin/bash /usr/local/bin/ncp-provisioning.sh
 [Install]
 WantedBy=multi-user.target
 EOF
-
   systemctl enable nc-provisioning
 
   NEED_UPDATE=false
@@ -219,8 +218,7 @@ EOF
 
   # adjust services
   systemctl mask nfs-blkmap
-  grep -q '^ACTIVE_=yes$' /usr/local/etc/nextcloudpi-config.d/samba.sh || \
-    update-rc.d nmbd disable
+  grep -q '^ACTIVE_=yes$' "$CONFDIR"/samba.sh || update-rc.d nmbd disable
 
   # fix automount dependencies with other ncp-apps
   sed -i \
@@ -230,11 +228,6 @@ EOF
   sed -i \
     's|^Before=.*|Before=nc-automount.service|' \
     /usr/lib/systemd/system/nc-automount-links.service
-
-  # fix ramlogs dependencies with other ncp-apps
-  sed -i \
-    's|^Before=.*|Before=redis-server.service apache2.service mysqld.service|' \
-    /usr/lib/systemd/system/ramlogs.service
 
   # adjust when other services start
   DBUNIT=/lib/systemd/system/mariadb.service
@@ -246,6 +239,23 @@ EOF
 
   # disable ncp user login
   chsh -s /usr/sbin/nologin ncp
+
+  # remove old instance of ramlogs
+  [[ -f  /usr/lib/systemd/system/ramlogs.service ]] && {
+    systemctl disable ramlogs
+    rm -f /usr/lib/systemd/system/ramlogs.service /usr/local/bin/ramlog-dirs.sh
+  }
+  sed -i '/tmpfs \/var\/log.* in RAM$/d' /etc/fstab
+  sed -i '/tmpfs \/tmp.* in RAM$/d'      /etc/fstab
+
+  # update ramlogs with log2ram
+  type log2ram &>/dev/null || {
+    cd "$CONFDIR" &>/dev/null
+    install_script nc-ramlogs.sh           &>/dev/null
+    grep -q '^ACTIVE_=yes$' "$CONFDIR"/nc-ramlogs.sh && \
+      systemctl enable log2ram
+    cd -                                   &>/dev/null
+  }
 
 } # end - only live updates
 

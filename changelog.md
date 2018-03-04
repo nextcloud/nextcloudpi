@@ -1,7 +1,9 @@
 
-[v0.46.38](https://github.com/nextcloud/nextcloudpi/commit/1746a25) (2018-03-04) disable ncp user login
+[v0.46.39](https://github.com/nextcloud/nextcloudpi/commit/ce08276) (2018-03-04) nc-ramlogs: change implementation to use log2ram
 
-[v0.46.37](https://github.com/nextcloud/nextcloudpi/commit/fb32cf9) (2018-03-03) nc-automount: fix dependencies
+[v0.46.38](https://github.com/nextcloud/nextcloudpi/commit/2b1fa11) (2018-03-04) disable ncp user login
+
+[v0.46.37](https://github.com/nextcloud/nextcloudpi/commit/78cdce5) (2018-03-03) nc-automount: fix dependencies
 
 [v0.46.36](https://github.com/nextcloud/nextcloudpi/commit/33fae1f) (2018-03-03) build: fix systemd dir not existing
 
