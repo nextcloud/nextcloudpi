@@ -58,22 +58,6 @@ configure()
     }
   }
 
-  # Check for insecure default ncp password ( taken from old jessie method )
-  local SHADOW="$( grep -E '^ncp:' /etc/shadow )"
-  test -n "${SHADOW}" && {
-    local SALT=$(echo "${SHADOW}" | sed -n 's/ncp:\$6\$//;s/\$.*//p')
-    local HASH=$(mkpasswd -msha-512 ownyourbits "$SALT")
-
-    grep -q "${HASH}" <<< "${SHADOW}" && {
-      systemctl stop    ssh
-      systemctl disable ssh
-      echo "The user ncp is using the default password. Refusing to activate SSH"
-      echo "You can change this password from nc-passwd"
-      echo "SSH disabled"
-      return 1
-    }
-  }
-
   # Enable
   chage -d 0 "$USER_"
   systemctl enable ssh

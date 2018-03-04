@@ -94,8 +94,9 @@ EOF
   a2ensite ncp
 
   ## NCP USER FOR AUTHENTICATION
-  useradd $WEBADMIN
-  echo -e "$WEBPASSWD\n$WEBPASSWD" | passwd $WEBADMIN
+  useradd --home-dir /nonexistent "$WEBADMIN"
+  echo -e "$WEBPASSWD\n$WEBPASSWD" | passwd "$WEBADMIN"
+  chsh -s /usr/sbin/nologin "$WEBADMIN"
 
   ## NCP LAUNCHER
   mkdir -p /home/www

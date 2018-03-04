@@ -244,6 +244,9 @@ EOF
   grep -q sleep "$F2BUNIT" || sed -i "/^ExecStart=/iExecStartPre=/bin/sleep 10" "$F2BUNIT"
   grep -q sleep "$SWPUNIT" || sed -i "/\<start)/asleep 30" "$SWPUNIT"
 
+  # disable ncp user login
+  chsh -s /usr/sbin/nologin ncp
+
 } # end - only live updates
 
 exit 0
