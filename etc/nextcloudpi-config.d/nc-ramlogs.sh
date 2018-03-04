@@ -18,56 +18,32 @@ ACTIVE_=no
 DESCRIPTION="mount logs in RAM to prevent SD degradation (faster, consumes more RAM)"
 
 INFOTITLE="Warning"
-INFO="If you are installing software other than NextCloud
-that creates folders under '/var/log/' disable this feature"
+INFO="You need to reboot for this change to take effect"
+
+install()
+{
+  curl -Lo log2ram.tar.gz https://github.com/azlux/log2ram/archive/master.tar.gz
+  tar xf log2ram.tar.gz
+  cd log2ram-master
+  chmod +x install.sh && sudo ./install.sh
+  cd ..
+  rm -r log2ram-master log2ram.tar.gz
+  rm /etc/cron.hourly/log2ram /usr/local/bin/uninstall-log2ram.sh
+}
 
 configure()
 {
   [[ $ACTIVE_ != "yes" ]] && {
-    sed -i '/tmpfs \/var\/log.* in RAM$/d' /etc/fstab
-    sed -i '/tmpfs \/tmp.* in RAM$/d'      /etc/fstab
-    echo "Logs in SD. Reboot for changes to take effect"
+    systemctl disable log2ram
+    systemctl stop    log2ram
+    echo "Logs in SD. Reboot to take effect"
     return
   }
+  systemctl enable log2ram
+  systemctl start  log2ram
 
-  grep -q "Logs in RAM" /etc/fstab || cat >> /etc/fstab <<EOF
-tmpfs /var/log tmpfs defaults,noatime,mode=1777,size=100M 0 0 # Logs in RAM
-tmpfs /tmp     tmpfs defaults,noatime,mode=1777           0 0 # /tmp in RAM
-EOF
-
-  # unit to recreate required logdirs
-  mkdir -p /usr/lib/systemd/system
-  cat > /usr/lib/systemd/system/ramlogs.service <<'EOF'
-[Unit]
-Description=Populate ramlogs dir
-Requires=network.target
-Before=redis-server.service apache2.service mysqld.service
-
-[Service]
-ExecStart=/bin/bash /usr/local/bin/ramlog-dirs.sh
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-  cat > /usr/local/bin/ramlog-dirs.sh <<'EOF'
-#!/bin/bash
-mkdir -p /var/log/mysql
-chown mysql /var/log/mysql
-
-mkdir -p /var/log/apache2
-chown www-data /var/log/apache2
-
-mkdir -p /var/log/redis
-chown redis /var/log/redis
-EOF
-  systemctl enable ramlogs
-
-  grep -q vm.swappiness /etc/sysctl.conf || echo "vm.swappiness = 10" >> /etc/sysctl.conf && sysctl --load
-  echo "Logs in RAM. Reboot for changes to take effect"
+  echo "Logs in RAM. Reboot to take effect"
 }
-
-install() { :; }
 
 # License
 #
