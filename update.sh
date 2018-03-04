@@ -46,7 +46,6 @@ NFS.sh
 EXCL_DOCKER+="
 nc-notify-updates.sh
 nc-scan-auto.sh
-nc-backup-auto.sh
 freeDNS.sh
 "
 
@@ -126,16 +125,6 @@ done
   # update ncp-backup
   cd "$CONFDIR" &>/dev/null
   install_script nc-backup.sh
-  cd - &>/dev/null
-
-  # update ncp-backup-auto
-  cd "$CONFDIR" &>/dev/null
-  install_script nc-backup-auto.sh
-  cd - &>/dev/null
-
-  # refresh nc-backup-auto
-  cd "$CONFDIR" &>/dev/null
-  grep -q '^ACTIVE_=yes$' nc-backup-auto.sh && activate_script nc-backup-auto.sh 
   cd - &>/dev/null
 
   # add ncp-config link
@@ -255,6 +244,17 @@ EOF
     grep -q '^ACTIVE_=yes$' "$CONFDIR"/nc-ramlogs.sh && \
       systemctl enable log2ram
     cd -                                   &>/dev/null
+  }
+
+  # update nc-backup-auto to use cron
+  [[ -f  /etc/systemd/system/nc-backup.timer ]] && {
+    systemctl stop    nc-backup.timer
+    systemctl disable nc-backup.timer
+    rm -f /etc/systemd/system/nc-backup.timer /etc/systemd/system/nc-backup.service
+    cd "$CONFDIR" &>/dev/null
+    grep -q '^ACTIVE_=yes$' "$CONFDIR"/nc-backup-auto.sh && \
+      activate_script nc-backup-auto.sh
+    cd -          &>/dev/null
   }
 
 } # end - only live updates
