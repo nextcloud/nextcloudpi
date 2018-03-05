@@ -124,7 +124,7 @@ done
 
   # update ncp-backup
   cd "$CONFDIR" &>/dev/null
-  install_script nc-backup.sh
+  install_script nc-backup.sh &>/dev/null
   cd - &>/dev/null
 
   # add ncp-config link

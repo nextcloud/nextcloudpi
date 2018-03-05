@@ -1,7 +1,9 @@
 
-[v0.46.40](https://github.com/nextcloud/nextcloudpi/commit/e88aa04) (2018-03-04) nc-backup-auto: change to using cron
+[v0.47.0](https://github.com/nextcloud/nextcloudpi/commit/4dd3979) (2018-03-05) added nc-zram
 
-[v0.46.39](https://github.com/nextcloud/nextcloudpi/commit/2371806) (2018-03-04) nc-ramlogs: change implementation to use log2ram
+[v0.46.40](https://github.com/nextcloud/nextcloudpi/commit/a251f64) (2018-03-04) nc-backup-auto: change to using cron
+
+[v0.46.39](https://github.com/nextcloud/nextcloudpi/commit/5ed50c9) (2018-03-04) nc-ramlogs: change implementation to use log2ram
 
 [v0.46.38](https://github.com/nextcloud/nextcloudpi/commit/63513bc) (2018-03-04) disable ncp user login
 
