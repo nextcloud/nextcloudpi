@@ -33,7 +33,7 @@ configure()
   [[ -d "$DSTDIR"            ]] || { echo "$DSTDIR Doesn't exist. Abort";     return 1; }
 
   [[ "$( stat -fc%T "$DSTDIR" )" == "btrfs" ]] && {
-    echo "BTRFS doesn't support swapfiles"
+    echo "BTRFS doesn't support swapfiles. You can still use nc-zram"
     return 1
   }
 
