@@ -257,6 +257,10 @@ EOF
     cd -          &>/dev/null
   }
 
+  # make sure the redis directory exists
+  mkdir -p /var/log/redis
+  chown redis /var/log/redis
+
 } # end - only live updates
 
 exit 0
