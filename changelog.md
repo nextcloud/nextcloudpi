@@ -1,7 +1,9 @@
 
-[v0.51.0](https://github.com/nextcloud/nextcloudpi/commit/95c92da) (2018-03-12) added nc-rsync
+[v0.52.0](https://github.com/nextcloud/nextcloudpi/commit/55cfec0) (2018-03-12) added nc-rsync-auto
 
-[v0.50.0](https://github.com/nextcloud/nextcloudpi/commit/a195697) (2018-03-12) added nc-snapshot-sync
+[v0.51.0 ](https://github.com/nextcloud/nextcloudpi/commit/2566e44) (2018-03-12) added nc-rsync
+
+[v0.50.0 ](https://github.com/nextcloud/nextcloudpi/commit/b663e32) (2018-03-12) added nc-snapshot-sync
 
 [v0.47.4 ](https://github.com/nextcloud/nextcloudpi/commit/5e9cb51) (2018-03-14) Add template generation functionality to L10N.php (activate by setting constant GENERATE_TEMPLATES to true).
 
