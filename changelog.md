@@ -1,7 +1,11 @@
 
-[v0.47.3](https://github.com/nextcloud/nextcloudpi/commit/4156bb7) (2018-03-16) fix for nc-automount-links
+[v0.50.0](https://github.com/nextcloud/nextcloudpi/commit/1937d28) (2018-03-12) added nc-snapshot-sync
 
-[v0.47.2](https://github.com/nextcloud/nextcloudpi/commit/66cb00a) (2018-03-15) improve dependency of database with automount
+[v0.47.4 ](https://github.com/nextcloud/nextcloudpi/commit/5e9cb51) (2018-03-14) Add template generation functionality to L10N.php (activate by setting constant GENERATE_TEMPLATES to true).
+
+[v0.47.3](https://github.com/nextcloud/nextcloudpi/commit/fd9fc8c) (2018-03-16) fix for nc-automount-links
+
+[v0.47.2 ](https://github.com/nextcloud/nextcloudpi/commit/66cb00a) (2018-03-15) improve dependency of database with automount
 
 [v0.47.1 ](https://github.com/nextcloud/nextcloudpi/commit/9f6c479) (2018-03-10) update: make sure redis log exists
 
