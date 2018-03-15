@@ -1,7 +1,9 @@
 
-[v0.47.1](https://github.com/nextcloud/nextcloudpi/commit/188da78) (2018-03-10) update: make sure redis log exists
+[v0.47.2](https://github.com/nextcloud/nextcloudpi/commit/3766959) (2018-03-15) improve dependency of database with automount
 
-[v0.47.0](https://github.com/nextcloud/nextcloudpi/commit/8c7a4f3) (2018-03-05) added nc-zram
+[v0.47.1 ](https://github.com/nextcloud/nextcloudpi/commit/9f6c479) (2018-03-10) update: make sure redis log exists
+
+[v0.47.0 ](https://github.com/nextcloud/nextcloudpi/commit/8c7a4f3) (2018-03-05) added nc-zram
 
 [v0.46.40](https://github.com/nextcloud/nextcloudpi/commit/0d9d2e4) (2018-03-04) nc-backup-auto: change to using cron
 

@@ -98,7 +98,8 @@ EOF
   chmod +x /usr/local/etc/nc-automount-links-mon
 
   # delay init because of automount
-  sed -i "/^ExecStart=/iExecStartPre=/bin/sleep 10" /lib/systemd/system/mariadb.service
+  sed -i "/^ExecStart=/iExecStartPre=/bin/sleep 20" /lib/systemd/system/mariadb.service
+  sed -i 's|^Restart=.*|Restart=on-failure|'        /lib/systemd/system/mariadb.service
 }
 
 configure()

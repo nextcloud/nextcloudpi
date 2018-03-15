@@ -261,6 +261,10 @@ EOF
   mkdir -p /var/log/redis
   chown redis /var/log/redis
 
+  # improve dependency of database with automount
+  sed -i 's|^ExecStartPre=/bin/sleep .*|ExecStartPre=/bin/sleep 20|' /lib/systemd/system/mariadb.service
+  sed -i 's|^Restart=.*|Restart=on-failure|'                         /lib/systemd/system/mariadb.service
+
 } # end - only live updates
 
 exit 0
