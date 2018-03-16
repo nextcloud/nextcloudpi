@@ -31,7 +31,6 @@ SSH.sh
 
 # need to be fixed for this
 EXCL_DOCKER+="
-nc-webui.sh
 fail2ban.sh
 spDYN.sh
 "
