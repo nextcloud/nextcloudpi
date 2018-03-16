@@ -1,5 +1,7 @@
 
-[v0.47.2](https://github.com/nextcloud/nextcloudpi/commit/3766959) (2018-03-15) improve dependency of database with automount
+[v0.47.3](https://github.com/nextcloud/nextcloudpi/commit/4156bb7) (2018-03-16) fix for nc-automount-links
+
+[v0.47.2](https://github.com/nextcloud/nextcloudpi/commit/66cb00a) (2018-03-15) improve dependency of database with automount
 
 [v0.47.1 ](https://github.com/nextcloud/nextcloudpi/commit/9f6c479) (2018-03-10) update: make sure redis log exists
 
