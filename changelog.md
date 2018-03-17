@@ -1,7 +1,9 @@
 
-[v0.53.1](https://github.com/nextcloud/nextcloudpi/commit/b2c50f5) (2018-03-17) fix web update to NC13.0.1 with .well-known existence
+[v0.53.2](https://github.com/nextcloud/nextcloudpi/commit/5608921) (2018-03-17) letsencrypt: remove .well-known dir after renewal
 
-[v0.53.0](https://github.com/nextcloud/nextcloudpi/commit/cf6c432) (2018-03-17) update to NC 13.0.1
+[v0.53.1](https://github.com/nextcloud/nextcloudpi/commit/d8ad80c) (2018-03-17) fix web update to NC13.0.1 with .well-known existence
+
+[v0.53.0 ](https://github.com/nextcloud/nextcloudpi/commit/cf6c432) (2018-03-17) update to NC 13.0.1
 
 [v0.52.2 ](https://github.com/nextcloud/nextcloudpi/commit/f5d0916) (2018-03-17) build: small script adjustments
 
