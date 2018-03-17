@@ -290,6 +290,9 @@ ls -d /media/* &>/dev/null && {
 EOF
   chmod +x /usr/local/etc/nc-automount-links
 
+  # fix updates from NC12 to NC12.0.1
+  rm -rf /var/www/nextcloud/.well-known
+
 } # end - only live updates
 
 exit 0
