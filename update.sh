@@ -126,44 +126,6 @@ done
   install_script nc-backup.sh &>/dev/null
   cd - &>/dev/null
 
-  # add ncp-config link
-  [[ -e /usr/local/bin/ncp-config ]] || ln -s /usr/local/bin/nextcloudpi-config /usr/local/bin/ncp-config
-
-  # turn modsecurity logs off, too spammy
-  sed -i 's|SecAuditEngine .*|SecAuditEngine Off|' /etc/modsecurity/modsecurity.conf
-
-  # fix unattended upgrades failing on modified files
-  grep -q Dpkg::Options /etc/apt/apt.conf.d/20nextcloudpi-upgrades || \
-    cat >> /etc/apt/apt.conf.d/20nextcloudpi-upgrades <<EOF
-Dpkg::Options {
-   "--force-confdef";
-   "--force-confold";
-};
-EOF
-
-  # some added security
-  sed -i 's|^ServerSignature .*|ServerSignature Off|' /etc/apache2/conf-enabled/security.conf
-  sed -i 's|^ServerTokens .*|ServerTokens Prod|'      /etc/apache2/conf-enabled/security.conf
-
-  # remove redundant configuration from unattended upgrades
-  [[ "$( ls -l /etc/php/7.0/fpm/conf.d/*-opcache.ini |  wc -l )" -gt 1 ]] && rm "$( ls /etc/php/7.0/fpm/conf.d/*-opcache.ini | tail -1 )"
-  [[ "$( ls -l /etc/php/7.0/cli/conf.d/*-opcache.ini |  wc -l )" -gt 1 ]] && rm "$( ls /etc/php/7.0/cli/conf.d/*-opcache.ini | tail -1 )"
-
-  # upgrade launcher after logging improvements
-  cat > /home/www/ncp-launcher.sh <<'EOF'
-#!/bin/bash
-DIR=/usr/local/etc/nextcloudpi-config.d
-test -f $DIR/$1 || { echo "File not found"; exit 1; }
-source /usr/local/etc/library.sh
-cd $DIR
-launch_script $1
-EOF
-  chmod 700 /home/www/ncp-launcher.sh
-
-  # update sudoers permissions for the reboot command
-  grep -q reboot /etc/sudoers || \
-    sed -i 's|www-data.*|www-data ALL = NOPASSWD: /home/www/ncp-launcher.sh , /sbin/halt, /sbin/reboot|' /etc/sudoers
-
   # randomize passwords for old images ( older than v0.46.30 )
   cat > /usr/lib/systemd/system/nc-provisioning.service <<'EOF'
 [Unit]
@@ -292,6 +254,16 @@ EOF
 
   # fix updates from NC12 to NC12.0.1
   rm -rf /var/www/nextcloud/.well-known
+
+  # remove .well-known after each renewal
+  test -d /etc/letsencrypt/live && {
+    cat > /etc/cron.weekly/letsencrypt-ncp <<EOF
+#!/bin/bash
+/etc/letsencrypt/certbot-auto renew --quiet
+rm -rf /var/www/nextcloud/.well-known
+EOF
+    chmod +x /etc/cron.weekly/letsencrypt-ncp
+  }
 
 } # end - only live updates
 

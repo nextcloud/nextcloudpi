@@ -52,6 +52,7 @@ persistent_cfg /etc/letsencrypt
 cat > /etc/cron.weekly/letsencrypt-ncp <<EOFCRON
 #!/bin/bash
 /etc/letsencrypt/certbot-auto renew --quiet
+rm -rf $NCDIR/.well-known
 EOFCRON
 
 chmod +x /etc/cron.weekly/letsencrypt-ncp
@@ -75,6 +76,7 @@ configure()
     cat > /etc/cron.weekly/letsencrypt-ncp <<EOF
 #!/bin/bash
 /etc/letsencrypt/certbot-auto renew --quiet
+rm -rf $NCDIR/.well-known
 EOF
     chmod +x /etc/cron.weekly/letsencrypt-ncp
 
