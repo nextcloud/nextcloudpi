@@ -8,6 +8,7 @@
 # Usage: ./batch.sh <DHCP QEMU image IP>
 #
 
+set -e
 source buildlib.sh          # initializes $IMGNAME
 
 IP=$1                       # First argument is the QEMU Raspbian IP address
@@ -29,15 +30,15 @@ export NO_CONFIG=1          # skip interactive configuration
 
 ## BUILD
 
-download_resize_raspbian_img 1G "$IMGBASE" || exit 1
+download_resize_raspbian_img 1G "$IMGBASE"
 
-NO_HALT_STEP=1 ./installer.sh prepare.sh          "$IP" "$IMGBASE"                    || exit 1
-               ./installer.sh lamp.sh             "$IP" "$( ls -1t *.img | head -1 )" || exit 1
-               ./installer.sh $NC_INSTALL         "$IP" "$( ls -1t *.img | head -1 )" || exit 1
-               ./installer.sh nextcloudpi.sh      "$IP" "$( ls -1t *.img | head -1 )" || exit 1
-               ./installer.sh $NC_CONFIG          "$IP" "$( ls -1t *.img | head -1 )" || exit 1
-               ./installer.sh raspbian-cleanup.sh "$IP" "$( ls -1t *.img | head -1 )" || exit 1
-#              ./installer.sh build-devel.sh "$IP" "$( ls -1t *.img | head -1 )" || exit 1
+NO_HALT_STEP=1 ./installer.sh prepare.sh          "$IP" "$IMGBASE"
+               ./installer.sh lamp.sh             "$IP" "$( ls -1t *.img | head -1 )"
+               ./installer.sh $NC_INSTALL         "$IP" "$( ls -1t *.img | head -1 )"
+               ./installer.sh nextcloudpi.sh      "$IP" "$( ls -1t *.img | head -1 )"
+               ./installer.sh $NC_CONFIG          "$IP" "$( ls -1t *.img | head -1 )"
+               ./installer.sh raspbian-cleanup.sh "$IP" "$( ls -1t *.img | head -1 )"
+#              ./installer.sh build-devel.sh "$IP" "$( ls -1t *.img | head -1 )"
 
 ## PACKING
  
@@ -54,14 +55,14 @@ launch_qemu "$IMGNAME.img" &
 sleep 10
 wait_SSH "$IP"
 sleep 180                         # Wait for the services to start. Improve this ( wait HTTP && trusted domains )
-tests/tests.py "$IP" || exit 1
+tests/tests.py "$IP"
 
 ssh_pi "$IP" sudo halt
 
 ## UPLOADING
 
 create_torrent "${IMGNAME}.tar.bz2"
-upload_ftp "$IMGNAME" || true
+upload_ftp "$IMGNAME" 
 
 ## CLEANUP
 
