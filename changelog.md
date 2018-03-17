@@ -1,5 +1,9 @@
 
-[v0.52.1](https://github.com/nextcloud/nextcloudpi/commit/2ae5105) (2018-03-16) docker: include nc-webui
+[v0.53.0](https://github.com/nextcloud/nextcloudpi/commit/51e88ec) (2018-03-17) update to NC 13.0.1
+
+[v0.52.2 ](https://github.com/nextcloud/nextcloudpi/commit/f5d0916) (2018-03-17) build: small script adjustments
+
+[v0.52.1](https://github.com/nextcloud/nextcloudpi/commit/974da0f) (2018-03-16) docker: include nc-webui
 
 [v0.52.0](https://github.com/nextcloud/nextcloudpi/commit/3ff4e9d) (2018-03-12) added nc-rsync-auto
 
