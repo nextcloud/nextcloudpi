@@ -42,8 +42,8 @@ install()
 {
   # Optional packets for Nextcloud and Apps
   apt-get update
-  $APTINSTALL -o "Dpkg::Options::=--force-confold" php-smbclient 
   $APTINSTALL lbzip2 iputils-ping
+  $APTINSTALL php-smbclient 
 
   # POSTFIX
   [[ "$ARMBIANBUILD" != 1 ]] && {
