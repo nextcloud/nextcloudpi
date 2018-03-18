@@ -40,6 +40,9 @@ You can use nc-backup "
 
 install()
 {
+  # During build, this step is run before nextcloudpi.sh. Avoid executing twice
+  [[ -f /usr/lib/systemd/system/nc-provisioning.service ]] && return 0
+
   # Optional packets for Nextcloud and Apps
   apt-get update
   $APTINSTALL lbzip2 iputils-ping
@@ -91,7 +94,7 @@ install()
 [Unit]
 Description=Randomize passwords on first boot
 Requires=network.target
-After=mysql.service
+After=mysql.service redis.service
 
 [Service]
 ExecStart=/bin/bash /usr/local/bin/ncp-provisioning.sh
@@ -99,8 +102,6 @@ ExecStart=/bin/bash /usr/local/bin/ncp-provisioning.sh
 [Install]
 WantedBy=multi-user.target
 EOF
-
-  [[ "$DOCKERBUILD" != 1 ]] && systemctl enable nc-provisioning
   return 0
 }
 

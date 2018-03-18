@@ -56,6 +56,9 @@ Main() {
               cleanup_script $script
             done
 
+            # enable randomize passwords
+            systemctl enable nc-provisioning
+
 			;;
 	esac
 } # Main

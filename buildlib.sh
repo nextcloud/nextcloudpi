@@ -23,7 +23,7 @@ function launch_install_qemu()
   local NUM=$(  sed 's=.*-stage\([[:digit:]]\)=\1=' <<< "$IMG" )
   [[ "$BASE" == "$IMG" ]] && NUM=0
 
-  local NUM_REBOOTS=$( grep -c reboot "$INSTALL_SCRIPT" )
+  local NUM_REBOOTS=$( grep -c "nohup reboot" "$INSTALL_SCRIPT" )
   while [[ $NUM_REBOOTS != -1 ]]; do
     NUM=$(( NUM+1 ))
     IMGOUT="$BASE-stage$NUM"
