@@ -265,6 +265,11 @@ EOF
     chmod +x /etc/cron.weekly/letsencrypt-ncp
   }
 
+    # disable ramlogs if accidentally enabled
+    grep -q '^ACTIVE_=yes$' "$CONFDIR"/nc-ramlogs.sh || {
+      systemctl disable log2ram
+      systemctl stop    log2ram
+    }
 } # end - only live updates
 
 exit 0

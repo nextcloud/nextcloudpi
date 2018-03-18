@@ -1,7 +1,9 @@
 
-[v0.53.3](https://github.com/nextcloud/nextcloudpi/commit/ad4686d) (2018-03-17) docker: fix development container script folder
+[v0.53.4](https://github.com/nextcloud/nextcloudpi/commit/2e5443e) (2018-03-18) nc-ramlogs: fix enabled by default upon installoation
 
-[v0.53.2 ](https://github.com/nextcloud/nextcloudpi/commit/96fa0f5) (2018-03-17) letsencrypt: remove .well-known dir after renewal
+[v0.53.3 ](https://github.com/nextcloud/nextcloudpi/commit/2f7aa40) (2018-03-17) docker: fix development container script folder
+
+[v0.53.2 ](https://github.com/nextcloud/nextcloudpi/commit/a72190a) (2018-03-17) letsencrypt: remove .well-known dir after renewal
 
 [v0.53.1 ](https://github.com/nextcloud/nextcloudpi/commit/d8ad80c) (2018-03-17) fix web update to NC13.0.1 with .well-known existence
 
