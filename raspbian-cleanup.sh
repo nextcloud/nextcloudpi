@@ -71,6 +71,9 @@ EOF
 
   # disable SSH
   systemctl disable ssh
+
+  # enable randomize passwords
+  systemctl enable nc-provisioning
 }
 
 # License

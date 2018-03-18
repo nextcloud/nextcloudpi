@@ -38,7 +38,6 @@ NO_HALT_STEP=1 ./installer.sh prepare.sh          "$IP" "$IMGBASE"
                ./installer.sh nextcloudpi.sh      "$IP" "$( ls -1t *.img | head -1 )"
                ./installer.sh $NC_CONFIG          "$IP" "$( ls -1t *.img | head -1 )"
                ./installer.sh raspbian-cleanup.sh "$IP" "$( ls -1t *.img | head -1 )"
-#              ./installer.sh build-devel.sh "$IP" "$( ls -1t *.img | head -1 )"
 
 ## PACKING
  
@@ -62,7 +61,7 @@ ssh_pi "$IP" sudo halt
 ## UPLOADING
 
 create_torrent "${IMGNAME}.tar.bz2"
-upload_ftp "$IMGNAME" 
+upload_ftp "$IMGNAME" || true
 
 ## CLEANUP
 
