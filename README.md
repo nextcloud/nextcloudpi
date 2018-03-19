@@ -2,6 +2,8 @@
 
 ![NC Logo](https://ownyourbits.com/wp-content/uploads/2017/11/ncp-square.png)
 
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=N8PJHSEQF4G7Y&lc=US&item_name=Own%20Your%20Bits&item_number=NextCloudPi&no_note=1&no_shipping=1&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted)
+
 This is the build code for [NextCloudPi](https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/).
 
 NextCloudPi is a ready to use image for Raspberry Pi.
@@ -54,8 +56,12 @@ This code also generates the [NextCloudPi docker images](https://hub.docker.com/
  * Format USB drive to BTRFS ( NEW 07-03-2017 )
  * BTRFS snapshots ( NEW 04-12-2017 )
  * Automatic BTRFS snapshots ( NEW 07-02-2018 )
+ * BTRFS snapshot auto sync ( NEW 19-03-2018 )
+ * scheduled rsync ( NEW 19-03-2018 )
+ * ZRAM ( NEW 19-03-2018 )
  * UPnP automatic port forwarding ( NEW 07-03-2017 )
  * Security audits with Lynis and Debsecan ( NEW 07-02-2018 )
+ * ZRAM ( NEW 19-03-2018 )
 
 Any extra can be installed independently in a running Raspbian instance through SSH. See `installer.sh`
 
