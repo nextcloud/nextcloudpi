@@ -42,12 +42,12 @@ class AdminWebTest(unittest.TestCase):
         self.assertIn("NextCloudPi", driver.title)
         trusted_domain_str = "You are accessing the server from an untrusted domain"
         self.assertNotIn(trusted_domain_str, driver.page_source)
-        driver.find_element_by_id("user").send_keys("admin")
+        driver.find_element_by_id("user").send_keys("ncp")
         driver.find_element_by_id("password").send_keys("ownyourbits")
         driver.find_element_by_id("submit").click()
         self.assertNotIn("Wrong password", driver.page_source)
 
-        wait = WebDriverWait(driver, 150)
+        wait = WebDriverWait(driver, 800) # first processing of this page is even slower in NC13
         wait.until(EC.visibility_of(driver.find_element_by_class_name("icon-checkmark")))
 
     def tearDown(self):
@@ -62,13 +62,13 @@ class CreateUserTest(unittest.TestCase):
     def setUp(self):
         self.driver = webdriver.Firefox()
 
-    # @unittest.skip("Skipping...")
+    @unittest.skip("Skipping...")
     def test_user_creation(self):
         """ Create user test_user1 """
         driver = self.driver
         driver.get("https://" + IP + "/index.php/settings/users")
 
-        driver.find_element_by_id("user").send_keys("admin")
+        driver.find_element_by_id("user").send_keys("ncp")
         driver.find_element_by_id("password").send_keys("ownyourbits")
         driver.find_element_by_id("submit").click()
         self.assertNotIn("Wrong password", driver.page_source)
@@ -100,7 +100,7 @@ class LoginNewUserTest(unittest.TestCase):
     def setUp(self):
         self.driver = webdriver.Firefox()
 
-    # @unittest.skip("Skipping...")
+    @unittest.skip("Skipping...")
     def test_user_login(self):
         """ Login as test_user1 """
         driver = self.driver
