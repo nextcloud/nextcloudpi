@@ -1,5 +1,7 @@
 
-[v0.53.4](https://github.com/nextcloud/nextcloudpi/commit/2e5443e) (2018-03-18) nc-ramlogs: fix enabled by default upon installoation
+[v0.53.5](https://github.com/nextcloud/nextcloudpi/commit/49734e3) (2018-03-20) NFS: check user and group existence
+
+[v0.53.4 ](https://github.com/nextcloud/nextcloudpi/commit/5192766) (2018-03-18) nc-ramlogs: fix enabled by default upon installoation
 
 [v0.53.3 ](https://github.com/nextcloud/nextcloudpi/commit/2f7aa40) (2018-03-17) docker: fix development container script folder
 
@@ -13,7 +15,7 @@
 
 [v0.52.1 ](https://github.com/nextcloud/nextcloudpi/commit/974da0f) (2018-03-16) docker: include nc-webui
 
-[v0.52.0](https://github.com/nextcloud/nextcloudpi/commit/3ff4e9d) (2018-03-12) added nc-rsync-auto
+[v0.52.0 ](https://github.com/nextcloud/nextcloudpi/commit/3ff4e9d) (2018-03-12) added nc-rsync-auto
 
 [v0.51.0 ](https://github.com/nextcloud/nextcloudpi/commit/2566e44) (2018-03-12) added nc-rsync
 

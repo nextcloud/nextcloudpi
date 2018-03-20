@@ -80,6 +80,8 @@ configure()
 
   # CHECKS
   ################################
+  id    "$USER_"  &>/dev/null || { echo "user USER_ does not exist"  ; return 1; }
+  id -g "$GROUP_" &>/dev/null || { echo "group GROUP_ does not exist"; return 1; }
   [ -d "$DIR_" ] || { echo -e "INFO: directory $DIR_ does not exist. Creating"; mkdir -p "$DIR_"; }
   [[ $( stat -fc%d / ) == $( stat -fc%d $DIR_ ) ]] && \
     echo -e "INFO: mounting a in the SD card\nIf you want to use an external mount, make sure it is properly set up"

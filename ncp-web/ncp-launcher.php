@@ -118,7 +118,7 @@ else if ( $_POST['action'] == "launch" && $_POST['config'] )
       {
         $value = "[". join(",", $value) ."]";
       }
-      preg_match( '/^[\[\]\w.,@_\/-:]+$/' , $value , $matches )
+      preg_match( '/^[\[\]\w-.,@_\/:]+$/' , $value , $matches )
         or exit( '{ "output": "Invalid input" , "token": "' . getCSRFToken() . '" }' );
       $code = preg_replace( '/\n' . $name . '_=.*' . PHP_EOL . '/'  ,
                           PHP_EOL . $name . '_=' . $value . PHP_EOL ,
