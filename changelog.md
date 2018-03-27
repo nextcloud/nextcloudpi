@@ -1,5 +1,7 @@
 
-[v0.53.5](https://github.com/nextcloud/nextcloudpi/commit/49734e3) (2018-03-20) NFS: check user and group existence
+[v0.53.6 ](https://github.com/nextcloud/nextcloudpi/commit/151160b) (2018-03-27) samba: dont force NAME_REGEX for username
+
+[v0.53.5](https://github.com/nextcloud/nextcloudpi/commit/ae5ad77) (2018-03-20) NFS: check user and group existence
 
 [v0.53.4 ](https://github.com/nextcloud/nextcloudpi/commit/5192766) (2018-03-18) nc-ramlogs: fix enabled by default upon installoation
 

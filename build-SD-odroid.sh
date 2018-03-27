@@ -8,12 +8,15 @@
 # Usage: ./build-SD-odroid.sh <DHCP QEMU image IP>
 #
 
+set -e
+
 # get armbian
-[[ -d armbian ]] || git clone https://github.com/armbian/build armbian || exit 1
+[[ -d armbian ]] || git clone https://github.com/armbian/build armbian
 
 # get NCP modifications
+mkdir -p armbian/userpatches
 wget https://raw.githubusercontent.com/nextcloud/nextcloudpi/master/armbian.sh \
-  -O armbian/userpatches/customize-image.sh || exit 1
+  -O armbian/userpatches/customize-image.sh
 
 # generate image
 armbian/compile.sh docker \
@@ -24,7 +27,7 @@ armbian/compile.sh docker \
   RELEASE=stretch\
   BUILD_DESKTOP=no\
   CLEAN_LEVEL=""\
-  NO_APT_CACHER=no || exit 1
+  NO_APT_CACHER=no
 
 # pack image
 IMGNAME="NextCloudPi_$( date  "+%m-%d-%y" )_OdroidHC1"
