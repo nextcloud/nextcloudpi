@@ -103,7 +103,7 @@ EOF
 EOF
 
     ## create user with no login if it doesn't exist
-    id "$user" &>/dev/null || adduser --disabled-password --gecos "" "$user"
+    id "$user" &>/dev/null || adduser --disabled-password --force-badname --gecos "" "$user" || return 1
     echo -e "$PWD_\n$PWD_" | smbpasswd -s -a $user
 
     usermod -aG www-data $user
