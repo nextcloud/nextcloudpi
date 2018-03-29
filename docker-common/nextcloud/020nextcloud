@@ -36,8 +36,7 @@ postfix start
 test -f /data/app/config/config.php || {
   echo "Uninitialized instance, running nc-init..."
   source /usr/local/etc/library.sh
-  cd     /usr/local/etc/
-  activate_script nc-init.sh
+  activate_script /nc-init.sh
 }
 
 # Trusted Domain ( local IP )
