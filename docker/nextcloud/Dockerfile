@@ -6,7 +6,8 @@ SHELL ["/bin/bash", "-c"]
 
 ENV DOCKERBUILD 1
 
-COPY etc/library.sh etc/nextcloudpi-config.d/nc-init.sh etc/nextcloudpi-config.d/nc-nextcloud.sh /usr/local/etc/
+COPY etc/library.sh /usr/local/etc/
+COPY etc/nextcloudpi-config.d/nc-init.sh etc/nextcloudpi-config.d/nc-nextcloud.sh /
 
 RUN \
 
@@ -15,8 +16,8 @@ apt-get update; \
 apt-get install --no-install-recommends -y wget ca-certificates sudo; \
 source /usr/local/etc/library.sh; \
 set +x; \
-install_script  /usr/local/etc/nc-nextcloud.sh; \
-activate_script /usr/local/etc/nc-nextcloud.sh; \
+install_script  /nc-nextcloud.sh; \
+activate_script /nc-nextcloud.sh; \
 mv /var/www/nextcloud /data/app; \
 ln -s /data/app /var/www/nextcloud; \
 
@@ -31,7 +32,7 @@ rm -f /var/log/alternatives.log /var/log/apt/*; \
 
 # specific cleanup
 apt-get purge -y wget ca-certificates; \
-rm /usr/local/etc/nc-nextcloud.sh; \
+rm /nc-nextcloud.sh; \
 sed -i -E "s/^requirepass .*/requirepass default/" /etc/redis/redis.conf; \
 echo -e "[client]\npassword=default" > /root/.my.cnf; \
 chmod 600 /root/.my.cnf
