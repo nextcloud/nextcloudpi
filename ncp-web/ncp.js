@@ -127,7 +127,7 @@ $(function()
     // request
     $.request('post', 'ncp-launcher.php', { action:'launch', 
                                             ref:selectedID ,
-                                            config: $.toJSON(cfg) ,
+                                            config: $.toJSON(cfg),
                                             csrf_token: $( '#csrf-token' ).get( '.value' ) }).then( 
       function success( result ) 
       {
@@ -254,6 +254,7 @@ $(function()
   {
     $('#poweroff-dialog').hide();
     $('#overlay').hide();
+
     // request
     $.request('post', 'ncp-launcher.php', { action:'poweroff', 
                                             csrf_token: $( '#csrf-token' ).get( '.value' ) }).then( 

@@ -270,6 +270,30 @@ EOF
       systemctl disable log2ram
       systemctl stop    log2ram
     }
+
+    # add new virtual host for initial password setup
+    cat > /etc/apache2/sites-available/ncp-activation.conf <<EOF
+<VirtualHost _default_:443>
+  DocumentRoot /var/www/ncp-web/
+  SSLEngine on
+  SSLCertificateFile      /etc/ssl/certs/ssl-cert-snakeoil.pem
+  SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
+
+</VirtualHost>
+<Directory /var/www/ncp-web/>
+  <RequireAll>
+
+   <RequireAny>
+      Require host localhost
+      Require local
+      Require ip 192.168
+      Require ip 172
+      Require ip 10
+   </RequireAny>
+
+  </RequireAll>
+</Directory>
+EOF
 } # end - only live updates
 
 exit 0

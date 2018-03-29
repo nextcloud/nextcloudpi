@@ -17,6 +17,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
     <meta name="mobile-web-app-capable" content="yes">
   <?php
+    exec("a2query -s ncp-activation", $output, $ret);
+    if ($ret == 0) {
+      header("Location: activate");
+      exit();
+    }
     session_start();
     $modules_path = '/usr/local/etc/nextcloudpi-config.d/';
     $l10nDir = "l10n";
@@ -34,7 +39,7 @@
       ini_set('session.cookie_secure', 1);
 
     // HTTP2 push headers
-    header("Link: </minified.js>; rel=preload; as=script;,</ncp.js>; rel=preload; as=script;,</ncp.css>; rel=preload; as=style;,</img/ncp-logo.svg>; rel=preload; as=image;, </loading-small.gif>; rel=preload; as=image;, rel=preconnect href=ncp-launcher.php;");
+    header("Link: </minified.js>; rel=preload; as=script;,</ncp.js>; rel=preload; as=script;,</ncp.css>; rel=preload; as=style;,</img/ncp-logo.svg>; rel=preload; as=image;, </img/loading-small.gif>; rel=preload; as=image;, rel=preconnect href=ncp-launcher.php;");
 
   ?>
     <link rel="icon" type="image/png" href="img/favicon.png"/>
@@ -175,7 +180,7 @@ HTML;
             <div id="config-box"></div>
               <div id="config-button-wrapper">
                 <button id="config-button"><?php echo $l->__("Run"); ?></button>
-                <img id="loading-gif" src="loading-small.gif">
+                <img id="loading-gif" src="img/loading-small.gif">
                 <div id="circle-retstatus" class="icon-red-circle"></div>
               </div>
           </form>
