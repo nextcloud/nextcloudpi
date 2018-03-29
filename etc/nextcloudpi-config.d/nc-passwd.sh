@@ -18,11 +18,14 @@ CONFIRM_=ownyourbits
 
 DESCRIPTION="Change password for the NextCloudPi Panel"
 
-configure() 
+configure()
 {
   echo -e "$PASSWORD_\n$CONFIRM_" | passwd ncp &>/dev/null && \
     echo "password updated successfully" || \
     { echo "passwords do not match"; return 1; }
+  a2ensite  ncp nextcloud
+  a2dissite ncp-activation
+  bash -c "sleep 1.5 && service apache2 reload" &>/dev/null &
 }
 
 install() { :; }
@@ -43,4 +46,3 @@ install() { :; }
 # along with this script; if not, write to the
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
-

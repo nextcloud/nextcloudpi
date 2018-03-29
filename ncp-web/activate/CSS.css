@@ -1,0 +1,233 @@
+/* 
+ * NextcloudPlus Web Panel style sheets. Based on official Nextcloud 12 datasheets
+ *
+ * Copyleft 2018 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
+ * GPL licensed (see end of file) * Use at your own risk!
+ *
+ * More at https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/
+*/
+
+
+html,body {
+ height:100%
+}
+article,aside,dialog,figure,footer,header,hgroup,nav,section {
+ display:block
+}
+body {
+ text-align: center;
+ line-height:1.5
+}
+a {
+ border:0;
+ color:#fff;
+ text-decoration:none;
+ cursor:pointer
+}
+a * {
+ cursor:pointer
+}
+select,.button span,label {
+ cursor:pointer
+}
+body {
+ background-image: url(../img/background.png);
+ background-color:#0082c9;
+ font-weight:400;
+ line-height:1.6em;
+ font-family:'Open Sans', Frutiger, Calibri, 'Myriad Pro', Myriad, sans-serif;
+ color:#fff;
+ height:auto
+}
+#nojavascript {
+ position:fixed;
+ top:0;
+ bottom:0;
+ height:100%;
+ width:100%;
+ z-index:9000;
+ text-align:center;
+ background-color:rgba(0, 0, 0, 0.5);
+ color:#fff;
+ line-height:125%;
+ font-size:24px
+}
+#nojavascript div {
+ display:block;
+ position:relative;
+ width:50%;
+ top:35%;
+ margin:0px auto
+}
+#nojavascript a {
+ color:#fff;
+ border-bottom:2px dotted #fff
+}
+#nojavascript a:hover,#nojavascript a:focus {
+ color:#dbdbdb
+}
+::-webkit-scrollbar {
+ width:5px
+}
+::-webkit-scrollbar-track-piece {
+ background-color:transparent
+}
+::-webkit-scrollbar-thumb {
+ background:#dbdbdb;
+ border-radius:3px
+}
+select,button,input,textarea {
+ width: 3em;
+ min-height:32px;
+ box-sizing:border-box;
+ text-align: center;
+}
+select,button,.button,input:not([type='range']),textarea,#quota,.pager li a {
+ margin:3px 3px 3px 0;
+ padding:7px 6px;
+ font-size:13px;
+ background-color:#fff;
+ color:#545454;
+ border:1px solid #dbdbdb;
+ outline:none;
+ border-radius:3px;
+}
+select:not(:disabled):not(.primary),button:not(:disabled):not(.primary),.button:not(:disabled):not(.primary),input:not([type='range']):not(:disabled):not(.primary),textarea:not(:disabled):not(.primary),#quota:not(:disabled):not(.primary),.pager li a:not(:disabled):not(.primary) {
+}
+select:not(:disabled):not(.primary):not(#quota):hover,button:not(:disabled):not(.primary):not(#quota):hover,.button:not(:disabled):not(.primary):not(#quota):hover,input:not([type='range']):not(:disabled):not(.primary):not(#quota):hover,textarea:not(:disabled):not(.primary):not(#quota):hover,#quota:not(:disabled):not(.primary):not(#quota):hover,.pager li a:not(:disabled):not(.primary):not(#quota):hover,select:not(:disabled):not(.primary):focus,button:not(:disabled):not(.primary):focus,.button:not(:disabled):not(.primary):focus,input:not([type='range']):not(:disabled):not(.primary):focus,textarea:not(:disabled):not(.primary):focus,#quota:not(:disabled):not(.primary):focus,.pager li a:not(:disabled):not(.primary):focus,select:not(:disabled):not(.primary).active,button:not(:disabled):not(.primary).active,.button:not(:disabled):not(.primary).active,input:not([type='range']):not(:disabled):not(.primary).active,textarea:not(:disabled):not(.primary).active,#quota:not(:disabled):not(.primary).active,.pager li a:not(:disabled):not(.primary).active {
+ border-color:#0082c9;
+ outline:none
+}
+select:not(:disabled):not(.primary):active,button:not(:disabled):not(.primary):active,.button:not(:disabled):not(.primary):active,input:not([type='range']):not(:disabled):not(.primary):active,textarea:not(:disabled):not(.primary):active,#quota:not(:disabled):not(.primary):active,.pager li a:not(:disabled):not(.primary):active {
+ outline:none;
+ background-color:#fff
+}
+select:disabled,button:disabled,.button:disabled,input:not([type='range']):disabled,textarea:disabled,#quota:disabled,.pager li a:disabled {
+ background-color:#ebebeb;
+ color:rgba(0, 0, 0, 0.4);
+ cursor:default;
+ opacity:0.5
+}
+select.primary,button.primary,.button.primary,input:not([type='range']).primary,textarea.primary,#quota.primary,.pager li a.primary {
+ border:1px solid #0082c9;
+ background-color:rgba(0, 130, 201, .7);
+ color:#fff;
+ cursor:pointer
+}
+select.primary:not(:disabled):hover,button.primary:not(:disabled):hover,.button.primary:not(:disabled):hover,input:not([type='range']).primary:not(:disabled):hover,textarea.primary:not(:disabled):hover,#quota.primary:not(:disabled):hover,.pager li a.primary:not(:disabled):hover,select.primary:not(:disabled):focus,button.primary:not(:disabled):focus,.button.primary:not(:disabled):focus,input:not([type='range']).primary:not(:disabled):focus,textarea.primary:not(:disabled):focus,#quota.primary:not(:disabled):focus,.pager li a.primary:not(:disabled):focus {
+ background-color:rgba(0, 130, 201, .85)
+}
+select.primary:not(:disabled):active,button.primary:not(:disabled):active,.button.primary:not(:disabled):active,input:not([type='range']).primary:not(:disabled):active,textarea.primary:not(:disabled):active,#quota.primary:not(:disabled):active,.pager li a.primary:not(:disabled):active {
+ background-color:rgba(0, 130, 201, .7)
+}
+select.primary:disabled,button.primary:disabled,.button.primary:disabled,input:not([type='range']).primary:disabled,textarea.primary:disabled,#quota.primary:disabled,.pager li a.primary:disabled {
+ background-color:rgba(0, 130, 201, .7);
+ color:#bababa
+}
+input {
+}
+input:not([type='radio']):not([type='checkbox']):not([type='range']):not([type='submit']):not([type='button']):not([type='reset']):not([type='color']):not([type='file']):not([type='image']) {
+ -webkit-appearance:textfield;
+ -moz-appearance:textfield
+}
+select,button,.button,input[type='button'],input[type='submit'],input[type='reset'] {
+ padding:6px 12px;
+ width:auto;
+ min-height:34px;
+ cursor:pointer;
+ box-sizing:border-box;
+ background-color:#f7f7f7
+}
+button,.button,input[type='button'],input[type='submit'],input[type='reset'] {
+ font-weight:bold;
+}
+button::-moz-focus-inner,.button::-moz-focus-inner,input[type='button']::-moz-focus-inner,input[type='submit']::-moz-focus-inner,input[type='reset']::-moz-focus-inner {
+ border:0
+}
+button,.button {
+}
+button > span[class^='icon-'],.button > span[class^='icon-'],button > span[class*=' icon-'],.button > span[class*=' icon-'] {
+ display:inline-block;
+ vertical-align:text-bottom;
+ opacity:0.5
+}
+textarea {
+ color:#545454;
+ cursor:text;
+ font-family:inherit;
+ height:auto
+}
+textarea:not(:disabled):active,textarea:not(:disabled):hover,textarea:not(:disabled):focus {
+ border-color:#dbdbdb !important;
+ background-color:#fff !important
+}
+select {
+ -webkit-appearance:none;
+ -moz-appearance:none;
+ appearance:none;
+ background:url('../../../core/css/../img/actions/triangle-s.svg') no-repeat right 4px center;
+ background-color:inherit;
+ outline:0;
+ padding-right:24px !important
+}
+button img,.button img {
+ cursor:pointer
+}
+input[type='checkbox'].radio,input[type='radio'].radio,input[type='checkbox'].checkbox,input[type='radio'].checkbox {
+ position:absolute;
+ left:-10000px;
+ top:auto;
+ width:1px;
+ height:1px;
+ overflow:hidden
+}
+#header {
+ color: white;
+}
+h2 {
+ font-size:20px;
+ font-weight:300;
+ margin-bottom:12px;
+ line-height:140%
+}
+h3 {
+ font-size:15px;
+ font-weight:300;
+ margin:12px 0
+}
+em {
+ font-style:normal;
+ -ms-filter:'progid:DXImageTransform.Microsoft.Alpha(Opacity=50)';
+ opacity:0.5
+}
+dl {
+ padding:12px 0
+}
+dt,dd {
+ display:inline-block;
+ padding:12px;
+ padding-left:0
+}
+dt {
+ width:130px;
+ white-space:nowrap;
+ text-align:right
+}
+kbd {
+ padding:4px 10px;
+ border:1px solid #ccc;
+ box-shadow:0 1px 0 rgba(0, 0, 0, .2);
+ border-radius:3px;
+ display:inline-block;
+ white-space:nowrap
+}
+
+hr { border: solid 1px white; }
+
+#ncp-logo { margin-top: 24px; }
+
+#loading-gif { display: none; }
+
+#ncp-pwd,#nc-pwd{ width:30em; }
+
+img { vertical-align: middle; }

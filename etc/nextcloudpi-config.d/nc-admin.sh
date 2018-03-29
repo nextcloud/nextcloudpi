@@ -1,39 +1,31 @@
 #!/bin/bash
 
-# Periodically synchronize NextCloud for externally modified files
+# Change password for the Nextcloud admin user
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
 #
 # Usage:
 # 
-#   ./installer.sh nc-webui.sh <IP>
+#   ./installer.sh nc-admin.sh <IP> (<img>)
 #
 # See installer.sh instructions for details
 # More at: https://ownyourbits.com
 #
 
-ACTIVE_=no
-LANGUAGE_=[_auto_,en,de]
-DESCRIPTION="Enable or disable the NCP web interface"
+USER_=ncp
+PASSWORD_=ownyourbits
+CONFIRM_=ownyourbits
 
-is_active()
+DESCRIPTION="Change password for the Nextcloud admin user"
+
+configure()
 {
-  a2query -s ncp &>/dev/null
-}
+  [[ "$PASSWORD_" == "$CONFIRM_" ]] || { echo "passwords do not match"; return 1; }
 
-configure() 
-{
-  if [[ $ACTIVE_ != "yes" ]]; then
-    a2dissite ncp
-    echo "ncp-web disabled"
-  else
-    a2ensite ncp
-    echo "ncp-web enabled"
-  fi
-
-  # delayed in bg so it does not kill the connection, and we get AJAX response
-  bash -c "sleep 2 && service apache2 reload" &>/dev/null &
+  OC_PASS="$PASSWORD_" \
+    sudo -E -u www-data php /var/www/nextcloud/occ \
+    user:resetpassword --password-from-env "$USER_"
 }
 
 install() { :; }
@@ -54,4 +46,3 @@ install() { :; }
 # along with this script; if not, write to the
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
-

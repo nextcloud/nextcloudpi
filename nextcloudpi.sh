@@ -40,6 +40,29 @@ install()
   # NEXTCLOUDPI-CONFIG WEB
 
   ## VIRTUAL HOST
+  cat > /etc/apache2/sites-available/ncp-activation.conf <<EOF
+<VirtualHost _default_:443>
+  DocumentRoot /var/www/ncp-web/
+  SSLEngine on
+  SSLCertificateFile      /etc/ssl/certs/ssl-cert-snakeoil.pem
+  SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
+
+</VirtualHost>
+<Directory /var/www/ncp-web/>
+  <RequireAll>
+
+   <RequireAny>
+      Require host localhost
+      Require local
+      Require ip 192.168
+      Require ip 172
+      Require ip 10
+   </RequireAny>
+
+  </RequireAll>
+</Directory>
+EOF
+
   cat > /etc/apache2/sites-available/ncp.conf <<EOF
 Listen 4443
 <VirtualHost _default_:4443>
@@ -91,7 +114,7 @@ EOF
 
   $APTINSTALL libapache2-mod-authnz-external pwauth
   a2enmod authnz_external authn_core auth_basic
-  a2ensite ncp
+  a2ensite ncp-activation
 
   ## NCP USER FOR AUTHENTICATION
   useradd --home-dir /nonexistent "$WEBADMIN"

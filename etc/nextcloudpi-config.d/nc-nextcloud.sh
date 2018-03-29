@@ -221,7 +221,6 @@ EOF
   </Directory>
 </IfModule>
 EOF
-  a2ensite nextcloud
 
   cat > /etc/apache2/sites-available/000-default.conf <<'EOF'
 <VirtualHost _default_:80>
