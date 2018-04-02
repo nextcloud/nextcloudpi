@@ -74,4 +74,9 @@ PHPTHREADS=0
             " &>/dev/null &
 }
 
+## Fix permissions on NCP folders. The main reason for this is to make devel docker container work
+chown -R root:www-data /usr/local/etc/nextcloudpi-config.d/*
+chmod 660              /usr/local/etc/nextcloudpi-config.d/*
+chmod 750              /usr/local/etc/nextcloudpi-config.d/l10n
+
 exit 0
