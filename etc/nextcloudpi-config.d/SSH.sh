@@ -28,6 +28,7 @@ is_active()
 configure() 
 {
   [[ $ACTIVE_ != "yes" ]]  && {
+    systemctl stop    ssh
     systemctl disable ssh
     echo "SSH disabled"
     return 0
