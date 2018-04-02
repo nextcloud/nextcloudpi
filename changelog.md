@@ -1,5 +1,7 @@
 
-[v0.53.7](https://github.com/nextcloud/nextcloudpi/commit/a574460) (2018-03-29) ncp-web: use random passwords for NC and ncp-web
+[v0.53.8](https://github.com/nextcloud/nextcloudpi/commit/cc733af) (2018-04-02) ncp-web: fix update notification
+
+[v0.53.7](https://github.com/nextcloud/nextcloudpi/commit/d4ca26a) (2018-03-29) ncp-web: use random passwords for NC and ncp-web
 
 [v0.53.6 ](https://github.com/nextcloud/nextcloudpi/commit/151160b) (2018-03-27) samba: dont force NAME_REGEX for username
 
