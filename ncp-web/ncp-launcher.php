@@ -190,10 +190,9 @@ else
 
     // return JSON
     echo '{ "token": "' . getCSRFToken() . '",';               // Get new token
-    echo ' "ref": " '       . $_POST['ref']     . '",';
     echo ' "table": '       . json_encode( $table       ) . ' , ';
     echo ' "suggestions": ' . json_encode( $suggestions ) . ' , ';
-    echo ' "ret": "'        . $ret    . '" }';
+    echo ' "ret": "'        . $ret                        . '" }';
   }
 }
 

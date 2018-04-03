@@ -1,7 +1,11 @@
 
-[v0.53.10](https://github.com/nextcloud/nextcloudpi/commit/dce58cc) (2018-04-03) ncp-web: implement dashboard
+[v0.53.12](https://github.com/nextcloud/nextcloudpi/commit/4e597b9) (2018-04-03) ncp-web: added nc-config and helper buttons
 
-[v0.53.9](https://github.com/nextcloud/nextcloudpi/commit/486d6ef) (2018-04-02) SSH: stop service upon activation
+[v0.53.11](https://github.com/nextcloud/nextcloudpi/commit/42adfb3) (2018-04-03) ncp-web: fix glitch showing power dialog
+
+[v0.53.10](https://github.com/nextcloud/nextcloudpi/commit/96a8c73) (2018-04-03) ncp-web: implement dashboard
+
+[v0.53.9 ](https://github.com/nextcloud/nextcloudpi/commit/486d6ef) (2018-04-02) SSH: stop service upon activation
 
 [v0.53.8 ](https://github.com/nextcloud/nextcloudpi/commit/afd2c8e) (2018-04-02) ncp-web: fix update notification
 

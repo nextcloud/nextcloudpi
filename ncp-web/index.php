@@ -100,8 +100,7 @@ HTML;
 
   <header role="banner"><div id="header">
     <div id="header-left">
-      <a href="https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/"
-           id="nextcloudpi" tabindex="1">
+      <a href="https://ownyourbits.com" id="nextcloudpi" target="_blank" tabindex="1">
         <div class="logo-icon">
            <h1 class="hidden-visually">NextCloudPi</h1>
         </div>
@@ -111,11 +110,18 @@ HTML;
       </a>
     </div>
     <div id="header-right">
-    <div id="dashboard-btn">
-        <div id="expand">
-            <div class="icon-dashboard"></div>
+      <a href="https://ownyourbits.com" id="nextcloud-btn" target="_blank" tabindex="1">
+        <div id="nc-button">
+            <div id="expand">
+                <div class="icon-nc-white"></div>
+            </div>
         </div>
-    </div>
+      </a>
+      <div id="dashboard-btn">
+          <div id="expand">
+              <div class="icon-dashboard"></div>
+          </div>
+      </div>
 <?php 
   if ( file_exists( 'wizard' ) )
     echo <<<HTML
@@ -127,13 +133,25 @@ HTML;
         </div>
       </a>
 HTML;
-          ?>
-            <div id="poweroff">
-                <div id="expand">
-                    <div class="icon-power-white"></div>
-                </div>
+?>
+      <div id="config-btn">
+          <div id="expand">
+              <div class="icon-config"></div>
+          </div>
+      </div>
+      <a href="https://github.com/nextcloud/nextcloudpi/wiki" target="_blank" tabindex="1">
+        <div id="nc-button">
+            <div id="expand">
+                <div class="icon-nc-info"></div>
             </div>
         </div>
+      </a>
+      <div id="poweroff">
+          <div id="expand">
+              <div class="icon-power-white"></div>
+          </div>
+      </div>
+  </div>
 </header>
 
   <div id="content-wrapper">
@@ -199,8 +217,19 @@ HTML;
           <h2 class="text-title"><?php echo $l->__("System Info"); ?></h2>
           <div id="dashboard-suggestions" class="table-wrapper"></div>
           <div id="dashboard-table" class="outputbox table-wrapper"></div>
+          <div id="loading-info-gif"> <img src="img/loading-small.gif"> </div>
         </div>
-        <div id="loading-info-gif"> <img src="img/loading-small.gif"> </div>
+
+        <div id="nc-config-wrapper" class="hidden">
+          <h2 class="text-title"><?php echo $l->__("Nextcloud configuration"); ?></h2>
+          <div id="nc-config-box" class="table-wrapper">
+<?php
+          $config = file_get_contents( '/var/www/nextcloud/config/config.php' );
+          $config = str_replace( "\n", "<br>", $config );
+           echo "$config";
+?>
+        </div>
+        </div>
     </div>
 
   <div id="poweroff-dialog" class='dialog primary hidden'>
