@@ -862,17 +862,6 @@ kbd {
 .clear-both {
  clear:both
 }
-.hidden {
- display:none
-}
-.hidden-visually {
- position:absolute;
- left:-10000px;
- top:auto;
- width:1px;
- height:1px;
- overflow:hidden
-}
 .bold {
  font-weight:600
 }
@@ -1238,7 +1227,6 @@ a#versionlink:hover {
 }
 
 #poweroff-dialog {
-  display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
   justify-content: space-around;
@@ -1293,4 +1281,17 @@ a#versionlink:hover {
 
 #dashboard-suggestions {
   margin-bottom: 1em;
+}
+
+.hidden {
+ display:none
+}
+
+.hidden-visually {
+ position:absolute;
+ left:-10000px;
+ top:auto;
+ width:1px;
+ height:1px;
+ overflow:hidden
 }
