@@ -1118,7 +1118,15 @@ select {
 .icon-power-white {
   background-image: url('img/poweroff.svg');
 }
-
+.icon-nc-white {
+  background-image: url('img/nc-button.svg');
+}
+.icon-nc-info {
+  background-image: url('img/info-white.svg');
+}
+.icon-config {
+  background-image: url('img/settings-white.svg');
+}
 .icon-reboot-white {
   background-image: url('img/reboot.svg');
 }
@@ -1281,6 +1289,10 @@ a#versionlink:hover {
 
 #dashboard-suggestions {
   margin-bottom: 1em;
+}
+
+#nc-config-box {
+  color: gray;
 }
 
 .hidden {

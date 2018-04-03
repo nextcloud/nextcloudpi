@@ -17,6 +17,16 @@ function errorMsg()
   $('#config-box').fill( "Something went wrong. Try refreshing the page" ); 
 }
 
+function switch_to_section( name )
+{
+  $( '#config-wrapper'    ).hide();
+  $( '#dashboard-wrapper' ).hide();
+  $( '#nc-config-wrapper' ).hide();
+  $( '#' + name + '-wrapper' ).show();
+  $( '#' + selectedID ).set('-active');
+  selectedID = null;
+}
+
 function cfgreqReceive( result )
 {
   var ret = $.parseJSON( result );
@@ -24,12 +34,11 @@ function cfgreqReceive( result )
     $('#csrf-token').set( { value: ret.token } );
 
   $('#details-box'      ).hide();
-  $('#dashboard-wrapper').hide();
   $('#circle-retstatus').hide();
   $('#config-box').ht( ret.output );
   $('#config-box-title'    ).fill( $( '#' + selectedID + '-desc' ).get( '.value' ) ); 
   $('#config-box-info-txt' ).fill( $( '#' + selectedID + '-info' ).get( '.value' ) ); 
-  $('#config-wrapper').show();
+  switch_to_section( 'config' );
   $('#config-box-wrapper').show();
   $('#config-extra-info').set( { $display: 'inline-block' } );
   $('#config-extra-info').up().set( '@href', 'https://github.com/nextcloud/nextcloudpi/wiki/Configuration-Reference#' + selectedID );
@@ -78,11 +87,9 @@ $(function()
                                             csrf_token: $( '#csrf-token' ).get( '.value' ) }).then( 
       function success( result ) 
       {
+        cfgreqReceive( result );
         selectedID = that.get('.id');
         that.set( '+active' );
-
-        cfgreqReceive( result );
-
         confLock = false;
       }).error( errorMsg );
   });
@@ -300,7 +307,7 @@ $(function()
   } );
 
   // click to nextcloud button
-  $('#nextcloudpi').set( '@href', window.location.protocol + '//' + window.location.hostname );
+  $('#nextcloud-btn').set( '@href', window.location.protocol + '//' + window.location.hostname );
 
   // load dashboard info
   $.request('post', 'ncp-launcher.php', { action: 'info',
@@ -319,10 +326,13 @@ $(function()
   // dashboard button
   $( '#dashboard-btn' ).on('click', function(e)
   {
-    $( '#config-wrapper'    ).hide();
-    $( '#dashboard-wrapper' ).show();
-    $( '#' + selectedID ).set('-active');
-    selectedID = null;
+    switch_to_section( 'dashboard' );
+  } );
+
+  // config button
+  $( '#config-btn' ).on('click', function(e)
+  {
+    switch_to_section( 'nc-config' );
   } );
 } );
 
