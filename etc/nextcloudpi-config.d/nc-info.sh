@@ -7,7 +7,7 @@
 #
 # Usage:
 # 
-#   ./installer.sh nc-diag.sh <IP> (<img>)
+#   ./installer.sh nc-info.sh <IP> (<img>)
 #
 # See installer.sh instructions for details
 # More at: https://ownyourbits.com
@@ -17,36 +17,16 @@ DESCRIPTION="Print NextCloudPi system info"
 
 configure() 
 {
-  # info
-
-  local OUT="$( ncp-diag )"
   echo "Gathering information..."
+  local OUT="$( bash /usr/local/bin/ncp-diag )"
+
+  # info
   echo "$OUT" | column -t -s'|'
 
   # suggestions
-
-  DNSMASQ_ON="$( grep "^ACTIVE_=" /usr/local/etc/nextcloudpi-config.d/dnsmasq.sh | cut -d'=' -f2 )"
-  
-  grep -q "distribution|.*bian GNU/Linux 9" <<<"$OUT" || \
-    echo -e "\nYou are using an unsupported distro release. Please upgrade to latest Debian/Raspbian"
-
-  [[ $DNSMASQ_ON != "yes" ]] && \
-    grep -q "NAT loopback|no" <<<"$OUT" && \
-      echo -e "\nYou should enable dnsmasq to use your domain inside home"
-
-  grep -q "certificates|none" <<<"$OUT" && \
-    echo -e "\nYou should run Lets Encrypt for trusted encrypted access"
-
-  grep -q "port check .*|closed" <<<"$OUT" && \
-      echo -e "\nYou should open your ports for Lets Encrypt and external access"
-
-  grep -q "USB devices|none" <<<"$OUT" || {
-    grep -q "data in SD|yes" <<<"$OUT" && \
-      echo -e "\nYou should use nc-datadir to move your files to your plugged in USB drive"
-
-    grep -q "automount|no" <<<"$OUT" && \
-      echo -e "\nYou should enable automount to uyyse your plugged in USB drive"
-  }
+  echo
+  bash /usr/local/bin/ncp-suggestions "$OUT"
+ 
   return 0
 }
 
@@ -68,4 +48,3 @@ install() { :; }
 # along with this script; if not, write to the
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
-

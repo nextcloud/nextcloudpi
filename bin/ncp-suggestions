@@ -1,0 +1,38 @@
+#!/bin/bash
+
+#
+# NextCloudPi configuration suggestions
+#
+# Copyleft 2018 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
+# GPL licensed (see end of file) * Use at your own risk!
+#
+# Usage:
+#   sudo ncp-suggestions "$( ncp-diag )"
+#
+# More at https://ownyourbits.com
+#
+
+OUT="$@"
+
+DNSMASQ_ON="$( grep "^ACTIVE_=" /usr/local/etc/nextcloudpi-config.d/dnsmasq.sh | cut -d'=' -f2 )"
+  
+grep -q "distribution|.*bian GNU/Linux 9" <<<"$OUT" || \
+  echo -e "You are using an unsupported distro release. Please upgrade to latest Debian/Raspbian"
+
+[[ $DNSMASQ_ON != "yes" ]] && \
+  grep -q "NAT loopback|no" <<<"$OUT" && \
+    echo -e "\nYou should enable dnsmasq to use your domain inside home"
+
+grep -q "certificates|none" <<<"$OUT" && \
+  echo -e "\nYou should run Lets Encrypt for trusted encrypted access"
+
+grep -q "port check .*|closed" <<<"$OUT" && \
+    echo -e "\nYou should open your ports for Lets Encrypt and external access"
+
+grep -q "USB devices|none" <<<"$OUT" || {
+  grep -q "data in SD|yes" <<<"$OUT" && \
+    echo -e "\nYou should use nc-datadir to move your files to your plugged in USB drive"
+
+  grep -q "automount|no" <<<"$OUT" && \
+    echo -e "\nYou should enable automount to use your plugged in USB drive"
+}
