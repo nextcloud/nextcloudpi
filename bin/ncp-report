@@ -39,7 +39,7 @@ echo "<--! Paste this in GitHub report -->"
 ##
 
 open_summary "NextCloudPi diagnostics"
-ncp-diag | column  -t -s'|'
+bash /usr/local/bin/ncp-diag | column  -t -s'|'
 close_summary
 
 ##

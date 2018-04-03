@@ -32,10 +32,12 @@ echo "datadir|$DATADIR$DIRINFO"
   echo "data disk usage|$( df -h "$DATADIR" | tail -1 | awk '{ print $3"/"$2 }')"
 }
 echo "rootfs usage|$( df -h / | tail -1 | awk '{ print $3"/"$2 }')"
-echo "swapfile|$( swapon | tail -1 | awk '{ print $1 }' )"
+SWP="$( swapon | tail -1 | awk '{ print $1 }' )"
+[[ "$SWP" == "" ]] && SWP="none"
+echo "swapfile|$SWP"
 
 # Nextcloud
-VERSION="$( sudo -u www-data php /var/www/nextcloud/occ status | grep "version:" | awk '{ print $3 }' )"
+VERSION="$( php /var/www/nextcloud/occ status | grep "version:" | awk '{ print $3 }' )"
 if [[ "$VERSION" != "" ]]; then
   echo "Nextcloud check|ok"
   echo "Nextcloud version|$VERSION"
@@ -75,13 +77,10 @@ echo "gateway|$GW"
 echo "interface|$IFACE"
 
 # Certificates
-LEOUT="$( /etc/letsencrypt/letsencrypt-auto certificates 2>/dev/null )"
-CERTS="$( echo -e "$LEOUT" | grep "Domains:" | awk '{ print $2 }' | tr '\n' ' ' )"
-CDUE="$( echo -e "$LEOUT" | grep "VALID:"   | grep -oP "\d+ days" | tr '\n' ' ' )"
+CERTS="$( grep "SSLCertificateFile /etc/letsencrypt/live/" /etc/apache2/sites-available/nextcloud.conf \
+        | sed 's|.*SSLCertificateFile /etc/letsencrypt/live/||;s|/fullchain.pem||' )"
 [[ "$CERTS" == "" ]] && CERTS=none
-[[ "$CDUE" == "" ]] && CDUE=none
 echo "certificates|$CERTS"
-echo "certs due|$CDUE"
 
 RESOLV="$( ping -c 1 "$CERTS" 2>/dev/null | head -1 | grep -oP '\d{1,3}(.\d{1,3}){3}' )"
 echo "NAT loopback|$( [[ "$RESOLV" == "$IP" ]] && echo yes || echo no )"

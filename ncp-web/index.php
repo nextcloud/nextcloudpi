@@ -111,6 +111,11 @@ HTML;
       </a>
     </div>
     <div id="header-right">
+    <div id="dashboard-btn">
+        <div id="expand">
+            <div class="icon-dashboard"></div>
+        </div>
+    </div>
 <?php 
   if ( file_exists( 'wizard' ) )
     echo <<<HTML
@@ -139,7 +144,7 @@ HTML;
               <?php
 
                 // fill options with contents from directory
-                $files = array_diff(scandir($modules_path), array('.', '..', 'nc-wifi.sh', 'l10n'));
+                $files = array_diff(scandir($modules_path), array('.', '..', 'nc-wifi.sh', 'nc-info.sh', 'l10n'));
 
                 foreach ($files as $file) {
                   $script = pathinfo($file, PATHINFO_FILENAME);
@@ -169,24 +174,33 @@ HTML;
 
       <div id="app-content">
         <div id="app-navigation-toggle" class="icon-menu hidden"></div>
-        <h2 id="config-box-title"><?php echo $l->__("Configure NextCloudPi features"); ?></h2>
-        <a href="#" target="_blank">
-          <div id="config-extra-info" class="icon-info"></div>
-        </a>
-        <div id="config-box-info"></div>
-        <br/>
-        <div id="config-box-wrapper" class="hidden">
-          <form>
-            <div id="config-box"></div>
-              <div id="config-button-wrapper">
-                <button id="config-button"><?php echo $l->__("Run"); ?></button>
-                <img id="loading-gif" src="img/loading-small.gif">
-                <div id="circle-retstatus" class="icon-red-circle"></div>
-              </div>
-          </form>
-          <textarea readonly id="details-box" rows="12"></textarea>
+
+        <div id="config-wrapper" class="hidden">
+          <h2 id="config-box-title" class="text-title"><?php echo $l->__("System Info"); ?></h2>
+          <div id="config-box-info-txt"></div>
+          <a href="#" target="_blank">
+            <div id="config-extra-info" class="icon-info"></div>
+          </a>
+          <br/>
+          <div id="config-box-wrapper" class="table-wrapper">
+            <form>
+              <div id="config-box"></div>
+                <div id="config-button-wrapper">
+                  <button id="config-button"><?php echo $l->__("Run"); ?></button>
+                  <img id="loading-gif" src="img/loading-small.gif">
+                  <div id="circle-retstatus" class="icon-red-circle"></div>
+                </div>
+            </form>
+            <textarea readonly id="details-box" class="outputbox" rows="12"></textarea>
+          </div>
         </div>
 
+        <div id="dashboard-wrapper">
+          <h2 class="text-title"><?php echo $l->__("System Info"); ?></h2>
+          <div id="dashboard-suggestions" class="table-wrapper"></div>
+          <div id="dashboard-table" class="outputbox table-wrapper"></div>
+        </div>
+        <div id="loading-info-gif"> <img src="img/loading-small.gif"> </div>
     </div>
 
   <div id="poweroff-dialog" class='dialog primary hidden'>
@@ -200,7 +214,8 @@ HTML;
 
   <?php
     include('csrf.php');
-    echo '<input type="hidden" id="csrf-token" name="csrf-token" value="' . getCSRFToken() . '"/>';
+    echo '<input type="hidden" id="csrf-token"      name="csrf-token"      value="' . getCSRFToken() . '"/>';
+    echo '<input type="hidden" id="csrf-token-dash" name="csrf-token-dash" value="' . getCSRFToken() . '"/>';
   ?>
     <script src="minified.js"></script>
     <script src="ncp.js"></script>

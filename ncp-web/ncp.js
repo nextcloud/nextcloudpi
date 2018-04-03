@@ -22,10 +22,14 @@ function cfgreqReceive( result )
   var ret = $.parseJSON( result );
   if ( ret.token )
     $('#csrf-token').set( { value: ret.token } );
+
+  $('#details-box'      ).hide();
+  $('#dashboard-wrapper').hide();
   $('#circle-retstatus').hide();
   $('#config-box').ht( ret.output );
-  $('#config-box-title').fill( $( '#' + selectedID + '-desc' ).get( '.value' ) ); 
-  $('#config-box-info' ).fill( $( '#' + selectedID + '-info' ).get( '.value' ) ); 
+  $('#config-box-title'    ).fill( $( '#' + selectedID + '-desc' ).get( '.value' ) ); 
+  $('#config-box-info-txt' ).fill( $( '#' + selectedID + '-info' ).get( '.value' ) ); 
+  $('#config-wrapper').show();
   $('#config-box-wrapper').show();
   $('#config-extra-info').set( { $display: 'inline-block' } );
   $('#config-extra-info').up().set( '@href', 'https://github.com/nextcloud/nextcloudpi/wiki/Configuration-Reference#' + selectedID );
@@ -81,9 +85,6 @@ $(function()
 
         confLock = false;
       }).error( errorMsg );
-
-    //clear details box
-    $('#details-box').hide( '' );
   });
 
   // Launch selected script
@@ -300,7 +301,30 @@ $(function()
 
   // click to nextcloud button
   $('#nextcloudpi').set( '@href', window.location.protocol + '//' + window.location.hostname );
-});
+
+  // load dashboard info
+  $.request('post', 'ncp-launcher.php', { action: 'info',
+                                          csrf_token: $( '#csrf-token-dash' ).get( '.value' ) }).then(
+
+    function success( result )
+    {
+      var ret = $.parseJSON( result );
+      if ( ret.token )
+        $('#csrf-token').set( { value: ret.token } );
+      $('#loading-info-gif').hide();
+      $('#dashboard-table').ht( ret.table );
+      $('#dashboard-suggestions').ht( ret.suggestions );
+    } ).error( errorMsg );
+
+  // dashboard button
+  $( '#dashboard-btn' ).on('click', function(e)
+  {
+    $( '#config-wrapper'    ).hide();
+    $( '#dashboard-wrapper' ).show();
+    $( '#' + selectedID ).set('-active');
+    selectedID = null;
+  } );
+} );
 
 // License
 //

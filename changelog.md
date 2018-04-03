@@ -1,7 +1,11 @@
 
-[v0.53.8](https://github.com/nextcloud/nextcloudpi/commit/cc733af) (2018-04-02) ncp-web: fix update notification
+[v0.53.10](https://github.com/nextcloud/nextcloudpi/commit/dce58cc) (2018-04-03) ncp-web: implement dashboard
 
-[v0.53.7](https://github.com/nextcloud/nextcloudpi/commit/d4ca26a) (2018-03-29) ncp-web: use random passwords for NC and ncp-web
+[v0.53.9](https://github.com/nextcloud/nextcloudpi/commit/486d6ef) (2018-04-02) SSH: stop service upon activation
+
+[v0.53.8 ](https://github.com/nextcloud/nextcloudpi/commit/afd2c8e) (2018-04-02) ncp-web: fix update notification
+
+[v0.53.7 ](https://github.com/nextcloud/nextcloudpi/commit/d4ca26a) (2018-03-29) ncp-web: use random passwords for NC and ncp-web
 
 [v0.53.6 ](https://github.com/nextcloud/nextcloudpi/commit/151160b) (2018-03-27) samba: dont force NAME_REGEX for username
 

@@ -38,8 +38,7 @@ if ( $_POST['action'] == "cfgreq" )
   $fh    = fopen( $path . $_POST['ref'] . '.sh' ,'r')
              or exit( '{ "output": "' . $file . ' read error" }' );
 
-  // Get new token
-  echo '{ "token": "' . getCSRFToken() . '",';
+  echo '{ "token": "' . getCSRFToken() . '",';    // Get new token
   echo ' "output": ';
 
   $output = "<table>";
@@ -52,10 +51,10 @@ if ( $_POST['action'] == "cfgreq" )
       $checked = "";
       if ( $matches[2] == "yes" )
         $checked = "checked";
-      $output = $output . "<tr>";
-      $output = $output . "<td><label for=\"$matches[1]\">". $l->__($matches[1], $_POST['ref']) ."</label></td>";
-      $output = $output . "<td><input type=\"checkbox\" id=\"$matches[1]\" name=\"$matches[1]\" value=\"$matches[2]\" $checked></td>";
-      $output = $output . "</tr>";
+      $output .= "<tr>";
+      $output .= "<td><label for=\"$matches[1]\">". $l->__($matches[1], $_POST['ref']) ."</label></td>";
+      $output .= "<td><input type=\"checkbox\" id=\"$matches[1]\" name=\"$matches[1]\" value=\"$matches[2]\" $checked></td>";
+      $output .= "</tr>";
     }
     // drop down menu
     else if(preg_match('/^(\w+)_=\[(([_\w]+,)*[_\w]+)\]$/', $line, $matches))
@@ -78,14 +77,14 @@ if ( $_POST['action'] == "cfgreq" )
     // text field
     else if ( preg_match('/^(\w+)_=(.*)$/', $line, $matches) )
     {
-      $output = $output . "<tr>";
-      $output = $output . "<td><label for=\"$matches[1]\">". $l->__($matches[1], $_POST['ref']) ."</label></td>";
-      $output = $output . "<td><input type=\"text\" name=\"$matches[1]\" id=\"$matches[1]\" value=\"$matches[2]\" size=\"40\"></td>";
-      $output = $output . "</tr>";
+      $output .= "<tr>";
+      $output .= "<td><label for=\"$matches[1]\">". $l->__($matches[1], $_POST['ref']) ."</label></td>";
+      $output .= "<td><input type=\"text\" name=\"$matches[1]\" id=\"$matches[1]\" value=\"$matches[2]\" size=\"40\"></td>";
+      $output .= "</tr>";
     }
   }
 
-  $output = $output . "</table>";
+  $output .= "</table>";
   fclose($fh);
 
   echo json_encode( $output ) . ' }'; // close JSON
@@ -129,9 +128,8 @@ else if ( $_POST['action'] == "launch" && $_POST['config'] )
   file_put_contents($file, $code )
     or exit( '{ "output": "' . $file . ' write error" }' );
 
-  // Get new token
-  echo '{ "token": "' . getCSRFToken() . '",';
-  echo ' "ref": "' . $_POST['ref']  . '",';
+  echo '{ "token": "' . getCSRFToken() . '",';     // Get new token
+  echo ' "ref": "' . $_POST['ref']     . '",';
   echo ' "output": "" , ';
   echo ' "ret": ';
 
@@ -153,6 +151,49 @@ else
   else if ( $_POST['action'] == "reboot" )
   {
     shell_exec('bash -c "( sleep 2 && sudo reboot ) 2>/dev/null >/dev/null &"');
+  }
+  else if ( $_POST['action'] == "info" )
+  {
+    exec( 'bash /usr/local/bin/ncp-diag', $output, $ret );
+
+    // info table
+    $table = '<table id="dashtable">';
+    foreach( $output as $line )
+    {
+      $table .= "<tr>";
+      $fields = explode( "|", $line );
+      $table .= "<td>$fields[0]</td>";
+
+      $class = "";
+      if ( strpos( $fields[1], "up"   ) !== false
+        || strpos( $fields[1], "ok"   ) !== false
+        || strpos( $fields[1], "open" ) !== false )
+        $class = 'class="ok-field"';
+      if ( strpos( $fields[1], "down"  ) !== false
+        || strpos( $fields[1], "error" ) !== false )
+        $class = 'class="error-field"';
+
+      $table .= "<td $class>$fields[1]</td>";
+      $table .= "</tr>";
+    }
+    $table .= "</table>";
+
+    // suggestions
+    $suggestions = "";
+    if ( $ret == 0 )
+    {
+      exec( "bash /usr/local/bin/ncp-suggestions \"" . implode( "\n", $output ) . '"', $out, $ret );
+      foreach( $out as $line )
+        if ( $line != "" )
+          $suggestions .= "<p class=\"warn-field\">‣ $line</p>";
+    }
+
+    // return JSON
+    echo '{ "token": "' . getCSRFToken() . '",';               // Get new token
+    echo ' "ref": " '       . $_POST['ref']     . '",';
+    echo ' "table": '       . json_encode( $table       ) . ' , ';
+    echo ' "suggestions": ' . json_encode( $suggestions ) . ' , ';
+    echo ' "ret": "'        . $ret    . '" }';
   }
 }
 

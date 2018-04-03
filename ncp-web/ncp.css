@@ -1049,22 +1049,22 @@ select {
  border-style:solid
 }
 
-#config-box-wrapper {
+.table-wrapper {
   width: 80%;
   max-width: 450px;
   margin-left: auto;
   margin-right: auto;
 }
 
-#config-box-wrapper table {
+.table-wrapper table {
   width: 100%;
 }
 
-#config-box-wrapper input[type='text'] {
+.table-wrapper input[type='text'] {
   width: 100%;
 }
 
-#details-box {
+.outputbox {
   width: 100%;
 }
 
@@ -1072,11 +1072,18 @@ select {
   display: none;
 }
 
-#config-box-title {
+#loading-info-gif {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 96px;
+}
+
+.text-title {
   text-align: center;
 }
 
-#config-box-info {
+#config-box-info-txt {
   white-space: pre-wrap;
   text-align: center;
 }
@@ -1125,6 +1132,9 @@ select {
 
 .icon-reboot-white {
   background-image: url('img/reboot.svg');
+}
+.icon-dashboard {
+  background-image: url('img/dashboard.svg');
 }
 
 .icon-wizard-white {
@@ -1258,4 +1268,29 @@ a#versionlink:hover {
   width: 100%;
   height: 100%;
   z-index: 2500;
+}
+
+.ok-field{
+  color: green;
+}
+
+.error-field{
+  color: red;
+}
+
+.warn-field{
+  color: gray;
+}
+
+#dashtable tr {
+  height: 25px;
+  border-bottom: 1px solid #ebebeb;
+}
+
+#dashtable td {
+  border-bottom: 1px solid #ebebeb;
+}
+
+#dashboard-suggestions {
+  margin-bottom: 1em;
 }
