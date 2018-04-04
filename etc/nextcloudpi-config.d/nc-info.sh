@@ -15,6 +15,12 @@
 
 DESCRIPTION="Print NextCloudPi system info"
 
+install()
+{ 
+  apt-get update
+  apt-get install -y --no-install-recommends bsdmainutils
+}
+
 configure() 
 {
   echo "Gathering information..."
@@ -29,8 +35,6 @@ configure()
  
   return 0
 }
-
-install() { :; }
 
 # License
 #
