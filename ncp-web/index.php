@@ -17,6 +17,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
     <meta name="mobile-web-app-capable" content="yes">
   <?php
+    // redirect to activation first time
     exec("a2query -s ncp-activation", $output, $ret);
     if ($ret == 0) {
       header("Location: activate");
@@ -165,12 +166,18 @@ HTML;
                 $files = array_diff(scandir($modules_path), array('.', '..', 'nc-wifi.sh', 'nc-info.sh', 'l10n'));
 
                 foreach ($files as $file) {
+
                   $script = pathinfo($file, PATHINFO_FILENAME);
+
+
                   $txt = file_get_contents($modules_path . $file);
 
                   $active = "";
-                  if (preg_match('/^ACTIVE_=yes$/m', $txt, $matches))
+                  $etc = '/usr/local/etc';
+                  exec("bash -c \"source $etc/library.sh && is_active_script $etc/nextcloudpi-config.d/$script\".sh", $output, $ret);
+                  if ($ret == 0) {
                     $active = " ✓";
+                  }
 
                   echo "<li id=\"$script\" class=\"nav-recent\">";
                   echo "<a href=\"#\"> {$l->__($script, $script)}$active </a>";

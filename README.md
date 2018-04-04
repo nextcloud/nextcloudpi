@@ -35,6 +35,7 @@ This code also generates the [NextCloudPi docker images](https://hub.docker.com/
  * Setup wizard ( NEW 09-27-2017 )
  * NextCloudPi Web Panel ( NEW 07-24-2017 )
  * Wi-Fi ready ( NEW 03-31-2017 )
+ * Ram logs ( NEW 03-31-2017 )
  * Automatic security updates, activated by default. ( NEW 03-21-2017 )
  * Let’s Encrypt for trusted HTTPS certificates.(  NEW 03-16-2017 )
  * Fail2Ban protection against brute force attacks. ( NEW 02-24-2017 )
