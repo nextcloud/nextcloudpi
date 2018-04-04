@@ -157,23 +157,23 @@ else
     exec( 'bash /usr/local/bin/ncp-diag', $output, $ret );
 
     // info table
-    $table = '<table id="dashtable">';
+    $table = '<table class="dashtable">';
     foreach( $output as $line )
     {
       $table .= "<tr>";
       $fields = explode( "|", $line );
       $table .= "<td>$fields[0]</td>";
 
-      $class = "";
+      $class = 'val-field';
       if ( strpos( $fields[1], "up"   ) !== false
         || strpos( $fields[1], "ok"   ) !== false
         || strpos( $fields[1], "open" ) !== false )
-        $class = 'class="ok-field"';
+        $class = 'ok-field';
       if ( strpos( $fields[1], "down"  ) !== false
         || strpos( $fields[1], "error" ) !== false )
-        $class = 'class="error-field"';
+        $class = 'error-field';
 
-      $table .= "<td $class>$fields[1]</td>";
+      $table .= "<td class=\"$class\">$fields[1]</td>";
       $table .= "</tr>";
     }
     $table .= "</table>";
@@ -185,7 +185,7 @@ else
       exec( "bash /usr/local/bin/ncp-suggestions \"" . implode( "\n", $output ) . '"', $out, $ret );
       foreach( $out as $line )
         if ( $line != "" )
-          $suggestions .= "<p class=\"warn-field\">‣ $line</p>";
+          $suggestions .= "<p class=\"val-field\">‣ $line</p>";
     }
 
     // return JSON

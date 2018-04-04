@@ -125,6 +125,11 @@ HTML;
               <div class="icon-dashboard"></div>
           </div>
       </div>
+      <div id="config-btn">
+          <div id="expand">
+              <div class="icon-config"></div>
+          </div>
+      </div>
 <?php 
   if ( file_exists( 'wizard' ) )
     echo <<<HTML
@@ -137,11 +142,6 @@ HTML;
       </a>
 HTML;
 ?>
-      <div id="config-btn">
-          <div id="expand">
-              <div class="icon-config"></div>
-          </div>
-      </div>
       <a href="https://github.com/nextcloud/nextcloudpi/wiki" target="_blank" tabindex="1">
         <div id="nc-button">
             <div id="expand">
@@ -200,9 +200,26 @@ HTML;
           <h2 class="text-title"><?php echo $l->__("Nextcloud configuration"); ?></h2>
           <div id="nc-config-box" class="table-wrapper">
 <?php
-          $config = file_get_contents( '/var/www/nextcloud/config/config.php' );
-          $config = str_replace( "\n", "<br>", $config );
-           echo "$config";
+  // print Nextcloud config table
+  include( '/var/www/nextcloud/config/config.php' );
+
+  echo '<table class="dashtable">';
+  foreach ( $CONFIG as $key => $val )
+  {
+    echo '<tr>';
+    if ( gettype( $val ) == "array" )
+    {
+      echo "<td>$key</td>";
+      echo "<td><table>";
+      foreach ( $val as $k => $v ) 
+        echo "<tr><td>$k</td><td class=\"val-field\">$v</td></tr>";
+      echo '</table></td>';
+    }
+    else
+      echo "<td>$key</td><td class=\"val-field\">$val</td>";
+    echo '</tr>';
+  }
+  echo '</table>';
 ?>
         </div>
         </div>
