@@ -27,18 +27,21 @@ function switch_to_section( name )
   selectedID = null;
 }
 
-function cfgreqReceive( result )
+function cfgreqReceive( result, item )
 {
   var ret = $.parseJSON( result );
   if ( ret.token )
     $('#csrf-token').set( { value: ret.token } );
 
-  $('#details-box'      ).hide();
+  switch_to_section( 'config' );
+  selectedID = item.get('.id');
+  item.set( '+active' );
+
+  $('#details-box'     ).hide();
   $('#circle-retstatus').hide();
   $('#config-box').ht( ret.output );
   $('#config-box-title'    ).fill( $( '#' + selectedID + '-desc' ).get( '.value' ) ); 
   $('#config-box-info-txt' ).fill( $( '#' + selectedID + '-info' ).get( '.value' ) ); 
-  switch_to_section( 'config' );
   $('#config-box-wrapper').show();
   $('#config-extra-info').set( { $display: 'inline-block' } );
   $('#config-extra-info').up().set( '@href', 'https://github.com/nextcloud/nextcloudpi/wiki/Configuration-Reference#' + selectedID );
@@ -87,9 +90,7 @@ $(function()
                                             csrf_token: $( '#csrf-token' ).get( '.value' ) }).then( 
       function success( result ) 
       {
-        cfgreqReceive( result );
-        selectedID = that.get('.id');
-        that.set( '+active' );
+        cfgreqReceive( result, that );
         confLock = false;
       }).error( errorMsg );
   });
@@ -171,11 +172,7 @@ $(function()
                                             csrf_token: $( '#csrf-token' ).get( '.value' ) }).then( 
       function success( result ) 
       {
-        selectedID = 'nc-update';
-        $( '#nc-update' ).set( '+active' );
-
-        cfgreqReceive( result );
-
+        cfgreqReceive( result, $( '#nc-update' ) );
         confLock = false;
       }
       ).error( errorMsg );
