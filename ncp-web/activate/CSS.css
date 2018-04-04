@@ -231,3 +231,12 @@ hr { border: solid 1px white; }
 #ncp-pwd,#nc-pwd{ width:30em; }
 
 img { vertical-align: middle; }
+
+.info {
+  text-shadow: 0 0 2px rgba(0, 0, 0, .4);
+  font-size: 80%;
+}
+
+.info a {
+  font-weight: 600;
+}

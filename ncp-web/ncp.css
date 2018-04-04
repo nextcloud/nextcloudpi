@@ -888,8 +888,7 @@ select {
   left:0;
   right:0;
   bottom:0;
-  width: 80% !important;
-  margin: auto !important;
+  padding: 0px 24px;
   background-color:#fff;
   overflow-x:hidden !important;
   z-index:1000
@@ -1047,6 +1046,8 @@ select {
 
 .table-wrapper table {
   width: 100%;
+  max-width: 450px;
+  margin: 0 auto;
 }
 
 .table-wrapper input[type='text'] {
