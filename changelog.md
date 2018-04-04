@@ -1,5 +1,21 @@
 
-[v0.53.12](https://github.com/nextcloud/nextcloudpi/commit/4e597b9) (2018-04-03) ncp-web: added nc-config and helper buttons
+[v0.53.20](https://github.com/nextcloud/nextcloudpi/commit/b0fbe28) (2018-04-04) ncp-web: replace textarea with div for output
+
+[v0.53.19](https://github.com/nextcloud/nextcloudpi/commit/b92ba98) (2018-04-04) ncp-web: check for updates upon first run
+
+[v0.53.18](https://github.com/nextcloud/nextcloudpi/commit/e7b76b6) (2018-04-04) ncp-web: refresh sidebar after launching actions
+
+[v0.53.17](https://github.com/nextcloud/nextcloudpi/commit/1c7b7f5) (2018-04-04) ncp-web: reload ncp-web after nc-update
+
+[v0.53.16](https://github.com/nextcloud/nextcloudpi/commit/ad31dd7) (2018-04-04) ncp-web: implement is_active()
+
+[v0.53.15](https://github.com/nextcloud/nextcloudpi/commit/c2e8a36) (2018-04-04) docker: add column command
+
+[v0.53.14](https://github.com/nextcloud/nextcloudpi/commit/ce7f125) (2018-04-04) ncp-web: fix scroll bar
+
+[v0.53.13](https://github.com/nextcloud/nextcloudpi/commit/3458642) (2018-04-04) ncp-web: fix ncp-app selection
+
+[v0.53.12](https://github.com/nextcloud/nextcloudpi/commit/c809f93) (2018-04-03) ncp-web: added nc-config and helper buttons
 
 [v0.53.11](https://github.com/nextcloud/nextcloudpi/commit/42adfb3) (2018-04-03) ncp-web: fix glitch showing power dialog
 

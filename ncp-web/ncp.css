@@ -1308,3 +1308,10 @@ a#versionlink:hover {
  height:1px;
  overflow:hidden
 }
+
+#details-box {
+  background-color: #fbfbfb;
+  border: solid 1px lightgray;
+  color: #565656;
+  overflow: auto;
+}
