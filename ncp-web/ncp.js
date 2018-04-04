@@ -135,7 +135,7 @@ $(function()
 
     // request
     $.request('post', 'ncp-launcher.php', { action:'launch', 
-                                            ref:selectedID ,
+                                            ref   : selectedID,
                                             config: $.toJSON(cfg),
                                             csrf_token: $( '#csrf-token' ).get( '.value' ) }).then( 
       function success( result ) 
@@ -155,6 +155,9 @@ $(function()
         $('#config-button').set('@disabled',null);
         $('#loading-gif').hide();
         confLock = false;
+
+        if( ret.ref &&  ret.ref == 'nc-update' );
+          window.location.reload( true );
       }).error( errorMsg );
   });
 
