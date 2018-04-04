@@ -21,7 +21,7 @@ DESCRIPTION="Move and resize your swapfile. Recommended to move to a permanent U
 is_active()
 {
   local DIR=$( swapon -s | sed -n 2p | awk '{ print $1 }' )
-  [[ "$DIR" != "/var/swap" ]]
+  [[ "$DIR" != "" ]] && [[ "$DIR" != "/var/swap" ]]
 }
 
 configure()
