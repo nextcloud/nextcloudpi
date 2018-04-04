@@ -194,6 +194,14 @@ else
     echo ' "suggestions": ' . json_encode( $suggestions ) . ' , ';
     echo ' "ret": "'        . $ret                        . '" }';
   }
+  else if ( $_POST['action'] == "sidebar" )
+  {
+    require( "sidebar.php" );
+    // return JSON
+    echo '{ "token": "' . getCSRFToken() . '",';               // Get new token
+    echo ' "output": '  . json_encode( print_sidebar( $l ) ) . ' , ';
+    echo ' "ret": "0" }';
+  }
 }
 
 // License

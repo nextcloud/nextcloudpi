@@ -24,6 +24,8 @@
       exit();
     }
     session_start();
+
+    include('sidebar.php');
     $modules_path = '/usr/local/etc/nextcloudpi-config.d/';
     $l10nDir = "l10n";
 
@@ -160,40 +162,7 @@ HTML;
         <div id='overlay' class="hidden"></div>
 		<div id="app-navigation">
         	<ul id="ncp-options">
-              <?php
-
-                // fill options with contents from directory
-                $files = array_diff(scandir($modules_path), array('.', '..', 'nc-wifi.sh', 'nc-info.sh', 'l10n'));
-
-                foreach ($files as $file) {
-
-                  $script = pathinfo($file, PATHINFO_FILENAME);
-
-
-                  $txt = file_get_contents($modules_path . $file);
-
-                  $active = "";
-                  $etc = '/usr/local/etc';
-                  exec("bash -c \"source $etc/library.sh && is_active_script $etc/nextcloudpi-config.d/$script\".sh", $output, $ret);
-                  if ($ret == 0) {
-                    $active = " ✓";
-                  }
-
-                  echo "<li id=\"$script\" class=\"nav-recent\">";
-                  echo "<a href=\"#\"> {$l->__($script, $script)}$active </a>";
-
-                  if (preg_match('/^DESCRIPTION="(.*)"$/m', $txt, $matches))
-                    echo "<input id=\"$script-desc\" type=\"hidden\" value=\"{$l->__($matches[1], $script)}\" />";
-
-                  if (preg_match('/^INFO="(.*)"/msU', $txt, $matches))
-                    echo "<input id=\"$script-info\" type=\"hidden\" value=\"{$l->__($matches[1], $script)}\" />";
-
-                  if (preg_match('/^INFOTITLE="(.*)"/msU', $txt, $matches))
-                    echo "<input id=\"$script-infotitle\" type=\"hidden\" value=\"{$l->__($matches[1], $script)}\" />";
-
-                  echo "</li>";
-                }
-              ?>
+              <?php echo print_sidebar($l); ?>
             </ul>
           </div>
 
