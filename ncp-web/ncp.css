@@ -1275,25 +1275,21 @@ a#versionlink:hover {
   color: red;
 }
 
-.warn-field{
+.val-field{
   color: gray;
 }
 
-#dashtable tr {
+.dashtable tr {
   height: 25px;
   border-bottom: 1px solid #ebebeb;
 }
 
-#dashtable td {
+.dashtable td {
   border-bottom: 1px solid #ebebeb;
 }
 
 #dashboard-suggestions {
   margin-bottom: 1em;
-}
-
-#nc-config-box {
-  color: gray;
 }
 
 .hidden {

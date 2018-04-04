@@ -1,5 +1,9 @@
 
-[v0.53.19](https://github.com/nextcloud/nextcloudpi/commit/18d1dd4) (2018-04-04) ncp-web: check for updates upon first run
+[v0.53.21](https://github.com/nextcloud/nextcloudpi/commit/89f2b3e) (2018-04-05) ncp-web: make config.php into a table
+
+[v0.53.20](https://github.com/nextcloud/nextcloudpi/commit/e0e9455) (2018-04-04) ncp-web: check for updates upon first run
+
+[v0.53.19](https://github.com/nextcloud/nextcloudpi/commit/88e965c) (2018-04-04) ncp-web: replace textarea with div for output
 
 [v0.53.18](https://github.com/nextcloud/nextcloudpi/commit/e7b76b6) (2018-04-04) ncp-web: refresh sidebar after launching actions
 
