@@ -27,6 +27,48 @@ function switch_to_section( name )
   selectedID = null;
 }
 
+function set_sidebar_click_handlers()
+{
+  // Show selected option configuration box
+  $( 'li' , '#app-navigation' ).on('click', function(e)
+  {
+    if ( selectedID == this.get( '.id' ) ) // already selected
+      return;
+
+    if ( confLock ) return;
+    confLock = true;
+
+    if ( window.innerWidth <= 768 )
+      close_menu();
+
+    $( '#' + selectedID ).set('-active');
+    var that = this;
+    $.request('post', 'ncp-launcher.php', { action:'cfgreq', 
+                                            ref:this.get('.id') ,
+                                            csrf_token: $( '#csrf-token' ).get( '.value' ) }).then( 
+      function success( result ) 
+      {
+        cfgreqReceive( result, that );
+        confLock = false;
+      }).error( errorMsg );
+  });
+}
+
+function reload_sidebar()
+{
+  // request
+  $.request('post', 'ncp-launcher.php', { action:'sidebar', 
+    csrf_token: $( '#csrf-token' ).get( '.value' ) }).then( 
+      function success( result ) 
+      {
+        var ret = $.parseJSON( result );
+        if ( ret.token )
+          $('#csrf-token').set( { value: ret.token } );
+        $('#ncp-options').ht( ret.output );
+        set_sidebar_click_handlers();
+      }).error( errorMsg );
+}
+
 function cfgreqReceive( result, item )
 {
   var ret = $.parseJSON( result );
@@ -71,29 +113,7 @@ $(function()
       textarea[0].scrollTop = textarea[0].scrollHeight;
     }, false);
 
-  // Show selected option configuration box
-  $( 'li' , '#app-navigation' ).on('click', function(e)
-  {
-    if ( selectedID == this.get( '.id' ) ) // already selected
-      return;
-
-    if ( confLock ) return;
-    confLock = true;
-
-    if ( window.innerWidth <= 768 )
-      close_menu();
-
-    $( '#' + selectedID ).set('-active');
-    var that = this;
-    $.request('post', 'ncp-launcher.php', { action:'cfgreq', 
-                                            ref:this.get('.id') ,
-                                            csrf_token: $( '#csrf-token' ).get( '.value' ) }).then( 
-      function success( result ) 
-      {
-        cfgreqReceive( result, that );
-        confLock = false;
-      }).error( errorMsg );
-  });
+  set_sidebar_click_handlers();
 
   // Launch selected script
   $( '#config-button' ).on('click', function(e)
@@ -145,8 +165,15 @@ $(function()
           $('#csrf-token').set( { value: ret.token } );
         if ( ret.ret )                           // means that the process was launched
         {
-          if ( ret.ret == '0' ) $('#circle-retstatus').set( '+icon-green-circle' );
-          else                  $('#circle-retstatus').set( '-icon-green-circle' );
+          if ( ret.ret == '0' ) 
+          {
+            if( ret.ref && ret.ref == 'nc-update' )
+              window.location.reload( true );
+            reload_sidebar();
+            $('#circle-retstatus').set( '+icon-green-circle' );
+          }
+          else 
+            $('#circle-retstatus').set( '-icon-green-circle' );
           $('#circle-retstatus').show();
         }
         else                                     // print error from server instead
@@ -155,9 +182,6 @@ $(function()
         $('#config-button').set('@disabled',null);
         $('#loading-gif').hide();
         confLock = false;
-
-        if( ret.ref &&  ret.ref == 'nc-update' );
-          window.location.reload( true );
       }).error( errorMsg );
   });
 
