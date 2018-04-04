@@ -174,6 +174,9 @@ EOF
 /usr/local/bin/ncp-check-version
 EOF
   chmod a+x /etc/cron.daily/ncp-check-version
+  touch               /var/run/.ncp-latest-version
+  chown root:www-data /var/run/.ncp-latest-version
+  chmod g+w           /var/run/.ncp-latest-version
 
   # TMP UPLOAD DIR
   mkdir -p "$UPLOADTMPDIR"

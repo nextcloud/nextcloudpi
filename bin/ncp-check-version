@@ -2,8 +2,6 @@
 
 # update latest available version in /var/run/.ncp-latest-version
 
-[ $(id -u) -ne 0 ] && exit 1
-
 rm -rf /tmp/ncp-check-tmp
 
 git clone --depth 20 -q --bare https://github.com/nextcloud/nextcloudpi.git /tmp/ncp-check-tmp || {

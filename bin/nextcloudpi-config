@@ -22,11 +22,7 @@ function nextcloud-config()
     local CONFDIR=/usr/local/etc/nextcloudpi-config.d/ 
     local DESC
 
-    # save latest version if it has never done before
-    test -f $VERFILE || ncp-check-version
-
     # ask for update if outdated
-    
     test -f /usr/local/etc/ncp-changelog && \
       local CHANGELOG=$( head -4 /usr/local/etc/ncp-changelog )
     ncp-test-updates && \

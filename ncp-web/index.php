@@ -71,7 +71,7 @@
     if ($ret == 0) {
       echo '<div id="notification">';
       echo '<div id="update-notification" class="row type-error closeable">';
-      echo "version " . file_get_contents( "/var/run/.ncp-latest-version" ) . " is available";
+      echo "version " . file_get_contents( '/var/run/.ncp-latest-version' ) . " is available";
       echo '<a class="action close icon-close" href="#" alt="Dismiss"></a>';
       echo '</div>';
       echo '</div>';

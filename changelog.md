@@ -1,7 +1,5 @@
 
-[v0.53.20](https://github.com/nextcloud/nextcloudpi/commit/b0fbe28) (2018-04-04) ncp-web: replace textarea with div for output
-
-[v0.53.19](https://github.com/nextcloud/nextcloudpi/commit/b92ba98) (2018-04-04) ncp-web: check for updates upon first run
+[v0.53.19](https://github.com/nextcloud/nextcloudpi/commit/18d1dd4) (2018-04-04) ncp-web: check for updates upon first run
 
 [v0.53.18](https://github.com/nextcloud/nextcloudpi/commit/e7b76b6) (2018-04-04) ncp-web: refresh sidebar after launching actions
 
