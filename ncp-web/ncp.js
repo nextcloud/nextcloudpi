@@ -27,6 +27,26 @@ function switch_to_section( name )
   selectedID = null;
 }
 
+function open_menu()
+{
+  if ( $('#app-navigation').get('$width') != '250px' )
+  {
+    $('#overlay').show();
+    $('#overlay').on('|click', close_menu );
+    $('#app-navigation').animate( {$width: '250px'}, 150 );
+  }
+}
+
+function close_menu()
+{
+  if ( $('#app-navigation').get('$width') == '250px' )
+  {
+    $('#app-navigation').animate( {$width: '0px'}, 150 );
+    $('#overlay').hide();
+    $.off( close_menu );
+  }
+}
+
 function set_sidebar_click_handlers()
 {
   // Show selected option configuration box
@@ -108,9 +128,9 @@ $(function()
         return;
       }
 
-      var textarea = $('#details-box');
-      textarea.fill( textarea.text() + e.data + '\n' );
-      textarea[0].scrollTop = textarea[0].scrollHeight;
+      var box = $$('#details-box');
+      $('#details-box').ht( box.innerHTML + e.data + '<br>' );
+      box.scrollTop = box.scrollHeight;
     }, false);
 
   set_sidebar_click_handlers();
@@ -147,8 +167,8 @@ $(function()
     // reset box
     $('#details-box').fill();
     $('#details-box').show();
-    $('#details-box').set( {$height: '0px'} );
-    $('#details-box').animate( {$height: '500px'}, 150 );
+    $('#details-box').set( {$height: '0vh'} );
+    $('#details-box').animate( {$height: '50vh'}, 150 );
     $('#circle-retstatus').hide();
 
     $( 'input' , '#config-box-wrapper' ).set('@disabled',true);
@@ -212,26 +232,6 @@ $(function()
   var slide_menu_enabled = false;
 
   function hide_overlay(e) { $('#overlay').hide() }
-
-  function open_menu()
-  {
-    if ( $('#app-navigation').get('$width') != '250px' )
-    {
-      $('#overlay').show();
-      $('#overlay').on('|click', close_menu );
-      $('#app-navigation').animate( {$width: '250px'}, 150 );
-    }
-  }
-
-  function close_menu()
-  {
-    if ( $('#app-navigation').get('$width') == '250px' )
-    {
-      $('#app-navigation').animate( {$width: '0px'}, 150 );
-      $('#overlay').hide();
-      $.off( close_menu );
-    }
-  }
 
   function close_menu_on_click_out(e) { close_menu(); }
 

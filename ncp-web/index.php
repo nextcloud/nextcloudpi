@@ -185,7 +185,7 @@ HTML;
                   <div id="circle-retstatus" class="icon-red-circle"></div>
                 </div>
             </form>
-            <textarea readonly id="details-box" class="outputbox" rows="12"></textarea>
+            <div id="details-box" class="outputbox"></div>
           </div>
         </div>
 
