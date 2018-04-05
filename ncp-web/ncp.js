@@ -344,7 +344,7 @@ $(function()
     {
       var ret = $.parseJSON( result );
       if ( ret.token )
-        $('#csrf-token').set( { value: ret.token } );
+        $('#csrf-token-dash').set( { value: ret.token } );
       $('#loading-info-gif').hide();
       $('#dashboard-table').ht( ret.table );
       $('#dashboard-suggestions').ht( ret.suggestions );
