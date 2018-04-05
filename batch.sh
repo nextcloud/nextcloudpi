@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Batch creation of NextCloudPi images and containers
+# Batch creation of NextCloudPlus images and containers
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -19,11 +19,15 @@ IP=$1                       # First argument is the QEMU Raspbian IP address
 
 # docker x86
 docker pull debian:stretch-slim
-make nextcloudpi-x86 && {
-  docker push ownyourbits/nextcloudpi-x86 
+make nextcloudplus-x86 && {
+  docker push ownyourbits/nextcloudplus-x86 
   docker push ownyourbits/nextcloud-x86 
   docker push ownyourbits/lamp-x86
   docker push ownyourbits/debian-ncp-x86
+
+  # keep old container updated, at least for a while
+  docker tag ownyourbits/nextcloudplus-x86   ownyourbits/nextcloudpi-x86
+  docker push ownyourbits/nextcloudpi-x86 
 }
 
 # docker armhf

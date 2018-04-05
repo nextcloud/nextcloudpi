@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Batch creation of NextCloudPi image
+# Batch creation of NextCloudPlus image
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -21,10 +21,10 @@ IP=$1                       # First argument is the QEMU Raspbian IP address
 
 ## BUILDING
 
-NC_INSTALL=etc/nextcloudpi-config.d/nc-nextcloud.sh
-NC_CONFIG=etc/nextcloudpi-config.d/nc-init.sh
+NC_INSTALL=etc/ncp-config.d/nc-nextcloud.sh
+NC_CONFIG=etc/ncp-config.d/nc-init.sh
 
-IMGBASE="NextCloudPi_$( date  "+%m-%d-%y" )_base.img"
+IMGBASE="NextCloudPlus_$( date  "+%m-%d-%y" )_base.img"
 
 export NO_CONFIG=1          # skip interactive configuration
 
@@ -35,14 +35,14 @@ download_resize_raspbian_img 1G "$IMGBASE"
 NO_HALT_STEP=1 ./installer.sh prepare.sh          "$IP" "$IMGBASE"
                ./installer.sh lamp.sh             "$IP" "$( ls -1t *.img | head -1 )"
                ./installer.sh $NC_INSTALL         "$IP" "$( ls -1t *.img | head -1 )"
-               ./installer.sh nextcloudpi.sh      "$IP" "$( ls -1t *.img | head -1 )"
+               ./installer.sh nextcloudplus.sh      "$IP" "$( ls -1t *.img | head -1 )"
                ./installer.sh $NC_CONFIG          "$IP" "$( ls -1t *.img | head -1 )"
                ./installer.sh raspbian-cleanup.sh "$IP" "$( ls -1t *.img | head -1 )"
 
 ## PACKING
  
 IMGFILE=$( ls -1t *.img | head -1 )
-IMGNAME=$( basename "$IMGFILE" _base_prepare_lamp_nc-nextcloud_nextcloudpi_nc-init_raspbian-cleanup.img )
+IMGNAME=$( basename "$IMGFILE" _base_prepare_lamp_nc-nextcloud_nextcloudplus_nc-init_raspbian-cleanup.img )
 
 [[ "$IMGNAME" != "" ]] || exit 1
 
@@ -65,7 +65,7 @@ upload_ftp "$IMGNAME" || true
 
 ## CLEANUP
 
-mkdir -p partial && mv NextCloudPi*.bz2 partial
+mkdir -p partial && mv NextCloudPlus*.bz2 partial
 rm -f *.img
 
 # License

@@ -44,6 +44,7 @@
              <button type="button" id="print-pwd"   > Print    </button>
              <button type="button" id="activate-ncp"> Activate </button>
           </p>
+<br>
           <img id="loading-gif" src="../img/loading-small.gif">
           <div id="error-box"></div>
 HTML;

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #
-# NextCloudPi configuration suggestions
+# NextCloudPlus configuration suggestions
 #
 # Copyleft 2018 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -14,7 +14,7 @@
 
 OUT="$@"
 
-DNSMASQ_ON="$( grep "^ACTIVE_=" /usr/local/etc/nextcloudpi-config.d/dnsmasq.sh | cut -d'=' -f2 )"
+DNSMASQ_ON="$( grep "^ACTIVE_=" /usr/local/etc/ncp-config.d/dnsmasq.sh | cut -d'=' -f2 )"
   
 grep -q "distribution|.*bian GNU/Linux 9" <<<"$OUT" || \
   echo -e "You are using an unsupported distro release. Please upgrade to latest Debian/Raspbian"

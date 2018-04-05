@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>NextCloudPi Wizard</title>
+		<title>NextCloudPlus Wizard</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<!-- Bootstrap -->
@@ -40,7 +40,7 @@
 		<!-- Tab 1 content - Welcome -->
 		<div class="tab-pane" id="tab1">
 			<div class="ncp-tab-pane">
-				<h1>Welcome to NextCloudPi</h1>
+				<h1>Welcome to NextCloudPlus</h1>
                 <img id="ncp-welcome-logo" src="img/ncp-logo.svg">
 				<p>This wizard will help you configure your personal cloud.</p>
 			</div>
@@ -64,7 +64,7 @@
 				<!-- Format USB drive -->
 				<div class="ncp-hidden" id="format-usb">
 					<p class="instructions">
-						If you want to prepare the USB drive to be used with NextCloudPi hit Format USB. Skip if already formated as ext4.
+						If you want to prepare the USB drive to be used with NextCloudPlus hit Format USB. Skip if already formated as ext4.
 						<br>	
 						<strong>Attention!</strong> This will format your USB drive as ext4 and <strong>will destroy any current data.</strong> 
 					</p>
@@ -94,7 +94,7 @@
                     <h3>Port forwarding</h3>
                     <p class="instructions">
                         To access from the outside, your need to forward ports 80 and 443 to your RPi IP address <br>
-                        You can have NextCloudPi try to do this automatically for you<br>
+                        You can have NextCloudPlus try to do this automatically for you<br>
                         To do it manually yourself, you must access your router interface, usually at <a href="http://192.168.1.1" target="_blank">http://192.168.1.1</a><br>
                     </p>
                     <div class="buttons-area">
@@ -183,7 +183,7 @@
           <!-- Tab 4 content - Finish -->
           <div class="tab-pane" id="tab4">
               <div class="ncp-tab-pane">
-                  <p class="instructions"> NextCloudPi is ready!</p>
+                  <p class="instructions"> NextCloudPlus is ready!</p>
 
                   <div class="linkbox">
                     <a id='gotonextcloud' href="#"><img id="nextcloud" src="img/nc-logo.png"></a>
@@ -191,7 +191,7 @@
                   </div>
                   <div class="linkbox">
                     <a href=".."><img id="ncp-web" src="img/ncp-logo.svg"></a>
-                    <br>go back to NextCloudPi web panel
+                    <br>go back to NextCloudPlus web panel
                   </div>
 
               </div>		

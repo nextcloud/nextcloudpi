@@ -2,7 +2,7 @@
 
 # arguments: $RELEASE $LINUXFAMILY $BOARD $BUILD_DESKTOP
 
-# This is the image customization script for NextCloudPi on Armbian
+# This is the image customization script for NextCloudPlus on Armbian
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -51,7 +51,7 @@ Main() {
 
             # cleanup all NCP options
             source /usr/local/etc/library.sh
-            cd /usr/local/etc/nextcloudpi-config.d/
+            cd /usr/local/etc/ncp-config.d/
             for script in *.sh; do
               cleanup_script $script
             done

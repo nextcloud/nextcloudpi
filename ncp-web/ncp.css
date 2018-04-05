@@ -1,5 +1,5 @@
 /* 
- * NextcloudPi Web Panel style sheets. Based on official Nextcloud 12 datasheets
+ * NextcloudPlus Web Panel style sheets. Based on official Nextcloud 12 datasheets
  *
  * Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
  * GPL licensed (see end of file) * Use at your own risk!
@@ -389,7 +389,7 @@ input[type='checkbox'].checkbox--white:indeterminate:disabled + label:after,inpu
  padding-right:20px
 }
 
-#nextcloudpi {
+#nextcloudplus {
  padding:5px;
  padding-bottom:0;
  height:45px;
@@ -397,11 +397,11 @@ input[type='checkbox'].checkbox--white:indeterminate:disabled + label:after,inpu
  -ms-filter:'progid:DXImageTransform.Microsoft.Alpha(Opacity=100)';
  opacity:1
 }
-#nextcloudpi:focus {
+#nextcloudplus:focus {
  -ms-filter:'progid:DXImageTransform.Microsoft.Alpha(Opacity=75)';
  opacity:0.75
 }
-#nextcloudpi:hover,#nextcloudpi:active {
+#nextcloudplus:hover,#nextcloudplus:active {
  -ms-filter:'progid:DXImageTransform.Microsoft.Alpha(Opacity=100)';
  opacity:1
 }

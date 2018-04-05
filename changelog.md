@@ -1,5 +1,7 @@
 
-[v0.53.28](https://github.com/nextcloud/nextcloudpi/commit/1c3532d) (2018-04-18) ncp-web: added spanish translations
+[v0.53.29](https://github.com/nextcloud/nextcloudpi/commit/dc1289f) (2018-04-05) renamed to NextCloudPlus
+
+[v0.53.28](https://github.com/nextcloud/nextcloudpi/commit/ab913c2) (2018-04-18) ncp-web: added spanish translations
 
 [v0.53.27](https://github.com/nextcloud/nextcloudpi/commit/24360e0) (2018-04-09) ncp-web: added language dropdown selector
 

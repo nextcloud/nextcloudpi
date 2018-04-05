@@ -7,7 +7,7 @@ SHELL ["/bin/bash", "-c"]
 ENV DOCKERBUILD 1
 
 COPY etc/library.sh /usr/local/etc/
-COPY etc/nextcloudpi-config.d/nc-init.sh etc/nextcloudpi-config.d/nc-nextcloud.sh /
+COPY etc/ncp-config.d/nc-init.sh etc/ncp-config.d/nc-nextcloud.sh /
 
 RUN \
 

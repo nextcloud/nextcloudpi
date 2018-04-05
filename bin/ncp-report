@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# NextCloudPi diagnostics report
+# NextCloudPlus diagnostics report
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -38,7 +38,7 @@ echo "<--! Paste this in GitHub report -->"
 
 ##
 
-open_summary "NextCloudPi diagnostics"
+open_summary "NextCloudPlus diagnostics"
 bash /usr/local/bin/ncp-diag | column  -t -s'|'
 close_summary
 

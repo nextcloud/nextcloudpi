@@ -1,13 +1,15 @@
-# NextCloudPi [![chatroom icon](https://patrolavia.github.io/telegram-badge/chat.png)](https://t.me/NextCloudPi) [![forums icon](https://img.shields.io/badge/help-forums-blue.svg)](https://help.nextcloud.com/c/support/appliances-docker-snappy-vm) [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=N8PJHSEQF4G7Y&lc=US&item_name=Own%20Your%20Bits&item_number=NextCloudPi&no_note=1&no_shipping=1&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted)
+# NextCloudPlus [![chatroom icon](https://patrolavia.github.io/telegram-badge/chat.png)](https://t.me/NextCloudPi) [![forums icon](https://img.shields.io/badge/help-forums-blue.svg)](https://help.nextcloud.com/c/support/appliances-docker-snappy-vm) [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=N8PJHSEQF4G7Y&lc=US&item_name=Own%20Your%20Bits&item_number=NextCloudPi&no_note=1&no_shipping=1&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted)
 
 
 ![NC Logo](https://ownyourbits.com/wp-content/uploads/2017/11/ncp-square.png)
 
-This is the build code for [NextCloudPi](https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/).
+This is the build code for [NextCloudPlus](https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/) ( formerly NextCloudPi ).
+
+NextCloudPlus is a ready to use image for Raspberry Pi, odroid HC1 and other boards.
 
 NextCloudPi is a ready to use image for Raspberry Pi.
 
-This code also generates the [NextCloudPi docker images](https://hub.docker.com/r/ownyourbits/nextcloudpi/).
+This code also generates the [NextCloudPlus docker images](https://hub.docker.com/r/ownyourbits/nextcloudpi/) for ARM and x86 platforms, and includes an installer for any Debian based system.
 
 ## Features
 
@@ -18,7 +20,7 @@ This code also generates the [NextCloudPi docker images](https://hub.docker.com/
  * MariaDB 10
  * Redis memory cache ( NEW 11-12-2017 )
  * 4.9 Linux Kernel ( NEW 03-13-2017 )
- * nextcloudpi-config for easy setup ( RAM logs, USB drive and more )
+ * ncp-config for easy setup ( RAM logs, USB drive and more )
  * Automatic redirection to HTTPS
  * ACPU PHP cache
  * PHP Zend OPcache enabled with file cache
@@ -32,7 +34,7 @@ This code also generates the [NextCloudPi docker images](https://hub.docker.com/
 ## Extras
 
  * Setup wizard ( NEW 09-27-2017 )
- * NextCloudPi Web Panel ( NEW 07-24-2017 )
+ * NextCloudPlus Web Panel ( NEW 07-24-2017 )
  * Wi-Fi ready ( NEW 03-31-2017 )
  * Ram logs ( NEW 03-31-2017 )
  * Automatic security updates, activated by default. ( NEW 03-21-2017 )
@@ -73,7 +75,7 @@ Extras can be activated and configured using the web interface at HTTPS port 444
 , or from the command line from
 
 ```
-sudo nextcloudpi-config
+sudo ncp-config
 ```
 
 ![NCP-config](https://ownyourbits.com/wp-content/uploads/2017/03/ncp-conf-700x456.jpg)
@@ -81,7 +83,7 @@ sudo nextcloudpi-config
 
 ## How to build
 
-The NextCloudPi SD image is based on Raspbian and is automatically generated using QEMU.
+The NextCloudPlus SD image is based on Raspbian and is automatically generated using QEMU.
 
 ```
 git clone https://github.com/nextcloud/nextcloudpi.git
@@ -102,10 +104,10 @@ make
 ```
 git clone https://github.com/nextcloud/nextcloudpi.git
 cd nextcloudpi
-make nextcloudpi-x86
+make nextcloudplus-x86
 ```
 
-NextCloudPi can be installed in any architecture running the latest Debian
+NextCloudPlus can be installed in any architecture running the latest Debian
 
 ```
 # curl -sSL https://raw.githubusercontent.com/nextcloud/nextcloudpi/master/install.sh | bash
@@ -124,3 +126,7 @@ https://ownyourbits.com/2017/06/08/nextcloudpi-docker-for-raspberry-pi/
 https://hub.docker.com/r/ownyourbits/nextcloudpi-x86
 
 https://hub.docker.com/r/ownyourbits/nextcloudpi-armhf
+
+## Contact
+
+You can find us in the [forums](https://help.nextcloud.com/c/support/appliances-docker-snappy-vm) and a [Telegram group](https://t.me/NextCloudPi)

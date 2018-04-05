@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# NextCloudPi function library
+# NextCloudPlus function library
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -13,7 +13,7 @@
 function config()
 {
   local INSTALL_SCRIPT="$1"
-  local BACKTITLE="NextCloudPi installer configuration"
+  local BACKTITLE="NextCloudPlus installer configuration"
 
   type dialog &>/dev/null || { echo "please, install dialog for interactive configuration"; return 1; }
 
@@ -133,12 +133,12 @@ function info_script()
 {
   (
     local SCRIPT=$1
-    cd /usr/local/etc/nextcloudpi-config.d/ || return 1
+    cd /usr/local/etc/ncp-config.d/ || return 1
     unset show_info INFO INFOTITLE
     source ./"$SCRIPT"
     local INFOTITLE="${INFOTITLE:-Info}"
     [[ "$INFO" == "" ]] && return 0
-    whiptail --yesno --backtitle "NextCloudPi configuration" --title "$INFOTITLE" "$INFO" 20 90
+    whiptail --yesno --backtitle "NextCloudPlus configuration" --title "$INFOTITLE" "$INFO" 20 90
   )
 }
 
@@ -146,7 +146,7 @@ function configure_script()
 {
   (
     local SCRIPT=$1
-    cd /usr/local/etc/nextcloudpi-config.d/ || return 1
+    cd /usr/local/etc/ncp-config.d/ || return 1
     config "$SCRIPT" || return 1                 # writes "$INSTALLATION_CODE"
     echo -e "$INSTALLATION_CODE" > "$SCRIPT"     # save configuration
     source ./"$SCRIPT"                           # load configuration
@@ -162,7 +162,7 @@ function cleanup_script()
 {
   (
     local SCRIPT=$1
-    cd /usr/local/etc/nextcloudpi-config.d/ || return 1
+    cd /usr/local/etc/ncp-config.d/ || return 1
     unset cleanup
     source ./"$SCRIPT"
     if [[ $( type -t cleanup ) == function ]]; then

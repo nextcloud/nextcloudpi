@@ -50,7 +50,7 @@ EOF
 
 CURRENT_THREADS=$( grep "^pm.max_children" /etc/php/7.0/fpm/pool.d/www.conf | awk '{ print $3 }' )
 
-CFG=/usr/local/etc/nextcloudpi-config.d/nc-limits.sh
+CFG=/usr/local/etc/ncp-config.d/nc-limits.sh
 PHPTHREADS=0
 [[ -f "$CFG" ]] && PHPTHREADS=$( grep "^PHPTHREADS_" "$CFG"  | cut -d= -f2 )
 
@@ -75,7 +75,7 @@ PHPTHREADS=0
 }
 
 ## Fix permissions on NCP folders. The main reason for this is to make devel docker container work
-CONFDIR="/usr/local/etc/nextcloudpi-config.d/"
+CONFDIR="/usr/local/etc/ncp-config.d/"
 [[ -e $CONFDIR ]] && {
   chown -R root:www-data "$CONFDIR"/*
   chmod 660              "$CONFDIR"/*

@@ -155,7 +155,7 @@ function deactivate_unattended_upgrades()
   [ -f "$IMG" ] || { echo "no image"; return 1; }
   mkdir -p tmpmnt
   sudo mount "$IMG" -o offset="$OFFSET" tmpmnt || return 1
-  sudo rm -f tmpmnt/etc/apt/apt.conf.d/20nextcloudpi-upgrades
+  sudo rm -f tmpmnt/etc/apt/apt.conf.d/20ncp-upgrades
   sudo umount -l tmpmnt
   rmdir tmpmnt &>/dev/null
 }
@@ -199,7 +199,7 @@ function create_torrent()
   [[ -d "$DIR" ]] && { echo "dir $DIR already exists"; return 1; }
   mkdir -p torrent/"$IMGNAME" && cp --reflink=auto "$IMG" torrent/"$IMGNAME"
   md5sum "$DIR"/*.bz2 > "$DIR"/md5sum
-  createtorrent -a udp://tracker.opentrackr.org -p 1337 -c "NextCloudPi. Nextcloud for Raspberry Pi image" "$DIR" "$DIR".torrent
+  createtorrent -a udp://tracker.opentrackr.org -p 1337 -c "NextCloudPlus. Nextcloud for Raspberry Pi image" "$DIR" "$DIR".torrent
 }
 
 function generate_changelog()
@@ -209,22 +209,6 @@ function generate_changelog()
     grep 'tag: v' | \
     sed '/HEAD ->\|origin/s|\[.*\(tag: v[0-9]\+\.[0-9]\+\.[0-9]\+\).*\]|[\1]|' | \
     sed 's|* \[tag: |\n[|' > changelog.md
-}
-
-function deactivate_unattended_upgrades()
-{
-  local IMG=$1
-  local SECTOR
-  local OFFSET
-  SECTOR=$( fdisk -l "$IMG" | grep Linux | awk '{ print $2 }' )
-  OFFSET=$(( SECTOR * 512 ))
-
-  [ -f "$IMG" ] || { echo "no image"; return 1; }
-  mkdir -p tmpmnt
-  sudo mount "$IMG" -o offset="$OFFSET" tmpmnt || return 1
-  sudo rm -f tmpmnt/etc/apt/apt.conf.d/20nextcloudpi-upgrades
-  sudo umount -l tmpmnt
-  rmdir tmpmnt &>/dev/null
 }
 
 function prepare_sshd()
