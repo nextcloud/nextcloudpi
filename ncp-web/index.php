@@ -36,7 +36,8 @@
     header("X-Robots-Tag: none");
     header("X-Permitted-Cross-Domain-Policies: none");
     header("X-Frame-Options: DENY");
-    header("Cache-Control: max-age=15778463");
+    header("Cache-Control: no-cache");
+    header('Pragma: no-cache');
     ini_set('session.cookie_httponly', 1);
     if (isset($_SERVER['HTTPS']))
       ini_set('session.cookie_secure', 1);

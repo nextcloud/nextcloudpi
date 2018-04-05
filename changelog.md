@@ -1,5 +1,9 @@
 
-[v0.53.21](https://github.com/nextcloud/nextcloudpi/commit/89f2b3e) (2018-04-05) ncp-web: make config.php into a table
+[v0.53.23](https://github.com/nextcloud/nextcloudpi/commit/b7ee6cd) (2018-04-05) ncp-web: force reload CSRF tokens every time
+
+[v0.53.22](https://github.com/nextcloud/nextcloudpi/commit/6f916a1) (2018-04-05) ncp-web: collapse sidebar menu when clicking in new sections
+
+[v0.53.21](https://github.com/nextcloud/nextcloudpi/commit/1618b2f) (2018-04-05) ncp-web: make config.php into a table
 
 [v0.53.20](https://github.com/nextcloud/nextcloudpi/commit/e0e9455) (2018-04-04) ncp-web: check for updates upon first run
 
