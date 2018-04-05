@@ -1,5 +1,7 @@
 
-[v0.53.23](https://github.com/nextcloud/nextcloudpi/commit/b7ee6cd) (2018-04-05) ncp-web: force reload CSRF tokens every time
+[v0.53.24](https://github.com/nextcloud/nextcloudpi/commit/181603a) (2018-04-05) ncp-web: faster first load by asynchronous call to is_active()
+
+[v0.53.23](https://github.com/nextcloud/nextcloudpi/commit/6fa40c5) (2018-04-05) ncp-web: force reload CSRF tokens every time
 
 [v0.53.22](https://github.com/nextcloud/nextcloudpi/commit/6f916a1) (2018-04-05) ncp-web: collapse sidebar menu when clicking in new sections
 

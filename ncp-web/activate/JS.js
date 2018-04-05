@@ -17,6 +17,33 @@ function errorMsg()
   $('#error-box').fill( "Something went wrong. Try refreshing the page" ); 
 }
 
+function launch_nc_passwd()
+{
+  // request
+  $.request('post', '../ncp-launcher.php', { action: 'launch',
+                                             ref   : 'nc-passwd', 
+                                             config: '{ "PASSWORD":"' + $('#ncp-pwd').get('.value') + '",'
+                                                     + '"CONFIRM" :"' + $('#ncp-pwd').get('.value') + '"}',
+                                             csrf_token: $( '#csrf-token' ).get( '.value' ) }).then(
+
+    function success( result )
+    {
+      var ret = $.parseJSON( result );
+      if ( ret.ret == '0' )
+      {
+        setTimeout( function(){ 
+          $('#loading-gif').hide();
+          $('#error-box').fill( "ACTIVATION SUCCESSFUL" ); 
+          var url = window.location.protocol + '//' + window.location.hostname + ':4443';
+          if ( !window.open( url, '_blank' ) ) // try to open in a new tab first
+            window.location.replace( url );
+        }, 2000 );
+      } else {
+        $('#error-box').fill( "nc-passwd error" ); 
+      }
+  } ).error( errorMsg );
+}
+
 $(function() 
 {
   // print info page
@@ -64,30 +91,7 @@ $(function()
         if ( ret.ret == '0' ) {
           if ( ret.token )
             $('#csrf-token').set( { value: ret.token } );
-
-          // request
-          $.request('post', '../ncp-launcher.php', { action: 'launch',
-                                                     ref   : 'nc-passwd', 
-                                                     config: '{ "PASSWORD":"' + $('#ncp-pwd').get('.value') + '",'
-                                                             + '"CONFIRM" :"' + $('#ncp-pwd').get('.value') + '"}',
-                                                     csrf_token: $( '#csrf-token' ).get( '.value' ) }).then(
-
-            function success( result )
-            {
-              var ret = $.parseJSON( result );
-              if ( ret.ret == '0' )
-              {
-                setTimeout( function(){ 
-                  $('#loading-gif').hide();
-                  $('#error-box').fill( "ACTIVATION SUCCESSFUL" ); 
-                  var url = window.location.protocol + '//' + window.location.hostname + ':4443';
-                  if ( !window.open( url, '_blank' ) ) // try to open in a new tab first
-                    window.location.replace( url );
-                }, 2000 );
-              } else {
-                $('#error-box').fill( "nc-passwd error" ); 
-              }
-          } ).error( errorMsg );
+          launch_nc_passwd();
         } else {
           $('#error-box').fill( "nc-admin error" ); 
         }

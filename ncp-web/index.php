@@ -163,7 +163,7 @@ HTML;
         <div id='overlay' class="hidden"></div>
 		<div id="app-navigation">
         	<ul id="ncp-options">
-              <?php echo print_sidebar($l); ?>
+              <?php echo print_sidebar($l, false); ?>
             </ul>
           </div>
 
@@ -237,8 +237,8 @@ HTML;
 
   <?php
     include('csrf.php');
-    echo '<input type="hidden" id="csrf-token"      name="csrf-token"      value="' . getCSRFToken() . '"/>';
-    echo '<input type="hidden" id="csrf-token-dash" name="csrf-token-dash" value="' . getCSRFToken() . '"/>';
+    echo '<input type="hidden" id="csrf-token"    name="csrf-token"    value="' . getCSRFToken() . '"/>';
+    echo '<input type="hidden" id="csrf-token-ui" name="csrf-token-ui" value="' . getCSRFToken() . '"/>';
   ?>
     <script src="minified.js"></script>
     <script src="ncp.js"></script>
