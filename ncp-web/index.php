@@ -84,7 +84,7 @@
     echo <<<HTML
     <div id="first-run-wizard">
       <div class='dialog'>
-        <br>
+        <br><br>
         <h2 id="config-box-title">NextCloudPi First Run</h2>
         <p>Click to start the configuration wizard</p>
         <br>

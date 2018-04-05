@@ -1193,11 +1193,17 @@ a#versionlink:hover {
   cursor:pointer;
 }
 
+#first-run-wizard img {
+  width: 70%;
+  max-width: 210px;
+}
+
 .dialog {
   display:block;
   background: white;
   position:relative;
   width:50%;
+  max-width: 400px;
   top:25%;
   margin:0px auto;
 }

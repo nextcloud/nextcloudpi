@@ -10,7 +10,7 @@
 var MINI = require('minified');
 var $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
 var selectedID = null;
-var confLock   = false;
+var lock       = false;
 
 function errorMsg()
 { 
@@ -27,8 +27,12 @@ function switch_to_section( name )
   selectedID = null;
 }
 
+// slide menu
+var slide_menu_enabled = false;
+
 function open_menu()
 {
+  if ( !slide_menu_enabled ) return;
   if ( $('#app-navigation').get('$width') != '250px' )
   {
     $('#overlay').show();
@@ -39,12 +43,39 @@ function open_menu()
 
 function close_menu()
 {
+  if ( !slide_menu_enabled ) return;
   if ( $('#app-navigation').get('$width') == '250px' )
   {
     $('#app-navigation').animate( {$width: '0px'}, 150 );
     $('#overlay').hide();
     $.off( close_menu );
   }
+}
+
+function hide_overlay(e) { $('#overlay').hide() }
+
+function close_menu_on_click_out(e) { close_menu(); }
+
+function enable_slide_menu()
+{
+  if ( slide_menu_enabled ) return;
+  $( '#app-navigation' ).set( { $width: '0px' } );
+  $( '#app-navigation' ).set( { $position: 'absolute' } );
+  $( '#app-navigation-toggle' ).on('click', open_menu );
+  $( '#app-content' ).on('|click', close_menu_on_click_out );
+  slide_menu_enabled = true;
+}
+
+function disable_slide_menu()
+{
+  if ( !slide_menu_enabled ) return;
+  $.off( open_menu );
+  $.off( close_menu );
+  $.off( close_menu_on_click_out );
+  $( '#app-navigation' ).set( { $width: '250px' } );
+  $( '#app-navigation' ).set( { $position: 'unset' } );
+  $('#overlay').hide();
+  slide_menu_enabled = false;
 }
 
 function set_sidebar_click_handlers()
@@ -55,8 +86,8 @@ function set_sidebar_click_handlers()
     if ( selectedID == this.get( '.id' ) ) // already selected
       return;
 
-    if ( confLock ) return;
-    confLock = true;
+    if ( lock ) return;
+    lock = true;
 
     if ( window.innerWidth <= 768 )
       close_menu();
@@ -69,7 +100,7 @@ function set_sidebar_click_handlers()
       function success( result ) 
       {
         cfgreqReceive( result, that );
-        confLock = false;
+        lock = false;
       }).error( errorMsg );
   });
 }
@@ -138,7 +169,7 @@ $(function()
   // Launch selected script
   $( '#config-button' ).on('click', function(e)
   {
-    confLock = true;
+    lock = true;
     $('#details-box').hide( '' );
     $('#config-button').set('@disabled',true);
     $('#loading-gif').set( { $display: 'inline' } );
@@ -201,15 +232,15 @@ $(function()
         $( 'input' , '#config-box-wrapper' ).set('@disabled', null);
         $('#config-button').set('@disabled',null);
         $('#loading-gif').hide();
-        confLock = false;
+        lock = false;
       }).error( errorMsg );
   });
 
   // Update notification
   $( '#notification' ).on('click', function(e)
   {
-    if ( confLock ) return;
-    confLock = true;
+    if ( lock ) return;
+    lock = true;
     
     $( '#' + selectedID ).set('-active');
 
@@ -220,7 +251,7 @@ $(function()
       function success( result ) 
       {
         cfgreqReceive( result, $( '#nc-update' ) );
-        confLock = false;
+        lock = false;
       }
       ).error( errorMsg );
 
@@ -229,34 +260,6 @@ $(function()
   } );
 
   // slide menu
-  var slide_menu_enabled = false;
-
-  function hide_overlay(e) { $('#overlay').hide() }
-
-  function close_menu_on_click_out(e) { close_menu(); }
-
-  function enable_slide_menu()
-  {
-    if ( slide_menu_enabled ) return;
-    $( '#app-navigation' ).set( { $width: '0px' } );
-    $( '#app-navigation' ).set( { $position: 'absolute' } );
-    $( '#app-navigation-toggle' ).on('click', open_menu );
-    $( '#app-content' ).on('|click', close_menu_on_click_out );
-    slide_menu_enabled = true;
-  }
-
-  function disable_slide_menu()
-  {
-    if ( !slide_menu_enabled ) return;
-    $.off( open_menu );
-    $.off( close_menu );
-    $.off( close_menu_on_click_out );
-    $( '#app-navigation' ).set( { $width: '250px' } );
-    $( '#app-navigation' ).set( { $position: 'unset' } );
-    $('#overlay').hide();
-    slide_menu_enabled = false;
-  }
-
   if ( window.innerWidth <= 768 ) 
     enable_slide_menu();
 
@@ -350,12 +353,16 @@ $(function()
   // dashboard button
   $( '#dashboard-btn' ).on('click', function(e)
   {
+    if ( lock ) return;
+    close_menu();
     switch_to_section( 'dashboard' );
   } );
 
   // config button
   $( '#config-btn' ).on('click', function(e)
   {
+    if ( lock ) return;
+    close_menu();
     switch_to_section( 'nc-config' );
   } );
 } );

@@ -121,103 +121,6 @@ done
 # not for image builds, only live updates
 [[ ! -f /.ncp-image ]] && {
 
-  # update ncp-backup
-  cd "$CONFDIR" &>/dev/null
-  install_script nc-backup.sh &>/dev/null
-  cd - &>/dev/null
-
-  # randomize passwords for old images ( older than v0.46.30 )
-  cat > /usr/lib/systemd/system/nc-provisioning.service <<'EOF'
-[Unit]
-Description=Randomize passwords on first boot
-Requires=network.target
-After=mysql.service
-
-[Service]
-ExecStart=/bin/bash /usr/local/bin/ncp-provisioning.sh
-
-[Install]
-WantedBy=multi-user.target
-EOF
-  systemctl enable nc-provisioning
-
-  NEED_UPDATE=false
-
-  MAJOR=0 MINOR=46 PATCH=30
-
-  MAJ=$( grep -oP "\d+\.\d+\.\d+" /usr/local/etc/ncp-version | cut -d. -f1 )
-  MIN=$( grep -oP "\d+\.\d+\.\d+" /usr/local/etc/ncp-version | cut -d. -f2 )
-  PAT=$( grep -oP "\d+\.\d+\.\d+" /usr/local/etc/ncp-version | cut -d. -f3 )
-
-  if [ "$MAJOR" -gt "$MAJ" ]; then
-    NEED_UPDATE=true
-  elif [ "$MAJOR" -eq "$MAJ" ] && [ "$MINOR" -gt "$MIN" ]; then
-    NEED_UPDATE=true
-  elif [ "$MAJOR" -eq "$MAJ" ] && [ "$MINOR" -eq "$MIN" ] && [ "$PATCH" -gt "$PAT" ]; then
-    NEED_UPDATE=true
-  fi
-
-  [[ "$NEED_UPDATE" == "true" ]] && {
-    REDISPASS="default"
-    DBPASSWD="default"
-    sed -i -E "s|^requirepass .*|requirepass $REDISPASS|" /etc/redis/redis.conf
-    echo -e "[client]\npassword=$DBPASSWD" > /root/.my.cnf
-    chmod 600 /root/.my.cnf
-    systemctl start nc-provisioning
-  }
-
-  # adjust services
-  systemctl mask nfs-blkmap
-  grep -q '^ACTIVE_=yes$' "$CONFDIR"/samba.sh || update-rc.d nmbd disable
-
-  # fix automount dependencies with other ncp-apps
-  sed -i \
-    's|^Before=.*|Before=mysqld.service dphys-swapfile.service fail2ban.service smbd.service nfs-server.service|' \
-    /usr/lib/systemd/system/nc-automount.service
-
-  sed -i \
-    's|^Before=.*|Before=nc-automount.service|' \
-    /usr/lib/systemd/system/nc-automount-links.service
-
-  # adjust when other services start
-  DBUNIT=/lib/systemd/system/mariadb.service
-  F2BUNIT=/lib/systemd/system/fail2ban.service
-  SWPUNIT=/etc/init.d/dphys-swapfile 
-  grep -q sleep "$DBUNIT"  || sed -i "/^ExecStart=/iExecStartPre=/bin/sleep 10" "$DBUNIT"
-  grep -q sleep "$F2BUNIT" || sed -i "/^ExecStart=/iExecStartPre=/bin/sleep 10" "$F2BUNIT"
-  grep -q sleep "$SWPUNIT" || sed -i "/\<start)/asleep 30" "$SWPUNIT"
-
-  # disable ncp user login
-  chsh -s /usr/sbin/nologin ncp
-
-  # remove old instance of ramlogs
-  [[ -f  /usr/lib/systemd/system/ramlogs.service ]] && {
-    systemctl disable ramlogs
-    rm -f /usr/lib/systemd/system/ramlogs.service /usr/local/bin/ramlog-dirs.sh
-  }
-  sed -i '/tmpfs \/var\/log.* in RAM$/d' /etc/fstab
-  sed -i '/tmpfs \/tmp.* in RAM$/d'      /etc/fstab
-
-  # update ramlogs with log2ram
-  type log2ram &>/dev/null || {
-    cd "$CONFDIR" &>/dev/null
-    install_script nc-ramlogs.sh           &>/dev/null
-    grep -q '^ACTIVE_=yes$' "$CONFDIR"/nc-ramlogs.sh && \
-      systemctl enable log2ram
-    cd -                                   &>/dev/null
-  }
-
-  # update nc-backup-auto to use cron
-  [[ -f  /etc/systemd/system/nc-backup.timer ]] && {
-    systemctl stop    nc-backup.timer
-    systemctl disable nc-backup.timer
-    rm -f /etc/systemd/system/nc-backup.timer /etc/systemd/system/nc-backup.service
-    cd "$CONFDIR" &>/dev/null
-    grep -q '^ACTIVE_=yes$' "$CONFDIR"/nc-backup-auto.sh && \
-      activate_script nc-backup-auto.sh
-    cd -          &>/dev/null
-  }
-
   # make sure the redis directory exists
   mkdir -p /var/log/redis
   chown redis /var/log/redis
@@ -271,29 +174,6 @@ EOF
       systemctl stop    log2ram
     }
 
-    # add new virtual host for initial password setup
-    cat > /etc/apache2/sites-available/ncp-activation.conf <<EOF
-<VirtualHost _default_:443>
-  DocumentRoot /var/www/ncp-web/
-  SSLEngine on
-  SSLCertificateFile      /etc/ssl/certs/ssl-cert-snakeoil.pem
-  SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
-
-</VirtualHost>
-<Directory /var/www/ncp-web/>
-  <RequireAll>
-
-   <RequireAny>
-      Require host localhost
-      Require local
-      Require ip 192.168
-      Require ip 172
-      Require ip 10
-   </RequireAny>
-
-  </RequireAll>
-</Directory>
-EOF
 } # end - only live updates
 
 exit 0

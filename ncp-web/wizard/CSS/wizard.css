@@ -23,6 +23,7 @@ a:hover, a:active, a:link {
 .ncp-tab-pane {
   display: table;
   margin: 0 auto;
+  text-align: center;
 }
 .ncp-tab-pane p {
   text-align: center;
