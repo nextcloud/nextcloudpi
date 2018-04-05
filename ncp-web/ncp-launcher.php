@@ -1,6 +1,6 @@
 <?php 
 ///
-// NextcloudPi Web Panel backend
+// NextcloudPlus Web Panel backend
 //
 // Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 // GPL licensed (see end of file) * Use at your own risk!
@@ -11,7 +11,7 @@
 include ('csrf.php');
 
 session_start();
-$modules_path = '/usr/local/etc/nextcloudpi-config.d/';
+$modules_path = '/usr/local/etc/ncp-config.d/';
 $l10nDir = "l10n";
 ignore_user_abort( true );
 
@@ -32,7 +32,7 @@ if ( $_POST['action'] == "cfgreq" )
   if ( empty($token) || !validateCSRFToken($token) )
     exit( '{ "output": "Unauthorized request. Try reloading the page" }' );
 
-  $path  = '/usr/local/etc/nextcloudpi-config.d/';
+  $path  = '/usr/local/etc/ncp-config.d/';
   $files = array_diff(scandir($path), array('.', '..'));
 
   $fh    = fopen( $path . $_POST['ref'] . '.sh' ,'r')
@@ -99,7 +99,7 @@ else if ( $_POST['action'] == "launch" && $_POST['config'] )
   if ( empty($token) || !validateCSRFToken($token) )
     exit( '{ "output": "Unauthorized request. Try reloading the page" }' );
 
-  chdir('/usr/local/etc/nextcloudpi-config.d/');
+  chdir('/usr/local/etc/ncp-config.d/');
 
   $file = $_POST['ref'] . '.sh';
 

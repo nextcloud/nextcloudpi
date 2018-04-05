@@ -1,4 +1,4 @@
-FROM ownyourbits/nextcloudpi-x86
+FROM ownyourbits/nextcloudplus-x86
 
 MAINTAINER Ignacio Núñez Hernanz <nacho@ownyourbits.com>
 
@@ -12,7 +12,7 @@ RUN \
 apt-get update; \
 apt-get install --no-install-recommends -y wget ca-certificates git; \
 
-# install nextcloudpi devel
+# install nextcloudplus devel
 source /usr/local/etc/library.sh; \
 set +x; \
 cd /usr/local/etc/; \

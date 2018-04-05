@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Batch creation of NextCloudPi image for the Odroid HC1
+# Batch creation of NextCloudPlus image for the Odroid HC1
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -27,10 +27,11 @@ armbian/compile.sh docker \
   RELEASE=stretch\
   BUILD_DESKTOP=no\
   CLEAN_LEVEL=""\
+  USE_CCACHE=yes\
   NO_APT_CACHER=no
 
 # pack image
-IMGNAME="NextCloudPi_$( date  "+%m-%d-%y" )_OdroidHC1"
+IMGNAME="NextCloudPlus_$( date  "+%m-%d-%y" )_OdroidHC1"
 IMGFILE="$( ls -1t armbian/output/images/*.img | head -1 )"
 pack_image "$IMGFILE" "$IMGNAME.img" 
 

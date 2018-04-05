@@ -1,7 +1,7 @@
 version: '3'
 services:
-  nextcloudpi:
-    image: ownyourbits/nextcloudpi-armhf
+  nextcloudplus:
+    image: ownyourbits/nextcloudplus-armhf
     command: "${IP}"
     ports:
      - "80:80"

@@ -21,7 +21,7 @@ cleanup()
 { 
   # cleanup all NCP extras
   source /usr/local/etc/library.sh
-  cd /usr/local/etc/nextcloudpi-config.d/
+  cd /usr/local/etc/ncp-config.d/
   for script in *.sh; do
     cleanup_script $script
   done

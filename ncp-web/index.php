@@ -1,5 +1,5 @@
 <!--
- NextcloudPi Web Panel frontend
+ NextcloudPlus Web Panel frontend
 
  Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
  GPL licensed (see end of file) * Use at your own risk!
@@ -11,7 +11,7 @@
 <html class="ng-csp" data-placeholder-focus="false" lang="en">
 <head>
     <meta charset="utf-8">
-    <title>NextCloudPi Panel</title>
+    <title>NextCloudPlus Panel</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="referrer" content="never">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
@@ -26,7 +26,7 @@
     session_start();
 
     include('sidebar.php');
-    $modules_path = '/usr/local/etc/nextcloudpi-config.d/';
+    $modules_path = '/usr/local/etc/ncp-config.d/';
     $l10nDir = "l10n";
 
     // security headers
@@ -86,7 +86,7 @@
     <div id="first-run-wizard">
       <div class='dialog'>
         <br><br>
-        <h2 id="config-box-title">NextCloudPi First Run</h2>
+        <h2 id="config-box-title">NextCloudPlus First Run</h2>
         <p>Click to start the configuration wizard</p>
         <br>
         <a href="wizard"><img class="wizard-btn" src="wizard/img/ncp-logo.svg" class="wizard"></a>
@@ -104,9 +104,9 @@ HTML;
 
   <header role="banner"><div id="header">
     <div id="header-left">
-      <a href="https://ownyourbits.com" id="nextcloudpi" target="_blank" tabindex="1">
+      <a href="https://ownyourbits.com" id="nextcloudplus" target="_blank" tabindex="1">
         <div class="logo-icon">
-           <h1 class="hidden-visually">NextCloudPi</h1>
+           <h1 class="hidden-visually">NextCloudPlus</h1>
         </div>
       </a>
       <a id=versionlink target="_blank" href="https://github.com/nextcloud/nextcloudpi/blob/master/changelog.md">

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Build NextCloudPi ARM docker container in a QEMU Raspbian with docker
+# Build NextCloudPlus ARM docker container in a QEMU Raspbian with docker
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -16,10 +16,14 @@ install()
   git pull origin master
   docker pull arm32v7/debian:stretch-slim
   make && {
-    docker push ownyourbits/nextcloudpi-armhf 
+    docker push ownyourbits/nextcloudplus-armhf 
     docker push ownyourbits/nextcloud-armhf 
     docker push ownyourbits/lamp-armhf
     docker push ownyourbits/debian-ncp-armhf
+
+    # keep old container updated, at least for a while
+    docker tag ownyourbits/nextcloudplus-armhf ownyourbits/nextcloudpi-armhf
+    docker push ownyourbits/nextcloudpi-armhf 
   }
 }
 

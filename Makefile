@@ -1,12 +1,12 @@
-# Batch-build docker container layers for nextcloudpi
+# Batch-build docker container layers for NextCloudPlus
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
 #
 
 
-nextcloudpi-armhf: nextcloud-armhf
-	docker build . -f docker-armhf/nextcloudpi/Dockerfile   -t ownyourbits/nextcloudpi-armhf:latest --no-cache
+nextcloudplus-armhf: nextcloud-armhf
+	docker build . -f docker-armhf/nextcloudplus/Dockerfile   -t ownyourbits/nextcloudplus-armhf:latest --no-cache
 
 nextcloud-armhf: lamp-armhf
 	docker build . -f docker-armhf/nextcloud/Dockerfile     -t ownyourbits/nextcloud-armhf:latest
@@ -18,8 +18,8 @@ debian-ncp-armhf:
 	docker build . -f docker-armhf/debian-ncp/Dockerfile  -t ownyourbits/debian-ncp-armhf:latest
 
 
-nextcloudpi-x86: nextcloud-x86
-	docker build . -f docker/nextcloudpi/Dockerfile       -t ownyourbits/nextcloudpi-x86:latest --no-cache
+nextcloudplus-x86: nextcloud-x86
+	docker build . -f docker/nextcloudplus/Dockerfile       -t ownyourbits/nextcloudplus-x86:latest --no-cache
 
 nextcloud-x86: lamp-x86
 	docker build . -f docker/nextcloud/Dockerfile         -t ownyourbits/nextcloud-x86:latest
@@ -31,7 +31,7 @@ debian-ncp-x86:
 	docker build . -f docker/debian-ncp/Dockerfile   -t ownyourbits/debian-ncp-x86:latest
 
 devel: 
-	docker build . -f docker/devel/Dockerfile   -t ownyourbits/nextcloudpi-x86:devel
+	docker build . -f docker/devel/Dockerfile   -t ownyourbits/nextcloudplus-x86:devel
 
 # License
 #

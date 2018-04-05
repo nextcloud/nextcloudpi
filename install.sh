@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# NextCloudPi installation script
+# NextCloudPlus installation script
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -13,7 +13,7 @@
 
 set -e$DBG
 
-TMPDIR=/tmp/nextcloudpi
+TMPDIR=/tmp/nextcloudplus
 
 [[ ${EUID} -ne 0 ]] && {
   printf "Must be run as root. Try 'sudo $0'\n"
@@ -40,14 +40,14 @@ git clone -q --depth 1 https://github.com/nextcloud/nextcloudpi.git "$TMPDIR" ||
 cd "$TMPDIR"
 
 # install NCP
-echo -e "\nInstalling NextCloudPi"
+echo -e "\nInstalling NextCloudPlus"
 source etc/library.sh
 
 install_script  lamp.sh
-install_script  etc/nextcloudpi-config.d/nc-nextcloud.sh
-activate_script etc/nextcloudpi-config.d/nc-nextcloud.sh
-install_script  nextcloudpi.sh
-activate_script etc/nextcloudpi-config.d/nc-init.sh
+install_script  etc/ncp-config.d/nc-nextcloud.sh
+activate_script etc/ncp-config.d/nc-nextcloud.sh
+install_script  nextcloudplus.sh
+activate_script etc/ncp-config.d/nc-init.sh
 
 # re-enable mods disabled during install, in case there's other shared services in apache2
 [[ "$APACHE_EXISTS" != "" ]] && \
@@ -58,11 +58,7 @@ rm -rf $TMPDIR
 
 echo "Done.
 
-Type 'sudo nextcloudpi-config' to configure NCP
-
-Access NextCloudPi panel on nextcloudpi.local:4443
-
-Access Nextcloud on nextcloudpi.local
+Type 'sudo ncp-config' to configure NCP, or access ncp-web on https://<this_ip>:4443
 "
 
 exit 0

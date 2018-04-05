@@ -1,5 +1,5 @@
 ///
-// NextcloudPi Web Panel javascript library
+// NextcloudPlus Web Panel javascript library
 //
 // Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 // GPL licensed (see end of file) * Use at your own risk!
@@ -37,7 +37,7 @@ function launch_nc_passwd()
           var url = window.location.protocol + '//' + window.location.hostname + ':4443';
           if ( !window.open( url, '_blank' ) ) // try to open in a new tab first
             window.location.replace( url );
-        }, 3500 );
+        }, 4000 );
       } else {
         $('#error-box').fill( "nc-passwd error" ); 
       }
@@ -96,7 +96,7 @@ $(function()
       input.selectionStart = input.selectionEnd;
     } );
 
-  // activate NextCloudPi
+  // activate NextCloudPlus
   $( '#activate-ncp' ).on( 'click', function(e)
   {
     $( '#activate-ncp' ).hide();

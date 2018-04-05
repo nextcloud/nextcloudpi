@@ -12,7 +12,7 @@
 
 function print_sidebar( $l /* translations l10n object */, $ticks /* wether to calculate ticks(slow) */ )
 {
-  $modules_path = '/usr/local/etc/nextcloudpi-config.d/';
+  $modules_path = '/usr/local/etc/ncp-config.d/';
   $files = array_diff(scandir($modules_path), array('.', '..', 'nc-wifi.sh', 'nc-info.sh', 'l10n'));
   $ret   = "";
 
@@ -23,7 +23,7 @@ function print_sidebar( $l /* translations l10n object */, $ticks /* wether to c
     $active = "";
     if ( $ticks ) {
       $etc = '/usr/local/etc';
-      exec("bash -c \"source $etc/library.sh && is_active_script $etc/nextcloudpi-config.d/$script\".sh", $output, $retval);
+      exec("bash -c \"source $etc/library.sh && is_active_script $etc/ncp-config.d/$script\".sh", $output, $retval);
       if ($retval == 0)
         $active = " ✓";
     } else if (preg_match('/^ACTIVE_=yes$/m', $txt, $matches))
