@@ -199,7 +199,7 @@ else
     require( "sidebar.php" );
     // return JSON
     echo '{ "token": "' . getCSRFToken() . '",';               // Get new token
-    echo ' "output": '  . json_encode( print_sidebar( $l ) ) . ' , ';
+    echo ' "output": '  . json_encode( print_sidebar( $l, true ) ) . ' , ';
     echo ' "ret": "0" }';
   }
 }

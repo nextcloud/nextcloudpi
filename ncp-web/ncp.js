@@ -105,18 +105,37 @@ function set_sidebar_click_handlers()
   });
 }
 
+function print_dashboard()
+{
+  $.request('post', 'ncp-launcher.php', { action: 'info',
+                                          csrf_token: $( '#csrf-token-ui' ).get( '.value' ) }).then(
+
+    function success( result )
+    {
+      var ret = $.parseJSON( result );
+      if ( ret.token )
+        $('#csrf-token-ui').set( { value: ret.token } );
+      $('#loading-info-gif').hide();
+      $('#dashboard-table').ht( ret.table );
+      $('#dashboard-suggestions').ht( ret.suggestions );
+      reload_sidebar();
+    } ).error( errorMsg );
+}
+
 function reload_sidebar()
 {
   // request
   $.request('post', 'ncp-launcher.php', { action:'sidebar', 
-    csrf_token: $( '#csrf-token' ).get( '.value' ) }).then( 
+    csrf_token: $( '#csrf-token-ui' ).get( '.value' ) }).then( 
       function success( result ) 
       {
         var ret = $.parseJSON( result );
         if ( ret.token )
-          $('#csrf-token').set( { value: ret.token } );
-        $('#ncp-options').ht( ret.output );
-        set_sidebar_click_handlers();
+          $('#csrf-token-ui').set( { value: ret.token } );
+        if ( ret.ret && ret.ret == '0' ) {
+          $('#ncp-options').ht( ret.output );
+          set_sidebar_click_handlers();
+        }
       }).error( errorMsg );
 }
 
@@ -336,20 +355,6 @@ $(function()
   // click to nextcloud button
   $('#nextcloud-btn').set( '@href', window.location.protocol + '//' + window.location.hostname );
 
-  // load dashboard info
-  $.request('post', 'ncp-launcher.php', { action: 'info',
-                                          csrf_token: $( '#csrf-token-dash' ).get( '.value' ) }).then(
-
-    function success( result )
-    {
-      var ret = $.parseJSON( result );
-      if ( ret.token )
-        $('#csrf-token-dash').set( { value: ret.token } );
-      $('#loading-info-gif').hide();
-      $('#dashboard-table').ht( ret.table );
-      $('#dashboard-suggestions').ht( ret.suggestions );
-    } ).error( errorMsg );
-
   // dashboard button
   $( '#dashboard-btn' ).on('click', function(e)
   {
@@ -365,6 +370,9 @@ $(function()
     close_menu();
     switch_to_section( 'nc-config' );
   } );
+
+  // load dashboard info
+  print_dashboard();
 } );
 
 // License

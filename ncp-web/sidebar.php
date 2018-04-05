@@ -10,7 +10,7 @@
 
 // fill options with contents from directory
 
-function print_sidebar( $l /* translations l10n object */ )
+function print_sidebar( $l /* translations l10n object */, $ticks /* wether to calculate ticks(slow) */ )
 {
   $modules_path = '/usr/local/etc/nextcloudpi-config.d/';
   $files = array_diff(scandir($modules_path), array('.', '..', 'nc-wifi.sh', 'nc-info.sh', 'l10n'));
@@ -21,10 +21,13 @@ function print_sidebar( $l /* translations l10n object */ )
     $txt = file_get_contents($modules_path . $file);
 
     $active = "";
-    $etc = '/usr/local/etc';
-    exec("bash -c \"source $etc/library.sh && is_active_script $etc/nextcloudpi-config.d/$script\".sh", $output, $retval);
-    if ($retval == 0)
-      $active = " ✓";
+    if ( $ticks ) {
+      $etc = '/usr/local/etc';
+      exec("bash -c \"source $etc/library.sh && is_active_script $etc/nextcloudpi-config.d/$script\".sh", $output, $retval);
+      if ($retval == 0)
+        $active = " ✓";
+    } else if (preg_match('/^ACTIVE_=yes$/m', $txt, $matches))
+        $active = " ✓";
 
     $ret .= "<li id=\"$script\" class=\"nav-recent\">";
     $ret .= "<a href=\"#\"> {$l->__($script, $script)}$active </a>";
