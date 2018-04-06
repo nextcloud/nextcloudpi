@@ -42,6 +42,7 @@ Before=mysqld.service dphys-swapfile.service fail2ban.service smbd.service nfs-s
 
 [Service]
 Restart=always
+ExecStartPre=/bin/bash -c "rmdir /media/* || true"
 ExecStart=/usr/bin/udiskie -NTF
 
 [Install]
