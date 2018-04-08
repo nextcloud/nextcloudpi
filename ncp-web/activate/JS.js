@@ -37,7 +37,7 @@ function launch_nc_passwd()
           var url = window.location.protocol + '//' + window.location.hostname + ':4443';
           if ( !window.open( url, '_blank' ) ) // try to open in a new tab first
             window.location.replace( url );
-        }, 2000 );
+        }, 2500 );
       } else {
         $('#error-box').fill( "nc-passwd error" ); 
       }

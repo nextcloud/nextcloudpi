@@ -1,5 +1,5 @@
 
-[v0.53.25](https://github.com/nextcloud/nextcloudpi/commit/7b794dd) (2018-04-08) docker: update armhf version
+[v0.53.25](https://github.com/nextcloud/nextcloudpi/commit/bb33a59) (2018-04-09) build: clean docker-env
 
 [v0.53.24](https://github.com/nextcloud/nextcloudpi/commit/1c44802) (2018-04-05) ncp-web: faster first load by asynchronous call to is_active()
 
