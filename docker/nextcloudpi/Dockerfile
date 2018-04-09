@@ -40,7 +40,6 @@ for script in *.sh; do cleanup_script $script; done; \
 # letsencrypt build artifacts cleanup
 apt-get purge -y \
     make \
-    git \
     binutils \
     cpp \
     cpp-6 \

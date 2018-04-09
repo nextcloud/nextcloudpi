@@ -48,12 +48,6 @@ nc-scan-auto.sh
 freeDNS.sh
 "
 
-# TODO think about updates
-EXCL_DOCKER+="
-nc-update.sh
-nc-autoupdate-ncp.sh
-"
-
 # check running apt
 pgrep apt &>/dev/null && { echo "apt is currently running. Try again later";  exit 1; }
 
@@ -126,6 +120,7 @@ done
   mkdir -p /var/log/redis
   chown redis /var/log/redis
 
+[[ "$DOCKERBUILD" != 1 ]] && {
   # improve dependency of database with automount
   sed -i 's|^ExecStartPre=/bin/sleep .*|ExecStartPre=/bin/sleep 20|' /lib/systemd/system/mariadb.service
   sed -i 's|^Restart=.*|Restart=on-failure|'                         /lib/systemd/system/mariadb.service
@@ -155,6 +150,7 @@ ls -d /media/* &>/dev/null && {
 }
 EOF
   chmod +x /usr/local/etc/nc-automount-links
+}
 
   # fix updates from NC12 to NC12.0.1
   rm -rf /var/www/nextcloud/.well-known
@@ -169,6 +165,7 @@ EOF
     chmod +x /etc/cron.weekly/letsencrypt-ncp
   }
 
+[[ "$DOCKERBUILD" != 1 ]] && {
     # disable ramlogs if accidentally enabled
     grep -q '^ACTIVE_=yes$' "$CONFDIR"/nc-ramlogs.sh || {
       systemctl disable log2ram
@@ -178,6 +175,7 @@ EOF
   # remove directories left from unclean shutdown
   UNIT=/usr/lib/systemd/system/nc-automount.service 
   grep -q rmdir "$UNIT"  || sed -i '/^ExecStart=/iExecStartPre=/bin/bash -c "rmdir /media/* || true"' "$UNIT"
+  }
 
 } # end - only live updates
 
