@@ -14,7 +14,6 @@
 #
 
 ACTIVE_=no
-LANGUAGE_=[_auto_,en,de]
 DESCRIPTION="Enable or disable the NCP web interface"
 
 is_active()

@@ -66,6 +66,22 @@ class L10N
     return ($jsonError == null);
   }
 
+  function save($lang)
+  {
+    $cfg = 'ncp-web.cfg';
+    $line = file_get_contents( $cfg );
+    $str  = '';
+    if (preg_match('/^LANGUAGE_=\[(([_\w]+,)*[_\w]+)\]$/', $line, $matches)) {
+      $options = explode(',', $matches[1]);
+      foreach ($options as $option) {
+        $opt = trim( $option, "_" );
+        $str .= $opt == $lang ? '_' . $opt . '_,' : $opt . ',';
+      }
+    }
+    $str = 'LANGUAGE_=[' . rtrim( $str, ',' ) . ']';
+    return file_put_contents( $cfg , $str );
+  }
+
   function load_template($module)
   {
     if (is_file("./l10n_templates/$module.json")) {
@@ -130,7 +146,7 @@ class L10N
 
   function load_language_setting($modules_path)
   {
-    $webui_config_file = join('/', [rtrim($modules_path, '/'), 'nc-webui.sh']);
+    $webui_config_file = 'ncp-web.cfg';
     $fh = fopen($webui_config_file, 'r')
     or exit('{ "output": "' . $webui_config_file . ' read error" }');
     $lang = "auto";
@@ -148,6 +164,5 @@ class L10N
         return $lang;
       }
     }
-
   }
 }

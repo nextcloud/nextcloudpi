@@ -1,5 +1,7 @@
 
-[v0.53.26](https://github.com/nextcloud/nextcloudpi/commit/ca66f50) (2018-04-06) nc-automount: remove directories left from unclean shutdown
+[v0.53.27](https://github.com/nextcloud/nextcloudpi/commit/f5defaf) (2018-04-09) ncp-web: added language dropdown selector
+
+[v0.53.26](https://github.com/nextcloud/nextcloudpi/commit/d4340a0) (2018-04-06) nc-automount: remove directories left from unclean shutdown
 
 [v0.53.25](https://github.com/nextcloud/nextcloudpi/commit/c5bbeb8) (2018-04-09) build: clean docker-env
 

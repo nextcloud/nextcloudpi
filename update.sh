@@ -103,6 +103,7 @@ cp -rT etc/nextcloudpi-config.d/l10n "$CONFDIR"/l10n
 # these files can contain sensitive information, such as passwords
 chown -R root:www-data "$CONFDIR"
 chmod 660 "$CONFDIR"/*
+chmod 750 "$CONFDIR"/l10n
 
 # install web interface
 cp -r ncp-web /var/www/
