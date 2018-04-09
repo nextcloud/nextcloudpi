@@ -202,6 +202,14 @@ else
     echo ' "output": '  . json_encode( print_sidebar( $l, true ) ) . ' , ';
     echo ' "ret": "0" }';
   }
+  else if ( $_POST['action'] == "cfg-ui" )
+  {
+    $ret = $l->save( $_POST['value'] );
+    $ret = $ret !== FALSE ? 0 : 1;
+    // return JSON
+    echo '{ "token": "' . getCSRFToken() . '",';               // Get new token
+    echo ' "ret": "'    . $ret           . '" }';
+  }
 }
 
 // License

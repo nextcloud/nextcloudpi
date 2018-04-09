@@ -112,6 +112,23 @@ HTML;
       <a id=versionlink target="_blank" href="https://github.com/nextcloud/nextcloudpi/blob/master/changelog.md">
         <?php echo file_get_contents( "/usr/local/etc/ncp-version" ) ?>
       </a>
+<?php
+    // language selection drop
+    if( preg_match('/^(\w+)_=\[(([_\w]+,)*[_\w]+)\]$/', file_get_contents( 'ncp-web.cfg') , $matches) )
+    {
+      $options = explode(",", $matches[2]);
+      echo "<select id=\"language-selection\" name=\"$matches[1]\">";
+      foreach($options as $option)
+      {
+        echo "<option value='". trim($option, "_") ."' ";
+        if( $option[0] == "_" && $option[count($option) - 1] == "_" )
+          echo "selected='selected'";
+        echo ">". trim($option, "_") ."</option>";
+      }
+      echo "<option value=\"[new]\">new..</option>";
+      echo "</select>";
+    }
+?>
     </div>
     <div id="header-right">
       <a href="https://ownyourbits.com" id="nextcloud-btn" target="_blank" tabindex="1">
@@ -237,8 +254,9 @@ HTML;
 
   <?php
     include('csrf.php');
-    echo '<input type="hidden" id="csrf-token"    name="csrf-token"    value="' . getCSRFToken() . '"/>';
-    echo '<input type="hidden" id="csrf-token-ui" name="csrf-token-ui" value="' . getCSRFToken() . '"/>';
+    echo '<input type="hidden" id="csrf-token"     name="csrf-token"     value="' . getCSRFToken() . '"/>';
+    echo '<input type="hidden" id="csrf-token-ui"  name="csrf-token-ui"  value="' . getCSRFToken() . '"/>';
+    echo '<input type="hidden" id="csrf-token-cfg" name="csrf-token-cfg" value="' . getCSRFToken() . '"/>';
   ?>
     <script src="minified.js"></script>
     <script src="ncp.js"></script>

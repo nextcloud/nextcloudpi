@@ -1317,3 +1317,8 @@ a#versionlink:hover {
   color: #565656;
   overflow: auto;
 }
+
+#language-selection {
+  border: none;
+  color: white;
+}

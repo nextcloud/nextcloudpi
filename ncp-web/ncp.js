@@ -371,6 +371,35 @@ $(function()
     switch_to_section( 'nc-config' );
   } );
 
+  // language selection
+  var langold = $( '#language-selection' ).get( '.value' );
+  $( '#language-selection' ).on( 'change', function(e)
+    {
+      if( '[new]' == this.get( '.value' ) )
+      {
+        this.set( '.value', langold );
+        var url = 'https://github.com/nextcloud/nextcloudpi/wiki/Add-a-new-language-to-ncp-web';
+        if ( !window.open( url, '_blank' ) ) // try to open in a new tab first
+          window.location.href = url;
+        return;
+      }
+      // request
+      $.request('post', 'ncp-launcher.php', { action:'cfg-ui',
+                                              value: this.get( '.value' ),
+                                              csrf_token: $( '#csrf-token-cfg' ).get( '.value' ) }).then(
+        function success( result )
+        {
+          var ret = $.parseJSON( result );
+          if ( ret.token )
+            $('#csrf-token-cfg').set( { value: ret.token } );
+          if ( ret.ret && ret.ret == '0' )                        // means that the process was launched
+            window.location.reload( true );
+          else
+            this.set( '.value', langold );
+        }
+    ).error( errorMsg )
+  } );
+
   // load dashboard info
   print_dashboard();
 } );
