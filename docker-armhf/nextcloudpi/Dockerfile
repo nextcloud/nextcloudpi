@@ -39,7 +39,6 @@ for script in *.sh; do cleanup_script $script; done; \
 
 apt-get purge -y \
   make \
-  git \
   binutils \
   cpp \
   cpp-6 \
