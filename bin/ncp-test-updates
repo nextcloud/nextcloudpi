@@ -5,7 +5,7 @@
 NEED_UPDATE=false
 VERFILE=/var/run/.ncp-latest-version
 
-[[ $( cat $VERFILE | wc -c ) -eq 0 ]] && ncp-check-version
+[[ $( cat $VERFILE 2>/dev/null | wc -c ) -eq 0 ]] && ncp-check-version
 
 if grep -qP "v\d+\.\d+\.\d+" $VERFILE; then
 
