@@ -13,6 +13,9 @@ RUN \
 # mark as image build
 touch /.ncp-image; \
 
+# mark as docker image
+touch /.docker-image; \
+
 apt-get update; \
 apt-get install --no-install-recommends -y wget ca-certificates; \
       
