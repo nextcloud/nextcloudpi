@@ -14,6 +14,8 @@ OCC="$NCDIR/occ"
   killall redis-server
   echo "stopping Postfix..."
   postfix stop
+  echo "stopping logs..."
+  killall tail
   exit 0
 }
 
@@ -53,5 +55,8 @@ sudo -u www-data php "$OCC" config:system:set trusted_domains 1 --value="$IP"
     echo "First argument must be an IP address to include as a Trusted domain. Ignoring"
   fi
 }
+
+# Display NC logs in the docker logs
+tail -f -n0 /data/app/data/nextcloud.log &
 
 exit 0
