@@ -37,6 +37,7 @@ source /usr/local/etc/library.sh; \
 cd /usr/local/etc/nextcloudpi-config.d/; \
 for script in *.sh; do cleanup_script $script; done; \
 
+# letsencrypt build artifacts cleanup
 apt-get purge -y \
   make \
   binutils \
