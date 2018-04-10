@@ -7,6 +7,8 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="referrer" content="never">
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
+  <meta http-equiv="cache-control" content="no-cache">
+  <meta http-equiv="pragma" content="no-cache">
   <link rel="icon" type="image/png" href="img/favicon.png"/>
   <link rel="stylesheet" href="CSS.css">
 <?php session_start(); ?>
