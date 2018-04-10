@@ -27,25 +27,13 @@ install()
 {
   apt-get update
   apt-get install --no-install-recommends -y dnsutils
-  cat > /etc/systemd/system/freedns.service <<EOF
-[Unit]
-Description=FreeDNS client
-
-[Service]
-Type=simple
-ExecStart=/usr/local/bin/freedns.sh
-
-[Install]
-WantedBy=default.target
-EOF
 }
 
 configure() 
 {
   [[ $ACTIVE_ != "yes" ]] && { 
-    systemctl stop    freedns.timer
-    systemctl disable freedns.timer
-    systemctl daemon-reload
+    rm /etc/cron.d/freeDNS
+    service cron restart
     echo "FreeDNS client is disabled"
     return 0
   }
@@ -63,25 +51,9 @@ echo "Registered IP: \$registeredIP | Current IP: \$currentIP"
 EOF
   chmod +744 /usr/local/bin/freedns.sh
 
+  echo "*/${UPDATEINTERVAL_}  *  *  *  *  root  /bin/bash /usr/local/bin/freedns.sh" > /etc/cron.d/freeDNS
+  service cron restart
 
-  cat > /etc/systemd/system/freedns.timer <<EOF
-[Unit] 
-Description=Timer to run FreeDNS client per interval 
-
-[Timer] 
-OnBootSec=${UPDATEINTERVAL_}min
-OnUnitActiveSec=${UPDATEINTERVAL_}min
-Unit=freedns.service 
-
-[Install] 
-WantedBy=timers.target
-EOF
-  systemctl daemon-reload
-
-  systemctl enable freedns.timer
-  systemctl start  freedns.timer
-  systemctl start  freedns.service
-  
   cd /var/www/nextcloud
   sudo -u www-data php occ config:system:set trusted_domains 3 --value="$DOMAIN_"
   sudo -u www-data php occ config:system:set overwrite.cli.url --value=https://"$DOMAIN_"

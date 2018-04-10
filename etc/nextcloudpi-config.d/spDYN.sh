@@ -131,7 +131,7 @@ configure()
     rm -f "$CRONFILE"
     echo "spdnsUpdater is now disabled"
   fi
-  systemctl restart cron
+  service cron restart
 }
 
 # License
