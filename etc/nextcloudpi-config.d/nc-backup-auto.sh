@@ -26,6 +26,7 @@ configure()
 {
   [[ $ACTIVE_ != "yes" ]] && { 
     rm /etc/cron.d/ncp-backup-auto
+    service cron restart
     echo "automatic backups disabled"
     return 0
   }

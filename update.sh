@@ -27,25 +27,13 @@ nc-snapshot.sh
 nc-snapshot-auto.sh
 nc-audit.sh
 SSH.sh
-"
-
-# need to be fixed for this
-EXCL_DOCKER+="
 fail2ban.sh
-spDYN.sh
+NFS.sh
 "
 
 # better use a designated container
 EXCL_DOCKER+="
 samba.sh
-NFS.sh
-"
-
-# use systemd timers
-EXCL_DOCKER+="
-nc-notify-updates.sh
-nc-scan-auto.sh
-freeDNS.sh
 "
 
 # check running apt

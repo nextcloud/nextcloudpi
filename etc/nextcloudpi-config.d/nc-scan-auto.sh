@@ -22,48 +22,35 @@ INFO="Set the time in minutes in SCANINTERVAL.
 
 >>> If there are too many files this can greatly affect performance. <<<"
 
-install() 
-{
-  cat > /etc/systemd/system/nc-scan.service <<EOF
-[Unit]
-Description=Scan NC for externally modified files
-
-[Service]
-Type=simple
-ExecStart=/usr/local/bin/ncp-scan
-
-[Install]
-WantedBy=default.target
-EOF
-}
-
 configure() 
 {
     [[ $ACTIVE_ != "yes" ]] && { 
-    systemctl stop    nc-scan.timer
-    systemctl disable nc-scan.timer
+    rm /etc/cron.d/ncp-scan-auto
+    service cron restart
     echo "automatic scans disabled"
     return 0
   }
 
-  cat > /etc/systemd/system/nc-scan.timer <<EOF
-[Unit]
-Description=Timer to scan NC for externally modified files
+  # set crontab
+  local DAYS HOURS MINS
+  DAYS=$(( SCANINTERVAL_ / 1440 ))
+  if [[ "$DAYS" != "0" ]]; then 
+    DAYS="*/$DAYS" HOUR="1" MINS="15"
+  else
+    DAYS="*" 
+    HOUR=$(( SCANINTERVAL_ / 60   ))
+    MINS=$(( SCANINTERVAL_ % 60   ))
+    MINS="*/$MINS"
+    [[ $HOUR == 0 ]] && HOUR="*" || { HOUR="*/$HOUR" MINS="15"; }
+  fi
 
-[Timer]
-OnBootSec=${SCANINTERVAL_}min
-OnUnitActiveSec=${SCANINTERVAL_}min
-Unit=nc-scan.service
+  echo "${MINS}  ${HOUR}  ${DAYS}  *  *  root /usr/local/bin/ncp-scan" > /etc/cron.d/ncp-scan-auto
+  service cron restart
 
-[Install]
-WantedBy=timers.target
-EOF
-
-  systemctl daemon-reload
-  systemctl enable nc-scan.timer
-  systemctl start  nc-scan.timer
   echo "automatic scans enabled"
 }
+
+install() { :; }
 
 # License
 #

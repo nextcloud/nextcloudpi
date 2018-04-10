@@ -15,33 +15,18 @@
 
 ACTIVE_=yes
 USER_=admin
-CHECKINTERVAL=60
+
 DESCRIPTION="Notify in NC when a NextCloudPi update is available"
 
+# check every hour
+CHECKINTERVAL=1
 NCDIR=/var/www/nextcloud
-
-install()
-{
-  # timers
-  cat > /etc/systemd/system/nc-notify-updates.service <<EOF
-[Unit]
-Description=Notify in NC when a NextCloudPi update is available
-
-[Service]
-Type=simple
-ExecStart=/usr/local/bin/ncp-notify-update
-ExecStartPost=/usr/local/bin/ncp-notify-unattended-upgrade
-
-[Install]
-WantedBy=default.target
-EOF
-}
 
 configure()
 {
   [[ $ACTIVE_ != "yes" ]] && {
-    systemctl stop    nc-notify-updates.timer
-    systemctl disable nc-notify-updates.timer
+    rm /etc/cron.d/ncp-notify-updates
+    service cron restart
     echo "update web notifications disabled"
     return 0
   }
@@ -103,25 +88,14 @@ sudo -u www-data php /var/www/nextcloud/occ notification:generate \
 EOF
   chmod +x /usr/local/bin/ncp-notify-unattended-upgrade
 
-  # timer
-  cat > /etc/systemd/system/nc-notify-updates.timer <<EOF
-[Unit]
-Description=Timer notify NCP updates in browser
+  # check every hour at 40th minute
+  echo "40  */${CHECKINTERVAL} *  *  *  root /usr/local/bin/ncp-notify-update && /usr/local/bin/ncp-notify-unattended-upgrade" > /etc/cron.d/ncp-notify-updates
+  service cron restart
 
-[Timer]
-OnBootSec=${CHECKINTERVAL}min
-OnUnitActiveSec=${CHECKINTERVAL}min
-Unit=nc-notify-updates.service
-
-[Install]
-WantedBy=timers.target
-EOF
-
-  systemctl daemon-reload
-  systemctl enable nc-notify-updates.timer
-  systemctl start  nc-notify-updates.timer
   echo "update web notifications enabled"
 }
+
+install() { :; }
 
 # License
 #
