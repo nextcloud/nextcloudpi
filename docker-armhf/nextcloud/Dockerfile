@@ -39,3 +39,9 @@ chmod 600 /root/.my.cnf
 
 COPY docker-common/nextcloud/020nextcloud /etc/services-enabled.d/
 COPY bin/ncp-provisioning.sh /usr/local/bin/
+
+# display message until first run initialization is complete
+COPY docker-common/nextcloud/ncp-wait-msg.html /data-ro/app
+RUN \
+mv /data-ro/app/index.php /; \
+mv /data-ro/app/ncp-wait-msg.html /data-ro/app/index.php;
