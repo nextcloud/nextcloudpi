@@ -125,3 +125,7 @@ https://ownyourbits.com/2017/06/08/nextcloudpi-docker-for-raspberry-pi/
 https://hub.docker.com/r/ownyourbits/nextcloudpi-x86
 
 https://hub.docker.com/r/ownyourbits/nextcloudpi-armhf
+
+## Contact
+
+You can find us in the [forums](https://help.nextcloud.com/c/support/appliances-docker-snappy-vm) and a [Telegram group](https://t.me/NextCloudPi)
