@@ -19,6 +19,10 @@ OCC="$NCDIR/occ"
   exit 0
 }
 
+# we want to work in the volume version of the code
+rm /var/www/nextcloud
+ln -s /data/app /var/www/nextcloud
+
 echo "Provisioning"
 bash /usr/local/bin/ncp-provisioning.sh
 

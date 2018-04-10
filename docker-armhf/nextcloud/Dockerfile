@@ -18,8 +18,8 @@ source /usr/local/etc/library.sh; \
 set +x; \
 install_script  /nc-nextcloud.sh; \
 activate_script /nc-nextcloud.sh; \
-mv /var/www/nextcloud /data/app; \
-ln -s /data/app /var/www/nextcloud; \
+mv /var/www/nextcloud /data-ro/app; \
+ln -s /data-ro/app /var/www/nextcloud; \
 
 # package cleanup 
 apt-get autoremove -y; \

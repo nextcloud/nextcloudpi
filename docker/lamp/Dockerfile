@@ -15,10 +15,10 @@ source /usr/local/etc/library.sh; \
 set +x; \
 install_script /usr/local/etc/lamp.sh; \
 
-# mariaDB fixups (move database to /data, which will be in a persistent volume)
-mkdir -p /data/; \
-mv /var/lib/mysql /data/database; \
-sed -i "s|^datadir.*|datadir = /data/database|" /etc/mysql/mariadb.conf.d/50-server.cnf; \
+# mariaDB fixups (move database to /data-ro, which will be in a persistent volume)
+mkdir -p /data-ro /data; \
+mv /var/lib/mysql /data-ro/database; \
+sed -i "s|^datadir.*|datadir = /data-ro/database|" /etc/mysql/mariadb.conf.d/50-server.cnf; \
 
 # package cleanup 
 apt-get autoremove -y; \
@@ -30,7 +30,7 @@ rm /var/cache/debconf/*-old; \
 rm -f /var/log/alternatives.log /var/log/apt/*; \
 
 # specific cleanup
-rm /data/database/ib_logfile*; \
+rm /data-ro/database/ib_logfile*; \
 rm /usr/local/etc/lamp.sh
 
 COPY docker-common/lamp/010lamp /etc/services-enabled.d/
