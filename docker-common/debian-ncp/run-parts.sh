@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 cleanup()
 {
   for file in $( ls -1rv /etc/services-enabled.d ); do
@@ -10,6 +11,10 @@ cleanup()
 
 trap cleanup SIGTERM
 
+# if an empty volume is mounted to /data, pre-populate it
+[[ $( ls -1A /data | wc -l ) -eq 0 ]] && { echo "Initializing empty volume.."; cp -raT /data-ro /data; }
+
+# wrapper to simulate update-rc.d
 cat > /usr/local/sbin/update-rc.d <<'EOF'
 #!/bin/bash
 FILE=/etc/services-available.d/???"$1"
@@ -43,5 +48,6 @@ for file in $( ls -1v -I 000* /etc/services-enabled.d ); do
   /etc/services-enabled.d/"$file" start "$1"
 done
 
+# wait for trap from 'docker stop'
 echo "Init done"
-while true; do sleep 0.5; done # do nothing, just wait for trap from 'docker stop'
+while true; do sleep 0.5; done
