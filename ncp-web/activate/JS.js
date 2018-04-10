@@ -21,7 +21,7 @@ function launch_nc_passwd()
 {
   // request
   $.request('post', '../ncp-launcher.php', { action: 'launch',
-                                             ref   : 'nc-passwd', 
+                                             ref   : 'nc-passwd',
                                              config: '{ "PASSWORD":"' + $('#ncp-pwd').get('.value') + '",'
                                                      + '"CONFIRM" :"' + $('#ncp-pwd').get('.value') + '"}',
                                              csrf_token: $( '#csrf-token' ).get( '.value' ) }).then(
@@ -42,6 +42,31 @@ function launch_nc_passwd()
         $('#error-box').fill( "nc-passwd error" ); 
       }
   } ).error( errorMsg );
+}
+
+function nc_admin_ok_cb( result ) 
+{
+  var ret = $.parseJSON( result );
+  if ( ret.token )
+    $('#csrf-token').set( { value: ret.token } );
+  if ( ret.ret == '0' ) {
+    launch_nc_passwd();
+  } else {
+    $('#error-box').fill( "NextCloudPlus not yet initialized, trying again in a few seconds ..." ); 
+    setTimeout( launch_activation, 10000 );
+  }
+}
+
+function launch_activation()
+{
+  // request
+  $.request('post', '../ncp-launcher.php', { action: 'launch',
+                                             ref   : 'nc-admin', 
+                                             config: '{ "PASSWORD":"' + $('#nc-pwd').get('.value') + '",'
+                                                     + '"CONFIRM" :"' + $('#nc-pwd').get('.value') + '",'
+                                                     + '"USER"    : "ncp" }',
+                                             csrf_token: $( '#csrf-token' ).get( '.value' ) } 
+  ).then( nc_admin_ok_cb ).error( errorMsg );
 }
 
 $(function() 
@@ -77,25 +102,7 @@ $(function()
     $( '#activate-ncp' ).hide();
     $( '#print-pwd'    ).hide();
     $('#loading-gif').set( { $display: 'inline' } );
-
-    // request
-    $.request('post', '../ncp-launcher.php', { action: 'launch',
-                                               ref   : 'nc-admin', 
-                                               config: '{ "PASSWORD":"' + $('#nc-pwd').get('.value') + '",'
-                                                       + '"CONFIRM" :"' + $('#nc-pwd').get('.value') + '",'
-                                                       + '"USER"    : "ncp" }',
-                                               csrf_token: $( '#csrf-token' ).get( '.value' ) }).then(
-      function success( result ) 
-      {
-        var ret = $.parseJSON( result );
-        if ( ret.ret == '0' ) {
-          if ( ret.token )
-            $('#csrf-token').set( { value: ret.token } );
-          launch_nc_passwd();
-        } else {
-          $('#error-box').fill( "nc-admin error" ); 
-        }
-      } ).error( errorMsg );
+    launch_activation();
   } );
 } );
 
