@@ -167,11 +167,16 @@ HTML;
             </div>
         </div>
       </a>
+<?php 
+  if ( !file_exists( '/.docker-image' ) )
+    echo <<<HTML
       <div id="poweroff">
           <div id="expand">
               <div class="icon-power-white"></div>
           </div>
       </div>
+HTML;
+?>
   </div>
 </header>
 
