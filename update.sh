@@ -44,7 +44,7 @@ cp etc/library.sh /usr/local/etc/
 source /usr/local/etc/library.sh
 
 # prevent installing some apt packages in the docker version
-[[ "$DOCKERBUILD" == 1 ]] && {
+[[ -f /.docker-image ]] && {
   mkdir -p $CONFDIR
   for opt in $EXCL_DOCKER; do 
     touch $CONFDIR/$opt
@@ -93,7 +93,7 @@ chown -R www-data:www-data /var/www/ncp-web
 chmod 770                  /var/www/ncp-web
 
 # remove unwanted packages for the docker version
-[[ "$DOCKERBUILD" == 1 ]] && {
+[[ -f /.docker-image ]] && {
   for opt in $EXCL_DOCKER; do 
     rm $CONFDIR/$opt
 done
@@ -108,7 +108,7 @@ done
   mkdir -p /var/log/redis
   chown redis /var/log/redis
 
-[[ "$DOCKERBUILD" != 1 ]] && {
+[[ ! -f /.docker-image ]] && {
   # improve dependency of database with automount
   sed -i 's|^ExecStartPre=/bin/sleep .*|ExecStartPre=/bin/sleep 20|' /lib/systemd/system/mariadb.service
   sed -i 's|^Restart=.*|Restart=on-failure|'                         /lib/systemd/system/mariadb.service
@@ -153,7 +153,7 @@ EOF
     chmod +x /etc/cron.weekly/letsencrypt-ncp
   }
 
-[[ "$DOCKERBUILD" != 1 ]] && {
+[[ ! -f /.docker-image ]] && {
     # disable ramlogs if accidentally enabled
     grep -q '^ACTIVE_=yes$' "$CONFDIR"/nc-ramlogs.sh || {
       systemctl disable log2ram
