@@ -1,5 +1,7 @@
 
-[v0.53.27](https://github.com/nextcloud/nextcloudpi/commit/f5defaf) (2018-04-09) ncp-web: added language dropdown selector
+[v0.53.28](https://github.com/nextcloud/nextcloudpi/commit/1c3532d) (2018-04-18) ncp-web: added spanish translations
+
+[v0.53.27](https://github.com/nextcloud/nextcloudpi/commit/24360e0) (2018-04-09) ncp-web: added language dropdown selector
 
 [v0.53.26](https://github.com/nextcloud/nextcloudpi/commit/d4340a0) (2018-04-06) nc-automount: remove directories left from unclean shutdown
 

@@ -1,0 +1,8 @@
+{
+    "translations": {
+        "ACTIVE": "Activado",
+        "AUTOREBOOT": "Reinicio automático",
+        "Automatic installation of security updates. Keep your cloud safe": "Instalación automática de actualizaciones de seguridad. Mantén tu nube segura",
+        "unattended-upgrades": "unattended-upgrades"
+    }
+}

@@ -1,0 +1,11 @@
+{
+    "translations": {
+        "ACTIVE": "Activado",
+        "CACHESIZE": "Tamaño de cache",
+        "DNS server with cache": "Servidor DNS con cache",
+        "DNSSERVER": "Servidor DNS",
+        "DOMAIN": "Dominio",
+        "Remember to point your PC and devices DNS or\nyou router DNS to your Raspberry Pi IP": "Recuerda apuntar las DNS tu PC y dispositivos\no de tu router a la IP de tu NCP",
+        "dnsmasq": "dnsmasq"
+    }
+}
