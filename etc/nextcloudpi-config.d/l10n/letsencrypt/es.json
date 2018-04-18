@@ -1,0 +1,10 @@
+{
+    "translations": {
+        "Automatic signed SSL certificates": "Certificados SSL firmados automáticamente",
+        "DOMAIN": "Dominio",
+        "EMAIL": "E-mail",
+        "Internet access is required for this configuration to complete\nBoth ports 80 and 443 need to be accessible from the internet\n \nYour certificate will be automatically renewed every month": "Se requiere acceso a internet para completar este paso\nAmbos puertos 80 y 443 necesitan estar accesibles desde internet\n \nTus certificados se renovarán automáticamente cada mes",
+        "Warning": "Aviso",
+        "letsencrypt": "letsencrypt"
+    }
+}
