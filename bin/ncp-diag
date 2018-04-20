@@ -37,7 +37,8 @@ SWP="$( swapon | tail -1 | awk '{ print $1 }' )"
 echo "swapfile|$SWP"
 
 # Nextcloud
-VERSION="$( php /var/www/nextcloud/occ status | grep "version:" | awk '{ print $3 }' )"
+[[ ${EUID} -eq 0 ]] && SUDO="sudo -u www-data"
+VERSION="$( $SUDO php /var/www/nextcloud/occ status | grep "version:" | awk '{ print $3 }' )"
 if [[ "$VERSION" != "" ]]; then
   echo "Nextcloud check|ok"
   echo "Nextcloud version|$VERSION"
