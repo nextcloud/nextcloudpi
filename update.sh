@@ -108,42 +108,6 @@ done
 # not for image builds, only live updates
 [[ ! -f /.ncp-image ]] && {
 
-  # make sure the redis directory exists
-  mkdir -p /var/log/redis
-  chown redis /var/log/redis
-
-[[ ! -f /.docker-image ]] && {
-  # improve dependency of database with automount
-  sed -i 's|^ExecStartPre=/bin/sleep .*|ExecStartPre=/bin/sleep 20|' /lib/systemd/system/mariadb.service
-  sed -i 's|^Restart=.*|Restart=on-failure|'                         /lib/systemd/system/mariadb.service
-
-  # fix for nc-automount-links
-  cat > /usr/local/etc/nc-automount-links <<'EOF'
-#!/bin/bash
-
-ls -d /media/* &>/dev/null && {
-
-  # remove old links
-  for l in $( ls /media/ ); do
-    test -L /media/"$l" && rm /media/"$l"
-  done
-
-  # create links
-  i=0
-  for d in $( ls -d /media/* 2>/dev/null ); do
-    if [ $i -eq 0 ]; then
-      test -e /media/USBdrive   || test -d "$d" && ln -sT "$d" /media/USBdrive
-    else
-      test -e /media/USBdrive$i || test -d "$d" && ln -sT "$d" /media/USBdrive$i
-    fi
-    i=$(( i + 1 ))
-  done
-
-}
-EOF
-  chmod +x /usr/local/etc/nc-automount-links
-}
-
   # fix updates from NC12 to NC12.0.1
   rm -rf /var/www/nextcloud/.well-known
 
