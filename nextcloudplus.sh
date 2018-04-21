@@ -154,7 +154,7 @@ EOF
 
   cat > /usr/local/bin/nextcloud-domain.sh <<'EOF'
 #!/bin/bash
-IFACE=$( ip r | grep "default via" | awk '{ print $5 }' )
+IFACE=$( ip r | grep "default via" | awk '{ print $5 }' | head -1 )
 IP=$( ip a show dev "$IFACE" | grep global | grep -oP '\d{1,3}(.\d{1,3}){3}' | head -1 )
 # wicd service finishes before completing DHCP
 while [[ "$IP" == "" ]]; do

@@ -1,5 +1,7 @@
 
-[v0.53.30](https://github.com/nextcloud/nextcloudpi/commit/63f22a2) (2018-04-20) ncp-report: fix root execution
+[v0.53.31](https://github.com/nextcloud/nextcloudpi/commit/0f8a193) (2018-04-21) fix double default gateway
+
+[v0.53.30](https://github.com/nextcloud/nextcloudpi/commit/344f184) (2018-04-20) ncp-report: fix root execution
 
 [v0.53.29](https://github.com/nextcloud/nextcloudpi/commit/79529c7) (2018-04-05) renamed to NextCloudPlus
 
