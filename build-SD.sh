@@ -35,7 +35,7 @@ download_resize_raspbian_img 1G "$IMGBASE"
 NO_HALT_STEP=1 ./installer.sh prepare.sh          "$IP" "$IMGBASE"
                ./installer.sh lamp.sh             "$IP" "$( ls -1t *.img | head -1 )"
                ./installer.sh $NC_INSTALL         "$IP" "$( ls -1t *.img | head -1 )"
-               ./installer.sh nextcloudplus.sh      "$IP" "$( ls -1t *.img | head -1 )"
+               ./installer.sh nextcloudplus.sh    "$IP" "$( ls -1t *.img | head -1 )"
                ./installer.sh $NC_CONFIG          "$IP" "$( ls -1t *.img | head -1 )"
                ./installer.sh raspbian-cleanup.sh "$IP" "$( ls -1t *.img | head -1 )"
 

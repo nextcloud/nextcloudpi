@@ -91,7 +91,7 @@
         <br>
         <a href="wizard"><img class="wizard-btn" src="wizard/img/ncp-logo.svg" class="wizard"></a>
         <br>
-        <button type="button" class="wizard-btn"      id="go-wizard"   >{$l->__("run")}  </button>
+        <a href="wizard"> <button type="button" class="wizard-btn" id="go-wizard">{$l->__("run")}  </button></a>
         <button type="button" class="first-run-close" id="skip-wizard" >{$l->__("skip")} </button>
         <button type="button" class="first-run-close" id="close-wizard">{$l->__("close")}</button>
         <br><br>

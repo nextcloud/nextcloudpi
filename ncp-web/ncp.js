@@ -346,7 +346,7 @@ $(function()
   {
     $( '#first-run-wizard' ).hide();
   } );
-  $( '#first-run-wizard' ).on('click', function(e)
+  $( '#first-run-wizard' ).on('|click', function(e)
   {
     if( e.target.id == 'first-run-wizard' )
       $( '#first-run-wizard' ).hide();
