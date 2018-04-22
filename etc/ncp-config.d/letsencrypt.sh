@@ -38,7 +38,11 @@ install()
   cd /etc || return 1
   apt-get update
   apt-get install --no-install-recommends -y python2.7-minimal
-  git clone https://github.com/letsencrypt/letsencrypt
+  wget -O- --no-check-certificate --content-disposition \
+  https://github.com/letsencrypt/letsencrypt/archive/master/latest.tar.gz \
+  | tar -xz \
+  || exit 1
+  mv certbot-master letsencrypt
   /etc/letsencrypt/letsencrypt-auto --help # do not actually run certbot, only install packages
 
   [[ "$DOCKERBUILD" == 1 ]] && {

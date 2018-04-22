@@ -33,11 +33,14 @@ type mysqld  &>/dev/null && echo ">>> WARNING: existing mysqld configuration wil
 # get install code
 echo "Getting build code..."
 apt-get update
-apt-get install --no-install-recommends -y wget ca-certificates sudo git
+apt-get install --no-install-recommends -y wget ca-certificates sudo
 
-rm -rf "$TMPDIR"
-git clone -q --depth 1 https://github.com/nextcloud/nextcloudpi.git "$TMPDIR" || exit 1
-cd "$TMPDIR"
+rm -rf "$TMPDIR" && mkdir "$TMPDIR" && cd "$TMPDIR"
+wget -O- --no-check-certificate --content-disposition \
+  https://github.com/nextcloud/nextcloudpi/archive/master/latest.tar.gz \
+  | tar -xz \
+  || exit 1
+cd - && cd "$TMPDIR"/nextcloudpi-master
 
 # install NCP
 echo -e "\nInstalling NextCloudPlus"
