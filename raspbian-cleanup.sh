@@ -74,6 +74,9 @@ EOF
 
   # enable randomize passwords
   systemctl enable nc-provisioning
+
+  # other
+  sudo -u www-data php /var/www/nextcloud/occ config:system:delete trusted_domains 1
 }
 
 # License
