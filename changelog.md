@@ -1,5 +1,7 @@
 
-[v0.53.31](https://github.com/nextcloud/nextcloudpi/commit/0f8a193) (2018-04-21) fix double default gateway
+[v0.53.32](https://github.com/nextcloud/nextcloudpi/commit/b459c0c) (2018-04-22) nc-info: check for existance of ncp-baseimage
+
+[v0.53.31](https://github.com/nextcloud/nextcloudpi/commit/4412ef7) (2018-04-21) fix double default gateway
 
 [v0.53.30](https://github.com/nextcloud/nextcloudpi/commit/344f184) (2018-04-20) ncp-report: fix root execution
 
