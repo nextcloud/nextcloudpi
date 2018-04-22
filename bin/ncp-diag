@@ -13,7 +13,7 @@
 
 # Distro, NCP version and tag
 echo "NextCloudPlus version|$( cat /usr/local/etc/ncp-version )"
-echo "NextCloudPlus image|$( cat /usr/local/etc/ncp-baseimage )"
+[[ -f /usr/local/etc/ncp-baseimage ]] && echo "NextCloudPlus image|$( cat /usr/local/etc/ncp-baseimage )"
 echo "distribution|$( cat /etc/issue )"
 
 # Data
