@@ -122,12 +122,6 @@ EOF
   }
 
 [[ ! -f /.docker-image ]] && {
-    # disable ramlogs if accidentally enabled
-    grep -q '^ACTIVE_=yes$' "$CONFDIR"/nc-ramlogs.sh || {
-      systemctl disable log2ram
-      systemctl stop    log2ram
-    }
-
   # remove directories left from unclean shutdown
   UNIT=/usr/lib/systemd/system/nc-automount.service 
   grep -q rmdir "$UNIT"  || sed -i '/^ExecStart=/iExecStartPre=/bin/bash -c "rmdir /media/* || true"' "$UNIT"
