@@ -9,7 +9,8 @@
 #
 # more details at https://ownyourbits.com
 
-#DBG=x
+BRANCH=master
+DBG=x
 
 set -e$DBG
 
@@ -37,10 +38,10 @@ apt-get install --no-install-recommends -y wget ca-certificates sudo
 
 rm -rf "$TMPDIR" && mkdir "$TMPDIR" && cd "$TMPDIR"
 wget -O- --no-check-certificate --content-disposition \
-  https://github.com/nextcloud/nextcloudpi/archive/master/latest.tar.gz \
+  https://github.com/nextcloud/nextcloudpi/archive/"$BRANCH"/latest.tar.gz \
   | tar -xz \
   || exit 1
-cd - && cd "$TMPDIR"/nextcloudpi-master
+cd - && cd "$TMPDIR"/nextcloudpi-"$BRANCH"
 
 # install NCP
 echo -e "\nInstalling NextCloudPlus"

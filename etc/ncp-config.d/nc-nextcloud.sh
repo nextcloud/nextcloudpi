@@ -49,14 +49,11 @@ install()
   $APTINSTALL php-smbclient 
 
   # POSTFIX
-  [[ "$ARMBIANBUILD" != 1 ]] && {
-    $APTINSTALL postfix
-  } || {
-    # post installation script fails, so mark as no problem for the rest of the build
-    echo "[NCP] Please, ignore the following postfix installation errors ..."
-    $APTINSTALL postfix || true
-    sed -i '/Package: postfix/{n;d}'                           /var/lib/dpkg/status
-    sed -i '/Package: postfix/a;Status: install ok installed|' /var/lib/dpkg/status
+  $APTINSTALL postfix || {
+    # post installation script fails in Armbian build, so mark as no problem for the rest of the build
+    echo "[NCP] Please, ignore the previous postfix installation error"
+    sed -i '/^Package: postfix$/{n;d}'                         /var/lib/dpkg/status
+    sed -i '/^Package: postfix$/aStatus: install ok installed' /var/lib/dpkg/status
   }
   sed -i 's|^smtpd_banner .*|smtpd_banner = $myhostname ESMTP|'    /etc/postfix/main.cf
   sed -i 's|^disable_vrfy_command .*|disable_vrfy_command = yes|'  /etc/postfix/main.cf
