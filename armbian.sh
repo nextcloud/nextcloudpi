@@ -31,14 +31,12 @@ Main() {
 
             # indicate that this will be an Armbian image build
             touch /.ncp-image
-            export ARMBIANBUILD
 
             # install NCP
             curl -sSL https://raw.githubusercontent.com/nextcloud/nextcloudpi/master/install.sh | bash
 
-            # restore postfix package half-configured status
-            sed -i '/Package: postfix/{n;d}'                                 /var/lib/dpkg/status
-            sed -i '/Package: postfix/a;Status: install ok half-configured|' /var/lib/dpkg/status
+            # permit root login in SSH
+            sed -i 's|^PermitRootLogin .*|PermitRootLogin yes|' /etc/ssh/sshd_config
 
             # force change root password at first login (again)
             chage -d 0 root
@@ -55,6 +53,10 @@ Main() {
             for script in *.sh; do
               cleanup_script $script
             done
+
+            # restore postfix package half-configured status
+            sed -i '/^Package: postfix$/{n;d}'                               /var/lib/dpkg/status
+            sed -i '/^Package: postfix$/aStatus: install ok half-configured' /var/lib/dpkg/status
 
             # enable randomize passwords
             systemctl enable nc-provisioning

@@ -16,6 +16,7 @@
 
 WEBADMIN=ncp
 WEBPASSWD=ownyourbits
+BRANCH=master
 
 CONFDIR=/usr/local/etc/ncp-config.d/
 UPLOADTMPDIR=/var/www/nextcloud/data/tmp
@@ -186,10 +187,10 @@ EOF
 
   # update to latest version from github as part of the build process
   $APTINSTALL git
-  wget https://raw.githubusercontent.com/nextcloud/nextcloudpi/master/bin/ncp-update -O /usr/local/bin/ncp-update
+  wget https://raw.githubusercontent.com/nextcloud/nextcloudpi/$BRANCH/bin/ncp-update -O /usr/local/bin/ncp-update
   chmod a+x /usr/local/bin/ncp-update
 
-  /usr/local/bin/ncp-update
+  /usr/local/bin/ncp-update $BRANCH
 
   # ONLY FOR IMAGE BUILDS
   if [[ -f /.ncp-image ]]; then
@@ -230,8 +231,7 @@ EOF
       sed -i 's|^#LogLevel .*|LogLevel VERBOSE|'                    /etc/ssh/sshd_config
       sed -i 's|^#Compression .*|Compression no|'                   /etc/ssh/sshd_config
       sed -i 's|^#AllowAgentForwarding .*|AllowAgentForwarding no|' /etc/ssh/sshd_config
-      [[ "$ARMBIANBUILD" != "1" ]] && \
-        sed -i 's|^#PermitRootLogin .*|PermitRootLogin no|'         /etc/ssh/sshd_config
+      sed -i 's|^#PermitRootLogin .*|PermitRootLogin no|'           /etc/ssh/sshd_config
     }
 
     ## kernel hardening
