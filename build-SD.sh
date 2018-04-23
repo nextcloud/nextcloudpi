@@ -24,7 +24,7 @@ IP=$1                       # First argument is the QEMU Raspbian IP address
 NC_INSTALL=etc/ncp-config.d/nc-nextcloud.sh
 NC_CONFIG=etc/ncp-config.d/nc-init.sh
 
-IMGBASE="NextCloudPlus_$( date  "+%m-%d-%y" )_base.img"
+IMGBASE="NextCloudPlus_RPi_$( date  "+%m-%d-%y" )_base.img"
 
 export NO_CONFIG=1          # skip interactive configuration
 
