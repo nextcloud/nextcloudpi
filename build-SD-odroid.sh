@@ -31,7 +31,7 @@ armbian/compile.sh docker \
   NO_APT_CACHER=no
 
 # pack image
-IMGNAME="NextCloudPlus_$( date  "+%m-%d-%y" )_OdroidHC1"
+IMGNAME="NextCloudPlus_OdroidHC2_$( date  "+%m-%d-%y" )"
 IMGFILE="$( ls -1t armbian/output/images/*.img | head -1 )"
 pack_image "$IMGFILE" "$IMGNAME.img" 
 
@@ -39,4 +39,5 @@ pack_image "$IMGFILE" "$IMGNAME.img"
 # TODO
 
 # uploading
-# TODO
+create_torrent "${IMGNAME}.tar.bz2"
+upload_ftp "$IMGNAME" || true
