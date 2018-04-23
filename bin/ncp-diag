@@ -23,7 +23,7 @@ test -d "$DATADIR" || DIRINFO=" (doesn't exist)"
 USBDEVS="$( lsblk -S -o  NAME,TRAN | awk '{ if ( $2 == "usb" ) print $1; }' | tr '\n' ' ' )"
 [[ "$USBDEVS" == "" ]] && USBDEVS="none"
 
-echo "automount|$( grep "^ACTIVE_" /usr/local/etc/ncp-config.d/nc-automount.sh | cut -d'=' -f2 )"
+[[ -f /usr/local/etc/ncp-config.d/nc-automount.sh ]] && echo "automount|$( grep "^ACTIVE_" /usr/local/etc/ncp-config.d/nc-automount.sh | cut -d'=' -f2 )"
 echo "USB devices|$USBDEVS"
 echo "datadir|$DATADIR$DIRINFO"
 [[ "$DIRINFO" == "" ]] && {
