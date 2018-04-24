@@ -221,7 +221,7 @@ EOF
     echo "NextCloudPlus_$( date  "+%m-%d-%y" )" > /usr/local/etc/ncp-baseimage
 
     ## SSH hardening
-    [[ -f /etc/ssh/sshd_config ]] && {
+    if [[ -f /etc/ssh/sshd_config ]]; then
       sed -i 's|^#AllowTcpForwarding .*|AllowTcpForwarding no|'     /etc/ssh/sshd_config
       sed -i 's|^#ClientAliveCountMax .*|ClientAliveCountMax 2|'    /etc/ssh/sshd_config
       sed -i 's|^MaxAuthTries .*|MaxAuthTries 1|'                   /etc/ssh/sshd_config
@@ -232,7 +232,7 @@ EOF
       sed -i 's|^#Compression .*|Compression no|'                   /etc/ssh/sshd_config
       sed -i 's|^#AllowAgentForwarding .*|AllowAgentForwarding no|' /etc/ssh/sshd_config
       sed -i 's|^#PermitRootLogin .*|PermitRootLogin no|'           /etc/ssh/sshd_config
-    }
+    fi
 
     ## kernel hardening
     cat >> /etc/sysctl.conf <<EOF
