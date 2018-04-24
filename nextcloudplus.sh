@@ -148,6 +148,8 @@ After=mysql.service
 
 [Service]
 ExecStart=/bin/bash /usr/local/bin/nextcloud-domain.sh
+Restart=on-failure
+RestartSec=5s
 
 [Install]
 WantedBy=multi-user.target
