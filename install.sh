@@ -10,7 +10,7 @@
 # more details at https://ownyourbits.com
 
 BRANCH=master
-DBG=x
+#DBG=x
 
 set -e$DBG
 
