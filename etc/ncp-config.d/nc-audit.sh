@@ -16,13 +16,11 @@
 
 DESCRIPTION="Perform a security audit with lynis and debsecan"
 
-configure()
+install()
 {
-  # moved installation here, because it is messing up the environment
-  type lynis &>/dev/null || {
   apt-get update
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-    lynis debian-goodies needrestart debsums debsecan
+    lynis debsecan debian-goodies debsums
   cp /etc/lynis/default.prf /etc/lynis/ncp.prf
   cat >> /etc/lynis/ncp.prf <<EOF
 # Won't install apt-listbugs and all its ruby dependencies
@@ -67,14 +65,14 @@ skip-test=FIRE-4513
 EOF
 }
 
+configure()
+{
   echo "General security audit"
   lynis audit system --profile /etc/lynis/ncp.prf --no-colors
 
   echo "Known vulnerabilities in this system"
   debsecan
 }
-
-install() { :; };
 
 # License
 #
