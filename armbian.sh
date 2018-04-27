@@ -54,10 +54,6 @@ Main() {
               cleanup_script $script
             done
 
-            # restore postfix package half-configured status
-            sed -i '/^Package: postfix$/{n;d}'                               /var/lib/dpkg/status
-            sed -i '/^Package: postfix$/aStatus: install ok half-configured' /var/lib/dpkg/status
-
             # enable randomize passwords
             systemctl enable nc-provisioning
 

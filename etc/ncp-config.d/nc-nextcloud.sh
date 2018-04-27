@@ -50,13 +50,14 @@ install()
 
   # POSTFIX
   $APTINSTALL postfix || {
-    # post installation script fails in Armbian build, so mark as no problem for the rest of the build
-    echo "[NCP] Please, ignore the previous postfix installation error"
-    sed -i '/^Package: postfix$/{n;d}'                         /var/lib/dpkg/status
-    sed -i '/^Package: postfix$/aStatus: install ok installed' /var/lib/dpkg/status
+    # [armbian] workaround for bug - https://bugs.launchpad.net/ubuntu/+source/postfix/+bug/1531299
+    echo "[NCP] Please, ignore the previous postfix installation error ..."
+    mv /usr/bin/newaliases /
+    ln -s /bin/true /usr/bin/newaliases
+    $APTINSTALL postfix
+    rm /usr/bin/newaliases
+    mv /newaliases /usr/bin/newaliases
   }
-  sed -i 's|^smtpd_banner .*|smtpd_banner = $myhostname ESMTP|'    /etc/postfix/main.cf
-  sed -i 's|^disable_vrfy_command .*|disable_vrfy_command = yes|'  /etc/postfix/main.cf
  
   # REDIS
   $APTINSTALL redis-server php7.0-redis
