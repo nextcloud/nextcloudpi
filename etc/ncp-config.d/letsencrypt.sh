@@ -38,8 +38,7 @@ install()
   cd /etc || return 1
   apt-get update
   apt-get install --no-install-recommends -y python2.7-minimal
-  wget -O- --no-check-certificate --content-disposition \
-  https://github.com/letsencrypt/letsencrypt/archive/master/latest.tar.gz \
+  wget -O- --content-disposition https://github.com/letsencrypt/letsencrypt/archive/master/latest.tar.gz \
   | tar -xz \
   || exit 1
   mv certbot-master letsencrypt

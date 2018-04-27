@@ -37,8 +37,7 @@ apt-get update
 apt-get install --no-install-recommends -y wget ca-certificates sudo
 
 rm -rf "$TMPDIR" && mkdir "$TMPDIR" && cd "$TMPDIR"
-wget -O- --no-check-certificate --content-disposition \
-  https://github.com/nextcloud/nextcloudpi/archive/"$BRANCH"/latest.tar.gz \
+wget -O- --content-disposition https://github.com/nextcloud/nextcloudpi/archive/"$BRANCH"/latest.tar.gz \
   | tar -xz \
   || exit 1
 cd - && cd "$TMPDIR"/nextcloudpi-"$BRANCH"
