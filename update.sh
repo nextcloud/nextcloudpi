@@ -134,6 +134,10 @@ EOF
   sed -i 's|nextcloudpi-config.d|ncp-config.d|' /home/www/ncp-launcher.sh
   mv /etc/apt/apt.conf.d/20nextcloudpi-upgrades /etc/apt/apt.conf.d/20ncp-upgrades &>/dev/null
 
+  # Update btrfs-sync
+  wget -q https://raw.githubusercontent.com/nachoparker/btrfs-sync/master/btrfs-sync -O /usr/local/bin/btrfs-sync
+  chmod +x /usr/local/bin/btrfs-sync
+
 } # end - only live updates
 
 exit 0
