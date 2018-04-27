@@ -1,5 +1,7 @@
 
-[v0.53.33](https://github.com/nextcloud/nextcloudpi/commit/7cbbced) (2018-04-25) nc-info: provide timeout for wget
+[v0.54.0](https://github.com/nextcloud/nextcloudpi/commit/07fa32f) (2018-04-27) update to NC 13.0.2
+
+[v0.53.33](https://github.com/nextcloud/nextcloudpi/commit/d510cfc) (2018-04-25) nc-info: provide timeout for wget
 
 [v0.53.32](https://github.com/nextcloud/nextcloudpi/commit/9a89669) (2018-04-22) nc-info: check for existance of ncp-baseimage
 
