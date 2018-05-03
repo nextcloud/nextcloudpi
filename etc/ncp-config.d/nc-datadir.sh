@@ -23,8 +23,7 @@ because they do not provide a compatible user/permissions system"
 is_active()
 {
   local SRCDIR
-  [[ "$( id -u )" != 33 ]] && local SUDO="sudo -u www-data"
-  SRCDIR=$( $SUDO php /var/www/nextcloud/occ config:system:get datadirectory ) || return 1;
+  SRCDIR="$( grep datadirectory /var/www/nextcloud/config/config.php | awk '{ print $3 }' | grep -oP "[^']*[^']" | head -1 )" || return 1
   [[ "$SRCDIR" != "/var/www/nextcloud/data" ]]
 }
 

@@ -1,5 +1,11 @@
 
-[v0.54.0](https://github.com/nextcloud/nextcloudpi/commit/07fa32f) (2018-04-27) update to NC 13.0.2
+[v0.54.3](https://github.com/nextcloud/nextcloudpi/commit/921b583) (2018-05-03) nc-datadir: avoid using occ for faster execution
+
+[v0.54.2 ](https://github.com/nextcloud/nextcloudpi/commit/ebfb7f1) (2018-05-03) samba: restart after configuration change
+
+[v0.54.1 ](https://github.com/nextcloud/nextcloudpi/commit/997515b) (2018-04-27) nc-snapshot-sync: upgrade
+
+[v0.54.0 ](https://github.com/nextcloud/nextcloudpi/commit/a979a5f) (2018-04-27) update to NC 13.0.2
 
 [v0.53.33](https://github.com/nextcloud/nextcloudpi/commit/d510cfc) (2018-04-25) nc-info: provide timeout for wget
 
