@@ -111,10 +111,10 @@ EOF
 
   update-rc.d smbd defaults
   update-rc.d smbd enable
-  service smbd start
+  service smbd restart
 
   update-rc.d nmbd enable
-  service nmbd start
+  service nmbd restart
 
   echo "SMB enabled"
 }
