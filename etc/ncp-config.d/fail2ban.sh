@@ -89,7 +89,6 @@ configure()
   [ -d "$BASEDIR" ] || { echo -e "directory $BASEDIR not found"; return 1; }
 
   sudo -u www-data touch "$NCLOG" || { echo -e "ERROR: user www-data does not have write permissions on $NCLOG"; return 1; }
-  chown -R www-data "$BASEDIR"
 
   cd /var/www/nextcloud
   sudo -u www-data php occ config:system:set loglevel --value=2
