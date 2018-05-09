@@ -14,7 +14,8 @@ BRANCH=master
 
 set -e$DBG
 
-TMPDIR=/tmp/nextcloudplus
+TMPDIR="$(mktemp -d /tmp/nextcloudplus.XXXXXX || (echo "Failed to create temp dir. Exiting" >&2 ; exit 1) )"
+trap "rm -rf \"${TMPDIR}\" ; exit 0" 0 1 2 3 15
 
 [[ ${EUID} -ne 0 ]] && {
   printf "Must be run as root. Try 'sudo $0'\n"
@@ -36,7 +37,7 @@ echo "Getting build code..."
 apt-get update
 apt-get install --no-install-recommends -y wget ca-certificates sudo
 
-rm -rf "$TMPDIR" && mkdir "$TMPDIR" && cd "$TMPDIR"
+pushd "$TMPDIR"
 wget -O- --content-disposition https://github.com/nextcloud/nextcloudpi/archive/"$BRANCH"/latest.tar.gz \
   | tar -xz \
   || exit 1
@@ -56,9 +57,7 @@ activate_script etc/ncp-config.d/nc-init.sh
 [[ "$APACHE_EXISTS" != "" ]] && \
   a2enmod status reqtimeout env autoindex access_compat auth_basic authn_file authn_core alias access_compat
 
-cd -
-rm -rf $TMPDIR
-
+popd
 echo "Done.
 
 Type 'sudo ncp-config' to configure NCP, or access ncp-web on https://<this_ip>:4443
