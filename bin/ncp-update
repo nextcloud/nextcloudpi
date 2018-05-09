@@ -8,14 +8,15 @@
   BRANCH="${1:-master}"
   [[ "$BRANCH" != "master" ]] && echo "INFO: updating to development branch '$BRANCH'"
 
-  echo -e "Downloading updates"
-  rm -rf /tmp/ncp-update-tmp
+  TMPDIR="$( mktemp -d /tmp/ncp-update.XXXXXX || ( echo "Failed to create temp dir. Exiting" >&2; exit 1 ) )"
+  trap "rm -rf \"${TMPDIR}\"; exit 0" 0 1 2 3 15
 
-  git clone --depth 20 -b "$BRANCH" -q https://github.com/nextcloud/nextcloudpi.git /tmp/ncp-update-tmp || {
+  echo -e "Downloading updates"
+  git clone --depth 20 -b "$BRANCH" -q https://github.com/nextcloud/nextcloudpi.git "$TMPDIR" || {
     echo "No internet connectivity"
     exit 1
   }
-  cd /tmp/ncp-update-tmp
+  cd "$TMPDIR"
 
   echo -e "Performing updates"
   ./update.sh && {
@@ -36,7 +37,6 @@
   }
 
   cd /
-  rm -rf /tmp/ncp-update-tmp
 
   exit 
 } # force to read the whole thing into memory, as its contents might change in update.sh
