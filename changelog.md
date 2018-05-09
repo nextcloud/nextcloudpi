@@ -1,5 +1,7 @@
 
-[v0.54.3](https://github.com/nextcloud/nextcloudpi/commit/921b583) (2018-05-03) nc-datadir: avoid using occ for faster execution
+[v0.54.4](https://github.com/nextcloud/nextcloudpi/commit/36fed66) (2018-05-09) avoid temp dir vulnerabilities
+
+[v0.54.3 ](https://github.com/nextcloud/nextcloudpi/commit/66dfbd0) (2018-05-03) nc-datadir: avoid using occ for faster execution
 
 [v0.54.2 ](https://github.com/nextcloud/nextcloudpi/commit/ebfb7f1) (2018-05-03) samba: restart after configuration change
 
