@@ -1,5 +1,7 @@
 
-[v0.54.4](https://github.com/nextcloud/nextcloudpi/commit/36fed66) (2018-05-09) avoid temp dir vulnerabilities
+[v0.54.5](https://github.com/nextcloud/nextcloudpi/commit/3f6f865) (2018-05-10) armbian: fix mDNS
+
+[v0.54.4](https://github.com/nextcloud/nextcloudpi/commit/36f4c6f) (2018-05-09) avoid temp dir vulnerabilities
 
 [v0.54.3 ](https://github.com/nextcloud/nextcloudpi/commit/66dfbd0) (2018-05-03) nc-datadir: avoid using occ for faster execution
 

@@ -215,7 +215,8 @@ EOF
 EOF
     chmod a+x /etc/update-motd.d/*
 
-    ## HOSTNAME
+    ## HOSTNAME AND mDNS
+    $APTINSTALL avahi-daemon
     echo nextcloudplus > /etc/hostname
     sed -i '$c127.0.1.1 nextcloudplus' /etc/hosts
 
