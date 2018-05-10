@@ -1,5 +1,7 @@
 
-[v0.54.5](https://github.com/nextcloud/nextcloudpi/commit/3f6f865) (2018-05-10) armbian: fix mDNS
+[v0.54.6](https://github.com/nextcloud/nextcloudpi/commit/1588d46) (2018-05-10) nc-notify-updates: fix wrong default user
+
+[v0.54.5](https://github.com/nextcloud/nextcloudpi/commit/ee05dbc) (2018-05-10) armbian: fix mDNS
 
 [v0.54.4](https://github.com/nextcloud/nextcloudpi/commit/36f4c6f) (2018-05-09) avoid temp dir vulnerabilities
 
