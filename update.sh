@@ -109,6 +109,7 @@ done
   wget -q https://raw.githubusercontent.com/nachoparker/btrfs-sync/master/btrfs-sync -O /usr/local/bin/btrfs-sync
   chmod +x /usr/local/bin/btrfs-sync
 
+  # for non docker images
   [[ ! -f /.docker-image ]] && {
     # install avahi-daemon in armbian images
     [[ -f /lib/systemd/system/avahi-daemon.service ]] || {
@@ -116,6 +117,20 @@ done
       apt-get install -y --no-install-recommends avahi-daemon
     }
   }
+
+  # fix wrong user for notifications
+  DATADIR="$( grep datadirectory /var/www/nextcloud/config/config.php | awk '{ print $3 }' | grep -oP "[^']*[^']" | head -1 )"
+  F="$CONFDIR"/nc-notify-updates.sh
+  test -d "$DATADIR" && {
+    [[ -d "$DATADIR"/ncp ]] && [[ ! -d "$DATADIR"/admin ]] \
+    && grep -q '^USER_=admin$' "$F" && grep -q '^ACTIVE_=yes$' "$F" && {
+      sed -i 's|^USER_=admin|USER_=ncp|' "$F"
+      cd "$CONFDIR" &>/dev/null
+      activate_script nc-notify-updates.sh
+      cd -          &>/dev/null
+    }
+  }
+
 } # end - only live updates
 
 exit 0
