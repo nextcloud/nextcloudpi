@@ -30,7 +30,7 @@ INCLUDEDATA="${2:-no}"
 COMPRESS="${3:-no}"
 BACKUPLIMIT="${4:-4}"
 
-DESTFILE="$DESTDIR"/nextcloud-bkp_$( date +"%Y%m%d" ).tar 
+DESTFILE="$DESTDIR"/nextcloud-bkp_$( date +"%Y%m%d_%s" ).tar 
 DBBACKUP=nextcloud-sqlbkp_$( date +"%Y%m%d" ).bak
 BASEDIR=/var/www
 
