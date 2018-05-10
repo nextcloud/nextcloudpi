@@ -131,6 +131,12 @@ done
     }
   }
 
+  # update nc-backup
+  cd "$CONFDIR" &>/dev/null
+  install_script nc-backup.sh
+  cd -          &>/dev/null
+
+
 } # end - only live updates
 
 exit 0
