@@ -1,9 +1,11 @@
 
-[v0.54.6](https://github.com/nextcloud/nextcloudpi/commit/1588d46) (2018-05-10) nc-notify-updates: fix wrong default user
+[v0.54.7](https://github.com/nextcloud/nextcloudpi/commit/890f0c6) (2018-05-10) armbian: fix static IP
 
-[v0.54.5](https://github.com/nextcloud/nextcloudpi/commit/ee05dbc) (2018-05-10) armbian: fix mDNS
+[v0.54.6](https://github.com/nextcloud/nextcloudpi/commit/008f065) (2018-05-10) nc-notify-updates: fix wrong user
 
-[v0.54.4](https://github.com/nextcloud/nextcloudpi/commit/36f4c6f) (2018-05-09) avoid temp dir vulnerabilities
+[v0.54.5 ](https://github.com/nextcloud/nextcloudpi/commit/ee05dbc) (2018-05-10) armbian: fix mDNS
+
+[v0.54.4 ](https://github.com/nextcloud/nextcloudpi/commit/36f4c6f) (2018-05-09) avoid temp dir vulnerabilities
 
 [v0.54.3 ](https://github.com/nextcloud/nextcloudpi/commit/66dfbd0) (2018-05-03) nc-datadir: avoid using occ for faster execution
 
