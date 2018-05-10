@@ -14,7 +14,7 @@
 #
 
 ACTIVE_=yes
-USER_=admin
+USER_=ncp
 
 DESCRIPTION="Notify in NC when a NextCloudPlus update is available"
 
