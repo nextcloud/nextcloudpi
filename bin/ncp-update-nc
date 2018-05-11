@@ -1,0 +1,184 @@
+#!/bin/bash
+
+# Upgrade to a different Nextcloud version
+#
+# Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
+# GPL licensed (see end of file) * Use at your own risk!
+#
+# Usage:
+#       bash ncp-update-nc <version>
+#
+# More at https://ownyourbits.com
+#
+
+# test cases
+####################
+# - with and without moving datadir
+# - failure at each test point
+# -> must pass basic NC in tests.py ( meaning it's not in a broken state )
+
+set -eE
+
+VER="$1"
+
+# pre-checks
+####################
+cd /var/www/
+DATADIR="$( grep datadirectory nextcloud/config/config.php | awk '{ print $3 }' | grep -oP "[^']*[^']" | head -1 )"
+[[ -d /var/www/nextcloud-old ]] && { echo "Nextcloud backup directory found. Interrupted installation?"; exit 1; }
+[[ -d /var/www/nextcloud     ]] || { echo "Nextcloud directory not found"                              ; exit 1; }
+[[ -d "$DATADIR"             ]] || { echo "Nextcloud data directory not found"                         ; exit 1; }
+
+# check version
+####################
+
+[[ ${EUID} -eq 0 ]] && SUDO="sudo -u www-data"
+CURRENT="$( $SUDO php /var/www/nextcloud/occ status | grep "version:" | awk '{ print $3 }' )"
+
+grep -qP "\d+\.\d+\.\d+" <<<"$CURRENT" || { echo "Malformed version $CURRENT"; exit 1; }
+grep -qP "\d+\.\d+\.\d+" <<<"$VER"     || { echo "Malformed version $VER"    ; exit 1; }
+
+MAJOR=$( grep -oP "\d+\.\d+\.\d+" <<<"$VER" | cut -d. -f1 )
+MINOR=$( grep -oP "\d+\.\d+\.\d+" <<<"$VER" | cut -d. -f2 )
+PATCH=$( grep -oP "\d+\.\d+\.\d+" <<<"$VER" | cut -d. -f3 )
+
+MAJ=$( grep -oP "\d+\.\d+\.\d+" <<<"$CURRENT" | cut -d. -f1 )
+MIN=$( grep -oP "\d+\.\d+\.\d+" <<<"$CURRENT" | cut -d. -f2 )
+PAT=$( grep -oP "\d+\.\d+\.\d+" <<<"$CURRENT" | cut -d. -f3 )
+
+NEED_UPDATE=false
+if [ "$MAJOR" -gt "$MAJ" ]; then
+  NEED_UPDATE=true
+elif [ "$MAJOR" -eq "$MAJ" ] && [ "$MINOR" -gt "$MIN" ]; then
+  NEED_UPDATE=true
+elif [ "$MAJOR" -eq "$MAJ" ] && [ "$MINOR" -eq "$MIN" ] && [ "$PATCH" -gt "$PAT" ]; then
+  NEED_UPDATE=true
+fi
+ 
+echo "Current   Nextcloud version $CURRENT"
+echo "Available Nextcloud version $VER"
+[[ "$NEED_UPDATE" == "true" ]] || { echo "Nothing to update"; exit 0; }
+
+# cleanup
+####################
+cleanup() {
+  local RET=$?
+  set +eE
+  echo "Clean up..."
+  rm -rf /var/www/nextcloud.tar.bz2 /var/www/nextcloud-old
+  sudo -u www-data php /var/www/nextcloud/occ maintenance:mode --off
+  trap "" EXIT
+  exit $RET
+}
+trap cleanup EXIT 
+
+# get new code
+####################
+URL="https://download.nextcloud.com/server/releases/nextcloud-$VER.tar.bz2"
+echo "Download Nextcloud $VER..."
+wget -q "$URL" -O nextcloud.tar.bz2 || { echo "Error downloading"; exit 1; }
+
+# backup
+####################
+BKPDIR=/var/www/
+WITH_DATA=no
+COMPRESSED=yes
+LIMIT=0
+
+sudo -u www-data php /var/www/nextcloud/occ maintenance:mode --on
+
+echo "Back up current instance..."
+set +eE
+ncp-backup "$BKPDIR" "$WITH_DATA" "$COMPRESSED" "$LIMIT" # && false # test point
+RET=$?
+set -eE
+
+BKP="$( ls -1t "$BKPDIR"/nextcloud-bkp_*.tar.gz 2>/dev/null | head -1 )"
+[[ -f "$BKP"  ]] || {               set +eE; echo "Error backing up"; false || cleanup; }
+[[ $RET -ne 0 ]] && { rm -f "$BKP"; set +eE; echo "Error backing up"; false || cleanup; }
+
+# simple restore if anything fails from here
+####################
+rollback_simple() {
+  set +eE
+  trap "" INT TERM HUP ERR
+  echo -e "Abort\nSimple roll back..."
+  rm -rf /var/www/nextcloud
+  mv /var/www/nextcloud-old /var/www/nextcloud
+  false || cleanup                 # so cleanup exits with 1
+}
+trap rollback_simple INT TERM HUP ERR
+
+# replace code
+####################
+echo "Install Nextcloud $VER..."
+mv -T nextcloud nextcloud-old
+tar -xf nextcloud.tar.bz2             # && false # test point
+rm -rf /var/www/nextcloud.tar.bz2
+
+# copy old config
+####################
+cp nextcloud-old/config/config.php nextcloud/config/
+
+# copy old themes
+####################
+cp -raT nextcloud-old/themes/ nextcloud/themes/
+
+# copy apps
+####################
+echo "Restore apps..."
+for app in $( ls nextcloud-old/apps/*/ -d ); do
+  app=$( basename "$app" )
+  [[ ! -d nextcloud/apps/$app ]] && {
+    echo " * $app"
+    cp -r nextcloud-old/apps/$app nextcloud/apps
+  }
+done
+#false # test point
+
+# copy data if it was at the default location
+####################
+[[ "$DATADIR" == "/var/www/nextcloud/data" ]] && {
+  echo "Restore data..."
+  mv -T nextcloud-old/data nextcloud/data
+}
+
+# nc-restore if anything fails from here
+####################
+rollback() {
+  set +eE
+  trap "" INT TERM HUP ERR EXIT
+  echo -e "Abort\nClean up..."
+  rm -rf /var/www/nextcloud.tar.bz2 /var/www/nextcloud-old
+  echo "Rolling back to backup $BKP..."
+  local TMPDATA="$( mktemp -d "/var/www/ncp-data.XXXXXX" )" || { echo "Failed to create temp dir" >&2; exit 1; }
+  [[ "$DATADIR" == "/var/www/nextcloud/data" ]] && mv -T "$DATADIR" "$TMPDATA"
+  ncp-restore "$BKP" || { echo "Rollback failed! Data left at $TMPDATA"; exit 1; }
+  [[ "$DATADIR" == "/var/www/nextcloud/data" ]] && { rm -rf "$DATADIR"; mv -T "$TMPDATA" "$DATADIR"; }
+  echo "Rollback successful. Nothing was updated"
+  exit 1
+}
+trap rollback INT TERM HUP ERR
+
+# fix permissions
+####################
+echo "Fix permissions..."
+chown -R www-data:www-data nextcloud
+find nextcloud/ -type d -exec chmod 750 {} \;
+find nextcloud/ -type f -exec chmod 640 {} \;
+
+# upgrade
+####################
+echo "Upgrade..."
+sudo -u www-data php nextcloud/occ upgrade      # && false # test point 
+
+[[ -f nextcloud-old/.user.ini ]] && cp nextcloud-old/.user.ini nextcloud/
+
+# done
+####################
+mkdir -p  "$DATADIR"/ncp-update-backups
+mv "$BKP" "$DATADIR"/ncp-update-backups
+chown -R www-data:www-data "$DATADIR"/ncp-update-backups
+BKP="$DATADIR"/ncp-update-backups/"$( basename "$BKP" )"
+echo "Backup stored at $BKP"
+
