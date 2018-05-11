@@ -1,7 +1,21 @@
 
-[v0.54.7](https://github.com/nextcloud/nextcloudpi/commit/890f0c6) (2018-05-10) armbian: fix static IP
+[v0.55.0](https://github.com/nextcloud/nextcloudpi/commit/e270979) (2018-05-11) added nc-update-nextcloud
 
-[v0.54.6](https://github.com/nextcloud/nextcloudpi/commit/008f065) (2018-05-10) nc-notify-updates: fix wrong user
+[v0.54.13](https://github.com/nextcloud/nextcloudpi/commit/057f531) (2018-05-11) nc-nextcloud: fix upload tmp dir
+
+[v0.54.12](https://github.com/nextcloud/nextcloudpi/commit/d8fc729) (2018-05-11) nc-restore: fix tmp dirs in backups without data
+
+[v0.54.11](https://github.com/nextcloud/nextcloudpi/commit/784c99e) (2018-05-11) nc-backup: make more robust to unexpected failure
+
+[v0.54.10](https://github.com/nextcloud/nextcloudpi/commit/41b35c8) (2018-05-11) nc-restore: make more robust to unexpected failure
+
+[v0.54.9 ](https://github.com/nextcloud/nextcloudpi/commit/c45f099) (2018-05-11) nc-restore: separate in its own executable
+
+[v0.54.8 ](https://github.com/nextcloud/nextcloudpi/commit/4224e3c) (2018-05-10) nc-backup: better avoid duplicates
+
+[v0.54.7](https://github.com/nextcloud/nextcloudpi/commit/011671a) (2018-05-10) armbian: fix static IP
+
+[v0.54.6 ](https://github.com/nextcloud/nextcloudpi/commit/008f065) (2018-05-10) nc-notify-updates: fix wrong user
 
 [v0.54.5 ](https://github.com/nextcloud/nextcloudpi/commit/ee05dbc) (2018-05-10) armbian: fix mDNS
 
