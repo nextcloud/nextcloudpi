@@ -31,7 +31,7 @@ install()
 { 
   cat > /usr/local/bin/ncp-restore <<'EOF'
 #!/bin/bash
-set -e
+set -eE
 
 BACKUPFILE="$1"
 
@@ -42,9 +42,10 @@ DBPASSWD="$( grep password /root/.my.cnf | sed 's|password=||' )"
 [ -f "$BACKUPFILE"      ] || { echo "$BACKUPFILE not found" ; exit 1; }
 [ -d /var/www/nextcloud ] && { echo "INFO: overwriting old instance"; }
 
-TMPDIR="$( mktemp -d "$( dirname $BACKUPFILE )"/ncp-restore.XXXXXX )" || { echo "Failed to create temp dir" >&2; exit 1; }
-cleanup(){  local RET=$?; echo "Cleanup..."; rm -rf "${TMPDIR}"; exit $RET; }
-trap cleanup INT TERM HUP EXIT
+TMPDIR="$( mktemp -d "$( dirname "$BACKUPFILE" )"/ncp-restore.XXXXXX )" || { echo "Failed to create temp dir" >&2; exit 1; }
+TMPDIR="$( cd "$TMPDIR" &>/dev/null && pwd )" || { echo "$TMPDIR not found"; exit 1; } #abspath
+cleanup(){  local RET=$?; echo "Cleanup..."; rm -rf "${TMPDIR}"; trap "" EXIT; exit $RET; }
+trap cleanup INT TERM HUP ERR EXIT
 rm -rf "$TMPDIR" && mkdir -p "$TMPDIR"
 
 # EXTRACT FILES
@@ -136,21 +137,18 @@ else
   sudo -u www-data php occ maintenance:mode --off
   sudo -u www-data php occ files:scan --all
 
-  # Just in case we moved the opcache dir
-  sed -i "s|^opcache.file_cache=.*|opcache.file_cache=$DATADIR/.opcache|" /etc/php/7.0/mods-available/opcache.ini
-
   # cache needs to be cleaned as of NC 12
-  bash -c " sleep 3
-            systemctl stop php7.0-fpm
-            systemctl stop mysqld
-            sleep 0.5
-            systemctl start php7.0-fpm
-            systemctl start mysqld
-            " &>/dev/null &
+  NEED_RESTART=1
 fi
 
 # Just in case we moved the opcache dir
 sed -i "s|^opcache.file_cache=.*|opcache.file_cache=$DATADIR/.opcache|" /etc/php/7.0/mods-available/opcache.ini
+
+# tmp upload dir
+mkdir -p "$DATADIR/tmp" 
+chown www-data:www-data "$DATADIR/tmp"
+sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $DATADIR/tmp|" /etc/php/7.0/fpm/php.ini
+sed -i "s|^;\?sys_temp_dir =.*$|sys_temp_dir = $DATADIR/tmp|"     /etc/php/7.0/fpm/php.ini
 
 # update fail2ban logpath
 sed -i "s|logpath  =.*|logpath  = $DATADIR/nextcloud.log|" /etc/fail2ban/jail.conf
@@ -158,6 +156,16 @@ pgrep fail2ban &>/dev/null && service fail2ban restart
 
 # refresh nextcloud trusted domains
 bash /usr/local/bin/nextcloud-domain.sh
+
+# restart PHP if needed
+[[ "$NEED_RESTART" == "1" ]] && \
+  bash -c " sleep 3
+            systemctl stop php7.0-fpm
+            systemctl stop mysqld
+            sleep 0.5
+            systemctl start php7.0-fpm
+            systemctl start mysqld
+            " &>/dev/null &
 EOF
   chmod +x /usr/local/bin/ncp-restore
 }
