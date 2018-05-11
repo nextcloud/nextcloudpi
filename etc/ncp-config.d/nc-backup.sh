@@ -24,6 +24,7 @@ install()
 {
   cat > /usr/local/bin/ncp-backup <<'EOF'
 #!/bin/bash
+set -eE
 
 DESTDIR="${1:-/media/USBdrive/ncp-backups}"
 INCLUDEDATA="${2:-no}"
@@ -39,7 +40,13 @@ DATADIR=$( cd "$BASEDIR"/nextcloud; sudo -u www-data php occ config:system:get d
   exit 1;
 }
 
+cleanup(){  local RET=$?; echo "Cleanup..."; rm -f "${DBBACKUP}"              ; exit $RET; }
+fail()   {  local RET=$?; echo "Abort..."  ; rm -f "${DBBACKUP}" "${DESTFILE}"; exit $RET; }
+trap cleanup EXIT
+trap fail INT TERM HUP ERR
+
 echo "check free space..."
+mkdir -p "$DESTDIR"
 SIZE=$( du -s "$DATADIR" |           awk '{ print $1 }' )
 FREE=$( df    "$DESTDIR" | tail -1 | awk '{ print $4 }' )
 
