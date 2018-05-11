@@ -165,10 +165,9 @@ configure()
   chown -R www-data:www-data $OPCACHEDIR
 
   ## RE-CREATE DATABASE TABLE 
-  echo "Starting mariaDB"
-
   # launch mariadb if not already running (for docker build)
   if ! pgrep -c mysqld &>/dev/null; then
+    echo "Starting mariaDB"
     mysqld & 
   fi
 
