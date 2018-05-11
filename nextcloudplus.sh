@@ -19,7 +19,6 @@ WEBPASSWD=ownyourbits
 BRANCH=master
 
 CONFDIR=/usr/local/etc/ncp-config.d/
-UPLOADTMPDIR=/var/www/nextcloud/data/tmp
 APTINSTALL="apt-get install -y --no-install-recommends"
 export DEBIAN_FRONTEND=noninteractive
 
@@ -180,12 +179,6 @@ EOF
   touch               /var/run/.ncp-latest-version
   chown root:www-data /var/run/.ncp-latest-version
   chmod g+w           /var/run/.ncp-latest-version
-
-  # TMP UPLOAD DIR
-  mkdir -p "$UPLOADTMPDIR"
-  chown www-data:www-data "$UPLOADTMPDIR"
-  sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $UPLOADTMPDIR|" /etc/php/7.0/fpm/php.ini
-  sed -i "s|^;\?sys_temp_dir =.*$|sys_temp_dir = $UPLOADTMPDIR|"     /etc/php/7.0/fpm/php.ini
 
   # update to latest version from github as part of the build process
   $APTINSTALL git
