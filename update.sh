@@ -131,9 +131,10 @@ done
     }
   }
 
-  # update nc-backup
+  # update nc-backup and nc-restore
   cd "$CONFDIR" &>/dev/null
   install_script nc-backup.sh
+  install_script nc-restore.sh
   cd -          &>/dev/null
 
 

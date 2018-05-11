@@ -17,7 +17,6 @@
 
 
 BACKUPFILE_=/media/USBdrive/nextcloud-bkp_xxxxxxxx.tar
-DBADMIN=ncadmin
 DESCRIPTION="Restore a previously backuped NC instance"
 
 INFOTITLE="Restore NextCloud backup"
@@ -28,53 +27,59 @@ NextCloud instance, including files and database.
 
 You can use nc-backup"
 
-configure()
+install()
 { 
-  local DBPASSWD=$( grep password /root/.my.cnf | sed 's|password=||' )
+  cat > /usr/local/bin/ncp-restore <<'EOF'
+#!/bin/bash
 
-  [ -f $BACKUPFILE_       ] || { echo "$BACKUPFILE_ not found"; return 1; }
-  [ -d /var/www/nextcloud ] && { echo "INFO: overwriting old instance"  ; }
+BACKUPFILE="$1"
 
-  local TMPDIR="$( dirname $BACKUPFILE_ )/$( basename ${BACKUPFILE_}-tmp )"
-  rm -rf "$TMPDIR" && mkdir -p "$TMPDIR"
+DBADMIN=ncadmin
+DBPASSWD=$( grep password /root/.my.cnf | sed 's|password=||' )
 
-  # EXTRACT FILES
-  [[ "$BACKUPFILE_" =~ ".tar.gz" ]] && local COMPRESSED=1 || local COMPRESSED=0
-  [[ "$COMPRESSED" == "1" ]] && {
-    echo "decompressing backup file $BACKUPFILE_..."
-    tar -xzf "$BACKUPFILE_" -C "$TMPDIR" || return 1
-    BACKUPFILE_="$( ls "$TMPDIR"/*.tar 2>/dev/null )"
-    [[ -f "$BACKUPFILE_" ]] || { echo "$BACKUPFILE_ not found"; return 1; }
-  }
+[ -f $BACKUPFILE        ] || { echo "$BACKUPFILE not found"; exit 1; }
+[ -d /var/www/nextcloud ] && { echo "INFO: overwriting old instance"  ; }
 
-  echo "extracting backup file $BACKUPFILE_..."
-  tar -xf "$BACKUPFILE_" -C "$TMPDIR" || return 1
+TMPDIR="$( dirname $BACKUPFILE )/$( basename ${BACKUPFILE}-tmp )"
+rm -rf "$TMPDIR" && mkdir -p "$TMPDIR"
 
-  ## SANITY CHECKS
-  [[ -d "$TMPDIR"/nextcloud ]] && [[ -f "$( ls "$TMPDIR"/nextcloud-sqlbkp_*.bak 2>/dev/null )" ]] || {
-    echo "invalid backup file. Abort"
-    return 1
-  }
+# EXTRACT FILES
+[[ "$BACKUPFILE" =~ ".tar.gz" ]] && COMPRESSED=1 || COMPRESSED=0
+[[ "$COMPRESSED" == "1" ]] && {
+  echo "decompressing backup file $BACKUPFILE..."
+  tar -xzf "$BACKUPFILE" -C "$TMPDIR" || exit 1
+  BACKUPFILE="$( ls "$TMPDIR"/*.tar 2>/dev/null )"
+  [[ -f "$BACKUPFILE" ]] || { echo "$BACKUPFILE not found"; exit 1; }
+}
 
-  ## RESTORE FILES
+echo "extracting backup file $BACKUPFILE..."
+tar -xf "$BACKUPFILE" -C "$TMPDIR" || exit 1
 
-  echo "restore files..."
-  rm -rf /var/www/nextcloud
-  mv "$TMPDIR"/nextcloud /var/www || { echo "Error restoring base files"; return 1; }
+## SANITY CHECKS
+[[ -d "$TMPDIR"/nextcloud ]] && [[ -f "$( ls "$TMPDIR"/nextcloud-sqlbkp_*.bak 2>/dev/null )" ]] || {
+  echo "invalid backup file. Abort"
+  exit 1
+}
 
-  # update NC database password to this instance
-  sed -i "s|'dbpassword' =>.*|'dbpassword' => '$DBPASSWD',|" /var/www/nextcloud/config/config.php
+## RESTORE FILES
 
-  # update redis credentials
-  local REDISPASS="$( grep "^requirepass" /etc/redis/redis.conf | cut -f2 -d' ' )"
-  [[ "$REDISPASS" != "" ]] && \
-    sed -i "s|'password'.*|'password' => '$REDISPASS',|" /var/www/nextcloud/config/config.php
-  service redis restart
+echo "restore files..."
+rm -rf /var/www/nextcloud
+mv "$TMPDIR"/nextcloud /var/www || { echo "Error restoring base files"; exit 1; }
 
-  ## RE-CREATE DATABASE TABLE
+# update NC database password to this instance
+sed -i "s|'dbpassword' =>.*|'dbpassword' => '$DBPASSWD',|" /var/www/nextcloud/config/config.php
 
-  echo "restore database..."
-  mysql -u root <<EOF
+# update redis credentials
+REDISPASS="$( grep "^requirepass" /etc/redis/redis.conf | cut -f2 -d' ' )"
+[[ "$REDISPASS" != "" ]] && \
+  sed -i "s|'password'.*|'password' => '$REDISPASS',|" /var/www/nextcloud/config/config.php
+service redis restart
+
+## RE-CREATE DATABASE TABLE
+
+echo "restore database..."
+mysql -u root <<EOFMYSQL
 DROP DATABASE IF EXISTS nextcloud;
 CREATE DATABASE nextcloud;
 GRANT USAGE ON *.* TO '$DBADMIN'@'localhost' IDENTIFIED BY '$DBPASSWD';
@@ -82,78 +87,83 @@ DROP USER '$DBADMIN'@'localhost';
 CREATE USER '$DBADMIN'@'localhost' IDENTIFIED BY '$DBPASSWD';
 GRANT ALL PRIVILEGES ON nextcloud.* TO $DBADMIN@localhost;
 EXIT
-EOF
-  [ $? -ne 0 ] && { echo "Error configuring nextcloud database"; return 1; }
+EOFMYSQL
+[ $? -ne 0 ] && { echo "Error configuring nextcloud database"; exit 1; }
 
-  mysql -u root nextcloud <  "$TMPDIR"/nextcloud-sqlbkp_*.bak || { echo "Error restoring nextcloud database"; return 1; }
+mysql -u root nextcloud <  "$TMPDIR"/nextcloud-sqlbkp_*.bak || { echo "Error restoring nextcloud database"; exit 1; }
 
-  ## RESTORE DATADIR
+## RESTORE DATADIR
 
-  cd /var/www/nextcloud
+cd /var/www/nextcloud
 
-  ### INCLUDEDATA=yes situation
+### INCLUDEDATA=yes situation
 
-  local NUMFILES=$(( 2 + COMPRESSED ))
-  if [[ $( ls "$TMPDIR" | wc -l ) -eq $NUMFILES ]]; then
+NUMFILES=$(( 2 + COMPRESSED ))
+if [[ $( ls "$TMPDIR" | wc -l ) -eq $NUMFILES ]]; then
 
-    local DATADIR=$( grep datadirectory /var/www/nextcloud/config/config.php | awk '{ print $3 }' | grep -oP "[^']*[^']" | head -1 ) 
-    [[ "$DATADIR" == "" ]] && { echo "Error reading data directory"; return 1; }
+  DATADIR=$( grep datadirectory /var/www/nextcloud/config/config.php | awk '{ print $3 }' | grep -oP "[^']*[^']" | head -1 ) 
+  [[ "$DATADIR" == "" ]] && { echo "Error reading data directory"; exit 1; }
 
-    echo "restore datadir to $DATADIR..."
+  echo "restore datadir to $DATADIR..."
 
-    [[ -e "$DATADIR" ]] && { 
-      echo "backing up existing $DATADIR"
-      mv "$DATADIR" "$DATADIR-$( date "+%m-%d-%y" )" || return 1
-    }
+  [[ -e "$DATADIR" ]] && { 
+    echo "backing up existing $DATADIR"
+    mv "$DATADIR" "$DATADIR-$( date "+%m-%d-%y" )" || exit 1
+  }
 
-    mkdir -p "$DATADIR"
-    [[ "$( stat -fc%T "$DATADIR" )" == "btrfs" ]] && {
-      rmdir "$DATADIR"                  || return 1
-      btrfs subvolume create "$DATADIR" || return 1
-    }
-    chown www-data:www-data "$DATADIR"
-    local TMPDATA="$TMPDIR/$( basename "$DATADIR" )"
-    mv "$TMPDATA"/* "$TMPDATA"/.[!.]* "$DATADIR" || return 1
-    rmdir "$TMPDATA"                             || return 1
+  mkdir -p "$DATADIR"
+  [[ "$( stat -fc%T "$DATADIR" )" == "btrfs" ]] && {
+    rmdir "$DATADIR"                  || exit 1
+    btrfs subvolume create "$DATADIR" || exit 1
+  }
+  chown www-data:www-data "$DATADIR"
+  TMPDATA="$TMPDIR/$( basename "$DATADIR" )"
+  mv "$TMPDATA"/* "$TMPDATA"/.[!.]* "$DATADIR" || exit 1
+  rmdir "$TMPDATA"                             || exit 1
 
-    sudo -u www-data php occ maintenance:mode --off
+  sudo -u www-data php occ maintenance:mode --off
 
-  ### INCLUDEDATA=no situation
+### INCLUDEDATA=no situation
 
-  else      
-    echo "no datadir found in backup"
-    local DATADIR=/var/www/nextcloud/data
+else      
+  echo "no datadir found in backup"
+  DATADIR=/var/www/nextcloud/data
 
-    sudo -u www-data php occ maintenance:mode --off
-    sudo -u www-data php occ files:scan --all
-
-    # Just in case we moved the opcache dir
-    sed -i "s|^opcache.file_cache=.*|opcache.file_cache=$DATADIR/.opcache|" /etc/php/7.0/mods-available/opcache.ini
-
-    # cache needs to be cleaned as of NC 12
-    bash -c " sleep 3
-              systemctl stop php7.0-fpm
-              systemctl stop mysqld
-              sleep 0.5
-              systemctl start php7.0-fpm
-              systemctl start mysqld
-              " &>/dev/null &
-  fi
+  sudo -u www-data php occ maintenance:mode --off
+  sudo -u www-data php occ files:scan --all
 
   # Just in case we moved the opcache dir
   sed -i "s|^opcache.file_cache=.*|opcache.file_cache=$DATADIR/.opcache|" /etc/php/7.0/mods-available/opcache.ini
 
-  # update fail2ban logpath
-  sed -i "s|logpath  =.*|logpath  = $DATADIR/nextcloud.log|" /etc/fail2ban/jail.conf
-  pgrep fail2ban &>/dev/null && service fail2ban restart
+  # cache needs to be cleaned as of NC 12
+  bash -c " sleep 3
+            systemctl stop php7.0-fpm
+            systemctl stop mysqld
+            sleep 0.5
+            systemctl start php7.0-fpm
+            systemctl start mysqld
+            " &>/dev/null &
+fi
 
-  # refresh nextcloud trusted domains
-  bash /usr/local/bin/nextcloud-domain.sh
+# Just in case we moved the opcache dir
+sed -i "s|^opcache.file_cache=.*|opcache.file_cache=$DATADIR/.opcache|" /etc/php/7.0/mods-available/opcache.ini
 
-  rm -r "$TMPDIR"
+# update fail2ban logpath
+sed -i "s|logpath  =.*|logpath  = $DATADIR/nextcloud.log|" /etc/fail2ban/jail.conf
+pgrep fail2ban &>/dev/null && service fail2ban restart
+
+# refresh nextcloud trusted domains
+bash /usr/local/bin/nextcloud-domain.sh
+
+rm -r "$TMPDIR"
+EOF
+  chmod +x /usr/local/bin/ncp-restore
 }
 
-install() { :; }
+configure()
+{
+  ncp-restore "$BACKUPFILE_"
+}
 
 # License
 #
