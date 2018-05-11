@@ -83,6 +83,7 @@ configure()
   mkdir -p "$DATADIR_/tmp" 
   chown www-data:www-data "$DATADIR_/tmp"
   sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $DATADIR_/tmp|" /etc/php/7.0/fpm/php.ini
+  sed -i "s|^;\?sys_temp_dir =.*$|sys_temp_dir = $DATADIR_/tmp|"     /etc/php/7.0/fpm/php.ini
 
   # opcache dir
   sed -i "s|^opcache.file_cache=.*|opcache.file_cache=$DATADIR_/.opcache|" /etc/php/7.0/mods-available/opcache.ini
