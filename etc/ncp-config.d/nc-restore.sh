@@ -31,16 +31,20 @@ install()
 { 
   cat > /usr/local/bin/ncp-restore <<'EOF'
 #!/bin/bash
+set -e
 
 BACKUPFILE="$1"
 
 DBADMIN=ncadmin
-DBPASSWD=$( grep password /root/.my.cnf | sed 's|password=||' )
+DBPASSWD="$( grep password /root/.my.cnf | sed 's|password=||' )"
 
-[ -f $BACKUPFILE        ] || { echo "$BACKUPFILE not found"; exit 1; }
-[ -d /var/www/nextcloud ] && { echo "INFO: overwriting old instance"  ; }
+[ $# -eq 0              ] && { echo "missing first argument"; exit 1; }
+[ -f "$BACKUPFILE"      ] || { echo "$BACKUPFILE not found" ; exit 1; }
+[ -d /var/www/nextcloud ] && { echo "INFO: overwriting old instance"; }
 
-TMPDIR="$( dirname $BACKUPFILE )/$( basename ${BACKUPFILE}-tmp )"
+TMPDIR="$( mktemp -d "$( dirname $BACKUPFILE )"/ncp-restore.XXXXXX )" || { echo "Failed to create temp dir" >&2; exit 1; }
+cleanup(){  local RET=$?; echo "Cleanup..."; rm -rf "${TMPDIR}"; exit $RET; }
+trap cleanup INT TERM HUP EXIT
 rm -rf "$TMPDIR" && mkdir -p "$TMPDIR"
 
 # EXTRACT FILES
@@ -154,8 +158,6 @@ pgrep fail2ban &>/dev/null && service fail2ban restart
 
 # refresh nextcloud trusted domains
 bash /usr/local/bin/nextcloud-domain.sh
-
-rm -r "$TMPDIR"
 EOF
   chmod +x /usr/local/bin/ncp-restore
 }
