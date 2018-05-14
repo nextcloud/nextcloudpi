@@ -77,6 +77,7 @@ tar --exclude "nextcloud/data/*/files/*" \
     --exclude "nextcloud/data/.opcache" \
     --exclude "nextcloud/data/{access,error,nextcloud}.log" \
     --exclude "nextcloud/data/access.log" \
+    --exclude "nextcloud/data/ncp-update-backups/" \
     -cf "$DESTFILE" "$DBBACKUP" nextcloud/ \
   || {
         echo "error generating backup"
@@ -89,6 +90,7 @@ rm "$DBBACKUP"
   tar --exclude "data/.opcache" \
       --exclude "data/{access,error,nextcloud}.log" \
       --exclude "data/access.log" \
+      --exclude "data/ncp-update-backups/" \
       -rf "$DESTFILE" -C "$DATADIR"/.. "$( basename "$DATADIR" )" \
   || {
         echo "error generating backup"
