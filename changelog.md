@@ -1,11 +1,17 @@
 
-[v0.55.0](https://github.com/nextcloud/nextcloudpi/commit/e270979) (2018-05-11) added nc-update-nextcloud
+[v0.55.2](https://github.com/nextcloud/nextcloudpi/commit/9109d3a) (2018-05-14) nc-datadir: fix php cli tmpdir
 
-[v0.54.13](https://github.com/nextcloud/nextcloudpi/commit/057f531) (2018-05-11) nc-nextcloud: fix upload tmp dir
+[v0.55.1](https://github.com/nextcloud/nextcloudpi/commit/a0a1145) (2018-05-14) nc-backup: exclude ncp-update-nc backups
 
-[v0.54.12](https://github.com/nextcloud/nextcloudpi/commit/d8fc729) (2018-05-11) nc-restore: fix tmp dirs in backups without data
+[v0.55.0 ](https://github.com/nextcloud/nextcloudpi/commit/935cf30) (2018-05-11) added nc-update-nextcloud
 
-[v0.54.11](https://github.com/nextcloud/nextcloudpi/commit/784c99e) (2018-05-11) nc-backup: make more robust to unexpected failure
+[v0.54.14](https://github.com/nextcloud/nextcloudpi/commit/adf38df) (2018-05-14) samba: fix permissions
+
+[v0.54.13](https://github.com/nextcloud/nextcloudpi/commit/570479d) (2018-05-11) nc-nextcloud: fix upload tmp dir
+
+[v0.54.12](https://github.com/nextcloud/nextcloudpi/commit/03e9682) (2018-05-11) nc-restore: fix tmp dirs in backups without data
+
+[v0.54.11](https://github.com/nextcloud/nextcloudpi/commit/98d34a4) (2018-05-11) nc-backup: make more robust to unexpected failure
 
 [v0.54.10](https://github.com/nextcloud/nextcloudpi/commit/41b35c8) (2018-05-11) nc-restore: make more robust to unexpected failure
 
