@@ -93,6 +93,7 @@ EOF
     writeable = yes
 ;	browseable = yes
     valid users = $user
+    force user = www-data
     force group = www-data
     create mask = 0770
     directory mask = 0771
