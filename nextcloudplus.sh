@@ -189,6 +189,7 @@ EOF
 
   # ONLY FOR IMAGE BUILDS
   if [[ -f /.ncp-image ]]; then
+    rm -rf /var/log/ncp.log
 
     ## NEXTCLOUDPLUS MOTD 
     rm -rf /etc/update-motd.d
