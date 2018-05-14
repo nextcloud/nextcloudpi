@@ -147,6 +147,7 @@ sed -i "s|^opcache.file_cache=.*|opcache.file_cache=$DATADIR/.opcache|" /etc/php
 # tmp upload dir
 mkdir -p "$DATADIR/tmp" 
 chown www-data:www-data "$DATADIR/tmp"
+sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $DATADIR/tmp|" /etc/php/7.0/cli/php.ini
 sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $DATADIR/tmp|" /etc/php/7.0/fpm/php.ini
 sed -i "s|^;\?sys_temp_dir =.*$|sys_temp_dir = $DATADIR/tmp|"     /etc/php/7.0/fpm/php.ini
 
