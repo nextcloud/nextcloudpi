@@ -120,14 +120,22 @@ done
 
   # fix wrong user for notifications
   DATADIR="$( grep datadirectory /var/www/nextcloud/config/config.php | awk '{ print $3 }' | grep -oP "[^']*[^']" | head -1 )"
-  F="$CONFDIR"/nc-notify-updates.sh
   test -d "$DATADIR" && {
-    [[ -d "$DATADIR"/ncp ]] && [[ ! -d "$DATADIR"/admin ]] \
-    && grep -q '^USER_=admin$' "$F" && grep -q '^ACTIVE_=yes$' "$F" && {
-      sed -i 's|^USER_=admin|USER_=ncp|' "$F"
-      cd "$CONFDIR" &>/dev/null
-      activate_script nc-notify-updates.sh
-      cd -          &>/dev/null
+    [[ -d "$DATADIR"/ncp ]] && [[ ! -d "$DATADIR"/admin ]] && {
+      F="$CONFDIR"/nc-notify-updates.sh
+      grep -q '^USER_=admin$' "$F" && grep -q '^ACTIVE_=yes$' "$F" && {
+        sed -i 's|^USER_=admin|USER_=ncp|' "$F"
+        cd "$CONFDIR" &>/dev/null
+        activate_script nc-notify-updates.sh
+        cd -          &>/dev/null
+      }
+      F="$CONFDIR"/nc-autoupdate-ncp.sh
+      grep -q '^NOTIFYUSER_=admin$' "$F" && grep -q '^ACTIVE_=yes$' "$F" && {
+        sed -i 's|^NOTIFYUSER_=admin|NOTIFYUSER_=ncp|' "$F"
+        cd "$CONFDIR" &>/dev/null
+        activate_script nc-autoupdate-ncp.sh
+        cd -          &>/dev/null
+      }
     }
   }
 
