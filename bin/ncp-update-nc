@@ -66,7 +66,6 @@ cleanup() {
   set +eE
   echo "Clean up..."
   rm -rf /var/www/nextcloud.tar.bz2 /var/www/nextcloud-old
-  sudo -u www-data php /var/www/nextcloud/occ maintenance:mode --off
   trap "" EXIT
   exit $RET
 }
@@ -85,17 +84,17 @@ WITH_DATA=no
 COMPRESSED=yes
 LIMIT=0
 
-sudo -u www-data php /var/www/nextcloud/occ maintenance:mode --on
-
 echo "Back up current instance..."
 set +eE
 ncp-backup "$BKPDIR" "$WITH_DATA" "$COMPRESSED" "$LIMIT" # && false # test point
 RET=$?
 set -eE
 
-BKP="$( ls -1t "$BKPDIR"/nextcloud-bkp_*.tar.gz 2>/dev/null | head -1 )"
-[[ -f "$BKP"  ]] || {               set +eE; echo "Error backing up"; false || cleanup; }
-[[ $RET -ne 0 ]] && { rm -f "$BKP"; set +eE; echo "Error backing up"; false || cleanup; }
+BKP_="$( ls -1t "$BKPDIR"/nextcloud-bkp_*.tar.gz 2>/dev/null | head -1 )"
+[[ -f "$BKP_"  ]] || {                set +eE; echo "Error backing up"; false || cleanup; }
+[[ $RET -ne 0  ]] && { rm -f "$BKP_"; set +eE; echo "Error backing up"; false || cleanup; }
+BKP="$( dirname "$BKP_" )/$( basename "$BKP_" .tar.gz )-${CURRENT}.tar.gz"
+mv "$BKP_" "$BKP"
 
 # simple restore if anything fails from here
 ####################
