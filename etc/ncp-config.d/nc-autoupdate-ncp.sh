@@ -14,10 +14,10 @@
 #
 
 ACTIVE_=no
-NOTIFYUSER_=admin
+NOTIFYUSER_=ncp
 DESCRIPTION="Automatically apply NextCloudPlus updates"
 
-configure() 
+configure()
 {
   [[ $ACTIVE_ != "yes" ]] && { 
     rm /etc/cron.daily/ncp-autoupdate
@@ -30,7 +30,7 @@ configure()
 /usr/local/bin/ncp-test-updates && {
   /usr/local/bin/ncp-update
   sudo -u www-data php /var/www/nextcloud/occ notification:generate \
-    "$NOTIFYUSER_" "NextCloudPlus " \
+    "$NOTIFYUSER_" "NextCloudPlus" \
        -l "NextCloudPlus was updated to \$( cat /usr/local/etc/ncp-version )"
 }
 EOF
