@@ -1,7 +1,9 @@
 
-[v0.56.0](https://github.com/nextcloud/nextcloudpi/commit/febbb00) (2018-05-15) added nc-autoupdate-nc
+[v0.56.1](https://github.com/nextcloud/nextcloudpi/commit/ef49d0e) (2018-05-15) nc-update-nextcloud: rollback in case of power cut
 
-[v0.55.4](https://github.com/nextcloud/nextcloudpi/commit/ef88be9) (2018-05-15) nc-autoupdate-ncp: fix wrong user
+[v0.56.0](https://github.com/nextcloud/nextcloudpi/commit/3c56aa8) (2018-05-15) added nc-autoupdate-nc
+
+[v0.55.4 ](https://github.com/nextcloud/nextcloudpi/commit/ef88be9) (2018-05-15) nc-autoupdate-ncp: fix wrong user
 
 [v0.55.3 ](https://github.com/nextcloud/nextcloudpi/commit/a57c9f6) (2018-05-15) nc-update-netcloud: include version in backup name
 
