@@ -74,6 +74,13 @@ PHPTHREADS=0
             " &>/dev/null &
 }
 
+## Check for interrupted upgrades and rollback
+BKP="$( ls -1t /var/www/nextcloud-bkp_*.tar.gz 2>/dev/null | head -1 )"
+[[ -f "$BKP" ]] && [[ "$( stat -c %U "$BKP" )" == "root" ]] && [[ "$( stat -c %a "$BKP" )" == 600 ]] && {
+  echo "Detected interrupted upgrade. Restoring..."
+  ncp-restore "$BKP" && rm "$BKP"
+}
+
 ## Fix permissions on NCP folders. The main reason for this is to make devel docker container work
 CONFDIR="/usr/local/etc/ncp-config.d/"
 [[ -e $CONFDIR ]] && {
