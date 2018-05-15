@@ -38,9 +38,12 @@ BACKUPFILE="$1"
 DBADMIN=ncadmin
 DBPASSWD="$( grep password /root/.my.cnf | sed 's|password=||' )"
 
-[ $# -eq 0              ] && { echo "missing first argument"; exit 1; }
-[ -f "$BACKUPFILE"      ] || { echo "$BACKUPFILE not found" ; exit 1; }
-[ -d /var/www/nextcloud ] && { echo "INFO: overwriting old instance"; }
+DIR="$( cd "$( dirname "$BACKUPFILE" )" &>/dev/null && pwd )" #abspath
+
+[[ $# -eq 0                       ]] && { echo "missing first argument"                     ; exit 1; }
+[[ -f "$BACKUPFILE"               ]] || { echo "$BACKUPFILE not found"                      ; exit 1; }
+[[ "$DIR" =~ "/var/www/nextcloud" ]] && { echo "Refusing to restore from /var/www/nextcloud"; exit 1; }
+[[ -d /var/www/nextcloud          ]] && { echo "INFO: overwriting old instance"; }
 
 TMPDIR="$( mktemp -d "$( dirname "$BACKUPFILE" )"/ncp-restore.XXXXXX )" || { echo "Failed to create temp dir" >&2; exit 1; }
 TMPDIR="$( cd "$TMPDIR" &>/dev/null && pwd )" || { echo "$TMPDIR not found"; exit 1; } #abspath
