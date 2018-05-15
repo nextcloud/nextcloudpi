@@ -29,25 +29,25 @@ set -eE
 DESTDIR="${1:-/media/USBdrive/ncp-backups}"
 INCLUDEDATA="${2:-no}"
 COMPRESS="${3:-no}"
-BACKUPLIMIT="${4:-4}"
+BACKUPLIMIT="${4:-0}"
 
 DESTFILE="$DESTDIR"/nextcloud-bkp_$( date +"%Y%m%d_%s" ).tar 
 DBBACKUP=nextcloud-sqlbkp_$( date +"%Y%m%d" ).bak
-BASEDIR=/var/www
+OCC="sudo -u www-data php /var/www/nextcloud/occ"
 
-DATADIR=$( cd "$BASEDIR"/nextcloud; sudo -u www-data php occ config:system:get datadirectory ) || {
+DATADIR=$( $OCC config:system:get datadirectory ) || {
   echo "Error reading data directory. Is NextCloud running and configured?";
   exit 1;
 }
 
-cleanup(){  local RET=$?; echo "Cleanup..."; rm -f "${DBBACKUP}"              ; exit $RET; }
-fail()   {  local RET=$?; echo "Abort..."  ; rm -f "${DBBACKUP}" "${DESTFILE}"; exit $RET; }
+cleanup(){  local RET=$?;                    rm -f "${DBBACKUP}"              ; $OCC maintenance:mode --off; exit $RET; }
+fail()   {  local RET=$?; echo "Abort..."  ; rm -f "${DBBACKUP}" "${DESTFILE}"; $OCC maintenance:mode --off; exit $RET; }
 trap cleanup EXIT
 trap fail INT TERM HUP ERR
 
-echo "check free space..."
+echo "check free space..." # allow at least ~500 MiB for backups without data
 mkdir -p "$DESTDIR"
-SIZE=$( du -s "$DATADIR" |           awk '{ print $1 }' )
+[[ "$INCLUDEDATA" == "yes" ]] && SIZE=$( du -s "$DATADIR" | awk '{ print $1 }' ) || SIZE=500000
 FREE=$( df    "$DESTDIR" | tail -1 | awk '{ print $4 }' )
 
 [ $SIZE -ge $FREE ] && { 
@@ -66,7 +66,8 @@ FREE=$( df    "$DESTDIR" | tail -1 | awk '{ print $4 }' )
 }
 
 # database
-cd "$BASEDIR" || exit 1
+cd /var/www || exit 1
+$OCC maintenance:mode --on
 echo "backup database..."
 mysqldump -u root --single-transaction nextcloud > "$DBBACKUP"
 
@@ -113,14 +114,7 @@ EOF
 
 configure()
 {
-  sudo -u www-data php /var/www/nextcloud/occ maintenance:mode --on
-
   ncp-backup "$DESTDIR_" "$INCLUDEDATA_" "$COMPRESS_" "$BACKUPLIMIT_"
-  local RET=$?
-
-  sudo -u www-data php /var/www/nextcloud/occ maintenance:mode --off
-
-  return $RET
 }
 
 # License
