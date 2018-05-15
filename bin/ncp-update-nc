@@ -57,7 +57,7 @@ fi
  
 echo "Current   Nextcloud version $CURRENT"
 echo "Available Nextcloud version $VER"
-[[ "$NEED_UPDATE" == "true" ]] || { echo "Nothing to update"; exit 0; }
+[[ "$NEED_UPDATE" == "true" ]] || { echo "Nothing to update"; exit 1; }
 
 # cleanup
 ####################
