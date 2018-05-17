@@ -69,7 +69,8 @@ EOF
   # clean build flags
   rm /.ncp-image
 
-  # disable SSH
+  # harden and disable SSH
+  sed -i 's|^#PermitRootLogin .*|PermitRootLogin no|' /etc/ssh/sshd_config
   systemctl disable ssh
 
   # enable randomize passwords
