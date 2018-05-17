@@ -16,52 +16,39 @@ LINUXFAMILY=$2
 BOARD=$3
 BUILD_DESKTOP=$4
 
-Main() {
-	case $RELEASE in
-		jessie)
-			# your code here
-			;;
-		xenial)
-			# your code here
-			;;
-		stretch)
+[[ "$RELEASE" != "stretch" ]] && { echo "Only stretch is supported by NextCloudPi" >&2; exit 1; }
 
-            # need sudo access that does not expire during build
-            chage -d -1 root
+# need sudo access that does not expire during build
+chage -d -1 root
 
-            # indicate that this will be an Armbian image build
-            touch /.ncp-image
+# indicate that this will be an Armbian image build
+touch /.ncp-image
 
-            # install NCP
-            curl -sSL https://raw.githubusercontent.com/nextcloud/nextcloudpi/master/install.sh | bash
+# install NCP
+curl -sSL https://raw.githubusercontent.com/nextcloud/nextcloudpi/master/install.sh | bash
 
-            # permit root login in SSH
-            sed -i 's|^PermitRootLogin .*|PermitRootLogin yes|' /etc/ssh/sshd_config
+# permit root login in SSH
+sed -i 's|^PermitRootLogin .*|PermitRootLogin yes|' /etc/ssh/sshd_config
 
-            # force change root password at first login (again)
-            chage -d 0 root
+# force change root password at first login (again)
+chage -d 0 root
 
-            # cleanup
-            apt-get autoremove -y
-            apt-get clean
-            rm /var/lib/apt/lists/* -r
-            rm /.ncp-image
+# cleanup
+apt-get autoremove -y
+apt-get clean
+rm /var/lib/apt/lists/* -r
+rm /.ncp-image
 
-            # cleanup all NCP options
-            source /usr/local/etc/library.sh
-            cd /usr/local/etc/ncp-config.d/
-            for script in *.sh; do
-              cleanup_script $script
-            done
+# cleanup all NCP options
+source /usr/local/etc/library.sh
+cd /usr/local/etc/ncp-config.d/
+for script in *.sh; do
+  cleanup_script $script
+done
 
-            # enable randomize passwords
-            systemctl enable nc-provisioning
+# enable randomize passwords
+systemctl enable nc-provisioning
 
-			;;
-	esac
-} # Main
-
-Main "$@"
 
 # License
 #
