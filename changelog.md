@@ -1,7 +1,9 @@
 
-[v0.56.2](https://github.com/nextcloud/nextcloudpi/commit/550f96a) (2018-05-15) nc-restore: refuse to restore from /var/www/nextcloud
+[v0.56.3](https://github.com/nextcloud/nextcloudpi/commit/7086145) (2018-05-17) nc-update-nextcloud: make sure backup syncs to disk
 
-[v0.56.1](https://github.com/nextcloud/nextcloudpi/commit/06f1d5c) (2018-05-15) nc-update-nextcloud: rollback in case of power cut
+[v0.56.2](https://github.com/nextcloud/nextcloudpi/commit/5ff8675) (2018-05-15) nc-restore: refuse to restore from /var/www/nextcloud
+
+[v0.56.1 ](https://github.com/nextcloud/nextcloudpi/commit/06f1d5c) (2018-05-15) nc-update-nextcloud: rollback in case of power cut
 
 [v0.56.0 ](https://github.com/nextcloud/nextcloudpi/commit/0248ba3) (2018-05-15) added nc-autoupdate-nc
 
@@ -29,7 +31,7 @@
 
 [v0.54.8 ](https://github.com/nextcloud/nextcloudpi/commit/4224e3c) (2018-05-10) nc-backup: better avoid duplicates
 
-[v0.54.7](https://github.com/nextcloud/nextcloudpi/commit/011671a) (2018-05-10) armbian: fix static IP
+[v0.54.7 ](https://github.com/nextcloud/nextcloudpi/commit/011671a) (2018-05-10) armbian: fix static IP
 
 [v0.54.6 ](https://github.com/nextcloud/nextcloudpi/commit/008f065) (2018-05-10) nc-notify-updates: fix wrong user
 
