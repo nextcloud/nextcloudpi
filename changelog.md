@@ -1,5 +1,7 @@
 
-[v0.56.3](https://github.com/nextcloud/nextcloudpi/commit/7086145) (2018-05-17) nc-update-nextcloud: make sure backup syncs to disk
+[v0.56.4](https://github.com/nextcloud/nextcloudpi/commit/d9ccd20) (2018-05-18) nc-info: change port checker providers
+
+[v0.56.3](https://github.com/nextcloud/nextcloudpi/commit/31543e6) (2018-05-17) nc-update-nextcloud: make sure backup syncs to disk
 
 [v0.56.2](https://github.com/nextcloud/nextcloudpi/commit/5ff8675) (2018-05-15) nc-restore: refuse to restore from /var/www/nextcloud
 

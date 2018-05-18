@@ -59,10 +59,9 @@ echo "internet check|$( ping -W 2 -w 1 -q github.com &>/dev/null && echo ok || e
 function is_port_open()
 {
   PORT=$1
-  wget -T2 -q http://canyouseeme.org --post-data \
-    "IP=$(wget -T2 -q ipinfo.io/ip -O -)&port=$PORT" \
-    -O - | grep -q "Connection refused" && { echo "closed"; return 1; }
-  echo "open"
+  wget -T2 -t1 -q  https://portchecker.co/check --post-data "port=$PORT" -O - \
+  | grep -q '<span class="green">open</span>' && { echo "open"; return 1; }
+  echo "closed"
 }
 
 echo "port check 80|$( is_port_open 80 )"
