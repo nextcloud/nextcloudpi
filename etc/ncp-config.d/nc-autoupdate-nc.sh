@@ -28,11 +28,11 @@ configure()
 
   cat > /etc/cron.daily/ncp-autoupdate-nc <<EOF
 #!/bin/bash
-/usr/local/bin/ncp-update-nc "$VERSION" && {
+if /usr/local/bin/ncp-update-nc "$VERSION"; then
   VER="\$( sudo -u www-data php /var/www/nextcloud/occ status | grep "version:" | awk '{ print \$3 }' )"
   sudo -u www-data php /var/www/nextcloud/occ notification:generate \
     "$NOTIFYUSER_" "NextCloudPlus" -l "Nextcloud was updated to \$VER"
-}
+fi
 EOF
   chmod a+x /etc/cron.daily/ncp-autoupdate-nc
   echo "automatic Nextcloud updates enabled"
