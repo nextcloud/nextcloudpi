@@ -145,6 +145,18 @@ done
   install_script nc-restore.sh
   cd -          &>/dev/null
 
+  F="$CONFDIR"/nc-autoupdate-ncp.sh
+  grep -q '^ACTIVE_=yes$' "$F" && {
+    cd "$CONFDIR" &>/dev/null
+    activate_script nc-autoupdate-ncp.sh
+    cd -          &>/dev/null
+  }
+  F="$CONFDIR"/nc-autoupdate-nc.sh
+  grep -q '^ACTIVE_=yes$' "$F" && {
+    cd "$CONFDIR" &>/dev/null
+    activate_script nc-autoupdate-nc.sh
+    cd -          &>/dev/null
+  }
 
 } # end - only live updates
 
