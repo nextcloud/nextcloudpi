@@ -1,7 +1,9 @@
 
-[v0.56.6](https://github.com/nextcloud/nextcloudpi/commit/e48323d) (2018-05-20) fix update httpd log location in virtual host after nc-datadir
+[v0.56.7](https://github.com/nextcloud/nextcloudpi/commit/d508710) (2018-05-22) move NC httpd logs to /var/log
 
-[v0.56.5](https://github.com/nextcloud/nextcloudpi/commit/d54b243) (2018-05-20) ncp-autoupdate: dont return 0 if no updates available
+[v0.56.6](https://github.com/nextcloud/nextcloudpi/commit/7afb720) (2018-05-20) fix update httpd log location in virtual host after nc-datadir
+
+[v0.56.5 ](https://github.com/nextcloud/nextcloudpi/commit/d54b243) (2018-05-20) ncp-autoupdate: dont return 0 if no updates available
 
 [v0.56.4 ](https://github.com/nextcloud/nextcloudpi/commit/656d2d8) (2018-05-18) nc-info: change port checker providers
 

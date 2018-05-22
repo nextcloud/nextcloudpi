@@ -160,10 +160,8 @@ done
   }
 
   # fix update httpd log location in virtual host after nc-datadir
-  DATADIR="$( grep datadirectory /var/www/nextcloud/config/config.php | awk '{ print $3 }' | grep -oP "[^']*[^']" | head -1 )"
-  sed -i "s|CustomLog.*|CustomLog $DATADIR/access.log combined|" /etc/apache2/sites-available/nextcloud.conf
-  sed -i "s|ErrorLog .*|ErrorLog  $DATADIR/error.log|"           /etc/apache2/sites-available/nextcloud.conf
-
+  sed -i "s|CustomLog.*|CustomLog /var/log/apache2/nc-access.log combined|" /etc/apache2/sites-available/nextcloud.conf
+  sed -i "s|ErrorLog .*|ErrorLog  /var/log/apache2/nc-error.log|"           /etc/apache2/sites-available/nextcloud.conf
 
 } # end - only live updates
 
