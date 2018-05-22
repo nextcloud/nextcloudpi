@@ -1,7 +1,9 @@
 
-[v0.56.7](https://github.com/nextcloud/nextcloudpi/commit/d508710) (2018-05-22) move NC httpd logs to /var/log
+[v0.56.8](https://github.com/nextcloud/nextcloudpi/commit/f047cf7) (2018-05-22) fix php cli tmpdir for running instances
 
-[v0.56.6](https://github.com/nextcloud/nextcloudpi/commit/7afb720) (2018-05-20) fix update httpd log location in virtual host after nc-datadir
+[v0.56.7 ](https://github.com/nextcloud/nextcloudpi/commit/54da658) (2018-05-22) move NC httpd logs to /var/log
+
+[v0.56.6 ](https://github.com/nextcloud/nextcloudpi/commit/7afb720) (2018-05-20) fix update httpd log location in virtual host after nc-datadir
 
 [v0.56.5 ](https://github.com/nextcloud/nextcloudpi/commit/d54b243) (2018-05-20) ncp-autoupdate: dont return 0 if no updates available
 

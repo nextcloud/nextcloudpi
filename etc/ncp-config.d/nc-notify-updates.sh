@@ -39,7 +39,7 @@ LATEST=/var/run/.ncp-latest-version
 NOTIFIED=/var/run/.ncp-version-notified
 
 test -e \$LATEST || exit 0;
-ncp-test-updates || { echo "NextCloudPlus up to date"; exit 0; }
+/usr/local/bin/ncp-test-updates || { echo "NextCloudPlus up to date"; exit 0; }
 
 test -e \$NOTIFIED && [[ "\$( cat \$LATEST )" == "\$( cat \$NOTIFIED )" ]] && { 
   echo "Found update from \$( cat \$VERFILE ) to \$( cat \$LATEST ). Already notified" 

@@ -163,6 +163,10 @@ done
   sed -i "s|CustomLog.*|CustomLog /var/log/apache2/nc-access.log combined|" /etc/apache2/sites-available/nextcloud.conf
   sed -i "s|ErrorLog .*|ErrorLog  /var/log/apache2/nc-error.log|"           /etc/apache2/sites-available/nextcloud.conf
 
+  # fix php cli tmpdir for running instances
+  DATADIR="$( grep datadirectory /var/www/nextcloud/config/config.php | awk '{ print $3 }' | grep -oP "[^']*[^']" | head -1 )"
+  sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $DATADIR|" /etc/php/7.0/cli/php.ini
+
 } # end - only live updates
 
 exit 0
