@@ -92,10 +92,6 @@ configure()
   # update fail2ban logpath
   sed -i "s|logpath  =.*nextcloud.log|logpath  = $DATADIR_/nextcloud.log|" /etc/fail2ban/jail.conf
 
-  # update httpd log location in virtual host
-  sed -i "s|CustomLog.*|CustomLog $DATADIR_/access.log combined|" /etc/apache2/sites-available/nextcloud.conf
-  sed -i "s|ErrorLog .*|ErrorLog  $DATADIR_/error.log|"           /etc/apache2/sites-available/nextcloud.conf
-
   # datadir
   sudo -u www-data php occ config:system:set datadirectory --value="$DATADIR_"
   sudo -u www-data php occ config:system:set logfile --value="$DATADIR_/nextcloud.log"
