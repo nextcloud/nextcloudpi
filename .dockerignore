@@ -1,5 +1,7 @@
 torrent/
-partial/
+tmp/
+cache/
+output/
 qemu-raspbian-network/
 armbian/
 *.img

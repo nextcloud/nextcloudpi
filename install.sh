@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# NextCloudPlus installation script
+# NextCloudPi installation script
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -14,7 +14,7 @@ BRANCH=master
 
 set -e$DBG
 
-TMPDIR="$(mktemp -d /tmp/nextcloudplus.XXXXXX || (echo "Failed to create temp dir. Exiting" >&2 ; exit 1) )"
+TMPDIR="$(mktemp -d /tmp/nextcloudpi.XXXXXX || (echo "Failed to create temp dir. Exiting" >&2 ; exit 1) )"
 trap "rm -rf \"${TMPDIR}\" ; exit 0" 0 1 2 3 15
 
 [[ ${EUID} -ne 0 ]] && {
@@ -44,13 +44,13 @@ wget -O- --content-disposition https://github.com/nextcloud/nextcloudpi/archive/
 cd - && cd "$TMPDIR"/nextcloudpi-"$BRANCH"
 
 # install NCP
-echo -e "\nInstalling NextCloudPlus"
+echo -e "\nInstalling NextCloudPi"
 source etc/library.sh
 
 install_script  lamp.sh
 install_script  etc/ncp-config.d/nc-nextcloud.sh
 activate_script etc/ncp-config.d/nc-nextcloud.sh
-install_script  nextcloudplus.sh
+install_script  ncp.sh
 activate_script etc/ncp-config.d/nc-init.sh
 
 # re-enable mods disabled during install, in case there's other shared services in apache2

@@ -5,12 +5,6 @@
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
 #
-# Usage:
-# 
-#   ./installer.sh no-ip.sh <IP> (<img>)
-#
-# See installer.sh instructions for details
-#
 # More at https://ownyourbits.com/2017/03/05/dynamic-dns-for-raspbian-with-no-ip-org-installer/
 #
 

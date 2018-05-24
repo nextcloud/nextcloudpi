@@ -8,6 +8,8 @@
 # Usage: ./build-SD-odroid.sh <DHCP QEMU image IP>
 #
 
+IMG="NextCloudPi_OdroidHC2_$( date  "+%m-%d-%y" ).img"
+
 set -e
 
 # get armbian
@@ -31,13 +33,12 @@ armbian/compile.sh docker \
   NO_APT_CACHER=no
 
 # pack image
-IMGNAME="NextCloudPlus_OdroidHC2_$( date  "+%m-%d-%y" )"
-IMGFILE="$( ls -1t armbian/output/images/*.img | head -1 )"
-pack_image "$IMGFILE" "$IMGNAME.img" 
+TAR=output/"$( basename "$IMG" .img ).tar.bz2"
+pack_image "$IMG" "$TAR"
 
 # testing
 # TODO
 
 # uploading
-create_torrent "${IMGNAME}.tar.bz2"
-upload_ftp "$IMGNAME" || true
+create_torrent "$TAR"
+upload_ftp "$( basename "$TAR" .tar.bz2 )"
