@@ -35,16 +35,13 @@ INSTALL_SCRIPT=$1       # First argument is the script to be run inside Raspbian
 IP=$2                   # Second argument is the QEMU Raspbian IP address
 IMGFILE=$3              # Third argument is the image file to start from ( empty for online installation )
  
-source buildlib.sh      # initializes $IMGNAME
-source etc/library.sh 
-
-test -f "$IMGNAME" && { echo "INFO: $IMGNAME already exists. Skip generation ... "; exit 0; }
+source buildlib.sh
 
 config "$INSTALL_SCRIPT" || exit 1    # Initializes $INSTALLATION_CODE
 
 if [[ "$IMGFILE" != "" ]]; then
-  launch_install_qemu "$IMGFILE" "$IP"       || { sudo killall qemu-system-arm; exit 1; }    # initializes $IMGOUT
-  pack_image          "$IMGOUT"  "$IMGNAME" 
+  launch_install_qemu "$IMGFILE" "$IP" || { sudo killall qemu-system-arm; exit 1; }    # initializes $IMGOUT
+  pack_image          "$IMGOUT" "$IMGOUT".tar.bz2
 else
   launch_installation_online "$IP"
 fi

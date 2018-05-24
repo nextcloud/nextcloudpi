@@ -63,8 +63,6 @@ This code also generates the [NextCloudPi docker images](https://hub.docker.com/
  * Security audits with Lynis and Debsecan ( NEW 07-02-2018 )
  * ZRAM ( NEW 19-03-2018 )
 
-Any extra can be installed independently in a running Raspbian instance through SSH. See `installer.sh`
-
 Extras can be activated and configured using the web interface at HTTPS port 4443
 
 

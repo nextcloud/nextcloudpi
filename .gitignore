@@ -1,7 +1,10 @@
 .*.swp
-*.img
-*.bz2
 .idea/
 qemu-raspbian-network/
+output/
+cache/
 torrent/
 armbian/
+raspbian_root
+raspbian_boot
+docker-armhf/raspbian_docker.img

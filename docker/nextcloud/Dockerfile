@@ -32,10 +32,7 @@ rm -f /var/log/alternatives.log /var/log/apt/*; \
 
 # specific cleanup
 apt-get purge -y wget ca-certificates; \
-rm /nc-nextcloud.sh; \
-sed -i -E "s/^requirepass .*/requirepass default/" /etc/redis/redis.conf; \
-echo -e "[client]\npassword=default" > /root/.my.cnf; \
-chmod 600 /root/.my.cnf
+rm /nc-nextcloud.sh
 
 COPY docker-common/nextcloud/020nextcloud /etc/services-enabled.d/
 COPY bin/ncp-provisioning.sh /usr/local/bin/

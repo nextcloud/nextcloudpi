@@ -1,13 +1,13 @@
 #!/bin/bash
 
-# NextcloudPlus additions to Raspbian 
+# NextCloudPi additions to Raspbian 
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
 #
 # Usage:
 # 
-#   ./installer.sh nextcloudplus.sh <IP> (<img>)
+#   ./installer.sh ncp.sh <IP> (<img>)
 #
 # See installer.sh instructions for details
 #
@@ -32,7 +32,7 @@ install()
 
   # include option in raspi-config (only Raspbian)
   test -f /usr/bin/raspi-config && {
-    sed -i '/Change User Password/i"0 NextCloudPlus Configuration" "Configuration of NextCloudPlus" \\\\'  /usr/bin/raspi-config
+    sed -i '/Change User Password/i"0 NextCloudPi Configuration" "Configuration of NextCloudPi" \\\\'  /usr/bin/raspi-config
     sed -i '/1\\\\ \*) do_change_pass ;;/i0\\\\ *) ncp-config ;;'                                          /usr/bin/raspi-config
   }
 
@@ -170,7 +170,7 @@ EOF
   # make sure this is called on last re-boot
   [[ "$DOCKERBUILD" != 1 ]] && systemctl enable nextcloud-domain 
 
-  # NEXTCLOUDPLUS UPDATES
+  # NEXTCLOUDPI UPDATES
   cat > /etc/cron.daily/ncp-check-version <<EOF
 #!/bin/sh
 /usr/local/bin/ncp-check-version
@@ -191,7 +191,7 @@ EOF
   if [[ -f /.ncp-image ]]; then
     rm -rf /var/log/ncp.log
 
-    ## NEXTCLOUDPLUS MOTD 
+    ## NEXTCLOUDPI MOTD 
     rm -rf /etc/update-motd.d
     mkdir /etc/update-motd.d
     rm /etc/motd
@@ -211,11 +211,11 @@ EOF
 
     ## HOSTNAME AND mDNS
     $APTINSTALL avahi-daemon
-    echo nextcloudplus > /etc/hostname
-    sed -i '$c127.0.1.1 nextcloudplus' /etc/hosts
+    echo nextcloudpi > /etc/hostname
+    sed -i '$c127.0.1.1 nextcloudpi' /etc/hosts
 
     ## tag image
-    echo "NextCloudPlus_$( date  "+%m-%d-%y" )" > /usr/local/etc/ncp-baseimage
+    echo "NextCloudPi_$( date  "+%m-%d-%y" )" > /usr/local/etc/ncp-baseimage
 
     ## SSH hardening
     if [[ -f /etc/ssh/sshd_config ]]; then

@@ -3,7 +3,7 @@
 # Activate/deactivate SSH
 #
 #
-# Copyleft 2017 by Courtney Hicks
+# Copyleft 2017 by Courtney Hicks and Ignacio Nunez Hernanz
 # GPL licensed (see end of file) * Use at your own risk!
 #
 

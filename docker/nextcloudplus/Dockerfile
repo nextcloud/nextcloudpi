@@ -6,7 +6,7 @@ SHELL ["/bin/bash", "-c"]
 
 ENV DOCKERBUILD 1
 
-COPY nextcloudplus.sh /usr/local/etc/
+COPY ncp.sh /usr/local/etc/
 
 RUN \
 
@@ -19,17 +19,22 @@ touch /.docker-image; \
 apt-get update; \
 apt-get install --no-install-recommends -y wget ca-certificates; \
       
-# install nextcloudplus
+# install nextcloudpi
 source /usr/local/etc/library.sh; \
 set +x; \
 cd /usr/local/etc/; \
-install_script nextcloudplus.sh; \
+install_script ncp.sh; \
+
+# stop mysqld and redis
+mysqladmin -u root shutdown; \
+kill $( cat /run/redis/redis-server.pid ); \
+kill $( cat /run/crond.pid ); \
 
 # fix default paths
 sed -i 's|/media/USBdrive|/data/backups|' ncp-config.d/nc-backup.sh; \
 
 # specific cleanup
-rm /usr/local/etc/nextcloudplus.sh; \
+rm /usr/local/etc/ncp.sh; \
 rm /.ncp-image; \
 
 # remove wizard for now
@@ -82,7 +87,7 @@ rm -rf /usr/share/doc/*; \
 rm -f /var/log/alternatives.log /var/log/apt/*; \
 rm /var/cache/debconf/*-old; 
 
-COPY docker-common/nextcloudplus/000ncp /etc/services-enabled.d/
+COPY docker-common/nextcloudpi/000ncp /etc/services-enabled.d/
 
 # 4443 - ncp-web
 EXPOSE 80 443 4443
