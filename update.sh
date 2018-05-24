@@ -160,12 +160,65 @@ done
   }
 
   # fix update httpd log location in virtual host after nc-datadir
-  sed -i "s|CustomLog.*|CustomLog /var/log/apache2/nc-access.log combined|" /etc/apache2/sites-available/nextcloud.conf
-  sed -i "s|ErrorLog .*|ErrorLog  /var/log/apache2/nc-error.log|"           /etc/apache2/sites-available/nextcloud.conf
-
-  # fix php cli tmpdir for running instances
   DATADIR="$( grep datadirectory /var/www/nextcloud/config/config.php | awk '{ print $3 }' | grep -oP "[^']*[^']" | head -1 )"
-  sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $DATADIR|" /etc/php/7.0/cli/php.ini
+  sed -i "s|CustomLog.*|CustomLog $DATADIR/access.log combined|" /etc/apache2/sites-available/nextcloud.conf
+  sed -i "s|ErrorLog .*|ErrorLog  $DATADIR/error.log|"           /etc/apache2/sites-available/nextcloud.conf
+
+  # fix systemd timer still present
+  [[ -f /etc/systemd/system/nc-scan.service ]] && {
+    systemctl stop nc-scan.service
+    systemctl disable nc-scan.service
+    rm -f /etc/systemd/system/nc-scan.service
+    F="$CONFDIR"/nc-scan-auto.sh
+    grep -q '^ACTIVE_=yes$' "$F" && {
+      cd "$CONFDIR" &>/dev/null
+      activate_script nc-scan-auto.sh
+      cd -          &>/dev/null
+    }
+  }
+  [[ -f /etc/systemd/system/nc-scan.timer ]] && {
+    systemctl stop nc-scan.timer
+    systemctl disable nc-scan.timer
+    rm -f /etc/systemd/system/nc-scan.timer
+  }
+  [[ -f /etc/systemd/system/nc-backup.service ]] && {
+    systemctl stop nc-backup
+    systemctl disable nc-backup
+    rm -f /etc/systemd/system/nc-backup.service
+    F="$CONFDIR"/nc-backup-auto.sh
+    grep -q '^ACTIVE_=yes$' "$F" && {
+      cd "$CONFDIR" &>/dev/null
+      activate_script nc-backup-auto.sh
+      cd -          &>/dev/null
+    }
+  }
+  [[ -f /etc/systemd/system/freedns.service ]] && {
+    systemctl stop freedns
+    systemctl disable freedns
+    rm -f /etc/systemd/system/freedns.service
+    F="$CONFDIR"/freeDNS.sh
+    grep -q '^ACTIVE_=yes$' "$F" && {
+      cd "$CONFDIR" &>/dev/null
+      activate_script freeDNS.sh
+      cd -          &>/dev/null
+    }
+  }
+  [[ -f /etc/systemd/system/nc-notify-updates.service ]] && {
+    systemctl stop nc-notify-updates
+    systemctl disable nc-notify-updates
+    rm -f /etc/systemd/system/nc-notify-updates.service
+    F="$CONFDIR"/nc-notify-updates.sh
+    grep -q '^ACTIVE_=yes$' "$F" && {
+      cd "$CONFDIR" &>/dev/null
+      activate_script nc-notify-updates.sh
+      cd -          &>/dev/null
+    }
+  }
+  [[ -f /etc/systemd/system/nc-notify-updates.timer ]] && {
+    systemctl stop nc-notify-updates.timer
+    systemctl disable nc-notify-updates.timer
+    rm -f /etc/systemd/system/nc-notify-updates.timer
+  }
 
 } # end - only live updates
 
