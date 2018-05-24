@@ -6,12 +6,6 @@
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
 #
-# Usage:
-# 
-#   ./installer.sh nc-snapshot-auto.sh <IP> (<img>)
-#
-# See installer.sh instructions for details
-#
 # More at https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/
 #
 

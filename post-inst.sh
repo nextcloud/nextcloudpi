@@ -1,29 +1,39 @@
 #!/bin/bash
 
-# Change password for the Nextcloud admin user
+# Cleanup step Raspbian image
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
 #
-# More at: https://ownyourbits.com
+# More at nextcloudpi.com
 #
 
-USER_=ncp
-PASSWORD_=ownyourbits
-CONFIRM_=ownyourbits
+configure()   
+{ 
+  # stop mysqld and redis
+  mysqladmin -u root shutdown
+  kill $( cat /run/redis/redis-server.pid )
+  kill $( cat /run/crond.pid )
 
-DESCRIPTION="Change password for the Nextcloud admin user"
+  # enable randomize passwords
+  systemctl enable nc-provisioning
 
-configure()
-{
-  [[ "$PASSWORD_" == "$CONFIRM_" ]] || { echo "passwords do not match"; return 1; }
+  # cleanup all NCP extras
+  source /usr/local/etc/library.sh
+  cd /usr/local/etc/ncp-config.d/
+  for script in *.sh; do
+    cleanup_script $script
+  done
 
-  OC_PASS="$PASSWORD_" \
-    sudo -E -u www-data php /var/www/nextcloud/occ \
-    user:resetpassword --password-from-env "$USER_"
+  # clean packages and installation logs
+  apt-get autoremove -y
+  apt-get clean
+  rm /var/lib/apt/lists/* -r
+  find /var/log -type f -exec rm {} \;
+
+  # clean build flags
+  rm /.ncp-image
 }
-
-install() { :; }
 
 # License
 #

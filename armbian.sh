@@ -2,7 +2,7 @@
 
 # arguments: $RELEASE $LINUXFAMILY $BOARD $BUILD_DESKTOP
 
-# This is the image customization script for NextCloudPlus on Armbian
+# This is the image customization script for NextCloudPi on Armbian
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -27,27 +27,8 @@ touch /.ncp-image
 # install NCP
 curl -sSL https://raw.githubusercontent.com/nextcloud/nextcloudpi/master/install.sh | bash
 
-# permit root login in SSH
-sed -i 's|^PermitRootLogin .*|PermitRootLogin yes|' /etc/ssh/sshd_config
-
 # force change root password at first login (again)
 chage -d 0 root
-
-# cleanup
-apt-get autoremove -y
-apt-get clean
-rm /var/lib/apt/lists/* -r
-rm /.ncp-image
-
-# cleanup all NCP options
-source /usr/local/etc/library.sh
-cd /usr/local/etc/ncp-config.d/
-for script in *.sh; do
-  cleanup_script $script
-done
-
-# enable randomize passwords
-systemctl enable nc-provisioning
 
 
 # License

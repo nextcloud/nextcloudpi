@@ -5,12 +5,6 @@
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
 #
-# Usage:
-# 
-#   ./installer.sh nc-nextcloud <IP> (<img>)
-#
-# See installer.sh instructions for details
-#
 # More at https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/
 #
 
@@ -31,7 +25,7 @@ INFOTITLE="NextCloud installation"
 INFO="This new installation will cleanup current
 NextCloud instance, including files and database.
 
-You can later use nc-init to configure to NextCloudPlus defaults
+You can later use nc-init to configure to NextCloudPi defaults
 
 ** perform backup before proceding **
 
@@ -40,7 +34,7 @@ You can use nc-backup "
 
 install()
 {
-  # During build, this step is run before nextcloudplus.sh. Avoid executing twice
+  # During build, this step is run before ncp.sh. Avoid executing twice
   [[ -f /usr/lib/systemd/system/nc-provisioning.service ]] && return 0
 
   # Optional packets for Nextcloud and Apps

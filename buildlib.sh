@@ -8,36 +8,27 @@
 # More at ownyourbits.com
 #
 
-IMGNAME=$( basename "$IMGFILE" .img )_$( basename "$INSTALL_SCRIPT" .sh ).img
 DBG=x
 
-# $IMGOUT will contain the name of the last step
+# $IMG    is the source image
+# $IP     is the IP of the QEMU images
+# $IMGOUT will contain the name of the generated image
 function launch_install_qemu()
 {
   local IMG=$1
   local IP=$2
-  [[ "$IP"      == ""  ]] && { echo "usage: launch_install_qemu <script> <img> <IP>"; return 1; }
-  test -f "$IMG"          || { echo "input file $IMG not found";                      return 1; }
+  [[ "$IP"      == ""  ]] && { echo "usage: launch_install_qemu <img> <IP>"; return 1; }
+  test -f "$IMG"          || { echo "input file $IMG not found";             return 1; }
 
-  local BASE=$( sed 's=-stage[[:digit:]]=='         <<< "$IMG" )
-  local NUM=$(  sed 's=.*-stage\([[:digit:]]\)=\1=' <<< "$IMG" )
-  [[ "$BASE" == "$IMG" ]] && NUM=0
+  IMGOUT="$IMG-$( date +%s )"
+  cp --reflink=auto -v "$IMG" "$IMGOUT" || return 1
 
-  local NUM_REBOOTS=$( grep -c "nohup reboot" "$INSTALL_SCRIPT" )
-  while [[ $NUM_REBOOTS != -1 ]]; do
-    NUM=$(( NUM+1 ))
-    IMGOUT="$BASE-stage$NUM"
-    cp --reflink=auto -v "$IMG" "$IMGOUT" || return 1 # take a copy of the input image for processing ( append "-stage1" )
-
-    pgrep qemu-system-arm &>/dev/null && { echo -e "QEMU instance already running. Abort..."; return 1; }
-    launch_qemu "$IMGOUT" &
-    sleep 10
-    wait_SSH "$IP"
-    launch_installation_qemu "$IP" || return 1
-    wait 
-    IMG="$IMGOUT"
-    NUM_REBOOTS=$(( NUM_REBOOTS-1 ))
-  done
+  pgrep qemu-system-arm &>/dev/null && { echo -e "QEMU instance already running. Abort..."; return 1; }
+  launch_qemu "$IMGOUT" &
+  sleep 10
+  wait_SSH "$IP"
+  launch_installation_qemu "$IP" || return 1 # uses $INSTALLATION_CODE
+  wait 
   echo "$IMGOUT generated successfully"
 }
 
@@ -111,7 +102,7 @@ $CFG_STEP
 $CLEANUP_STEP
 $HALT_STEP
 "
-  launch_installation "$IP"
+  launch_installation "$IP" # uses $INSTALLATION_CODE
 }
 
 function launch_installation_online()
@@ -122,7 +113,121 @@ function launch_installation_online()
 install
 $CFG_STEP
 "
-  launch_installation "$IP"
+  launch_installation "$IP" # uses $INSTALLATION_CODE
+}
+
+function mount_raspbian()
+{
+  local IMG="$1"
+  local MP=raspbian_root
+
+  [[ -f "$IMG"        ]] || { echo "no image";  return 1; }
+  [[ -e "$MP" ]] && { echo "$MP already exists"; return 1; }
+
+  local SECTOR=$( fdisk -l "$IMG" | grep Linux | awk '{ print $2 }' )
+  local OFFSET=$(( SECTOR * 512 ))
+  mkdir -p "$MP"
+  sudo mount $IMG -o offset=$OFFSET "$MP" || return 1
+  echo "Raspbian image mounted"
+}
+
+function mount_raspbian_boot()
+{
+  local IMG="$1"
+  local MP=raspbian_boot
+
+  [[ -f "$IMG" ]] || { echo "no image";           return 1; }
+  [[ -e "$MP"  ]] && { echo "$MP already exists"; return 1; }
+
+  local SECTOR=$( fdisk -l "$IMG" | grep FAT32 | awk '{ print $2 }' )
+  local OFFSET=$(( SECTOR * 512 ))
+  mkdir -p "$MP"
+  sudo mount $IMG -o offset=$OFFSET "$MP" || return 1
+  echo "Raspbian image mounted"
+}
+
+function umount_raspbian()
+{
+  [[ -d raspbian_root ]] || [[ -d raspbian_boot ]] || { echo "Nothing to umount"; return 0; }
+  [[ -d raspbian_root ]] && { sudo umount -l raspbian_root; rmdir raspbian_root || return 1; }
+  [[ -d raspbian_boot ]] && { sudo umount -l raspbian_boot; rmdir raspbian_boot || return 1; }
+  echo "Raspbian image umounted"
+}
+
+function prepare_chroot_raspbian()
+{
+  local IMG="$1"
+  mount_raspbian "$IMG" || return 1
+  sudo mount -t proc proc     raspbian_root/proc/
+  sudo mount -t sysfs sys     raspbian_root/sys/
+  sudo mount -o bind /dev     raspbian_root/dev/
+  sudo mount -o bind /dev/pts raspbian_root/dev/pts
+  sudo cp /usr/bin/qemu-arm-static raspbian_root/usr/bin
+}
+
+function clean_chroot_raspbian()
+{
+  sudo rm -f raspbian_root/usr/bin/qemu-arm-static
+  sudo umount -l raspbian_root/{proc,sys,dev/pts,dev}
+  umount_raspbian
+}
+
+# sets DEV
+function resize_image()
+{
+  local IMG="$1"
+  local SIZE="$2"
+  local DEV
+  fallocate -l$SIZE "$IMG"
+  parted "$IMG" -- resizepart 2 -1s
+  DEV="$( losetup -f )"
+  mount_raspbian "$IMG"
+  sudo resize2fs -f "$DEV"
+  echo "image resized"
+  umount_raspbian
+}
+
+function update_boot_uuid()
+{
+  local IMG="$1"
+  local PTUUID="$( sudo blkid -o export "$IMG" | grep PTUUID | sed 's|.*=||' )"
+
+  mount_raspbian "$IMG" || return 1
+  sudo bash -c "cat > raspbian_root/etc/fstab" <<EOF
+PARTUUID=${PTUUID}-01  /boot           vfat    defaults          0       2
+PARTUUID=${PTUUID}-02  /               ext4    defaults,noatime  0       1
+EOF
+  umount_raspbian
+
+  mount_raspbian_boot "$IMG"
+  sudo bash -c "sed -i 's|root=[^[:space:]]*|root=PARTUUID=${PTUUID}-02 |' raspbian_boot/cmdline.txt"
+  umount_raspbian
+}
+
+function prepare_sshd()
+{
+  local IMG="$1"
+  mount_raspbian_boot "$IMG" || return 1
+  sudo touch raspbian_boot/ssh   # this enables ssh
+  umount_raspbian
+}
+
+function set_static_IP()
+{
+  local IMG="$1"
+  local IP="$2"
+  mount_raspbian "$IMG" || return 1
+  sudo bash -c "cat > raspbian_root/etc/dhcpcd.conf" <<EOF
+interface eth0
+static ip_address=$IP/24
+static routers=192.168.0.1
+static domain_name_servers=8.8.8.8
+
+# Local loopback
+auto lo
+iface lo inet loopback
+EOF
+  umount_raspbian
 }
 
 function copy_to_image()
@@ -130,74 +235,64 @@ function copy_to_image()
   local IMG=$1
   local DST=$2
   local SRC=${@: 3 }
-  local SECTOR
-  local OFFSET
-  SECTOR=$( fdisk -l "$IMG" | grep Linux | awk '{ print $2 }' )
-  OFFSET=$(( SECTOR * 512 ))
 
-  [ -f "$IMG" ] || { echo "no image"; return 1; }
-  mkdir -p tmpmnt
-  sudo mount "$IMG" -o offset="$OFFSET" tmpmnt || return 1
-  sudo cp --reflink=auto -v "$SRC" tmpmnt/"$DST" || return 1
+  mount_raspbian "$IMG" || return 1
+  sudo cp --reflink=auto -v "$SRC" raspbian_root/"$DST" || return 1
   sync
-  sudo umount -l tmpmnt
-  rmdir tmpmnt &>/dev/null
+  umount_raspbian
 }
 
 function deactivate_unattended_upgrades()
 {
   local IMG=$1
-  local SECTOR
-  local OFFSET
-  SECTOR=$( fdisk -l "$IMG" | grep Linux | awk '{ print $2 }' )
-  OFFSET=$(( SECTOR * 512 ))
 
-  [ -f "$IMG" ] || { echo "no image"; return 1; }
-  mkdir -p tmpmnt
-  sudo mount "$IMG" -o offset="$OFFSET" tmpmnt || return 1
-  sudo rm -f tmpmnt/etc/apt/apt.conf.d/20ncp-upgrades
-  sudo umount -l tmpmnt
-  rmdir tmpmnt &>/dev/null
+  mount_raspbian "$IMG" || return 1
+  sudo rm -f raspbian_root/etc/apt/apt.conf.d/20ncp-upgrades
+  umount_raspbian
 }
 
-function download_resize_raspbian_img()
+function download_raspbian()
 {
-  local SIZE=$1
-  local IMGFILE=$2
-  local IMG=raspbian_lite_latest
+  local IMGFILE=$1
+  local IMG_CACHE=cache/raspbian_lite.img
+  local ZIP_CACHE=cache/raspbian_lite.zip
 
-  test -f "$IMGFILE" && \
-    echo -e "INFO: $IMGFILE already exists. Skipping download ..." && return 0 
-
-  test -f $IMG.zip || \
-    wget https://downloads.raspberrypi.org/$IMG -O $IMG.zip || return 1
-
-  unzip -o $IMG.zip && \
-    mv *-raspbian-*.img "$IMGFILE" && \
-    qemu-img resize -f raw "$IMGFILE" +"$SIZE"  && \
+  mkdir -p cache
+  test -f $IMG_CACHE && \
+    echo -e "INFO: $IMG_CACHE already exists. Skipping download ..." && \
+    cp -v --reflink=auto $IMG_CACHE "$IMGFILE" && \
     return 0
+
+  test -f "$ZIP_CACHE" && {
+    echo -e "INFO: $ZIP_CACHE already exists. Skipping download ..."
+  } || {
+    wget https://downloads.raspberrypi.org/raspbian_lite_latest -O "$ZIP_CACHE" || return 1
+  }
+
+  unzip -o "$ZIP_CACHE" && \
+    mv *-raspbian-*.img $IMG_CACHE && \
+    cp -v --reflink=auto $IMG_CACHE "$IMGFILE" 
 }
 
 function pack_image()
 {
-  local IMGOUT="$1"
-  local IMGNAME="$2"
-  local TARNAME=$( basename $IMGNAME .img ).tar.bz2
-  echo "copying $IMGOUT → $IMGNAME"
-  cp --reflink=auto "$IMGOUT" "$IMGNAME" || return 1
-  echo "packing $IMGNAME → $TARNAME"
-  tar -I pbzip2 -cvf "$TARNAME" "$IMGNAME" &>/dev/null && \
-    echo -e "$TARNAME packed successfully"
+  local IMG="$1"
+  local TAR="$2"
+  local DIR="$( dirname  "$IMG" )"
+  local IMG="$( basename "$IMG" )"
+  echo "packing $IMG → $TAR"
+  tar -I pbzip2 -C "$DIR" -cvf "$TAR" "$IMG" && \
+    echo -e "$TAR packed successfully"
 }
 
 function create_torrent()
 {
-  local IMG="$1"
-  [[ -f "$IMG" ]] || { echo "image $IMG not found"; return 1; }
-  local IMGNAME="$( basename "$IMG" .tar.bz2 )"
+  local TAR="$1"
+  [[ -f "$TAR" ]] || { echo "image $TAR not found"; return 1; }
+  local IMGNAME="$( basename "$TAR" .tar.bz2 )"
   local DIR="torrent/$IMGNAME"
   [[ -d "$DIR" ]] && { echo "dir $DIR already exists"; return 1; }
-  mkdir -p torrent/"$IMGNAME" && cp --reflink=auto "$IMG" torrent/"$IMGNAME"
+  mkdir -p torrent/"$IMGNAME" && cp -v --reflink=auto "$TAR" torrent/"$IMGNAME"
   md5sum "$DIR"/*.bz2 > "$DIR"/md5sum
   createtorrent -a udp://tracker.opentrackr.org -p 1337 -c "NextCloudPlus. Nextcloud for Raspberry Pi image" "$DIR" "$DIR".torrent
 }
@@ -211,22 +306,10 @@ function generate_changelog()
     sed 's|* \[tag: |\n[|' > changelog.md
 }
 
-function prepare_sshd()
-{
-  local IMG="$1"
-  local SECTOR1=$( fdisk -l $IMG | grep FAT32 | awk '{ print $2 }' )
-  local OFFSET1=$(( SECTOR1 * 512 ))
-  mkdir -p tmpmnt
-  sudo mount $IMG -o offset=$OFFSET1 tmpmnt
-  sudo touch tmpmnt/ssh   # this enables ssh
-  sudo umount tmpmnt
-  rmdir tmpmnt
-}
-
 function upload_ftp()
 {
   local IMGNAME="$1"
-  [[ -f torrent/"$IMGNAME"/"$IMGNAME".tar.bz2 ]] || { echo "No image file found, abort";       return 1; }
+  [[ -f torrent/"$IMGNAME"/"$IMGNAME".tar.bz2 ]] || { echo "No image file found, abort"; return 1; }
   [[ "$FTPPASS" == "" ]] && { echo "No FTPPASS variable found, abort"; return 1; }
 
   cd torrent
@@ -251,6 +334,20 @@ put md5sum
 bye
 EOF
   cd -
+}
+
+function test_image()
+{
+  local IMG="$1"
+  local IP="$2"
+  [[ -f "$IMG" ]] || { echo "No image file found, abort"; return 1; }
+  launch_qemu "$IMG" &
+  sleep 10
+  wait_SSH "$IP"
+  sleep 180            # Wait for the services to start. Improve this ( wait HTTP && trusted domains )
+  tests/tests.py "$IP"
+  ssh_pi "$IP" sudo halt
+  wait
 }
 
 # License
