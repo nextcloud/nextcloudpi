@@ -26,6 +26,7 @@ install()
   curl -Lo log2ram.tar.gz https://github.com/azlux/log2ram/archive/master.tar.gz
   tar xf log2ram.tar.gz
   cd log2ram-master
+  sed -i '/systemctl -q is-active log2ram/d' install.sh
   sed -i '/systemctl enable log2ram/d' install.sh
   chmod +x install.sh && sudo ./install.sh
   cd ..
