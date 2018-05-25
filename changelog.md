@@ -1,7 +1,9 @@
 
-[v0.56.9](https://github.com/nextcloud/nextcloudpi/commit/72cd80d) (2018-05-24) remove old systemd timer config in running systems
+[v0.56.10](https://github.com/nextcloud/nextcloudpi/commit/4348861) (2018-05-25) nc-ramlogs: fix docker installation from latest upstream changes
 
-[v0.56.8](https://github.com/nextcloud/nextcloudpi/commit/cf42bf8) (2018-05-22) fix php cli tmpdir for running instances
+[v0.56.9](https://github.com/nextcloud/nextcloudpi/commit/dc41bef) (2018-05-24) remove old systemd timer config in running systems
+
+[v0.56.8 ](https://github.com/nextcloud/nextcloudpi/commit/cf42bf8) (2018-05-22) fix php cli tmpdir for running instances
 
 [v0.56.7 ](https://github.com/nextcloud/nextcloudpi/commit/54da658) (2018-05-22) move NC httpd logs to /var/log
 
