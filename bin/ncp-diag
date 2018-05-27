@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# NextCloudPlus diagnostics report
+# NextCloudPi diagnostics report
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -12,8 +12,8 @@
 #
 
 # Distro, NCP version and tag
-echo "NextCloudPlus version|$( cat /usr/local/etc/ncp-version )"
-[[ -f /usr/local/etc/ncp-baseimage ]] && echo "NextCloudPlus image|$( cat /usr/local/etc/ncp-baseimage )"
+echo "NextCloudPi version|$( cat /usr/local/etc/ncp-version )"
+[[ -f /usr/local/etc/ncp-baseimage ]] && echo "NextCloudPi image|$( cat /usr/local/etc/ncp-baseimage )"
 echo "distribution|$( cat /etc/issue )"
 
 # Data

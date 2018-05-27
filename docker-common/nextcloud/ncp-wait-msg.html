@@ -3,7 +3,7 @@
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta charset="utf-8">
-  <title> NextCloudPlus Initialization </title>
+  <title> NextCloudPi Initialization </title>
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="referrer" content="never">
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
@@ -14,7 +14,7 @@
     <div class="v-align">
       <header role="banner">
         <div id="header">
-          <p style="font-size:130%">Initializing NextCloudPlus for the first time</p>
+          <p style="font-size:130%">Initializing NextCloudPi for the first time</p>
           <p style="font-size:130%">Please wait...</p>
         </div>
       </header>

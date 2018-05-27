@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# update latest NextCloudPlus code from github
+# update latest NextCloudPi code from github
 
 {
   [ "$(id -u)" -ne 0 ] && { printf "Must be run as root. Try 'sudo $0'\n"; exit 1; }
@@ -33,7 +33,7 @@
         sed '/HEAD ->\|origin/s|\[.*\(tag: v[0-9]\+\.[0-9]\+\.[0-9]\+\).*\]|[\1]|' | \
         sed 's|* \[tag: |[|' > /usr/local/etc/ncp-changelog
     }
-    echo -e "NextCloudPlus updated to version $VER"
+    echo -e "NextCloudPi updated to version $VER"
   }
 
   cd /

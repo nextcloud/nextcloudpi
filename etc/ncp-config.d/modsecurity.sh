@@ -25,7 +25,7 @@ install()
 
   cat >> /etc/modsecurity/crs/crs-setup.conf <<'EOF'
 
-  # NextCloudPlus: allow PROPFIND for webDAV
+  # NextCloudPi: allow PROPFIND for webDAV
   SecAction "id:900200, phase:1, nolog, pass, t:none, setvar:'tx.allowed_methods=GET HEAD POST OPTIONS PROPFIND'"
 EOF
 

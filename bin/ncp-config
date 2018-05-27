@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# NextCloudPlus software configuration
+# NextCloudPi software configuration
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -18,7 +18,7 @@ function nextcloud-config()
 {
     local DIALOG_OK=0
     local VERFILE=/var/run/.ncp-latest-version
-    local BACKTITLE="NextCloudPlus configuration ver. "
+    local BACKTITLE="NextCloudPi configuration ver. "
     local CONFDIR=/usr/local/etc/ncp-config.d/ 
     local DESC
 
@@ -27,7 +27,7 @@ function nextcloud-config()
       local CHANGELOG=$( head -4 /usr/local/etc/ncp-changelog )
     ncp-test-updates 2>/dev/null && \
     whiptail --backtitle "$BACKTITLE $( cat /usr/local/etc/ncp-version )" \
-      --title "NextCloudPlus update available" \
+      --title "NextCloudPi update available" \
       --clear --yesno "Update to $( cat $VERFILE )?\n\n$CHANGELOG" \
       15 70
     [[ $? -eq $DIALOG_OK ]] && ncp-update
@@ -45,7 +45,7 @@ function nextcloud-config()
       # launch the selection menu
       local script
       script=$( whiptail --backtitle "$BACKTITLE $( cat /usr/local/etc/ncp-version )" \
-                         --title "NextCloudPlus Software Configuration Tool (ncp-config)" \
+                         --title "NextCloudPi Software Configuration Tool (ncp-config)" \
                          --cancel-button Finish --ok-button Select \
                          --menu "Select program to configure and activate:" 20 105 10 \
                          "${LIST[@]}" \

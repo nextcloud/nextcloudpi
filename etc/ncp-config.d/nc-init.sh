@@ -14,7 +14,7 @@ DBADMIN=ncadmin
 DESCRIPTION="(Re)initiate Nextcloud to a clean configuration"
 
 INFOTITLE="Clean NextCloud configuration"
-INFO="This action will configure NextCloud to NextCloudPlus defaults.
+INFO="This action will configure NextCloud to NextCloudPi defaults.
 
 ** YOUR CONFIGURATION WILL BE LOST **
 
@@ -111,7 +111,7 @@ EOF
   test -f /usr/local/bin/nextcloud-domain.sh && {
     test -f /.ncp-image || bash /usr/local/bin/nextcloud-domain.sh
   }
-  sudo -u www-data php occ config:system:set trusted_domains 5 --value="nextcloudplus.local"
+  sudo -u www-data php occ config:system:set trusted_domains 5 --value="nextcloudpi.local"
 
   # email
   sudo -u www-data php occ config:system:set mail_smtpmode     --value="php"
@@ -129,7 +129,7 @@ EOF
   }
 
   mysql nextcloud <<EOF
-replace into  oc_appconfig values ( 'theming', 'name'          , "NextCloudPlus"           );
+replace into  oc_appconfig values ( 'theming', 'name'          , "NextCloudPi"             );
 replace into  oc_appconfig values ( 'theming', 'slogan'        , "keep your data close"    );
 replace into  oc_appconfig values ( 'theming', 'url'           , "https://ownyourbits.com" );
 replace into  oc_appconfig values ( 'theming', 'logoMime'      , "image/svg+xml"           );

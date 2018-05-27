@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# NextCloudPlus function library
+# NextCloudPi function library
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -13,7 +13,7 @@
 function config()
 {
   local INSTALL_SCRIPT="$1"
-  local BACKTITLE="NextCloudPlus installer configuration"
+  local BACKTITLE="NextCloudPi installer configuration"
 
   type dialog &>/dev/null || { echo "please, install dialog for interactive configuration"; return 1; }
 
@@ -138,7 +138,7 @@ function info_script()
     source ./"$SCRIPT"
     local INFOTITLE="${INFOTITLE:-Info}"
     [[ "$INFO" == "" ]] && return 0
-    whiptail --yesno --backtitle "NextCloudPlus configuration" --title "$INFOTITLE" "$INFO" 20 90
+    whiptail --yesno --backtitle "NextCloudPi configuration" --title "$INFOTITLE" "$INFO" 20 90
   )
 }
 
