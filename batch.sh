@@ -8,16 +8,22 @@
 # Usage: ./batch.sh <DHCP QEMU image IP>
 #
 
-source buildlib.sh          # initializes $IMGNAME
+set -e
 
-IP=$1                       # First argument is the QEMU Raspbian IP address
+IP=${1:-192.168.0.145}      # For QEMU automated testing
 
 ## BUILDING
+source buildlib.sh          # initializes $IMGNAME
 
 # Raspbian
-./build-SD.sh "$IP"
+./build-SD-rpi.sh "$IP"
 
-# docker x86
+# Armbian
+./build-SD-odroidHC2.sh
+./build-SD-rock64.sh
+./build-SD-bananapi.sh
+
+# Docker x86
 docker pull debian:stretch-slim
 make nextcloudplus-x86 && {
   docker push ownyourbits/nextcloudplus-x86 
@@ -26,7 +32,7 @@ make nextcloudplus-x86 && {
   docker push ownyourbits/debian-ncp-x86
 
   # keep old container updated, at least for a while
-  docker tag ownyourbits/nextcloudplus-x86   ownyourbits/nextcloudpi-x86
+  docker tag ownyourbits/nextcloudplus-x86 ownyourbits/nextcloudpi-x86
   docker push ownyourbits/nextcloudpi-x86 
 }
 
@@ -34,9 +40,6 @@ make nextcloudplus-x86 && {
 [[ -f docker-armhf/raspbian_docker.img ]] || \
   ./installer.sh docker-armhf/docker-env.sh "$IP" raspbian_lite.img # && mv
 ./installer.sh docker-armhf/build-container.sh "$IP" docker-armhf/raspbian_docker.img
-
-# armbian
-./build-SD-odroid.sh
 
 # License
 #
