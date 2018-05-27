@@ -1,7 +1,7 @@
 {
     "translations": {
         "CONFIRM": "Confirmar",
-        "Change password for the NextCloudPlus Panel": "Cambiar la contraseña para el Panel de NextCloudPlus",
+        "Change password for the NextCloudPi Panel": "Cambiar la contraseña para el Panel de NextCloudPi",
         "PASSWORD": "Contraseña",
         "nc-passwd": "nc-passwd"
     }

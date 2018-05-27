@@ -11,7 +11,7 @@
 ACTIVE_=yes
 USER_=ncp
 
-DESCRIPTION="Notify in NC when a NextCloudPlus update is available"
+DESCRIPTION="Notify in NC when a NextCloudPi update is available"
 
 # check every hour
 CHECKINTERVAL=1
@@ -34,7 +34,7 @@ LATEST=/var/run/.ncp-latest-version
 NOTIFIED=/var/run/.ncp-version-notified
 
 test -e \$LATEST || exit 0;
-/usr/local/bin/ncp-test-updates || { echo "NextCloudPlus up to date"; exit 0; }
+/usr/local/bin/ncp-test-updates || { echo "NextCloudPi up to date"; exit 0; }
 
 test -e \$NOTIFIED && [[ "\$( cat \$LATEST )" == "\$( cat \$NOTIFIED )" ]] && { 
   echo "Found update from \$( cat \$VERFILE ) to \$( cat \$LATEST ). Already notified" 
@@ -47,7 +47,7 @@ IFACE=\$( ip r | grep "default via" | awk '{ print \$5 }' | head -1 )
 IP=\$( ip a show dev "\$IFACE" | grep global | grep -oP '\d{1,3}(\.\d{1,3}){3}' | head -1 )
 
 sudo -u www-data php /var/www/nextcloud/occ notification:generate \
-  $USER_ "NextCloudPlus update" \
+  $USER_ "NextCloudPi update" \
      -l "Update from \$( cat \$VERFILE ) to \$( cat \$LATEST ) is available. Update from https://\$IP:4443"
 
 cat \$LATEST > \$NOTIFIED
@@ -78,7 +78,7 @@ echo -e "Packages automatically upgraded: \$PKGS\\n"
 
 # notify
 sudo -u www-data php /var/www/nextcloud/occ notification:generate \
-  $USER_ "NextCloudPlus Unattended Upgrades" \
+  $USER_ "NextCloudPi Unattended Upgrades" \
      -l "Packages automatically upgraded \$PKGS"
 EOF
   chmod +x /usr/local/bin/ncp-notify-unattended-upgrade

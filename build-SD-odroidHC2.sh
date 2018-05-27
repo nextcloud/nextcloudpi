@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Batch creation of NextCloudPlus image for the Odroid HC1
+# Batch creation of NextCloudPi image for the Odroid HC1
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!

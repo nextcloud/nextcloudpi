@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# System limit configurator for NextCloudPlus
+# System limit configurator for NextCloudPi
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -13,7 +13,7 @@ MEMORYLIMIT_=768M
 PHPTHREADS_=0
 REDISMEM_=3gb
 
-DESCRIPTION="Configure system limits for NextCloudPlus"
+DESCRIPTION="Configure system limits for NextCloudPi"
 INFO="Set PHP threads to 0 in order to use all cores"
 
 configure()

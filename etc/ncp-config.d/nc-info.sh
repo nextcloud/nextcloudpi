@@ -8,7 +8,7 @@
 # More at: https://ownyourbits.com
 #
 
-DESCRIPTION="Print NextCloudPlus system info"
+DESCRIPTION="Print NextCloudPi system info"
 
 install()
 { 

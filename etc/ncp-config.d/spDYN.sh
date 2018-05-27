@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# spDYN setup for NextcloudPlus
+# spDYN setup for NextCloudPi
 #
 #
 # Copyleft 2017 by Timm Goldenstein

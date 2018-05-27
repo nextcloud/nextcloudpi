@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Use uPnP to forward router ports for NextCloudPlus
+# Use uPnP to forward router ports for NextCloudPi
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -13,7 +13,7 @@ HTTPPORT_=80
 DESCRIPTION="Set port forwarding to access from outside (UPnP)"
 
 INFOTITLE="Instructions for UPnP Port Forwarding"
-INFO="For NextCloudPlus to be able to setup your ports, UPnP must be activated
+INFO="For NextCloudPi to be able to setup your ports, UPnP must be activated
 in your router. Activate it now on your router admin webpage.
 
 ** UPnP is considered a security risk **

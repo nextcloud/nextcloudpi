@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Data dir configuration script for NextCloudPlus
+# Data dir configuration script for NextCloudPi
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -8,7 +8,7 @@
 # More at https://ownyourbits.com/
 #
 
-DESCRIPTION="Update NextCloudPlus"
+DESCRIPTION="Update NextCloudPi"
 
 configure()
 {
