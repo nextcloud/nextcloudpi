@@ -11,7 +11,7 @@
 PASSWORD_=ownyourbits
 CONFIRM_=ownyourbits
 
-DESCRIPTION="Change password for the NextCloudPlus Panel"
+DESCRIPTION="Change password for the NextCloudPi Panel"
 
 configure()
 {

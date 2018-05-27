@@ -57,7 +57,7 @@ EOF
 
   # tweak fail2ban email 
   local F=/etc/fail2ban/action.d/sendmail-common.conf
-  sed -i 's|Fail2Ban|NextCloudPlus|' /etc/fail2ban/action.d/sendmail-whois-lines.conf
+  sed -i 's|Fail2Ban|NextCloudPi|' /etc/fail2ban/action.d/sendmail-whois-lines.conf
   grep -q actionstart_ "$F" || sed -i 's|actionstart|actionstart_|' "$F"
   grep -q actionstop_  "$F" || sed -i 's|actionstop|actionstop_|'   "$F"
 

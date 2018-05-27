@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Import NextCloudPlus configuration
+# Import NextCloudPi configuration
 #
 #
 # Copyleft 2017 by Courtney Hicks
@@ -9,7 +9,7 @@
 
 FILE_=/media/USBdrive/ncp-config_xxxxxx.cfg
 
-DESCRIPTION="Import NextCloudPlus configuration from file"
+DESCRIPTION="Import NextCloudPi configuration from file"
 
 configure() 
 {

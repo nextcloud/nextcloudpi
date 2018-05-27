@@ -1,6 +1,6 @@
 <?php
 ///
-// NextcloudPlus Web Panel CSRF protection library
+// NextCloudPi Web Panel CSRF protection library
 //
 // Inspired by http://blog.ircmaxell.com/2013/02/preventing-csrf-attacks.html
 //

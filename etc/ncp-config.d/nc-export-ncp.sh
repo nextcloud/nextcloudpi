@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Export NextCloudPlus configuration
+# Export NextCloudPi configuration
 #
 #
 # Copyleft 2017 by Courtney Hicks
@@ -9,7 +9,7 @@
 
 DIR_=/media/USBdrive/
 
-DESCRIPTION="Export NextCloudPlus configuration"
+DESCRIPTION="Export NextCloudPi configuration"
 
 configure() 
 {
