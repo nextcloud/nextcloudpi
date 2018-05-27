@@ -25,7 +25,7 @@ function nextcloud-config()
     # ask for update if outdated
     test -f /usr/local/etc/ncp-changelog && \
       local CHANGELOG=$( head -4 /usr/local/etc/ncp-changelog )
-    ncp-test-updates && \
+    ncp-test-updates 2>/dev/null && \
     whiptail --backtitle "$BACKTITLE $( cat /usr/local/etc/ncp-version )" \
       --title "NextCloudPlus update available" \
       --clear --yesno "Update to $( cat $VERFILE )?\n\n$CHANGELOG" \
