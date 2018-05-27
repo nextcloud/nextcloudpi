@@ -11,7 +11,7 @@
 set -e
 source buildlib.sh
 
-IP=192.168.0.145            # For QEMU automated testing
+IP=${1:-192.168.0.145}      # For QEMU automated testing
 SIZE=3G                     # Raspbian image size
 #CLEAN=1                    # Pass this envvar to clean download cache
 IMG="NextCloudPi_RPi_$( date  "+%m-%d-%y" ).img"
