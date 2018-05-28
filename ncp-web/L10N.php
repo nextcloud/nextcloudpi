@@ -111,6 +111,9 @@ class L10N
     if (isset($this->translations[$module]) && isset($this->translations[$module][$text])) {
       return $this->translations[$module][$text];
     }
+    else {
+      //error_log( "couldn't find translation for " . $module . ": " . $text, 0 );
+    }
     return $text;
   }
 

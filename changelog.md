@@ -1,5 +1,13 @@
 
-[v0.56.11](https://github.com/nextcloud/nextcloudpi/commit/4159b4f) (2018-05-27) ncp-config: silence connectivity errors
+[v0.56.15](https://github.com/nextcloud/nextcloudpi/commit/7439045) (2018-05-28) ncp-web: added chinese translations
+
+[v0.56.14](https://github.com/nextcloud/nextcloudpi/commit/c47fb2d) (2018-05-27) re-rename to NCPi
+
+[v0.56.13](https://github.com/nextcloud/nextcloudpi/commit/b39c32f) (2018-05-28) spDYN: install curl for docker
+
+[v0.56.12](https://github.com/nextcloud/nextcloudpi/commit/af7e6f1) (2018-05-28) nc-format-USB: fix when ZRAM active
+
+[v0.56.11](https://github.com/nextcloud/nextcloudpi/commit/d84d292) (2018-05-27) ncp-config: silence connectivity errors
 
 [v0.56.10](https://github.com/nextcloud/nextcloudpi/commit/a629e63) (2018-05-25) nc-ramlogs: fix docker installation from latest upstream changes
 
