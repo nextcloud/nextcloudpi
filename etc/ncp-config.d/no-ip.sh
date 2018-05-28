@@ -22,10 +22,12 @@ install()
 {
   apt-get update
   apt-get install --no-install-recommends -y make 
-  mkdir /tmp/noip && cd /tmp/noip
-  wget http://www.no-ip.com/client/linux/noip-duc-linux.tar.gz
-  tar vzxf noip-duc-linux.tar.gz
-  cd -; cd "$OLDPWD"/noip-2*
+  local TMPDIR="$( mktemp -d /tmp/noip.XXXXXX )"
+  cd "$TMPDIR"
+  wget -O- --content-disposition https://github.com/nachoparker/noip-DDNS/archive/master/latest.tar.gz \
+  | tar -xz \
+  || return 1
+  cd -; cd "$OLDPWD"/noip-DDNS-master/
   make
   cp noip2 /usr/local/bin/
 
@@ -47,7 +49,7 @@ EOF
 
   chmod +x /etc/init.d/noip2
   cd -
-  rm -r /tmp/noip
+  rm -r "$TMPDIR"
 
   update-rc.d noip2 defaults
   update-rc.d noip2 disable
