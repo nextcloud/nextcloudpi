@@ -20,7 +20,7 @@ careful, this will destroy any data in the USB drive
 configure() 
 {
   # count all disk devices except mmcblk0
-  local NUM=$(( $( lsblk -l -n | awk '{ print $6 }' | grep disk | wc -l ) - 1 ))
+  local NUM=$(( $( lsblk -l -n | grep -v zram | awk '{ print $6 }' | grep disk | wc -l ) - 1 ))
 
   # only one plugged in
   [[ $NUM != 1 ]] && { 
