@@ -40,16 +40,6 @@ configure()
     return; 
   } 
 
-  # Installation in QEMU (without a wireless interface) produces 
-  # wicd installation to generate 'wireless_interface = None'.
-  # It does not hurt to restart it to wlan0 for RPi3 & zero w
-  sed -i 's|^wireless_interface = None|wireless_interface = wlan0|' /etc/wicd/manager-settings.conf
-
-  # First booting with a connected ethernet cable produces
-  # wicd daemon to generate 'wireless_interface = '. (issue #6)
-  # It does not hurt to restart it to wlan0 for RPi3 & zero w
-  sed -i 's|^wireless_interface = $|wireless_interface = wlan0|'    /etc/wicd/manager-settings.conf
-
   ip link set up dev wlan0
   systemctl stop    dhcpcd
   systemctl disable dhcpcd
