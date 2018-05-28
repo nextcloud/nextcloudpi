@@ -109,6 +109,14 @@ done
   wget -q https://raw.githubusercontent.com/nachoparker/btrfs-sync/master/btrfs-sync -O /usr/local/bin/btrfs-sync
   chmod +x /usr/local/bin/btrfs-sync
 
+  # docker images only
+  [[ -f /.docker-image ]] && {
+    # install curl for dynDNS and duckDNS
+    [[ -f /usr/bin/curl ]] || {
+      apt-get update
+      apt-get install -y --no-install-recommends curl
+    }
+  }
   # for non docker images
   [[ ! -f /.docker-image ]] && {
     # install avahi-daemon in armbian images
