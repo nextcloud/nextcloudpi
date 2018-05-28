@@ -16,7 +16,11 @@ INSTALLPATH=/usr/local/etc/$INSTALLDIR
 CRONFILE=/etc/cron.d/duckdns
 DESCRIPTION="Free Dynamic DNS provider (need account from https://duckdns.org)"
 
-install() { :; }
+install()
+{
+  apt-get update
+  apt-get install -y --no-install-recommends curl # TODO use wget instead
+}
 
 configure() 
 {

@@ -18,7 +18,10 @@ INSTALLPATH=/usr/local/etc/$INSTALLDIR
 CRONFILE=/etc/cron.d/spdnsupdater
 DESCRIPTION="Free Dynamic DNS provider (need account from spdyn.de)"
 
-install() {
+install()
+{
+  apt-get update
+  apt-get install -y --no-install-recommends curl # TODO use wget instead
 
   # Create the spdnsUpdater.sh
   mkdir -p "$INSTALLPATH"
