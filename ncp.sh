@@ -32,8 +32,8 @@ install()
 
   # include option in raspi-config (only Raspbian)
   test -f /usr/bin/raspi-config && {
-    sed -i '/Change User Password/i"0 NextCloudPi Configuration" "Configuration of NextCloudPi" \\\\'  /usr/bin/raspi-config
-    sed -i '/1\\\\ \*) do_change_pass ;;/i0\\\\ *) ncp-config ;;'                                          /usr/bin/raspi-config
+    sed -i '/Change User Password/i"0 NextCloudPi Configuration" "Configuration of NextCloudPi" \\' /usr/bin/raspi-config
+    sed -i '/1\\ \*) do_change_pass ;;/i0\\ *) ncp-config ;;'                                       /usr/bin/raspi-config
   }
 
   # NCP-WEB
