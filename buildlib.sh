@@ -116,6 +116,13 @@ $CFG_STEP
   launch_installation "$IP" # uses $INSTALLATION_CODE
 }
 
+function prepare_dirs()
+{
+  [[ "$CLEAN" != "" ]] && rm -rf cache
+  rm -rf tmp
+  mkdir -p tmp output cache
+}
+
 function mount_raspbian()
 {
   local IMG="$1"
@@ -178,12 +185,13 @@ function resize_image()
   local IMG="$1"
   local SIZE="$2"
   local DEV
+  echo -e "\n\e[1m[ Resize Image ]\e[0m"
   fallocate -l$SIZE "$IMG"
   parted "$IMG" -- resizepart 2 -1s
   DEV="$( losetup -f )"
   mount_raspbian "$IMG"
   sudo resize2fs -f "$DEV"
-  echo "image resized"
+  echo "Image resized"
   umount_raspbian
 }
 
@@ -192,6 +200,7 @@ function update_boot_uuid()
   local IMG="$1"
   local PTUUID="$( sudo blkid -o export "$IMG" | grep PTUUID | sed 's|.*=||' )"
 
+  echo -e "\n\e[1m[ Update Raspbian Boot UUIDS ]\e[0m"
   mount_raspbian "$IMG" || return 1
   sudo bash -c "cat > raspbian_root/etc/fstab" <<EOF
 PARTUUID=${PTUUID}-01  /boot           vfat    defaults          0       2
@@ -257,6 +266,7 @@ function download_raspbian()
   local IMG_CACHE=cache/raspbian_lite.img
   local ZIP_CACHE=cache/raspbian_lite.zip
 
+  echo -e "\n\e[1m[ Download Raspbian ]\e[0m"
   mkdir -p cache
   test -f $IMG_CACHE && \
     echo -e "INFO: $IMG_CACHE already exists. Skipping download ..." && \
@@ -280,6 +290,7 @@ function pack_image()
   local TAR="$2"
   local DIR="$( dirname  "$IMG" )"
   local IMG="$( basename "$IMG" )"
+  echo -e "\n\e[1m[ Pack Image ]\e[0m"
   echo "packing $IMG → $TAR"
   tar -I pbzip2 -C "$DIR" -cvf "$TAR" "$IMG" && \
     echo -e "$TAR packed successfully"
@@ -288,13 +299,14 @@ function pack_image()
 function create_torrent()
 {
   local TAR="$1"
+  echo -e "\n\e[1m[ Create Torrent ]\e[0m"
   [[ -f "$TAR" ]] || { echo "image $TAR not found"; return 1; }
   local IMGNAME="$( basename "$TAR" .tar.bz2 )"
   local DIR="torrent/$IMGNAME"
   [[ -d "$DIR" ]] && { echo "dir $DIR already exists"; return 1; }
   mkdir -p torrent/"$IMGNAME" && cp -v --reflink=auto "$TAR" torrent/"$IMGNAME"
   md5sum "$DIR"/*.bz2 > "$DIR"/md5sum
-  createtorrent -a udp://tracker.opentrackr.org -p 1337 -c "NextCloudPi. Nextcloud for Raspberry Pi image" "$DIR" "$DIR".torrent
+  createtorrent -a udp://tracker.opentrackr.org -p 1337 -c "NextCloudPi. Nextcloud ready to use image" "$DIR" "$DIR".torrent
 }
 
 function generate_changelog()
@@ -309,6 +321,7 @@ function generate_changelog()
 function upload_ftp()
 {
   local IMGNAME="$1"
+  echo -e "\n\e[1m[ Upload FTP ]\e[0m"
   [[ -f torrent/"$IMGNAME"/"$IMGNAME".tar.bz2 ]] || { echo "No image file found, abort"; return 1; }
   [[ "$FTPPASS" == "" ]] && { echo "No FTPPASS variable found, abort"; return 1; }
 
@@ -340,6 +353,7 @@ function test_image()
 {
   local IMG="$1"
   local IP="$2"
+  echo -e "\e[1m\n[ QEMU Test ]\e[0m"
   [[ -f "$IMG" ]] || { echo "No image file found, abort"; return 1; }
   launch_qemu "$IMG" &
   sleep 10

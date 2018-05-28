@@ -20,21 +20,16 @@ IMG="NextCloudPi_RPi_$( date  "+%m-%d-%y" ).img"
 
 ## preparations
 
-[[ "$FTPPASS" == "" ]] && { 
-  echo -e "\e[1mNo FTPPASS variable found, FTP won't work.\nYou can to cancel now\e[0m"
-  sleep 5
-}
-
-[[ "$CLEAN" != "" ]] && rm -rf cache
-rm -rf tmp && mkdir tmp
 IMG=tmp/"$IMG"
 
+prepare_dirs                   # tmp cache output
 download_raspbian "$IMG"
 resize_image      "$IMG" "$SIZE"
 update_boot_uuid  "$IMG"       # PARTUUID has changed after resize
 
 ## BUILD NCP
 
+echo -e "\e[1m\n[ Build NCP ]\e[0m"
 prepare_chroot_raspbian "$IMG"
 
 mkdir raspbian_root/tmp/ncp-build
@@ -75,7 +70,6 @@ clean_chroot_raspbian
 
 ## pack
  
-mkdir -p output
 TAR=output/"$( basename "$IMG" .img ).tar.bz2"
 pack_image "$IMG" "$TAR"
 
@@ -83,7 +77,6 @@ pack_image "$IMG" "$TAR"
 
 set_static_IP "$IMG" "$IP"
 test_image    "$IMG" "$IP"
-rm -r tmp
 
 # upload
 create_torrent "$TAR"

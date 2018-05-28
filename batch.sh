@@ -15,13 +15,19 @@ IP=${1:-192.168.0.145}      # For QEMU automated testing
 ## BUILDING
 source buildlib.sh          # initializes $IMGNAME
 
+[[ "$FTPPASS" == "" ]] && {
+  echo -e "\e[1mNo FTPPASS variable found, FTP won't work.\nYou can to cancel now\e[0m"
+  sleep 5
+}
+
 # Raspbian
 ./build-SD-rpi.sh "$IP"
+# TODO berryboot
 
 # Armbian
-./build-SD-odroidHC2.sh
-./build-SD-rock64.sh
-./build-SD-bananapi.sh
+./build-SD-armbian.sh odroidxu4 OdroidHC2
+./build-SD-armbian.sh rock64
+./build-SD-armbian.sh bananapi
 
 # Docker x86
 docker pull debian:stretch-slim
