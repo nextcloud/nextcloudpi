@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Cleanup step Raspbian image
+# Cleanup step NCP image
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -15,8 +15,8 @@ configure()
   kill $( cat /run/redis/redis-server.pid )
   kill $( cat /run/crond.pid )
 
-  # enable randomize passwords
-  systemctl enable nc-provisioning
+  # disable unused apache mods
+  a2dismod status reqtimeout env autoindex access_compat auth_basic authn_file authn_core alias access_compat
 
   # cleanup all NCP extras
   source /usr/local/etc/library.sh

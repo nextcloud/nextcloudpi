@@ -106,7 +106,6 @@ EOF
     a2enmod mime
     a2enmod ssl
     
-    a2dismod -f status reqtimeout env autoindex access_compat auth_basic authn_file authn_core alias access_compat
     echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
 

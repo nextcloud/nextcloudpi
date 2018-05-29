@@ -94,6 +94,7 @@ ExecStart=/bin/bash /usr/local/bin/ncp-provisioning.sh
 [Install]
 WantedBy=multi-user.target
 EOF
+  systemctl enable nc-provisioning
   return 0
 }
 
