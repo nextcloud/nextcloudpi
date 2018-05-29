@@ -29,7 +29,6 @@ grep -q -e "Debian GNU/Linux 9" -e "Raspbian GNU/Linux 9" /etc/issue || {
 }
 
 # check installed software
-type apache2 &>/dev/null && APACHE_EXISTS=1
 type mysqld  &>/dev/null && echo ">>> WARNING: existing mysqld configuration will be changed <<<"
 
 # get install code
@@ -52,10 +51,7 @@ install_script  etc/ncp-config.d/nc-nextcloud.sh
 activate_script etc/ncp-config.d/nc-nextcloud.sh
 install_script  ncp.sh
 activate_script etc/ncp-config.d/nc-init.sh
-
-# re-enable mods disabled during install, in case there's other shared services in apache2
-[[ "$APACHE_EXISTS" != "" ]] && \
-  a2enmod status reqtimeout env autoindex access_compat auth_basic authn_file authn_core alias access_compat
+[[ -f /.ncp-image ]] && activate_script post-inst.sh
 
 popd
 echo "Done.

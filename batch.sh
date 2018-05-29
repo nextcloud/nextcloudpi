@@ -26,8 +26,8 @@ source buildlib.sh          # initializes $IMGNAME
 
 # Armbian
 ./build-SD-armbian.sh odroidxu4 OdroidHC2
-./build-SD-armbian.sh rock64
-./build-SD-armbian.sh bananapi
+./build-SD-armbian.sh rock64 Rock64
+./build-SD-armbian.sh bananapi Bananapi
 
 # Docker x86
 docker pull debian:stretch-slim
