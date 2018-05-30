@@ -6,3 +6,4 @@ qemu-raspbian-network/
 armbian/
 *.img
 *.tar.bz2
+.git
