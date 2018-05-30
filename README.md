@@ -12,7 +12,7 @@ This code also generates the [NextCloudPi docker images](https://hub.docker.com/
 ## Features
 
  * Raspbian 9 stretch
- * Nextcloud 13.0.0
+ * Nextcloud 13.0.2
  * Apache 2.4.25, with HTTP2 enabled
  * PHP 7.0 (double the speed of PHP5!)
  * MariaDB 10
@@ -49,7 +49,8 @@ This code also generates the [NextCloudPi docker images](https://hub.docker.com/
  * SAMBA ready to share your files with Windows/Mac/Linux ( NEW 04-16-2017 )
  * USB automount ( NEW 05-24-2017 )
  * Remote updates ( NEW 03-31-2017 )
- * Autoupdates ( NEW 08-16-2017 )
+ * Autoumatic NCP updates ( NEW 08-16-2017 )
+ * Automatic Nextcloud updates ( NEW 05-29-2018 )
  * Update notifications ( NEW 08-16-2017 )
  * NextCloud backup and restore ( NEW 05-24-2017 )
  * NextCloud online installation ( NEW 05-24-2017 )
@@ -79,12 +80,18 @@ sudo ncp-config
 
 ## How to build
 
-The NextCloudPi SD image is based on Raspbian and is automatically generated using QEMU.
+Install git, docker, qemu-user-static, chroot and all the usual building tools.
 
 ```
 git clone https://github.com/nextcloud/nextcloudpi.git
 cd nextcloudpi
-./batch.sh 192.168.0.145 # change to your QEMU raspbian IP
+./build-SD-rpi.sh
+```
+
+, or for an Armbian based board
+
+```
+./build-SD-armbian.sh odroidxu4   # supported board code name
 ```
 
 The docker armhf image can be generated in an ARM environment with docker
