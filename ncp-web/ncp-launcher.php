@@ -92,7 +92,11 @@ if ( $_POST['action'] == "cfgreq" )
 
 else if ( $_POST['action'] == "launch" && $_POST['config'] )
 {
+  // sanity checks
   if ( !$_POST['ref'] ) exit( '{ "output": "Invalid request" }' );
+
+  preg_match( '/^[a-z-]+$/' , $_POST['ref'] , $matches )
+    or exit( '{ "output": "Invalid input" , "token": "' . getCSRFToken() . '" }' );
 
   // CSRF check
   $token = isset($_POST['csrf_token']) ? $_POST['csrf_token'] : '';
