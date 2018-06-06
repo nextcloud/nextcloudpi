@@ -28,39 +28,8 @@ install()
   systemctl disable nfs-kernel-server
   systemctl mask nfs-blkmap
 
-  cat > /etc/systemd/system/nfs-common.services <<EOF
-[Unit]
-Description=NFS Common daemons
-Wants=remote-fs-pre.target
-DefaultDependencies=no
-
-[Service]
-Type=oneshot
-RemainAfterExit=yes
-ExecStart=/etc/init.d/nfs-common start
-ExecStop=/etc/init.d/nfs-common stop
-
-[Install]
-WantedBy=sysinit.target
-EOF
-
-  cat > /etc/systemd/system/rpcbind.service <<EOF
-[Unit]
-Description=RPC bind portmap service
-After=systemd-tmpfiles-setup.service
-Wants=remote-fs-pre.target
-Before=remote-fs-pre.target
-DefaultDependencies=no
-
-[Service]
-ExecStart=/sbin/rpcbind -f -w
-KillMode=process
-Restart=on-failure
-
-[Install]
-WantedBy=sysinit.target
-Alias=portmap
-EOF
+  # delay init because of automount
+  sed -i 's|^ExecStartPre=.*|ExecStartPre=/bin/bash -c "/bin/sleep 30; /usr/sbin/exportfs -r"|' /lib/systemd/system/nfs-server.service
 }
 
 configure()

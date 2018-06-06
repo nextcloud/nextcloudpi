@@ -238,6 +238,10 @@ done
     systemctl enable nc-provisioning
   }
 
+  # fix NFS dependency with automount
+  rm -f /etc/systemd/system/rpcbind.service /etc/systemd/system/nfs-common.services
+  sed -i 's|^ExecStartPre=.*|ExecStartPre=/bin/bash -c "/bin/sleep 30; /usr/sbin/exportfs -r"|' /lib/systemd/system/nfs-server.service
+
 } # end - only live updates
 
 exit 0
