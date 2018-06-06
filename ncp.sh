@@ -36,6 +36,13 @@ install()
     sed -i '/1\\ \*) do_change_pass ;;/i0\\ *) ncp-config ;;'                                       /usr/bin/raspi-config
   }
 
+  # add the ncc shortcut
+  cat >> /usr/local/bin/ncc <<'EOF'
+#!/bin/bash
+sudo -u www-data php /var/www/nextcloud/occ "$@"
+EOF
+  chmod +x /usr/local/bin/ncc
+
   # NCP-WEB
 
   ## VIRTUAL HOST

@@ -1,5 +1,7 @@
 
-[v0.56.18](https://github.com/nextcloud/nextcloudpi/commit/caaa4cd) (2018-06-06) NFS: fix dependency with automount
+[v0.56.19](https://github.com/nextcloud/nextcloudpi/commit/f08c238) (2018-06-06) add ncc command, shortcut of occ
+
+[v0.56.18](https://github.com/nextcloud/nextcloudpi/commit/8914348) (2018-06-06) NFS: fix dependency with automount
 
 [v0.56.17](https://github.com/nextcloud/nextcloudpi/commit/b4038ca) (2018-06-04) ncp-web: sanitize the ref parameter
 

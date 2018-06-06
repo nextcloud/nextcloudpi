@@ -242,6 +242,13 @@ done
   rm -f /etc/systemd/system/rpcbind.service /etc/systemd/system/nfs-common.services
   sed -i 's|^ExecStartPre=.*|ExecStartPre=/bin/bash -c "/bin/sleep 30; /usr/sbin/exportfs -r"|' /lib/systemd/system/nfs-server.service
 
+  # add the ncc shortcut
+  cat >> /usr/local/bin/ncc <<'EOF'
+#!/bin/bash
+sudo -u www-data php /var/www/nextcloud/occ "$@"
+EOF
+  chmod +x /usr/local/bin/ncc
+
 } # end - only live updates
 
 exit 0
