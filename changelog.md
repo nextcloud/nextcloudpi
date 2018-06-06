@@ -1,5 +1,11 @@
 
-[v0.56.15](https://github.com/nextcloud/nextcloudpi/commit/7439045) (2018-05-28) ncp-web: added chinese translations
+[v0.56.18](https://github.com/nextcloud/nextcloudpi/commit/caaa4cd) (2018-06-06) NFS: fix dependency with automount
+
+[v0.56.17](https://github.com/nextcloud/nextcloudpi/commit/b4038ca) (2018-06-04) ncp-web: sanitize the ref parameter
+
+[v0.56.16](https://github.com/nextcloud/nextcloudpi/commit/6eaa853) (2018-05-29) build: fix cleanup armbian images
+
+[v0.56.15](https://github.com/nextcloud/nextcloudpi/commit/6600972) (2018-05-28) ncp-web: added chinese translations
 
 [v0.56.14](https://github.com/nextcloud/nextcloudpi/commit/c47fb2d) (2018-05-27) re-rename to NCPi
 
