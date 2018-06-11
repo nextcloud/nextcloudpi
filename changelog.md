@@ -1,5 +1,7 @@
 
-[v0.56.19](https://github.com/nextcloud/nextcloudpi/commit/f08c238) (2018-06-06) add ncc command, shortcut of occ
+[v0.56.20](https://github.com/nextcloud/nextcloudpi/commit/6240d00) (2018-06-11) ncp-web: fix sanitization for fail2ban
+
+[v0.56.19](https://github.com/nextcloud/nextcloudpi/commit/09daa19) (2018-06-06) add ncc command, shortcut of occ
 
 [v0.56.18](https://github.com/nextcloud/nextcloudpi/commit/8914348) (2018-06-06) NFS: fix dependency with automount
 
