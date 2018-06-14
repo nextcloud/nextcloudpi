@@ -1,5 +1,7 @@
 
-[v0.56.21](https://github.com/nextcloud/nextcloudpi/commit/4cc62c8) (2018-06-11) docker: persist SSL certificates
+[v0.56.22](https://github.com/nextcloud/nextcloudpi/commit/cbda56e) (2018-06-14) nc-restore: fix redis restart in docker
+
+[v0.56.21](https://github.com/nextcloud/nextcloudpi/commit/80492b3) (2018-06-11) docker: persist SSL certificates
 
 [v0.56.20](https://github.com/nextcloud/nextcloudpi/commit/ac4128a) (2018-06-11) ncp-web: fix sanitization for fail2ban
 
