@@ -105,10 +105,6 @@ done
 # not for image builds, only live updates
 [[ ! -f /.ncp-image ]] && {
 
-  # Update btrfs-sync
-  wget -q https://raw.githubusercontent.com/nachoparker/btrfs-sync/master/btrfs-sync -O /usr/local/bin/btrfs-sync
-  chmod +x /usr/local/bin/btrfs-sync
-
   # docker images only
   [[ -f /.docker-image ]] && {
     # install curl for dynDNS and duckDNS
@@ -117,41 +113,11 @@ done
       apt-get install -y --no-install-recommends curl
     }
   }
+
   # for non docker images
   [[ ! -f /.docker-image ]] && {
-    # install avahi-daemon in armbian images
-    [[ -f /lib/systemd/system/avahi-daemon.service ]] || {
-      apt-get update
-      apt-get install -y --no-install-recommends avahi-daemon
-    }
+    :
   }
-
-  # fix wrong user for notifications
-  DATADIR="$( grep datadirectory /var/www/nextcloud/config/config.php | awk '{ print $3 }' | grep -oP "[^']*[^']" | head -1 )"
-  test -d "$DATADIR" && {
-    [[ -d "$DATADIR"/ncp ]] && [[ ! -d "$DATADIR"/admin ]] && {
-      F="$CONFDIR"/nc-notify-updates.sh
-      grep -q '^USER_=admin$' "$F" && grep -q '^ACTIVE_=yes$' "$F" && {
-        sed -i 's|^USER_=admin|USER_=ncp|' "$F"
-        cd "$CONFDIR" &>/dev/null
-        activate_script nc-notify-updates.sh
-        cd -          &>/dev/null
-      }
-      F="$CONFDIR"/nc-autoupdate-ncp.sh
-      grep -q '^NOTIFYUSER_=admin$' "$F" && grep -q '^ACTIVE_=yes$' "$F" && {
-        sed -i 's|^NOTIFYUSER_=admin|NOTIFYUSER_=ncp|' "$F"
-        cd "$CONFDIR" &>/dev/null
-        activate_script nc-autoupdate-ncp.sh
-        cd -          &>/dev/null
-      }
-    }
-  }
-
-  # update nc-backup and nc-restore
-  cd "$CONFDIR" &>/dev/null
-  install_script nc-backup.sh
-  install_script nc-restore.sh
-  cd -          &>/dev/null
 
   # fix exit status autoupdate
   F="$CONFDIR"/nc-autoupdate-ncp.sh
@@ -248,6 +214,11 @@ done
 sudo -u www-data php /var/www/nextcloud/occ "$@"
 EOF
   chmod +x /usr/local/bin/ncc
+
+  # update nc-restore
+  cd "$CONFDIR" &>/dev/null
+  install_script nc-restore.sh
+  cd -          &>/dev/null
 
 } # end - only live updates
 
