@@ -76,7 +76,7 @@ sed -i "s|'dbpassword' =>.*|'dbpassword' => '$DBPASSWD',|" /var/www/nextcloud/co
 REDISPASS="$( grep "^requirepass" /etc/redis/redis.conf | cut -f2 -d' ' )"
 [[ "$REDISPASS" != "" ]] && \
   sed -i "s|'password'.*|'password' => '$REDISPASS',|" /var/www/nextcloud/config/config.php
-service redis restart
+service redis-server restart
 
 ## RE-CREATE DATABASE TABLE
 
