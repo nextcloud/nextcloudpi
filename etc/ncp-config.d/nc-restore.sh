@@ -158,11 +158,11 @@ bash /usr/local/bin/nextcloud-domain.sh
 # restart PHP if needed
 [[ "$NEED_RESTART" == "1" ]] && \
   bash -c " sleep 3
-            systemctl stop php7.0-fpm
-            systemctl stop mysqld
+            service php7.0-fpm stop
+            service mysqld     stop
             sleep 0.5
-            systemctl start php7.0-fpm
-            systemctl start mysqld
+            service php7.0-fpm start
+            service mysqld     start
             " &>/dev/null &
 EOF
   chmod +x /usr/local/bin/ncp-restore
