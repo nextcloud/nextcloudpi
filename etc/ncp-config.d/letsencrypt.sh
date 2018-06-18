@@ -31,12 +31,7 @@ install()
 {
   cd /etc || return 1
   apt-get update
-  apt-get install --no-install-recommends -y python2.7-minimal
-  wget -O- --content-disposition https://github.com/letsencrypt/letsencrypt/archive/master/latest.tar.gz \
-  | tar -xz \
-  || exit 1
-  mv certbot-master letsencrypt
-  /etc/letsencrypt/letsencrypt-auto --help # do not actually run certbot, only install packages
+  apt-get install --no-install-recommends -y letsencrypt
 
   [[ "$DOCKERBUILD" == 1 ]] && {
     # execute before lamp stack
@@ -46,21 +41,13 @@ install()
 source /usr/local/etc/library.sh
 persistent_cfg /etc/letsencrypt
 
-cat > /etc/cron.weekly/letsencrypt-ncp <<EOFCRON
-#!/bin/bash
-/etc/letsencrypt/certbot-auto renew --quiet
-rm -rf $NCDIR/.well-known
-EOFCRON
-
-chmod +x /etc/cron.weekly/letsencrypt-ncp
-
 exit 0
 EOF
     chmod +x /etc/services-available.d/009letsencrypt
   }
 }
 
-# tested with git version v0.11.0-71-g018a304
+# tested with certbot 0.10.2
 configure() 
 {
   local DOMAIN_LOWERCASE="${DOMAIN_,,}"
@@ -69,10 +56,10 @@ configure()
     sed -i "s|ServerName .*|ServerName $DOMAIN_|" $VHOSTCFG || \
     sed -i "/DocumentRoot/aServerName $DOMAIN_" $VHOSTCFG 
 
-  /etc/letsencrypt/letsencrypt-auto certonly -n --no-self-upgrade --webroot -w $NCDIR --hsts --agree-tos -m $EMAIL_ -d $DOMAIN_ && {
+  letsencrypt certonly -n --no-self-upgrade --webroot -w $NCDIR --hsts --agree-tos -m $EMAIL_ -d $DOMAIN_ && {
     cat > /etc/cron.weekly/letsencrypt-ncp <<EOF
 #!/bin/bash
-/etc/letsencrypt/certbot-auto renew --quiet
+/usr/bin/certbot renew --quiet
 rm -rf $NCDIR/.well-known
 EOF
     chmod +x /etc/cron.weekly/letsencrypt-ncp
@@ -97,18 +84,6 @@ EOF
   }
   rm -rf $NCDIR/.well-known
   return 1
-}
-
-cleanup()
-{
-  apt-get purge -y \
-    augeas-lenses \
-    libpython-dev \
-    libpython2.7-dev \
-    libssl-dev \
-    python-dev \
-    python2.7-dev \
-    python-pip-whl
 }
 
 # License

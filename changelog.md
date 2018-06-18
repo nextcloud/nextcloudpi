@@ -1,7 +1,11 @@
 
-[v0.57.2](https://github.com/nextcloud/nextcloudpi/commit/09943a8) (2018-06-18) nc-static-IP: autodetect default interface
+[v0.57.4](https://github.com/nextcloud/nextcloudpi/commit/c00fbce) (2018-06-18) letsencrypt: install from debian package
 
-[v0.57.1](https://github.com/nextcloud/nextcloudpi/commit/1c3d0c0) (2018-06-18) docker: replace systemd for service
+[v0.57.3](https://github.com/nextcloud/nextcloudpi/commit/a74248b) (2018-06-18) armbian: default to SSH disabled
+
+[v0.57.2 ](https://github.com/nextcloud/nextcloudpi/commit/5479305) (2018-06-18) nc-static-IP: autodetect default interface
+
+[v0.57.1 ](https://github.com/nextcloud/nextcloudpi/commit/97375a1) (2018-06-18) docker: replace systemd for service
 
 [v0.57.0](https://github.com/nextcloud/nextcloudpi/commit/ef5839d) (2018-06-18) update to NC 13.0.4
 
