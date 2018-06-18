@@ -72,6 +72,7 @@ configure()
   }
 
   cp --reflink=auto -raT "$SRCDIR" "$DATADIR_" || return 1
+  chown www-data:www-data "$DATADIR_"
  
   # tmp upload dir
   mkdir -p "$DATADIR_/tmp" 
