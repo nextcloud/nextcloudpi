@@ -219,6 +219,14 @@ EOF
     activate_script nc-autoupdate-nc.sh
     cd -          &>/dev/null
   }
+  
+  # change letsencrypt from git to package based
+  [[ -f /usr/bin/letsencrypt ]] || {
+    echo "updating letsencrypt..."
+    apt-get update
+    apt-get install -y --no-install-recommends letsencrypt
+  }
+
 } # end - only live updates
 
 exit 0
