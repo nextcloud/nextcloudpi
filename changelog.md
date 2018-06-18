@@ -1,11 +1,13 @@
 
-[v0.57.0](https://github.com/nextcloud/nextcloudpi/commit/2591f25) (2018-06-18) update to NC 13.0.4
+[v0.57.1](https://github.com/nextcloud/nextcloudpi/commit/5483031) (2018-06-18) nc-limits: replace systemd for service
+
+[v0.57.0](https://github.com/nextcloud/nextcloudpi/commit/ef5839d) (2018-06-18) update to NC 13.0.4
 
 [v0.56.25](https://github.com/nextcloud/nextcloudpi/commit/fe16326) (2018-06-18) nc-snapshot-sync: upgrade
 
 [v0.56.24](https://github.com/nextcloud/nextcloudpi/commit/16ce683) (2018-06-18) nc-datadir: make sure we have the correct permissions
 
-[v0.56.23, master](https://github.com/nextcloud/nextcloudpi/commit/0a047a1) (2018-06-18) nc-info: fix typo
+[v0.56.23](https://github.com/nextcloud/nextcloudpi/commit/0a047a1) (2018-06-18) nc-info: fix typo
 
 [v0.56.22](https://github.com/nextcloud/nextcloudpi/commit/96e9f20) (2018-06-14) nc-restore: fix redis restart in docker
 

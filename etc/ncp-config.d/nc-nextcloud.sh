@@ -73,11 +73,11 @@ install()
     systemctl enable  redis-server
 
     # need to restart php
-    systemctl stop php7.0-fpm
-    systemctl stop mysqld
+    service php7.0-fpm stop
+    service mysqld     stop
     sleep 0.5
-    systemctl start php7.0-fpm
-    systemctl start mysqld
+    service php7.0-fpm start
+    service mysqld     start
   }
   
   # service to randomize passwords on first boot
