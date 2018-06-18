@@ -119,20 +119,6 @@ done
     :
   }
 
-  # fix exit status autoupdate
-  F="$CONFDIR"/nc-autoupdate-ncp.sh
-  grep -q '^ACTIVE_=yes$' "$F" && {
-    cd "$CONFDIR" &>/dev/null
-    activate_script nc-autoupdate-ncp.sh
-    cd -          &>/dev/null
-  }
-  F="$CONFDIR"/nc-autoupdate-nc.sh
-  grep -q '^ACTIVE_=yes$' "$F" && {
-    cd "$CONFDIR" &>/dev/null
-    activate_script nc-autoupdate-nc.sh
-    cd -          &>/dev/null
-  }
-
   # fix update httpd log location in virtual host after nc-datadir
   sed -i "s|CustomLog.*|CustomLog /var/log/apache2/nc-access.log combined|" /etc/apache2/sites-available/nextcloud.conf
   sed -i "s|ErrorLog .*|ErrorLog  /var/log/apache2/nc-error.log|"           /etc/apache2/sites-available/nextcloud.conf
@@ -226,6 +212,13 @@ EOF
   wget -q https://raw.githubusercontent.com/nachoparker/btrfs-snp/master/btrfs-snp -O /usr/local/bin/btrfs-snp
   chmod +x /usr/local/bin/btrfs-snp
 
+  # update to NC13.0.4
+  F="$CONFDIR"/nc-autoupdate-nc.sh
+  grep -q '^ACTIVE_=yes$' "$F" && {
+    cd "$CONFDIR" &>/dev/null
+    activate_script nc-autoupdate-nc.sh
+    cd -          &>/dev/null
+  }
 } # end - only live updates
 
 exit 0
