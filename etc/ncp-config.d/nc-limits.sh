@@ -30,16 +30,16 @@ configure()
 
   # need to restart php
   bash -c " sleep 3
-            systemctl stop php7.0-fpm
-            systemctl stop mysqld
+            service php7.0-fpm stop
+            service mysqld     stop
             sleep 0.5
-            systemctl start php7.0-fpm
-            systemctl start mysqld
+            service php7.0-fpm start
+            service mysqld     start
             " &>/dev/null &
 
   # redis max memory
   sed -i "s|maxmemory .*|maxmemory $REDISMEM_|" /etc/redis/redis.conf
-  systemctl restart redis
+  service redis restart
 }
 
 install() { :; }
