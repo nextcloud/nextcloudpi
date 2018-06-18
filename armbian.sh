@@ -30,6 +30,9 @@ curl -sSL https://raw.githubusercontent.com/nextcloud/nextcloudpi/master/install
 # force change root password at first login (again)
 chage -d 0 root
 
+# disable SSH by default, it can be enabled through ncp-web
+systemctl disable sshd
+
 
 # License
 #

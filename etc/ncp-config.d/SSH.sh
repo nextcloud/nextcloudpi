@@ -8,21 +8,22 @@
 #
 
 ACTIVE_=no
-USER_=pi
-PASS_=raspberry
-CONFIRM_=raspberry
+USER_=root
+PASS_=1234
+CONFIRM_=1234
 
 DESCRIPTION="Activate or deactivate SSH"
 INFOTITLE="SSH notes"
-INFO="In order to enable SSH, the password for user pi can NOT remain set to the default raspberry. 
-You HAVE to create a NEW password for pi if you want this program to enable SSH, it will fail if you dont!
+INFO="In order to enable SSH, the password for user 'pi' can NOT remain set to the default raspberry. 
+You HAVE to create a NEW password for 'pi' if you want this program to enable SSH, it will fail if you dont!
+The same will happen with user 'root' and password '1234'
 Note: Use normal AlphaNumeric, the only special characters allowed are .,@-_/"
 
 install() { :; }
 
 is_active()
 {
-  systemctl status ssh &>/dev/null
+  systemctl -q is-enabled ssh &>/dev/null
 }
 
 configure() 
@@ -37,6 +38,10 @@ configure()
   # Check for bad ideas
   [[ "$USER_" == "pi" ]] && [[ "$PASS_" == "raspberry" ]] && {
     echo "Refusing to use the default Raspbian user and password. It's insecure"
+    return 1
+  }
+  [[ "$USER_" == "root" ]] && [[ "$PASS_" == "1234" ]] && {
+    echo "Refusing to use the default Armbian user and password. It's insecure"
     return 1
   }
 
@@ -54,6 +59,21 @@ configure()
       systemctl stop    ssh
       systemctl disable ssh
       echo "The user pi is using the default password. Refusing to activate SSH"
+      echo "SSH disabled"
+      return 1
+    }
+  }
+
+  # Check for insecure default root password ( taken from old jessie method )
+  local SHADOW="$( grep -E '^root:' /etc/shadow )"
+  test -n "${SHADOW}" && {
+    local SALT=$(echo "${SHADOW}" | sed -n 's/root:\$6\$//;s/\$.*//p')
+    local HASH=$(mkpasswd -msha-512 1234 "$SALT")
+
+    grep -q "${HASH}" <<< "${SHADOW}" && {
+      systemctl stop    ssh
+      systemctl disable ssh
+      echo "The user root is using the default password. Refusing to activate SSH"
       echo "SSH disabled"
       return 1
     }
