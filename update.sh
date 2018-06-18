@@ -227,6 +227,21 @@ EOF
     apt-get install -y --no-install-recommends letsencrypt
   }
 
+  # fix nextcloud-domain running before default GW is ready
+  pkill -f nextcloud-domain
+  cat > /usr/local/bin/nextcloud-domain.sh <<'EOF'
+#!/bin/bash
+# wicd service finishes before completing DHCP
+while :; do
+  IFACE="$( ip r | grep "default via" | awk '{ print $5 }' | head -1 )"
+  IP="$( ip a show dev "$IFACE" | grep global | grep -oP '\d{1,3}(.\d{1,3}){3}' | head -1 )"
+  [[ "$IP" != "" ]] && break
+  sleep 3
+done
+cd /var/www/nextcloud
+sudo -u www-data php occ config:system:set trusted_domains 1 --value=$IP
+EOF
+
 } # end - only live updates
 
 exit 0
