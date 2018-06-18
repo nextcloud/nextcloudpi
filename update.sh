@@ -220,6 +220,12 @@ EOF
   install_script nc-restore.sh
   cd -          &>/dev/null
 
+  # Update btrfs-sync and btrfs-snap
+  wget -q https://raw.githubusercontent.com/nachoparker/btrfs-sync/master/btrfs-sync -O /usr/local/bin/btrfs-sync
+  chmod +x /usr/local/bin/btrfs-sync
+  wget -q https://raw.githubusercontent.com/nachoparker/btrfs-snp/master/btrfs-snp -O /usr/local/bin/btrfs-snp
+  chmod +x /usr/local/bin/btrfs-snp
+
 } # end - only live updates
 
 exit 0
