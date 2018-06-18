@@ -1,7 +1,9 @@
 
-[v0.57.4](https://github.com/nextcloud/nextcloudpi/commit/c00fbce) (2018-06-18) letsencrypt: install from debian package
+[v0.57.5](https://github.com/nextcloud/nextcloudpi/commit/444e762) (2018-06-18) fix nextcloud-domain running before default GW is ready
 
-[v0.57.3](https://github.com/nextcloud/nextcloudpi/commit/a74248b) (2018-06-18) armbian: default to SSH disabled
+[v0.57.4](https://github.com/nextcloud/nextcloudpi/commit/ce2d38c) (2018-06-18) letsencrypt: install from debian package
+
+[v0.57.3 ](https://github.com/nextcloud/nextcloudpi/commit/a74248b) (2018-06-18) armbian: default to SSH disabled
 
 [v0.57.2 ](https://github.com/nextcloud/nextcloudpi/commit/5479305) (2018-06-18) nc-static-IP: autodetect default interface
 
