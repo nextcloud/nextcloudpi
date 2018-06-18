@@ -11,11 +11,11 @@
 ACTIVE_=no
 NOTIFYUSER_=ncp
 DESCRIPTION="Automatically apply Nextcloud updates"
-VERSION=13.0.2
+VERSION=13.0.4
 
 configure() 
 {
-  [[ $ACTIVE_ != "yes" ]] && { 
+  [[ "$ACTIVE_" != "yes" ]] && { 
     rm /etc/cron.daily/ncp-autoupdate-nc
     echo "automatic Nextcloud updates disabled"
     return 0

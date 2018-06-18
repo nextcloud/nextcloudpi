@@ -1,5 +1,7 @@
 
-[v0.56.25](https://github.com/nextcloud/nextcloudpi/commit/13b8060) (2018-06-18) nc-snapshot-sync: upgrade
+[v0.57.0](https://github.com/nextcloud/nextcloudpi/commit/2591f25) (2018-06-18) update to NC 13.0.4
+
+[v0.56.25](https://github.com/nextcloud/nextcloudpi/commit/fe16326) (2018-06-18) nc-snapshot-sync: upgrade
 
 [v0.56.24](https://github.com/nextcloud/nextcloudpi/commit/16ce683) (2018-06-18) nc-datadir: make sure we have the correct permissions
 
