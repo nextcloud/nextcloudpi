@@ -14,6 +14,11 @@ DESCRIPTION="mount logs in RAM to prevent SD degradation (faster, consumes more 
 INFOTITLE="Warning"
 INFO="You need to reboot for this change to take effect"
 
+is_active()
+{
+  systemctl -q is-active log2ram &>/dev/null
+}
+
 install()
 {
   [[ -d /var/log.hdd ]] || [[ -d /var/hdd.log ]] && { echo "log2ram detected, not installing"; return; }
