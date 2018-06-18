@@ -63,6 +63,11 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
     # harden SSH further for Raspbian
     sed -i 's|^#PermitRootLogin .*|PermitRootLogin no|' /etc/ssh/sshd_config
 
+    # default user 'pi' for SSH
+    sed -i 's|^USER_=.*|USER_=pi|'              /usr/local/etc/ncp-config.d/SSH.sh
+    sed -i 's|^PASS_=.*|PASS_=raspberry|'       /usr/local/etc/ncp-config.d/SSH.sh
+    sed -i 's|^CONFIRM_=.*|CONFIRM_=raspberry|' /usr/local/etc/ncp-config.d/SSH.sh
+
     rm -rf /tmp/ncp-build
 EOFCHROOT
 
