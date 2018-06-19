@@ -179,7 +179,7 @@ function persistent_cfg()
   local DST="${2:-/data/etc/$( basename "$SRC" )}"
   test -e /changelog.md && return        # trick to disable in dev docker
   mkdir -p "$( dirname "$DST" )"
-  test -d "$DST" || {
+  test -e "$DST" || {
     echo "Making $SRC persistent ..."
     mv    "$SRC" "$DST"
   }

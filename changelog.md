@@ -1,7 +1,9 @@
 
-[v0.57.6](https://github.com/nextcloud/nextcloudpi/commit/8ab0187) (2018-06-19) fix mysqld service named mysql
+[v0.57.7](https://github.com/nextcloud/nextcloudpi/commit/619812c) (2018-06-19) docker: fix persist ncp-web password
 
-[v0.57.5](https://github.com/nextcloud/nextcloudpi/commit/e75b574) (2018-06-18) fix nextcloud-domain running before default GW is ready
+[v0.57.6 ](https://github.com/nextcloud/nextcloudpi/commit/9d0d3b3) (2018-06-19) fix mysqld service named mysql
+
+[v0.57.5 ](https://github.com/nextcloud/nextcloudpi/commit/e75b574) (2018-06-18) fix nextcloud-domain running before default GW is ready
 
 [v0.57.4 ](https://github.com/nextcloud/nextcloudpi/commit/ce2d38c) (2018-06-18) letsencrypt: install from debian package
 
