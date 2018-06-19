@@ -23,7 +23,7 @@ Only use compression for internet transfer, because it uses many resources"
 install()
 {
   apt-get update
-  apt-get install -y --no-install-recommends pv
+  apt-get install -y --no-install-recommends pv openssh-client
   wget https://raw.githubusercontent.com/nachoparker/btrfs-sync/master/btrfs-sync -O /usr/local/bin/btrfs-sync
   chmod +x /usr/local/bin/btrfs-sync
   ssh-keygen -N "" -f /root/.ssh/id_rsa 
