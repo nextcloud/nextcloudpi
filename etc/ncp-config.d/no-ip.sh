@@ -21,7 +21,8 @@ Internet access is required for this configuration to complete."
 install()
 {
   apt-get update
-  apt-get install --no-install-recommends -y make 
+  apt-get install --no-install-recommends -y make gcc libc-dev
+
   local TMPDIR="$( mktemp -d /tmp/noip.XXXXXX )"
   cd "$TMPDIR"
   wget -O- --content-disposition https://github.com/nachoparker/noip-DDNS/archive/master/latest.tar.gz \
@@ -97,6 +98,11 @@ configure()
   sudo -u www-data php occ config:system:set overwrite.cli.url --value=https://"$DOMAIN_"
   echo "noip DDNS enabled"
 
+}
+
+cleanup()
+{
+  apt-get purge -y make gcc libc-dev
 }
 
 # License
