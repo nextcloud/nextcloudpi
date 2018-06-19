@@ -32,9 +32,6 @@ sed -i 's|/media/USBdrive|/data/backups|' ncp-config.d/nc-backup.sh; \
 rm /usr/local/etc/ncp.sh; \
 rm /.ncp-image; \
 
-# remove wizard for now
-rm -r /var/www/ncp-web/wizard; \
-
 # cleanup all NCP extras
 source /usr/local/etc/library.sh; \
 cd /usr/local/etc/ncp-config.d/; \
