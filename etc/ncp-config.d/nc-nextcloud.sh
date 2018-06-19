@@ -74,10 +74,10 @@ install()
 
     # need to restart php
     service php7.0-fpm stop
-    service mysqld     stop
+    service mysql      stop
     sleep 0.5
     service php7.0-fpm start
-    service mysqld     start
+    service mysql      start
   }
   
   # service to randomize passwords on first boot
