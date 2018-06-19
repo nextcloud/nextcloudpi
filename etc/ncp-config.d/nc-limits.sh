@@ -31,10 +31,10 @@ configure()
   # need to restart php
   bash -c " sleep 3
             service php7.0-fpm stop
-            service mysqld     stop
+            service mysql      stop
             sleep 0.5
             service php7.0-fpm start
-            service mysqld     start
+            service mysql      start
             " &>/dev/null &
 
   # redis max memory

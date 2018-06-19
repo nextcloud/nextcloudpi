@@ -1,7 +1,9 @@
 
-[v0.57.5](https://github.com/nextcloud/nextcloudpi/commit/444e762) (2018-06-18) fix nextcloud-domain running before default GW is ready
+[v0.57.6](https://github.com/nextcloud/nextcloudpi/commit/8ab0187) (2018-06-19) fix mysqld service named mysql
 
-[v0.57.4](https://github.com/nextcloud/nextcloudpi/commit/ce2d38c) (2018-06-18) letsencrypt: install from debian package
+[v0.57.5](https://github.com/nextcloud/nextcloudpi/commit/e75b574) (2018-06-18) fix nextcloud-domain running before default GW is ready
+
+[v0.57.4 ](https://github.com/nextcloud/nextcloudpi/commit/ce2d38c) (2018-06-18) letsencrypt: install from debian package
 
 [v0.57.3 ](https://github.com/nextcloud/nextcloudpi/commit/a74248b) (2018-06-18) armbian: default to SSH disabled
 
@@ -9,7 +11,7 @@
 
 [v0.57.1 ](https://github.com/nextcloud/nextcloudpi/commit/97375a1) (2018-06-18) docker: replace systemd for service
 
-[v0.57.0](https://github.com/nextcloud/nextcloudpi/commit/ef5839d) (2018-06-18) update to NC 13.0.4
+[v0.57.0 ](https://github.com/nextcloud/nextcloudpi/commit/ef5839d) (2018-06-18) update to NC 13.0.4
 
 [v0.56.25](https://github.com/nextcloud/nextcloudpi/commit/fe16326) (2018-06-18) nc-snapshot-sync: upgrade
 
