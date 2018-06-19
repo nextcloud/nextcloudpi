@@ -24,7 +24,7 @@ Your certificate will be automatically renewed every month"
 
 is_active()
 {
-  test -d /etc/letsencrypt/live
+  [[ $( find /etc/letsencrypt/live/ -maxdepth 0 -empty | wc -l ) == 0 ]]
 }
 
 install()
