@@ -25,11 +25,6 @@ set +x; \
 cd /usr/local/etc/; \
 install_script ncp.sh; \
 
-# stop mysqld and redis
-mysqladmin -u root shutdown; \
-kill $( cat /run/redis/redis-server.pid ); \
-kill $( cat /run/crond.pid ); \
-
 # fix default paths
 sed -i 's|/media/USBdrive|/data/backups|' ncp-config.d/nc-backup.sh; \
 
