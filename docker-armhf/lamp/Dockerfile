@@ -15,6 +15,9 @@ source /usr/local/etc/library.sh; \
 set +x; \
 install_script /usr/local/etc/lamp.sh; \
 
+# stop mysqld
+mysqladmin -u root shutdown; \
+
 # mariaDB fixups (move database to /data-ro, which will be in a persistent volume)
 mkdir -p /data-ro /data; \
 mv /var/lib/mysql /data-ro/database; \

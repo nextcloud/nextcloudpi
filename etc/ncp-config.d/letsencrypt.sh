@@ -32,6 +32,7 @@ install()
   cd /etc || return 1
   apt-get update
   apt-get install --no-install-recommends -y letsencrypt
+  mkdir -p /etc/letsencrypt/live
 
   [[ "$DOCKERBUILD" == 1 ]] && {
     # execute before lamp stack

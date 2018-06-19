@@ -37,16 +37,13 @@ configure()
     mysqld & 
   fi
 
+  # wait for mariadb
   pgrep -x mysqld &>/dev/null || { 
     echo "mariaDB process not found. Waiting..."
-
-  # wait for mariadb
-  # TODO FIXME armbian build
-  #while :; do
-    #[[ -S /run/mysqld/mysqld.sock ]] && break
-    #sleep 0.5
-  #done
-    sleep 10
+    while :; do
+      [[ -S /run/mysqld/mysqld.sock ]] && break
+      sleep 0.5
+    done
   }
 
   # workaround to emulate DROP USER IF EXISTS ..;)
