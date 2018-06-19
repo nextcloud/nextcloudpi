@@ -68,16 +68,16 @@ install()
 
   usermod -a -G redis www-data
 
-  [[ "$DOCKERBUILD" != 1 ]] && {
+  # refresh configuration, only needed in curl installer
+  [[ ! -f /.ncp-image ]] && {
     systemctl restart redis-server
     systemctl enable  redis-server
 
-    # need to restart php
-    service php7.0-fpm stop
-    service mysql      stop
+    systemctl stop php7.0-fpm
+    systemctl stop mysql
     sleep 0.5
-    service php7.0-fpm start
-    service mysql      start
+    systemctl start php7.0-fpm
+    systemctl start mysql
   }
   
   # service to randomize passwords on first boot
@@ -94,7 +94,7 @@ ExecStart=/bin/bash /usr/local/bin/ncp-provisioning.sh
 [Install]
 WantedBy=multi-user.target
 EOF
-  systemctl enable nc-provisioning
+  [[ "$DOCKERBUILD" != 1 ]] && systemctl enable nc-provisioning
   return 0
 }
 
