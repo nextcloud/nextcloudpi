@@ -29,7 +29,13 @@
 <div id="rootwizard">
 	<ul id="ncp-nav">
 		<li><a href="#tab1" data-toggle="tab">Welcome</a></li>
+<?php
+  // Skip USB section in docker container
+  if ( !file_exists( '/.docker-image' ) )
+    echo <<<HTML
 		<li><a href="#tab2" data-toggle="tab">USB Configuration</a></li>
+HTML
+?>
 		<li><a href="#tab3" data-toggle="tab">External access</a></li>
 		<li><a href="#tab4" data-toggle="tab">Finish</a></li>
 	</ul>
@@ -208,8 +214,13 @@
       <div id="notifications"></div>
 
 <?php
+  // CSRF protection
   include ('../csrf.php');
   echo '<input type="hidden" id="csrf-token" name="csrf-token" value="' . getCSRFToken() . '"/>';
+
+  // Mark the wizard as "in docker"
+  if ( file_exists( '/.docker-image' ) )
+    echo '<input type="hidden" id="in-docker" name="in-docker" value=""/>';
 ?>
 
 <script src="JS/jquery-latest.js"></script>

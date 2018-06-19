@@ -2,6 +2,8 @@
 /*global $, jQuery, alert*/
 $(document).ready(function(){
 
+    var in_docker = $('#in-docker');
+
     function addNotification( txt, tclass )
     {
       // limit to 9 notifications
@@ -185,12 +187,15 @@ $(document).ready(function(){
 
 	// Enable external access step
 	$('#enable-external').on('click', function(){
-      launch_action( 'fail2ban', 
-        { "ACTIVE":"yes" }, 
-        function ( data ){
-          nextOnSuccess( data, function(){ show_with_animation( 'forward-ports-pane' ) } );
-        }
-      );
+      if ( !in_docker )
+        launch_action( 'fail2ban',
+          { "ACTIVE":"yes" }, 
+          function ( data ){
+            nextOnSuccess( data, function(){ show_with_animation( 'forward-ports-pane' ) } );
+          }
+        );
+      else
+        show_with_animation( 'forward-ports-pane' );
 	});
 
 	// Skip external access step
