@@ -8,7 +8,7 @@
 # More at nextcloudpi.com
 #
 
-configure()   
+install()   
 { 
   # stop mysqld and redis
   mysqladmin -u root shutdown
