@@ -15,9 +15,18 @@ DESCRIPTION="Change password for the NextCloudPi Panel"
 
 configure()
 {
+  # update password
   echo -e "$PASSWORD_\n$CONFIRM_" | passwd ncp &>/dev/null && \
     echo "password updated successfully" || \
     { echo "passwords do not match"; return 1; }
+
+  # persist ncp-web password in docker container
+  [[ -f /.docker-image ]] && {
+    mv /etc/shadow /data/etc/shadow
+    ln -s /data/etc/shadow /etc/shadow
+  }
+
+  # activate NCP
   a2ensite  ncp nextcloud
   a2dissite ncp-activation
   bash -c "sleep 1.5 && service apache2 reload" &>/dev/null &
