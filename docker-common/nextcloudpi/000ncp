@@ -7,5 +7,9 @@ persistent_cfg /usr/local/etc/ncp-config.d /data/ncp
 persistent_cfg /etc/services-enabled.d
 persistent_cfg /etc/letsencrypt/live               # persist SSL certificates
 persistent_cfg /etc/shadow                         # persist ncp-web password
+persistent_cfg /etc/cron.d
+persistent_cfg /etc/cron.daily
+persistent_cfg /etc/cron.hourly
+persistent_cfg /etc/cron.weekly
 
 exit 0
