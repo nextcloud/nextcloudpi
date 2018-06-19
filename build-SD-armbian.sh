@@ -24,10 +24,9 @@ prepare_dirs                   # tmp cache output
 [[ -d armbian ]] || git clone https://github.com/armbian/build armbian
 ( cd armbian && git pull --ff-only --tags )
 
-# get NCP modifications
+# add NCP modifications
 mkdir -p armbian/userpatches
-wget https://raw.githubusercontent.com/nextcloud/nextcloudpi/master/armbian.sh \
-  -O armbian/userpatches/customize-image.sh
+cp armbian.sh armbian/userpatches/customize-image.sh
 
 # GENERATE IMAGE
 
