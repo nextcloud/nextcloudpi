@@ -2,7 +2,7 @@
 /*global $, jQuery, alert*/
 $(document).ready(function(){
 
-    var in_docker = $('#in-docker');
+    var in_docker = document.getElementById( 'in-docker' );
 
     function addNotification( txt, tclass )
     {

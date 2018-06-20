@@ -1,7 +1,9 @@
 
-[v0.57.8](https://github.com/nextcloud/nextcloudpi/commit/61360da) (2018-06-19) docker: adapt wizard
+[v0.57.9](https://github.com/nextcloud/nextcloudpi/commit/b91d989) (2018-06-20) ncp-web: fix JS docker detection
 
-[v0.57.7](https://github.com/nextcloud/nextcloudpi/commit/98c99e3) (2018-06-19) docker: fix persist ncp-web password
+[v0.57.8 ](https://github.com/nextcloud/nextcloudpi/commit/e63523c) (2018-06-19) docker: adapt wizard
+
+[v0.57.7 ](https://github.com/nextcloud/nextcloudpi/commit/98c99e3) (2018-06-19) docker: fix persist ncp-web password
 
 [v0.57.6 ](https://github.com/nextcloud/nextcloudpi/commit/9d0d3b3) (2018-06-19) fix mysqld service named mysql
 
