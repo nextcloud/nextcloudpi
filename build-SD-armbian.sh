@@ -51,9 +51,8 @@ CONF="config-$BOARD".conf
 # build
 armbian/compile.sh docker
 
-mv armbian/output/images/Armbian*.img "$IMG"
-
 # pack image
+mv armbian/output/images/Armbian*.img "$IMG"
 TAR=output/"$( basename "$IMG" .img ).tar.bz2"
 pack_image "$IMG" "$TAR"
 
