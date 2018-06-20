@@ -9,6 +9,7 @@
 
 DOMAIN_=mycloud.ownyourbits.com
 EMAIL_=mycloud@ownyourbits.com
+NOTIFYUSER_=ncp
 
 NCDIR=/var/www/nextcloud
 OCC="$NCDIR/occ"
@@ -53,24 +54,43 @@ configure()
 {
   local DOMAIN_LOWERCASE="${DOMAIN_,,}"
 
+  # Configure Apache
   grep -q ServerName $VHOSTCFG && \
     sed -i "s|ServerName .*|ServerName $DOMAIN_|" $VHOSTCFG || \
     sed -i "/DocumentRoot/aServerName $DOMAIN_" $VHOSTCFG 
 
+  # Do it
   letsencrypt certonly -n --no-self-upgrade --webroot -w $NCDIR --hsts --agree-tos -m $EMAIL_ -d $DOMAIN_ && {
+
+    # Set up auto-renewal
     cat > /etc/cron.weekly/letsencrypt-ncp <<EOF
 #!/bin/bash
-/usr/bin/certbot renew --quiet
+
+# renew and notify
+/usr/bin/certbot renew --quiet --renew-hook '
+  sudo -u www-data php $OCC notification:generate \
+                            $NOTIFYUSER_ "SSL renewal" \
+                            -l "Your SSL certificate(s) \$RENEWED_DOMAINS has been renewed for another 90 days"
+  '
+
+# notify if fails
+[[ \$? -ne 0 ]] && sudo -u www-data php $OCC notification:generate \
+                                             $NOTIFYUSER_ "SSL renewal error" \
+                                             -l "SSL certificate renewal failed. See /var/log/letsencrypt/letsencrypt.log"
+
+# cleanup
 rm -rf $NCDIR/.well-known
 EOF
     chmod +x /etc/cron.weekly/letsencrypt-ncp
 
+    # Configure Apache
     sed -i "s|SSLCertificateFile.*|SSLCertificateFile /etc/letsencrypt/live/$DOMAIN_LOWERCASE/fullchain.pem|" $VHOSTCFG
     sed -i "s|SSLCertificateKeyFile.*|SSLCertificateKeyFile /etc/letsencrypt/live/$DOMAIN_LOWERCASE/privkey.pem|" $VHOSTCFG
 
     sed -i "s|SSLCertificateFile.*|SSLCertificateFile /etc/letsencrypt/live/$DOMAIN_LOWERCASE/fullchain.pem|" $VHOSTCFG2
     sed -i "s|SSLCertificateKeyFile.*|SSLCertificateKeyFile /etc/letsencrypt/live/$DOMAIN_LOWERCASE/privkey.pem|" $VHOSTCFG2
 
+    # Configure Nextcloud
     sudo -u www-data php $OCC config:system:set trusted_domains 4 --value=$DOMAIN_
     sudo -u www-data php $OCC config:system:set overwrite.cli.url --value=https://$DOMAIN_
 
@@ -78,7 +98,7 @@ EOF
     bash -c "sleep 2 && service apache2 reload" &>/dev/null &
     rm -rf $NCDIR/.well-known
     
-    # update configuration
+    # Update configuration
     [[ "$DOCKERBUILD" == 1 ]] && update-rc.d letsencrypt enable
 
     return 0
