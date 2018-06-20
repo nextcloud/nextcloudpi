@@ -329,8 +329,9 @@ function upload_ftp()
 
   ftp -np ftp.ownyourbits.com <<EOF
 user root@ownyourbits.com $FTPPASS
-mkdir $IMGNAME
-cd $IMGNAME
+mkdir testing
+mkdir testing/$IMGNAME
+cd testing/$IMGNAME
 binary
 put $IMGNAME.torrent
 bye
@@ -340,7 +341,7 @@ EOF
 
   ftp -np ftp.ownyourbits.com <<EOF
 user root@ownyourbits.com $FTPPASS
-cd $IMGNAME
+cd testing/$IMGNAME
 binary
 put $IMGNAME.tar.bz2
 put md5sum
