@@ -31,7 +31,7 @@ curl -sSL https://raw.githubusercontent.com/nextcloud/nextcloudpi/master/install
 chage -d 0 root
 
 # disable SSH by default, it can be enabled through ncp-web
-systemctl disable sshd
+systemctl disable ssh
 
 
 # License
