@@ -20,10 +20,6 @@ install()
     docker push ownyourbits/nextcloud-armhf 
     docker push ownyourbits/lamp-armhf
     docker push ownyourbits/debian-ncp-armhf
-
-    # keep old container updated, at least for a while
-    docker tag ownyourbits/nextcloudpi-armhf ownyourbits/nextcloudpi-armhf
-    docker push ownyourbits/nextcloudpi-armhf 
   }
 }
 
