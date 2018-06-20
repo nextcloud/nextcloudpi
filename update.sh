@@ -252,6 +252,32 @@ cd /var/www/nextcloud
 sudo -u www-data php occ config:system:set trusted_domains 1 --value=$IP
 EOF
 
+    # letsencrypt: notify of renewals
+    [[ -f /etc/cron.weekly/letsencrypt-ncp ]] && ! grep -q SSL /etc/cron.weekly/letsencrypt-ncp && {
+      NCDIR=/var/www/nextcloud
+      OCC="$NCDIR"/occ
+      NOTIFYUSER_=ncp
+      cat > /etc/cron.weekly/letsencrypt-ncp <<EOF
+#!/bin/bash
+
+# renew and notify
+/usr/bin/certbot renew --quiet --renew-hook '
+  sudo -u www-data php $OCC notification:generate \
+                            $NOTIFYUSER_ "SSL renewal" \
+                            -l "Your SSL certificate(s) \$RENEWED_DOMAINS has been renewed for another 90 days"
+  '
+
+# notify if fails
+[[ \$? -ne 0 ]] && sudo -u www-data php $OCC notification:generate \
+                                             $NOTIFYUSER_ "SSL renewal error" \
+                                             -l "SSL certificate renewal failed. See /var/log/letsencrypt/letsencrypt.log"
+
+# cleanup
+rm -rf $NCDIR/.well-known
+EOF
+      chmod +x /etc/cron.weekly/letsencrypt-ncp
+    }
+
 } # end - only live updates
 
 exit 0
