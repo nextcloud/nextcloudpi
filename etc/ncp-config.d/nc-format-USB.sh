@@ -20,7 +20,7 @@ careful, this will destroy any data in the USB drive
 configure() 
 {
   # count all disk devices except mmcblk0
-  local NUM=$(( $( lsblk -l -n | grep -v zram | awk '{ print $6 }' | grep disk | wc -l ) - 1 ))
+  local NUM=$(( $( lsblk -ln | grep -v zram | awk '{ print $6 }' | grep disk | wc -l ) - 1 ))
 
   # only one plugged in
   [[ $NUM != 1 ]] && { 
@@ -40,7 +40,7 @@ configure()
   done
 
   # do it
-  local NAME=( $( lsblk -l -n | grep -v mmcblk | grep disk | awk '{ print $1 }' ) )
+  local NAME=( $( lsblk -ln | grep -v -e mmcblk -e zram | grep disk | awk '{ print $1 }' ) )
   [[ ${#NAME[@]} != 1 ]] && { echo "unexpected error"; return 1; }
 
   wipefs -a -f /dev/"$NAME"                              || return 1
