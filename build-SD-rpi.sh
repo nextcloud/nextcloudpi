@@ -58,7 +58,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
     activate_script nc-nextcloud.sh
     install_script  ncp.sh
     activate_script nc-init.sh
-    install_script post-inst.sh
+    install_script  post-inst.sh
 
     # harden SSH further for Raspbian
     sed -i 's|^#PermitRootLogin .*|PermitRootLogin no|' /etc/ssh/sshd_config

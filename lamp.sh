@@ -31,7 +31,11 @@ install()
 
     $APTINSTALL apt-utils cron
     $APTINSTALL apache2
-    $APTINSTALL php7.0 php7.0-curl php7.0-gd php7.0-fpm php7.0-cli php7.0-opcache php7.0-mbstring php7.0-xml php7.0-zip php7.0-fileinfo php7.0-mcrypt php7.0-ldap
+    $APTINSTALL php7.0 php7.0-curl php7.0-gd php7.0-fpm php7.0-cli php7.0-opcache \
+                php7.0-mbstring php7.0-xml php7.0-zip php7.0-fileinfo php7.0-ldap \
+                php7.0-intl libmagickcore-6.q16-2-extra php7.0-imagick php-mcrypt
+
+
     mkdir -p /run/php
 
     # Randomize mariaDB password
@@ -140,9 +144,6 @@ y
 y
 y
 EOF
-
-  # adjust max PHP processes so Apps don't overload the board (#146)
-  sed -i 's|pm.max_children =.*|pm.max_children = 3|' /etc/php/7.0/fpm/pool.d/www.conf
 }
 
 configure() { :; }

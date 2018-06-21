@@ -5,6 +5,7 @@
 ## redis provisioning
 
 CFG=/var/www/nextcloud/config/config.php
+CONFDIR=/usr/local/etc/ncp-config.d/
 REDISPASS="$( grep "^requirepass" /etc/redis/redis.conf | cut -f2 -d' ' )"
 
 ### IF redis password is the default one, generate a new one
@@ -46,33 +47,12 @@ EOF
   sed -i "s|'dbpassword' =>.*|'dbpassword' => '$DBPASSWD',|" "$CFG"
 }
 
-## CPU core adjustment
+## nc.limits.sh (auto)adjustments: number of threads, memory limits...
 
-CURRENT_THREADS=$( grep "^pm.max_children" /etc/php/7.0/fpm/pool.d/www.conf | awk '{ print $3 }' )
-
-CFG=/usr/local/etc/ncp-config.d/nc-limits.sh
-PHPTHREADS=0
-[[ -f "$CFG" ]] && PHPTHREADS=$( grep "^PHPTHREADS_" "$CFG"  | cut -d= -f2 )
-
-[[ $PHPTHREADS -eq 0 ]] && PHPTHREADS=$( nproc )
-
-[[ $PHPTHREADS -ne $CURRENT_THREADS ]] && {
-
-  echo "PHP threads set to $PHPTHREADS"
-
-  sed -i "s|pm.max_children =.*|pm.max_children = $PHPTHREADS|"           /etc/php/7.0/fpm/pool.d/www.conf
-  sed -i "s|pm.max_spare_servers =.*|pm.max_spare_servers = $PHPTHREADS|" /etc/php/7.0/fpm/pool.d/www.conf
-  sed -i "s|pm.start_servers =.*|pm.start_servers = $PHPTHREADS|"         /etc/php/7.0/fpm/pool.d/www.conf
-
-  # need to restart php
-  bash -c " sleep 3
-            systemctl stop php7.0-fpm
-            systemctl stop mysqld
-            sleep 0.5
-            systemctl start php7.0-fpm
-            systemctl start mysqld
-            " &>/dev/null &
-}
+source /usr/local/etc/library.sh
+cd "$CONFDIR" &>/dev/null
+activate_script nc-limits.sh
+cd -          &>/dev/null
 
 ## Check for interrupted upgrades and rollback
 BKP="$( ls -1t /var/www/nextcloud-bkp_*.tar.gz 2>/dev/null | head -1 )"
@@ -82,7 +62,6 @@ BKP="$( ls -1t /var/www/nextcloud-bkp_*.tar.gz 2>/dev/null | head -1 )"
 }
 
 ## Fix permissions on NCP folders. The main reason for this is to make devel docker container work
-CONFDIR="/usr/local/etc/ncp-config.d/"
 [[ -e $CONFDIR ]] && {
   chown -R root:www-data "$CONFDIR"/*
   chmod 660              "$CONFDIR"/*
