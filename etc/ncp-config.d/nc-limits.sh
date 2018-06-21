@@ -8,38 +8,63 @@
 # More at https://ownyourbits.com/2017/03/13/nextcloudpi-gets-nextcloudpi-config/
 #
 
-MAXFILESIZE_=2G
-MEMORYLIMIT_=768M
+MAXFILESIZE_=10G
+MEMORYLIMIT_=0
 PHPTHREADS_=0
-REDISMEM_=3gb
+REDISMEM_=0
 
 DESCRIPTION="Configure system limits for NextCloudPi"
-INFO="Set PHP threads to 0 in order to use all cores"
+INFO="Examples: 200M or 2G. Write 0 for autoconfig"
 
 configure()
 {
-  sed -i "s/post_max_size=.*/post_max_size=$MAXFILESIZE_/"             /var/www/nextcloud/.user.ini
-  sed -i "s/upload_max_filesize=.*/upload_max_filesize=$MAXFILESIZE_/" /var/www/nextcloud/.user.ini
-  sed -i "s/memory_limit=.*/memory_limit=$MEMORYLIMIT_/"               /var/www/nextcloud/.user.ini
+  # Set auto memory limit to 75% of the total memory
+  local TOTAL_MEM="$( free | sed -n 2p | awk '{ print $2 }' )"
+  AUTOMEM=$(( TOTAL_MEM * 75 / 100 ))
 
-  # adjust max PHP processes so Apps don't overload the board (#146)
+  # MAX FILESIZE
+  local CONF=/var/www/nextcloud/.user.ini
+  local CURRENT_FILE_SIZE="$( grep "^upload_max_filesize" "$CONF" | sed 's|.*=||' )"
+  [[ "$MAXFILESIZE_" == "0" ]] && MAXFILESIZE_=10G
+
+  # MAX PHP MEMORY
+  local CONF=/var/www/nextcloud/.user.ini
+  local CURRENT_PHP_MEM="$( grep "^memory_limit" "$CONF" | sed 's|.*=||' )"
+  [[ $MEMORYLIMIT_ -eq 0 ]] && MEMORYLIMIT_=$AUTOMEM && echo "Using ${AUTOMEM}B for PHP"
+  sed -i "s/post_max_size=.*/post_max_size=$MAXFILESIZE_/"             "$CONF" 
+  sed -i "s/upload_max_filesize=.*/upload_max_filesize=$MAXFILESIZE_/" "$CONF" 
+  sed -i "s/memory_limit=.*/memory_limit=$MEMORYLIMIT_/"               "$CONF" 
+
+  # MAX PHP THREADS
+  local CONF=/etc/php/7.0/fpm/pool.d/www.conf
+  local CURRENT_THREADS=$( grep "^pm.max_children" "$CONF" | awk '{ print $3 }' )
+  local PHPTHREADS=0
   [[ $PHPTHREADS_ -eq 0 ]] && PHPTHREADS_=$( nproc ) && echo "Using $PHPTHREADS_ PHP threads"
-  sed -i "s|pm.max_children =.*|pm.max_children = $PHPTHREADS_|"           /etc/php/7.0/fpm/pool.d/www.conf
-  sed -i "s|pm.max_spare_servers =.*|pm.max_spare_servers = $PHPTHREADS_|" /etc/php/7.0/fpm/pool.d/www.conf
-  sed -i "s|pm.start_servers =.*|pm.start_servers = $PHPTHREADS_|"         /etc/php/7.0/fpm/pool.d/www.conf
+  sed -i "s|pm.max_children =.*|pm.max_children = $PHPTHREADS_|"           "$CONF"
+  sed -i "s|pm.max_spare_servers =.*|pm.max_spare_servers = $PHPTHREADS_|" "$CONF"
+  sed -i "s|pm.start_servers =.*|pm.start_servers = $PHPTHREADS_|"         "$CONF"
 
-  # need to restart php
-  bash -c " sleep 3
-            service php7.0-fpm stop
-            service mysql      stop
-            sleep 0.5
-            service php7.0-fpm start
-            service mysql      start
-            " &>/dev/null &
+  # RESTART PHP
+  [[ $PHPTHREADS     -ne $CURRENT_THREADS    ]] || \
+  [[ "$MEMORYLIMIT"  != "$CURRENT_PHP_MEM"   ]] || \
+  [[ "$MAXFILESIZE_" != "$CURRENT_FILE_SIZE" ]] && {
+    bash -c " sleep 3
+              service php7.0-fpm stop
+              service mysql      stop
+              sleep 0.5
+              service php7.0-fpm start
+              service mysql      start
+              " &>/dev/null &
+  }
 
   # redis max memory
-  sed -i "s|maxmemory .*|maxmemory $REDISMEM_|" /etc/redis/redis.conf
-  service redis restart
+  local CONF=/etc/redis/redis.conf
+  local CURRENT_REDIS_MEM=$( grep "^maxmemory" "$CONF" | awk '{ print $2 }' )
+  [[ $REDISMEM_ -eq 0 ]] && REDISMEM_=$AUTOMEM && echo "Using ${AUTOMEM}B for Redis"
+  [[ "$REDISMEM_" != "$CURRENT_REDIS_MEM" ]] && {
+    sed -i "s|maxmemory .*|maxmemory $REDISMEM_|" "$CONF"
+    service redis restart
+  }
 }
 
 install() { :; }
