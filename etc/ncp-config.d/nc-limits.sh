@@ -19,7 +19,7 @@ INFO="Examples: 200M or 2G. Write 0 for autoconfig"
 configure()
 {
   # Set auto memory limit to 75% of the total memory
-  local TOTAL_MEM="$( free | sed -n 2p | awk '{ print $2 }' )"
+  local TOTAL_MEM="$( free -b | sed -n 2p | awk '{ print $2 }' )"
   AUTOMEM=$(( TOTAL_MEM * 75 / 100 ))
 
   # MAX FILESIZE
