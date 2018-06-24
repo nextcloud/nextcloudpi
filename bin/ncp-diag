@@ -16,6 +16,11 @@ echo "NextCloudPi version|$( cat /usr/local/etc/ncp-version )"
 [[ -f /usr/local/etc/ncp-baseimage ]] && echo "NextCloudPi image|$( cat /usr/local/etc/ncp-baseimage )"
 echo "distribution|$( cat /etc/issue )"
 
+# Database
+DBDIR=$( grep datadir /etc/mysql/mariadb.conf.d/50-server.cnf | awk -F "= " '{ print $2 }' )
+test -d "$DBDIR" || DBDIRINFO=" (doesn't exist)"
+echo "dbdir|$DBDIR$DBDIRINFO"
+
 # Data
 DATADIR="$( grep datadirectory /var/www/nextcloud/config/config.php |
 	    awk '{ print $3 }' | grep -oP "[^']*[^']" | head -1 )"
