@@ -1,11 +1,13 @@
 
-[v0.57.12](https://github.com/nextcloud/nextcloudpi/commit/b0203ab) (2018-06-21) nc-limits: autolimits enhancements
+[v0.57.13](https://github.com/nextcloud/nextcloudpi/commit/2c9c790) (2018-06-24) nc-limits: fix units
+
+[v0.57.12](https://github.com/nextcloud/nextcloudpi/commit/79da40a) (2018-06-21) nc-limits: autolimits enhancements
 
 [v0.57.11](https://github.com/nextcloud/nextcloudpi/commit/038b260) (2018-06-20) letsencrypt: notify of renewals
 
 [v0.57.10](https://github.com/nextcloud/nextcloudpi/commit/88843ab) (2018-06-20) ncp-web: fix JS docker detection
 
-[v0.57.9](https://github.com/nextcloud/nextcloudpi/commit/ad64a4b) (2018-06-21) nc-format-USB: fix when ZRAM active
+[v0.57.9 ](https://github.com/nextcloud/nextcloudpi/commit/ad64a4b) (2018-06-21) nc-format-USB: fix when ZRAM active
 
 [v0.57.8 ](https://github.com/nextcloud/nextcloudpi/commit/e63523c) (2018-06-19) docker: adapt wizard
 
