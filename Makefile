@@ -15,7 +15,7 @@ lamp-armhf: debian-ncp-armhf
 	docker build . -f docker-armhf/lamp/Dockerfile          -t ownyourbits/lamp-armhf:latest
 
 debian-ncp-armhf:
-	docker build . -f docker-armhf/debian-ncp/Dockerfile  -t ownyourbits/debian-ncp-armhf:latest
+	docker build --pull . -f docker-armhf/debian-ncp/Dockerfile  -t ownyourbits/debian-ncp-armhf:latest
 
 
 nextcloudpi-x86: nextcloud-x86
@@ -28,10 +28,7 @@ lamp-x86: debian-ncp-x86
 	docker build . -f docker/lamp/Dockerfile           -t ownyourbits/lamp-x86:latest
 
 debian-ncp-x86: 
-	docker build . -f docker/debian-ncp/Dockerfile   -t ownyourbits/debian-ncp-x86:latest
-
-devel: 
-	docker build . -f docker/devel/Dockerfile   -t ownyourbits/nextcloudpi-x86:devel
+	docker build --pull . -f docker/debian-ncp/Dockerfile   -t ownyourbits/debian-ncp-x86:latest
 
 # License
 #
