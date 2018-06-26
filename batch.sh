@@ -30,7 +30,6 @@ CLEAN=1 ./build-SD-rpi.sh       "$IP"
 ./build-SD-armbian.sh bananapi Bananapi
 
 # Docker x86
-docker pull debian:stretch-slim
 make nextcloudpi-x86 && {
   docker push ownyourbits/nextcloudpi-x86 
   docker push ownyourbits/nextcloud-x86 
@@ -38,10 +37,14 @@ make nextcloudpi-x86 && {
   docker push ownyourbits/debian-ncp-x86
 }
 
-# docker armhf
-[[ -f docker-armhf/raspbian_docker.img ]] || \
-  ./installer.sh docker-armhf/docker-env.sh "$IP" raspbian_lite.img # && mv
-./installer.sh docker-armhf/build-container.sh "$IP" docker-armhf/raspbian_docker.img
+# Docker armhf
+[[ -f qemu-arm-static ]] || cp /usr/bin/qemu-arm-static . || echo { "Need qemu-arm-static (and binfmt support) in the system to build the ARM container"; exit 1; }
+make nextcloudpi-armhf && {
+  docker push ownyourbits/nextcloudpi-armhf
+  docker push ownyourbits/nextcloud-armhf
+  docker push ownyourbits/lamp-armhf
+  docker push ownyourbits/debian-ncp-armhf
+}
 
 # License
 #
