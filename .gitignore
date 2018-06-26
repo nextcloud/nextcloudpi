@@ -7,5 +7,5 @@ torrent/
 armbian/
 raspbian_root
 raspbian_boot
-docker-armhf/raspbian_docker.img
 ncp-web/wizard.cfg
+qemu-arm-static

@@ -94,20 +94,13 @@ cd nextcloudpi
 ./build-SD-armbian.sh odroidxu4   # supported board code name
 ```
 
-The docker armhf image can be generated in an ARM environment with docker
+In order to generate the Docker images
 
 ```
 git clone https://github.com/nextcloud/nextcloudpi.git
 cd nextcloudpi
-make
-```
-
-, and for an x86 image, on a x86 environment do
-
-```
-git clone https://github.com/nextcloud/nextcloudpi.git
-cd nextcloudpi
-make nextcloudpi-x86
+make                        # armhf version
+make nextcloudpi-x86        # x86   version
 ```
 
 NextCloudPi can be installed in any architecture running the latest Debian
