@@ -1,5 +1,9 @@
 
-[v0.57.13](https://github.com/nextcloud/nextcloudpi/commit/2c9c790) (2018-06-24) nc-limits: fix units
+[v0.57.15](https://github.com/nextcloud/nextcloudpi/commit/164b5cd) (2018-06-26) nc-automount: fix udiskie not installed in latest image
+
+[v0.57.14](https://github.com/nextcloud/nextcloudpi/commit/16af06f) (2018-06-26) added database dir to ncp-info (#553)
+
+[v0.57.13](https://github.com/nextcloud/nextcloudpi/commit/f0fbf61) (2018-06-24) nc-limits: fix units
 
 [v0.57.12](https://github.com/nextcloud/nextcloudpi/commit/79da40a) (2018-06-21) nc-limits: autolimits enhancements
 
