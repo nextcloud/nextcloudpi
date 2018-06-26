@@ -36,6 +36,11 @@ SWP="$( swapon | tail -1 | awk '{ print $1 }' )"
 [[ "$SWP" == "" ]] && SWP="none"
 echo "swapfile|$SWP"
 
+# Database
+DBDIR=$( grep datadir /etc/mysql/mariadb.conf.d/50-server.cnf | awk -F "= " '{ print $2 }' )
+test -d "$DBDIR" || DBDIRINFO=" (doesn't exist)"
+echo "dbdir|$DBDIR$DBDIRINFO"
+
 # Nextcloud
 [[ ${EUID} -eq 0 ]] && SUDO="sudo -u www-data"
 VERSION="$( $SUDO php /var/www/nextcloud/occ status | grep "version:" | awk '{ print $3 }' )"
