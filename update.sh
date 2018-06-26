@@ -278,6 +278,9 @@ EOF
       chmod +x /etc/cron.weekly/letsencrypt-ncp
     }
 
+  # fix udiskie not correctly installed
+  type udiskie &> /dev/null || apt-get install -y --no-install-recommends udiskie inotify-tools  
+
 } # end - only live updates
 
 exit 0
