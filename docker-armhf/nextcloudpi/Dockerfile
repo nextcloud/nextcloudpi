@@ -32,6 +32,10 @@ sed -i 's|/media/USBdrive|/data/backups|' ncp-config.d/nc-backup.sh; \
 rm /usr/local/etc/ncp.sh; \
 rm /.ncp-image; \
 
+# should be cleaned up in no-ip.sh, but breaks udiskie.
+# safe to do it here since no automount in docker
+apt-get purge -y make gcc libc-dev; \
+
 # cleanup all NCP extras
 source /usr/local/etc/library.sh; \
 cd /usr/local/etc/ncp-config.d/; \
