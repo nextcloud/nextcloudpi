@@ -38,13 +38,14 @@ make nextcloudpi-x86 && {
 }
 
 # Docker armhf
-[[ -f qemu-arm-static ]] || cp /usr/bin/qemu-arm-static . || echo { "Need qemu-arm-static (and binfmt support) in the system to build the ARM container"; exit 1; }
+cp /usr/bin/qemu-arm-static docker-armhf
 make nextcloudpi-armhf && {
   docker push ownyourbits/nextcloudpi-armhf
   docker push ownyourbits/nextcloud-armhf
   docker push ownyourbits/lamp-armhf
   docker push ownyourbits/debian-ncp-armhf
 }
+rm docker-armhf/qemu-arm-static
 
 # License
 #
