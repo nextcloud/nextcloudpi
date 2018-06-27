@@ -53,14 +53,16 @@ configure()
   local SHADOW="$( grep -E '^pi:' /etc/shadow )"
   test -n "${SHADOW}" && {
     local SALT=$(echo "${SHADOW}" | sed -n 's/pi:\$6\$//;s/\$.*//p')
-    local HASH=$(mkpasswd -msha-512 raspberry "$SALT")
 
-    grep -q "${HASH}" <<< "${SHADOW}" && {
-      systemctl stop    ssh
-      systemctl disable ssh
-      echo "The user pi is using the default password. Refusing to activate SSH"
-      echo "SSH disabled"
-      return 1
+    [[ "${SALT}" != "" ]] && {
+      local HASH=$(mkpasswd -msha-512 raspberry "$SALT")
+      grep -q "${HASH}" <<< "${SHADOW}" && {
+        systemctl stop    ssh
+        systemctl disable ssh
+        echo "The user pi is using the default password. Refusing to activate SSH"
+        echo "SSH disabled"
+        return 1
+      }
     }
   }
 
@@ -68,14 +70,16 @@ configure()
   local SHADOW="$( grep -E '^root:' /etc/shadow )"
   test -n "${SHADOW}" && {
     local SALT=$(echo "${SHADOW}" | sed -n 's/root:\$6\$//;s/\$.*//p')
-    local HASH=$(mkpasswd -msha-512 1234 "$SALT")
 
-    grep -q "${HASH}" <<< "${SHADOW}" && {
-      systemctl stop    ssh
-      systemctl disable ssh
-      echo "The user root is using the default password. Refusing to activate SSH"
-      echo "SSH disabled"
-      return 1
+    [[ "${SALT}" != "" ]] && {
+      local HASH=$(mkpasswd -msha-512 1234 "$SALT")
+      grep -q "${HASH}" <<< "${SHADOW}" && {
+        systemctl stop    ssh
+        systemctl disable ssh
+        echo "The user root is using the default password. Refusing to activate SSH"
+        echo "SSH disabled"
+        return 1
+      }
     }
   }
 

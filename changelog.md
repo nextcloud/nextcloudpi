@@ -1,5 +1,7 @@
 
-[v0.57.15](https://github.com/nextcloud/nextcloudpi/commit/164b5cd) (2018-06-26) nc-automount: fix udiskie not installed in latest image
+[v0.57.16](https://github.com/nextcloud/nextcloudpi/commit/cf3dbf8) (2018-06-27) SSH: fix root password in Raspbian
+
+[v0.57.15](https://github.com/nextcloud/nextcloudpi/commit/c329280) (2018-06-26) nc-automount: fix udiskie not installed in latest image
 
 [v0.57.14](https://github.com/nextcloud/nextcloudpi/commit/16af06f) (2018-06-26) added database dir to ncp-info (#553)
 
