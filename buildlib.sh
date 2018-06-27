@@ -169,12 +169,18 @@ function prepare_chroot_raspbian()
   sudo mount -t sysfs sys     raspbian_root/sys/
   sudo mount -o bind /dev     raspbian_root/dev/
   sudo mount -o bind /dev/pts raspbian_root/dev/pts
+
   sudo cp /usr/bin/qemu-arm-static raspbian_root/usr/bin
+
+  # Prevent services from auto-starting
+  sudo bash -c "echo -e '#!/bin/sh\nexit 101' > raspbian_root/usr/sbin/policy-rc.d"
+  sudo chmod +x raspbian_root/usr/sbin/policy-rc.d
 }
 
 function clean_chroot_raspbian()
 {
   sudo rm -f raspbian_root/usr/bin/qemu-arm-static
+  sudo rm -f raspbian_root/usr/sbin/policy-rc.d
   sudo umount -l raspbian_root/{proc,sys,dev/pts,dev}
   umount_raspbian
 }
