@@ -229,7 +229,7 @@ EOF
     activate_script nc-autoupdate-nc.sh
     cd -          &>/dev/null
   }
-  
+
   # change letsencrypt from git to package based
   [[ -f /usr/bin/letsencrypt ]] || {
     echo "updating letsencrypt..."

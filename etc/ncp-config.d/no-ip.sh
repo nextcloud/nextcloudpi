@@ -102,7 +102,9 @@ configure()
 
 cleanup()
 {
-  apt-get purge -y make gcc libc-dev
+  # this uninstalls udiskie, commented out
+  # apt-get purge -y make gcc libc-dev
+  :
 }
 
 # License
