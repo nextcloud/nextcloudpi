@@ -8,4 +8,4 @@ armbian/
 raspbian_root
 raspbian_boot
 ncp-web/wizard.cfg
-qemu-arm-static
+docker-armhf/qemu-arm-static

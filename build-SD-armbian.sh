@@ -39,7 +39,6 @@ KERNEL_ONLY=no
 KERNEL_CONFIGURE=no
 BUILD_DESKTOP=no
 USE_CCACHE=yes
-CLEAN_LEVEL="cache debs"
 # CLEAN_LEVEL=""          # study this: it is much faster, but generated images might be broken (#548)
 # NO_APT_CACHER=no        # this will also improve build times, but doesn't seem very reliable
 EOF
