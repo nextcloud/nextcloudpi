@@ -289,10 +289,10 @@ function pack_image()
   local IMG="$1"
   local TAR="$2"
   local DIR="$( dirname  "$IMG" )"
-  local IMG="$( basename "$IMG" )"
+  local IMGNAME="$( basename "$IMG" )"
   echo -e "\n\e[1m[ Pack Image ]\e[0m"
   echo "packing $IMG → $TAR"
-  tar -I pbzip2 -C "$DIR" -cvf "$TAR" "$IMG" && \
+  tar -I pbzip2 -C "$DIR" -cvf "$TAR" "$IMGNAME" && \
     echo -e "$TAR packed successfully"
 }
 

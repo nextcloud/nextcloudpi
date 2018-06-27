@@ -4,7 +4,7 @@ MAINTAINER Ignacio Núñez Hernanz <nacho@ownyourbits.com>
 
 CMD /bin/bash
 
-COPY qemu-arm-static /usr/bin
+COPY docker-armhf/qemu-arm-static /usr/bin
 
 RUN mkdir -p /etc/services-available.d  /etc/services-enabled.d
 

@@ -34,12 +34,9 @@ install()
     $APTINSTALL php7.0 php7.0-curl php7.0-gd php7.0-fpm php7.0-cli php7.0-opcache \
                 php7.0-mbstring php7.0-xml php7.0-zip php7.0-fileinfo php7.0-ldap \
                 php7.0-intl libmagickcore-6.q16-2-extra php7.0-imagick php-mcrypt
-
-
     mkdir -p /run/php
 
-    # Randomize mariaDB password
-    # Suggested by @enoch85 and taken from the nextcloud vm ( https://github.com/nextcloud/vm/blob/master/lib.sh#L46 )
+    # mariaDB password
     local DBPASSWD="default"
     echo -e "[client]\npassword=$DBPASSWD" > /root/.my.cnf
     chmod 600 /root/.my.cnf
