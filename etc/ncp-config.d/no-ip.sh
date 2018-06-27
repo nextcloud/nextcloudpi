@@ -103,6 +103,7 @@ configure()
 cleanup()
 {
   # this uninstalls udiskie, commented out
+ #  udiskie with these dependencies fixed in Buster
   # apt-get purge -y make gcc libc-dev
   :
 }
