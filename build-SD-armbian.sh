@@ -8,7 +8,7 @@
 # Usage: ./build-SD-armbian.sh <board_code> [<board_name>]
 #
 
-#CLEAN=1                    # Pass this envvar to clean download cache
+#CLEAN=0                    # Pass this envvar to avoid cleaning download cache
 BOARD="$1"
 BNAME="${2:-$1}"
 
@@ -39,9 +39,13 @@ KERNEL_ONLY=no
 KERNEL_CONFIGURE=no
 BUILD_DESKTOP=no
 USE_CCACHE=yes
-# CLEAN_LEVEL=""          # study this: it is much faster, but generated images might be broken (#548)
-# NO_APT_CACHER=no        # this will also improve build times, but doesn't seem very reliable
 EOF
+[[ "$CLEAN" == "0" ]] && {
+  cat >> armbian/config-docker-guest.conf <<EOF
+  CLEAN_LEVEL=""          # study this: it is much faster, but generated images might be broken (#548)
+  # NO_APT_CACHER=no      # this will also improve build times, but doesn't seem very reliable
+EOF
+}
 
 # board specific parameters
 CONF="config-$BOARD".conf
@@ -49,6 +53,7 @@ CONF="config-$BOARD".conf
 
 # build
 armbian/compile.sh docker
+rm armbian/config-docker-guest.conf
 
 # pack image
 mv armbian/output/images/Armbian*.img "$IMG"

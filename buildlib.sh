@@ -118,7 +118,7 @@ $CFG_STEP
 
 function prepare_dirs()
 {
-  [[ "$CLEAN" != "" ]] && rm -rf cache
+  [[ "$CLEAN" == "0" ]] || rm -rf cache
   rm -rf tmp
   mkdir -p tmp output cache
 }

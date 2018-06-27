@@ -21,7 +21,7 @@ source buildlib.sh          # initializes $IMGNAME
 }
 
 # Raspbian
-CLEAN=1 ./build-SD-rpi.sh       "$IP"
+./build-SD-rpi.sh       "$IP"
 #./build-SD-berryboot.sh "$IMG" #TODO
 
 # Armbian
