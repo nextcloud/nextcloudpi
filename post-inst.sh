@@ -15,9 +15,6 @@ install()
   kill $( cat /run/redis/redis-server.pid )
   [[ -f /run/crond.pid ]] && kill $( cat /run/crond.pid )
 
-  # disable unused apache mods
-  a2dismod status reqtimeout env autoindex access_compat auth_basic authn_file authn_core alias access_compat
-
   # cleanup all NCP extras
   source /usr/local/etc/library.sh
   cd /usr/local/etc/ncp-config.d/
