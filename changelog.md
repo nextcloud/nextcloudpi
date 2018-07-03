@@ -1,5 +1,7 @@
 
-[v0.57.16](https://github.com/nextcloud/nextcloudpi/commit/cf3dbf8) (2018-06-27) SSH: fix root password in Raspbian
+[v0.57.17](https://github.com/nextcloud/nextcloudpi/commit/ddae4df) (2018-07-03) armbian: fix image tag preventing updates
+
+[v0.57.16](https://github.com/nextcloud/nextcloudpi/commit/1298bfe) (2018-06-27) SSH: fix root password in Raspbian
 
 [v0.57.15](https://github.com/nextcloud/nextcloudpi/commit/c329280) (2018-06-26) nc-automount: fix udiskie not installed in latest image
 
