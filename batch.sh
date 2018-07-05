@@ -22,7 +22,8 @@ source buildlib.sh          # initializes $IMGNAME
 
 # Raspbian
 ./build-SD-rpi.sh       "$IP"
-#./build-SD-berryboot.sh "$IMG" #TODO
+IMG="$( ls -1t tmp/*.img | head -1 )"
+./build-SD-berryboot.sh "$IMG"
 
 # Armbian
 ./build-SD-armbian.sh odroidxu4 OdroidHC2

@@ -29,8 +29,6 @@ EOF
 sudo mksquashfs raspbian_root "$IMG"  -comp lzo -e lib/modules
 umount_raspbian
 
-exit # TODO remove once tested
-
 ## pack
  
 TAR=output/"$( basename "$IMG" .img ).tar.bz2"
