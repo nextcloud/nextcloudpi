@@ -1,5 +1,7 @@
 
-[v0.57.17](https://github.com/nextcloud/nextcloudpi/commit/ddae4df) (2018-07-03) armbian: fix image tag preventing updates
+[v0.57.18](https://github.com/nextcloud/nextcloudpi/commit/7c2457e) (2018-07-13) fix ncc command repeating itself
+
+[v0.57.17](https://github.com/nextcloud/nextcloudpi/commit/baa2fa2) (2018-07-03) armbian: fix image tag preventing updates
 
 [v0.57.16](https://github.com/nextcloud/nextcloudpi/commit/1298bfe) (2018-06-27) SSH: fix root password in Raspbian
 
