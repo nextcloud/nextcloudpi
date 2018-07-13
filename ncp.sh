@@ -31,7 +31,7 @@ install()
   }
 
   # add the ncc shortcut
-  cat >> /usr/local/bin/ncc <<'EOF'
+  cat > /usr/local/bin/ncc <<'EOF'
 #!/bin/bash
 sudo -u www-data php /var/www/nextcloud/occ "$@"
 EOF
