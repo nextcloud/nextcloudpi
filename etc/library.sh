@@ -18,8 +18,8 @@ function config()
   type dialog &>/dev/null || { echo "please, install dialog for interactive configuration"; return 1; }
 
   test -f "$INSTALL_SCRIPT" || { echo "file $INSTALL_SCRIPT not found"; return 1; }
-  local VARS=( $( grep "^[[:alpha:]]\+_=" "$INSTALL_SCRIPT" | cut -d= -f1 | sed 's|_$||' ) )
-  local VALS=( $( grep "^[[:alpha:]]\+_=" "$INSTALL_SCRIPT" | cut -d= -f2 ) )
+  local VARS=( $( grep "^[[:alpha:]]\+_=" "$INSTALL_SCRIPT" | sed 's|_=.*$||' ) )
+  local VALS=( $( grep "^[[:alpha:]]\+_=" "$INSTALL_SCRIPT" | sed 's|^.*_=||' ) )
 
   [[ "$NO_CONFIG" == "1" ]] || test ${#VARS[@]} -eq 0 && { INSTALLATION_CODE="$( cat "$INSTALL_SCRIPT" )"; return; }
 
@@ -35,23 +35,26 @@ function config()
 
   while test $RET != 1 && test $RET != 250; do
     local value
-    value=$( dialog --ok-label "Start" \
-                    --no-lines --backtitle "$BACKTITLE" \
-                    --form "Enter configuration for $( basename "$INSTALL_SCRIPT" .sh )" \
-                    20 70 0 $PARAM \
-             3>&1 1>&2 2>&3 )
+    value="$( dialog --ok-label "Start" \
+                     --no-lines --backtitle "$BACKTITLE" \
+                     --form "Enter configuration for $( basename "$INSTALL_SCRIPT" .sh )" \
+                     20 70 0 $PARAM \
+               3>&1 1>&2 2>&3 )"
     RET=$?
-
     case $RET in
       $DIALOG_CANCEL)
         return 1
         ;;
       $DIALOG_OK)
-        local RET=( $value )
-        for i in $( seq 0 1 $(( ${#RET[@]} - 1 )) ); do
+        local RET_VALS=()
+        while read l; do RET_VALS+=("$l"); done < <( echo -e "$value" )
+
+        for i in $( seq 0 1 $(( ${#RET_VALS[@]} - 1 )) ); do
+
           # check for invalid characters
-          grep -q "[&]" <<< "${RET[$i]}" && { echo "Invalid characters in field ${VARS[$i]}"; return 1; }
-          local SEDRULE+="s|^${VARS[$i]}_=.*|${VARS[$i]}_=${RET[$i]}|;"
+          grep -q "[&[:space:]]" <<< "${RET_VALS[$i]}" && { echo "Invalid characters in field ${VARS[$i]}"; return 1; }
+
+          local SEDRULE+="s|^${VARS[$i]}_=.*|${VARS[$i]}_=${RET_VALS[$i]}|;"
         done
         break
         ;;

@@ -1,5 +1,7 @@
 
-[v0.57.19](https://github.com/nextcloud/nextcloudpi/commit/acb7114) (2018-07-20) nc-backup: fix space check error message
+[v0.57.20](https://github.com/nextcloud/nextcloudpi/commit/0f8bb29) (2018-07-20) ncp-config: add spaces to invalid characters
+
+[v0.57.19](https://github.com/nextcloud/nextcloudpi/commit/cdefd54) (2018-07-20) nc-backup: fix space check error message
 
 [v0.57.18](https://github.com/nextcloud/nextcloudpi/commit/7985f48) (2018-07-13) fix ncc command repeating itself
 
