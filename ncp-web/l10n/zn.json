@@ -1,7 +1,0 @@
-{
-    "translations": {
-        "Configure NextCloudPi features": "Configurar NextCloudPi",
-        "Run": "Ejecutar",
-        "This application requires JavaScript for correct operation. Please %s enable JavaScript %s and reload the page.": "Esta aplicación requiere Javascript para un funcionamiento correcto. Por favor %s active Javascript %s y recarge la página."
-    }
-}
