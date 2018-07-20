@@ -1,0 +1,11 @@
+{"translations":{
+    "ACTIVE":"開啟",
+    "BANTIME":"禁止時間",
+    "FINDTIME":"尋找時間",
+    "MAXRETRY":"最大重試次數",
+    "EMAIL":"電子郵件提醒",
+    "MAILALERTS":"郵件警報",
+    "Brute force protection for SSH and NextCloud":"SSH和NextCloud防火牆?",
+    "fail2ban":"fail2ban"
+    }
+}
