@@ -1,5 +1,7 @@
 
-[v0.57.18](https://github.com/nextcloud/nextcloudpi/commit/7c2457e) (2018-07-13) fix ncc command repeating itself
+[v0.57.19](https://github.com/nextcloud/nextcloudpi/commit/acb7114) (2018-07-20) nc-backup: fix space check error message
+
+[v0.57.18](https://github.com/nextcloud/nextcloudpi/commit/7985f48) (2018-07-13) fix ncc command repeating itself
 
 [v0.57.17](https://github.com/nextcloud/nextcloudpi/commit/baa2fa2) (2018-07-03) armbian: fix image tag preventing updates
 
