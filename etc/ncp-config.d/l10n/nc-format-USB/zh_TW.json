@@ -1,0 +1,7 @@
+{
+    "translations":{
+        "LABEL":"名稱",
+        "Format an external USB drive as a BTRFS partition (dangerous)":"將USB格式化成BTRFS格式",
+        "Make sure that ONLY the USB drive that you want to format is plugged in.\ncareful, this will destroy any data in the USB drive\n\n** YOU WILL LOSE ALL YOUR USB DATA **":"請確認您只有連結需要格式化的USB\n**開始後您將會遺失該USB的所有資料**"
+    }
+}
