@@ -5,6 +5,6 @@
         "Free Dynamic DNS provider (need account from https://duckdns.org)": "使用duckdns.org免費提供的動態DNS(DDNS)（https://duckdns.org）",
         "TOKEN": "TOKEN",
         "duckDNS": "duckDNS",
-        "Run":"存檔"
+        "Run":"儲存"
     }
 }
