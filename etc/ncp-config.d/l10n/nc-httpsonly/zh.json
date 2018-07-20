@@ -1,0 +1,7 @@
+{
+    "translations": {
+        "ACTIVE": "啟動",
+        "Force HTTPS": "強制使用https",
+        "nc-httpsonly": "強制使用https"
+    }
+}
