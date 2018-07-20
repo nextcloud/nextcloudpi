@@ -284,6 +284,11 @@ EOF
   # fix udiskie not correctly installed
   type udiskie &> /dev/null || apt-get install -y --no-install-recommends udiskie inotify-tools  
 
+  # update nc-backup
+  cd "$CONFDIR" &>/dev/null
+  install_script nc-backup.sh
+  cd -          &>/dev/null
+
 } # end - only live updates
 
 exit 0

@@ -45,7 +45,7 @@ mkdir -p "$DESTDIR"
 FREE=$( df    "$DESTDIR" | tail -1 | awk '{ print $4 }' )
 
 [ $SIZE -ge $FREE ] && { 
-  echo "free space check failed. Need $( du -sh "$DATADIR" | awk '{ print $1 }' )";
+  echo "free space check failed. Need $SIZE Bytes";
   exit 1; 
 }
 
