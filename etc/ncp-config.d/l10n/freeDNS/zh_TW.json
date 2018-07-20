@@ -1,0 +1,9 @@
+{
+    "translations":{
+        "ACTIVE":"開啟",
+        "UPDATEHASH":"Update Hash",
+        "DOMAIN":"域名",
+        "UPDATEINTERVAL":"更新間隔時間",
+        "freeDNS":"freeDNS"
+    }
+}
