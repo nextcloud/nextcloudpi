@@ -5,7 +5,7 @@
     "MAXRETRY":"最大重試次數",
     "EMAIL":"電子郵件提醒",
     "MAILALERTS":"郵件警報",
-    "Brute force protection for SSH and NextCloud":"SSH和NextCloud防火牆?",
+    "Brute force protection for SSH and NextCloud":"封鎖SSH多次登入錯誤IP",
     "fail2ban":"fail2ban"
     }
 }
