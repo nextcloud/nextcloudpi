@@ -289,6 +289,10 @@ EOF
   install_script nc-backup.sh
   cd -          &>/dev/null
 
+  # remove redundant opcache configuration
+  [[ "$( ls -l /etc/php/7.0/fpm/conf.d/*-opcache.ini |  wc -l )" -gt 1 ]] && rm "$( ls /etc/php/7.0/fpm/conf.d/*-opcache.ini | tail -1 )"
+  [[ "$( ls -l /etc/php/7.0/cli/conf.d/*-opcache.ini |  wc -l )" -gt 1 ]] && rm "$( ls /etc/php/7.0/cli/conf.d/*-opcache.ini | tail -1 )"
+
 } # end - only live updates
 
 exit 0
