@@ -1,0 +1,8 @@
+{
+    "translations":{
+        "ACTIVE":"開啟",
+        "DOMAIN":"域名",
+        "TOKEN":"TOKEN",
+        "Free Dynamic DNS provider (need account from spdyn.de)":"使用spdyn.de提供的免費提供的動態DNS(DDNS)"
+    }
+}
