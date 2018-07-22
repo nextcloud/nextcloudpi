@@ -1,0 +1,11 @@
+{
+    "translations": {
+        "Configure system limits for NextCloudPi": "設定NextCloudPi的系統限制",
+        "MAXFILESIZE": "最大文件大小（<=2G）",
+        "MEMORYLIMIT": "內存限制",
+        "PHPTHREADS": "PHPTHREADS",
+        "REDISMEM": "REDISMEM",
+        "Set PHP threads to 0 in order to use all cores": "",
+        "nc-limits": "nc-limits"
+    }
+}

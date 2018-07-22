@@ -1,0 +1,8 @@
+{
+    "translations": {
+        "Configure NxtCloudPi features": "設定NextcloudPi",
+        "Run": "開始",
+        "Skip":"跳過",
+        "This application requires JavaScript for correct operation. Please %s enable JavaScript %s and reload the page.": "您的瀏覽器已禁用JavaScript，請%s 啟動JavaScript %s並重新載入頁面。"
+    }
+}

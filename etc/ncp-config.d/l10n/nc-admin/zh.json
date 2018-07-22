@@ -1,0 +1,10 @@
+{
+    "translations":{
+    "Change password for the Nextcloud admin user":"變更Nextcloud管理員密碼",
+    "USER":"管理員帳號",
+    "PASSWORD":"密碼",
+    "CONFIRM":"再次輸入密碼",
+    "nc-admin":"修改Nextcloud管理員密碼",
+    "Run":"修改並儲存"
+    }
+}

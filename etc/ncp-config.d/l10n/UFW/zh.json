@@ -1,0 +1,11 @@
+{
+    "translations":{
+        "ACTIVE":"開啟",
+        "HTTP":"HTTP",
+        "HTTPS":"HTTPS",
+        "SSH":"SSH",
+        "Uncomplicated Firewall":"簡易防火牆(UFW)",
+        "Beware of blocking the SSH port you are using!":"保護您使用SSH",
+        "Run":"儲存"
+    }
+}

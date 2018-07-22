@@ -1,0 +1,10 @@
+{
+    "translations": {
+        "BACKUPLIMIT": "備份限制",
+        "Backup this NC instance to a file": "備份Nextcloud",
+        "COMPRESS": "壓縮",
+        "DESTDIR": "備份位置",
+        "INCLUDEDATA": "包括數據",
+        "nc-backup": "備份Nextcloud"
+    }
+}
