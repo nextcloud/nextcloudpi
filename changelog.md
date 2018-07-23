@@ -1,5 +1,9 @@
 
-[v0.57.20](https://github.com/nextcloud/nextcloudpi/commit/0f8bb29) (2018-07-20) ncp-config: add spaces to invalid characters
+[v0.58.0](https://github.com/nextcloud/nextcloudpi/commit/4c53bf3) (2018-07-23) update to NC 13.0.5
+
+[v0.57.21](https://github.com/nextcloud/nextcloudpi/commit/214c187) (2018-07-23) Fixes #566 Remove redundant opcache configuration (#572)
+
+[v0.57.20](https://github.com/nextcloud/nextcloudpi/commit/a05cbe8) (2018-07-20) ncp-config: add spaces to invalid characters
 
 [v0.57.19](https://github.com/nextcloud/nextcloudpi/commit/cdefd54) (2018-07-20) nc-backup: fix space check error message
 
