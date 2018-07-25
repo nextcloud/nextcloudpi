@@ -1,5 +1,7 @@
 
-[v0.58.0](https://github.com/nextcloud/nextcloudpi/commit/4c53bf3) (2018-07-23) update to NC 13.0.5
+[v0.58.1](https://github.com/nextcloud/nextcloudpi/commit/422f4b7) (2018-07-25) nc-datadir: backup existing datadir after checks
+
+[v0.58.0](https://github.com/nextcloud/nextcloudpi/commit/60cfc18) (2018-07-23) update to NC 13.0.5
 
 [v0.57.21](https://github.com/nextcloud/nextcloudpi/commit/214c187) (2018-07-23) Fixes #566 Remove redundant opcache configuration (#572)
 
