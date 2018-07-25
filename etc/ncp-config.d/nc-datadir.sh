@@ -39,13 +39,7 @@ configure()
 
   [[ "$SRCDIR" == "$DATADIR_" ]] && { echo -e "INFO: data already there"; return 0; }
 
-  # check datadir exists
-  [ -d $DATADIR_ ] && {
-    local BKP="${DATADIR_}-$( date "+%m-%d-%y" )" 
-    echo "INFO: $DATADIR_ is not empty. Creating backup $BKP"
-    mv "$DATADIR_" "$BKP"
-  }
-
+  # checks
   local BASEDIR=$( dirname "$DATADIR_" )
 
   [ -d "$BASEDIR" ] || { echo "$BASEDIR does not exist"; return 1; }
@@ -58,6 +52,14 @@ configure()
     echo "Refusing to move to the SD card. Abort"
     return 1
   }
+
+  # backup possibly existing datadir
+  [ -d $DATADIR_ ] && {
+    local BKP="${DATADIR_}-$( date "+%m-%d-%y" )" 
+    echo "INFO: $DATADIR_ is not empty. Creating backup $BKP"
+    mv "$DATADIR_" "$BKP"
+  }
+
 
   ## COPY
   cd /var/www/nextcloud
