@@ -34,10 +34,12 @@ DBPASSWD="$( grep password /root/.my.cnf | sed 's|password=||' )"
 
 DIR="$( cd "$( dirname "$BACKUPFILE" )" &>/dev/null && pwd )" #abspath
 
-[[ $# -eq 0                       ]] && { echo "missing first argument"                     ; exit 1; }
-[[ -f "$BACKUPFILE"               ]] || { echo "$BACKUPFILE not found"                      ; exit 1; }
-[[ "$DIR" =~ "/var/www/nextcloud" ]] && { echo "Refusing to restore from /var/www/nextcloud"; exit 1; }
-[[ -d /var/www/nextcloud          ]] && { echo "INFO: overwriting old instance"; }
+[[ -f /.docker-image ]] && NCDIR=/data/app || NCDIR=/var/www/nextcloud
+
+[[ $# -eq 0           ]] && { echo "missing first argument"         ; exit 1; }
+[[ -f "$BACKUPFILE"   ]] || { echo "$BACKUPFILE not found"          ; exit 1; }
+[[ "$DIR" =~ "$NCDIR" ]] && { echo "Refusing to restore from $NCDIR"; exit 1; }
+[[ -d "$NCDIR"        ]] && { echo "INFO: overwriting old instance"; }
 
 TMPDIR="$( mktemp -d "$( dirname "$BACKUPFILE" )"/ncp-restore.XXXXXX )" || { echo "Failed to create temp dir" >&2; exit 1; }
 TMPDIR="$( cd "$TMPDIR" &>/dev/null && pwd )" || { echo "$TMPDIR not found"; exit 1; } #abspath
@@ -66,16 +68,16 @@ tar -xf "$BACKUPFILE" -C "$TMPDIR" || exit 1
 ## RESTORE FILES
 
 echo "restore files..."
-rm -rf /var/www/nextcloud
-mv "$TMPDIR"/nextcloud /var/www || { echo "Error restoring base files"; exit 1; }
+rm -rf "$NCDIR"
+mv "$TMPDIR"/nextcloud "$NCDIR"/.. || { echo "Error restoring base files"; exit 1; }
 
 # update NC database password to this instance
-sed -i "s|'dbpassword' =>.*|'dbpassword' => '$DBPASSWD',|" /var/www/nextcloud/config/config.php
+sed -i "s|'dbpassword' =>.*|'dbpassword' => '$DBPASSWD',|" "$NCDIR"/config/config.php
 
 # update redis credentials
 REDISPASS="$( grep "^requirepass" /etc/redis/redis.conf | cut -f2 -d' ' )"
 [[ "$REDISPASS" != "" ]] && \
-  sed -i "s|'password'.*|'password' => '$REDISPASS',|" /var/www/nextcloud/config/config.php
+  sed -i "s|'password'.*|'password' => '$REDISPASS',|" "$NCDIR"/config/config.php
 service redis-server restart
 
 ## RE-CREATE DATABASE TABLE
@@ -96,14 +98,14 @@ mysql -u root nextcloud <  "$TMPDIR"/nextcloud-sqlbkp_*.bak || { echo "Error res
 
 ## RESTORE DATADIR
 
-cd /var/www/nextcloud
+cd "$NCDIR"
 
 ### INCLUDEDATA=yes situation
 
 NUMFILES=$(( 2 + COMPRESSED ))
 if [[ $( ls "$TMPDIR" | wc -l ) -eq $NUMFILES ]]; then
 
-  DATADIR=$( grep datadirectory /var/www/nextcloud/config/config.php | awk '{ print $3 }' | grep -oP "[^']*[^']" | head -1 ) 
+  DATADIR=$( grep datadirectory "$NCDIR"/config/config.php | awk '{ print $3 }' | grep -oP "[^']*[^']" | head -1 ) 
   [[ "$DATADIR" == "" ]] && { echo "Error reading data directory"; exit 1; }
 
   echo "restore datadir to $DATADIR..."
@@ -129,7 +131,7 @@ if [[ $( ls "$TMPDIR" | wc -l ) -eq $NUMFILES ]]; then
 
 else      
   echo "no datadir found in backup"
-  DATADIR=/var/www/nextcloud/data
+  DATADIR="$NCDIR"/data
 
   sudo -u www-data php occ maintenance:mode --off
   sudo -u www-data php occ files:scan --all
