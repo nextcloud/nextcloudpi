@@ -1,5 +1,7 @@
 
-[v0.60.0](https://github.com/nextcloud/nextcloudpi/commit/3930c82) (2018-09-22) add nc-previews
+[v0.60.1](https://github.com/nextcloud/nextcloudpi/commit/2b80190) (2018-07-31) nc-restore: restore to volume in docker container
+
+[v0.60.0, master](https://github.com/nextcloud/nextcloudpi/commit/e973397) (2018-09-22) add nc-previews
 
 [v0.59.20](https://github.com/nextcloud/nextcloudpi/commit/4457485) (2018-09-21) autoupdate: log everything to ncp.log
 

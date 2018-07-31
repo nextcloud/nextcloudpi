@@ -34,8 +34,8 @@ DATADIR=$( $OCC config:system:get datadirectory ) || {
   exit 1;
 }
 
-cleanup(){  local RET=$?;                    rm -f "${DBBACKUP}"              ; $OCC maintenance:mode --off; exit $RET; }
-fail()   {  local RET=$?; echo "Abort..."  ; rm -f "${DBBACKUP}" "${DESTFILE}"; $OCC maintenance:mode --off; exit $RET; }
+cleanup(){ local RET=$?;                    rm -f "${DBBACKUP}"              ;[[ -f /.docker-image ]] && mv /data/nextcloud /data/app; $OCC maintenance:mode --off; exit $RET; }
+fail()   { local RET=$?; echo "Abort..."  ; rm -f "${DBBACKUP}" "${DESTFILE}";[[ -f /.docker-image ]] && mv /data/nextcloud /data/app; $OCC maintenance:mode --off; exit $RET; }
 trap cleanup EXIT
 trap fail INT TERM HUP ERR
 
@@ -60,8 +60,10 @@ FREE=$( df    "$DESTDIR" | tail -1 | awk '{ print $4 }' )
 }
 
 # database
-cd /var/www || exit 1
 $OCC maintenance:mode --on
+[[ -f /.docker-image ]] && mv /data/app /data/nextcloud
+[[ -f /.docker-image ]] && BASEDIR=/data || BASEDIR=/var/www
+cd "$BASEDIR" || exit 1
 echo "backup database..."
 mysqldump -u root --single-transaction nextcloud > "$DBBACKUP"
 
@@ -73,7 +75,7 @@ tar --exclude "nextcloud/data/*/files/*" \
     --exclude "nextcloud/data/{access,error,nextcloud}.log" \
     --exclude "nextcloud/data/access.log" \
     --exclude "nextcloud/data/ncp-update-backups/" \
-    -cf "$DESTFILE" "$DBBACKUP" nextcloud/ \
+    -cf "$DESTFILE" "$DBBACKUP" "nextcloud"/ \
   || {
         echo "error generating backup"
         exit 1

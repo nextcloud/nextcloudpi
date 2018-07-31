@@ -167,9 +167,15 @@ EOF
     sudo -u www-data php /var/www/nextcloud/occ config:system:set mail_smtpmode --value="sendmail"
   }
 
+  # update nc-restore
+  cd "$CONFDIR" &>/dev/null
+  install_script nc-backup.sh
+  install_script nc-restore.sh
+  cd -          &>/dev/null
+
+  # install preview generator
   sudo -u www-data php /var/www/nextcloud/occ app:install previewgenerator
   sudo -u www-data php /var/www/nextcloud/occ app:enable  previewgenerator
-
 } # end - only live updates
 
 exit 0
