@@ -281,9 +281,6 @@ EOF
       chmod +x /etc/cron.weekly/letsencrypt-ncp
     }
 
-  # fix udiskie not correctly installed
-  type udiskie &> /dev/null || apt-get install -y --no-install-recommends udiskie inotify-tools  
-
   # update nc-backup
   cd "$CONFDIR" &>/dev/null
   install_script nc-backup.sh
