@@ -24,31 +24,18 @@ export DEBIAN_FRONTEND=noninteractive
 
 install()
 {
+
+    # Linux
+    ##########################################
+
     apt-get update
-
-    # INSTALL 
-    ##########################################
-
     $APTINSTALL apt-utils cron
-    $APTINSTALL apache2
-    $APTINSTALL php7.0 php7.0-curl php7.0-gd php7.0-fpm php7.0-cli php7.0-opcache \
-                php7.0-mbstring php7.0-xml php7.0-zip php7.0-fileinfo php7.0-ldap \
-                php7.0-intl libmagickcore-6.q16-2-extra php7.0-imagick php-mcrypt
-    mkdir -p /run/php
 
-    # mariaDB password
-    local DBPASSWD="default"
-    echo -e "[client]\npassword=$DBPASSWD" > /root/.my.cnf
-    chmod 600 /root/.my.cnf
 
-    debconf-set-selections <<< "mariadb-server-5.5 mysql-server/root_password password $DBPASSWD"
-    debconf-set-selections <<< "mariadb-server-5.5 mysql-server/root_password_again password $DBPASSWD"
-    $APTINSTALL mariadb-server php7.0-mysql 
-    mkdir -p /run/mysqld
-    chown mysql /run/mysqld
-
-    # CONFIGURE APACHE 
+    # APACHE 
     ##########################################
+
+    $APTINSTALL apache2
 
   cat >/etc/apache2/conf-available/http2.conf <<EOF
 Protocols h2 h2c http/1.1
@@ -81,8 +68,42 @@ EOF
 </IfModule>
 EOF
 
-    # CONFIGURE PHP7
+    # MySQL
     ##########################################
+    
+    # check sqld
+    if [ type mysqld  &>/dev/null ]
+    then
+      echo ">>> WARNING: existing mysqld configuration will be changed <<<"
+        read -p "Are you sure? [y/n]" -n 1 -r
+      if [[ ! $REPLY =~ ^[Yy]$ ]]
+      then
+        exit 1
+      fi
+    fi
+
+    # configure DB password
+    local DBPASSWD="default"
+    echo -e "[client]\npassword=$DBPASSWD" > /root/.my.cnf
+    chmod 600 /root/.my.cnf
+
+    debconf-set-selections <<< "mariadb-server-5.5 mysql-server/root_password password $DBPASSWD"
+    debconf-set-selections <<< "mariadb-server-5.5 mysql-server/root_password_again password $DBPASSWD"
+    
+    # install DB
+    $APTINSTALL mariadb-server php7.0-mysql 
+    mkdir -p /run/mysqld
+    chown mysql /run/mysqld
+  
+  
+    # PHP
+    ##########################################
+
+    $APTINSTALL php7.0 php7.0-curl php7.0-gd php7.0-fpm php7.0-cli php7.0-opcache \
+                php7.0-mbstring php7.0-xml php7.0-zip php7.0-fileinfo php7.0-ldap \
+                php7.0-intl libmagickcore-6.q16-2-extra php7.0-imagick php-mcrypt
+    mkdir -p /run/php
+
 
     cat > /etc/php/7.0/mods-available/opcache.ini <<EOF
 zend_extension=opcache.so
@@ -97,6 +118,10 @@ opcache.revalidate_freq=1
 opcache.file_cache=/tmp;
 EOF
 
+
+    # CONFIGURE LAMP FOR NEXTCLOUD
+    ##########################################
+
     a2enmod http2
     a2enconf http2 
     a2enmod proxy_fcgi setenvif
@@ -108,10 +133,6 @@ EOF
     a2enmod ssl
     
     echo "ServerName localhost" >> /etc/apache2/apache2.conf
-
-
-    # CONFIGURE LAMP FOR NEXTCLOUD
-    ##########################################
 
     $APTINSTALL ssl-cert # self signed snakeoil certs
 
