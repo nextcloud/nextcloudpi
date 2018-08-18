@@ -1,7 +1,11 @@
 
-[v0.58.1](https://github.com/nextcloud/nextcloudpi/commit/422f4b7) (2018-07-25) nc-datadir: backup existing datadir after checks
+[v0.58.3](https://github.com/nextcloud/nextcloudpi/commit/c6403b7) (2018-08-18) update: remove the armbian fix so we can build images again
 
-[v0.58.0](https://github.com/nextcloud/nextcloudpi/commit/60cfc18) (2018-07-23) update to NC 13.0.5
+[v0.58.2](https://github.com/nextcloud/nextcloudpi/commit/44a368f) (2018-07-31) nc-restore: restore to volume in docker container
+
+[v0.58.1 ](https://github.com/nextcloud/nextcloudpi/commit/81c53af) (2018-07-25) nc-datadir: backup existing datadir after checks
+
+[v0.58.0 ](https://github.com/nextcloud/nextcloudpi/commit/60cfc18) (2018-07-23) update to NC 13.0.5
 
 [v0.57.21](https://github.com/nextcloud/nextcloudpi/commit/214c187) (2018-07-23) Fixes #566 Remove redundant opcache configuration (#572)
 
