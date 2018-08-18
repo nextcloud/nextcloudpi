@@ -104,9 +104,6 @@ chmod 770                  /var/www/ncp-web
 
 ## BACKWARD FIXES ( for older images )
 
-# clean build flags armbian
-rm -f /.ncp-image
-
 # not for image builds, only live updates
 [[ ! -f /.ncp-image ]] && {
 
