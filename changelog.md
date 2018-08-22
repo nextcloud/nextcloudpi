@@ -1,141 +1,151 @@
 
-[v0.59.2](https://github.com/nextcloud/nextcloudpi/commit/86aae1a) (2018-09-10) nc-format-USB: fix wrong detection of USB drives present
+[v0.59.7](https://github.com/nextcloud/nextcloudpi/commit/bb2eb48) (2018-08-22) Rename DDNS apps so they show up together
 
-[v0.59.1 ](https://github.com/nextcloud/nextcloudpi/commit/377e3b9) (2018-09-10) nc-datadir: support specifying the root of the mountpoint
+[v0.59.6 ](https://github.com/nextcloud/nextcloudpi/commit/1210517) (2018-09-12) wizard: fix instructions for BTRFS
 
-[v0.59.0](https://github.com/nextcloud/nextcloudpi/commit/3a74591) (2018-08-31) update to NC 13.0.6
+[v0.59.5 ](https://github.com/nextcloud/nextcloudpi/commit/ed96a0c) (2018-09-09) nc-limits: fix error when specifying units
 
-[v0.58.1 ](https://github.com/nextcloud/nextcloudpi/commit/a582c52) (2018-07-25) nc-datadir: backup existing datadir after checks
+[v0.59.4 ](https://github.com/nextcloud/nextcloudpi/commit/ee370f1) (2018-09-03) ncp-suggestions: fix Raspbian parsing
 
-[v0.58.0 ](https://github.com/nextcloud/nextcloudpi/commit/32da117) (2018-07-23) update to NC 13.0.5
+[v0.59.3 ](https://github.com/nextcloud/nextcloudpi/commit/6e1a1a9) (2018-08-31) build: add imagick for gallery
 
-[v0.57.21](https://github.com/nextcloud/nextcloudpi/commit/09598d1) (2018-07-23) Fixes #566 Remove redundant opcache configuration (#572)
+[v0.59.2 ](https://github.com/nextcloud/nextcloudpi/commit/e25f5d1) (2018-09-10) nc-format-USB: fix wrong detection of USB drives present
 
-[v0.57.20](https://github.com/nextcloud/nextcloudpi/commit/1b0182a) (2018-07-20) ncp-config: add spaces to invalid characters
+[v0.59.1 ](https://github.com/nextcloud/nextcloudpi/commit/378ca60) (2018-09-10) nc-datadir: support specifying the root of the mountpoint
 
-[v0.57.19](https://github.com/nextcloud/nextcloudpi/commit/9ffe73f) (2018-07-20) nc-backup: fix space check error message
+[v0.59.0](https://github.com/nextcloud/nextcloudpi/commit/9113ab2) (2018-08-31) update to NC 13.0.6
 
-[v0.57.18](https://github.com/nextcloud/nextcloudpi/commit/857b0bb) (2018-07-13) fix ncc command repeating itself
+[v0.58.1 ](https://github.com/nextcloud/nextcloudpi/commit/dad9900) (2018-07-25) nc-datadir: backup existing datadir after checks
 
-[v0.57.17](https://github.com/nextcloud/nextcloudpi/commit/b5378bd) (2018-07-03) armbian: fix image tag preventing updates
+[v0.58.0 ](https://github.com/nextcloud/nextcloudpi/commit/df7a277) (2018-07-23) update to NC 13.0.5
 
-[v0.57.16](https://github.com/nextcloud/nextcloudpi/commit/016ceeb) (2018-06-27) SSH: fix root password in Raspbian
+[v0.57.21](https://github.com/nextcloud/nextcloudpi/commit/965716d) (2018-07-23) Fixes #566 Remove redundant opcache configuration (#572)
 
-[v0.57.15](https://github.com/nextcloud/nextcloudpi/commit/985af3e) (2018-06-26) nc-automount: fix udiskie not installed in latest image
+[v0.57.20](https://github.com/nextcloud/nextcloudpi/commit/bf91e4c) (2018-07-20) ncp-config: add spaces to invalid characters
 
-[v0.57.14](https://github.com/nextcloud/nextcloudpi/commit/7ae1aad) (2018-06-26) added database dir to ncp-info (#553)
+[v0.57.19](https://github.com/nextcloud/nextcloudpi/commit/baaf79a) (2018-07-20) nc-backup: fix space check error message
 
-[v0.57.13](https://github.com/nextcloud/nextcloudpi/commit/55b0de8) (2018-06-24) nc-limits: fix units
+[v0.57.18](https://github.com/nextcloud/nextcloudpi/commit/b81b3e6) (2018-07-13) fix ncc command repeating itself
 
-[v0.57.12](https://github.com/nextcloud/nextcloudpi/commit/c228376) (2018-06-21) nc-limits: autolimits enhancements
+[v0.57.17](https://github.com/nextcloud/nextcloudpi/commit/dc089bf) (2018-07-03) armbian: fix image tag preventing updates
 
-[v0.57.11](https://github.com/nextcloud/nextcloudpi/commit/efcea4f) (2018-06-20) letsencrypt: notify of renewals
+[v0.57.16](https://github.com/nextcloud/nextcloudpi/commit/2aa0e8f) (2018-06-27) SSH: fix root password in Raspbian
 
-[v0.57.10](https://github.com/nextcloud/nextcloudpi/commit/01276a5) (2018-06-20) ncp-web: fix JS docker detection
+[v0.57.15](https://github.com/nextcloud/nextcloudpi/commit/2c01a87) (2018-06-26) nc-automount: fix udiskie not installed in latest image
 
-[v0.57.9 ](https://github.com/nextcloud/nextcloudpi/commit/e04ad59) (2018-06-21) nc-format-USB: fix when ZRAM active
+[v0.57.14](https://github.com/nextcloud/nextcloudpi/commit/f1cc627) (2018-06-26) added database dir to ncp-info (#553)
 
-[v0.57.8 ](https://github.com/nextcloud/nextcloudpi/commit/594b2c5) (2018-06-19) docker: adapt wizard
+[v0.57.13](https://github.com/nextcloud/nextcloudpi/commit/fe12ff9) (2018-06-24) nc-limits: fix units
 
-[v0.57.7 ](https://github.com/nextcloud/nextcloudpi/commit/5d9cfec) (2018-06-19) docker: fix persist ncp-web password
+[v0.57.12](https://github.com/nextcloud/nextcloudpi/commit/bbb25fa) (2018-06-21) nc-limits: autolimits enhancements
 
-[v0.57.6 ](https://github.com/nextcloud/nextcloudpi/commit/97f83a0) (2018-06-19) fix mysqld service named mysql
+[v0.57.11](https://github.com/nextcloud/nextcloudpi/commit/9983b7c) (2018-06-20) letsencrypt: notify of renewals
 
-[v0.57.5 ](https://github.com/nextcloud/nextcloudpi/commit/dfcde41) (2018-06-18) fix nextcloud-domain running before default GW is ready
+[v0.57.10](https://github.com/nextcloud/nextcloudpi/commit/a0a31b4) (2018-06-20) ncp-web: fix JS docker detection
 
-[v0.57.4 ](https://github.com/nextcloud/nextcloudpi/commit/ca5da82) (2018-06-18) letsencrypt: install from debian package
+[v0.57.9 ](https://github.com/nextcloud/nextcloudpi/commit/de5d9fb) (2018-06-21) nc-format-USB: fix when ZRAM active
 
-[v0.57.3 ](https://github.com/nextcloud/nextcloudpi/commit/386c020) (2018-06-18) armbian: default to SSH disabled
+[v0.57.8 ](https://github.com/nextcloud/nextcloudpi/commit/3ee6409) (2018-06-19) docker: adapt wizard
 
-[v0.57.2 ](https://github.com/nextcloud/nextcloudpi/commit/56b135a) (2018-06-18) nc-static-IP: autodetect default interface
+[v0.57.7 ](https://github.com/nextcloud/nextcloudpi/commit/c727d65) (2018-06-19) docker: fix persist ncp-web password
 
-[v0.57.1 ](https://github.com/nextcloud/nextcloudpi/commit/cb127d2) (2018-06-18) docker: replace systemd for service
+[v0.57.6 ](https://github.com/nextcloud/nextcloudpi/commit/865ad08) (2018-06-19) fix mysqld service named mysql
 
-[v0.57.0 ](https://github.com/nextcloud/nextcloudpi/commit/a8bf66a) (2018-06-18) update to NC 13.0.4
+[v0.57.5 ](https://github.com/nextcloud/nextcloudpi/commit/1a9a53f) (2018-06-18) fix nextcloud-domain running before default GW is ready
 
-[v0.56.25](https://github.com/nextcloud/nextcloudpi/commit/d8de31e) (2018-06-18) nc-snapshot-sync: upgrade
+[v0.57.4 ](https://github.com/nextcloud/nextcloudpi/commit/9210fb2) (2018-06-18) letsencrypt: install from debian package
 
-[v0.56.24](https://github.com/nextcloud/nextcloudpi/commit/68fbb16) (2018-06-18) nc-datadir: make sure we have the correct permissions
+[v0.57.3 ](https://github.com/nextcloud/nextcloudpi/commit/5aa071e) (2018-06-18) armbian: default to SSH disabled
 
-[v0.56.23](https://github.com/nextcloud/nextcloudpi/commit/8e1d46a) (2018-06-18) nc-info: fix typo
+[v0.57.2 ](https://github.com/nextcloud/nextcloudpi/commit/7b2737b) (2018-06-18) nc-static-IP: autodetect default interface
 
-[v0.56.22](https://github.com/nextcloud/nextcloudpi/commit/3a5a42b) (2018-06-14) nc-restore: fix redis restart in docker
+[v0.57.1 ](https://github.com/nextcloud/nextcloudpi/commit/7ac1847) (2018-06-18) docker: replace systemd for service
 
-[v0.56.21](https://github.com/nextcloud/nextcloudpi/commit/b8bb912) (2018-06-11) docker: persist SSL certificates
+[v0.57.0 ](https://github.com/nextcloud/nextcloudpi/commit/676776f) (2018-06-18) update to NC 13.0.4
 
-[v0.56.20](https://github.com/nextcloud/nextcloudpi/commit/ded504a) (2018-06-11) ncp-web: fix sanitization for fail2ban
+[v0.56.25](https://github.com/nextcloud/nextcloudpi/commit/57852ad) (2018-06-18) nc-snapshot-sync: upgrade
 
-[v0.56.19](https://github.com/nextcloud/nextcloudpi/commit/2e51541) (2018-06-06) add ncc command, shortcut of occ
+[v0.56.24](https://github.com/nextcloud/nextcloudpi/commit/0d7ceb5) (2018-06-18) nc-datadir: make sure we have the correct permissions
 
-[v0.56.18](https://github.com/nextcloud/nextcloudpi/commit/e365275) (2018-06-06) NFS: fix dependency with automount
+[v0.56.23](https://github.com/nextcloud/nextcloudpi/commit/005ed80) (2018-06-18) nc-info: fix typo
 
-[v0.56.17](https://github.com/nextcloud/nextcloudpi/commit/4de3e2a) (2018-06-04) ncp-web: sanitize the ref parameter
+[v0.56.22](https://github.com/nextcloud/nextcloudpi/commit/cef7cb4) (2018-06-14) nc-restore: fix redis restart in docker
 
-[v0.56.16](https://github.com/nextcloud/nextcloudpi/commit/636dd4b) (2018-05-29) build: fix cleanup armbian images
+[v0.56.21](https://github.com/nextcloud/nextcloudpi/commit/598e1c8) (2018-06-11) docker: persist SSL certificates
 
-[v0.56.15](https://github.com/nextcloud/nextcloudpi/commit/e9b4f7a) (2018-05-28) ncp-web: added chinese translations
+[v0.56.20](https://github.com/nextcloud/nextcloudpi/commit/75cfd80) (2018-06-11) ncp-web: fix sanitization for fail2ban
 
-[v0.56.14](https://github.com/nextcloud/nextcloudpi/commit/704b3a3) (2018-05-27) re-rename to NCPi
+[v0.56.19](https://github.com/nextcloud/nextcloudpi/commit/b78c9e2) (2018-06-06) add ncc command, shortcut of occ
 
-[v0.56.13](https://github.com/nextcloud/nextcloudpi/commit/70e91e4) (2018-05-28) spDYN: install curl for docker
+[v0.56.18](https://github.com/nextcloud/nextcloudpi/commit/412eee2) (2018-06-06) NFS: fix dependency with automount
 
-[v0.56.12](https://github.com/nextcloud/nextcloudpi/commit/9ca53da) (2018-05-28) nc-format-USB: fix when ZRAM active
+[v0.56.17](https://github.com/nextcloud/nextcloudpi/commit/05c14ce) (2018-06-04) ncp-web: sanitize the ref parameter
 
-[v0.56.11](https://github.com/nextcloud/nextcloudpi/commit/d2c2346) (2018-05-27) ncp-config: silence connectivity errors
+[v0.56.16](https://github.com/nextcloud/nextcloudpi/commit/3862eca) (2018-05-29) build: fix cleanup armbian images
 
-[v0.56.10](https://github.com/nextcloud/nextcloudpi/commit/54b1acd) (2018-05-25) nc-ramlogs: fix docker installation from latest upstream changes
+[v0.56.15](https://github.com/nextcloud/nextcloudpi/commit/b45e68f) (2018-05-28) ncp-web: added chinese translations
 
-[v0.56.9 ](https://github.com/nextcloud/nextcloudpi/commit/b9718ee) (2018-05-24) remove old systemd timer config in running systems
+[v0.56.14](https://github.com/nextcloud/nextcloudpi/commit/a070860) (2018-05-27) re-rename to NCPi
 
-[v0.56.8 ](https://github.com/nextcloud/nextcloudpi/commit/3c9a971) (2018-05-22) fix php cli tmpdir for running instances
+[v0.56.13](https://github.com/nextcloud/nextcloudpi/commit/003c29c) (2018-05-28) spDYN: install curl for docker
 
-[v0.56.7 ](https://github.com/nextcloud/nextcloudpi/commit/e8fe100) (2018-05-22) move NC httpd logs to /var/log
+[v0.56.12](https://github.com/nextcloud/nextcloudpi/commit/ed0a368) (2018-05-28) nc-format-USB: fix when ZRAM active
 
-[v0.56.6 ](https://github.com/nextcloud/nextcloudpi/commit/0d47f27) (2018-05-20) fix update httpd log location in virtual host after nc-datadir
+[v0.56.11](https://github.com/nextcloud/nextcloudpi/commit/fae7ba2) (2018-05-27) ncp-config: silence connectivity errors
 
-[v0.56.5 ](https://github.com/nextcloud/nextcloudpi/commit/da7b1d2) (2018-05-20) ncp-autoupdate: dont return 0 if no updates available
+[v0.56.10](https://github.com/nextcloud/nextcloudpi/commit/027a2a0) (2018-05-25) nc-ramlogs: fix docker installation from latest upstream changes
 
-[v0.56.4 ](https://github.com/nextcloud/nextcloudpi/commit/05b5a30) (2018-05-18) nc-info: change port checker providers
+[v0.56.9 ](https://github.com/nextcloud/nextcloudpi/commit/438e73d) (2018-05-24) remove old systemd timer config in running systems
 
-[v0.56.3 ](https://github.com/nextcloud/nextcloudpi/commit/f8c7bc1) (2018-05-17) nc-update-nextcloud: make sure backup syncs to disk
+[v0.56.8 ](https://github.com/nextcloud/nextcloudpi/commit/9e8fc92) (2018-05-22) fix php cli tmpdir for running instances
 
-[v0.56.2 ](https://github.com/nextcloud/nextcloudpi/commit/f4dcded) (2018-05-15) nc-restore: refuse to restore from /var/www/nextcloud
+[v0.56.7 ](https://github.com/nextcloud/nextcloudpi/commit/061d2ae) (2018-05-22) move NC httpd logs to /var/log
 
-[v0.56.1 ](https://github.com/nextcloud/nextcloudpi/commit/59ab9a1) (2018-05-15) nc-update-nextcloud: rollback in case of power cut
+[v0.56.6 ](https://github.com/nextcloud/nextcloudpi/commit/fac99a6) (2018-05-20) fix update httpd log location in virtual host after nc-datadir
 
-[v0.56.0 ](https://github.com/nextcloud/nextcloudpi/commit/46d29b7) (2018-05-15) added nc-autoupdate-nc
+[v0.56.5 ](https://github.com/nextcloud/nextcloudpi/commit/c97acf8) (2018-05-20) ncp-autoupdate: dont return 0 if no updates available
 
-[v0.55.4 ](https://github.com/nextcloud/nextcloudpi/commit/227d7eb) (2018-05-15) nc-autoupdate-ncp: fix wrong user
+[v0.56.4 ](https://github.com/nextcloud/nextcloudpi/commit/cd32b30) (2018-05-18) nc-info: change port checker providers
 
-[v0.55.3 ](https://github.com/nextcloud/nextcloudpi/commit/67e344d) (2018-05-15) nc-update-netcloud: include version in backup name
+[v0.56.3 ](https://github.com/nextcloud/nextcloudpi/commit/f04de1f) (2018-05-17) nc-update-nextcloud: make sure backup syncs to disk
 
-[v0.55.2 ](https://github.com/nextcloud/nextcloudpi/commit/c49fa0d) (2018-05-15) nc-backup: faster free space calculation. Minimize maintenance mode time
+[v0.56.2 ](https://github.com/nextcloud/nextcloudpi/commit/741e79a) (2018-05-15) nc-restore: refuse to restore from /var/www/nextcloud
 
-[v0.55.1 ](https://github.com/nextcloud/nextcloudpi/commit/85f43eb) (2018-05-14) nc-backup: exclude ncp-update-nc backups
+[v0.56.1 ](https://github.com/nextcloud/nextcloudpi/commit/88dcfef) (2018-05-15) nc-update-nextcloud: rollback in case of power cut
 
-[v0.55.0 ](https://github.com/nextcloud/nextcloudpi/commit/bf8377f) (2018-05-11) added nc-update-nextcloud
+[v0.56.0 ](https://github.com/nextcloud/nextcloudpi/commit/9bd6f81) (2018-05-15) added nc-autoupdate-nc
 
-[v0.54.14](https://github.com/nextcloud/nextcloudpi/commit/cb1570f) (2018-05-14) samba: fix permissions
+[v0.55.4 ](https://github.com/nextcloud/nextcloudpi/commit/ee92111) (2018-05-15) nc-autoupdate-ncp: fix wrong user
 
-[v0.54.13](https://github.com/nextcloud/nextcloudpi/commit/0b8a8bd) (2018-05-11) nc-nextcloud: fix upload tmp dir
+[v0.55.3 ](https://github.com/nextcloud/nextcloudpi/commit/191ea16) (2018-05-15) nc-update-netcloud: include version in backup name
 
-[v0.54.12](https://github.com/nextcloud/nextcloudpi/commit/47b73ad) (2018-05-11) nc-restore: fix tmp dirs in backups without data
+[v0.55.2 ](https://github.com/nextcloud/nextcloudpi/commit/2507cc6) (2018-05-15) nc-backup: faster free space calculation. Minimize maintenance mode time
 
-[v0.54.11](https://github.com/nextcloud/nextcloudpi/commit/6c5a308) (2018-05-11) nc-backup: make more robust to unexpected failure
+[v0.55.1 ](https://github.com/nextcloud/nextcloudpi/commit/5e3da08) (2018-05-14) nc-backup: exclude ncp-update-nc backups
 
-[v0.54.10](https://github.com/nextcloud/nextcloudpi/commit/e94d1ab) (2018-05-11) nc-restore: make more robust to unexpected failure
+[v0.55.0 ](https://github.com/nextcloud/nextcloudpi/commit/8d01fc4) (2018-05-11) added nc-update-nextcloud
 
-[v0.54.9 ](https://github.com/nextcloud/nextcloudpi/commit/0bde108) (2018-05-11) nc-restore: separate in its own executable
+[v0.54.14](https://github.com/nextcloud/nextcloudpi/commit/8ef0881) (2018-05-14) samba: fix permissions
 
-[v0.54.8 ](https://github.com/nextcloud/nextcloudpi/commit/034795d) (2018-05-10) nc-backup: better avoid duplicates
+[v0.54.13](https://github.com/nextcloud/nextcloudpi/commit/b08e45f) (2018-05-11) nc-nextcloud: fix upload tmp dir
 
-[v0.54.7 ](https://github.com/nextcloud/nextcloudpi/commit/7b554aa) (2018-05-10) armbian: fix static IP
+[v0.54.12](https://github.com/nextcloud/nextcloudpi/commit/eb1cf1a) (2018-05-11) nc-restore: fix tmp dirs in backups without data
 
-[v0.54.6 ](https://github.com/nextcloud/nextcloudpi/commit/25a143e) (2018-05-10) nc-notify-updates: fix wrong user
+[v0.54.11](https://github.com/nextcloud/nextcloudpi/commit/40a8431) (2018-05-11) nc-backup: make more robust to unexpected failure
 
-[v0.54.5 ](https://github.com/nextcloud/nextcloudpi/commit/cfc81b0) (2018-05-10) armbian: fix mDNS
+[v0.54.10](https://github.com/nextcloud/nextcloudpi/commit/2ef575c) (2018-05-11) nc-restore: make more robust to unexpected failure
 
-[v0.54.4 ](https://github.com/nextcloud/nextcloudpi/commit/bf55914) (2018-05-09) avoid temp dir vulnerabilities
+[v0.54.9 ](https://github.com/nextcloud/nextcloudpi/commit/b93aec5) (2018-05-11) nc-restore: separate in its own executable
+
+[v0.54.8 ](https://github.com/nextcloud/nextcloudpi/commit/dbc3094) (2018-05-10) nc-backup: better avoid duplicates
+
+[v0.54.7 ](https://github.com/nextcloud/nextcloudpi/commit/5dca250) (2018-05-10) armbian: fix static IP
+
+[v0.54.6 ](https://github.com/nextcloud/nextcloudpi/commit/09741e1) (2018-05-10) nc-notify-updates: fix wrong user
+
+[v0.54.5 ](https://github.com/nextcloud/nextcloudpi/commit/688d6d8) (2018-05-10) armbian: fix mDNS
+
+[v0.54.4 ](https://github.com/nextcloud/nextcloudpi/commit/63f83da) (2018-05-09) avoid temp dir vulnerabilities
 
 [v0.54.3 ](https://github.com/nextcloud/nextcloudpi/commit/28d2332) (2018-05-03) nc-datadir: avoid using occ for faster execution
 

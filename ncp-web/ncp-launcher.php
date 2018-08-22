@@ -95,7 +95,7 @@ else if ( $_POST['action'] == "launch" && $_POST['config'] )
   // sanity checks
   if ( !$_POST['ref'] ) exit( '{ "output": "Invalid request" }' );
 
-  preg_match( '/^[0-9A-Za-z-]+$/' , $_POST['ref'] , $matches )
+  preg_match( '/^[0-9A-Za-z_-]+$/' , $_POST['ref'] , $matches )
     or exit( '{ "output": "Invalid input" , "token": "' . getCSRFToken() . '" }' );
 
   // CSRF check

@@ -247,7 +247,7 @@ $(document).ready(function(){
 
 	// Enable FreeDNS step
 	$('#ddns-enable-freedns').on('click', function(){
-        launch_action( 'freeDNS', 
+        launch_action( 'DDNS_freeDNS', 
           {
             "ACTIVE":"yes",
             "DOMAIN":     $("#ddns-domain" ).val(),
@@ -269,7 +269,7 @@ $(document).ready(function(){
 
 	// Enable noip step
 	$('#ddns-enable-noip').on('click', function(){
-          launch_action( 'no-ip', 
+          launch_action( 'DDNS_no-ip', 
           {
             "ACTIVE":"yes",
             "DOMAIN": $("#ddns-domain"  ).val(),

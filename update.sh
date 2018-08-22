@@ -45,6 +45,14 @@ source /usr/local/etc/library.sh
 
 mkdir -p "$CONFDIR"
 
+# rename DDNS entries TODO temporary
+[[ -f "$CONFDIR"/no-ip.sh ]] && {
+  mv "$CONFDIR"/no-ip.sh   "$CONFDIR"/DDNS_no-ip.sh
+  mv "$CONFDIR"/freeDNS.sh "$CONFDIR"/DDNS_freeDNS.sh
+  mv "$CONFDIR"/duckDNS.sh "$CONFDIR"/DDNS_duckDNS.sh
+  mv "$CONFDIR"/spDYN.sh   "$CONFDIR"/DDNS_spDYN.sh
+}
+
 # prevent installing some apt packages in the docker version
 [[ -f /.docker-image ]] && {
   for opt in $EXCL_DOCKER; do 
@@ -126,7 +134,6 @@ chmod 770                  /var/www/ncp-web
     apt-get update
     apt-get install -y --no-install-recommends php-imagick imagemagick-6-common
   }
-
 
 } # end - only live updates
 
