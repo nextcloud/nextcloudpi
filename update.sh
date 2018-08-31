@@ -287,6 +287,13 @@ EOF
   [[ "$( ls -l /etc/php/7.0/fpm/conf.d/*-opcache.ini |  wc -l )" -gt 1 ]] && rm "$( ls /etc/php/7.0/fpm/conf.d/*-opcache.ini | tail -1 )"
   [[ "$( ls -l /etc/php/7.0/cli/conf.d/*-opcache.ini |  wc -l )" -gt 1 ]] && rm "$( ls /etc/php/7.0/cli/conf.d/*-opcache.ini | tail -1 )"
 
+  # faster previews
+  [[ -f /etc/php/7.0/mods-available/imagick.ini ]] || {
+    apt-get update
+    apt-get install -y --no-install-recommends php-imagick imagemagick-6-common
+  }
+
+
 } # end - only live updates
 
 exit 0
