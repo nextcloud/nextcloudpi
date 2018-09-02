@@ -4,7 +4,6 @@
         "UPDATEHASH":"Update Hash",
         "DOMAIN":"域名",
         "UPDATEINTERVAL":"更新間隔時間",
-        "freeDNS":"freeDNS",
-        "Run":"儲存"
+        "DDNS FreeDNS client (need account)":"DDNS FreeDNS client (需要帳號)"
     }
 }
