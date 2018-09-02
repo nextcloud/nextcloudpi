@@ -2,8 +2,9 @@
   "translations":{
     "ACTIVE":"開啟",
     "DESTINATION":"目標資料夾",
-    "SYNCDAYS":"SYNCDAYS",
-    "Periodically sync Nextcloud data through rsync":"通過rsync定期同步Nextcloud數據",
-    "DESTINATION can be a regular path for local sync\n'user' needs SSH autologin from the NCP 'root' user at 'ip'":"DESTINATION can be a regular path for local sync\n'user' needs SSH autologin from the NCP 'root' user at 'ip'"
+    "SYNCDAYS":"同步間格天數",
+    "Periodically sync Nextcloud data through rsync":"使用rsync定期同步Nextcloud數據",
+    "DESTINATION can be a regular path for local sync\n'user' needs SSH autologin from the NCP 'root' user at 'ip'":"DESTINATION can be a regular path for local sync\n'user' needs SSH autologin from the NCP 'root' user at 'ip'",
+    "nc-rsync-auto":"定期同步NC數據(rsync)"
   }
 }
