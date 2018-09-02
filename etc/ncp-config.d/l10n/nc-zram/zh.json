@@ -1,7 +1,7 @@
 {
   "translations":{
-    "ACTIVE":"開啟"
-    "Enable compressed RAM to improve swap performance":"壓縮記憶體來提高性能"
+    "ACTIVE":"開啟",
+    "Enable compressed RAM to improve swap performance":"壓縮記憶體來提高性能",
     "nc-zram":"壓縮記憶體"
   }
 }
