@@ -1,7 +1,7 @@
 {
   "translations":{
     "VER":"版本",
-    "BETA":"測試",
+    "BETA":"測試版",
     "MAXFILESIZE":"最大檔案大小",
     "MEMORYLIMIT":"記憶體限制",
     "MAXTRANSFERTIME":"最大傳輸時間",
