@@ -1,6 +1,4 @@
-{
-    "translations":{
-    "Perform a security audit with lynis and debsecan":"使用lynis和debsecan進行安全檢查",
-    "run":"開始",
-    }
-}
+{"translations": {
+    "nc-audit": "安全性檢查",
+    "Perform a security audit with lynis and debsecan":"使用lynis和debsecan進行安全檢查"
+}}
