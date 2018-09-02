@@ -2,6 +2,6 @@
     "translations": {
         "DIR": "位置",
         "Export NextCloudPi configuration": "匯出NextCloudPi設定",
-        "nc-export-ncp": "匯出NextCloudPi設定"
+        "nc-export-ncp": "匯出NCP設定"
     }
 }
