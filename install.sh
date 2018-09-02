@@ -28,9 +28,6 @@ grep -q -e "Debian GNU/Linux 9" -e "Raspbian GNU/Linux 9" /etc/issue || {
   exit 1; 
 }
 
-# check installed software
-type mysqld  &>/dev/null && echo ">>> WARNING: existing mysqld configuration will be changed <<<"
-
 # get install code
 echo "Getting build code..."
 apt-get update
