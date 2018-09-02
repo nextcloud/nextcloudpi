@@ -3,9 +3,9 @@
         "Configure system limits for NextCloudPi": "設定NextCloudPi的系統限制",
         "MAXFILESIZE": "最大文件大小（<=2G）",
         "MEMORYLIMIT": "內存限制",
-        "PHPTHREADS": "PHPTHREADS",
-        "REDISMEM": "REDISMEM",
-        "Set PHP threads to 0 in order to use all cores": "",
-        "nc-limits": "nc-limits"
+        "PHPTHREADS": "PHP線程",
+        "REDISMEM": "REDIS記憶大小",
+        "Examples: 200M or 2G. Write 0 for autoconfig": "例如：輸入200M或是2G。若要讓系統自行設定，請輸入0",
+        "nc-limits": "修改NCP系統限制"
     }
 }
