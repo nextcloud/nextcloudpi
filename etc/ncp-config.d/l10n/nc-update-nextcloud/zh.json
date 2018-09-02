@@ -1,0 +1,7 @@
+{
+  "translations":{
+      "Update current instance to a new Nextcloud version":"更新Nextcloud版本",
+      "VERSION":"版本號",
+      "nc-update-nextcloud":"更新NC版本"
+  }
+}
