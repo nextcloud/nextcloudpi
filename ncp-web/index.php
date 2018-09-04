@@ -131,27 +131,27 @@ HTML;
 ?>
     </div>
     <div id="header-right">
-      <a href="https://ownyourbits.com" id="nextcloud-btn" target="_blank" tabindex="1">
+      <a href="https://ownyourbits.com" id="nextcloud-btn" target="_blank" tabindex="1" title="<?php echo $l->__("Launch Nextcloud"); ?>">
         <div id="nc-button">
             <div id="expand">
                 <div class="icon-nc-white"></div>
             </div>
         </div>
       </a>
-      <div id="dashboard-btn">
+      <div id="dashboard-btn" title="<?php echo $l->__("View System Info"); ?>">
           <div id="expand">
               <div class="icon-dashboard"></div>
           </div>
       </div>
-      <div id="config-btn">
+      <div id="config-btn" title="<?php echo $l->__("Nextcloud Configuration"); ?>">
           <div id="expand">
               <div class="icon-config"></div>
           </div>
       </div>
-<?php 
+<?php
   if ( file_exists( 'wizard' ) )
     echo <<<HTML
-      <a href="wizard">
+      <a href="wizard" title="{$l->__("NextCloudPi Wizard")}">
         <div class="wizard-btn">
           <div id="expand">
             <div class="icon-wizard-white"></div>
@@ -160,22 +160,18 @@ HTML;
       </a>
 HTML;
 ?>
-      <a href="https://github.com/nextcloud/nextcloudpi/wiki" target="_blank" tabindex="1">
+      <a href="https://github.com/nextcloud/nextcloudpi/wiki" target="_blank" tabindex="1"  title="<?php echo $l->__("NextCloudPi Wiki"); ?>">
         <div id="nc-button">
             <div id="expand">
                 <div class="icon-nc-info"></div>
             </div>
         </div>
       </a>
-<?php 
-  echo <<<HTML
-    <div id="poweroff">
-        <div id="expand">
-            <div class="icon-power-white"></div>
-        </div>
-    </div>
-HTML;
-?>
+      <div id="poweroff" title="<?php echo $l->__("Power Off"); ?>">
+          <div id="expand">
+              <div class="icon-power-white"></div>
+          </div>
+      </div>
   </div>
 </header>
 
@@ -233,7 +229,7 @@ HTML;
     {
       echo "<td>$key</td>";
       echo "<td><table>";
-      foreach ( $val as $k => $v ) 
+      foreach ( $val as $k => $v )
         echo "<tr><td>$k</td><td class=\"val-field\">$v</td></tr>";
       echo '</table></td>';
     }

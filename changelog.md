@@ -1,5 +1,11 @@
 
-[v0.59.7](https://github.com/nextcloud/nextcloudpi/commit/bb2eb48) (2018-08-22) Rename DDNS apps so they show up together
+[v0.59.10](https://github.com/nextcloud/nextcloudpi/commit/e17f56b) (2018-09-04) ncp-web: add hover text for ncp admin header icons
+
+[v0.59.9 ](https://github.com/nextcloud/nextcloudpi/commit/6a755c3) (2018-09-16) nc-prettyURL: fixes
+
+[v0.59.8](https://github.com/nextcloud/nextcloudpi/commit/a00cd0b) (2018-09-15) nc-format-USB: drive number was off by one (#631)
+
+[v0.59.7 ](https://github.com/nextcloud/nextcloudpi/commit/e26a834) (2018-08-22) Rename DDNS apps so they show up together
 
 [v0.59.6 ](https://github.com/nextcloud/nextcloudpi/commit/1210517) (2018-09-12) wizard: fix instructions for BTRFS
 
@@ -13,7 +19,7 @@
 
 [v0.59.1 ](https://github.com/nextcloud/nextcloudpi/commit/378ca60) (2018-09-10) nc-datadir: support specifying the root of the mountpoint
 
-[v0.59.0](https://github.com/nextcloud/nextcloudpi/commit/9113ab2) (2018-08-31) update to NC 13.0.6
+[v0.59.0 ](https://github.com/nextcloud/nextcloudpi/commit/9113ab2) (2018-08-31) update to NC 13.0.6
 
 [v0.58.1 ](https://github.com/nextcloud/nextcloudpi/commit/dad9900) (2018-07-25) nc-datadir: backup existing datadir after checks
 
