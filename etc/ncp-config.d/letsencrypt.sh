@@ -93,6 +93,11 @@ EOF
     # Configure Nextcloud
     sudo -u www-data php $OCC config:system:set trusted_domains 4 --value=$DOMAIN_
     sudo -u www-data php $OCC config:system:set overwrite.cli.url --value=https://$DOMAIN_
+    
+    # Set pretty URLs (no index.php in URL)
+    chown -R www-data:www-data $NCDIR
+    sudo -u www-data php $NCDIR/occ config:system:set htaccess.RewriteBase --value="/"
+    sudo -u www-data php $NCDIR/occ maintenance:update:htaccess
 
     # delayed in bg so it does not kill the connection, and we get AJAX response
     bash -c "sleep 2 && service apache2 reload" &>/dev/null &
