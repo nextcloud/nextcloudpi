@@ -144,6 +144,9 @@ chmod 770                  /var/www/ncp-web
 EOF
   }
 
+  # NC14 doesnt support php mail
+  sudo -u www-data php /var/www/nextcloud/occ config:system:set mail_smtpmode --value="sendmail"
+
 } # end - only live updates
 
 exit 0

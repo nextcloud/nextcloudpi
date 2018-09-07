@@ -1,5 +1,7 @@
 
-[v0.59.11](https://github.com/nextcloud/nextcloudpi/commit/701dcd6) (2018-09-16) lamp: add referrer policy for enhanced privacy
+[v0.59.12](https://github.com/nextcloud/nextcloudpi/commit/5fc8986) (2018-09-07) Change email program from PHP to Sendmail
+
+[v0.59.11](https://github.com/nextcloud/nextcloudpi/commit/5be7866) (2018-09-16) lamp: add referrer policy for enhanced privacy
 
 [v0.59.10](https://github.com/nextcloud/nextcloudpi/commit/fcbd661) (2018-09-04) ncp-web: add hover text for ncp admin header icons
 
