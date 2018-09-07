@@ -111,7 +111,7 @@ EOF
   sudo -u www-data php occ config:system:set trusted_domains 5 --value="nextcloudpi.local"
 
   # email
-  sudo -u www-data php occ config:system:set mail_smtpmode     --value="php"
+  sudo -u www-data php occ config:system:set mail_smtpmode     --value="sendmail"
   sudo -u www-data php occ config:system:set mail_smtpauthtype --value="LOGIN"
   sudo -u www-data php occ config:system:set mail_from_address --value="admin"
   sudo -u www-data php occ config:system:set mail_domain       --value="ownyourbits.com"
