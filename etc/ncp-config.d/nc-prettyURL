@@ -35,6 +35,11 @@ configure()
     return 0
   }
   
+  [[ $DOMAIN_ = "" ]] && {
+    echo "Your specified domain is invalid."
+    return 1
+  }
+  
   sudo -u www-data php $OCC config:system:set htaccess.RewriteBase --value="/"
   sudo -u www-data php $OCC maintenance:update:htaccess
   systemctl apache2 restart
