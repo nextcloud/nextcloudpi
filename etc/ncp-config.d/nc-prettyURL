@@ -12,7 +12,7 @@ DOMAIN_=$(sudo -u www-data php /var/www/nextcloud/occ config:system:get overwrit
 
 DESCRIPTION="Set pretty URLs (no index.php in URL)"
 INFOTITLE="PrettyURL notes"
-INFO="Use a domain where your cloud is accessible.
+INFO="Use a domain where your cloud is accessible, e.g. https://mycloud.mydomain.com.
 Make sure that you use HTTP or HTTPS, depending on your setup.
 
 You are not sure about it? Check the domain in your browser."
@@ -27,11 +27,11 @@ configure()
   chown -R www-data:www-data $NCDIR
   
   [[ $ACTIVE_ != "yes" ]] && {
-    sudo -u www-data php $NCDIR/occ config:system:set htaccess.RewriteBase --value=""
-    sudo -u www-data php $NCDIR/occ maintenance:update:htaccess
+    sudo -u www-data php $OCC config:system:set htaccess.RewriteBase --value=""
+    sudo -u www-data php $OCC maintenance:update:htaccess
     systemctl apache2 restart
     
-    echo "Your cloud does no longer show a pretty domain name."
+    echo "Your cloud does no longer have a pretty domain name."
     return 0
   }
   
@@ -39,7 +39,7 @@ configure()
   sudo -u www-data php $OCC maintenance:update:htaccess
   systemctl apache2 restart
   
-  echo "Your cloud now shows a pretty domain name."
+  echo "Your cloud now has a pretty domain name."
   return 0
   
 }
