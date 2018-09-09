@@ -8,7 +8,7 @@
 # More at https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/
 #
 
-VER_=13.0.5
+VER_=13.0.6
 BETA_=no
 MAXFILESIZE_=2G
 MEMORYLIMIT_=768M
@@ -40,7 +40,8 @@ install()
   # Optional packets for Nextcloud and Apps
   apt-get update
   $APTINSTALL lbzip2 iputils-ping
-  $APTINSTALL php-smbclient 
+  $APTINSTALL php-smbclient                          # for external storage
+  $APTINSTALL php-imagick imagemagick-6-common       # for gallery
 
   # POSTFIX
   $APTINSTALL postfix || {
