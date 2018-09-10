@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Activate/deactivate SSH
+# Activate/deactivate a pretty URL without index.php
 #
 #
 # Copyleft 2018 by Timo Stiefel and xxx
@@ -23,9 +23,7 @@ OCC="$NCDIR/occ"
 install() { :; }
 
 configure() 
-{
-  chown -R www-data:www-data $NCDIR
-  
+{  
   [[ $ACTIVE_ != "yes" ]] && {
     sudo -u www-data php $OCC config:system:set htaccess.RewriteBase --value=""
     sudo -u www-data php $OCC maintenance:update:htaccess
