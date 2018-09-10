@@ -1,5 +1,7 @@
 
-[v0.59.15](https://github.com/nextcloud/nextcloudpi/commit/5498397) (2018-09-17) Don't overwrite an existing mail_smtpmode, if it is not "PHP"
+[v0.59.17](https://github.com/nextcloud/nextcloudpi/commit/620be82) (2018-09-09) docker: fix letsencrypt not persistent
+
+[v0.59.15](https://github.com/nextcloud/nextcloudpi/commit/41f21fa) (2018-09-17) Don't overwrite an existing mail_smtpmode, if it is not "PHP"
 
 [v0.59.14](https://github.com/nextcloud/nextcloudpi/commit/1420348) (2018-09-18) spDYN: fix misspelled variables
 
