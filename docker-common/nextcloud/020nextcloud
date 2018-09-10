@@ -52,14 +52,8 @@ IP=$( ip a show dev "$IFACE" | grep global | grep -oP '\d{1,3}(.\d{1,3}){3}' | h
 sudo -u www-data php "$OCC" config:system:set trusted_domains 1 --value="$IP"
 
 # Trusted Domain ( as an argument )
-[[ "$@" != "" ]] && {
-  IP=$( grep -oP '\d{1,3}(\.\d{1,3}){3}' <<< "$2" ) # validate that the first argument is a valid IP
-  if [[ "$IP" != "" ]]; then
-    sudo -u www-data php "$OCC" config:system:set trusted_domains 6 --value="$IP"
-  else
-    echo "First argument must be an IP address to include as a Trusted domain. Ignoring"
-  fi
-}
+[[ "$@" != "" ]] && \
+  sudo -u www-data php "$OCC" config:system:set trusted_domains 6 --value="$@"
 
 # Display NC logs in the docker logs
 tail -f -n0 /data/app/data/nextcloud.log &
