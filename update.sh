@@ -109,11 +109,23 @@ chmod 770                  /var/www/ncp-web
 
   # docker images only
   [[ -f /.docker-image ]] && {
-    # install curl for dynDNS and duckDNS
-    [[ -f /usr/bin/curl ]] || {
-      apt-get update
-      apt-get install -y --no-install-recommends curl
-    }
+     cat > /etc/services-enabled.d/000ncp <<EOF
+#!/bin/bash
+
+source /usr/local/etc/library.sh
+
+# INIT NCP CONFIG (first run)
+persistent_cfg /usr/local/etc/ncp-config.d /data/ncp
+persistent_cfg /etc/services-enabled.d
+persistent_cfg /etc/letsencrypt                    # persist SSL certificates
+persistent_cfg /etc/shadow                         # persist ncp-web password
+persistent_cfg /etc/cron.d
+persistent_cfg /etc/cron.daily
+persistent_cfg /etc/cron.hourly
+persistent_cfg /etc/cron.weekly
+
+exit 0
+EOF
   }
 
   # for non docker images
