@@ -44,9 +44,21 @@ configure()
 
   [ -d "$BASEDIR" ] || { echo "$BASEDIR does not exist"; return 1; }
 
-  grep -q -e ext -e btrfs <( stat -fc%T "$BASEDIR" ) || { echo -e "Only ext/btrfs filesystems can hold the data directory"; return 1; }
+  # If the user chooses the root of the mountpoint, force a folder
+  mountpoint -q "$DATADIR_" && {
+    BASEDIR="$DATADIR_"
+    DATADIR_="$DATADIR_/ncdata"
+  }
 
-  sudo -u www-data test -x "$BASEDIR" || { echo -e "ERROR: the user www-data does not have access permissions over $BASEDIR"; return 1; }
+  grep -q -e ext -e btrfs <( stat -fc%T "$BASEDIR" ) || {
+    echo -e "Only ext/btrfs filesystems can hold the data directory"
+    return 1
+  }
+
+  sudo -u www-data test -x "$BASEDIR" || {
+    echo -e "ERROR: the user www-data does not have access permissions over $BASEDIR"
+    return 1
+  }
 
   [[ $( stat -fc%d / ) == $( stat -fc%d "$BASEDIR" ) ]] && {
     echo "Refusing to move to the SD card. Abort"
