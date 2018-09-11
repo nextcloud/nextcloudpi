@@ -19,7 +19,6 @@ FINDTIME_=600
 # bad attempts before banning an IP
 MAXRETRY_=6
 
-
 # Option to activate email notifications
 MAILALERTS_=no
 
