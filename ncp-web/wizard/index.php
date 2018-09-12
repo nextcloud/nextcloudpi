@@ -70,9 +70,9 @@ HTML
 				<!-- Format USB drive -->
 				<div class="ncp-hidden" id="format-usb">
 					<p class="instructions">
-						If you want to prepare the USB drive to be used with NextCloudPi hit Format USB. Skip if already formated as ext4.
+						If you want to prepare the USB drive to be used with NextCloudPi hit Format USB. Skip if already formated as ext4 or BTRFS.
 						<br>	
-						<strong>Attention!</strong> This will format your USB drive as ext4 and <strong>will destroy any current data.</strong> 
+						<strong>Attention!</strong> This will format your USB drive as BTRFS and <strong>will destroy any current data.</strong> 
 					</p>
 					<div class="buttons-area">
 						<input type="button" class="btn" id="format-USB" value="Format USB"/>
