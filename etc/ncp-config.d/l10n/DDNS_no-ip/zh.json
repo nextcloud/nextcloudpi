@@ -7,6 +7,7 @@
         "PASS": "密碼",
         "TIME": "間隔時間(更新IP)",
         "USER": "使用者",
-        "no-ip": "no-ip"
+        "no-ip": "no-ip",
+        "DDNS_no-ip": "no-ip(DDNS)"
     }
 }
