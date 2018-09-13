@@ -5,5 +5,6 @@
         "DOMAIN":"域名",
         "UPDATEINTERVAL":"更新間隔時間",
         "DDNS FreeDNS client (need account)":"DDNS FreeDNS client (需要帳號)"
+        "DDNS_freeDNS":"freeDNS(DDNS)",
     }
 }
