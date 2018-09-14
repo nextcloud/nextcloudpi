@@ -7,7 +7,7 @@
 		<!-- Bootstrap -->
 		<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
 		<link href="CSS/wizard.css" rel="stylesheet">
-        <?php 
+        <?php
             session_start();
 
             // security headers
@@ -20,7 +20,7 @@
             header("Cache-Control: max-age=15778463");
             ini_set('session.cookie_httponly', 1);
             if ( isset($_SERVER['HTTPS']) )
-              ini_set('session.cookie_secure', 1); 
+              ini_set('session.cookie_secure', 1);
         ?>
         <link rel="icon" type="image/png" href="../img/favicon.png" />
 	</head>
@@ -70,9 +70,9 @@ HTML
 				<!-- Format USB drive -->
 				<div class="ncp-hidden" id="format-usb">
 					<p class="instructions">
-						If you want to prepare the USB drive to be used with NextCloudPi hit Format USB. Skip if already formated as ext4.
-						<br>	
-						<strong>Attention!</strong> This will format your USB drive as ext4 and <strong>will destroy any current data.</strong> 
+						If you want to prepare the USB drive to be used with NextCloudPi hit Format USB. Skip if already formated as ext4 or BTRFS.
+						<br>
+						<strong>Attention!</strong> This will format your USB drive as BTRFS and <strong>will destroy any current data.</strong>
 					</p>
 					<div class="buttons-area">
 						<input type="button" class="btn" id="format-USB" value="Format USB"/>
@@ -161,7 +161,7 @@ HTML
                         </div>
                     </div>
 
-                    <!-- Configure No-IP -->	
+                    <!-- Configure No-IP -->
                     <div class="ncp-hidden" id="noip">
                         <div class="buttons-area">
                             <div class="ddns-form">
@@ -180,7 +180,7 @@ HTML
                                         <button class="btn" id="ddns-enable-noip">Finish</button>
                                     </div>
                                 </form>
-                            </div>	
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -200,7 +200,7 @@ HTML
                     <br>go back to NextCloudPi web panel
                   </div>
 
-              </div>		
+              </div>
           </div>
       </div>
 

@@ -3,7 +3,7 @@
 
 ![NC Logo](https://ownyourbits.com/wp-content/uploads/2017/11/ncp-square.png)
 
-This is the build code for [NextCloudPi](https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/).
+This is the build code for [NextCloudPi](https://nextcloudpi.com).
 
 NextCloudPi is a ready to use image for Raspberry Pi, Odroid HC1, rock64 and other boards.
 

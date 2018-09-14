@@ -12,7 +12,7 @@ $(document).ready(function(){
 
       $('#notifications').prepend( '<div class="notification ' + tclass + '">' + txt + '</div>' );
     }
-  
+
     function logOutput( txt )
     {
       var textarea = $('#output-box');
@@ -37,11 +37,11 @@ $(document).ready(function(){
       addNotification( action, 'gray-bg' ) ;
 
       $.post('../ncp-launcher.php',
-        { action:'launch', 
+        { action:'launch',
           ref: action,
           config: JSON.stringify( args ),
           csrf_token: document.getElementById( 'csrf-token' ).value
-        } 
+        }
       ).fail( errorMsg ).done( callback );
     }
 
@@ -89,8 +89,8 @@ $(document).ready(function(){
 
     // Show error on failed AJAX call
     function errorMsg( data )
-    { 
-      alert('There was an error with the request'); 
+    {
+      alert('There was an error with the request');
     }
 
     function post_ddns_hook( data )
@@ -117,13 +117,13 @@ $(document).ready(function(){
     if (!!window.EventSource)
       var source = new EventSource('../ncp-output.php');
     else
-      $('#config-box-title').val( "Browser not supported" ); 
+      $('#config-box-title').val( "Browser not supported" );
 
-    source.addEventListener('message', function(e) 
+    source.addEventListener('message', function(e)
       {
-        if ( e.origin != 'https://' + window.location.hostname + ':4443') 
+        if ( e.origin != 'https://' + window.location.hostname + ':4443')
         {
-          $('#output-box').val( "Invalid origin" ); 
+          $('#output-box').val( "Invalid origin" );
           return;
         }
 
@@ -142,7 +142,7 @@ $(document).ready(function(){
 	}});
 
 	// This is required or the tabs aren't styled
-	$('#rootwizard').bootstrapWizard({'tabClass': 'nav nav-pills'}); 
+	$('#rootwizard').bootstrapWizard({'tabClass': 'nav nav-pills'});
 
 	// Enable Automount step
 	$('#enable-automount').on('click', function() {
@@ -158,8 +158,8 @@ $(document).ready(function(){
 	// Enable format-usb step
 	$('#plugUSB').on('click', function() {
       launch_action( 'nc-automount',
-        {"ACTIVE":"yes"}, 
-        function ( data ){ 
+        {"ACTIVE":"yes"},
+        function ( data ){
           nextOnSuccess( data, function(){ show_with_animation( 'format-usb' ); } );
         }
       );
@@ -168,7 +168,7 @@ $(document).ready(function(){
 	// Enable nextcloud-data step
 	$('#format-USB').on('click', function(){
       launch_action( 'nc-format-USB',
-        {"LABEL":"myCloudDrive"}, 
+        {"LABEL":"myCloudDrive"},
         function ( data ){
           nextOnSuccess( data, function(){ show_with_animation( 'nc-datadir-pane' ); } );
         }
@@ -189,7 +189,7 @@ $(document).ready(function(){
 	$('#enable-external').on('click', function(){
       if ( !in_docker )
         launch_action( 'fail2ban',
-          { "ACTIVE":"yes" }, 
+          { "ACTIVE":"yes" },
           function ( data ){
             nextOnSuccess( data, function(){ show_with_animation( 'forward-ports-pane' ) } );
           }
@@ -213,7 +213,7 @@ $(document).ready(function(){
 	$('#port-forward-run').on('click', function(){
 		// Run Port Forwarding and Test Port
         launch_action( 'nc-forward-ports',
-          {"HTTPSPORT":"443","HTTPPORT":"80"}, 
+          {"HTTPSPORT":"443","HTTPPORT":"80"},
           function ( data ){
             nextOnSuccess( data, function(){ show_with_animation( 'ddns-choose' ) } );
           }
@@ -247,7 +247,7 @@ $(document).ready(function(){
 
 	// Enable FreeDNS step
 	$('#ddns-enable-freedns').on('click', function(){
-        launch_action( 'freeDNS', 
+        launch_action( 'DDNS_freeDNS',
           {
             "ACTIVE":"yes",
             "DOMAIN":     $("#ddns-domain" ).val(),
@@ -269,7 +269,7 @@ $(document).ready(function(){
 
 	// Enable noip step
 	$('#ddns-enable-noip').on('click', function(){
-          launch_action( 'no-ip', 
+          launch_action( 'DDNS_no-ip',
           {
             "ACTIVE":"yes",
             "DOMAIN": $("#ddns-domain"  ).val(),

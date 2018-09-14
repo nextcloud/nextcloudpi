@@ -8,7 +8,7 @@
 # More at https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/
 #
 
-VER_=13.0.5
+VER_=13.0.6
 BETA_=no
 MAXFILESIZE_=2G
 MEMORYLIMIT_=768M
@@ -40,7 +40,8 @@ install()
   # Optional packets for Nextcloud and Apps
   apt-get update
   $APTINSTALL lbzip2 iputils-ping
-  $APTINSTALL php-smbclient 
+  $APTINSTALL php-smbclient                          # for external storage
+  $APTINSTALL php-imagick imagemagick-6-common       # for gallery
 
   # POSTFIX
   $APTINSTALL postfix || {
@@ -52,7 +53,7 @@ install()
     rm /usr/bin/newaliases
     mv /newaliases /usr/bin/newaliases
   }
- 
+
   # REDIS
   $APTINSTALL redis-server php7.0-redis
 
@@ -79,7 +80,7 @@ install()
     systemctl start php7.0-fpm
     systemctl start mysql
   }
-  
+
   # service to randomize passwords on first boot
   mkdir -p /usr/lib/systemd/system
   cat > /usr/lib/systemd/system/nc-provisioning.service <<'EOF'
@@ -102,7 +103,7 @@ configure()
 {
   ## IF BETA SELECTED ADD "pre" to DOWNLOAD PATH
   [[ "$BETA_" == yes ]] && local PREFIX="pre"
-    
+
   ## DOWNLOAD AND (OVER)WRITE NEXTCLOUD
   cd /var/www/
 
@@ -155,15 +156,15 @@ configure()
 
   # create and configure opcache dir
   OPCACHEDIR=/var/www/nextcloud/data/.opcache
-  sed -i "s|^opcache.file_cache=.*|opcache.file_cache=$OPCACHEDIR|" /etc/php/7.0/mods-available/opcache.ini 
+  sed -i "s|^opcache.file_cache=.*|opcache.file_cache=$OPCACHEDIR|" /etc/php/7.0/mods-available/opcache.ini
   mkdir -p $OPCACHEDIR
   chown -R www-data:www-data $OPCACHEDIR
 
-  ## RE-CREATE DATABASE TABLE 
+  ## RE-CREATE DATABASE TABLE
   # launch mariadb if not already running (for docker build)
   if ! pgrep -c mysqld &>/dev/null; then
     echo "Starting mariaDB"
-    mysqld & 
+    mysqld &
   fi
 
   # wait for mariadb
@@ -233,9 +234,9 @@ EOF
   echo "Setting up system..."
 
   ## SET LIMITS
-  sed -i "s/post_max_size=.*/post_max_size=$MAXFILESIZE_/"             /var/www/nextcloud/.user.ini 
-  sed -i "s/upload_max_filesize=.*/upload_max_filesize=$MAXFILESIZE_/" /var/www/nextcloud/.user.ini 
-  sed -i "s/memory_limit=.*/memory_limit=$MEMORYLIMIT_/"               /var/www/nextcloud/.user.ini 
+  sed -i "s/post_max_size=.*/post_max_size=$MAXFILESIZE_/"             /var/www/nextcloud/.user.ini
+  sed -i "s/upload_max_filesize=.*/upload_max_filesize=$MAXFILESIZE_/" /var/www/nextcloud/.user.ini
+  sed -i "s/memory_limit=.*/memory_limit=$MEMORYLIMIT_/"               /var/www/nextcloud/.user.ini
 
   # TMP UPLOAD DIR
   local UPLOADTMPDIR=/var/www/nextcloud/data/tmp
@@ -254,7 +255,7 @@ EOF
   echo "*/15  *  *  *  * php -f /var/www/nextcloud/cron.php" > /tmp/crontab_http
   crontab -u www-data /tmp/crontab_http
   rm /tmp/crontab_http
-  
+
   echo "Don't forget to run nc-init"
 }
 
@@ -274,4 +275,3 @@ EOF
 # along with this script; if not, write to the
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
-

@@ -8,7 +8,7 @@
 # More at https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/
 #
 
-VERSION_=13.0.5
+VERSION_=13.0.6
 DESCRIPTION="Update current instance to a new Nextcloud version"
 
 configure()
@@ -34,4 +34,3 @@ install() { :; }
 # along with this script; if not, write to the
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
-

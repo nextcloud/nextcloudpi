@@ -21,9 +21,9 @@ is_active()
   [[ "$SRCDIR" != "/var/www/nextcloud/data" ]]
 }
 
-install() 
-{ 
-  apt-get update 
+install()
+{
+  apt-get update
   apt-get install -y --no-install-recommends btrfs-tools
 }
 
@@ -32,7 +32,7 @@ configure()
   ## CHECKS
   local SRCDIR
   SRCDIR=$( cd /var/www/nextcloud; sudo -u www-data php occ config:system:get datadirectory ) || {
-    echo -e "Error reading data directory. Is NextCloud running and configured?"; 
+    echo -e "Error reading data directory. Is NextCloud running and configured?";
     return 1;
   }
   [ -d "$SRCDIR" ] || { echo -e "data directory $SRCDIR not found"; return 1; }
@@ -44,9 +44,21 @@ configure()
 
   [ -d "$BASEDIR" ] || { echo "$BASEDIR does not exist"; return 1; }
 
-  grep -q -e ext -e btrfs <( stat -fc%T "$BASEDIR" ) || { echo -e "Only ext/btrfs filesystems can hold the data directory"; return 1; }
+  # If the user chooses the root of the mountpoint, force a folder
+  mountpoint -q "$DATADIR_" && {
+    BASEDIR="$DATADIR_"
+    DATADIR_="$DATADIR_/ncdata"
+  }
 
-  sudo -u www-data test -x "$BASEDIR" || { echo -e "ERROR: the user www-data does not have access permissions over $BASEDIR"; return 1; }
+  grep -q -e ext -e btrfs <( stat -fc%T "$BASEDIR" ) || {
+    echo -e "Only ext/btrfs filesystems can hold the data directory"
+    return 1
+  }
+
+  sudo -u www-data test -x "$BASEDIR" || {
+    echo -e "ERROR: the user www-data does not have access permissions over $BASEDIR"
+    return 1
+  }
 
   [[ $( stat -fc%d / ) == $( stat -fc%d "$BASEDIR" ) ]] && {
     echo "Refusing to move to the SD card. Abort"
@@ -55,7 +67,7 @@ configure()
 
   # backup possibly existing datadir
   [ -d $DATADIR_ ] && {
-    local BKP="${DATADIR_}-$( date "+%m-%d-%y" )" 
+    local BKP="${DATADIR_}-$( date "+%m-%d-%y" )"
     echo "INFO: $DATADIR_ is not empty. Creating backup $BKP"
     mv "$DATADIR_" "$BKP"
   }
@@ -75,9 +87,9 @@ configure()
 
   cp --reflink=auto -raT "$SRCDIR" "$DATADIR_" || return 1
   chown www-data:www-data "$DATADIR_"
- 
+
   # tmp upload dir
-  mkdir -p "$DATADIR_/tmp" 
+  mkdir -p "$DATADIR_/tmp"
   chown www-data:www-data "$DATADIR_/tmp"
   sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $DATADIR_/tmp|" /etc/php/7.0/cli/php.ini
   sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $DATADIR_/tmp|" /etc/php/7.0/fpm/php.ini
@@ -111,4 +123,3 @@ configure()
 # along with this script; if not, write to the
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
-

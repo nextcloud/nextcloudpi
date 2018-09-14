@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# Unattended upgrades installation on Raspbian 
+# Unattended upgrades installation on Raspbian
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
 #
-# More at: ownyourbits.com 
+# More at: ownyourbits.com
 #
 
 ACTIVE_=yes
@@ -15,21 +15,24 @@ DESCRIPTION="Automatic installation of security updates. Keep your cloud safe"
 install()
 {
   apt-get update
-  apt install -y --no-install-recommends unattended-upgrades 
+  apt install -y --no-install-recommends unattended-upgrades
   rm /etc/apt/apt.conf.d/20auto-upgrades
 }
 
-configure() 
-{ 
+configure()
+{
   [[ $ACTIVE_     == "yes" ]] && local AUTOUPGRADE=1   || local AUTOUPGRADE=0
   [[ $AUTOREBOOT_ == "yes" ]] && local AUTOREBOOT=true || local AUTOREBOOT=false
 
-  # It seems like the label Raspbian-Security does not work for Raspbian
-  # See https://www.raspberrypi.org/forums/viewtopic.php?t=82863&p=585739
-  cat > /etc/apt/apt.conf.d/20ncp-upgrades <<EOF
+  # Raspbian case
+  grep -q Raspbian /etc/issue && {
+
+    # It seems like the label Raspbian-Security does not work for Raspbian
+    # See https://www.raspberrypi.org/forums/viewtopic.php?t=82863&p=585739
+    cat > /etc/apt/apt.conf.d/20ncp-upgrades <<EOF
 APT::Periodic::Update-Package-Lists "1";
 APT::Periodic::Unattended-Upgrade "$AUTOUPGRADE";
-APT::Periodic::MaxAge "14"; 
+APT::Periodic::MaxAge "14";
 APT::Periodic::AutocleanInterval "7";
 Unattended-Upgrade::Automatic-Reboot "$AUTOREBOOT";
 Unattended-Upgrade::Automatic-Reboot-Time "04:00";
@@ -41,6 +44,25 @@ Dpkg::Options {
    "--force-confold";
 };
 EOF
+
+  # Armbian case # TODO security only?
+  } || {
+    cat > /etc/apt/apt.conf.d/20ncp-upgrades <<EOF
+APT::Periodic::Update-Package-Lists "1";
+APT::Periodic::Unattended-Upgrade "$AUTOUPGRADE";
+APT::Periodic::MaxAge "14";
+APT::Periodic::AutocleanInterval "7";
+Unattended-Upgrade::Automatic-Reboot "$AUTOREBOOT";
+Unattended-Upgrade::Automatic-Reboot-Time "04:00";
+Unattended-Upgrade::Origins-Pattern {
+o=Debian,n=stretch,l=Debian;
+}
+Dpkg::Options {
+   "--force-confdef";
+   "--force-confold";
+};
+EOF
+  }
   echo "Unattended upgrades active: $ACTIVE_ (autoreboot $AUTOREBOOT_)"
 }
 
@@ -60,4 +82,3 @@ EOF
 # along with this script; if not, write to the
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
-
