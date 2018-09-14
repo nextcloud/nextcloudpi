@@ -20,7 +20,7 @@ careful, this will destroy any data in the USB drive
 configure() 
 {
   # count all disk devices except mmcblk0
-  local NUM=$(( $( lsblk -ln | grep "^sd[[:alpha:]].*disk" | awk '{ print $6 }' | wc -l ) - 1 ))
+  local NUM=$( lsblk -ln | grep "^sd[[:alpha:]].*disk" | awk '{ print $6 }' | wc -l )
 
   # only one plugged in
   [[ $NUM != 1 ]] && { 
