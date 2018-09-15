@@ -12,6 +12,7 @@
 ACTIVE_=no
 DOMAIN_=mycloud.spdns.de
 TOKEN_=your-spdns-token
+IPv6_=no
 
 INSTALLDIR=spdnsupdater
 INSTALLPATH=/usr/local/etc/$INSTALLDIR
@@ -38,8 +39,15 @@ install()
 
 ### Configuration
 
+IPv6_=$3
+
 # Get current IP address from
-get_ip_url="https://api.ipify.org/"
+if [[ $IPv6 == "yes" ]];	then
+		get_ip_url="https://myexternalip.com/raw"
+else
+		get_ip_url="https://api.ipify.org/"
+fi
+
 update_url="https://update.spdyn.de/nic/update"
 
 
@@ -78,7 +86,7 @@ function spdnsUpdater {
 }
 
 
-if [ $# -eq 2 ]
+if [ $# -eq 3 ]
   	then
   		# if hostname and token
   		# Get current IP address
@@ -87,14 +95,14 @@ if [ $# -eq 2 ]
 		token=$2
     	params="-d hostname=$host -d myip=$currip -d user=$host -d pass=$token"
     	spdnsUpdater "$params"
-	elif [ $# -eq 3 ]
+	elif [ $# -eq 4 ]
 		then
 			# if hostname and user and passwd
 			# Get current IP address
 			currip=$(curl -s "$get_ip_url");
 			host=$1
 			user=$2
-			pass=$3
+			pass=$4
 			params="-d hostname=$host -d myip=$currip -d user=$user -d pass=$pass"
 			spdnsUpdater "$params"
 	else
@@ -122,11 +130,11 @@ configure()
     
     # Adds file to cron to run script for DNS record updates and change permissions 
     touch $CRONFILE
-    echo "0 * * * * root $INSTALLPATH/spdnsUpdater.sh $DOMAIN_ $TOKEN_ >/dev/null 2>&1" > "$CRONFILE"
+    echo "0 * * * * root $INSTALLPATH/spdnsUpdater.sh $DOMAIN_ $TOKEN_ $IPv6 >/dev/null 2>&1" > "$CRONFILE"
     chmod +x "$CRONFILE"
 
     # First-time execution of update script and print response from spdns.de server
-    "$INSTALLPATH"/spdnsUpdater.sh "$DOMAIN_" "$TOKEN_"
+    "$INSTALLPATH"/spdnsUpdater.sh "$DOMAIN_" "$TOKEN_" "IPv6"
 
     # Removes config files and cron job if ACTIVE_ is set to no
   elif [[ $ACTIVE_ == "no" ]]; then
