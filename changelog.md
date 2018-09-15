@@ -1,5 +1,7 @@
 
-[v0.59.12](https://github.com/nextcloud/nextcloudpi/commit/5fc8986) (2018-09-07) Change email program from PHP to Sendmail
+[v0.59.13](https://github.com/nextcloud/nextcloudpi/commit/3ccf987) (2018-09-15) spDYN: support IPv6
+
+[v0.59.12](https://github.com/nextcloud/nextcloudpi/commit/241f2e0) (2018-09-07) Change email program from PHP to Sendmail
 
 [v0.59.11](https://github.com/nextcloud/nextcloudpi/commit/5be7866) (2018-09-16) lamp: add referrer policy for enhanced privacy
 
@@ -7,7 +9,7 @@
 
 [v0.59.9 ](https://github.com/nextcloud/nextcloudpi/commit/6a755c3) (2018-09-16) nc-prettyURL: fixes
 
-[v0.59.8](https://github.com/nextcloud/nextcloudpi/commit/a00cd0b) (2018-09-15) nc-format-USB: drive number was off by one (#631)
+[v0.59.8 ](https://github.com/nextcloud/nextcloudpi/commit/a00cd0b) (2018-09-15) nc-format-USB: drive number was off by one (#631)
 
 [v0.59.7 ](https://github.com/nextcloud/nextcloudpi/commit/e26a834) (2018-08-22) Rename DDNS apps so they show up together
 
