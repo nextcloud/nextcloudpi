@@ -39,7 +39,7 @@ install()
 
 ### Configuration
 
-IPv6_=$3
+IPv6=$3
 
 # Get current IP address from
 if [[ $IPv6 == "yes" ]];	then
@@ -134,7 +134,7 @@ configure()
     chmod +x "$CRONFILE"
 
     # First-time execution of update script and print response from spdns.de server
-    "$INSTALLPATH"/spdnsUpdater.sh "$DOMAIN_" "$TOKEN_" "IPv6_"
+    "$INSTALLPATH"/spdnsUpdater.sh "$DOMAIN_" "$TOKEN_" "$IPv6_"
 
     # Removes config files and cron job if ACTIVE_ is set to no
   elif [[ $ACTIVE_ == "no" ]]; then
