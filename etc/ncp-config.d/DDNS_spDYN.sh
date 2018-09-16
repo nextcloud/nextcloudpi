@@ -39,6 +39,8 @@ install()
 
 ### Configuration
 
+IPv6_=$3
+
 # Get current IP address from
 if [[ $IPv6 == "yes" ]];	then
 		get_ip_url="https://myexternalip.com/raw"
