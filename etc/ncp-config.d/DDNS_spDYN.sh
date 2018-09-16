@@ -107,7 +107,7 @@ if [ $# -eq 3 ]
 		echo
 		echo "Updater for Dynamic DNS at spdns.de"
 		echo "==================================="
-		echos
+		echo
 		echo "Usage:"
 		echo "------"
 		echo
