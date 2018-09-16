@@ -135,6 +135,15 @@ chmod 770                  /var/www/ncp-web
     apt-get install -y --no-install-recommends php-imagick imagemagick-6-common
   }
 
+  # no-origin policy for enhanced privacy
+  grep -q "Referrer-Policy" /etc/apache2/apache2.conf || {
+    cat >> /etc/apache2/apache2.conf <<EOF
+<IfModule mod_headers.c>
+  Header always set Referrer-Policy "no-referrer"
+</IfModule>
+EOF
+  }
+
 } # end - only live updates
 
 exit 0

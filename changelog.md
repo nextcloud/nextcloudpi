@@ -1,5 +1,7 @@
 
-[v0.59.10](https://github.com/nextcloud/nextcloudpi/commit/e17f56b) (2018-09-04) ncp-web: add hover text for ncp admin header icons
+[v0.59.11](https://github.com/nextcloud/nextcloudpi/commit/701dcd6) (2018-09-16) lamp: add referrer policy for enhanced privacy
+
+[v0.59.10](https://github.com/nextcloud/nextcloudpi/commit/fcbd661) (2018-09-04) ncp-web: add hover text for ncp admin header icons
 
 [v0.59.9 ](https://github.com/nextcloud/nextcloudpi/commit/6a755c3) (2018-09-16) nc-prettyURL: fixes
 
