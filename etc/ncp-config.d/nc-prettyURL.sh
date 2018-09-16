@@ -8,14 +8,8 @@
 
 
 ACTIVE_=no
-DOMAIN_=$(sudo -u www-data php /var/www/nextcloud/occ config:system:get overwrite.cli.url)
-
 DESCRIPTION="Set pretty URLs (no index.php in URL)"
 INFOTITLE="PrettyURL notes"
-INFO="Use a domain where your cloud is accessible, e.g. https://mycloud.mydomain.com.
-Make sure that you use HTTP or HTTPS, depending on your setup.
-
-You are not sure about it? Check the domain in your browser."
 
 NCDIR=/var/www/nextcloud
 OCC="$NCDIR/occ"
@@ -25,26 +19,17 @@ install() { :; }
 configure() 
 {  
   [[ $ACTIVE_ != "yes" ]] && {
-    sudo -u www-data php $OCC config:system:set htaccess.RewriteBase --value=""
-    sudo -u www-data php $OCC maintenance:update:htaccess
-    systemctl apache2 restart
-    
+    sudo -u www-data php "$OCC" config:system:set htaccess.RewriteBase --value=""
+    sudo -u www-data php "$OCC" maintenance:update:htaccess
     echo "Your cloud does no longer have a pretty domain name."
-    return 0
+  } || {
+    sudo -u www-data php "$OCC" config:system:set htaccess.RewriteBase --value="/"
+    sudo -u www-data php "$OCC" maintenance:update:htaccess
+    a2enmod env
+    echo "Your cloud now has a pretty domain name."
   }
-  
-  [[ $DOMAIN_ = "" ]] && {
-    echo "Your specified domain is invalid."
-    return 1
-  }
-  
-  sudo -u www-data php $OCC config:system:set htaccess.RewriteBase --value="/"
-  sudo -u www-data php $OCC maintenance:update:htaccess
-  systemctl apache2 restart
-  
-  echo "Your cloud now has a pretty domain name."
+  bash -c "sleep 2 && service apache2 reload" &>/dev/null &
   return 0
-  
 }
 
 # License
