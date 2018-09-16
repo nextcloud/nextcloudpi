@@ -31,9 +31,9 @@ configure()
   local CONF=/var/www/nextcloud/.user.ini
   local CURRENT_PHP_MEM="$( grep "^memory_limit" "$CONF" | sed 's|.*=||' )"
   [[ "$MEMORYLIMIT_" == "0" ]] && MEMORYLIMIT_=$AUTOMEM && echo "Using ${AUTOMEM}B for PHP"
-  sed -i "s/post_max_size=.*/post_max_size=$MAXFILESIZE_/"             "$CONF" 
-  sed -i "s/upload_max_filesize=.*/upload_max_filesize=$MAXFILESIZE_/" "$CONF" 
-  sed -i "s/memory_limit=.*/memory_limit=$MEMORYLIMIT_/"               "$CONF" 
+  sed -i "s/post_max_size=.*/post_max_size=$MAXFILESIZE_/"             "$CONF"
+  sed -i "s/upload_max_filesize=.*/upload_max_filesize=$MAXFILESIZE_/" "$CONF"
+  sed -i "s/memory_limit=.*/memory_limit=$MEMORYLIMIT_/"               "$CONF"
 
   # MAX PHP THREADS
   local CONF=/etc/php/7.0/fpm/pool.d/www.conf
@@ -84,4 +84,3 @@ install() { :; }
 # along with this script; if not, write to the
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
-

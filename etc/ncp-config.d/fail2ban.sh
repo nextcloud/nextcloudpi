@@ -19,12 +19,10 @@ FINDTIME_=600
 # bad attempts before banning an IP
 MAXRETRY_=6
 
-
-# Option to activate email notifications
-MAILALERTS_=no
-
 # email to send notifications to
 EMAIL_=optional@email.com
+
+MAILALERTS_=no
 
 DESCRIPTION="Brute force protection for SSH and NextCloud"
 

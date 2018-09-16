@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# Unattended upgrades installation on Raspbian 
+# Unattended upgrades installation on Raspbian
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
 #
-# More at: ownyourbits.com 
+# More at: ownyourbits.com
 #
 
 ACTIVE_=yes
@@ -15,12 +15,12 @@ DESCRIPTION="Automatic installation of security updates. Keep your cloud safe"
 install()
 {
   apt-get update
-  apt install -y --no-install-recommends unattended-upgrades 
+  apt install -y --no-install-recommends unattended-upgrades
   rm /etc/apt/apt.conf.d/20auto-upgrades
 }
 
-configure() 
-{ 
+configure()
+{
   [[ $ACTIVE_     == "yes" ]] && local AUTOUPGRADE=1   || local AUTOUPGRADE=0
   [[ $AUTOREBOOT_ == "yes" ]] && local AUTOREBOOT=true || local AUTOREBOOT=false
 
@@ -32,7 +32,7 @@ configure()
     cat > /etc/apt/apt.conf.d/20ncp-upgrades <<EOF
 APT::Periodic::Update-Package-Lists "1";
 APT::Periodic::Unattended-Upgrade "$AUTOUPGRADE";
-APT::Periodic::MaxAge "14"; 
+APT::Periodic::MaxAge "14";
 APT::Periodic::AutocleanInterval "7";
 Unattended-Upgrade::Automatic-Reboot "$AUTOREBOOT";
 Unattended-Upgrade::Automatic-Reboot-Time "04:00";
@@ -50,7 +50,7 @@ EOF
     cat > /etc/apt/apt.conf.d/20ncp-upgrades <<EOF
 APT::Periodic::Update-Package-Lists "1";
 APT::Periodic::Unattended-Upgrade "$AUTOUPGRADE";
-APT::Periodic::MaxAge "14"; 
+APT::Periodic::MaxAge "14";
 APT::Periodic::AutocleanInterval "7";
 Unattended-Upgrade::Automatic-Reboot "$AUTOREBOOT";
 Unattended-Upgrade::Automatic-Reboot-Time "04:00";
@@ -82,4 +82,3 @@ EOF
 # along with this script; if not, write to the
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
-

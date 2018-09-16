@@ -15,9 +15,9 @@ DESCRIPTION="Automatically apply Nextcloud updates"
 # just change this value and re-activate in update.sh to upgrade users
 VERSION=13.0.6
 
-configure() 
+configure()
 {
-  [[ "$ACTIVE_" != "yes" ]] && { 
+  [[ "$ACTIVE_" != "yes" ]] && {
     rm /etc/cron.daily/ncp-autoupdate-nc
     echo "automatic Nextcloud updates disabled"
     return 0
@@ -53,4 +53,3 @@ install() { :; }
 # along with this script; if not, write to the
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
-

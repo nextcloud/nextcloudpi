@@ -23,7 +23,7 @@ try {
   die(json_encode("<p class='error'>Error while loading localizations!</p>"));
 }
 
-if ( $_POST['action'] == "cfgreq" ) 
+if ( $_POST['action'] == "cfgreq" )
 {
   if ( !$_POST['ref'] ) exit( '{ "output": "Invalid request" }' );
 
@@ -43,7 +43,7 @@ if ( $_POST['action'] == "cfgreq" )
 
   $output = "<table>";
 
-  while ( $line = fgets($fh) ) 
+  while ( $line = fgets($fh) )
   {
     // checkbox (yes/no) field
     if ( preg_match('/^(\w+)_=(yes|no)$/', $line, $matches) )
@@ -115,7 +115,7 @@ else if ( $_POST['action'] == "launch" && $_POST['config'] )
             or exit( '{ "output": "' . $file . ' read error" }' );
 
   if ( !empty( $params ) )
-    foreach( $params as $name => $value ) 
+    foreach( $params as $name => $value )
     {
       if( is_array($value))
       {

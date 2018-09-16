@@ -55,7 +55,7 @@ mkdir -p "$CONFDIR"
 
 # prevent installing some apt packages in the docker version
 [[ -f /.docker-image ]] && {
-  for opt in $EXCL_DOCKER; do 
+  for opt in $EXCL_DOCKER; do
     touch $CONFDIR/$opt
 done
 }
@@ -73,7 +73,7 @@ for file in etc/ncp-config.d/*; do
     install_script "$file"       # install
 
     # configure if active by default
-    grep -q '^ACTIVE_=yes$' "$file" && activate_script "$file" 
+    grep -q '^ACTIVE_=yes$' "$file" && activate_script "$file"
   }
 
   # save current configuration to (possibly) updated script
@@ -167,4 +167,3 @@ exit 0
 # along with this script; if not, write to the
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
-

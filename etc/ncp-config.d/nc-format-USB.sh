@@ -11,21 +11,21 @@
 LABEL_=myCloudDrive
 DESCRIPTION="Format an external USB drive as a BTRFS partition (dangerous)"
 
-INFOTITLE="Instructions for USB drive formatting" 
+INFOTITLE="Instructions for USB drive formatting"
 INFO="Make sure that ONLY the USB drive that you want to format is plugged in.
 careful, this will destroy any data in the USB drive
 
 ** YOU WILL LOSE ALL YOUR USB DATA **"
 
-configure() 
+configure()
 {
   # count all disk devices except mmcblk0
   local NUM=$( lsblk -ln | grep "^sd[[:alpha:]].*disk" | awk '{ print $6 }' | wc -l )
 
   # only one plugged in
-  [[ $NUM != 1 ]] && { 
+  [[ $NUM != 1 ]] && {
     echo "ERROR: counted $NUM devices. Please, only plug in the USB drive you want to format";
-    return 1; 
+    return 1;
   }
 
   # disable nc-automount if enabled
@@ -74,4 +74,3 @@ install() { :; }
 # along with this script; if not, write to the
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
-
