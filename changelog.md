@@ -1,5 +1,7 @@
 
-[v0.59.14](https://github.com/nextcloud/nextcloudpi/commit/c8992cf) (2018-09-18) spDYN: fix misspelled variables
+[v0.59.15](https://github.com/nextcloud/nextcloudpi/commit/5498397) (2018-09-17) Don't overwrite an existing mail_smtpmode, if it is not "PHP"
+
+[v0.59.14](https://github.com/nextcloud/nextcloudpi/commit/1420348) (2018-09-18) spDYN: fix misspelled variables
 
 [v0.59.13](https://github.com/nextcloud/nextcloudpi/commit/3479014) (2018-09-15) spDYN: support IPv6
 
