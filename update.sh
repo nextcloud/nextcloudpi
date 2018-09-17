@@ -145,7 +145,10 @@ EOF
   }
 
   # NC14 doesnt support php mail
-  sudo -u www-data php /var/www/nextcloud/occ config:system:set mail_smtpmode --value="sendmail"
+  mail_smtpmode=$(sudo -u www-data php /var/www/nextcloud/occ config:system:get mail_smtpmode)
+  [[ $mail_smtpmode == "php" ]] && {
+    sudo -u www-data php /var/www/nextcloud/occ config:system:set mail_smtpmode --value="sendmail"
+  }
 
 } # end - only live updates
 
