@@ -1,5 +1,7 @@
 
-[v0.59.13](https://github.com/nextcloud/nextcloudpi/commit/3ccf987) (2018-09-15) spDYN: support IPv6
+[v0.59.14](https://github.com/nextcloud/nextcloudpi/commit/c8992cf) (2018-09-18) spDYN: fix misspelled variables
+
+[v0.59.13](https://github.com/nextcloud/nextcloudpi/commit/3479014) (2018-09-15) spDYN: support IPv6
 
 [v0.59.12](https://github.com/nextcloud/nextcloudpi/commit/241f2e0) (2018-09-07) Change email program from PHP to Sendmail
 
