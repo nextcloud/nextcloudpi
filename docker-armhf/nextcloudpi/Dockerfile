@@ -45,6 +45,7 @@ for script in *.sh; do cleanup_script $script; done; \
 apt-get autoremove -y; \
 apt-get clean; \
 rm -f /var/lib/apt/lists/*; \
+find /var/log -type f -exec rm {} \; ; \
 rm -rf /usr/share/man/*; \
 rm -rf /usr/share/doc/*; \
 rm -f /var/log/alternatives.log /var/log/apt/*; \

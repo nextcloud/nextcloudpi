@@ -24,6 +24,9 @@ activate_script /nc-nextcloud.sh; \
 mv /var/www/nextcloud /data-ro/app; \
 ln -s /data-ro/app /var/www/nextcloud; \
 
+# stop mysqld
+mysqladmin -u root shutdown; \
+
 # package cleanup 
 apt-get autoremove -y; \
 apt-get clean; \

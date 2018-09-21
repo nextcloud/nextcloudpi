@@ -1,5 +1,9 @@
 
-[v0.59.17](https://github.com/nextcloud/nextcloudpi/commit/620be82) (2018-09-09) docker: fix letsencrypt not persistent
+[v0.59.18](https://github.com/nextcloud/nextcloudpi/commit/fb7164e) (2018-09-20) docker: build fixes
+
+[v0.59.17](https://github.com/nextcloud/nextcloudpi/commit/9ee4282) (2018-09-09) docker: fix letsencrypt not persistent
+
+[v0.59.16](https://github.com/nextcloud/nextcloudpi/commit/7443425) (2018-09-09) docker: allow domains in command line, not only IPs
 
 [v0.59.15](https://github.com/nextcloud/nextcloudpi/commit/41f21fa) (2018-09-17) Don't overwrite an existing mail_smtpmode, if it is not "PHP"
 

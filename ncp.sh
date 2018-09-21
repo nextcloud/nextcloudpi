@@ -216,7 +216,8 @@ EOF
     sed -i '$c127.0.1.1 nextcloudpi' /etc/hosts
 
     ## tag image
-    echo "NextCloudPi_$( date  "+%m-%d-%y" )" > /usr/local/etc/ncp-baseimage
+    [[ -f /.docker-image ]] && local DOCKER_TAG="_docker"
+    echo "NextCloudPi${DOCKER_TAG}_$( date  "+%m-%d-%y" )" > /usr/local/etc/ncp-baseimage
 
     ## SSH hardening
     if [[ -f /etc/ssh/sshd_config ]]; then

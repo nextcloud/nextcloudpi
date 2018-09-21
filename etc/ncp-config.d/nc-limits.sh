@@ -62,7 +62,7 @@ configure()
   [[ "$REDISMEM_" == "0" ]] && REDISMEM_=$AUTOMEM && echo "Using ${AUTOMEM}B for Redis"
   [[ "$REDISMEM_" != "$CURRENT_REDIS_MEM" ]] && {
     sed -i "s|maxmemory .*|maxmemory $REDISMEM_|" "$CONF"
-    service redis restart
+    service redis-server restart
   }
 }
 
