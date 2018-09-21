@@ -21,7 +21,7 @@ install()
 {
   # NCP-CONFIG
   apt-get update
-  $APTINSTALL dialog whiptail
+  $APTINSTALL git dialog whiptail
   mkdir -p $CONFDIR
 
   # include option in raspi-config (only Raspbian)
@@ -182,11 +182,7 @@ EOF
   chmod g+w           /var/run/.ncp-latest-version
 
   # update to latest version from github as part of the build process
-  $APTINSTALL git
-  wget https://raw.githubusercontent.com/nextcloud/nextcloudpi/$BRANCH/bin/ncp-update -O /usr/local/bin/ncp-update
-  chmod a+x /usr/local/bin/ncp-update
-
-  /usr/local/bin/ncp-update $BRANCH
+  bin/ncp-update $BRANCH
 
   # ONLY FOR IMAGE BUILDS
   if [[ -f /.ncp-image ]]; then

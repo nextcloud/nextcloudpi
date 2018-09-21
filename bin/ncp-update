@@ -16,11 +16,12 @@
     echo "No internet connectivity"
     exit 1
   }
-  cd "$TMPDIR"
+  [[ -f /.ncp-image ]] || cd "$TMPDIR"         # update locally during build
 
   echo -e "Performing updates"
   ./update.sh && {
 
+    cd "$TMPDIR"
     VER=$( git describe --always --tags | grep -oP "v\d+\.\d+\.\d+" )
     grep -qP "v\d+\.\d+\.\d+" <<< "$VER" && {       # check format
       echo "$VER" > /usr/local/etc/ncp-version

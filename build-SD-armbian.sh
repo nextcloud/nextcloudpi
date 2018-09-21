@@ -25,8 +25,9 @@ prepare_dirs                   # tmp cache output
 ( cd armbian && git pull --ff-only --tags )
 
 # add NCP modifications
-mkdir -p armbian/userpatches
+mkdir -p armbian/userpatches armbian/userpatches/overlay
 cp armbian.sh armbian/userpatches/customize-image.sh
+rsync -Aax --delete --exclude-from .gitignore . armbian/userpatches/overlay/
 
 # GENERATE IMAGE
 

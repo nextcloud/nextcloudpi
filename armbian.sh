@@ -25,7 +25,18 @@ chage -d -1 root
 touch /.ncp-image
 
 # install NCP
-curl -sSL https://raw.githubusercontent.com/nextcloud/nextcloudpi/master/install.sh | bash
+cd /tmp/overlay
+echo -e "\nInstalling NextCloudPi"
+source etc/library.sh
+
+install_script  lamp.sh
+install_script  etc/ncp-config.d/nc-nextcloud.sh
+activate_script etc/ncp-config.d/nc-nextcloud.sh
+install_script  ncp.sh
+activate_script etc/ncp-config.d/nc-init.sh
+install_script  post-inst.sh
+
+cd -
 
 # force change root password at first login (again)
 chage -d 0 root

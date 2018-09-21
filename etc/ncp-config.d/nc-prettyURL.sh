@@ -25,7 +25,6 @@ configure()
   } || {
     sudo -u www-data php "$OCC" config:system:set htaccess.RewriteBase --value="/"
     sudo -u www-data php "$OCC" maintenance:update:htaccess
-    a2enmod env
     echo "Your cloud now has a pretty domain name."
   }
   bash -c "sleep 2 && service apache2 reload" &>/dev/null &

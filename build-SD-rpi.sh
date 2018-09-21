@@ -33,7 +33,7 @@ echo -e "\e[1m\n[ Build NCP ]\e[0m"
 prepare_chroot_raspbian "$IMG"
 
 mkdir raspbian_root/tmp/ncp-build
-cp etc/library.sh lamp.sh etc/ncp-config.d/{nc-nextcloud.sh,nc-init.sh} ncp.sh post-inst.sh raspbian_root/tmp/ncp-build
+cp -r *.sh etc bin ncp-web raspbian_root/tmp/ncp-build
 
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
   sudo chroot raspbian_root /bin/bash <<'EOFCHROOT'
@@ -52,12 +52,12 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
 
     # install everything
     cd /tmp/ncp-build || exit 1
-    source library.sh
+    source etc/library.sh
     install_script  lamp.sh
-    install_script  nc-nextcloud.sh
-    activate_script nc-nextcloud.sh
+    install_script  etc/ncp-config.d/nc-nextcloud.sh
+    activate_script etc/ncp-config.d/nc-nextcloud.sh
     install_script  ncp.sh
-    activate_script nc-init.sh
+    activate_script etc/ncp-config.d/nc-init.sh
     install_script  post-inst.sh
 
     # harden SSH further for Raspbian

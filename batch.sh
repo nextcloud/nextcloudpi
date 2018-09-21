@@ -39,14 +39,14 @@ make nextcloudpi-x86 && {
 }
 
 # Docker armhf
-cp /usr/bin/qemu-arm-static docker-armhf
+cp -n /usr/bin/qemu-arm-static docker-armhf && \
 make nextcloudpi-armhf && {
   docker push ownyourbits/nextcloudpi-armhf
   docker push ownyourbits/nextcloud-armhf
   docker push ownyourbits/lamp-armhf
   docker push ownyourbits/debian-ncp-armhf
 }
-rm docker-armhf/qemu-arm-static
+rm -f docker-armhf/qemu-arm-static
 
 # License
 #

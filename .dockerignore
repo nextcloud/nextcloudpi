@@ -2,6 +2,8 @@ torrent/
 tmp/
 cache/
 output/
+raspbian_root/
+raspbian_boot/
 qemu-raspbian-network/
 armbian/
 *.img

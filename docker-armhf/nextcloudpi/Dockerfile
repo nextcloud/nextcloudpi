@@ -6,7 +6,12 @@ SHELL ["/bin/bash", "-c"]
 
 ENV DOCKERBUILD 1
 
-COPY ncp.sh /usr/local/etc/
+RUN mkdir -p /tmp/ncp-build
+COPY bin/*            /tmp/ncp-build/bin/
+COPY etc              /tmp/ncp-build/etc/
+COPY ncp.sh update.sh /tmp/ncp-build/
+COPY ncp-web          /tmp/ncp-build/ncp-web/
+COPY docker-common    /tmp/ncp-build/docker-common/
 
 RUN \
 
@@ -22,24 +27,24 @@ apt-get install --no-install-recommends -y wget ca-certificates; \
 # install nextcloudpi
 source /usr/local/etc/library.sh; \
 set +x; \
-cd /usr/local/etc/; \
+cd /tmp/ncp-build/; \
 install_script ncp.sh; \
 
 # fix default paths
-sed -i 's|/media/USBdrive|/data/backups|' ncp-config.d/nc-backup.sh; \
+sed -i 's|/media/USBdrive|/data/backups|' /usr/local/etc/ncp-config.d/nc-backup.sh; \
 
 # specific cleanup
-rm /usr/local/etc/ncp.sh; \
+rm -r /tmp/ncp-build; \
 rm /.ncp-image; \
-
-# should be cleaned up in no-ip.sh, but breaks udiskie.
-# safe to do it here since no automount in docker
-apt-get purge -y make gcc libc-dev; \
 
 # cleanup all NCP extras
 source /usr/local/etc/library.sh; \
 cd /usr/local/etc/ncp-config.d/; \
 for script in *.sh; do cleanup_script $script; done; \
+
+# should be cleaned up in no-ip.sh, but breaks udiskie.
+# safe to do it here since no automount in docker
+apt-get purge -y make gcc libc-dev; \
 
 # package clean up
 apt-get autoremove -y; \
