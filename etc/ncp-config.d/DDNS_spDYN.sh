@@ -89,8 +89,14 @@ function spdnsUpdater {
 if [ $# -eq 3 ]
   	then
   		# if hostname and token
-  		# Get current IP address
+  		# Get registered IP address
+		registeredIP=\$(nslookup ${DOMAIN_}|tail -n2|grep A|sed s/[^0-9.]//g)
+		# Get current IP address
 		currip=$(curl -s "$get_ip_url");
+		# Update only when IP address has changed.
+		[ "\$currentIP" == "\$registeredIP" ] && {
+        		return 0
+  		}
 		host=$1
 		token=$2
     	params="-d hostname=$host -d myip=$currip -d user=$host -d pass=$token"
@@ -98,8 +104,14 @@ if [ $# -eq 3 ]
 	elif [ $# -eq 4 ]
 		then
 			# if hostname and user and passwd
+			# Get registered IP address
+			registeredIP=\$(nslookup ${DOMAIN_}|tail -n2|grep A|sed s/[^0-9.]//g)
 			# Get current IP address
 			currip=$(curl -s "$get_ip_url");
+			# Update only when IP address has changed.
+			[ "\$currentIP" == "\$registeredIP" ] && {
+        			return 0
+  			}
 			host=$1
 			user=$2
 			pass=$4
