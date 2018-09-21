@@ -167,6 +167,11 @@ EOF
     sudo -u www-data php /var/www/nextcloud/occ config:system:set mail_smtpmode --value="sendmail"
   }
 
+  # update nc-restore
+  cd "$CONFDIR" &>/dev/null
+  install_script nc-backup.sh
+  install_script nc-restore.sh
+  cd -          &>/dev/null
 } # end - only live updates
 
 exit 0
