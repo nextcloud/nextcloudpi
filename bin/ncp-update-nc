@@ -166,7 +166,7 @@ echo "Fix permissions..."
 chown -R www-data:www-data nextcloud
 find nextcloud/ -type d -exec chmod 750 {} \;
 find nextcloud/ -type f -exec chmod 640 {} \;
-
+sudo -u www-data php /var/www/nextcloud/occ db:add-missing-indices
 # upgrade
 ####################
 echo "Upgrade..."
