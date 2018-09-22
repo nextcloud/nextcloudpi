@@ -167,6 +167,9 @@ EOF
     sudo -u www-data php /var/www/nextcloud/occ config:system:set mail_smtpmode --value="sendmail"
   }
 
+  sudo -u www-data php /var/www/nextcloud/occ app:install previewgenerator
+  sudo -u www-data php /var/www/nextcloud/occ app:enable  previewgenerator
+
 } # end - only live updates
 
 exit 0
