@@ -60,7 +60,9 @@ FREE=$( df    "$DESTDIR" | tail -1 | awk '{ print $4 }' )
 }
 
 # database
-cd /var/www || exit 1
+[[ -f /.docker-image ]] && BASEDIR=/data || BASEDIR=/var/www
+[[ -f /.docker-image ]] && NCDIR=app     || NCDIR=nextcloud
+cd "$BASEDIR" || exit 1
 $OCC maintenance:mode --on
 echo "backup database..."
 mysqldump -u root --single-transaction nextcloud > "$DBBACKUP"
@@ -68,12 +70,12 @@ mysqldump -u root --single-transaction nextcloud > "$DBBACKUP"
 # files
 echo "backup base files..."
 mkdir -p "$DESTDIR"
-tar --exclude "nextcloud/data/*/files/*" \
-    --exclude "nextcloud/data/.opcache" \
-    --exclude "nextcloud/data/{access,error,nextcloud}.log" \
-    --exclude "nextcloud/data/access.log" \
-    --exclude "nextcloud/data/ncp-update-backups/" \
-    -cf "$DESTFILE" "$DBBACKUP" nextcloud/ \
+tar --exclude "$NCDIR/data/*/files/*" \
+    --exclude "$NCDIR/data/.opcache" \
+    --exclude "$NCDIR/data/{access,error,$NCDIR}.log" \
+    --exclude "$NCDIR/data/access.log" \
+    --exclude "$NCDIR/data/ncp-update-backups/" \
+    -cf "$DESTFILE" "$DBBACKUP" "$NCDIR"/ \
   || {
         echo "error generating backup"
         exit 1
@@ -83,7 +85,7 @@ rm "$DBBACKUP"
 [[ "$INCLUDEDATA" == "yes" ]] && {
   echo "backup data files..."
   tar --exclude "data/.opcache" \
-      --exclude "data/{access,error,nextcloud}.log" \
+      --exclude "data/{access,error,$NCDIR}.log" \
       --exclude "data/access.log" \
       --exclude "data/ncp-update-backups/" \
       -rf "$DESTFILE" -C "$DATADIR"/.. "$( basename "$DATADIR" )" \
