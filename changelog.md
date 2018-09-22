@@ -1,5 +1,11 @@
 
-[v0.59.18](https://github.com/nextcloud/nextcloudpi/commit/fb7164e) (2018-09-20) docker: build fixes
+[v0.60.0](https://github.com/nextcloud/nextcloudpi/commit/3930c82) (2018-09-22) add nc-previews
+
+[v0.59.20](https://github.com/nextcloud/nextcloudpi/commit/4457485) (2018-09-21) autoupdate: log everything to ncp.log
+
+[v0.59.19](https://github.com/nextcloud/nextcloudpi/commit/cc53f40) (2018-09-21) ncp-report: remove sensitive data
+
+[v0.59.18](https://github.com/nextcloud/nextcloudpi/commit/7a8c0e4) (2018-09-20) docker: build fixes
 
 [v0.59.17](https://github.com/nextcloud/nextcloudpi/commit/9ee4282) (2018-09-09) docker: fix letsencrypt not persistent
 
