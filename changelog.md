@@ -1,7 +1,11 @@
 
-[v0.60.1](https://github.com/nextcloud/nextcloudpi/commit/2b80190) (2018-07-31) nc-restore: restore to volume in docker container
+[v0.60.3](https://github.com/nextcloud/nextcloudpi/commit/b4d7776) (2018-09-23) nc-update-nextcloud: workaround news integrity bug
 
-[v0.60.0, master](https://github.com/nextcloud/nextcloudpi/commit/e973397) (2018-09-22) add nc-previews
+[v0.60.2 ](https://github.com/nextcloud/nextcloudpi/commit/5914624) (2018-09-21) DDNS_spdyn.sh : Send new IP only when changed.
+
+[v0.60.1](https://github.com/nextcloud/nextcloudpi/commit/f80ee23) (2018-07-31) nc-restore: restore to volume in docker container
+
+[v0.60.0 ](https://github.com/nextcloud/nextcloudpi/commit/3a1b974) (2018-09-22) add nc-previews
 
 [v0.59.20](https://github.com/nextcloud/nextcloudpi/commit/4457485) (2018-09-21) autoupdate: log everything to ncp.log
 
