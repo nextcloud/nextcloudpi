@@ -37,7 +37,7 @@ SWP="$( swapon | tail -1 | awk '{ print $1 }' )"
 echo "swapfile|$SWP"
 
 # Database
-DBDIR=$( grep datadir /etc/mysql/mariadb.conf.d/50-server.cnf | awk -F "= " '{ print $2 }' )
+DBDIR=$( grep datadir /etc/mysql/mariadb.conf.d/90-ncp.cnf | awk -F "= " '{ print $2 }' )
 test -d "$DBDIR" || DBDIRINFO=" (doesn't exist)"
 echo "dbdir|$DBDIR$DBDIRINFO"
 

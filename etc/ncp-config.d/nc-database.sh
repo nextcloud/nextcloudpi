@@ -21,13 +21,13 @@ or the database will fail.
 
 is_active()
 {
-  local SRCDIR=$( grep datadir /etc/mysql/mariadb.conf.d/50-server.cnf | awk -F "= " '{ print $2 }' )
+  local SRCDIR=$( grep datadir /etc/mysql/mariadb.conf.d/90-ncp.cnf | awk -F "= " '{ print $2 }' )
   [[ "$SRCDIR" != "/var/lib/mysql" ]]
 }
 
 configure()
 {
-  local SRCDIR=$( grep datadir /etc/mysql/mariadb.conf.d/50-server.cnf | awk -F "= " '{ print $2 }' )
+  local SRCDIR=$( grep datadir /etc/mysql/mariadb.conf.d/90-ncp.cnf | awk -F "= " '{ print $2 }' )
   [ -d "$SRCDIR" ] || { echo -e "database directory $SRCDIR not found"; return 1; }
 
   [ -d "$DBDIR_" ] && {
@@ -54,7 +54,7 @@ configure()
   echo "moving database to $DBDIR_..."
   service mysql stop
   mv "$SRCDIR" "$DBDIR_" && \
-    sed -i "s|^datadir.*|datadir = $DBDIR_|" /etc/mysql/mariadb.conf.d/50-server.cnf
+    sed -i "s|^datadir.*|datadir = $DBDIR_|" /etc/mysql/mariadb.conf.d/90-ncp.cnf
   service mysql start 
 
   sudo -u www-data php occ maintenance:mode --off
