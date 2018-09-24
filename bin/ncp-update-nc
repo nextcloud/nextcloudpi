@@ -23,6 +23,8 @@ VER="$1"
 
 # pre-checks
 ####################
+[[ -f /.docker-image ]] && { echo "This feature is still not available for docker containers"; exit 1; }
+
 cd /var/www/
 DATADIR="$( grep datadirectory nextcloud/config/config.php | awk '{ print $3 }' | grep -oP "[^']*[^']" | head -1 )"
 [[ -d /var/www/nextcloud-old ]] && { echo "Nextcloud backup directory found. Interrupted installation?"; exit 1; }
