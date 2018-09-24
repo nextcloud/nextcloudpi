@@ -250,6 +250,9 @@ EOF
 
     ## other tweaks
     sed -i "s|^UMASK.*|UMASK           027|" /etc/login.defs
+
+    ## locales for ncp-config
+    [[ "$LANG" == "" ]] && localectl set-locale LANG=en_US.utf8
   fi
 }
 

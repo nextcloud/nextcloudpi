@@ -183,6 +183,9 @@ EOF
     service mysql restart
   }
 
+  # fix locale for Armbian images, for ncp-config
+  [[ "$LANG" == "" ]] && localectl set-locale LANG=en_US.utf8
+
 } # end - only live updates
 
 exit 0
