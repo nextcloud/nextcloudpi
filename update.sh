@@ -176,6 +176,13 @@ EOF
   # install preview generator
   sudo -u www-data php /var/www/nextcloud/occ app:install previewgenerator
   sudo -u www-data php /var/www/nextcloud/occ app:enable  previewgenerator
+
+  # use separate db config file
+  [[ -f /etc/mysql/mariadb.conf.d/90-ncp.cnf ]] || {
+    cp /etc/mysql/mariadb.conf.d/50-server.cnf /etc/mysql/mariadb.conf.d/90-ncp.cnf
+    service mysql restart
+  }
+
 } # end - only live updates
 
 exit 0
