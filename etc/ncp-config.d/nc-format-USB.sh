@@ -40,7 +40,7 @@ configure()
   done
 
   # do it
-  local NAME=( $( lsblk -ln | grep -v -e mmcblk -e zram | grep disk | awk '{ print $1 }' ) )
+  local NAME=( $( lsblk -ln | grep "^sd[[:alpha:]].*disk" | awk '{ print $1 }' ) )
   [[ ${#NAME[@]} != 1 ]] && { echo "unexpected error"; return 1; }
 
   wipefs -a -f /dev/"$NAME"                              || return 1

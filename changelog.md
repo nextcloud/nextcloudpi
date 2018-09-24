@@ -1,7 +1,9 @@
 
-[v0.60.5](https://github.com/nextcloud/nextcloudpi/commit/601cf1e) (2018-09-23) armbian: fix locales for ncp-config
+[v0.60.6](https://github.com/nextcloud/nextcloudpi/commit/bf1a052) (2018-09-24) nc-format-USB: fix
 
-[v0.60.4](https://github.com/nextcloud/nextcloudpi/commit/a7f0fd2) (2018-09-23) build: use a separate file for NCP database config
+[v0.60.5](https://github.com/nextcloud/nextcloudpi/commit/3de5fe0) (2018-09-23) armbian: fix locales for ncp-config
+
+[v0.60.4, master](https://github.com/nextcloud/nextcloudpi/commit/a7f0fd2) (2018-09-23) build: use a separate file for NCP database config
 
 [v0.60.3](https://github.com/nextcloud/nextcloudpi/commit/1bfcebc) (2018-09-23) nc-update-nextcloud: workaround news integrity bug
 
