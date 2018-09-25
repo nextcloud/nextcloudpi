@@ -70,15 +70,7 @@ class L10N
   {
     $cfg = 'ncp-web.cfg';
     $line = file_get_contents( $cfg );
-    $str  = '';
-    if (preg_match('/^LANGUAGE_=\[(([_\w]+,)*[_\w]+)\]$/', $line, $matches)) {
-      $options = explode(',', $matches[1]);
-      foreach ($options as $option) {
-        $opt = trim( $option, "_" );
-        $str .= $opt == $lang ? '_' . $opt . '_,' : $opt . ',';
-      }
-    }
-    $str = 'LANGUAGE_=[' . rtrim( $str, ',' ) . ']';
+    $str = "LANGUAGE_=$lang";
     return file_put_contents( $cfg , $str );
   }
 
@@ -147,25 +139,15 @@ class L10N
     return array_keys($langs)[0];
   }
 
-  function load_language_setting($modules_path)
+  function load_language_setting()
   {
     $webui_config_file = 'ncp-web.cfg';
-    $fh = fopen($webui_config_file, 'r')
-    or exit('{ "output": "' . $webui_config_file . ' read error" }');
-    $lang = "auto";
-    while ($line = fgets($fh)) {
-      // drop down menu
-      if (preg_match('/^LANGUAGE_=\[(([_\w]+,)*[_\w]+)\]$/', $line, $matches)) {
-        $options = explode(',', $matches[1]);
-        foreach ($options as $option) {
-          if ($option[0] == "_" && $option[count($option) - 1] == "_") {
-            fclose($fh);
-            $lang = trim($option, '_');
-          }
-        }
-        fclose($fh);
-        return $lang;
-      }
-    }
+    $fh = fopen($webui_config_file, 'r');
+    if ($fh === false)
+      return "auto";
+
+    $lang=file_get_contents($webui_config_file);
+    fclose($fh);
+    return ltrim($lang, 'LANGUAGE_=');
   }
 }

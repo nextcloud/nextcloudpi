@@ -1,7 +1,9 @@
 
-[v0.60.7](https://github.com/nextcloud/nextcloudpi/commit/bd464b2) (2018-09-24) docker: disable auto-upgrade until it is adapted to containers
+[v0.60.8](https://github.com/nextcloud/nextcloudpi/commit/57999b6) (2018-09-24) ncp-web: put configuration in a separate file from available languages
 
-[v0.60.6](https://github.com/nextcloud/nextcloudpi/commit/1150ed8) (2018-09-24) nc-format-USB: fix
+[v0.60.7](https://github.com/nextcloud/nextcloudpi/commit/cdbb750) (2018-09-24) docker: disable auto-upgrade until it is adapted to containers
+
+[v0.60.6 ](https://github.com/nextcloud/nextcloudpi/commit/1150ed8) (2018-09-24) nc-format-USB: fix
 
 [v0.60.5 ](https://github.com/nextcloud/nextcloudpi/commit/3de5fe0) (2018-09-23) armbian: fix locales for ncp-config
 

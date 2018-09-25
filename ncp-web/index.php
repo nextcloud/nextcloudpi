@@ -114,20 +114,20 @@ HTML;
       </a>
 <?php
     // language selection drop
-    if( preg_match('/^(\w+)_=\[(([_\w]+,)*[_\w]+)\]$/', file_get_contents( 'ncp-web.cfg') , $matches) )
-    {
-      $options = explode(",", $matches[2]);
-      echo "<select id=\"language-selection\" name=\"$matches[1]\">";
-      foreach($options as $option)
-      {
-        echo "<option value='". trim($option, "_") ."' ";
-        if( $option[0] == "_" && $option[count($option) - 1] == "_" )
-          echo "selected='selected'";
-        echo ">". trim($option, "_") ."</option>";
-      }
-      echo "<option value=\"[new]\">new..</option>";
-      echo "</select>";
+    $selected_lang=$l->load_language_setting();
+
+    $fh = fopen('langs.cfg', 'r');
+    echo "<select id=\"language-selection\" name=\"language-selection\">";
+    while ($line = fgets($fh)) {
+      echo "<option value='" . $line . "' ";
+      error_log("NACHO $line - $selected_lang");
+      if( $line == $selected_lang )
+        echo "selected='selected'";
+      echo ">". $line ."</option>";
     }
+    echo "<option value=\"[new]\">new..</option>";
+    echo "</select>";
+    fclose($fh);
 ?>
     </div>
     <div id="header-right">
