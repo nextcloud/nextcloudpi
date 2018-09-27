@@ -143,13 +143,8 @@ EOF
 
   # for non docker images
   [[ ! -f /.docker-image ]] && {
-    :
-  }
-
-  # faster previews
-  [[ -f /etc/php/7.0/mods-available/imagick.ini ]] || {
-    apt-get update
-    apt-get install -y --no-install-recommends php-imagick imagemagick-6-common
+    # fix locale for Armbian images, for ncp-config
+    [[ "$LANG" == "" ]] && localectl set-locale LANG=en_US.utf8
   }
 
   # no-origin policy for enhanced privacy
@@ -181,6 +176,14 @@ EOF
   [[ -f /etc/mysql/mariadb.conf.d/90-ncp.cnf ]] || {
     cp /etc/mysql/mariadb.conf.d/50-server.cnf /etc/mysql/mariadb.conf.d/90-ncp.cnf
     service mysql restart
+  }
+
+  # update to NC14.0.1
+  F="$CONFDIR"/nc-autoupdate-nc.sh
+  grep -q '^ACTIVE_=yes$' "$F" && {
+    cd "$CONFDIR" &>/dev/null
+    activate_script nc-autoupdate-nc.sh
+    cd -          &>/dev/null
   }
 
   # fix locale for Armbian images, for ncp-config
