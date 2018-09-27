@@ -186,8 +186,78 @@ EOF
     cd -          &>/dev/null
   }
 
-  # fix locale for Armbian images, for ncp-config
-  [[ "$LANG" == "" ]] && localectl set-locale LANG=en_US.utf8
+  # PHP7.2
+  [[ -e /etc/php/7.2 ]] || {
+    PHPVER=7.2
+    APTINSTALL="apt-get install -y --no-install-recommends"
+    export DEBIAN_FRONTEND=noninteractive
+
+    ncc maintenance:mode --on
+
+    apt-get update
+    $APTINSTALL apt-transport-https
+
+    echo "deb https://deb.debian.org/debian buster main contrib non-free" > /etc/apt/sources.list.d/ncp-buster.list
+cat > /etc/apt/preferences.d/10-ncp-buster <<EOF
+Package: *
+Pin: release n=stretch
+Pin-Priority: 600
+EOF
+
+    apt-get     --allow-unauthenticated update
+    $APTINSTALL --allow-unauthenticated debian-archive-keyring
+
+    apt-get update
+
+    apt-get purge -y php7.0-*
+    apt-get autoremove -y
+
+    $APTINSTALL -t buster php${PHPVER} php${PHPVER}-curl php${PHPVER}-gd php${PHPVER}-fpm php${PHPVER}-cli php${PHPVER}-opcache \
+                          php${PHPVER}-mbstring php${PHPVER}-xml php${PHPVER}-zip php${PHPVER}-fileinfo php${PHPVER}-ldap \
+                          php${PHPVER}-intl php${PHPVER}-bz2 php${PHPVER}-json
+ 
+      $APTINSTALL php${PHPVER}-mysql
+      $APTINSTALL -t buster php${PHPVER}-redis
+      $APTINSTALL -t buster php-smbclient                                         # for external storage
+      $APTINSTALL -t buster imagemagick php${PHPVER}-imagick php${PHPVER}-exif    # for gallery
+
+      cat > /etc/php/${PHPVER}/mods-available/opcache.ini <<EOF
+zend_extension=opcache.so
+opcache.enable=1
+opcache.enable_cli=1
+opcache.fast_shutdown=1
+opcache.interned_strings_buffer=8
+opcache.max_accelerated_files=10000
+opcache.memory_consumption=128
+opcache.save_comments=1
+opcache.revalidate_freq=1
+opcache.file_cache=/tmp;
+EOF
+      a2enconf  php${PHPVER}-fpm
+
+
+      DATADIR="$( grep datadirectory /var/www/nextcloud/config/config.php | awk '{ print $3 }' | grep -oP "[^']*[^']" | head -1 )"
+      UPLOADTMPDIR="$DATADIR"/tmp
+      sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $UPLOADTMPDIR|" /etc/php/${PHPVER}/cli/php.ini
+      sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $UPLOADTMPDIR|" /etc/php/${PHPVER}/fpm/php.ini
+      sed -i "s|^;\?sys_temp_dir =.*$|sys_temp_dir = $UPLOADTMPDIR|"     /etc/php/${PHPVER}/fpm/php.ini
+
+      OPCACHEDIR="$DATADIR"/.opcache
+      sed -i "s|^opcache.file_cache=.*|opcache.file_cache=$OPCACHEDIR|" /etc/php/${PHPVER}/mods-available/opcache.ini
+
+      apt-get autoremove -y
+
+      ncc maintenance:mode --off
+
+      bash -c "sleep 5 && service apache2 restart" &>/dev/null &
+      bash -c " sleep 3
+              service php${PHPVER}-fpm stop
+              service mysql      stop
+              sleep 0.5
+              service php${PHPVER}-fpm start
+              service mysql      start
+              " &>/dev/null &
+  }
 
 } # end - only live updates
 

@@ -31,6 +31,7 @@ BACKUPFILE="$1"
 
 DBADMIN=ncadmin
 DBPASSWD="$( grep password /root/.my.cnf | sed 's|password=||' )"
+PHPVER=7.2
 
 DIR="$( cd "$( dirname "$BACKUPFILE" )" &>/dev/null && pwd )" #abspath
 
@@ -140,14 +141,14 @@ else
 fi
 
 # Just in case we moved the opcache dir
-sed -i "s|^opcache.file_cache=.*|opcache.file_cache=$DATADIR/.opcache|" /etc/php/7.0/mods-available/opcache.ini
+sed -i "s|^opcache.file_cache=.*|opcache.file_cache=$DATADIR/.opcache|" /etc/php/${PHPVER}/mods-available/opcache.ini
 
 # tmp upload dir
 mkdir -p "$DATADIR/tmp" 
 chown www-data:www-data "$DATADIR/tmp"
-sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $DATADIR/tmp|" /etc/php/7.0/cli/php.ini
-sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $DATADIR/tmp|" /etc/php/7.0/fpm/php.ini
-sed -i "s|^;\?sys_temp_dir =.*$|sys_temp_dir = $DATADIR/tmp|"     /etc/php/7.0/fpm/php.ini
+sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $DATADIR/tmp|" /etc/php/${PHPVER}/cli/php.ini
+sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $DATADIR/tmp|" /etc/php/${PHPVER}/fpm/php.ini
+sed -i "s|^;\?sys_temp_dir =.*$|sys_temp_dir = $DATADIR/tmp|"     /etc/php/${PHPVER}/fpm/php.ini
 
 # update fail2ban logpath
 [[ ! -f /.docker-image ]] && {
@@ -161,10 +162,10 @@ bash /usr/local/bin/nextcloud-domain.sh
 # restart PHP if needed
 [[ "$NEED_RESTART" == "1" ]] && \
   bash -c " sleep 3
-            service php7.0-fpm stop
+            service php${PHPVER}-fpm stop
             service mysql      stop
             sleep 0.5
-            service php7.0-fpm start
+            service php${PHPVER}-fpm start
             service mysql      start
             " &>/dev/null &
 EOF

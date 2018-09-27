@@ -21,7 +21,7 @@ This can be done manually or automatically using 'nc-scan' and 'nc-scan-auto'"
 install()
 {
   apt-get update
-  apt-get install --no-install-recommends -y samba
+  apt-get install --no-install-recommends -y -t buster samba
   update-rc.d smbd disable
   update-rc.d nmbd disable
 

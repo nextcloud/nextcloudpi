@@ -1,15 +1,19 @@
 
-[v0.60.8](https://github.com/nextcloud/nextcloudpi/commit/57999b6) (2018-09-24) ncp-web: put configuration in a separate file from available languages
+[v0.62.0](https://github.com/nextcloud/nextcloudpi/commit/aca5004) (2018-09-23) upgrade to NC14
 
-[v0.60.7](https://github.com/nextcloud/nextcloudpi/commit/cdbb750) (2018-09-24) docker: disable auto-upgrade until it is adapted to containers
+[v0.61.0, php72](https://github.com/nextcloud/nextcloudpi/commit/20c1e8a) (2018-06-21) upgrade to PHP7.2
+
+[v0.60.8](https://github.com/nextcloud/nextcloudpi/commit/6152e7e) (2018-09-24) ncp-web: put configuration in a separate file from available languages
+
+[v0.60.7 ](https://github.com/nextcloud/nextcloudpi/commit/cdbb750) (2018-09-24) docker: disable auto-upgrade until it is adapted to containers
 
 [v0.60.6 ](https://github.com/nextcloud/nextcloudpi/commit/1150ed8) (2018-09-24) nc-format-USB: fix
 
 [v0.60.5 ](https://github.com/nextcloud/nextcloudpi/commit/3de5fe0) (2018-09-23) armbian: fix locales for ncp-config
 
-[v0.60.4, master](https://github.com/nextcloud/nextcloudpi/commit/a7f0fd2) (2018-09-23) build: use a separate file for NCP database config
+[v0.60.4 ](https://github.com/nextcloud/nextcloudpi/commit/a7f0fd2) (2018-09-23) build: use a separate file for NCP database config
 
-[v0.60.3](https://github.com/nextcloud/nextcloudpi/commit/1bfcebc) (2018-09-23) nc-update-nextcloud: workaround news integrity bug
+[v0.60.3 ](https://github.com/nextcloud/nextcloudpi/commit/1bfcebc) (2018-09-23) nc-update-nextcloud: workaround news integrity bug
 
 [v0.60.2 ](https://github.com/nextcloud/nextcloudpi/commit/5914624) (2018-09-21) DDNS_spdyn.sh : Send new IP only when changed.
 
