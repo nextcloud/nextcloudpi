@@ -15,6 +15,7 @@ MEMORYLIMIT_=768M
 MAXTRANSFERTIME_=3600
 DBADMIN=ncadmin
 REDIS_MEM=3gb
+PHPVER=7.2
 DESCRIPTION="Install any NextCloud version"
 
 APTINSTALL="apt-get install -y --no-install-recommends"
@@ -40,8 +41,9 @@ install()
   # Optional packets for Nextcloud and Apps
   apt-get update
   $APTINSTALL lbzip2 iputils-ping
-  $APTINSTALL php-smbclient                          # for external storage
-  $APTINSTALL php-imagick imagemagick-6-common       # for gallery
+  $APTINSTALL -t buster php-smbclient                                         # for external storage
+  $APTINSTALL -t buster imagemagick php${PHPVER}-imagick php${PHPVER}-exif    # for gallery
+
 
   # POSTFIX
   $APTINSTALL postfix || {
@@ -54,8 +56,8 @@ install()
     mv /newaliases /usr/bin/newaliases
   }
  
-  # REDIS
-  $APTINSTALL redis-server php7.0-redis
+  $APTINSTALL redis-server
+  $APTINSTALL -t buster php${PHPVER}-redis
 
   local REDIS_CONF=/etc/redis/redis.conf
   local REDISPASS="default"
@@ -74,10 +76,10 @@ install()
     systemctl restart redis-server
     systemctl enable  redis-server
 
-    systemctl stop php7.0-fpm
+    systemctl stop php${PHPVER}-fpm
     systemctl stop mysql
     sleep 0.5
-    systemctl start php7.0-fpm
+    systemctl start php${PHPVER}-fpm
     systemctl start mysql
   }
   
@@ -155,8 +157,8 @@ configure()
   fi
 
   # create and configure opcache dir
-  OPCACHEDIR=/var/www/nextcloud/data/.opcache
-  sed -i "s|^opcache.file_cache=.*|opcache.file_cache=$OPCACHEDIR|" /etc/php/7.0/mods-available/opcache.ini 
+  local OPCACHEDIR=/var/www/nextcloud/data/.opcache
+  sed -i "s|^opcache.file_cache=.*|opcache.file_cache=$OPCACHEDIR|" /etc/php/${PHPVER}/mods-available/opcache.ini
   mkdir -p $OPCACHEDIR
   chown -R www-data:www-data $OPCACHEDIR
 
@@ -242,9 +244,9 @@ EOF
   local UPLOADTMPDIR=/var/www/nextcloud/data/tmp
   mkdir -p "$UPLOADTMPDIR"
   chown www-data:www-data "$UPLOADTMPDIR"
-  sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $UPLOADTMPDIR|" /etc/php/7.0/cli/php.ini
-  sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $UPLOADTMPDIR|" /etc/php/7.0/fpm/php.ini
-  sed -i "s|^;\?sys_temp_dir =.*$|sys_temp_dir = $UPLOADTMPDIR|"     /etc/php/7.0/fpm/php.ini
+  sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $UPLOADTMPDIR|" /etc/php/${PHPVER}/cli/php.ini
+  sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $UPLOADTMPDIR|" /etc/php/${PHPVER}/fpm/php.ini
+  sed -i "s|^;\?sys_temp_dir =.*$|sys_temp_dir = $UPLOADTMPDIR|"     /etc/php/${PHPVER}/fpm/php.ini
 
 
   # slow transfers will be killed after this time

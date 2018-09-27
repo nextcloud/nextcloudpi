@@ -12,6 +12,7 @@ MAXFILESIZE_=10G
 MEMORYLIMIT_=0
 PHPTHREADS_=0
 REDISMEM_=0
+PHPVER=7.2
 
 DESCRIPTION="Configure system limits for NextCloudPi"
 INFO="Examples: 200M or 2G. Write 0 for autoconfig"
@@ -36,7 +37,7 @@ configure()
   sed -i "s/memory_limit=.*/memory_limit=$MEMORYLIMIT_/"               "$CONF" 
 
   # MAX PHP THREADS
-  local CONF=/etc/php/7.0/fpm/pool.d/www.conf
+  local CONF=/etc/php/${PHPVER}/fpm/pool.d/www.conf
   local CURRENT_THREADS=$( grep "^pm.max_children" "$CONF" | awk '{ print $3 }' )
   [[ "$PHPTHREADS_" == "0" ]] && PHPTHREADS_=$( nproc ) && echo "Using $PHPTHREADS_ PHP threads"
   sed -i "s|pm.max_children =.*|pm.max_children = $PHPTHREADS_|"           "$CONF"
@@ -48,10 +49,10 @@ configure()
   [[ "$MEMORYLIMIT"  != "$CURRENT_PHP_MEM"   ]] || \
   [[ "$MAXFILESIZE_" != "$CURRENT_FILE_SIZE" ]] && {
     bash -c " sleep 3
-              service php7.0-fpm stop
+              service php${PHPVER}-fpm stop
               service mysql      stop
               sleep 0.5
-              service php7.0-fpm start
+              service php${PHPVER}-fpm start
               service mysql      start
               " &>/dev/null &
   }

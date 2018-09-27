@@ -14,7 +14,7 @@ This code also generates the [NextCloudPi docker images](https://hub.docker.com/
  * Raspbian 9 stretch
  * Nextcloud 14.0.1
  * Apache 2.4.25, with HTTP2 enabled
- * PHP 7.0 (double the speed of PHP5!)
+ * PHP 7.2
  * MariaDB 10
  * Redis memory cache ( NEW 11-12-2017 )
  * 4.9 Linux Kernel ( NEW 03-13-2017 )

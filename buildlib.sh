@@ -194,7 +194,7 @@ function resize_image()
   echo -e "\n\e[1m[ Resize Image ]\e[0m"
   fallocate -l$SIZE "$IMG"
   parted "$IMG" -- resizepart 2 -1s
-  DEV="$( losetup -f )"
+  DEV="$( sudo losetup -f )"
   mount_raspbian "$IMG"
   sudo resize2fs -f "$DEV"
   echo "Image resized"

@@ -19,21 +19,36 @@
 # More at https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/
 #
 
+PHPVER=7.2
 APTINSTALL="apt-get install -y --no-install-recommends"
 export DEBIAN_FRONTEND=noninteractive
 
 install()
 {
-    apt-get update
+    # Raspbian still doesn't support Buster -> http://archive.raspberrypi.org/debian/dists/
+    # Get Debian Buster sources
+    echo "deb https://deb.debian.org/debian buster main contrib non-free" > /etc/apt/sources.list.d/ncp-buster.list
+cat > /etc/apt/preferences.d/10-ncp-buster <<EOF
+Package: *
+Pin: release n=stretch
+Pin-Priority: 600
+EOF
+
+    # Debian Buster repository keys are not in the Raspbian Stretch keyring. Install the Debian keyring
+    apt-get     --allow-unauthenticated update
+    $APTINSTALL --allow-unauthenticated debian-archive-keyring
 
     # INSTALL 
     ##########################################
 
+    apt-get update
     $APTINSTALL apt-utils cron
     $APTINSTALL apache2
-    $APTINSTALL php7.0 php7.0-curl php7.0-gd php7.0-fpm php7.0-cli php7.0-opcache \
-                php7.0-mbstring php7.0-xml php7.0-zip php7.0-fileinfo php7.0-ldap \
-                php7.0-intl libmagickcore-6.q16-2-extra php7.0-imagick php-mcrypt
+
+    $APTINSTALL -t buster php${PHPVER} php${PHPVER}-curl php${PHPVER}-gd php${PHPVER}-fpm php${PHPVER}-cli php${PHPVER}-opcache \
+                          php${PHPVER}-mbstring php${PHPVER}-xml php${PHPVER}-zip php${PHPVER}-fileinfo php${PHPVER}-ldap \
+                          php${PHPVER}-intl php${PHPVER}-bz2 php${PHPVER}-json
+
     mkdir -p /run/php
 
     # mariaDB password
@@ -43,7 +58,7 @@ install()
 
     debconf-set-selections <<< "mariadb-server-5.5 mysql-server/root_password password $DBPASSWD"
     debconf-set-selections <<< "mariadb-server-5.5 mysql-server/root_password_again password $DBPASSWD"
-    $APTINSTALL mariadb-server php7.0-mysql 
+    $APTINSTALL mariadb-server php${PHPVER}-mysql
     mkdir -p /run/mysqld
     chown mysql /run/mysqld
 
@@ -85,7 +100,7 @@ EOF
     # CONFIGURE PHP7
     ##########################################
 
-    cat > /etc/php/7.0/mods-available/opcache.ini <<EOF
+    cat > /etc/php/${PHPVER}/mods-available/opcache.ini <<EOF
 zend_extension=opcache.so
 opcache.enable=1
 opcache.enable_cli=1
@@ -101,7 +116,7 @@ EOF
     a2enmod http2
     a2enconf http2 
     a2enmod proxy_fcgi setenvif
-    a2enconf php7.0-fpm
+    a2enconf php${PHPVER}-fpm
     a2enmod rewrite
     a2enmod headers
     a2enmod dir
