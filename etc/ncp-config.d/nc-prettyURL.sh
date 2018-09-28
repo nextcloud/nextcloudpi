@@ -21,10 +21,20 @@ configure()
   [[ $ACTIVE_ != "yes" ]] && {
     sudo -u www-data php "$OCC" config:system:set htaccess.RewriteBase --value=""
     sudo -u www-data php "$OCC" maintenance:update:htaccess
+    [[ $? -ne 0 ]] && {
+      echo "There has been an error."
+      # ACTIVE_ = "yes" (TODO)
+      return 1
+    }
     echo "Your cloud does no longer have a pretty domain name."
   } || {
     sudo -u www-data php "$OCC" config:system:set htaccess.RewriteBase --value="/"
     sudo -u www-data php "$OCC" maintenance:update:htaccess
+    [[ $? -ne 0 ]] && {
+      echo "There has been an error."
+      # ACTIVE_ = "no" (TODO)
+      return 1
+    }
     echo "Your cloud now has a pretty domain name."
   }
   bash -c "sleep 2 && service apache2 reload" &>/dev/null &
