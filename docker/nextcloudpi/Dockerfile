@@ -15,6 +15,9 @@ COPY docker-common    /tmp/ncp-build/docker-common/
 
 RUN \
 
+# make sure we don't accidentally disable first run wizard
+rm -f ncp-web/{wizard.cfg,ncp-web.cfg}; \
+
 # mark as image build
 touch /.ncp-image; \
 

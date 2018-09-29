@@ -26,6 +26,7 @@ prepare_dirs                   # tmp cache output
 
 # add NCP modifications
 mkdir -p armbian/userpatches armbian/userpatches/overlay
+rm -f ncp-web/{wizard.cfg,ncp-web.cfg}
 cp armbian.sh armbian/userpatches/customize-image.sh
 rsync -Aax --delete --exclude-from .gitignore --exclude *.img --exclude *.bz2 . armbian/userpatches/overlay/
 

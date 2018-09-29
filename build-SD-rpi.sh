@@ -27,6 +27,9 @@ download_raspbian "$IMG"
 resize_image      "$IMG" "$SIZE"
 update_boot_uuid  "$IMG"       # PARTUUID has changed after resize
 
+# make sure we don't accidentally disable first run wizard
+rm -f ncp-web/{wizard.cfg,ncp-web.cfg}
+
 ## BUILD NCP
 
 echo -e "\e[1m\n[ Build NCP ]\e[0m"
