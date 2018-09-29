@@ -14,6 +14,8 @@ DESCRIPTION="Change your data dir to a new location, like a USB drive"
 INFO="Note that non Unix filesystems such as NTFS are not supported
 because they do not provide a compatible user/permissions system"
 
+PHPDIR="/etc/php/7.2"
+
 is_active()
 {
   local SRCDIR
@@ -91,12 +93,12 @@ configure()
   # tmp upload dir
   mkdir -p "$DATADIR_/tmp" 
   chown www-data:www-data "$DATADIR_/tmp"
-  sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $DATADIR_/tmp|" /etc/php/7.0/cli/php.ini
-  sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $DATADIR_/tmp|" /etc/php/7.0/fpm/php.ini
-  sed -i "s|^;\?sys_temp_dir =.*$|sys_temp_dir = $DATADIR_/tmp|"     /etc/php/7.0/fpm/php.ini
+  sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $DATADIR_/tmp|" "$PHPDIR/cli/php.ini"
+  sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $DATADIR_/tmp|" "$PHPDIR/fpm/php.ini"
+  sed -i "s|^;\?sys_temp_dir =.*$|sys_temp_dir = $DATADIR_/tmp|"     "$PHPDIR/fpm/php.ini"
 
   # opcache dir
-  sed -i "s|^opcache.file_cache=.*|opcache.file_cache=$DATADIR_/.opcache|" /etc/php/7.0/mods-available/opcache.ini
+  sed -i "s|^opcache.file_cache=.*|opcache.file_cache=$DATADIR_/.opcache|" "$PHPDIR/mods-available/opcache.ini"
 
   # update fail2ban logpath
   sed -i "s|logpath  =.*nextcloud.log|logpath  = $DATADIR_/nextcloud.log|" /etc/fail2ban/jail.conf
