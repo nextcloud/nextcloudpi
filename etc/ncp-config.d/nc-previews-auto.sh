@@ -24,6 +24,7 @@ configure()
   # set crontab
   local HOURS MINS
     HOUR=$(( STARTTIME_ / 60   ))
+    HOUR=$(( $HOUR % 24  ))
     MINS=$(( STARTTIME_ % 60   ))
   
   echo "${MINS}  ${HOUR}  *  *  *  php /var/www/nextcloud/occ preview:pre-generate" > /etc/cron.d/nc-previews-auto
