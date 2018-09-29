@@ -21,7 +21,7 @@ Internet access is required for this configuration to complete."
 install()
 {
   apt-get update
-  apt-get install --no-install-recommends -y make gcc libc-dev
+  apt-get install -t buster --no-install-recommends -y make gcc libc-dev
 
   local TMPDIR="$( mktemp -d /tmp/noip.XXXXXX )"
   cd "$TMPDIR"

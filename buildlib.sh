@@ -339,6 +339,7 @@ mkdir testing
 mkdir testing/$IMGNAME
 cd testing/$IMGNAME
 binary
+rm  $IMGNAME.torrent
 put $IMGNAME.torrent
 bye
 EOF
@@ -349,7 +350,9 @@ EOF
 user root@ownyourbits.com $FTPPASS
 cd testing/$IMGNAME
 binary
+rm  $IMGNAME.tar.bz2
 put $IMGNAME.tar.bz2
+rm  md5sum
 put md5sum
 bye
 EOF

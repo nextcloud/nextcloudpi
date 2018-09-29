@@ -207,7 +207,7 @@ EOF
     chmod a+x /etc/update-motd.d/*
 
     ## HOSTNAME AND mDNS
-    $APTINSTALL avahi-daemon
+    [[ -f /.docker-image ]] || $APTINSTALL avahi-daemon
     echo nextcloudpi > /etc/hostname
     sed -i '$c127.0.1.1 nextcloudpi' /etc/hosts
 
@@ -250,9 +250,6 @@ EOF
 
     ## other tweaks
     sed -i "s|^UMASK.*|UMASK           027|" /etc/login.defs
-
-    ## locales for ncp-config
-    [[ "$LANG" == "" ]] && localectl set-locale LANG=en_US.utf8
   fi
 }
 
