@@ -265,6 +265,10 @@ EOF
         sed -i 's|# maxmemory-policy .*|maxmemory-policy allkeys-lru|' /etc/redis/redis.conf
         service redis-server restart
       }
+
+      # allow .lan domains
+      ncc config:system:set trusted_domains 7 --value="nextcloudpi"
+      ncc config:system:set trusted_domains 8 --value="nextcloudpi.lan"
   }
 
 } # end - only live updates
