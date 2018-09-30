@@ -257,6 +257,14 @@ EOF
               service php${PHPVER}-fpm start
               service mysql      start
               " &>/dev/null &
+
+      # PHP7.2 end
+
+      # Redis eviction policy
+      grep -q "^maxmemory-policy allkeys-lru" /etc/redis/redis.conf || {
+        sed -i 's|# maxmemory-policy .*|maxmemory-policy allkeys-lru|' /etc/redis/redis.conf
+        service redis-server restart
+      }
   }
 
 } # end - only live updates
