@@ -1,6 +1,6 @@
 ---
 name: ⛔ Support Question
-about: See the FAQ or use the forums to ask for technical help.
+about: Do NOT ask here - Use the forum
 
 ---
 
