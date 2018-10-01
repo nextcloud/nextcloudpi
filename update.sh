@@ -269,6 +269,14 @@ EOF
       # allow .lan domains
       ncc config:system:set trusted_domains 7 --value="nextcloudpi"
       ncc config:system:set trusted_domains 8 --value="nextcloudpi.lan"
+
+      # possible traces of the old name
+      sed -i 's|NextCloudPlus|NextCloudPi|' /usr/local/bin/ncp-notify-update
+      sed -i 's|NextCloudPlus|NextCloudPi|' /usr/local/bin/ncp-notify-unattended-upgrade
+
+      # nc-prettyURL: fix for NC14
+      URL="$(ncc config:system:get overwrite.cli.url)"
+      [[ "${URL: -1}" != "/" ]] && ncc config:system:set overwrite.cli.url --value="${URL}/"
   }
 
 } # end - only live updates
