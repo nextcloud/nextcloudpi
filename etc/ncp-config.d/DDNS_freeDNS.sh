@@ -34,7 +34,7 @@ configure()
 #!/bin/bash
 echo "FreeDNS client started"
 echo "${URL}"
-registeredIP=\$(nslookup ${DOMAIN_}|tail -n2|grep A|sed s/[^0-9.]//g)
+registeredIP=$(dig +short "$DOMAIN_"|tail -n1)
 currentIP=\$(wget -q -O - http://checkip.dyndns.org|sed s/[^0-9.]//g)
     [ "\$currentIP" != "\$registeredIP" ] && {
         wget -q -O /dev/null ${URL}
