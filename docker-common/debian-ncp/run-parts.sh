@@ -21,7 +21,7 @@ FILE=/etc/services-available.d/???"$1"
 
 test -f $FILE || {
   echo "$1 doesn't exist"
-  exit 1
+  exit 0
 }
 
 [[ "$2" == "enable" ]] && {

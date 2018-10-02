@@ -138,6 +138,8 @@ EOF
       /etc/services-available.d/000ncp
       rm /data/etc/letsencrypt/live
       mv /data/etc/live /data/etc/letsencrypt
+
+      sed -i 's|exit 1|exit 0|' /usr/local/sbin/update-rc.d
     }
   }
 
@@ -194,19 +196,21 @@ EOF
 
     ncc maintenance:mode --on
 
-    apt-get update
-    $APTINSTALL apt-transport-https
+    [[ -f /usr/bin/raspi-config ]] && {
+      apt-get update
+      $APTINSTALL apt-transport-https
 
-    echo "deb https://deb.debian.org/debian buster main contrib non-free" > /etc/apt/sources.list.d/ncp-buster.list
+      echo "deb https://deb.debian.org/debian buster main contrib non-free" > /etc/apt/sources.list.d/ncp-buster.list
+      apt-get     --allow-unauthenticated update
+      $APTINSTALL --allow-unauthenticated debian-archive-keyring
+    }
+
+    echo "deb http://deb.debian.org/debian buster main contrib non-free" > /etc/apt/sources.list.d/ncp-buster.list
 cat > /etc/apt/preferences.d/10-ncp-buster <<EOF
 Package: *
 Pin: release n=stretch
 Pin-Priority: 600
 EOF
-
-    apt-get     --allow-unauthenticated update
-    $APTINSTALL --allow-unauthenticated debian-archive-keyring
-
     apt-get update
 
     apt-get purge -y php7.0-*
@@ -258,7 +262,7 @@ EOF
               service mysql      start
               " &>/dev/null &
 
-      # PHP7.2 end
+      } # PHP7.2 end
 
       # Redis eviction policy
       grep -q "^maxmemory-policy allkeys-lru" /etc/redis/redis.conf || {
@@ -273,7 +277,10 @@ EOF
       # possible traces of the old name
       sed -i 's|NextCloudPlus|NextCloudPi|' /usr/local/bin/ncp-notify-update
       sed -i 's|NextCloudPlus|NextCloudPi|' /usr/local/bin/ncp-notify-unattended-upgrade
-  }
+
+      # nc-prettyURL: fix for NC14
+      URL="$(ncc config:system:get overwrite.cli.url)"
+      [[ "${URL: -1}" != "/" ]] && ncc config:system:set overwrite.cli.url --value="${URL}/"
 
 } # end - only live updates
 
