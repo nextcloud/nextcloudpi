@@ -1,4 +1,6 @@
 
+[v0.62.2](https://github.com/nextcloud/nextcloudpi/commit/2669ba4) (2018-10-02) nc-prettyURL: make sure URL is correct
+
 [v0.62.1 ](https://github.com/nextcloud/nextcloudpi/commit/4f20b71) (2018-09-30) redis: change eviction policy
 
 [v0.62.0 ](https://github.com/nextcloud/nextcloudpi/commit/4bce1bb) (2018-09-26) upgrade to PHP7.2
