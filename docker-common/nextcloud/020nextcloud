@@ -21,6 +21,7 @@ rm /var/www/nextcloud
 ln -s /data/app /var/www/nextcloud
 
 echo "Starting Redis"
+sed -i 's|^requirepass .*|requirepass default|' /etc/redis/redis.conf
 mkdir -p /var/run/redis
 chown redis /var/run/redis
 sudo -u redis redis-server /etc/redis/redis.conf
