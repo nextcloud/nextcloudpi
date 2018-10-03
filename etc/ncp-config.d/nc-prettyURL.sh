@@ -27,7 +27,6 @@ configure()
     sudo -u www-data php "$OCC" maintenance:update:htaccess
     [[ $? -ne 0 ]] && {
       echo "There has been an error."
-      # ACTIVE_ = "yes" (TODO)
       return 1
     }
     echo "Your cloud does no longer have a pretty domain name."
@@ -36,7 +35,6 @@ configure()
     sudo -u www-data php "$OCC" maintenance:update:htaccess
     [[ $? -ne 0 ]] && {
       echo "There has been an error."
-      # ACTIVE_ = "no" (TODO)
       return 1
     }
     echo "Your cloud now has a pretty domain name."
