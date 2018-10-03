@@ -25,18 +25,23 @@ export DEBIAN_FRONTEND=noninteractive
 
 install()
 {
+    # GET DEBIAN BUSTER SOURCES
+    ##########################################
+
     # Raspbian still doesn't support Buster -> http://archive.raspberrypi.org/debian/dists/
-    # Get Debian Buster sources
-    echo "deb https://deb.debian.org/debian buster main contrib non-free" > /etc/apt/sources.list.d/ncp-buster.list
-cat > /etc/apt/preferences.d/10-ncp-buster <<EOF
+    # Debian Buster repository keys are not in the Raspbian Stretch keyring. Install the Debian keyring
+    [[ -f /usr/bin/raspi-config ]] && {
+      echo "deb https://deb.debian.org/debian buster main contrib non-free" > /etc/apt/sources.list.d/ncp-buster.list
+      apt-get     --allow-unauthenticated update
+      $APTINSTALL --allow-unauthenticated debian-archive-keyring
+    }
+
+    echo "deb http://deb.debian.org/debian buster main contrib non-free" > /etc/apt/sources.list.d/ncp-buster.list
+    cat > /etc/apt/preferences.d/10-ncp-buster <<EOF
 Package: *
 Pin: release n=stretch
 Pin-Priority: 600
 EOF
-
-    # Debian Buster repository keys are not in the Raspbian Stretch keyring. Install the Debian keyring
-    apt-get     --allow-unauthenticated update
-    $APTINSTALL --allow-unauthenticated debian-archive-keyring
 
     # INSTALL 
     ##########################################

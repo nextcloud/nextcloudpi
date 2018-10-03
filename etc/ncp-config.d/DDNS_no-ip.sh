@@ -21,7 +21,7 @@ Internet access is required for this configuration to complete."
 install()
 {
   apt-get update
-  apt-get install --no-install-recommends -y make gcc libc-dev
+  apt-get install -t buster --no-install-recommends -y make gcc libc-dev
 
   local TMPDIR="$( mktemp -d /tmp/noip.XXXXXX )"
   cd "$TMPDIR"
@@ -95,7 +95,7 @@ configure()
   service noip2 restart
   cd /var/www/nextcloud
   sudo -u www-data php occ config:system:set trusted_domains 3 --value="$DOMAIN_"
-  sudo -u www-data php occ config:system:set overwrite.cli.url --value=https://"$DOMAIN_"
+  sudo -u www-data php occ config:system:set overwrite.cli.url --value=https://"$DOMAIN_"/
   echo "noip DDNS enabled"
 
 }

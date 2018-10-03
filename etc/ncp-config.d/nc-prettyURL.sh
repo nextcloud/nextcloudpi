@@ -18,6 +18,10 @@ install() { :; }
 
 configure() 
 {  
+  # make sure overwrite.cli.url end with a '/'
+  local URL="$(ncc config:system:get overwrite.cli.url)"
+  [[ "${URL: -1}" != "/" ]] && ncc config:system:set overwrite.cli.url --value="${URL}/"
+
   [[ $ACTIVE_ != "yes" ]] && {
     sudo -u www-data php "$OCC" config:system:set htaccess.RewriteBase --value=""
     sudo -u www-data php "$OCC" maintenance:update:htaccess

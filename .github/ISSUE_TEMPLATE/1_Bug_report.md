@@ -1,3 +1,9 @@
+---
+name: 🐛 Bug Report
+about: Report errors and problems
+
+---
+
 <!--
 Thanks for reporting issues back to NextCloudPi! 
 
@@ -20,4 +26,6 @@ Keep in mind that many problems come from faulty power sources and corrupted SD 
 If you are running into problems, make sure to include the output of `sudo-ncp-report`
 -->
 
-Paste the output of `sudo ncp-report`
+**System information**
+
+<!-- Paste the output of `sudo ncp-report` -->

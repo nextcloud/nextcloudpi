@@ -51,7 +51,6 @@ install_script  etc/ncp-config.d/nc-nextcloud.sh
 activate_script etc/ncp-config.d/nc-nextcloud.sh
 install_script  ncp.sh
 activate_script etc/ncp-config.d/nc-init.sh
-[[ -f /.ncp-image ]] && install_script post-inst.sh
 
 popd
 echo "Done.

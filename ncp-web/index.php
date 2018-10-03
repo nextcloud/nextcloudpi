@@ -148,9 +148,6 @@ HTML;
               <div class="icon-config"></div>
           </div>
       </div>
-<?php
-  if ( file_exists( 'wizard' ) )
-    echo <<<HTML
       <a href="wizard" title="{$l->__("NextCloudPi Wizard")}">
         <div class="wizard-btn">
           <div id="expand">
@@ -158,8 +155,6 @@ HTML;
           </div>
         </div>
       </a>
-HTML;
-?>
       <a href="https://github.com/nextcloud/nextcloudpi/wiki" target="_blank" tabindex="1"  title="<?php echo $l->__("NextCloudPi Wiki"); ?>">
         <div id="nc-button">
             <div id="expand">

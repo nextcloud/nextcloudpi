@@ -90,7 +90,7 @@ EOF
   }
  
   sudo -u www-data php /var/www/nextcloud/occ config:system:set trusted_domains 1 --value="$IP_"
-  sudo -u www-data php /var/www/nextcloud/occ config:system:set overwrite.cli.url --value=https://"$IP_"
+  sudo -u www-data php /var/www/nextcloud/occ config:system:set overwrite.cli.url --value=https://"$IP_"/
   echo "Static IP set to $IP_"
 }
 

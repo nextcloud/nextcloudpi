@@ -109,6 +109,9 @@ EOF
     test -f /.ncp-image || bash /usr/local/bin/nextcloud-domain.sh
   }
   sudo -u www-data php occ config:system:set trusted_domains 5 --value="nextcloudpi.local"
+  # trusted_domains 6 used by docker
+  sudo -u www-data php occ config:system:set trusted_domains 7 --value="nextcloudpi"
+  sudo -u www-data php occ config:system:set trusted_domains 8 --value="nextcloudpi.lan"
 
   # email
   sudo -u www-data php occ config:system:set mail_smtpmode     --value="sendmail"
@@ -140,6 +143,7 @@ EOF
   sudo -u www-data php /var/www/nextcloud/occ app:install tasks
   sudo -u www-data php /var/www/nextcloud/occ app:install news
   sudo -u www-data php /var/www/nextcloud/occ app:install admin_notifications
+  sudo -u www-data php /var/www/nextcloud/occ app:install previewgenerator
 
   sudo -u www-data php /var/www/nextcloud/occ app:enable calendar
   sudo -u www-data php /var/www/nextcloud/occ app:enable contacts
@@ -147,6 +151,7 @@ EOF
   sudo -u www-data php /var/www/nextcloud/occ app:enable tasks
   sudo -u www-data php /var/www/nextcloud/occ app:enable news
   sudo -u www-data php /var/www/nextcloud/occ app:enable admin_notifications
+  sudo -u www-data php /var/www/nextcloud/occ app:enable previewgenerator
 
   # other
   sudo -u www-data php /var/www/nextcloud/occ config:system:set overwriteprotocol --value=https

@@ -20,11 +20,8 @@ set -e
 rm /var/www/nextcloud
 ln -s /data/app /var/www/nextcloud
 
-echo "Provisioning"
-DB_PID="$( pidof mysqld )"
-bash /usr/local/bin/ncp-provisioning.sh
-
 echo "Starting Redis"
+sed -i 's|^requirepass .*|requirepass default|' /etc/redis/redis.conf
 mkdir -p /var/run/redis
 chown redis /var/run/redis
 sudo -u redis redis-server /etc/redis/redis.conf
@@ -38,17 +35,23 @@ postfix start
 # INIT DATABASE AND NEXTCLOUD CONFIG (first run)
 test -f /data/app/config/config.php || {
   echo "Uninitialized instance, running nc-init..."
-
-  # mariaDB is restarted in the backgroud during provisioning
-  while kill -0 "$DB_PID" 2>/dev/null; do sleep 0.5; done
-  while :; do
-    [[ -S /run/mysqld/mysqld.sock ]] && break
-    sleep 0.5
-  done
   source /usr/local/etc/library.sh
   activate_script /nc-init.sh
   mv /index.php /var/www/nextcloud/    # restore this file after init
 }
+
+# Better do real provisioning at the end, as it can restart PHP asynchronously
+sed -i "s|'password'.*|'password' => 'default',|"        /data/app/config/config.php
+sed -i "s|'dbpassword' =>.*|'dbpassword' => 'default',|" /data/app/config/config.php
+DBPASSWD=default
+DBADMIN=ncadmin
+mysql <<EOF
+GRANT USAGE ON *.* TO '$DBADMIN'@'localhost' IDENTIFIED BY '$DBPASSWD';
+DROP USER '$DBADMIN'@'localhost';
+CREATE USER '$DBADMIN'@'localhost' IDENTIFIED BY '$DBPASSWD';
+GRANT ALL PRIVILEGES ON nextcloud.* TO $DBADMIN@localhost;
+EXIT
+EOF
 
 # Trusted Domain ( local IP )
 IFACE=$( ip r | grep "default via" | awk '{ print $5 }' | head -1 )
@@ -58,6 +61,9 @@ ncc config:system:set trusted_domains 1 --value="$IP"
 # Trusted Domain ( as an argument )
 [[ "$2" != "" ]] && \
   ncc config:system:set trusted_domains 6 --value="$2"
+
+echo "Provisioning"
+bash /usr/local/bin/ncp-provisioning.sh
 
 # Display NC logs in the docker logs
 tail -f -n0 /data/app/data/nextcloud.log &

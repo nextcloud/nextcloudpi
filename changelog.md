@@ -1,9 +1,12 @@
+[v0.62.2](https://github.com/nextcloud/nextcloudpi/commit/2669ba4) (2018-10-02) nc-prettyURL: make sure URL is correct
 
-[v0.62.0](https://github.com/nextcloud/nextcloudpi/commit/aca5004) (2018-09-23) upgrade to NC14
+[v0.62.1 ](https://github.com/nextcloud/nextcloudpi/commit/4f20b71) (2018-09-30) redis: change eviction policy
 
-[v0.61.0, php72](https://github.com/nextcloud/nextcloudpi/commit/20c1e8a) (2018-06-21) upgrade to PHP7.2
+[v0.62.0 ](https://github.com/nextcloud/nextcloudpi/commit/4bce1bb) (2018-09-26) upgrade to PHP7.2
 
-[v0.60.8](https://github.com/nextcloud/nextcloudpi/commit/6152e7e) (2018-09-24) ncp-web: put configuration in a separate file from available languages
+[v0.61.0 ](https://github.com/nextcloud/nextcloudpi/commit/66e4d83) (2018-09-26) upgrade to NC14
+
+[v0.60.8 ](https://github.com/nextcloud/nextcloudpi/commit/6152e7e) (2018-09-24) ncp-web: put configuration in a separate file from available languages
 
 [v0.60.7 ](https://github.com/nextcloud/nextcloudpi/commit/cdbb750) (2018-09-24) docker: disable auto-upgrade until it is adapted to containers
 
