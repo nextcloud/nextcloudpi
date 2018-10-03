@@ -16,6 +16,13 @@ OCC="$NCDIR/occ"
 
 install() { :; }
 
+isactive()
+{
+  local REWRITEBASE
+  REWRITEBASE="$( grep RewriteBase /var/www/nextcloud/.htaccess )" || return 1
+  [[ $REWRITEBASE != 1 ]]
+}
+
 configure() 
 {  
   # make sure overwrite.cli.url end with a '/'
