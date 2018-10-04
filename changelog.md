@@ -1,5 +1,7 @@
 
-[v0.62.4](https://github.com/nextcloud/nextcloudpi/commit/128f713) (2018-10-03) nc-update-nextcloud: option to upgrade to the latest version
+[v0.62.5](https://github.com/nextcloud/nextcloudpi/commit/ca01dbf) (2018-10-03) nc-update-nc: dont fix the news app if there is no news app
+
+[v0.62.4](https://github.com/nextcloud/nextcloudpi/commit/b449e54) (2018-10-03) nc-update-nextcloud: option to upgrade to the latest version
 
 [v0.62.3, master](https://github.com/nextcloud/nextcloudpi/commit/af4b646) (2018-10-03) nc-autoupdate-nc: fix repeating notification
 
