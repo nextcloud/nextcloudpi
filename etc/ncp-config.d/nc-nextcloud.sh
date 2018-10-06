@@ -76,12 +76,7 @@ install()
   [[ ! -f /.ncp-image ]] && {
     systemctl restart redis-server
     systemctl enable  redis-server
-
-    systemctl stop php${PHPVER}-fpm
-    systemctl stop mysql
-    sleep 0.5
-    systemctl start php${PHPVER}-fpm
-    systemctl start mysql
+    systemctl restart php${PHPVER}-fpm
   }
   
   # service to randomize passwords on first boot
