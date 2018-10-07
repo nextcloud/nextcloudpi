@@ -1,4 +1,3 @@
-
 [v0.62.6](https://github.com/nextcloud/nextcloudpi/commit/d069004) (2018-10-06) nc-limits: fix PHP service restart
 
 [v0.62.5](https://github.com/nextcloud/nextcloudpi/commit/0bf6045) (2018-10-03) nc-update-nc: dont fix the news app if there is no news app

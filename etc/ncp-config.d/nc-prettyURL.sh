@@ -16,6 +16,13 @@ OCC="$NCDIR/occ"
 
 install() { :; }
 
+isactive()
+{
+  local REWRITEBASE
+  REWRITEBASE="$( grep RewriteBase /var/www/nextcloud/.htaccess )" || return 1
+  [[ $REWRITEBASE != 1 ]]
+}
+
 configure() 
 {  
   # make sure overwrite.cli.url end with a '/'
@@ -25,10 +32,18 @@ configure()
   [[ $ACTIVE_ != "yes" ]] && {
     sudo -u www-data php "$OCC" config:system:set htaccess.RewriteBase --value=""
     sudo -u www-data php "$OCC" maintenance:update:htaccess
+    [[ $? -ne 0 ]] && {
+      echo "There has been an error."
+      return 1
+    }
     echo "Your cloud does no longer have a pretty domain name."
   } || {
     sudo -u www-data php "$OCC" config:system:set htaccess.RewriteBase --value="/"
     sudo -u www-data php "$OCC" maintenance:update:htaccess
+    [[ $? -ne 0 ]] && {
+      echo "There has been an error."
+      return 1
+    }
     echo "Your cloud now has a pretty domain name."
   }
   bash -c "sleep 2 && service apache2 reload" &>/dev/null &

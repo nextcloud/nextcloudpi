@@ -211,6 +211,7 @@ Package: *
 Pin: release n=stretch
 Pin-Priority: 600
 EOF
+
     apt-get update
 
     apt-get purge -y php7.0-*
