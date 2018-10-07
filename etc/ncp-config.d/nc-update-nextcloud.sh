@@ -9,10 +9,13 @@
 #
 
 VERSION_=14.0.1
+LATEST=14.0.1
 DESCRIPTION="Update current instance to a new Nextcloud version"
+INFO="Set to 0 to update to the latest avaliable version"
 
 configure()
 {
+  [[ "$VERSION_" == "0" ]] && VERSION_="$LATEST"
   bash /usr/local/bin/ncp-update-nc "$VERSION_"
 }
 

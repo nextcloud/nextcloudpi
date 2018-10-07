@@ -1,4 +1,12 @@
-[v0.62.2](https://github.com/nextcloud/nextcloudpi/commit/2669ba4) (2018-10-02) nc-prettyURL: make sure URL is correct
+[v0.62.6](https://github.com/nextcloud/nextcloudpi/commit/d069004) (2018-10-06) nc-limits: fix PHP service restart
+
+[v0.62.5](https://github.com/nextcloud/nextcloudpi/commit/0bf6045) (2018-10-03) nc-update-nc: dont fix the news app if there is no news app
+
+[v0.62.4 ](https://github.com/nextcloud/nextcloudpi/commit/aa886f9) (2018-10-03) nc-update-nextcloud: option to upgrade to the latest version
+
+[v0.62.3 ](https://github.com/nextcloud/nextcloudpi/commit/af4b646) (2018-10-03) nc-autoupdate-nc: fix repeating notification
+
+[v0.62.2 ](https://github.com/nextcloud/nextcloudpi/commit/6324949) (2018-10-02) nc-prettyURL: make sure URL is correct
 
 [v0.62.1 ](https://github.com/nextcloud/nextcloudpi/commit/4f20b71) (2018-09-30) redis: change eviction policy
 

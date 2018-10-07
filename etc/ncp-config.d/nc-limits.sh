@@ -47,15 +47,8 @@ configure()
   # RESTART PHP
   [[ "$PHPTHREADS_"  != "$CURRENT_THREADS"   ]] || \
   [[ "$MEMORYLIMIT"  != "$CURRENT_PHP_MEM"   ]] || \
-  [[ "$MAXFILESIZE_" != "$CURRENT_FILE_SIZE" ]] && {
-    bash -c " sleep 3
-              service php${PHPVER}-fpm stop
-              service mysql      stop
-              sleep 0.5
-              service php${PHPVER}-fpm start
-              service mysql      start
-              " &>/dev/null &
-  }
+  [[ "$MAXFILESIZE_" != "$CURRENT_FILE_SIZE" ]] && \
+    bash -c "sleep 3; service php${PHPVER}-fpm restart" &>/dev/null &
 
   # redis max memory
   local CONF=/etc/redis/redis.conf
