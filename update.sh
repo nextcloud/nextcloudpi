@@ -169,7 +169,8 @@ EOF
   
   # Reinstall DDNS_spDYN for use of IPv6 
   rm -r /usr/local/etc/spdnsupdater
-  install_script /usr/local/etc/ncp-config.d/DDNS_spDYN.sh
+  cd /usr/local/etc/ncp-config.d
+  install_script DDNS_spDYN.sh
 
 } # end - only live updates
 
