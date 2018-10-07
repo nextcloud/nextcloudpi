@@ -216,7 +216,6 @@ Package: *
 Pin: release n=stretch
 Pin-Priority: 600
 EOF
-
     apt-get update
 
     apt-get purge -y php7.0-*
@@ -287,6 +286,22 @@ EOF
       # nc-prettyURL: fix for NC14
       URL="$(ncc config:system:get overwrite.cli.url)"
       [[ "${URL: -1}" != "/" ]] && ncc config:system:set overwrite.cli.url --value="${URL}/"
+
+      # Implement logrotate restrictions
+      grep -q "^\& stop" /etc/rsyslog.d/20-ufw.conf ||  echo "& stop" >> /etc/rsyslog.d/20-ufw.conf
+      grep -q maxsize /etc/logrotate.d/ufw     || sed -i /weekly/amaxsize2M /etc/logrotate.d/ufw
+      grep -q maxsize /etc/logrotate.d/apache2 || sed -i /weekly/amaxsize2M /etc/logrotate.d/apache2
+      service rsyslog restart
+      cat >> /etc/logrotate.d/ncp <<'EOF'
+/var/log/ncp.log
+{
+        rotate 4
+        size 500K
+        missingok
+        notifempty
+        compress
+}
+EOF
 
 } # end - only live updates
 

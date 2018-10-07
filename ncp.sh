@@ -184,6 +184,19 @@ EOF
   # update to latest version from github as part of the build process
   bin/ncp-update $BRANCH
 
+  # LIMIT LOG SIZE
+  grep -q maxsize /etc/logrotate.d/apache2 || sed -i /weekly/amaxsize2M /etc/logrotate.d/apache2
+  cat >> /etc/logrotate.d/ncp <<'EOF'
+/var/log/ncp.log
+{
+        rotate 4
+        size 500K
+        missingok
+        notifempty
+        compress
+}
+EOF
+
   # ONLY FOR IMAGE BUILDS
   if [[ -f /.ncp-image ]]; then
     rm -rf /var/log/ncp.log

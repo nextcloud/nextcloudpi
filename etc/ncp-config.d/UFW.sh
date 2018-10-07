@@ -21,6 +21,9 @@ install()
   apt-get update
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ufw
   systemctl disable ufw
+
+  # Disable logging to kernel
+  grep -q maxsize /etc/logrotate.d/ufw || sed -i /weekly/amaxsize2M /etc/logrotate.d/ufw
 }
 
 configure()
