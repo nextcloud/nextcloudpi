@@ -163,6 +163,11 @@ EOF
   [[ $mail_smtpmode == "php" ]] && {
     sudo -u www-data php /var/www/nextcloud/occ config:system:set mail_smtpmode --value="sendmail"
   }
+  
+  # Reinstall DDNS_spDYN for use of IPv6 
+  rm -r /usr/local/etc/spdnsupdater
+  cd /usr/local/etc/ncp-config.d
+  install_script DDNS_spDYN.sh
 
   # update nc-restore
   cd "$CONFDIR" &>/dev/null
