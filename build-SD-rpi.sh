@@ -45,8 +45,10 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
 
     # update packages
     apt-get update
-    apt-get upgrade -y
-    apt-get dist-upgrade -y
+
+    # As of 10-2018 this upgrades raspi-kernel and messes up wifi and BTRFS
+    #apt-get upgrade -y
+    #apt-get dist-upgrade -y
 
     # As of 03-2018, you dont get a big kernel update by doing
     # this, so better be safe. Might uncomment again in the future
