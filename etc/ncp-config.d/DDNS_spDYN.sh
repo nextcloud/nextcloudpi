@@ -87,7 +87,7 @@ if [ $# -eq 3 ]
   	then
   		# if hostname and token
   		# Get registered IP address
-		registeredIP=\$(nslookup ${DOMAIN_}|tail -n2|grep A|sed s/[^0-9.]//g)
+		registeredIP=$(dig +short "$DOMAIN_"|tail -n1)
 		# Get current IP address
 		currip=$(curl -s "$get_ip_url");
 		# Update only when IP address has changed.
@@ -102,7 +102,7 @@ if [ $# -eq 3 ]
 		then
 			# if hostname and user and passwd
 			# Get registered IP address
-			registeredIP=\$(nslookup ${DOMAIN_}|tail -n2|grep A|sed s/[^0-9.]//g)
+			registeredIP=$(dig +short "$DOMAIN_"|tail -n1)
 			# Get current IP address
 			currip=$(curl -s "$get_ip_url");
 			# Update only when IP address has changed.
