@@ -32,11 +32,13 @@ configure()
   
   if [ $SMALLONLY_ == "yes" ]]
     then
-      sudo -u www-data php /var/www/nextcloud/occ config:system:set preview_max_x --value="512"
-      sudo -u www-data php /var/www/nextcloud/occ config:system:set preview_max_y --value="256"
+      sudo -u www-data php /var/www/nextcloud/occ config:app:set --value="32 64 256"  previewgenerator squareSizes
+      sudo -u www-data php /var/www/nextcloud/occ config:app:set --value="64 128 512" previewgenerator widthSizes
+      sudo -u www-data php /var/www/nextcloud/occ config:app:set --value="64 128 256" previewgenerator heightSizes
     else
-      sudo -u www-data php /var/www/nextcloud/occ config:system:set preview_max_x --value="0"
-      sudo -u www-data php /var/www/nextcloud/occ config:system:set preview_max_y --value="0"
+      sudo -u www-data php /var/www/nextcloud/occ config:system:delete previewgenerator squareSizes
+      sudo -u www-data php /var/www/nextcloud/occ config:system:delete previewgenerator widthSizes
+      sudo -u www-data php /var/www/nextcloud/occ config:system:delete previewgenerator heightSizes
   fi
   
   # set crontab
