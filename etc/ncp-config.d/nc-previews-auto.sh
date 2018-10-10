@@ -31,11 +31,11 @@ configure()
   
   if [ $SMALLONLY_ == "yes" ]]
     then
-      sudo -u www-data php ncc config:system:set preview_max_x --value="256"
-      sudo -u www-data php ncc config:system:set preview_max_y --value="256"
+      sudo -u www-data php /var/www/nextcloud/occ config:system:set preview_max_x --value="256"
+      sudo -u www-data php /var/www/nextcloud/occ config:system:set preview_max_y --value="256"
     else
-      sudo -u www-data php ncc config:system:set preview_max_x --value="0"
-      sudo -u www-data php ncc config:system:set preview_max_y --value="0"
+      sudo -u www-data php /var/www/nextcloud/occ config:system:set preview_max_x --value="0"
+      sudo -u www-data php /var/www/nextcloud/occ config:system:set preview_max_y --value="0"
   fi
   
   # set crontab
