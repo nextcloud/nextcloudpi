@@ -9,12 +9,16 @@
 ACTIVE_=no
 STARTTIME_=240
 RUNTIME_=180
+SMALLONLY_=yes
 
 DESCRIPTION="Periodically generate previews for the gallery"
 INFO="Set the STARTTIME in minutes after midnight and RUNTIME in minutes.
 
 Make sure that you have the correct time zone set.
-You can use "sudo tzselect" in shell for that."
+You can use "sudo tzselect" in shell for that.
+
+Activate SMALLONLY for preventing the generation of
+big preview files that are seldom used."
 
 configure()
 {
@@ -24,6 +28,15 @@ configure()
     echo "Automatic preview generation disabled"
     return 0
   }
+  
+  if [ $SMALLONLY_ == "yes" ]]
+    then
+      sudo -u www-data php ncc config:system:set preview_max_x --value="256"
+      sudo -u www-data php ncc config:system:set preview_max_y --value="256"
+    else
+      sudo -u www-data php ncc config:system:set preview_max_x --value="0"
+      sudo -u www-data php ncc config:system:set preview_max_y --value="0"
+  fi
   
   # set crontab
   local STARTHOUR STARTMIN STOPHOUR STOPMIN
