@@ -8,9 +8,10 @@
 
 ACTIVE_=no
 STARTTIME_=240
+RUNTIME_=1
 
 DESCRIPTION="Periodically generate previews for the gallery"
-INFO="Set the time in minutes after midnight in STARTTIME."
+INFO="Set the STARTTIME in minutes after midnight<br>and RUNTIME in minutes."
 
 configure()
 {
@@ -22,12 +23,16 @@ configure()
   }
   
   # set crontab
-  local HOURS MINS
-    HOUR=$(( STARTTIME_ / 60   ))
-    HOUR=$(( $HOUR % 24  ))
-    MINS=$(( STARTTIME_ % 60   ))
+  local STARTHOUR STARTMIN STOPHOUR STOPMIN
+    STARTHOUR=$(( $STARTTIME_ / 60 ))
+    STARTHOUR=$(( $STARTHOUR  % 24 ))
+    STARTMIN=$((  $STARTTIME_ % 60 ))
+    STOPHOUR=$(( ($STARTTIME_ + RUNTIME_) / 60 ))
+    STOPHOUR=$((  $STOPHOUR   % 24 ))
+    STOPMINS=$(( ($STARTTIME_ + RUNTIME_) & 60 ))
   
-  echo "${MINS}  ${HOUR}  *  *  *  php /var/www/nextcloud/occ preview:pre-generate" > /etc/cron.d/nc-previews-auto
+  echo "${STARTMINS}  ${STARTHOUR}  *  *  *  root  /usr/bin/sudo -u www-data /usr/bin/php /var/www/nextcloud/occ preview:pre-generate" >  /etc/cron.d/nc-previews-auto
+  echo "${STOPMINS}   ${STOPHOUR}   *  *  *  root  /usr/bin/pkill -f \"occ preview\""
   service cron restart
 
   echo "Automatic preview generation enabled"
