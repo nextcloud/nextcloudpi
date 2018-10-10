@@ -2,16 +2,19 @@
 
 # Periodically generate previews for the gallery
 #
-# Copyleft 2018 by Timo Stiefel
+# Copyleft 2018 by Timo Stiefel and Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
 #
 
 ACTIVE_=no
 STARTTIME_=240
-RUNTIME_=1
+RUNTIME_=180
 
 DESCRIPTION="Periodically generate previews for the gallery"
-INFO="Set the STARTTIME in minutes after midnight<br>and RUNTIME in minutes."
+INFO="Set the STARTTIME in minutes after midnight and RUNTIME in minutes.
+
+Make sure that you have the correct time zone set.
+You can use "sudo tzselect" in shell for that."
 
 configure()
 {
