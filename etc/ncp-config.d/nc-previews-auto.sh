@@ -18,7 +18,8 @@ Make sure that you have the correct time zone set.
 You can use "sudo tzselect" in shell for that.
 
 Activate SMALLONLY for preventing the generation of
-big preview files that are seldom used."
+big preview files that are seldom used.
+They're still big enough for gallery previews."
 
 configure()
 {
@@ -31,7 +32,7 @@ configure()
   
   if [ $SMALLONLY_ == "yes" ]]
     then
-      sudo -u www-data php /var/www/nextcloud/occ config:system:set preview_max_x --value="256"
+      sudo -u www-data php /var/www/nextcloud/occ config:system:set preview_max_x --value="512"
       sudo -u www-data php /var/www/nextcloud/occ config:system:set preview_max_y --value="256"
     else
       sudo -u www-data php /var/www/nextcloud/occ config:system:set preview_max_x --value="0"
