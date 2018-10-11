@@ -175,13 +175,6 @@ echo "Upgrade..."
 sudo -u www-data php nextcloud/occ upgrade      # && false # test point 
 sudo -u www-data php nextcloud/occ db:add-missing-indices
 
-# workaround for updating news to NC14 - bug https://github.com/nextcloud/news/issues/327
-[[ -e /var/www/nextcloud/apps/news ]] && {
-  F=/var/www/nextcloud/apps/news/vendor/ezyang/htmlpurifier/maintenance/.htaccess
-  [[ -f "$F" ]] || echo "Deny from all" > "$F" || true
-  sudo -u www-data php nextcloud/occ integrity:check-app --path=/var/www/nextcloud/apps/news news || true
-}
-
 # done
 ####################
 mkdir -p  "$DATADIR"/ncp-update-backups

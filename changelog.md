@@ -1,6 +1,17 @@
-[v0.62.6](https://github.com/nextcloud/nextcloudpi/commit/d069004) (2018-10-06) nc-limits: fix PHP service restart
 
-[v0.62.5](https://github.com/nextcloud/nextcloudpi/commit/0bf6045) (2018-10-03) nc-update-nc: dont fix the news app if there is no news app
+[v0.63.0](https://github.com/nextcloud/nextcloudpi/commit/37a44a9) (2018-10-11) upgrade to NC14.0.2
+
+[v0.62.10](https://github.com/nextcloud/nextcloudpi/commit/48ac238) (2018-10-07) limit logs size with logrotate
+
+[v0.62.9 ](https://github.com/nextcloud/nextcloudpi/commit/694a885) (2018-10-07) DDNS_spDYN reinstall DDNS_spDYN for use of IPv6 (#642)
+
+[v0.62.8 ](https://github.com/nextcloud/nextcloudpi/commit/c6da8a9) (2018-10-07) Use DIG instead of NSLOOKUP in DDNS apps (#666)
+
+[v0.62.7 ](https://github.com/nextcloud/nextcloudpi/commit/54e0968) (2018-10-07) nc-prettyURL: Catch failure of maintenance:update:htaccess (#654)
+
+[v0.62.6](https://github.com/nextcloud/nextcloudpi/commit/5e3d411) (2018-10-06) nc-limits: fix PHP service restart
+
+[v0.62.5 ](https://github.com/nextcloud/nextcloudpi/commit/0bf6045) (2018-10-03) nc-update-nc: dont fix the news app if there is no news app
 
 [v0.62.4 ](https://github.com/nextcloud/nextcloudpi/commit/aa886f9) (2018-10-03) nc-update-nextcloud: option to upgrade to the latest version
 

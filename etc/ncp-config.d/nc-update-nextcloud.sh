@@ -8,8 +8,8 @@
 # More at https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/
 #
 
-VERSION_=14.0.1
-LATEST=14.0.1
+VERSION_=0
+LATEST=14.0.2
 DESCRIPTION="Update current instance to a new Nextcloud version"
 INFO="Set to 0 to update to the latest avaliable version"
 

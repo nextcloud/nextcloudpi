@@ -13,7 +13,7 @@ NOTIFYUSER_=ncp
 DESCRIPTION="Automatically apply Nextcloud updates"
 
 # just change this value and re-activate in update.sh to upgrade users
-VERSION=14.0.1
+VERSION=14.0.2
 
 configure() 
 {
