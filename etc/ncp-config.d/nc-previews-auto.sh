@@ -35,7 +35,7 @@ configure()
   #   Gallery folder preview: width 128, 256; heigth 128, 256
   #   Gallery preview: width 512; height 256
   # 
-  if [ $SMALLONLY_ == "yes" ]]
+  if [ $SMALLONLY_ == "yes" ]
     then
       sudo -u www-data php /var/www/nextcloud/occ config:app:set --value="32"  previewgenerator squareSizes
       sudo -u www-data php /var/www/nextcloud/occ config:app:set --value="128 256 512" previewgenerator widthSizes
@@ -56,7 +56,7 @@ configure()
     STOPMIN=$((  ($STARTTIME_ + RUNTIME_) & 60 ))
   
   echo "${STARTMIN}  ${STARTHOUR}  *  *  *  root  /usr/bin/sudo -u www-data /usr/bin/php /var/www/nextcloud/occ preview:pre-generate" >  /etc/cron.d/nc-previews-auto
-  echo "${STOPMIN}   ${STOPHOUR}   *  *  *  root  /usr/bin/pkill -f \"occ preview\""
+  echo "${STOPMIN}   ${STOPHOUR}   *  *  *  root  /usr/bin/pkill -f \"occ preview\""                                                  >> /etc/cron.d/nc-previews-auto
   service cron restart
 
   echo "Automatic preview generation enabled"
