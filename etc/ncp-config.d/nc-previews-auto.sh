@@ -58,7 +58,11 @@ configure()
   return 0
 }
 
-install() { :; }
+install() {
+  # install preview generator
+  sudo -u www-data php /var/www/nextcloud/occ app:install previewgenerator
+  sudo -u www-data php /var/www/nextcloud/occ app:enable previewgenerator
+  }
 
 # License
 #
