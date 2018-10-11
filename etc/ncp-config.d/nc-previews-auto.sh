@@ -39,8 +39,8 @@ configure()
   if [ $SMALLONLY_ == "yes" ]]
     then
       sudo -u www-data php /var/www/nextcloud/occ config:app:set --value="32"  previewgenerator squareSizes
-      sudo -u www-data php /var/www/nextcloud/occ config:app:set --value="64 128 256 512" previewgenerator widthSizes
-      sudo -u www-data php /var/www/nextcloud/occ config:app:set --value="64 128 256" previewgenerator heightSizes
+      sudo -u www-data php /var/www/nextcloud/occ config:app:set --value="128 256 512" previewgenerator widthSizes
+      sudo -u www-data php /var/www/nextcloud/occ config:app:set --value="128 256" previewgenerator heightSizes
     else
       sudo -u www-data php /var/www/nextcloud/occ config:system:delete previewgenerator squareSizes
       sudo -u www-data php /var/www/nextcloud/occ config:system:delete previewgenerator widthSizes
