@@ -15,10 +15,9 @@ DESCRIPTION="Periodically generate previews for the gallery"
 INFO="Set the STARTTIME in minutes after midnight and RUNTIME in minutes.
 
 Make sure that you have the correct time zone set.
-You can use "sudo tzselect" in shell for that.
+You can use 'sudo tzselect' in shell for that.
 
-Activate SMALLONLY for preventing the generation of
-big preview files that are seldom used.
+Activate SMALLONLY for preventing the generation of big preview files that are seldom used.
 They're still big enough for gallery previews."
 
 configure()
