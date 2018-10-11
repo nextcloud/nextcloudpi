@@ -30,10 +30,16 @@ configure()
     return 0
   }
   
+  # Required values for SMALLONLY previews (in pixel as used with standard DPI screens without zooming):
+  #   Thumbnail in files list: square 32
+  #   Sidebar preview (when opening "Details"): width 512; (also height 256?)
+  #   Gallery folder preview: width 128, 256; heigth 128, 256
+  #   Gallery preview: width 512; height 256
+  # 
   if [ $SMALLONLY_ == "yes" ]]
     then
-      sudo -u www-data php /var/www/nextcloud/occ config:app:set --value="32 64 256"  previewgenerator squareSizes
-      sudo -u www-data php /var/www/nextcloud/occ config:app:set --value="64 128 512" previewgenerator widthSizes
+      sudo -u www-data php /var/www/nextcloud/occ config:app:set --value="32"  previewgenerator squareSizes
+      sudo -u www-data php /var/www/nextcloud/occ config:app:set --value="64 128 256 512" previewgenerator widthSizes
       sudo -u www-data php /var/www/nextcloud/occ config:app:set --value="64 128 256" previewgenerator heightSizes
     else
       sudo -u www-data php /var/www/nextcloud/occ config:system:delete previewgenerator squareSizes
