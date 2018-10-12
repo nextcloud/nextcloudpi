@@ -288,10 +288,10 @@ EOF
       [[ "${URL: -1}" != "/" ]] && ncc config:system:set overwrite.cli.url --value="${URL}/"
 
       # Implement logrotate restrictions
-      grep -q "^\& stop" /etc/rsyslog.d/20-ufw.conf ||  echo "& stop" >> /etc/rsyslog.d/20-ufw.conf
-      grep -q maxsize /etc/logrotate.d/ufw     || sed -i /weekly/amaxsize2M /etc/logrotate.d/ufw
+      [[ -f /etc/rsyslog.d/20-ufw.conf ]] && { grep -q "^\& stop" /etc/rsyslog.d/20-ufw.conf ||  echo "& stop" >> /etc/rsyslog.d/20-ufw.conf; }
+      [[ -f /etc/logrotate.d/ufw ]] && { grep -q maxsize /etc/logrotate.d/ufw     || sed -i /weekly/amaxsize2M /etc/logrotate.d/ufw; }
       grep -q maxsize /etc/logrotate.d/apache2 || sed -i /weekly/amaxsize2M /etc/logrotate.d/apache2
-      service rsyslog restart
+      service rsyslog restart &>/dev/null
       cat >> /etc/logrotate.d/ncp <<'EOF'
 /var/log/ncp.log
 {
