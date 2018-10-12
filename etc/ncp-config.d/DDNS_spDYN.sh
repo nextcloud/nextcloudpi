@@ -3,7 +3,7 @@
 # spDYN setup for NextCloudPi
 #
 #
-# Copyleft 2017 by Timm Goldenstein
+# Copyleft 2017/2018 by Timm Goldenstein and Timo Stiefel
 # https://github.com/TimmThaler/spdnsUpdater
 #
 # GPL licensed (see end of file) * Use at your own risk!
@@ -30,19 +30,19 @@ install()
 ### Usage
 #
 #	Recommended usage:	./spdnsUpdater.sh <hostname> <token>
-#	Alternative usage:	./spdnsUpdater.sh <hostname> <user> <passwd>
+#	Alternative usage:	./spdnsUpdater.sh <hostname> <user> <passwd> (not implemented)
 #
 
-
 ### Configuration
-
+HOST=$1
+TOKEN=$2
 IPv6=$3
 
 # Get current IP address from
 if [[ $IPv6 == "yes" ]];	then
-		get_ip_url="https://myexternalip.com/raw"
+	get_ip_url="http://checkip6.spdyn.de"
 else
-		get_ip_url="https://api.ipify.org/"
+	get_ip_url="http://checkip4.spdyn.de"
 fi
 
 update_url="https://update.spdyn.de/nic/update"
@@ -54,7 +54,7 @@ function spdnsUpdater {
 	# and show the response
 	
 	params=$1
-	updater=$(curl -s $update_url $params)
+	updater=$(wget -qO- --post-data $params $update_url)
 	updater=$(echo $updater | grep -o '^[a-z]*')
 	
 	case "$updater" in
@@ -82,50 +82,16 @@ function spdnsUpdater {
 
 }
 
-
-if [ $# -eq 3 ]
-  	then
-  		# if hostname and token
-  		# Get registered IP address
-		registeredIP=$(dig +short "$DOMAIN_"|tail -n1)
-		# Get current IP address
-		currip=$(curl -s "$get_ip_url");
-		# Update only when IP address has changed.
-		[ "\$currentIP" == "\$registeredIP" ] && {
-        		return 0
-  		}
-		host=$1
-		token=$2
-    	params="-d hostname=$host -d myip=$currip -d user=$host -d pass=$token"
-    	spdnsUpdater "$params"
-	elif [ $# -eq 4 ]
-		then
-			# if hostname and user and passwd
-			# Get registered IP address
-			registeredIP=$(dig +short "$DOMAIN_"|tail -n1)
-			# Get current IP address
-			currip=$(curl -s "$get_ip_url");
-			# Update only when IP address has changed.
-			[ "\$currentIP" == "\$registeredIP" ] && {
-        			return 0
-  			}
-			host=$1
-			user=$2
-			pass=$4
-			params="-d hostname=$host -d myip=$currip -d user=$user -d pass=$pass"
-			spdnsUpdater "$params"
-	else
-		echo
-		echo "Updater for Dynamic DNS at spdns.de"
-		echo "==================================="
-		echo
-		echo "Usage:"
-		echo "------"
-		echo
-		echo "Recommended:	./spdnsUpdater.sh <hostname> <token>"
-		echo "Alternative:	./spdnsUpdater.sh <hostname> <user> <password>"
-		echo
-fi
+	# Get registered IP address
+	registered_ip=$(dig +short "$HOST"|tail -n1)
+	# Get current IP address
+	current_ip=$(wget -qO- "$get_ip_url");
+	# Update only when IP address has changed.
+	[ "\$current_ip" == "\$registered_ip" ] && {
+    	return 0
+	}
+	params="hostname=$HOST&myip=$current_ip&user=$HOST&pass=$TOKEN"
+	spdnsUpdater "$params"
 EOF
 
     chmod 700 "$INSTALLPATH"/spdnsUpdater.sh
@@ -137,19 +103,21 @@ configure()
 {
   if [[ $ACTIVE_ == "yes" ]]; then
     
-    # Adds file to cron to run script for DNS record updates and change permissions 
+    # Adds file to cron to run script for DNS record updates and change permissions
     touch $CRONFILE
     echo "0 * * * * root $INSTALLPATH/spdnsUpdater.sh $DOMAIN_ $TOKEN_ $IPv6_ >/dev/null 2>&1" > "$CRONFILE"
     chmod +x "$CRONFILE"
 
     # First-time execution of update script and print response from spdns.de server
     "$INSTALLPATH"/spdnsUpdater.sh "$DOMAIN_" "$TOKEN_" "$IPv6_"
+		
+		echo -e "\nspdnsUpdater is now enabled"
 
     # Removes config files and cron job if ACTIVE_ is set to no
   elif [[ $ACTIVE_ == "no" ]]; then
     echo "... removing cronfile: $CRONFILE"
     rm -f "$CRONFILE"
-    echo "spdnsUpdater is now disabled"
+    echo -e "\nspdnsUpdater is now disabled"
   fi
   service cron restart
 }
