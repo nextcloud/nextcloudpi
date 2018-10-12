@@ -7,8 +7,8 @@
 #
 
 ACTIVE_=no
-STARTTIME_=240
-RUNTIME_=180
+STARTTIME_=210
+RUNTIME_=60
 SMALLONLY_=yes
 
 DESCRIPTION="Periodically generate previews for the gallery"
@@ -56,9 +56,9 @@ configure()
     STARTHOUR=$(( $STARTTIME_ / 60 ))
     STARTHOUR=$(( $STARTHOUR  % 24 ))
     STARTMIN=$((  $STARTTIME_ % 60 ))
-    STOPHOUR=$(( ($STARTTIME_ + RUNTIME_) / 60 ))
+    STOPHOUR=$(( ($STARTTIME_ + $RUNTIME_) / 60 ))
     STOPHOUR=$((  $STOPHOUR   % 24 ))
-    STOPMIN=$((  ($STARTTIME_ + RUNTIME_) & 60 ))
+    STOPMIN=$((  ($STARTTIME_ + $RUNTIME_) % 60 ))
   
   echo "${STARTMIN}  ${STARTHOUR}  *  *  *  root  /usr/bin/sudo -u www-data /usr/bin/php /var/www/nextcloud/occ preview:pre-generate" >  /etc/cron.d/nc-previews-auto
   echo "${STOPMIN}   ${STOPHOUR}   *  *  *  root  /usr/bin/pkill -f \"occ preview\""                                                  >> /etc/cron.d/nc-previews-auto
