@@ -125,6 +125,7 @@ source /usr/local/etc/library.sh
 
 # INIT NCP CONFIG (first run)
 persistent_cfg /usr/local/etc/ncp-config.d /data/ncp
+persistent_cfg /usr/local/bin /data/bin
 persistent_cfg /etc/services-enabled.d
 persistent_cfg /etc/letsencrypt                    # persist SSL certificates
 persistent_cfg /etc/shadow                         # persist ncp-web password

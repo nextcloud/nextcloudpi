@@ -1,7 +1,9 @@
 
-[v0.64.0](https://github.com/nextcloud/nextcloudpi/commit/8dafc9b) (2018-10-12) upgrade to NC14.0.3
+[v0.64.1](https://github.com/nextcloud/nextcloudpi/commit/86c90e1) (2018-10-12) docker: make bin persistent too
 
-[v0.63.0](https://github.com/nextcloud/nextcloudpi/commit/b4555ba) (2018-10-11) upgrade to NC14.0.2
+[v0.64.0 ](https://github.com/nextcloud/nextcloudpi/commit/a9b1542) (2018-10-12) upgrade to NC14.0.3
+
+[v0.63.0 ](https://github.com/nextcloud/nextcloudpi/commit/b4555ba) (2018-10-11) upgrade to NC14.0.2
 
 [v0.62.10](https://github.com/nextcloud/nextcloudpi/commit/48ac238) (2018-10-07) limit logs size with logrotate
 
