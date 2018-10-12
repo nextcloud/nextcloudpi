@@ -12,6 +12,7 @@ services:
      - ./etc:/usr/local/etc
      - ./changelog.md:/changelog.md
      - ncdata:/data
+    container_name: nextcloudpi
 
 volumes:
   ncdata:
