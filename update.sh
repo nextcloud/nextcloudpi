@@ -185,7 +185,7 @@ EOF
     service mysql restart
   }
 
-  # update to NC14.0.2
+  # update to NC14.0.3
   F="$CONFDIR"/nc-autoupdate-nc.sh
   grep -q '^ACTIVE_=yes$' "$F" && {
     cd "$CONFDIR" &>/dev/null

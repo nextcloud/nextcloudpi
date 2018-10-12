@@ -1,5 +1,7 @@
 
-[v0.63.0](https://github.com/nextcloud/nextcloudpi/commit/37a44a9) (2018-10-11) upgrade to NC14.0.2
+[v0.64.0](https://github.com/nextcloud/nextcloudpi/commit/8dafc9b) (2018-10-12) upgrade to NC14.0.3
+
+[v0.63.0](https://github.com/nextcloud/nextcloudpi/commit/b4555ba) (2018-10-11) upgrade to NC14.0.2
 
 [v0.62.10](https://github.com/nextcloud/nextcloudpi/commit/48ac238) (2018-10-07) limit logs size with logrotate
 
