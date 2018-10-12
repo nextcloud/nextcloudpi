@@ -20,6 +20,11 @@ You can use 'sudo tzselect' in shell for that.
 Activate SMALLONLY for preventing the generation of big preview files that are seldom used.
 They're still big enough for gallery previews."
 
+isactive()
+{
+  [[ -f "/etc/cron.d/nc-previews-auto" ]]
+}
+
 configure()
 {
   [[ $ACTIVE_ != "yes" ]] && { 
