@@ -30,7 +30,7 @@ mysqladmin -u root shutdown; \
 # package cleanup 
 apt-get autoremove -y; \
 apt-get clean; \
-rm /var/lib/apt/lists/* -f; \
+find /var/lib/apt/lists -type f | xargs rm; \
 rm -rf /usr/share/man/*; \
 rm -rf /usr/share/doc/*; \
 rm /var/cache/debconf/*-old; \

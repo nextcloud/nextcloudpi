@@ -52,7 +52,7 @@ apt-get purge -y make gcc libc-dev; \
 # package clean up
 apt-get autoremove -y; \
 apt-get clean; \
-rm -f /var/lib/apt/lists/*; \
+find /var/lib/apt/lists -type f | xargs rm; \
 find /var/log -type f -exec rm {} \; ; \
 rm -rf /usr/share/man/*; \
 rm -rf /usr/share/doc/*; \
