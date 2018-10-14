@@ -61,6 +61,12 @@ echo "Current   Nextcloud version $CURRENT"
 echo "Available Nextcloud version $VER"
 [[ "$NEED_UPDATE" == "true" ]] || { echo "Nothing to update"; exit 1; }
 
+# make sure that cron.php is not running and there are no pending jobs
+# https://github.com/nextcloud/server/issues/10949
+pgrep -cf cron.php &>/dev/null && { pkill -f cron.php; sleep 3; }
+pgrep -cf cron.php &>/dev/null && { echo "cron.php running. Abort"; exit 1; }
+mysql nextcloud <<<"UPDATE oc_jobs SET reserved_at=0;"
+
 # cleanup
 ####################
 cleanup() {

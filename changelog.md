@@ -1,5 +1,7 @@
 
-[v0.64.1](https://github.com/nextcloud/nextcloudpi/commit/86c90e1) (2018-10-12) docker: make bin persistent too
+[v0.64.2](https://github.com/nextcloud/nextcloudpi/commit/10562dc) (2018-10-14) ncp-update-nc: make sure cron.php is not running and there are no pending jobs
+
+[v0.64.1](https://github.com/nextcloud/nextcloudpi/commit/c036525) (2018-10-12) docker: make bin persistent too
 
 [v0.64.0 ](https://github.com/nextcloud/nextcloudpi/commit/a9b1542) (2018-10-12) upgrade to NC14.0.3
 
