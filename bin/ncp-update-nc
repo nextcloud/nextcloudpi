@@ -61,6 +61,47 @@ echo "Current   Nextcloud version $CURRENT"
 echo "Available Nextcloud version $VER"
 [[ "$NEED_UPDATE" == "true" ]] || { echo "Nothing to update"; exit 1; }
 
+
+# app compatibility check
+##########################
+
+incompatible_apps=""
+for app_info in /var/www/nextcloud/apps/*/appinfo/info.xml
+do
+  version_xml=$(grep "$app_info" -e '< *nextcloud *min-version="[0-9][0-9]*" *max-version="[0-9][0-9]*" */>' | tr -d "\n")
+  for word in $version_xml
+  do
+    #echo "$word"
+    min_grep=$(echo $word | grep "min-version" | sed "s/min-version=\"//" | sed "s/\"//")
+    max_grep=$(echo $word | grep "max-version" | sed "s/max-version=\"//" | sed "s/\"//")
+
+    if [ "$min_grep" != "" ];
+    then
+      min_version="$min_grep"
+    fi
+    if [ "$max_grep" != "" ];
+    then
+      max_version="$max_grep"
+    fi
+  done
+  if [ "$MAJOR" -lt "$min_version" ] || [ "$MAJOR" -gt "$max_version" ]; then
+    app_dir=$(dirname $app_info)
+    app_dir=$(dirname $app_dir)
+    app=$(basename $app_dir)
+    incompatible_apps="$incompatible_apps, $app (requires NC $min_version-$max_version)"
+    #echo App: $app
+    #echo $version_xml
+    echo Supported NC versions: $min_version - $max_version
+  fi
+done
+
+if [ "$incompatible_apps" != "" ];
+  echo "1 or more apps are not compatible with the latest Nextcloud version! Update will be held back..."
+  echo "Not compatible: $incompatible_apps"
+  exit 1
+fi
+
+
 # make sure that cron.php is not running and there are no pending jobs
 # https://github.com/nextcloud/server/issues/10949
 pgrep -cf cron.php &>/dev/null && { pkill -f cron.php; sleep 3; }
