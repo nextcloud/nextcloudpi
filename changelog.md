@@ -1,5 +1,9 @@
 
-[v0.64.4](https://github.com/nextcloud/nextcloudpi/commit/0bbd7c5) (2018-10-21) nc-rsync: dont preserve ACL
+[v0.64.6](https://github.com/nextcloud/nextcloudpi/commit/fab9d0e) (2018-10-21) DDNS_spDYN: switch to wget and more
+
+[v0.64.5](https://github.com/nextcloud/nextcloudpi/commit/b5ba95a) (2018-10-21) ncp-web: fixed hover text for ncp wizard icon (#688)
+
+[v0.64.4 ](https://github.com/nextcloud/nextcloudpi/commit/d2155b0) (2018-10-21) nc-rsync: dont preserve ACL
 
 [v0.64.3 ](https://github.com/nextcloud/nextcloudpi/commit/6fb1c06) (2018-10-21) nc-rsync: sync datadir, not only content (#686) (#687)
 
