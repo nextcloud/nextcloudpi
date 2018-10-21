@@ -55,7 +55,7 @@ EOF
     ##########################################
 
     apt-get update
-    $APTINSTALL apt-utils cron
+    $APTINSTALL apt-utils cron curl
     $APTINSTALL apache2
 
     $APTINSTALL -t $RELEASE php${PHPVER} php${PHPVER}-curl php${PHPVER}-gd php${PHPVER}-fpm php${PHPVER}-cli php${PHPVER}-opcache \
