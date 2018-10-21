@@ -1,7 +1,9 @@
 
-[v0.64.2](https://github.com/nextcloud/nextcloudpi/commit/10562dc) (2018-10-14) ncp-update-nc: make sure cron.php is not running and there are no pending jobs
+[v0.64.3](https://github.com/nextcloud/nextcloudpi/commit/7d51f7c) (2018-10-21) nc-rsync: sync datadir, not only content (#686) (#687)
 
-[v0.64.1](https://github.com/nextcloud/nextcloudpi/commit/c036525) (2018-10-12) docker: make bin persistent too
+[v0.64.2 ](https://github.com/nextcloud/nextcloudpi/commit/d6b7267) (2018-10-14) ncp-update-nc: make sure cron.php is not running and there are no pending jobs
+
+[v0.64.1 ](https://github.com/nextcloud/nextcloudpi/commit/c036525) (2018-10-12) docker: make bin persistent too
 
 [v0.64.0 ](https://github.com/nextcloud/nextcloudpi/commit/a9b1542) (2018-10-12) upgrade to NC14.0.3
 
@@ -15,7 +17,7 @@
 
 [v0.62.7 ](https://github.com/nextcloud/nextcloudpi/commit/54e0968) (2018-10-07) nc-prettyURL: Catch failure of maintenance:update:htaccess (#654)
 
-[v0.62.6](https://github.com/nextcloud/nextcloudpi/commit/5e3d411) (2018-10-06) nc-limits: fix PHP service restart
+[v0.62.6 ](https://github.com/nextcloud/nextcloudpi/commit/5e3d411) (2018-10-06) nc-limits: fix PHP service restart
 
 [v0.62.5 ](https://github.com/nextcloud/nextcloudpi/commit/0bf6045) (2018-10-03) nc-update-nc: dont fix the news app if there is no news app
 

@@ -32,7 +32,7 @@ configure()
     return 1;
   }
 
-  rsync -aAx --delete "$DATADIR"/ "$DESTINATION_"
+  rsync -aAx --delete "$DATADIR" "$DESTINATION_"
 
   sudo -u www-data php "$BASEDIR"/nextcloud/occ maintenance:mode --off
 }
