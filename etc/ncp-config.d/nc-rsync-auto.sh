@@ -42,7 +42,7 @@ configure()
     ${SSH[@]} : || { echo "SSH non-interactive not properly configured"; return 1; }
   }
 
-  echo "0  5  */${SYNCDAYS_}  *  *  root  /usr/bin/rsync -aAx --delete \"$DATADIR\" \"$DESTINATION_\"" > /etc/cron.d/ncp-rsync-auto
+  echo "0  5  */${SYNCDAYS_}  *  *  root  /usr/bin/rsync -ax --delete \"$DATADIR\" \"$DESTINATION_\"" > /etc/cron.d/ncp-rsync-auto
   service cron restart
 
   echo "automatic rsync enabled"

@@ -1,5 +1,7 @@
 
-[v0.64.3](https://github.com/nextcloud/nextcloudpi/commit/7d51f7c) (2018-10-21) nc-rsync: sync datadir, not only content (#686) (#687)
+[v0.64.4](https://github.com/nextcloud/nextcloudpi/commit/0bbd7c5) (2018-10-21) nc-rsync: dont preserve ACL
+
+[v0.64.3 ](https://github.com/nextcloud/nextcloudpi/commit/6fb1c06) (2018-10-21) nc-rsync: sync datadir, not only content (#686) (#687)
 
 [v0.64.2 ](https://github.com/nextcloud/nextcloudpi/commit/d6b7267) (2018-10-14) ncp-update-nc: make sure cron.php is not running and there are no pending jobs
 
