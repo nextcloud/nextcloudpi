@@ -148,7 +148,7 @@ HTML;
               <div class="icon-config"></div>
           </div>
       </div>
-      <a href="wizard" title="{$l->__("NextCloudPi Wizard")}">
+      <a href="wizard" title="<?php echo $l->__("NextCloudPi Wizard"); ?>">
         <div class="wizard-btn">
           <div id="expand">
             <div class="icon-wizard-white"></div>
