@@ -39,7 +39,6 @@ class tc:
 
 class Test:
     title  = "test"
-    result = True
 
     def new(self, title):
         self.title = title

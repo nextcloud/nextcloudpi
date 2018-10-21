@@ -293,7 +293,7 @@ EOF
       [[ -f /etc/logrotate.d/ufw ]] && { grep -q maxsize /etc/logrotate.d/ufw     || sed -i /weekly/amaxsize2M /etc/logrotate.d/ufw; }
       grep -q maxsize /etc/logrotate.d/apache2 || sed -i /weekly/amaxsize2M /etc/logrotate.d/apache2
       service rsyslog restart &>/dev/null
-      cat >> /etc/logrotate.d/ncp <<'EOF'
+      cat > /etc/logrotate.d/ncp <<'EOF'
 /var/log/ncp.log
 {
         rotate 4
