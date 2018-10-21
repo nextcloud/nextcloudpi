@@ -97,7 +97,6 @@ def test_nextcloud(IP):
     except: pass
     test.report("password", "Wrong password" not in driver.page_source)
 
-    test.report("settings page", "Settings" in driver.title)
     test.new("settings config")
     try:
         wait = WebDriverWait(driver, 30)
@@ -107,7 +106,6 @@ def test_nextcloud(IP):
         test.check(False)
 
     driver.close()
-    return test.result
 
 if __name__ == "__main__":
     signal.signal(signal.SIGINT, signal_handler)

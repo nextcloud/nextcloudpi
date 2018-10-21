@@ -46,7 +46,6 @@ def usage():
 
 class Test:
     title  = "test"
-    result = True
 
     def new(self, title):
         self.title = title
@@ -136,7 +135,6 @@ def test_activation(IP):
     test.report("first run wizard", is_element_present(driver, By.ID, "first-run-wizard"))
 
     driver.close()
-    return test.result
 
 if __name__ == "__main__":
     signal.signal(signal.SIGINT, signal_handler)
