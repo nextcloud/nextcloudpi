@@ -2,7 +2,7 @@
     "translations":{
         "ACTIVE":"開啟",
         "NOTIFYUSER":"提示使用者",
-        "Automatically apply Nextcloud updates":"自動更新Nextcloudpi",
-        "run":"儲存變更"
+        "Automatically apply NextCloudPi updates":"自動更新NextcloudPi",
+        "nc-autoupdate-ncp":"自動更新NCP"
     }
 }

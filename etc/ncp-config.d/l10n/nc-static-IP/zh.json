@@ -1,1 +1,8 @@
-﻿{"translations":{"ACTIVE":"開啟","IP":"IP地址"}}
+{
+  "translations":{
+    "ACTIVE":"開啟",
+    "IP":"IP地址",
+    "Set up a static IP address (on), or DHCP (off)":"設定靜態IP地址（開啟）或 DHCP（關閉）",
+    "nc-static-IP":"修改網路型態(靜態IP)"
+  }
+}

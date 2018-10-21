@@ -1,1 +1,8 @@
-{"translations":{"DESTINATION":"目標資料夾"}}
+{
+  "translations":{
+    "DESTINATION":"目標資料夾",
+    "Sync Nextcloud data through rsync":"使用rsync同步Nextcloud數據",
+    "'user' needs SSH autologin from the NCP 'root' user at 'ip'\nif we are launching from ncp-web":"'user' needs SSH autologin from the NCP 'root' user at 'ip'\nif we are launching from ncp-web",
+    "nc-rsync":"同步NC數據(rsync)"
+  }
+}

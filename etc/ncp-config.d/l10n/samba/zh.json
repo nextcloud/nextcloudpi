@@ -1,8 +1,1 @@
-{
-   "translations":{
-     "ACTIVE":"開啟",
-     "PWD":"密碼",
-     "SMB/CIFS file server (for Mac/Linux/Windows)":"SMB/CIFS (Mac/Linux/Windows)",
-     "If we intend to modify the data folder through SAMBA,\nthen we have to synchronize NextCloud to make it aware of the changes.\n\nThis can be done manually or automatically using 'nc-scan' and 'nc-scan-auto'":"您若開啟SMB/CIFS功能，那麼請您開啟'nc-scan'或'nc-scan-auto'來更新您的Nextcloud數據文件紀錄。"
-   }
- }
+﻿{"translations":{"ACTIVE":"開啟","PWD":"密碼"}}

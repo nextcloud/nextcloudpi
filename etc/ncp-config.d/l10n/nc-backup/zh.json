@@ -5,6 +5,6 @@
         "COMPRESS": "壓縮",
         "DESTDIR": "備份位置",
         "INCLUDEDATA": "包括數據",
-        "nc-backup": "備份Nextcloud"
+        "nc-backup": "備份NC"
     }
 }

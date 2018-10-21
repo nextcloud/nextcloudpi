@@ -4,7 +4,7 @@
         "DOMAIN": "域名",
         "Free Dynamic DNS provider (need account from https://duckdns.org)": "使用duckdns.org免費提供的動態DNS(DDNS)（https://duckdns.org）",
         "TOKEN": "TOKEN",
-        "duckDNS": "duckDNS",
+        "DDNS_duckDNS": "duckDNS(DDNS)",
         "Run":"儲存"
     }
 }

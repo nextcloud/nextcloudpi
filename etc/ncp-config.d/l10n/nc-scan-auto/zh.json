@@ -1,1 +1,10 @@
-{"translations":{"ACTIVE":"開啟","SCANINTERVAL":"掃瞄間隔時間"}}
+{
+  "translations":{
+    "ACTIVE":"開啟",
+    "SCANINTERVAL":"掃瞄間隔時間",
+    "Periodically scan NC for externally modified files":"定期檢查更新NextCloud使用者數據修改",
+    "Set the time in minutes in SCANINTERVAL.\n\n>>> If there are too many files this can greatly affect performance. <<<":"''掃描間隔時間''的單位是分鐘\n>>>如果文件過多，可能將影響效能<<<",
+    "nc-scan-auto":"定期掃描NC使用者文件"
+    
+  }
+}

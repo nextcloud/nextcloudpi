@@ -1,1 +1,8 @@
-﻿{"translations":{"ACTIVE":"開啟"}}
+{
+  "translations":{
+    "ACTIVE":"開啟",
+    "mount logs in RAM to prevent SD degradation (faster, consumes more RAM)":"在記憶體中儲存記錄檔以防止SD降級（更快，消耗更多記憶體）",
+    "You need to reboot for this change to take effect":"您需要重新啟動來變更此動作",
+    "nc-ramlogs":"在記憶體中儲存記錄檔"
+  }
+}

@@ -3,6 +3,6 @@
         "ACTIVE":"開啟",
         "NOTIFYUSER":"提示使用者",
         "Automatically apply Nextcloud updates":"自動更新Nextcloud",
-        "run":"儲存變更"
+        "nc-autoupdate-nc":"自動更新NC"
     }
 }
