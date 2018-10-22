@@ -3,7 +3,7 @@
     "BANTIME":"禁止時間",
     "FINDTIME":"尋找時間",
     "MAXRETRY":"最大重試次數",
-    "EMAIL":"電子郵件提醒",
+    "EMAIL":"郵件提醒",
     "MAILALERTS":"郵件警報",
     "Brute force protection for SSH and NextCloud":"封鎖SSH多次登入錯誤IP",
     "fail2ban":"fail2ban",
