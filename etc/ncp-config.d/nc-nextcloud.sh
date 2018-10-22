@@ -72,12 +72,9 @@ install()
 
   usermod -a -G redis www-data
 
-  # refresh configuration, only needed in curl installer
-  [[ ! -f /.ncp-image ]] && {
-    systemctl restart redis-server
-    systemctl enable  redis-server
-    systemctl restart php${PHPVER}-fpm
-  }
+  service redis-server restart
+  update-rc.d redis-server enable
+  service php${PHPVER}-fpm restart
   
   # service to randomize passwords on first boot
   mkdir -p /usr/lib/systemd/system
