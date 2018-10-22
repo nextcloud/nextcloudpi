@@ -30,6 +30,9 @@ IMG="$( ls -1t tmp/*.img | head -1 )"
 ./build-SD-armbian.sh rock64 Rock64
 ./build-SD-armbian.sh bananapi Bananapi
 
+# VM
+./build-VM.sh
+
 # Docker x86
 make nextcloudpi-x86 
 
