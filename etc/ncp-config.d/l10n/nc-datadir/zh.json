@@ -1,8 +1,8 @@
 {
     "translations":{
         "DATADIR":"數據資料儲存資料夾",
-        "Change your data dir to a new location, like a USB drive":"移動Nextcloud使用者數據資料夾(USB)",
+        "Change your data dir to a new location, like a USB drive":"移動Nextcloud用戶數據資料夾(USB)",
         "Note that non Unix filesystems such as NTFS are not supported\nbecause they do not provide a compatible user/permissions system":"**移動的目錄不能為非Unix文件系統格式(NTFS)**",
-        "nc-datadir":"移動使用者資料夾(NC)"
+        "nc-datadir":"移動用戶資料夾(NC)"
     }
 }

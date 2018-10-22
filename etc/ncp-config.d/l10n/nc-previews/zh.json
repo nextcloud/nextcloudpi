@@ -1,0 +1,7 @@
+{
+    "translations":{
+        "Generate previews for the gallery":"生成預覽圖示",
+        "nc-previews":"生成圖庫",
+        "This will make browsing the gallery much more smooth.\nFor big collections, this can take a LONG time, depending on your hardware":"生成後瀏覽圖庫會更加順暢\n若您的圖片很多，生成可能需要很多時間，具體的時間取決於您的硬件"
+    }
+}

@@ -1,8 +1,8 @@
 {
     "translations":{
         "DBDIR":"資料庫資料夾",
-        "Move your database to a new location, like a USB drive":"移動的資料庫到新的位置(USB)",
-        "Note that non Unix filesystems such as NTFS are not supported\nbecause they do not provide a compatible user/permissions system\n\nYou need to use a USB drive that is permanently on and is responsive\nor the database will fail.\n\n** If it ever fails with a white page, move the database back to the SD **":"NextcloudPi不支持非Unix文件系統（如NTFS）的外接儲存空間。\n**若移動失敗，我們會將數據庫移回SD **",
-        "nc-database":"移動的資料庫"
+        "Move your database to a new location, like a USB drive":"移動資料庫到新的位置(USB)",
+        "Note that non Unix filesystems such as NTFS are not supported\nbecause they do not provide a compatible user/permissions system\n\nYou need to use a USB drive that is permanently on and is responsive \nor the database will fail.\n\n** If it ever fails with a white page, move the database back to the SD **":"NextcloudPi不支持非Unix文件系統（如NTFS）的外接儲存空間。\n**若移動失敗，我們會將數據庫移回SD **",
+        "nc-database":"移動資料庫"
     }
 }

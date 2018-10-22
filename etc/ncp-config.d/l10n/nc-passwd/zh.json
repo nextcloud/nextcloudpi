@@ -1,1 +1,8 @@
-﻿{"translations":{"PASSWORD":"密碼","CONFIRM":"再次輸入密碼"}}
+{
+  "translations":{
+    "Change password for the NextCloudPi Panel":"修改NextCloudPi網頁介面的密碼",
+    "nc-passwd":"修改NCP密碼",
+    "PASSWORD":"密碼",
+    "CONFIRM":"再次輸入密碼"
+  }
+}

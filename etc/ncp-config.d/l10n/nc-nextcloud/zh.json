@@ -6,7 +6,8 @@
     "MEMORYLIMIT":"記憶體限制",
     "MAXTRANSFERTIME":"最大傳輸時間",
     "NextCloud installation":"重新下載安裝NextCloud",
-    "This new installation will cleanup current\nNextCloud instance, including files and database.\n\nYou can later use nc-init to configure to NextCloudPi defaults\n\n** perform backup before proceding **\n\nYou can use nc-backup ":"這個動作安裝將清理目前NextCloud的所有內容，所有的文件及數據庫都將會被刪除。\n安裝完後您可以使用初始化NextCloud來快速設定回系統默認值以及資料庫\n或者您可以在開始動作前先進行備份(NC備份)",
-    "nc-nextcloud":"重新下載安裝NC"
+    "This new installation will cleanup current\nNextCloud instance, including files and database.\n\nYou can later use nc-init to configure to NextCloudPi defaults\n\n** perform backup before proceding **\n\nYou can use nc-backup ":"這個動作安裝將清理目前NextCloud的所有內容，所有的文件及數據庫都將會被刪除\n安裝完後您可以使用初始化NextCloud來快速設定回系統默認值以及資料庫\n或者您可以在開始動作前先進行備份(NC備份)",
+    "nc-nextcloud":"重新安裝NC",
+    "Install any NextCloud version":"下載安裝NextCloud"
   }
 }

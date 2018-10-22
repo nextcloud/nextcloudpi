@@ -6,8 +6,7 @@
      "USER":"使用者",
      "GROUP":"組別",
      "NFS network file system server (for Linux LAN)":"NFS網路檔案系統（Linux LAN）",
-     "If we intend to modify the data folder through NFS,\nthen we have to synchronize NextCloud to make it aware of the changes\n\nThis can be done manually or automatically using 'nc-scan' and 'nc-scan-auto'.
-":"您若開啟NFS功能，那麼請您開啟'nc-scan'或'nc-scan-auto'來更新您的Nextcloud數據文件紀錄。",
+     "If we intend to modify the data folder through NFS,\nthen we have to synchronize NextCloud to make it aware of the changes.\n\nThis can be done manually or automatically using 'nc-scan' and 'nc-scan-auto'":"您若開啟NFS功能，那麼請您開啟'nc-scan'或'nc-scan-auto'來更新您的Nextcloud數據文件紀錄。",
      "Run":"儲存"
    }
  }

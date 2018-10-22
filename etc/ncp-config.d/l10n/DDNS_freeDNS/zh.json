@@ -3,8 +3,9 @@
         "ACTIVE":"開啟",
         "UPDATEHASH":"Update Hash",
         "DOMAIN":"域名",
-        "UPDATEINTERVAL":"更新間隔時間",
+        "UPDATEINTERVAL":"更新IP時間間隔",
         "DDNS FreeDNS client (need account)":"DDNS FreeDNS client (需要帳號)",
-        "DDNS_freeDNS":"freeDNS(DDNS)",
+        "DDNS_freeDNS":"freeDNS(DDNS)"
+        
     }
 }

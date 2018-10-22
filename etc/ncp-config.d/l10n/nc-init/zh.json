@@ -1,7 +1,7 @@
 {
     "translations":{
         "(Re)initiate Nextcloud to a clean configuration":"初始化Nextcloud",
-        "This action will configure NextCloud to NextCloudPi defaults.\n\n** YOUR CONFIGURATION WILL BE LOST **\n\n":"重設後將使用預設文件配置(NextcloudPi)/n/n**您所有的資料(設定)將會刪除並無法復原**",
+        "This action will configure NextCloud to NextCloudPi defaults.\n\n** YOUR CONFIGURATION WILL BE LOST **\n\n":"重設後將使用預設文件配置(NextcloudPi)\n**您所有的資料及設定將會刪除並無法復原**",
         "ADMINUSER":"管理員",
         "ADMINPASS":"管理員密碼",
         "nc-init":"初始化NC"

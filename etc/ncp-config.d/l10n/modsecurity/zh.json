@@ -2,7 +2,7 @@
     "translations": {
         "ACTIVE": "開啟",
         "Experimental feature warning": "注意，這是測試功能!",
-        "This feature is highly experimental and has only been tested with\na basic NextCloud installation. If a new App does not work disable it": "這個功能我們只有在基本的NextCloud進行過測試。\n如果因開啟而導致某些功能無法運作，請將它停用。",
+        "This feature is highly experimental and has only been tested with\na basic NextCloud installation. If a new App does not work disable it": "這個功能我們只有在基本的NextCloud進行過測試\n如果因開啟而導致某些功能無法運作，請將它停用",
         "Web Application Firewall for extra security (experimental)": "網頁中的防火牆(額外的安全性)",
         "modsecurity": "modsecurity",
         "Run":"儲存"

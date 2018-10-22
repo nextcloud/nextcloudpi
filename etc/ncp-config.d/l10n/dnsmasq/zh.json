@@ -5,7 +5,7 @@
         "DNS server with cache": "DNS伺服器(緩存)",
         "DNSSERVER": "DNS伺服器",
         "DOMAIN": "域名",
-        "Remember to point your PC and devices DNS or\n you router DNS to your Raspberry Pi IP": "請記住指向你的PC和裝置所用的DNS或者路由器的DNS到你的raspberry pi的IP",
+        "Remember to point your PC and devices DNS or\nyou router DNS to your Raspberry Pi IP": "請記住指向你的PC和裝置所用的DNS或者路由器的DNS到你的Raspberry Pi的IP",
         "dnsmasq": "dnsmasq",
         "Run":"儲存"
     }

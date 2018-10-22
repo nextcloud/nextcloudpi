@@ -1,1 +1,8 @@
-﻿{"translations":{"ACTIVE":"啟動","AUTOREBOOT":"重新開機"}}
+{
+  "translations":{
+    "ACTIVE":"啟動",
+    "AUTOREBOOT":"重新開機",
+    "Automatic installation of security updates. Keep your cloud safe":"自動安裝安全",
+    "unattended-upgrades":"自動更新安全更新"
+  }
+}

@@ -6,8 +6,8 @@
         "COMPRESS":"壓縮",
         "BACKUPDAYS":"備份日期",
         "BACKUPLIMIT":"備份限制",
-        "Periodic backups":"定期自動備份",
-        "nc-backup-auto":"自動備份"
+        "Periodic backups":"定期自動備份Nextcloud",
+        "nc-backup-auto":"自動備份NC"
         
     }
 }

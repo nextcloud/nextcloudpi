@@ -3,7 +3,7 @@
         "ACTIVE": "啟動",
         "DDNS no-ip free provider (need account)": "DDNS免費提供商（No-ip）",
         "DOMAIN": "域名",
-        "For this step to succeed, you need to register a noip account first.\nInternet access is required for this configuration to complete.": "若執行此步驟，您必須先從No-ip註冊一個帳戶\n這個動作需要網路才能完成。",
+        "For this step to succeed, you need to register a noip account first.\nInternet access is required for this configuration to complete.": "若執行此步驟，您必須先從No-ip註冊一個帳戶\n這個動作需要網路才能完成",
         "PASS": "密碼",
         "TIME": "間隔時間(更新IP)",
         "USER": "使用者",

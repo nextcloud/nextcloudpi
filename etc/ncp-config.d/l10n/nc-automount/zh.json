@@ -2,7 +2,8 @@
     "translations":{
     "Automount USB drives by plugging them in":"自動掛載USB裝置",
     "ACTIVE":"開啟",
-    "Plugged in USB drives will be automounted under /media/non boot or at the moment of insertion./n/nFormat your drive as ext4 in order to move NC datafolder or database/nVFAT or NTFS is not recommended for this task, as it does not suport permissions/n/nIMPORTANT: halt or umount the drive before extracting":"在啟動電腦前或者已啟動情況下，插入USB盤會自動裝載在/media資料夾/n為了移動nextCloud的資料夾和資料庫，請格式化為ext4/nVFAT和NTFS不建議使用，因為不支援權限。/n/n若要移除USB，請將Raspberry Pi 關機或使用安全移除USB功能(commands)，以防止系統錯誤及資料遺失",
+    "Plugged in USB drives will be automounted under /media\non boot or at the moment of insertion.\n\nFormat your drive as ext4 in order to move NC datafolder or database\nVFAT or NTFS is not recommended for this task, as it does not suport permissions\n\nIMPORTANT: halt or umount the drive before extracting":
+        "開啟此功能後，插入USB後會自動掛載在/media資料夾\n若要使用此USB來修改NextCloud的用戶資料位置及資料庫，建議格式化為ext4\n建議不要格式化為VFAT和NTFS，NextcloudPi不支援權限。\n\n**若要移除USB，請將Raspberry Pi 關機或使用安全移除USB功能(commands)，以防止系統錯誤及資料遺失**",
     "nc-automount":"掛載USB"
     }
 }
