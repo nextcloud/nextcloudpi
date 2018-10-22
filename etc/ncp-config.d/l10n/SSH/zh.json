@@ -5,6 +5,6 @@
   "CONFIRM":"確認",
   "Run":"儲存",
   "Activate or deactivate SSH":"SSH",
-  "In order to enable SSH, the password for user 'pi' can NOT remain set to the default raspberry.\nYou HAVE to create a NEW password for 'pi' if you want this program to enable SSH, it will fail if you dont!\nThe same will happen with user 'root' and password '1234'\nNote: Use normal AlphaNumeric, the only special characters allowed are .,@-_/":"請在開啟前，先將預設密碼修改，否則將無法開啟成功\n注意 : 我們只允許這些特殊字符  .,@-_/"
+  "In order to enable SSH, the password for user 'pi' can NOT remain set to the default raspberry. \nYou HAVE to create a NEW password for 'pi' if you want this program to enable SSH, it will fail if you dont!\nThe same will happen with user 'root' and password '1234'\nNote: Use normal AlphaNumeric, the only special characters allowed are .,@-_/":"請在開啟前，先將預設密碼修改，否則將無法開啟成功\n注意 : 我們只允許這些特殊字符  .,@-_/"
 }
 }
