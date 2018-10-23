@@ -20,8 +20,11 @@ This can be done manually or automatically using 'nc-scan' and 'nc-scan-auto'"
 
 install()
 {
+  # workaround until Sury has PHP7.2-redis armhf
+  [[ "$(uname -m)" == "x86_64" ]] && local RELEASE=stretch || local RELEASE=buster
+
   apt-get update
-  apt-get install --no-install-recommends -y -t buster samba
+  apt-get install --no-install-recommends -y -t $RELEASE samba
   update-rc.d smbd disable
   update-rc.d nmbd disable
 

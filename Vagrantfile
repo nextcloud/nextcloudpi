@@ -2,7 +2,7 @@
 # vi: set ft=ruby :
 
 #
-# Vagrantfile test the NCP curl installer
+# Vagrantfile for the NCP Debian VM
 #
 # Instructions: vagrant up; vagrant ssh
 #
@@ -41,6 +41,7 @@ Vagrant.configure("2") do |config|
     install_script post-inst.sh
     cd -
     rm -r /tmp/nextcloudpi
+    systemctl disable sshd
     poweroff
   SHELL
 

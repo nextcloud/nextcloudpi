@@ -38,11 +38,14 @@ install()
   # During build, this step is run before ncp.sh. Avoid executing twice
   [[ -f /usr/lib/systemd/system/nc-provisioning.service ]] && return 0
 
+  # workaround until Sury has PHP7.2-redis armhf
+  [[ "$(uname -m)" == "x86_64" ]] && local RELEASE=stretch || local RELEASE=buster
+
   # Optional packets for Nextcloud and Apps
   apt-get update
   $APTINSTALL lbzip2 iputils-ping
-  $APTINSTALL -t buster php-smbclient                                         # for external storage
-  $APTINSTALL -t buster imagemagick php${PHPVER}-imagick php${PHPVER}-exif    # for gallery
+  $APTINSTALL -t $RELEASE php-smbclient                                         # for external storage
+  $APTINSTALL -t $RELEASE imagemagick php${PHPVER}-imagick php${PHPVER}-exif    # for gallery
 
 
   # POSTFIX
@@ -57,7 +60,7 @@ install()
   }
  
   $APTINSTALL redis-server
-  $APTINSTALL -t buster php${PHPVER}-redis
+  $APTINSTALL -t $RELEASE php${PHPVER}-redis
 
   local REDIS_CONF=/etc/redis/redis.conf
   local REDISPASS="default"

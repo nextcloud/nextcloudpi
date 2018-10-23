@@ -25,23 +25,31 @@ export DEBIAN_FRONTEND=noninteractive
 
 install()
 {
-    # GET DEBIAN BUSTER SOURCES
+    # GET PHP 7.2 SOURCES
     ##########################################
 
-    # Raspbian still doesn't support Buster -> http://archive.raspberrypi.org/debian/dists/
-    # Debian Buster repository keys are not in the Raspbian Stretch keyring. Install the Debian keyring
-    [[ -f /usr/bin/raspi-config ]] && {
-      echo "deb https://deb.debian.org/debian buster main contrib non-free" > /etc/apt/sources.list.d/ncp-buster.list
-      apt-get     --allow-unauthenticated update
-      $APTINSTALL --allow-unauthenticated debian-archive-keyring
-    }
+    # workaround until Sury has PHP7.2-redis armhf
+    [[ "$(uname -m)" == "x86_64" ]] && local RELEASE=stretch || local RELEASE=buster
 
-    echo "deb http://deb.debian.org/debian buster main contrib non-free" > /etc/apt/sources.list.d/ncp-buster.list
-    cat > /etc/apt/preferences.d/10-ncp-buster <<EOF
+    ## Raspbian
+    if [[ -f /usr/bin/raspi-config ]]; then
+      echo "deb http://mirrordirector.raspbian.org/raspbian/ buster main contrib non-free rpi" > /etc/apt/sources.list.d/ncp-buster.list
+
+    ## x86
+    elif [[ "$(uname -m)" == "x86_64" ]]; then
+      $APTINSTALL apt-transport-https
+      echo "deb https://packages.sury.org/php/ stretch main" > /etc/apt/sources.list.d/php.list
+      wget -q https://packages.sury.org/php/apt.gpg -O- | sudo apt-key add -
+
+    ## armhf
+    else
+      echo "deb http://deb.debian.org/debian buster main contrib non-free" > /etc/apt/sources.list.d/ncp-buster.list
+      cat > /etc/apt/preferences.d/10-ncp-buster <<EOF
 Package: *
 Pin: release n=stretch
 Pin-Priority: 600
 EOF
+    fi
 
     # INSTALL 
     ##########################################
@@ -50,9 +58,9 @@ EOF
     $APTINSTALL apt-utils cron
     $APTINSTALL apache2
 
-    $APTINSTALL -t buster php${PHPVER} php${PHPVER}-curl php${PHPVER}-gd php${PHPVER}-fpm php${PHPVER}-cli php${PHPVER}-opcache \
-                          php${PHPVER}-mbstring php${PHPVER}-xml php${PHPVER}-zip php${PHPVER}-fileinfo php${PHPVER}-ldap \
-                          php${PHPVER}-intl php${PHPVER}-bz2 php${PHPVER}-json
+    $APTINSTALL -t $RELEASE php${PHPVER} php${PHPVER}-curl php${PHPVER}-gd php${PHPVER}-fpm php${PHPVER}-cli php${PHPVER}-opcache \
+                            php${PHPVER}-mbstring php${PHPVER}-xml php${PHPVER}-zip php${PHPVER}-fileinfo php${PHPVER}-ldap \
+                            php${PHPVER}-intl php${PHPVER}-bz2 php${PHPVER}-json
 
     mkdir -p /run/php
 

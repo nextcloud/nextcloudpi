@@ -20,8 +20,11 @@ Internet access is required for this configuration to complete."
 
 install()
 {
+  # workaround until Sury has PHP7.2-redis armhf
+  [[ "$(uname -m)" == "x86_64" ]] && local RELEASE=stretch || local RELEASE=buster
+
   apt-get update
-  apt-get install -t buster --no-install-recommends -y make gcc libc-dev
+  apt-get install -t $RELEASE --no-install-recommends -y make gcc libc-dev
 
   local TMPDIR="$( mktemp -d /tmp/noip.XXXXXX )"
   cd "$TMPDIR"

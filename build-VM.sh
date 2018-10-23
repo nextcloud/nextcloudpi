@@ -34,7 +34,7 @@ vagrant destroy -f
 vagrant up --provider=libvirt --provision
 
 sudo chown "$USER" "$VM"
-sudo cp --reflink=auto --sparse=auto "$VM" "$IMG"
+sudo cp -a --reflink=auto --sparse=auto "$VM" "$IMG"
 
 ## pack
  
