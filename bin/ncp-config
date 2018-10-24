@@ -38,7 +38,7 @@ function nextcloud-config()
       local LIST=()
       for item in $CONFDIR/*.sh; do
         DESC=$( grep "DESCRIPTION=" "$item" | sed 's|^DESCRIPTION="||;s|"$||' )
-        is_active_script "$item" &>/dev/null && local ON="✓" || local ON=" "
+        is_active_script "$item" &>/dev/null && local ON="*" || local ON=" "
         LIST+=( "$ON $( basename "$item" .sh )" "$DESC" )
       done
 
@@ -54,7 +54,7 @@ function nextcloud-config()
       [[ $? -ne $DIALOG_OK ]] || [[ "$script" == "" ]] && return 0
 
       # remove ✓ and spaces
-      script=$( sed  's=✓\| ==g' <<< "$script" ) 
+      script=$( sed  's=*\| ==g' <<< "$script" )
 
       # launch selected script
       info_script      "$script".sh || continue;

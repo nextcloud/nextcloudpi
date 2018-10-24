@@ -38,9 +38,6 @@ install_script  post-inst.sh
 
 cd -
 
-## locales for ncp-config
-localectl set-locale LANG=en_US.utf8
-
 # force change root password at first login (again)
 chage -d 0 root
 

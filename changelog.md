@@ -1,5 +1,7 @@
 
-[v0.64.8](https://github.com/nextcloud/nextcloudpi/commit/46972c7) (2018-10-22) ncp-web: update chinese translations
+[v0.64.9](https://github.com/nextcloud/nextcloudpi/commit/f2930ca) (2018-10-23) ncp-config: use simple characters
+
+[v0.64.8](https://github.com/nextcloud/nextcloudpi/commit/dceacdf) (2018-10-22) ncp-web: update chinese translations
 
 [v0.64.7 ](https://github.com/nextcloud/nextcloudpi/commit/20a4147) (2018-10-21) ncp-web: update chinese translations
 
