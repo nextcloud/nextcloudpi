@@ -14,6 +14,7 @@ install()
   mysqladmin -u root shutdown
   kill $( cat /run/redis/redis-server.pid )
   [[ -f /run/crond.pid ]] && kill $( cat /run/crond.pid )
+  pkill -f php-fpm
 
   # cleanup all NCP extras
   source /usr/local/etc/library.sh

@@ -1,7 +1,5 @@
 #!/bin/bash
 
-PHPVER=7.2
-
 source /usr/local/etc/library.sh
 
 set -e
@@ -10,7 +8,7 @@ set -e
   echo "Stopping apache"
   apachectl graceful-stop
   echo "Stopping PHP-fpm"
-  killall php-fpm${PHPVER}
+  pkill -f php-fpm
   echo "Stopping mariaDB"
   mysqladmin -u root shutdown
   echo "LAMP cleanup complete"
