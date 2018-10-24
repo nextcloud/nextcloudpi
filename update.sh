@@ -45,14 +45,6 @@ source /usr/local/etc/library.sh
 
 mkdir -p "$CONFDIR"
 
-# rename DDNS entries TODO temporary
-[[ -f "$CONFDIR"/no-ip.sh ]] && {
-  mv "$CONFDIR"/no-ip.sh   "$CONFDIR"/DDNS_no-ip.sh
-  mv "$CONFDIR"/freeDNS.sh "$CONFDIR"/DDNS_freeDNS.sh
-  mv "$CONFDIR"/duckDNS.sh "$CONFDIR"/DDNS_duckDNS.sh
-  mv "$CONFDIR"/spDYN.sh   "$CONFDIR"/DDNS_spDYN.sh
-}
-
 # prevent installing some apt packages in the docker version
 [[ -f /.docker-image ]] && {
   for opt in $EXCL_DOCKER; do 
@@ -136,35 +128,15 @@ persistent_cfg /etc/cron.weekly
 
 exit 0
 EOF
-      /etc/services-available.d/000ncp
-      rm /data/etc/letsencrypt/live
-      mv /data/etc/live /data/etc/letsencrypt
-
       sed -i 's|exit 1|exit 0|' /usr/local/sbin/update-rc.d
     }
   }
 
   # for non docker images
   [[ ! -f /.docker-image ]] && {
-    # fix locale for Armbian images, for ncp-config
-    [[ "$LANG" == "" ]] && localectl set-locale LANG=en_US.utf8
+    :
   }
 
-  # no-origin policy for enhanced privacy
-  grep -q "Referrer-Policy" /etc/apache2/apache2.conf || {
-    cat >> /etc/apache2/apache2.conf <<EOF
-<IfModule mod_headers.c>
-  Header always set Referrer-Policy "no-referrer"
-</IfModule>
-EOF
-  }
-
-  # NC14 doesnt support php mail
-  mail_smtpmode=$(sudo -u www-data php /var/www/nextcloud/occ config:system:get mail_smtpmode)
-  [[ $mail_smtpmode == "php" ]] && {
-    sudo -u www-data php /var/www/nextcloud/occ config:system:set mail_smtpmode --value="sendmail"
-  }
-  
   # Reinstall DDNS_spDYN for use of IPv6 
   rm -r /usr/local/etc/spdnsupdater
   cd /usr/local/etc/ncp-config.d
@@ -176,16 +148,6 @@ EOF
   install_script nc-restore.sh
   cd -          &>/dev/null
 
-  # install preview generator
-  sudo -u www-data php /var/www/nextcloud/occ app:install previewgenerator
-  sudo -u www-data php /var/www/nextcloud/occ app:enable  previewgenerator
-
-  # use separate db config file
-  [[ -f /etc/mysql/mariadb.conf.d/90-ncp.cnf ]] || {
-    cp /etc/mysql/mariadb.conf.d/50-server.cnf /etc/mysql/mariadb.conf.d/90-ncp.cnf
-    service mysql restart
-  }
-
   # update to NC14.0.3
   F="$CONFDIR"/nc-autoupdate-nc.sh
   grep -q '^ACTIVE_=yes$' "$F" && {
@@ -193,82 +155,6 @@ EOF
     activate_script nc-autoupdate-nc.sh
     cd -          &>/dev/null
   }
-
-  # PHP7.2
-  [[ -e /etc/php/7.2 ]] || {
-    PHPVER=7.2
-    APTINSTALL="apt-get install -y --no-install-recommends"
-    export DEBIAN_FRONTEND=noninteractive
-
-    ncc maintenance:mode --on
-
-    [[ -f /usr/bin/raspi-config ]] && {
-      apt-get update
-      $APTINSTALL apt-transport-https
-
-      echo "deb https://deb.debian.org/debian buster main contrib non-free" > /etc/apt/sources.list.d/ncp-buster.list
-      apt-get     --allow-unauthenticated update
-      $APTINSTALL --allow-unauthenticated debian-archive-keyring
-    }
-
-    echo "deb http://deb.debian.org/debian buster main contrib non-free" > /etc/apt/sources.list.d/ncp-buster.list
-cat > /etc/apt/preferences.d/10-ncp-buster <<EOF
-Package: *
-Pin: release n=stretch
-Pin-Priority: 600
-EOF
-    apt-get update
-
-    apt-get purge -y php7.0-*
-    apt-get autoremove -y
-
-    $APTINSTALL -t buster php${PHPVER} php${PHPVER}-curl php${PHPVER}-gd php${PHPVER}-fpm php${PHPVER}-cli php${PHPVER}-opcache \
-                          php${PHPVER}-mbstring php${PHPVER}-xml php${PHPVER}-zip php${PHPVER}-fileinfo php${PHPVER}-ldap \
-                          php${PHPVER}-intl php${PHPVER}-bz2 php${PHPVER}-json
- 
-      $APTINSTALL php${PHPVER}-mysql
-      $APTINSTALL -t buster php${PHPVER}-redis
-      $APTINSTALL -t buster php-smbclient                                         # for external storage
-      $APTINSTALL -t buster imagemagick php${PHPVER}-imagick php${PHPVER}-exif    # for gallery
-
-      cat > /etc/php/${PHPVER}/mods-available/opcache.ini <<EOF
-zend_extension=opcache.so
-opcache.enable=1
-opcache.enable_cli=1
-opcache.fast_shutdown=1
-opcache.interned_strings_buffer=8
-opcache.max_accelerated_files=10000
-opcache.memory_consumption=128
-opcache.save_comments=1
-opcache.revalidate_freq=1
-opcache.file_cache=/tmp;
-EOF
-      a2enconf  php${PHPVER}-fpm
-
-
-      DATADIR="$( grep datadirectory /var/www/nextcloud/config/config.php | awk '{ print $3 }' | grep -oP "[^']*[^']" | head -1 )"
-      UPLOADTMPDIR="$DATADIR"/tmp
-      sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $UPLOADTMPDIR|" /etc/php/${PHPVER}/cli/php.ini
-      sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $UPLOADTMPDIR|" /etc/php/${PHPVER}/fpm/php.ini
-      sed -i "s|^;\?sys_temp_dir =.*$|sys_temp_dir = $UPLOADTMPDIR|"     /etc/php/${PHPVER}/fpm/php.ini
-
-      OPCACHEDIR="$DATADIR"/.opcache
-      sed -i "s|^opcache.file_cache=.*|opcache.file_cache=$OPCACHEDIR|" /etc/php/${PHPVER}/mods-available/opcache.ini
-
-      apt-get autoremove -y
-
-      ncc maintenance:mode --off
-
-      bash -c "sleep 5 && service apache2 restart" &>/dev/null &
-      bash -c " sleep 3
-              service php${PHPVER}-fpm stop
-              service mysql      stop
-              sleep 0.5
-              service php${PHPVER}-fpm start
-              service mysql      start
-              " &>/dev/null &
-
-      } # PHP7.2 end
 
       # Redis eviction policy
       grep -q "^maxmemory-policy allkeys-lru" /etc/redis/redis.conf || {
@@ -303,6 +189,30 @@ EOF
         compress
 }
 EOF
+
+  # Adjust sources
+  ## Raspbian
+  if [[ -f /usr/bin/raspi-config ]]; then
+    echo "deb http://mirrordirector.raspbian.org/raspbian/ buster main contrib non-free rpi" > /etc/apt/sources.list.d/ncp-buster.list
+
+  ## x86
+  elif [[ "$(uname -m)" == "x86_64" ]]; then
+    apt-get update
+    apt-get install -y --no-install-recommends apt-transport-https gnupg
+    echo "deb https://packages.sury.org/php/ stretch main" > /etc/apt/sources.list.d/php.list
+    wget -q https://packages.sury.org/php/apt.gpg -O- | apt-key add -
+    rm -f /etc/apt/preferences.d/10-ncp-buster
+
+  ## armhf
+  else
+    echo "deb http://deb.debian.org/debian buster main contrib non-free" > /etc/apt/sources.list.d/ncp-buster.list
+    cat > /etc/apt/preferences.d/10-ncp-buster <<EOF
+Package: *
+Pin: release n=stretch
+Pin-Priority: 600
+EOF
+  fi
+
 
 } # end - only live updates
 
