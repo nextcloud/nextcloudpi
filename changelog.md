@@ -1,9 +1,11 @@
 
-[v0.64.10](https://github.com/nextcloud/nextcloudpi/commit/f836c87) (2018-10-24) update: update sources
+[v0.64.11](https://github.com/nextcloud/nextcloudpi/commit/89218e5) (2018-10-27) check for path transversal
 
-[v0.64.9](https://github.com/nextcloud/nextcloudpi/commit/b847ad4) (2018-10-23) ncp-config: use simple characters
+[v0.64.10](https://github.com/nextcloud/nextcloudpi/commit/26083e9) (2018-10-24) update: update sources
 
-[v0.64.8 ](https://github.com/nextcloud/nextcloudpi/commit/dceacdf) (2018-10-22) ncp-web: update chinese translations
+[v0.64.9 ](https://github.com/nextcloud/nextcloudpi/commit/54e5c21) (2018-10-23) ncp-config: use simple characters
+
+[v0.64.8 ](https://github.com/nextcloud/nextcloudpi/commit/9d998ae) (2018-10-22) ncp-web: update chinese translations
 
 [v0.64.7 ](https://github.com/nextcloud/nextcloudpi/commit/20a4147) (2018-10-21) ncp-web: update chinese translations
 

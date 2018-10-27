@@ -130,7 +130,8 @@ EOF
   cat > /home/www/ncp-launcher.sh <<'EOF'
 #!/bin/bash
 DIR=/usr/local/etc/ncp-config.d
-test -f $DIR/$1 || { echo "File not found"; exit 1; }
+[[ -f $DIR/$1  ]] || { echo "File not found"; exit 1; }
+[[ "$1" =~ ../ ]] && { echo "Forbidden path"; exit 2; }
 source /usr/local/etc/library.sh
 cd $DIR
 launch_script $1

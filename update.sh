@@ -218,6 +218,18 @@ EOF
   [[ "$( ls -l /etc/php/7.2/fpm/conf.d/*-opcache.ini |  wc -l )" -gt 1 ]] && rm "$( ls /etc/php/7.2/fpm/conf.d/*-opcache.ini | tail -1 )"
   [[ "$( ls -l /etc/php/7.2/cli/conf.d/*-opcache.ini |  wc -l )" -gt 1 ]] && rm "$( ls /etc/php/7.2/cli/conf.d/*-opcache.ini | tail -1 )"
 
+  # update launcher
+  cat > /home/www/ncp-launcher.sh <<'EOF'
+#!/bin/bash
+DIR=/usr/local/etc/ncp-config.d
+[[ -f $DIR/$1  ]] || { echo "File not found"; exit 1; }
+[[ "$1" =~ ../ ]] && { echo "Forbidden path"; exit 2; }
+source /usr/local/etc/library.sh
+cd $DIR
+launch_script $1
+EOF
+  chmod 700 /home/www/ncp-launcher.sh
+
 } # end - only live updates
 
 exit 0
