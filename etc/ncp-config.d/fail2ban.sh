@@ -100,6 +100,15 @@ failregex = Login failed.*Remote IP.*'<HOST>'
 ignoreregex =
 EOF
 
+  cat > /etc/fail2ban/filter.d/ufwban.conf <<'EOF'
+[INCLUDES]
+before = common.conf
+
+[Definition]
+failregex = UFW BLOCK.* SRC=
+ignoreregex =
+EOF
+
   [[ "$MAILALERTS_" == "yes" ]] && local ACTION=action_mwl || local ACTION=action_
 
   cat > /etc/fail2ban/jail.conf <<EOF
@@ -154,6 +163,13 @@ port     = http,https
 filter   = nextcloud
 logpath  = $NCLOG
 maxretry = $MAXRETRY_
+
+[ufwban]
+enabled = true
+port = ssh, http, https
+filter = ufwban
+logpath = /var/log/ufw.log
+action = ufw
 EOF
   cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
   update-rc.d fail2ban defaults
