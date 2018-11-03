@@ -43,6 +43,8 @@ test -f /data/app/config/config.php || {
 # Better do real provisioning at the end, as it can restart PHP asynchronously
 sed -i "s|'password'.*|'password' => 'default',|"        /data/app/config/config.php
 sed -i "s|'dbpassword' =>.*|'dbpassword' => 'default',|" /data/app/config/config.php
+echo -e "[client]\npassword=default" > /root/.my.cnf
+chmod 600 /root/.my.cnf
 DBPASSWD=default
 DBADMIN=ncadmin
 mysql <<EOF
@@ -50,6 +52,7 @@ GRANT USAGE ON *.* TO '$DBADMIN'@'localhost' IDENTIFIED BY '$DBPASSWD';
 DROP USER '$DBADMIN'@'localhost';
 CREATE USER '$DBADMIN'@'localhost' IDENTIFIED BY '$DBPASSWD';
 GRANT ALL PRIVILEGES ON nextcloud.* TO $DBADMIN@localhost;
+FLUSH PRIVILEGES;
 EXIT
 EOF
 

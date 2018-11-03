@@ -98,7 +98,7 @@ chmod 770                  /var/www/ncp-web
   for opt in $EXCL_DOCKER; do rm $CONFDIR/$opt; done
 
   # update services
-  cp docker-common/{lamp/010lamp,nextcloud/020nextcloud,nextcloudpi/000ncp} /etc/services-available.d
+  cp docker-common/{lamp/010lamp,nextcloud/020nextcloud,nextcloudpi/000ncp} /etc/services-enabled.d
 
 }
 

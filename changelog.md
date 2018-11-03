@@ -1,5 +1,7 @@
 
-[v0.64.11](https://github.com/nextcloud/nextcloudpi/commit/89218e5) (2018-10-27) check for path transversal
+[v0.64.12](https://github.com/nextcloud/nextcloudpi/commit/293c2c7) (2018-11-03) docker: fix provisioning on a stopped the container
+
+[v0.64.11](https://github.com/nextcloud/nextcloudpi/commit/1758331) (2018-10-27) check for path transversal
 
 [v0.64.10](https://github.com/nextcloud/nextcloudpi/commit/26083e9) (2018-10-24) update: update sources
 

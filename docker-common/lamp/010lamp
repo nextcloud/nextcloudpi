@@ -2,6 +2,8 @@
 
 source /usr/local/etc/library.sh
 
+PHPVER=7.2
+
 set -e
 
 [[ "$1" == "stop" ]] && {
