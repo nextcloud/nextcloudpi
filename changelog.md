@@ -1,5 +1,7 @@
 
-[v0.64.12](https://github.com/nextcloud/nextcloudpi/commit/293c2c7) (2018-11-03) docker: fix provisioning on a stopped the container
+[v0.65.0](https://github.com/nextcloud/nextcloudpi/commit/2f56f2c) (2018-11-03) add nc-test-hdd
+
+[v0.64.12](https://github.com/nextcloud/nextcloudpi/commit/5e7f3da) (2018-11-03) docker: fix provisioning on a stopped the container
 
 [v0.64.11](https://github.com/nextcloud/nextcloudpi/commit/1758331) (2018-10-27) check for path transversal
 

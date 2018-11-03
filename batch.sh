@@ -5,12 +5,10 @@
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
 #
-# Usage: ./batch.sh <DHCP QEMU image IP>
+# Usage: ./batch.sh
 #
 
 set -e
-
-IP=${1:-192.168.0.145}      # For QEMU automated testing
 
 ## BUILDING
 source buildlib.sh          # initializes $IMGNAME
@@ -21,7 +19,7 @@ source buildlib.sh          # initializes $IMGNAME
 }
 
 # Raspbian
-./build-SD-rpi.sh       "$IP"
+./build-SD-rpi.sh
 IMG="$( ls -1t tmp/*.img | head -1 )"
 ./build-SD-berryboot.sh "$IMG"
 
@@ -29,6 +27,7 @@ IMG="$( ls -1t tmp/*.img | head -1 )"
 ./build-SD-armbian.sh odroidxu4 OdroidHC2
 ./build-SD-armbian.sh rock64 Rock64
 ./build-SD-armbian.sh bananapi Bananapi
+./build-SD-armbian.sh orangepizeroplus2-h5 OrangePiZeroPlus2
 
 # VM
 ./build-VM.sh
