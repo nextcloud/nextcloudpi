@@ -37,9 +37,10 @@ install()
 
     ## x86
     elif [[ "$(uname -m)" == "x86_64" ]]; then
-      $APTINSTALL apt-transport-https
+      apt-get update
+      $APTINSTALL apt-transport-https gnupg2 wget ca-certificates
       echo "deb https://packages.sury.org/php/ stretch main" > /etc/apt/sources.list.d/php.list
-      wget -q https://packages.sury.org/php/apt.gpg -O- | sudo apt-key add -
+      wget -q https://packages.sury.org/php/apt.gpg -O- | apt-key add -
 
     ## armhf
     else
