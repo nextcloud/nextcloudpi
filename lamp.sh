@@ -28,29 +28,11 @@ install()
     # GET PHP 7.2 SOURCES
     ##########################################
 
-    # workaround until Sury has PHP7.2-redis armhf
-    [[ "$(uname -m)" == "x86_64" ]] && local RELEASE=stretch || local RELEASE=buster
-
-    ## Raspbian
-    if [[ -f /usr/bin/raspi-config ]]; then
-      echo "deb http://mirrordirector.raspbian.org/raspbian/ buster main contrib non-free rpi" > /etc/apt/sources.list.d/ncp-buster.list
-
-    ## x86
-    elif [[ "$(uname -m)" == "x86_64" ]]; then
-      apt-get update
-      $APTINSTALL apt-transport-https gnupg2 wget ca-certificates
-      echo "deb https://packages.sury.org/php/ stretch main" > /etc/apt/sources.list.d/php.list
-      wget -q https://packages.sury.org/php/apt.gpg -O- | apt-key add -
-
-    ## armhf
-    else
-      echo "deb http://deb.debian.org/debian buster main contrib non-free" > /etc/apt/sources.list.d/ncp-buster.list
-      cat > /etc/apt/preferences.d/10-ncp-buster <<EOF
-Package: *
-Pin: release n=stretch
-Pin-Priority: 600
-EOF
-    fi
+    local RELEASE=stretch
+    apt-get update
+    $APTINSTALL apt-transport-https gnupg2 wget ca-certificates
+    echo "deb https://packages.sury.org/php/ stretch main" > /etc/apt/sources.list.d/php.list
+    wget -q https://packages.sury.org/php/apt.gpg -O- | apt-key add -
 
     # INSTALL 
     ##########################################

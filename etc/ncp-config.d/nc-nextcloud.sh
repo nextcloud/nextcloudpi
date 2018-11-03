@@ -38,14 +38,15 @@ install()
   # During build, this step is run before ncp.sh. Avoid executing twice
   [[ -f /usr/lib/systemd/system/nc-provisioning.service ]] && return 0
 
-  # workaround until Sury has PHP7.2-redis armhf
-  [[ "$(uname -m)" == "x86_64" ]] && local RELEASE=stretch || local RELEASE=buster
+  local RELEASE=stretch
 
   # Optional packets for Nextcloud and Apps
   apt-get update
   $APTINSTALL lbzip2 iputils-ping
   $APTINSTALL -t $RELEASE php-smbclient                                # for external storage
-  $APTINSTALL -t $RELEASE imagemagick php-imagick php${PHPVER}-exif    # for gallery
+  [[ "$(uname -m)" == "x86_64" ]] && {
+    $APTINSTALL -t $RELEASE imagemagick php-imagick php${PHPVER}-exif    # for gallery
+  } # TODO fixme when armhf version is available for php7.2
 
 
   # POSTFIX

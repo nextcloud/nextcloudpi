@@ -190,29 +190,6 @@ EOF
 }
 EOF
 
-  # Adjust sources
-  ## Raspbian
-  if [[ -f /usr/bin/raspi-config ]]; then
-    echo "deb http://mirrordirector.raspbian.org/raspbian/ buster main contrib non-free rpi" > /etc/apt/sources.list.d/ncp-buster.list
-
-  ## x86
-  elif [[ "$(uname -m)" == "x86_64" ]]; then
-    apt-get update
-    apt-get install -y --no-install-recommends apt-transport-https gnupg
-    echo "deb https://packages.sury.org/php/ stretch main" > /etc/apt/sources.list.d/php.list
-    wget -q https://packages.sury.org/php/apt.gpg -O- | apt-key add -
-    rm -f /etc/apt/preferences.d/10-ncp-buster
-
-  ## armhf
-  else
-    echo "deb http://deb.debian.org/debian buster main contrib non-free" > /etc/apt/sources.list.d/ncp-buster.list
-    cat > /etc/apt/preferences.d/10-ncp-buster <<EOF
-Package: *
-Pin: release n=stretch
-Pin-Priority: 600
-EOF
-  fi
-
   # remove redundant opcache configuration. Leave until update bug is fixed -> https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=815968
   # Bug #416 reappeared after we moved to php7.2 and debian buster packages.
   [[ "$( ls -l /etc/php/7.2/fpm/conf.d/*-opcache.ini |  wc -l )" -gt 1 ]] && rm "$( ls /etc/php/7.2/fpm/conf.d/*-opcache.ini | tail -1 )"
@@ -229,6 +206,15 @@ cd $DIR
 launch_script $1
 EOF
   chmod 700 /home/www/ncp-launcher.sh
+
+  # Adjust sources
+  apt-get update
+  apt-get install -y --no-install-recommends apt-transport-https gnupg
+  echo "deb https://packages.sury.org/php/ stretch main" > /etc/apt/sources.list.d/php.list
+  wget -q https://packages.sury.org/php/apt.gpg -O- | apt-key add -
+  rm -f /etc/apt/sources.list.d/ncp-buster.list
+  rm -f /etc/apt/preferences.d/10-ncp-buster
+  apt-get update
 
 } # end - only live updates
 
