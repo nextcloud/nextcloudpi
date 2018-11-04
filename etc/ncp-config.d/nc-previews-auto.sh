@@ -9,7 +9,8 @@
 ACTIVE_=no
 STARTTIME_=210
 RUNTIME_=60
-SMALLONLY_=yes
+SHOW_SMALLONLY_=yes
+GEN_SMALLONLY_=yes
 
 DESCRIPTION="Periodically generate previews for the gallery"
 INFO="Set the STARTTIME in minutes after midnight and RUNTIME in minutes.
@@ -40,7 +41,7 @@ configure()
   #   Gallery folder preview: width 128, 256; heigth 128, 256
   #   Gallery preview: width 512; height 256
   # 
-  if [ $SMALLONLY_ == "yes" ]
+  if [ $GEN_SMALLONLY_ == "yes" ]
     then
       sudo -u www-data php /var/www/nextcloud/occ config:app:set --value="32"  previewgenerator squareSizes
       sudo -u www-data php /var/www/nextcloud/occ config:app:set --value="128 256 512" previewgenerator widthSizes
@@ -49,6 +50,17 @@ configure()
       sudo -u www-data php /var/www/nextcloud/occ config:system:delete previewgenerator squareSizes
       sudo -u www-data php /var/www/nextcloud/occ config:system:delete previewgenerator widthSizes
       sudo -u www-data php /var/www/nextcloud/occ config:system:delete previewgenerator heightSizes
+  fi
+  
+   if [ $SHOW_SMALLONLY_ == "yes" ]
+    then
+      sudo -u www-data php /var/www/nextcloud/occ config:system:set preview_max_x --value="1024"
+      sudo -u www-data php /var/www/nextcloud/occ config:system:set preview_max_y --value="768"
+      sudo -u www-data php /var/www/nextcloud/occ config:system:set preview_max_scale_factor --value="1"
+    else
+      sudo -u www-data php /var/www/nextcloud/occ config:system:delete preview_max_x
+      sudo -u www-data php /var/www/nextcloud/occ config:system:delete preview_max_y
+      sudo -u www-data php /var/www/nextcloud/occ config:system:delete preview_max_scale_factor
   fi
   
   # set crontab
