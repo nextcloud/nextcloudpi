@@ -1,5 +1,7 @@
 
-[v0.65.0](https://github.com/nextcloud/nextcloudpi/commit/2f56f2c) (2018-11-03) add nc-test-hdd
+[v0.66.0](https://github.com/nextcloud/nextcloudpi/commit/989bc39) (2018-11-04) add nc-hdd-monitor
+
+[v0.65.0](https://github.com/nextcloud/nextcloudpi/commit/ab65f41) (2018-11-03) add nc-test-hdd
 
 [v0.64.12](https://github.com/nextcloud/nextcloudpi/commit/5e7f3da) (2018-11-03) docker: fix provisioning on a stopped the container
 

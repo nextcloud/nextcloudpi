@@ -26,6 +26,7 @@ UFW.sh
 nc-snapshot.sh
 nc-snapshot-auto.sh
 nc-audit.sh
+nc-hdd-monitor.sh
 SSH.sh
 fail2ban.sh
 NFS.sh
