@@ -217,6 +217,12 @@ EOF
   rm -f /etc/apt/preferences.d/10-ncp-buster
   apt-get update
 
+  apt-get remove -y libcurl4 &>/dev/null
+  apt-get install -y --no-install-recommends curl debian-goodies
+  [[ -f /usr/bin/raspi-config ]] && apt-get install -y --no-install-recommends rpi-update
+  apt-get --with-new-pkgs upgrade -y
+  apt-get autoremove -y
+
 } # end - only live updates
 
 exit 0
