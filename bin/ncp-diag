@@ -87,7 +87,7 @@ CERTS="$( grep "SSLCertificateFile /etc/letsencrypt/live/" /etc/apache2/sites-av
 [[ "$CERTS" == "" ]] && CERTS=none
 echo "certificates|$CERTS"
 
-RESOLV="$( ping -c 1 "$CERTS" 2>/dev/null | head -1 | grep -oP '\d{1,3}(.\d{1,3}){3}' )"
+RESOLV="$( ping -c1 -w1 "$CERTS" 2>/dev/null | head -1 | grep -oP '\d{1,3}(.\d{1,3}){3}' )"
 echo "NAT loopback|$( [[ "$RESOLV" == "$IP" ]] && echo yes || echo no )"
 
 # Other
