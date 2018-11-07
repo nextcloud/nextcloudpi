@@ -19,7 +19,7 @@ DESCRIPTION="Periodic backups"
 configure()
 {
   [[ $ACTIVE_ != "yes" ]] && { 
-    rm /etc/cron.d/ncp-backup-auto
+    rm -f /etc/cron.d/ncp-backup-auto
     service cron restart
     echo "automatic backups disabled"
     return 0

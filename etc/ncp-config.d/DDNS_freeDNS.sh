@@ -24,7 +24,7 @@ install()
 configure() 
 {
   [[ $ACTIVE_ != "yes" ]] && { 
-    rm /etc/cron.d/freeDNS
+    rm -f /etc/cron.d/freeDNS
     service cron restart
     echo "FreeDNS client is disabled"
     return 0

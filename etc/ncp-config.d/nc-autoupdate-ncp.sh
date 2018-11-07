@@ -15,7 +15,7 @@ DESCRIPTION="Automatically apply NextCloudPi updates"
 configure()
 {
   [[ $ACTIVE_ != "yes" ]] && { 
-    rm /etc/cron.daily/ncp-autoupdate
+    rm -f /etc/cron.daily/ncp-autoupdate
     echo "automatic NextCloudPi updates disabled"
     return 0
   }

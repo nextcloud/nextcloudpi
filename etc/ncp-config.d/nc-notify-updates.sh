@@ -20,7 +20,7 @@ NCDIR=/var/www/nextcloud
 configure()
 {
   [[ $ACTIVE_ != "yes" ]] && {
-    rm /etc/cron.d/ncp-notify-updates
+    rm -f /etc/cron.d/ncp-notify-updates
     service cron restart
     echo "update web notifications disabled"
     return 0

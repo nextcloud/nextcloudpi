@@ -32,7 +32,7 @@ install()
 configure()
 {
   [[ $ACTIVE_ != "yes" ]] && { 
-    rm /etc/cron.d/ncp-snapsync-auto
+    rm -f /etc/cron.d/ncp-snapsync-auto
     service cron restart
     echo "snapshot sync disabled"
     return 0

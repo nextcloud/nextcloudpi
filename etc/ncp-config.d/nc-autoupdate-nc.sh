@@ -18,7 +18,7 @@ VERSION=14.0.3
 configure() 
 {
   [[ "$ACTIVE_" != "yes" ]] && { 
-    rm /etc/cron.daily/ncp-autoupdate-nc
+    rm -f /etc/cron.daily/ncp-autoupdate-nc
     echo "automatic Nextcloud updates disabled"
     return 0
   }

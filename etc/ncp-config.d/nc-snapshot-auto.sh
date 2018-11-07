@@ -21,7 +21,7 @@ install()
 configure()
 { 
   [[ $ACTIVE_ != "yes" ]] && { 
-    rm /etc/cron.hourly/btrfs-snp
+    rm -f /etc/cron.hourly/btrfs-snp
     echo "automatic snapshots disabled"
     return 0
   }

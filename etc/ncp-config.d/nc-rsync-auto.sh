@@ -25,7 +25,7 @@ install()
 configure()
 {
   [[ $ACTIVE_ != "yes" ]] && { 
-    rm /etc/cron.d/ncp-rsync-auto
+    rm -f /etc/cron.d/ncp-rsync-auto
     echo "automatic rsync disabled"
     return 0
   }

@@ -20,7 +20,7 @@ INFO="Set the time in minutes in SCANINTERVAL.
 configure() 
 {
     [[ $ACTIVE_ != "yes" ]] && { 
-    rm /etc/cron.d/ncp-scan-auto
+    rm -f /etc/cron.d/ncp-scan-auto
     service cron restart
     echo "automatic scans disabled"
     return 0
