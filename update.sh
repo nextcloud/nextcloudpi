@@ -223,6 +223,9 @@ EOF
   apt-get --with-new-pkgs upgrade -y
   apt-get autoremove -y
 
+  # Update btrfs-sync
+  wget -q https://raw.githubusercontent.com/nachoparker/btrfs-sync/master/btrfs-sync -O /usr/local/bin/btrfs-sync
+
 } # end - only live updates
 
 exit 0
