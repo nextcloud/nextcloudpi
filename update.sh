@@ -209,6 +209,7 @@ EOF
   chmod 700 /home/www/ncp-launcher.sh
 
   # Adjust sources
+  export DEBIAN_FRONTEND=noninteractive
   apt-get update
   apt-get install -y --no-install-recommends apt-transport-https gnupg
   echo "deb https://packages.sury.org/php/ stretch main" > /etc/apt/sources.list.d/php.list
@@ -225,6 +226,9 @@ EOF
 
   # Update btrfs-sync
   wget -q https://raw.githubusercontent.com/nachoparker/btrfs-sync/master/btrfs-sync -O /usr/local/bin/btrfs-sync
+
+  # Update php imagick
+  apt-get install -y --no-install-recommends imagemagick php7.2-imagick php7.2-exif
 
 } # end - only live updates
 

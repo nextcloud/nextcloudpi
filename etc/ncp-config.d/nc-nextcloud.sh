@@ -43,10 +43,8 @@ install()
   # Optional packets for Nextcloud and Apps
   apt-get update
   $APTINSTALL lbzip2 iputils-ping
-  $APTINSTALL -t $RELEASE php-smbclient                                # for external storage
-  [[ "$(uname -m)" == "x86_64" ]] && {
-    $APTINSTALL -t $RELEASE imagemagick php-imagick php${PHPVER}-exif    # for gallery
-  } # TODO fixme when armhf version is available for php7.2
+  $APTINSTALL -t $RELEASE php-smbclient                                         # for external storage
+  $APTINSTALL -t $RELEASE imagemagick php${PHPVER}-imagick php${PHPVER}-exif    # for gallery
 
 
   # POSTFIX
