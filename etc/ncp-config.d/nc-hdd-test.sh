@@ -42,14 +42,8 @@ configure()
       smartctl -X "/dev/$dr" &>/dev/null
       smartctl -t long "/dev/$dr" | sed 1,2d
     else
-      echo "* Test results for $dr"
-      smartctl -l selftest "/dev/$dr" | sed 1,2d
-
-      echo "* Health Check for $dr"
-      smartctl -H "/dev/$dr" | sed 1,2d
-
       echo "* Stats for $dr"
-      smartctl -A "/dev/$dr" | sed 1,2d
+      smartctl -a "/dev/$dr" | sed 1,2d
     fi
   done
 }

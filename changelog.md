@@ -1,5 +1,7 @@
 
-[v0.66.2](https://github.com/nextcloud/nextcloudpi/commit/74ce141) (2018-11-06) dont fail removing cronfile
+[v0.66.3](https://github.com/nextcloud/nextcloudpi/commit/a0c4361) (2018-11-11) nc-hdd-test: remove redundancy
+
+[v0.66.2](https://github.com/nextcloud/nextcloudpi/commit/1b25141) (2018-11-06) dont fail removing cronfile
 
 [v0.66.1 ](https://github.com/nextcloud/nextcloudpi/commit/089bebb) (2018-11-04) nc-info: speedup
 
