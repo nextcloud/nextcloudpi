@@ -1,7 +1,9 @@
 
-[v0.66.4](https://github.com/nextcloud/nextcloudpi/commit/d1147a2) (2018-11-11) build: package php7.2-imagick now available
+[v0.66.5](https://github.com/nextcloud/nextcloudpi/commit/3c0621e) (2018-11-18) nc-datadir: clarify usage under info (#717)
 
-[v0.66.3](https://github.com/nextcloud/nextcloudpi/commit/d4206f7) (2018-11-11) nc-hdd-test: remove redundancy
+[v0.66.4](https://github.com/nextcloud/nextcloudpi/commit/f3666d6) (2018-11-11) build: package php7.2-imagick now available
+
+[v0.66.3 ](https://github.com/nextcloud/nextcloudpi/commit/d4206f7) (2018-11-11) nc-hdd-test: remove redundancy
 
 [v0.66.2 ](https://github.com/nextcloud/nextcloudpi/commit/1b25141) (2018-11-06) dont fail removing cronfile
 

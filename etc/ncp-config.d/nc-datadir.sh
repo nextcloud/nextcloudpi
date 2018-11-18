@@ -9,10 +9,12 @@
 #
 
 DATADIR_=/media/USBdrive/ncdata
-DESCRIPTION="Change your data dir to a new location, like a USB drive"
+DESCRIPTION="Change your data dir to a new location, like an external USB drive"
 
 INFO="Note that non Unix filesystems such as NTFS are not supported
-because they do not provide a compatible user/permissions system"
+because they do not provide a compatible user/permissions system.
+Also please note that the default location, when first installed is /var/www/nextcloud/data. 
+Move it to the desired location by editing the DATADIR= field, the PATH shown is an example."
 
 PHPVER=7.2
 
