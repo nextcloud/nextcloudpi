@@ -9,13 +9,16 @@
 #
 
 DBDIR_=/media/USBdrive/ncdatabase
-DESCRIPTION="Move your database to a new location, like a USB drive"
+DESCRIPTION="This utility allows you to move your database to a new location, like an external USB drive."
 
 INFO="Note that non Unix filesystems such as NTFS are not supported
-because they do not provide a compatible user/permissions system
+because they do not provide a compatible user/permissions system.
 
 You need to use a USB drive that is permanently on and is responsive 
 or the database will fail.
+
+Please note that the default location, when first installed is /var/lib/mysql/. 
+Move it to the desired location by editing the DBDIR_= field, the one shown is an example.
 
 ** If it ever fails with a white page, move the database back to the SD **"
 
