@@ -1,5 +1,5 @@
 
-[v0.66.5](https://github.com/nextcloud/nextcloudpi/commit/3c0621e) (2018-11-18) nc-datadir: clarify usage under info (#717)
+[v0.66.6](https://github.com/nextcloud/nextcloudpi/commit/c2eaf06) (2018-11-18) nc-static-IP: clarify usage
 
 [v0.66.4](https://github.com/nextcloud/nextcloudpi/commit/f3666d6) (2018-11-11) build: package php7.2-imagick now available
 

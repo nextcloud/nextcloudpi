@@ -11,7 +11,7 @@
 ACTIVE_=no
 IP_=192.168.1.130
 
-DESCRIPTION="Set up a static IP address (on), or DHCP (off)"
+DESCRIPTION="Set up a static IP address (ACTIVE=yes), or DHCP (ACTIVE=no)"
 
 configure() 
 {
