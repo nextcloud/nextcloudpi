@@ -11,13 +11,12 @@ This code also generates the [NextCloudPi docker images](https://hub.docker.com/
 
 ## Features
 
- * Raspbian 9 stretch
- * Nextcloud 14.0.3
+ * Debian/Raspbian 9 stretch
+ * Nextcloud 14.0.4
  * Apache 2.4.25, with HTTP2 enabled
  * PHP 7.2
  * MariaDB 10
  * Redis memory cache ( NEW 11-12-2017 )
- * 4.9 Linux Kernel ( NEW 03-13-2017 )
  * ncp-config for easy setup ( RAM logs, USB drive and more )
  * Automatic redirection to HTTPS
  * ACPU PHP cache

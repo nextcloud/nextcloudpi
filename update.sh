@@ -149,14 +149,6 @@ EOF
   install_script nc-restore.sh
   cd -          &>/dev/null
 
-  # update to NC14.0.3
-  F="$CONFDIR"/nc-autoupdate-nc.sh
-  grep -q '^ACTIVE_=yes$' "$F" && {
-    cd "$CONFDIR" &>/dev/null
-    activate_script nc-autoupdate-nc.sh
-    cd -          &>/dev/null
-  }
-
       # Redis eviction policy
       grep -q "^maxmemory-policy allkeys-lru" /etc/redis/redis.conf || {
         sed -i 's|# maxmemory-policy .*|maxmemory-policy allkeys-lru|' /etc/redis/redis.conf
@@ -229,6 +221,14 @@ EOF
 
   # Update php imagick
   apt-get install -y --no-install-recommends imagemagick php7.2-imagick php7.2-exif
+
+  # update to NC14.0.4
+  F="$CONFDIR"/nc-autoupdate-nc.sh
+  grep -q '^ACTIVE_=yes$' "$F" && {
+    cd "$CONFDIR" &>/dev/null
+    activate_script nc-autoupdate-nc.sh
+    cd -          &>/dev/null
+  }
 
 } # end - only live updates
 

@@ -9,7 +9,7 @@
 #
 
 VERSION_=0
-LATEST=14.0.3
+LATEST=14.0.4
 DESCRIPTION="Update current instance to a new Nextcloud version"
 INFO="Set to 0 to update to the latest avaliable version"
 
