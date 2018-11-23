@@ -1,7 +1,9 @@
 
-[v0.67.0](https://github.com/nextcloud/nextcloudpi/commit/56ef7da) (2018-11-22) upgrade to NC14.0.4
+[v0.67.1](https://github.com/nextcloud/nextcloudpi/commit/f04770e) (2018-11-23) referrer policy already in .htaccess in NC14.0.4
 
-[v0.66.6](https://github.com/nextcloud/nextcloudpi/commit/5aeb83c) (2018-11-18) nc-static-IP: clarify usage
+[v0.67.0](https://github.com/nextcloud/nextcloudpi/commit/bcac4bc) (2018-11-22) upgrade to NC14.0.4
+
+[v0.66.6 ](https://github.com/nextcloud/nextcloudpi/commit/5aeb83c) (2018-11-18) nc-static-IP: clarify usage
 
 [v0.66.4](https://github.com/nextcloud/nextcloudpi/commit/f3666d6) (2018-11-11) build: package php7.2-imagick now available
 

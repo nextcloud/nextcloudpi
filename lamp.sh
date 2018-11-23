@@ -89,7 +89,6 @@ EOF
     cat >> /etc/apache2/apache2.conf <<EOF
 <IfModule mod_headers.c>
   Header always set Strict-Transport-Security "max-age=15768000; includeSubDomains; preload"
-  Header always set Referrer-Policy "no-referrer"
 </IfModule>
 EOF
 

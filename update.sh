@@ -183,11 +183,6 @@ EOF
 }
 EOF
 
-  # remove redundant opcache configuration. Leave until update bug is fixed -> https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=815968
-  # Bug #416 reappeared after we moved to php7.2 and debian buster packages.
-  [[ "$( ls -l /etc/php/7.2/fpm/conf.d/*-opcache.ini |  wc -l )" -gt 1 ]] && rm "$( ls /etc/php/7.2/fpm/conf.d/*-opcache.ini | tail -1 )"
-  [[ "$( ls -l /etc/php/7.2/cli/conf.d/*-opcache.ini |  wc -l )" -gt 1 ]] && rm "$( ls /etc/php/7.2/cli/conf.d/*-opcache.ini | tail -1 )"
-
   # update launcher
   cat > /home/www/ncp-launcher.sh <<'EOF'
 #!/bin/bash
@@ -229,6 +224,14 @@ EOF
     activate_script nc-autoupdate-nc.sh
     cd -          &>/dev/null
   }
+
+  # remove redundant opcache configuration. Leave until update bug is fixed -> https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=815968
+  # Bug #416 reappeared after we moved to php7.2 and debian buster packages. (keep last)
+  [[ "$( ls -l /etc/php/7.2/fpm/conf.d/*-opcache.ini |  wc -l )" -gt 1 ]] && rm "$( ls /etc/php/7.2/fpm/conf.d/*-opcache.ini | tail -1 )"
+  [[ "$( ls -l /etc/php/7.2/cli/conf.d/*-opcache.ini |  wc -l )" -gt 1 ]] && rm "$( ls /etc/php/7.2/cli/conf.d/*-opcache.ini | tail -1 )"
+
+  # in NC14.0.4 the referrer policy is included in .htaccess
+  grep -q Referrer-Policy /var/www/nextcloud/.htaccess && sed -i /Referrer-Policy/d /etc/apache2/apache2.conf
 
 } # end - only live updates
 
