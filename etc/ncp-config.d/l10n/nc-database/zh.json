@@ -1,8 +1,8 @@
 {
     "translations":{
-        "DBDIR":"資料庫資料夾",
-        "Move your database to a new location, like a USB drive":"移動資料庫到新的位置(USB)",
-        "Note that non Unix filesystems such as NTFS are not supported\nbecause they do not provide a compatible user/permissions system\n\nYou need to use a USB drive that is permanently on and is responsive \nor the database will fail.\n\n** If it ever fails with a white page, move the database back to the SD **":"NextcloudPi不支持非Unix文件系統（如NTFS）的外接儲存空間。\n**若移動失敗，我們會將數據庫移回SD **",
+        "DBDIR":"位置",
+        "This utility allows you to move your database to a new location, like an external USB drive.":"移動資料庫到新的位置(USB)",
+        "Note that non Unix filesystems such as NTFS are not supported\nbecause they do not provide a compatible user/permissions system.\n\nYou need to use a USB drive that is permanently on and is responsive \nor the database will fail.\n\nPlease note that the default location, when first installed is /var/lib/mysql/. \nMove it to the desired location by editing the DBDIR= field, the one shown is an example.\n\n** If it ever fails with a white page, move the database back to the SD **":"NextcloudPi不支持非Unix文件系統（如NTFS）的外接儲存空間\n建議您使用讀取快速且運作時間長的外接儲存空間，否則資料庫將無法運作\n請注意，系統默認資料庫的位置為 /var/lib/mysql/ \n**若移動失敗，我們會將數據庫移回SD **",
         "nc-database":"移動資料庫"
     }
 }
