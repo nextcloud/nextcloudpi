@@ -1,8 +1,8 @@
 {
     "translations":{
         "DATADIR":"數據資料儲存資料夾",
-        "Change your data dir to a new location, like a USB drive":"移動Nextcloud用戶數據資料夾(USB)",
-        "Note that non Unix filesystems such as NTFS are not supported\nbecause they do not provide a compatible user/permissions system":"**移動的目錄不能為非Unix文件系統格式(NTFS)**",
+        "Change your data dir to a new location, like an external USB drive":"移動Nextcloud用戶數據資料夾(USB)",
+        "Note that non Unix filesystems such as NTFS are not supported\nbecause they do not provide a compatible user/permissions system.\nAlso please note that the default location, when first installed is /var/www/nextcloud/data. \nMove it to the desired location by editing the DATADIR= field, the PATH shown is an example.":"NextcloudPi不支持非Unix文件系統（如NTFS）的外接儲存空間\n建議您使用讀取快速且運作時間長的外接儲存空間，否則資料庫將無法運作\n請注意，系統默認資料庫的位置為 /var/www/nextcloud/data\n**若移動失敗，我們會將數據庫移回SD**",
         "nc-datadir":"移動用戶資料夾(NC)"
     }
 }
