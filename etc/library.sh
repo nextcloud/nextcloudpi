@@ -24,7 +24,7 @@ function config()
   [[ "$NO_CONFIG" == "1" ]] || test ${#VARS[@]} -eq 0 && { INSTALLATION_CODE="$( cat "$INSTALL_SCRIPT" )"; return; }
 
   for i in $( seq 1 1 ${#VARS[@]} ); do
-    local PARAM+="${VARS[$((i-1))]} $i 1 ${VALS[$((i-1))]} $i 15 60 0 "
+    local PARAM+="${VARS[$((i-1))]} $i 1 ${VALS[$((i-1))]} $i 15 60 120 "
   done
 
   local DIALOG_OK=0
