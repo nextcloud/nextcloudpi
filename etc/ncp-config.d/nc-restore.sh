@@ -42,6 +42,8 @@ DIR="$( cd "$( dirname "$BACKUPFILE" )" &>/dev/null && pwd )" #abspath
 [[ "$DIR" =~ "$NCDIR" ]] && { echo "Refusing to restore from $NCDIR"; exit 1; }
 
 TMPDIR="$( mktemp -d "$( dirname "$BACKUPFILE" )"/ncp-restore.XXXXXX )" || { echo "Failed to create temp dir" >&2; exit 1; }
+grep -q -e ext -e btrfs <( stat -fc%T "$TMPDIR" ) || { echo "Can only restore from ext/btrfs filesystems"     >&2; exit 1; }
+
 TMPDIR="$( cd "$TMPDIR" &>/dev/null && pwd )" || { echo "$TMPDIR not found"; exit 1; } #abspath
 cleanup(){  local RET=$?; echo "Cleanup..."; rm -rf "${TMPDIR}"; trap "" EXIT; exit $RET; }
 trap cleanup INT TERM HUP ERR EXIT
