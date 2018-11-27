@@ -9,7 +9,7 @@
 #
 
 DATADIR_=/media/USBdrive/ncdata
-DESCRIPTION="Change your data dir to a new location, like an external USB drive"
+DESCRIPTION="Change your data dir to a new location, like a USB drive"
 
 INFO="Note that non Unix filesystems such as NTFS are not supported
 because they do not provide a compatible user/permissions system.

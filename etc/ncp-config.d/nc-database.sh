@@ -9,7 +9,7 @@
 #
 
 DBDIR_=/media/USBdrive/ncdatabase
-DESCRIPTION="This utility allows you to move your database to a new location, like an external USB drive."
+DESCRIPTION="Move your database to a new location, like a USB drive"
 
 INFO="Note that non Unix filesystems such as NTFS are not supported
 because they do not provide a compatible user/permissions system.
