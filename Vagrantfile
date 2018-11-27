@@ -17,6 +17,8 @@ Vagrant.configure("2") do |config|
   config.vm.box_check_update = false
   config.vm.hostname = "ncp-vm"
 
+  config.vm.synced_folder '.', '/vagrant', disabled: true
+
   $script = <<-SHELL
     sudo su
     BRANCH=master

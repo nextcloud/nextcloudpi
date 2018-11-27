@@ -32,6 +32,7 @@ prepare_dirs                   # tmp cache output
 echo -e "\e[1m\n[ Build NCP ]\e[0m"
 vagrant destroy -f
 vagrant up --provider=libvirt --provision
+sudo qemu-img rebase -b "" "$VM"
 
 sudo chown "$USER" "$VM"
 sudo cp -a --reflink=auto --sparse=auto "$VM" "$IMG"
