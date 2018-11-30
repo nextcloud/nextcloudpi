@@ -110,7 +110,6 @@ chmod 770                  /var/www/ncp-web
 
   # docker images only
   [[ -f /.docker-image ]] && {
-    [[ -e /data/etc/live ]] && {
      cat > /etc/services-available.d/000ncp <<EOF
 #!/bin/bash
 
@@ -120,8 +119,8 @@ source /usr/local/etc/library.sh
 persistent_cfg /usr/local/etc/ncp-config.d /data/ncp
 persistent_cfg /usr/local/bin /data/bin
 persistent_cfg /etc/services-enabled.d
-persistent_cfg /etc/letsencrypt                    # persist SSL certificates
-persistent_cfg /etc/shadow                         # persist ncp-web password
+persistent_cfg /etc/letsencrypt                   # persist SSL certificates
+persistent_cfg /etc/shadow                        # persist ncp-web password
 persistent_cfg /etc/cron.d
 persistent_cfg /etc/cron.daily
 persistent_cfg /etc/cron.hourly
@@ -129,8 +128,6 @@ persistent_cfg /etc/cron.weekly
 
 exit 0
 EOF
-      sed -i 's|exit 1|exit 0|' /usr/local/sbin/update-rc.d
-    }
   }
 
   # for non docker images
@@ -138,78 +135,11 @@ EOF
     :
   }
 
-  # Reinstall DDNS_spDYN for use of IPv6 
-  rm -r /usr/local/etc/spdnsupdater
-  cd /usr/local/etc/ncp-config.d
-  install_script DDNS_spDYN.sh
-
   # update nc-restore
   cd "$CONFDIR" &>/dev/null
   install_script nc-backup.sh
   install_script nc-restore.sh
   cd -          &>/dev/null
-
-      # Redis eviction policy
-      grep -q "^maxmemory-policy allkeys-lru" /etc/redis/redis.conf || {
-        sed -i 's|# maxmemory-policy .*|maxmemory-policy allkeys-lru|' /etc/redis/redis.conf
-        service redis-server restart
-      }
-
-      # allow .lan domains
-      ncc config:system:set trusted_domains 7 --value="nextcloudpi"
-      ncc config:system:set trusted_domains 8 --value="nextcloudpi.lan"
-
-      # possible traces of the old name
-      sed -i 's|NextCloudPlus|NextCloudPi|' /usr/local/bin/ncp-notify-update
-      sed -i 's|NextCloudPlus|NextCloudPi|' /usr/local/bin/ncp-notify-unattended-upgrade
-
-      # nc-prettyURL: fix for NC14
-      URL="$(ncc config:system:get overwrite.cli.url)"
-      [[ "${URL: -1}" != "/" ]] && ncc config:system:set overwrite.cli.url --value="${URL}/"
-
-      # Implement logrotate restrictions
-      [[ -f /etc/rsyslog.d/20-ufw.conf ]] && { grep -q "^\& stop" /etc/rsyslog.d/20-ufw.conf ||  echo "& stop" >> /etc/rsyslog.d/20-ufw.conf; }
-      [[ -f /etc/logrotate.d/ufw ]] && { grep -q maxsize /etc/logrotate.d/ufw     || sed -i /weekly/amaxsize2M /etc/logrotate.d/ufw; }
-      grep -q maxsize /etc/logrotate.d/apache2 || sed -i /weekly/amaxsize2M /etc/logrotate.d/apache2
-      service rsyslog restart &>/dev/null
-      cat > /etc/logrotate.d/ncp <<'EOF'
-/var/log/ncp.log
-{
-        rotate 4
-        size 500K
-        missingok
-        notifempty
-        compress
-}
-EOF
-
-  # update launcher
-  cat > /home/www/ncp-launcher.sh <<'EOF'
-#!/bin/bash
-DIR=/usr/local/etc/ncp-config.d
-[[ -f $DIR/$1  ]] || { echo "File not found"; exit 1; }
-[[ "$1" =~ ../ ]] && { echo "Forbidden path"; exit 2; }
-source /usr/local/etc/library.sh
-cd $DIR
-launch_script $1
-EOF
-  chmod 700 /home/www/ncp-launcher.sh
-
-  # Adjust sources
-  export DEBIAN_FRONTEND=noninteractive
-  apt-get update
-  apt-get install -y --no-install-recommends apt-transport-https gnupg
-  echo "deb https://packages.sury.org/php/ stretch main" > /etc/apt/sources.list.d/php.list
-  wget -q https://packages.sury.org/php/apt.gpg -O- | apt-key add -
-  rm -f /etc/apt/sources.list.d/ncp-buster.list
-  rm -f /etc/apt/preferences.d/10-ncp-buster
-  apt-get update
-
-  apt-get remove -y libcurl4 &>/dev/null
-  apt-get install -y --no-install-recommends curl debian-goodies
-  [[ -f /usr/bin/raspi-config ]] && apt-get install -y --no-install-recommends rpi-update
-  apt-get --with-new-pkgs upgrade -y
-  apt-get autoremove -y
 
   # Update btrfs-sync
   wget -q https://raw.githubusercontent.com/nachoparker/btrfs-sync/master/btrfs-sync -O /usr/local/bin/btrfs-sync

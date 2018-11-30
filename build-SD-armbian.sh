@@ -54,6 +54,7 @@ CONF="config-$BOARD".conf
 [[ -f "$CONF" ]] && cat "$CONF" >> armbian/config-docker-guest.conf
 
 # build
+rm -rf armbian/output/images
 armbian/compile.sh docker
 rm armbian/config-docker-guest.conf
 
