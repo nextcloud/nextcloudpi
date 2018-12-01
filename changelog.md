@@ -1,5 +1,7 @@
 
-[v0.67.5](https://github.com/nextcloud/nextcloudpi/commit/5ef27fb) (2018-12-01) nc-datadir: also use tempdirectory setting
+[v0.67.6](https://github.com/nextcloud/nextcloudpi/commit/f9f62eb) (2018-12-01) build: start sharing torrents automatically
+
+[v0.67.5 ](https://github.com/nextcloud/nextcloudpi/commit/d19a7f7) (2018-12-01) nc-datadir: also use tempdirectory setting
 
 [v0.67.4 ](https://github.com/nextcloud/nextcloudpi/commit/88d9fe2) (2018-11-26) nc-restore: check that we are in linux fs
 
