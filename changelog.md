@@ -1,5 +1,9 @@
 
-[v0.67.3](https://github.com/nextcloud/nextcloudpi/commit/d3c72cc) (2018-11-26) nc-datadir: shorten short description
+[v0.67.5](https://github.com/nextcloud/nextcloudpi/commit/5ef27fb) (2018-12-01) nc-datadir: also use tempdirectory setting
+
+[v0.67.4 ](https://github.com/nextcloud/nextcloudpi/commit/88d9fe2) (2018-11-26) nc-restore: check that we are in linux fs
+
+[v0.67.3 ](https://github.com/nextcloud/nextcloudpi/commit/5278bfd) (2018-11-26) nc-datadir: shorten short description
 
 [v0.67.2 ](https://github.com/nextcloud/nextcloudpi/commit/5e4be44) (2018-11-26) change dialog text width to 120
 
