@@ -143,7 +143,8 @@ EOF
     sleep 0.5
   done
 
-    mysql_secure_installation <<EOF
+  cd /tmp
+  mysql_secure_installation <<EOF
 $DBPASSWD
 y
 $DBPASSWD

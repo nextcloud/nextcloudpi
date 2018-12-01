@@ -22,6 +22,7 @@ is_active()
 install()
 {
   [[ -d /var/log.hdd ]] || [[ -d /var/hdd.log ]] && { echo "log2ram detected, not installing"; return; }
+  cd /tmp
   curl -Lo log2ram.tar.gz https://github.com/azlux/log2ram/archive/master.tar.gz
   tar xf log2ram.tar.gz
   cd log2ram-master
