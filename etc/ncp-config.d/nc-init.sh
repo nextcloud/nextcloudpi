@@ -102,6 +102,7 @@ EOF
 EOF
 
   # tmp upload dir
+  PHPVER=7.2
   local UPLOADTMPDIR=/var/www/nextcloud/data/tmp
   mkdir -p "$UPLOADTMPDIR"
   chown www-data:www-data "$UPLOADTMPDIR"
