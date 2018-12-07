@@ -20,6 +20,8 @@ INFO="This action will configure NextCloud to NextCloudPi defaults.
 
 "
 
+PHPVER=7.2
+
 configure()
 {
   echo "Setting up a clean Nextcloud instance... wait until message 'NC init done'"
