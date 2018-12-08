@@ -62,7 +62,7 @@ echo "Done.
 First: Visit https://$IP/  https://nextcloudpi.local/ (also https://nextcloudpi.lan/ or https://nextcloudpi/ on windows and mac)
 to activate your instance of NC, and save the auto generated passwords. You may review or reset them
 anytime by using nc-admin and nc-passwd.
-Second: Type 'sudo ncp-config' to further configure NCP, or access ncp-web on https://<your_ip>:4443
+Second: Type 'sudo ncp-config' to further configure NCP, or access ncp-web on https://$IP:4443/
 Note: You will have to add an exception, to bypass your browser warning when you
 first load the activation and :4443 pages. You can run letsencrypt to get rid of
 the warning if you have a (sub)domain available.
