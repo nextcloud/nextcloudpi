@@ -53,10 +53,14 @@ install_script  ncp.sh
 activate_script etc/ncp-config.d/nc-init.sh
 
 popd
+
+IFACE="$( ip r | grep "default via" | awk '{ print $5 }' | head -1 )"
+IP="$( ip a show dev "$IFACE" | grep global | grep -oP '\d{1,3}(.\d{1,3}){3}' | head -1 )" 
+
 echo "Done.
 
-First: Visit https://your_ip/ or https://nextcloudpi.local/ to activate your
-instance of NC, and save the auto generated passwords. You may review or reset them
+First: Visit https://$IP/  https://nextcloudpi.local/ (also https://nextcloudpi.lan/ or https://nextcloudpi/ on windows and mac)
+to activate your instance of NC, and save the auto generated passwords. You may review or reset them
 anytime by using nc-admin and nc-passwd.
 Second: Type 'sudo ncp-config' to further configure NCP, or access ncp-web on https://<your_ip>:4443
 Note: You will have to add an exception, to bypass your browser warning when you
