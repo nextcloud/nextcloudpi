@@ -13,7 +13,7 @@ RUN \
 # installation
 source /usr/local/etc/library.sh; \
 set +x; \
-install_script /usr/local/etc/lamp.sh; \
+install_app /usr/local/etc/lamp.sh; \
 
 # stop mysqld
 mysqladmin -u root shutdown; \

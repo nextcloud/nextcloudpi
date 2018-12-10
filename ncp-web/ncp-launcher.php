@@ -2,218 +2,165 @@
 ///
 // NextCloudPi Web Panel backend
 //
-// Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
+// Copyleft 2018 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 // GPL licensed (see end of file) * Use at your own risk!
 //
-// More at https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/
+// More at https://nextcloudpi.com
 ///
 
 include ('csrf.php');
 
 session_start();
-$modules_path = '/usr/local/etc/ncp-config.d/';
+$cfg_dir = '/usr/local/etc/ncp-config.d/';
 $l10nDir = "l10n";
-ignore_user_abort( true );
+ignore_user_abort(true);
 
-
+// 
+// language
+//
 require("L10N.php");
 try {
-  $l = new L10N($_SERVER["HTTP_ACCEPT_LANGUAGE"], $l10nDir, $modules_path);
+  $l = new L10N($_SERVER["HTTP_ACCEPT_LANGUAGE"], $l10nDir, $cfg_dir);
 } catch (Exception $e) {
   die(json_encode("<p class='error'>Error while loading localizations!</p>"));
 }
 
-if ( $_POST['action'] == "cfgreq" ) 
-{
-  if ( !$_POST['ref'] ) exit( '{ "output": "Invalid request" }' );
+// CSRF check
+$token = isset($_POST['csrf_token']) ? $_POST['csrf_token'] : '';
+if ( empty($token) || !validateCSRFToken($token) )
+  exit( '{ "output": "Unauthorized request. Try reloading the page" }' );
 
-  //CSFR check
-  $token = isset($_POST['csrf_token']) ? $_POST['csrf_token'] : '';
-  if ( empty($token) || !validateCSRFToken($token) )
-    exit( '{ "output": "Unauthorized request. Try reloading the page" }' );
-
-  $path  = '/usr/local/etc/ncp-config.d/';
-  $files = array_diff(scandir($path), array('.', '..'));
-
-  $fh    = fopen( $path . $_POST['ref'] . '.sh' ,'r')
-             or exit( '{ "output": "' . $file . ' read error" }' );
-
-  echo '{ "token": "' . getCSRFToken() . '",';    // Get new token
-  echo ' "output": ';
-
-  $output = "<table>";
-
-  while ( $line = fgets($fh) ) 
-  {
-    // checkbox (yes/no) field
-    if ( preg_match('/^(\w+)_=(yes|no)$/', $line, $matches) )
-    {
-      $checked = "";
-      if ( $matches[2] == "yes" )
-        $checked = "checked";
-      $output .= "<tr>";
-      $output .= "<td><label for=\"$matches[1]\">". $l->__($matches[1], $_POST['ref']) ."</label></td>";
-      $output .= "<td><input type=\"checkbox\" id=\"$matches[1]\" name=\"$matches[1]\" value=\"$matches[2]\" $checked></td>";
-      $output .= "</tr>";
-    }
-    // drop down menu
-    else if(preg_match('/^(\w+)_=\[(([_\w]+,)*[_\w]+)\]$/', $line, $matches))
-    {
-      $options = explode(",", $matches[2]);
-      $output .= "<tr>";
-      $output .= "<td><label for=\"$matches[1]\">". $l->__($matches[1], $_POST['ref']) ."</label></td>";
-      $output .= "<td><select id=\"$matches[1]\" name=\"$matches[1]\">";
-      foreach($options as $option)
-      {
-        $output .= "<option value='". trim($option, "_") ."' ";
-        if( $option[0] == "_" && $option[count($option) - 1] == "_" )
-        {
-          $output .="selected='selected'";
-        }
-        $output .= ">". $l->__(trim($option, "_"), $_POST['ref']) ."</option>";
-      }
-      $output .= "</select></td></tr>";
-    }
-    // text field
-    else if ( preg_match('/^(\w+)_=(.*)$/', $line, $matches) )
-    {
-      $output .= "<tr>";
-      $output .= "<td><label for=\"$matches[1]\">". $l->__($matches[1], $_POST['ref']) ."</label></td>";
-      $output .= "<td><input type=\"text\" name=\"$matches[1]\" id=\"$matches[1]\" value=\"$matches[2]\" size=\"40\"></td>";
-      $output .= "</tr>";
-    }
-  }
-
-  $output .= "</table>";
-  fclose($fh);
-
-  echo json_encode( $output ) . ' }'; // close JSON
-}
-
-else if ( $_POST['action'] == "launch" && $_POST['config'] )
+//
+// launch
+//
+if ( $_POST['action'] == "launch" && $_POST['config'] )
 {
   // sanity checks
   if ( !$_POST['ref'] ) exit( '{ "output": "Invalid request" }' );
 
+  $ncp_app = $_POST['ref'];
+
   preg_match( '/^[0-9A-Za-z_-]+$/' , $_POST['ref'] , $matches )
     or exit( '{ "output": "Invalid input" , "token": "' . getCSRFToken() . '" }' );
 
-  // CSRF check
-  $token = isset($_POST['csrf_token']) ? $_POST['csrf_token'] : '';
-  if ( empty($token) || !validateCSRFToken($token) )
-    exit( '{ "output": "Unauthorized request. Try reloading the page" }' );
-
-  chdir('/usr/local/etc/ncp-config.d/');
-
-  $file = $_POST['ref'] . '.sh';
-
+  // save new config
   if ( $_POST['config'] != "{}" )
-    $params = json_decode( $_POST['config'], true )
-                or exit( '{ "output": "Invalid request" }' );
+  {
+    $cfg_file = $cfg_dir . $ncp_app . '.cfg';
 
-  $code = file_get_contents( $file )
-            or exit( '{ "output": "' . $file . ' read error" }' );
+    $cfg_str = file_get_contents($cfg_file)
+      or exit('{ "output": "' . $ncp_app . ' read error" }');
 
-  if ( !empty( $params ) )
-    foreach( $params as $name => $value ) 
-    {
-      if( is_array($value))
-      {
-        $value = "[". join(",", $value) ."]";
-      }
-      preg_match( '/^[\[\]\w+-.,@_\/:]+$/' , $value , $matches )
-        or exit( '{ "output": "Invalid input" , "token": "' . getCSRFToken() . '" }' );
-      $code = preg_replace( '/\n' . $name . '_=.*' . PHP_EOL . '/'  ,
-                          PHP_EOL . $name . '_=' . $value . PHP_EOL ,
-                          $code )
-                or exit();
-    }
+    $cfg = json_decode($cfg_str, true)
+      or exit('{ "output": "' . $ncp_app . ' read error" }');
 
-  file_put_contents($file, $code )
-    or exit( '{ "output": "' . $file . ' write error" }' );
+    $new_params = json_decode($_POST['config'], true)
+      or exit('{ "output": "Invalid request" }');
 
+    foreach ($cfg['params'] as $index => $param)
+      $cfg['params'][$index]['value'] = $new_params[$cfg['params'][$index]['id']];
+
+    $cfg_str = json_encode($cfg)
+      or exit('{ "output": "' . $ncp_app . ' internal error" }');
+
+    file_put_contents($cfg_file, $cfg_str)
+      or exit('{ "output": "' . $ncp_app . ' write error" }');
+  }
+
+  // launch
   echo '{ "token": "' . getCSRFToken() . '",';     // Get new token
-  echo ' "ref": "' . $_POST['ref']     . '",';
+  echo ' "ref": "' . $ncp_app          . '",';
   echo ' "output": "" , ';
   echo ' "ret": ';
 
-  exec( 'bash -c "sudo /home/www/ncp-launcher.sh ' . $file . '"' , $output , $ret );
+  exec( 'bash -c "sudo /home/www/ncp-launcher.sh ' . $ncp_app . '"' , $output , $ret );
   echo '"' . $ret . '" }';
 }
 
-else
+//
+// info
+//
+else if ( $_POST['action'] == "info" )
 {
-  // CSRF check
-  $token = isset($_POST['csrf_token']) ? $_POST['csrf_token'] : '';
-  if ( empty($token) || !validateCSRFToken($token) )
-    exit( '{ "output": "Unauthorized request. Try reloading the page" }' );
+  exec( 'bash /usr/local/bin/ncp-diag', $output, $ret );
 
-  if ( $_POST['action'] == "poweroff" )
+  // info table
+  $table = '<table class="dashtable">';
+  foreach( $output as $line )
   {
-    shell_exec( 'bash -c "( sleep 2 && sudo halt ) 2>/dev/null >/dev/null &"' );
+    $table .= "<tr>";
+    $fields = explode( "|", $line );
+    $table .= "<td>$fields[0]</td>";
+
+    $class = 'val-field';
+    if ( strpos( $fields[1], "up"   ) !== false
+      || strpos( $fields[1], "ok"   ) !== false
+      || strpos( $fields[1], "open" ) !== false )
+      $class = 'ok-field';
+    if ( strpos( $fields[1], "down"  ) !== false
+      || strpos( $fields[1], "error" ) !== false )
+      $class = 'error-field';
+
+    $table .= "<td class=\"$class\">$fields[1]</td>";
+    $table .= "</tr>";
   }
-  else if ( $_POST['action'] == "reboot" )
+  $table .= "</table>";
+
+  // suggestions
+  $suggestions = "";
+  if ( $ret == 0 )
   {
-    shell_exec('bash -c "( sleep 2 && sudo reboot ) 2>/dev/null >/dev/null &"');
+    exec( "bash /usr/local/bin/ncp-suggestions \"" . implode( "\n", $output ) . '"', $out, $ret );
+    foreach( $out as $line )
+      if ( $line != "" )
+        $suggestions .= "<p class=\"val-field\">‣ $line</p>";
   }
-  else if ( $_POST['action'] == "info" )
-  {
-    exec( 'bash /usr/local/bin/ncp-diag', $output, $ret );
 
-    // info table
-    $table = '<table class="dashtable">';
-    foreach( $output as $line )
-    {
-      $table .= "<tr>";
-      $fields = explode( "|", $line );
-      $table .= "<td>$fields[0]</td>";
+  // return JSON
+  echo '{ "token": "' . getCSRFToken() . '",';               // Get new token
+  echo ' "table": '       . json_encode( $table       ) . ' , ';
+  echo ' "suggestions": ' . json_encode( $suggestions ) . ' , ';
+  echo ' "ret": "'        . $ret                        . '" }';
+}
 
-      $class = 'val-field';
-      if ( strpos( $fields[1], "up"   ) !== false
-        || strpos( $fields[1], "ok"   ) !== false
-        || strpos( $fields[1], "open" ) !== false )
-        $class = 'ok-field';
-      if ( strpos( $fields[1], "down"  ) !== false
-        || strpos( $fields[1], "error" ) !== false )
-        $class = 'error-field';
+//
+// sidebar
+//
+else if ( $_POST['action'] == "sidebar" )
+{
+  require( "elements.php" );
+  // return JSON
+  echo '{ "token": "' . getCSRFToken() . '",';               // Get new token
+  echo ' "output": '  . json_encode( print_sidebar( $l, true ) ) . ' , ';
+  echo ' "ret": "0" }';
+}
 
-      $table .= "<td class=\"$class\">$fields[1]</td>";
-      $table .= "</tr>";
-    }
-    $table .= "</table>";
+//
+// cfg-ui
+//
+else if ( $_POST['action'] == "cfg-ui" )
+{
+  $ret = $l->save( $_POST['value'] );
+  $ret = $ret !== FALSE ? 0 : 1;
+  // return JSON
+  echo '{ "token": "' . getCSRFToken() . '",';               // Get new token
+  echo ' "ret": "'    . $ret           . '" }';
+}
 
-    // suggestions
-    $suggestions = "";
-    if ( $ret == 0 )
-    {
-      exec( "bash /usr/local/bin/ncp-suggestions \"" . implode( "\n", $output ) . '"', $out, $ret );
-      foreach( $out as $line )
-        if ( $line != "" )
-          $suggestions .= "<p class=\"val-field\">‣ $line</p>";
-    }
+//
+// poweroff
+//
+else if ( $_POST['action'] == "poweroff" )
+{
+  shell_exec( 'bash -c "( sleep 2 && sudo halt ) 2>/dev/null >/dev/null &"' );
+}
 
-    // return JSON
-    echo '{ "token": "' . getCSRFToken() . '",';               // Get new token
-    echo ' "table": '       . json_encode( $table       ) . ' , ';
-    echo ' "suggestions": ' . json_encode( $suggestions ) . ' , ';
-    echo ' "ret": "'        . $ret                        . '" }';
-  }
-  else if ( $_POST['action'] == "sidebar" )
-  {
-    require( "sidebar.php" );
-    // return JSON
-    echo '{ "token": "' . getCSRFToken() . '",';               // Get new token
-    echo ' "output": '  . json_encode( print_sidebar( $l, true ) ) . ' , ';
-    echo ' "ret": "0" }';
-  }
-  else if ( $_POST['action'] == "cfg-ui" )
-  {
-    $ret = $l->save( $_POST['value'] );
-    $ret = $ret !== FALSE ? 0 : 1;
-    // return JSON
-    echo '{ "token": "' . getCSRFToken() . '",';               // Get new token
-    echo ' "ret": "'    . $ret           . '" }';
-  }
+//
+// reboot
+//
+else if ( $_POST['action'] == "reboot" )
+{
+  shell_exec('bash -c "( sleep 2 && sudo reboot ) 2>/dev/null >/dev/null &"');
 }
 
 // License

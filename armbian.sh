@@ -29,12 +29,12 @@ cd /tmp/overlay
 echo -e "\nInstalling NextCloudPi"
 source etc/library.sh
 
-install_script  lamp.sh
-install_script  etc/ncp-config.d/nc-nextcloud.sh
-activate_script etc/ncp-config.d/nc-nextcloud.sh
-install_script  ncp.sh
-activate_script etc/ncp-config.d/nc-init.sh
-install_script  post-inst.sh
+install_app  lamp.sh
+install_app  etc/ncp-config.d/nc-nextcloud.sh
+run_app      etc/ncp-config.d/nc-nextcloud.sh
+install_app  ncp.sh
+run_app      etc/ncp-config.d/nc-init.sh
+run_app      post-inst.sh
 
 cd -
 

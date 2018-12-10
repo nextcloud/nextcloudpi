@@ -40,7 +40,7 @@ Vagrant.configure("2") do |config|
 
     # cleanup
     source etc/library.sh
-    install_script post-inst.sh
+    run_app post-inst.sh
     cd -
     rm -r /tmp/nextcloudpi
     systemctl disable sshd

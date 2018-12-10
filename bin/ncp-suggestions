@@ -14,12 +14,12 @@
 
 OUT="$@"
 
-DNSMASQ_ON="$( grep "^ACTIVE_=" /usr/local/etc/ncp-config.d/dnsmasq.sh | cut -d'=' -f2 )"
+source /usr/local/etc/library.sh
   
 grep -q "distribution|.*bian GNU/Linux 9,*" <<<"$OUT" || \
   echo -e "You are using an unsupported distro release. Please upgrade to latest Debian/Raspbian"
 
-[[ $DNSMASQ_ON != "yes" ]] && \
+is_active_app dnsmasq && \
   grep -q "NAT loopback|no" <<<"$OUT" && \
     echo -e "\nYou should enable dnsmasq to use your domain inside home"
 

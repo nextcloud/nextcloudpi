@@ -12,29 +12,29 @@ CONFDIR=/usr/local/etc/ncp-config.d/
 
 # don't make sense in a docker container
 EXCL_DOCKER="
-nc-automount.sh
-nc-format-USB.sh
-nc-datadir.sh
-nc-database.sh
-nc-ramlogs.sh
-nc-swapfile.sh
-nc-static-IP.sh
-nc-wifi.sh
-nc-nextcloud.sh
-nc-init.sh
-UFW.sh
-nc-snapshot.sh
-nc-snapshot-auto.sh
-nc-audit.sh
-nc-hdd-monitor.sh
-SSH.sh
-fail2ban.sh
-NFS.sh
+nc-automount
+nc-format-USB
+nc-datadir
+nc-database
+nc-ramlogs
+nc-swapfile
+nc-static-IP
+nc-wifi
+nc-nextcloud
+nc-init
+UFW
+nc-snapshot
+nc-snapshot-auto
+nc-audit
+nc-hdd-monitor
+SSH
+fail2ban
+NFS
 "
 
 # better use a designated container
 EXCL_DOCKER+="
-samba.sh
+samba
 "
 
 # check running apt
@@ -46,38 +46,28 @@ source /usr/local/etc/library.sh
 
 mkdir -p "$CONFDIR"
 
-# prevent installing some apt packages in the docker version
+# prevent installing some ncp-apps in the docker version
 [[ -f /.docker-image ]] && {
-  for opt in $EXCL_DOCKER; do 
-    touch $CONFDIR/$opt
-done
+  for opt in $EXCL_DOCKER; do
+    touch $CONFDIR/$opt.cfg
+  done
 }
 
 # copy all files in bin and etc
-for file in bin/* etc/*; do
-  [ -f "$file" ] || continue;
-  cp "$file" /usr/local/"$file"
-done
+cp -r bin/* /usr/local/bin/
+find etc -maxdepth 1 -type f -exec echo cp '{}' /usr/local/ \;
 
 # install new entries of ncp-config and update others
 for file in etc/ncp-config.d/*; do
   [ -f "$file" ] || continue;    # skip dirs
   [ -f /usr/local/"$file" ] || { # new entry
-    install_script "$file"       # install
+    install_app "$(basename "$file" .cfg)"
 
     # configure if active by default
-    grep -q '^ACTIVE_=yes$' "$file" && activate_script "$file" 
+    [[ "$(jq -r ".params[0].id"    "$file")" == "active" ]] && \
+    [[ "$(jq -r ".params[0].value" "$file")" == "yes"    ]] && \
+      run_app_unsafe "$file"
   }
-
-  # save current configuration to (possibly) updated script
-  [ -f /usr/local/"$file" ] && {
-    VARS=( $( grep "^[[:alpha:]]\+_=" /usr/local/"$file" | cut -d= -f1 ) )
-    VALS=( $( grep "^[[:alpha:]]\+_=" /usr/local/"$file" | cut -d= -f2 ) )
-    for i in $( seq 0 1 ${#VARS[@]} ); do
-      sed -i "s|^${VARS[$i]}=.*|${VARS[$i]}=${VALS[$i]}|" "$file"
-    done
-  }
-
   cp "$file" /usr/local/"$file"
 done
 
@@ -95,8 +85,11 @@ chown -R www-data:www-data /var/www/ncp-web
 chmod 770                  /var/www/ncp-web
 
 [[ -f /.docker-image ]] && {
-  # remove unwanted packages for the docker version
-  for opt in $EXCL_DOCKER; do rm $CONFDIR/$opt; done
+  # remove unwanted ncp-apps for the docker version
+  for opt in $EXCL_DOCKER; do
+    rm $CONFDIR/$opt.cfg
+    find /usr/local/bin/ncp -name "$opt.sh" -exec rm '{}' \;
+  done
 
   # update services
   cp docker-common/{lamp/010lamp,nextcloud/020nextcloud,nextcloudpi/000ncp} /etc/services-enabled.d
@@ -110,24 +103,7 @@ chmod 770                  /var/www/ncp-web
 
   # docker images only
   [[ -f /.docker-image ]] && {
-     cat > /etc/services-available.d/000ncp <<EOF
-#!/bin/bash
-
-source /usr/local/etc/library.sh
-
-# INIT NCP CONFIG (first run)
-persistent_cfg /usr/local/etc/ncp-config.d /data/ncp
-persistent_cfg /usr/local/bin /data/bin
-persistent_cfg /etc/services-enabled.d
-persistent_cfg /etc/letsencrypt                   # persist SSL certificates
-persistent_cfg /etc/shadow                        # persist ncp-web password
-persistent_cfg /etc/cron.d
-persistent_cfg /etc/cron.daily
-persistent_cfg /etc/cron.hourly
-persistent_cfg /etc/cron.weekly
-
-exit 0
-EOF
+    :
   }
 
   # for non docker images
@@ -136,24 +112,11 @@ EOF
   }
 
   # update nc-restore
-  cd "$CONFDIR" &>/dev/null
-  install_script nc-backup.sh
-  install_script nc-restore.sh
-  cd -          &>/dev/null
-
-  # Update btrfs-sync
-  wget -q https://raw.githubusercontent.com/nachoparker/btrfs-sync/master/btrfs-sync -O /usr/local/bin/btrfs-sync
-
-  # Update php imagick
-  apt-get install -y --no-install-recommends imagemagick php7.2-imagick php7.2-exif
+  install_app nc-backup
+  install_app nc-restore
 
   # update to NC14.0.4
-  F="$CONFDIR"/nc-autoupdate-nc.sh
-  grep -q '^ACTIVE_=yes$' "$F" && {
-    cd "$CONFDIR" &>/dev/null
-    activate_script nc-autoupdate-nc.sh
-    cd -          &>/dev/null
-  }
+  is_active_app nc-autoupdate-nc && run_app nc-autoupdate-nc
 
   # remove redundant opcache configuration. Leave until update bug is fixed -> https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=815968
   # Bug #416 reappeared after we moved to php7.2 and debian buster packages. (keep last)
@@ -162,6 +125,12 @@ EOF
 
   # in NC14.0.4 the referrer policy is included in .htaccess
   grep -q Referrer-Policy /var/www/nextcloud/.htaccess && sed -i /Referrer-Policy/d /etc/apache2/apache2.conf
+
+  # install new dependencies
+  type jq &>/dev/null || {
+    apt-get update
+    apt-get install -y --no-install-recommends jq
+  }
 
 } # end - only live updates
 

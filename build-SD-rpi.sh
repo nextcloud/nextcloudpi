@@ -57,12 +57,12 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
     # install everything
     cd /tmp/ncp-build || exit 1
     source etc/library.sh
-    install_script  lamp.sh
-    install_script  etc/ncp-config.d/nc-nextcloud.sh
-    activate_script etc/ncp-config.d/nc-nextcloud.sh
-    install_script  ncp.sh
-    activate_script etc/ncp-config.d/nc-init.sh
-    install_script  post-inst.sh
+    install_app  lamp.sh
+    install_app  etc/ncp-config.d/nc-nextcloud.sh
+    run_app      etc/ncp-config.d/nc-nextcloud.sh
+    install_app  ncp.sh
+    run_app      etc/ncp-config.d/nc-init.sh
+    run_app      post-inst.sh
 
     # harden SSH further for Raspbian
     sed -i 's|^#PermitRootLogin .*|PermitRootLogin no|' /etc/ssh/sshd_config

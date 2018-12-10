@@ -69,7 +69,6 @@ class L10N
   function save($lang)
   {
     $cfg = 'ncp-web.cfg';
-    $line = file_get_contents( $cfg );
     $str = "LANGUAGE_=$lang";
     return file_put_contents( $cfg , $str );
   }
@@ -141,12 +140,14 @@ class L10N
 
   function load_language_setting()
   {
-    $webui_config_file = 'ncp-web.cfg';
-    $fh = fopen($webui_config_file, 'r');
+    $cfg = 'ncp-web.cfg';
+    if (!file_exists($cfg))
+      return "auto";
+    $fh = fopen($cfg, 'r');
     if ($fh === false)
       return "auto";
 
-    $lang=file_get_contents($webui_config_file);
+    $lang=file_get_contents($cfg);
     fclose($fh);
     return ltrim($lang, 'LANGUAGE_=');
   }

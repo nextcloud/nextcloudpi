@@ -11,55 +11,96 @@
 # More at https://ownyourbits.com/2017/03/13/nextcloudpi-gets-nextcloudpi-config/
 #
 
+BINDIR=/usr/local/bin/ncp
+
 source /usr/local/etc/library.sh
 {
+  # ask for update if outdated
+  ncp-test-updates 2>/dev/null && {
+    [[ -f "$chlogfile" ]] && local changelog=$( head -4 "$chlogfile" )
 
-function nextcloud-config()
+    whiptail --backtitle "$backtitle $ncpversion" \
+             --title "NextCloudPi update available" \
+             --clear --yesno "Update to $latest_ver?\n\n$changelog" \
+             15 70
+
+    [[ $? -eq $dialog_ok ]] && ncp-update
+  }
+
+function generate_list()
 {
-    local DIALOG_OK=0
-    local VERFILE=/var/run/.ncp-latest-version
-    local BACKTITLE="NextCloudPi configuration ver. "
-    local CONFDIR=/usr/local/etc/ncp-config.d/ 
-    local DESC
+  local dir="$1"
+  unset list
+  for item in "$dir"/*; do
 
-    # ask for update if outdated
-    test -f /usr/local/etc/ncp-changelog && \
-      local CHANGELOG=$( head -4 /usr/local/etc/ncp-changelog )
-    ncp-test-updates 2>/dev/null && \
-    whiptail --backtitle "$BACKTITLE $( cat /usr/local/etc/ncp-version )" \
-      --title "NextCloudPi update available" \
-      --clear --yesno "Update to $( cat $VERFILE )?\n\n$CHANGELOG" \
-      15 70
-    [[ $? -eq $DIALOG_OK ]] && ncp-update
+    # directories
+    [[ -d "$item" ]] && {
+      local dir="$( basename "$item" )"
+      list+=("  $dir" "")
+      continue
+    }
 
-    while true; do
+    [[ "$item" =~ ".sh" ]] || continue
 
-      # fill options
-      local LIST=()
-      for item in $CONFDIR/*.sh; do
-        DESC=$( grep "DESCRIPTION=" "$item" | sed 's|^DESCRIPTION="||;s|"$||' )
-        is_active_script "$item" &>/dev/null && local ON="*" || local ON=" "
-        LIST+=( "$ON $( basename "$item" .sh )" "$DESC" )
-      done
+    # regular ncp_apps
+    local app="$( basename "$item" .sh )"
+    local cfg="$cfgdir/$app".cfg
 
-      # launch the selection menu
-      local script
-      script=$( whiptail --backtitle "$BACKTITLE $( cat /usr/local/etc/ncp-version )" \
-                         --title "NextCloudPi Software Configuration Tool (ncp-config)" \
-                         --cancel-button Finish --ok-button Select \
-                         --menu "Select program to configure and activate:" 20 105 10 \
-                         "${LIST[@]}" \
-                3>&1 1>&2 2>&3 )
+    [[ -f "$cfg" ]] && local desc=$( jq -r .description "$cfg" ) || local desc="No description."
+    is_active_app "$app" "$dir" && local on="*" || local on=" "
 
-      [[ $? -ne $DIALOG_OK ]] || [[ "$script" == "" ]] && return 0
+    list+=( "$on $app" "$desc" )
+  done
+}
 
-      # remove ✓ and spaces
-      script=$( sed  's=*\| ==g' <<< "$script" )
+function config_menu()
+{
+  local dir="$1"
+  local backtitle="NextCloudPi configuration ver. "
+  local latest_ver="$(cat /var/run/.ncp-latest-version)"
+  local ncpversion="$(cat /usr/local/etc/ncp-version  )"
+  local cfgdir=/usr/local/etc/ncp-config.d
+  local chlogfile=/usr/local/etc/ncp-changelog
+  local dialog_ok=0
+  local desc cfg ncp_app
 
-      # launch selected script
-      info_script      "$script".sh || continue;
-      configure_script "$script".sh && { echo "Done. Press any key..."; read -r; }
-    done
+  while true; do
+
+    # menu items
+    generate_list "$dir"
+
+    # launch the selection menu
+    [[ "$dir" == "$BINDIR" ]] && local cancel_btn="Finish" || local cancel_btn="Back"
+    ncp_app=$( whiptail --backtitle "$backtitle $ncpversion" \
+                       --title "NextCloudPi Configuration Tool (ncp-config)" \
+                       --cancel-button $cancel_btn --ok-button Select \
+                       --menu "Select ncp-app to configure or activate:" 20 105 10 \
+                       "${list[@]}" \
+              3>&1 1>&2 2>&3 )
+
+    [[ $? -ne $dialog_ok ]] || [[ "$ncp_app" == "" ]] && {
+      [[ "$dir" == "$BINDIR" ]] && return 0
+      dir="$(dirname "$dir")"
+      continue
+    }
+
+    # remove * and spaces
+    ncp_app=$( sed  's=*\| ==g' <<< "$ncp_app" )
+
+    # directory selection
+    [[ -d "$dir/$ncp_app" ]] && {
+      dir="$dir/$ncp_app"
+      config_menu "$dir"
+      return
+    }
+
+    # launch selected ncp_app
+    info_app      "$ncp_app" || continue
+    configure_app "$ncp_app" || continue
+    run_app       "$ncp_app"
+    echo "Done. Press any key..."
+    read -r
+  done
 }
 
 if [[ ${EUID} -ne 0 ]]; then
@@ -67,7 +108,7 @@ if [[ ${EUID} -ne 0 ]]; then
   exit 1
 fi
 
-nextcloud-config
+config_menu "$BINDIR"
 
 exit $?
 } # force to read the whole thing into memory, as its contents might change in update.sh
