@@ -36,7 +36,7 @@ postfix start
 test -f /data/app/config/config.php || {
   echo "Uninitialized instance, running nc-init..."
   source /usr/local/etc/library.sh
-  activate_script /nc-init.sh
+  run_app_unsafe /nc-init.sh
   mv /index.php /var/www/nextcloud/    # restore this file after init
 }
 

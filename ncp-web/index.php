@@ -17,15 +17,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
     <meta name="mobile-web-app-capable" content="yes">
   <?php
+
     // redirect to activation first time
     exec("a2query -s ncp-activation", $output, $ret);
     if ($ret == 0) {
       header("Location: activate");
       exit();
     }
+    ini_set('session.cookie_httponly', 1);
+    if (isset($_SERVER['HTTPS']))
+      ini_set('session.cookie_secure', 1);
     session_start();
 
-    include('sidebar.php');
+    include('elements.php');
     $modules_path = '/usr/local/etc/ncp-config.d/';
     $l10nDir = "l10n";
 
@@ -38,16 +42,14 @@
     header("X-Frame-Options: DENY");
     header("Cache-Control: no-cache");
     header('Pragma: no-cache');
-    ini_set('session.cookie_httponly', 1);
-    if (isset($_SERVER['HTTPS']))
-      ini_set('session.cookie_secure', 1);
+    header('Expires: -1');
 
     // HTTP2 push headers
-    header("Link: </minified.js>; rel=preload; as=script;,</ncp.js>; rel=preload; as=script;,</ncp.css>; rel=preload; as=style;,</img/ncp-logo.svg>; rel=preload; as=image;, </img/loading-small.gif>; rel=preload; as=image;, rel=preconnect href=ncp-launcher.php;");
+    header("Link: </js/minified.js>; rel=preload; as=script;,</js/ncp.js>; rel=preload; as=script;,</css/ncp.css>; rel=preload; as=style;,</img/ncp-logo.svg>; rel=preload; as=image;, </img/loading-small.gif>; rel=preload; as=image;, rel=preconnect href=ncp-launcher.php;");
 
   ?>
     <link rel="icon" type="image/png" href="img/favicon.png"/>
-    <link rel="stylesheet" href="ncp.css">
+    <link rel="stylesheet" href="css/ncp.css">
 </head>
 <body id="body-user">
 <?php
@@ -70,9 +72,13 @@
   <?php
     exec("ncp-test-updates", $output, $ret);
     if ($ret == 0) {
+      $version  = "v0.0";
+      $ver_file = '/var/run/.ncp-latest-version';
+      if (file_exists($ver_file))
+        $version = file_get_contents($ver_file);
       echo '<div id="notification">';
       echo '<div id="update-notification" class="row type-error closeable">';
-      echo "version " . file_get_contents( '/var/run/.ncp-latest-version' ) . " is available";
+      echo "version " . $version . " is available";
       echo '<a class="action close icon-close" href="#" alt="Dismiss"></a>';
       echo '</div>';
       echo '</div>';
@@ -110,25 +116,30 @@ HTML;
         </div>
       </a>
       <a id=versionlink target="_blank" href="https://github.com/nextcloud/nextcloudpi/blob/master/changelog.md">
-        <?php echo file_get_contents( "/usr/local/etc/ncp-version" ) ?>
+        <?php
+          $version  = "v0.0";
+          $ver_file = "/usr/local/etc/ncp-version";
+          if (file_exists($ver_file))
+            $version = file_get_contents($ver_file);
+          echo $version;
+      ?>
       </a>
-<?php
-    // language selection drop
-    $selected_lang=$l->load_language_setting();
+      <?php
+        // language selection drop
+        $selected_lang=$l->load_language_setting();
 
-    $fh = fopen('langs.cfg', 'r');
-    echo "<select id=\"language-selection\" name=\"language-selection\">";
-    while ($line = fgets($fh)) {
-      echo "<option value='" . $line . "' ";
-      error_log("NACHO $line - $selected_lang");
-      if( $line == $selected_lang )
-        echo "selected='selected'";
-      echo ">". $line ."</option>";
-    }
-    echo "<option value=\"[new]\">new..</option>";
-    echo "</select>";
-    fclose($fh);
-?>
+        $fh = fopen('langs.cfg', 'r');
+        echo "<select id=\"language-selection\" name=\"language-selection\">";
+        while ($line = fgets($fh)) {
+          echo "<option value='" . $line . "' ";
+          if( $line == $selected_lang )
+            echo "selected='selected'";
+          echo ">". $line ."</option>";
+        }
+        echo "<option value=\"[new]\">new..</option>";
+        echo "</select>";
+        fclose($fh);
+    ?>
     </div>
     <div id="header-right">
       <a href="https://ownyourbits.com" id="nextcloud-btn" target="_blank" tabindex="1" title="<?php echo $l->__("Launch Nextcloud"); ?>">
@@ -174,42 +185,26 @@ HTML;
 	<div id="content" class="app-files" role="main">
         <div id='overlay' class="hidden"></div>
 		<div id="app-navigation">
-        	<ul id="ncp-options">
+        	<div id="ncp-options">
               <?php echo print_sidebar($l, false); ?>
-            </ul>
+            </div>
           </div>
 
       <div id="app-content">
         <div id="app-navigation-toggle" class="icon-menu hidden"></div>
 
-        <div id="config-wrapper" class="hidden">
-          <h2 id="config-box-title" class="text-title"><?php echo $l->__("System Info"); ?></h2>
-          <div id="config-box-info-txt"></div>
-          <a href="#" target="_blank">
-            <div id="config-extra-info" class="icon-info"></div>
-          </a>
-          <br/>
-          <div id="config-box-wrapper" class="table-wrapper">
-            <form>
-              <div id="config-box"></div>
-                <div id="config-button-wrapper">
-                  <button id="config-button"><?php echo $l->__("Run"); ?></button>
-                  <img id="loading-gif" src="img/loading-small.gif">
-                  <div id="circle-retstatus" class="icon-red-circle"></div>
-                </div>
-            </form>
-            <div id="details-box" class="outputbox"></div>
-          </div>
+        <div id="config-wrapper">
+          <?php echo print_config_forms($l); ?>
         </div>
 
-        <div id="dashboard-wrapper">
+        <div id="dashboard-wrapper" <?php if(array_key_exists('app',$_GET) && ($_GET['app'] != 'dashboard')) echo 'class="hidden"'; ?>>
           <h2 class="text-title"><?php echo $l->__("System Info"); ?></h2>
           <div id="dashboard-suggestions" class="table-wrapper"></div>
           <div id="dashboard-table" class="outputbox table-wrapper"></div>
           <div id="loading-info-gif"> <img src="img/loading-small.gif"> </div>
         </div>
 
-        <div id="nc-config-wrapper" class="hidden">
+        <div id="nc-config-wrapper" <?php if($_GET['app'] != 'config') echo 'class="hidden"';?>>
           <h2 class="text-title"><?php echo $l->__("Nextcloud configuration"); ?></h2>
           <div id="nc-config-box" class="table-wrapper">
 <?php
@@ -253,8 +248,8 @@ HTML;
     echo '<input type="hidden" id="csrf-token-ui"  name="csrf-token-ui"  value="' . getCSRFToken() . '"/>';
     echo '<input type="hidden" id="csrf-token-cfg" name="csrf-token-cfg" value="' . getCSRFToken() . '"/>';
   ?>
-    <script src="minified.js"></script>
-    <script src="ncp.js"></script>
+    <script src="js/minified.js"></script>
+    <script src="js/ncp.js"></script>
 </body>
 </html>
 

@@ -8,172 +8,211 @@
 # More at ownyourbits.com
 #
 
+CFGDIR=/usr/local/etc/ncp-config.d
+BINDIR=/usr/local/bin/ncp
 
-# Initializes $INSTALLATION_CODE
-function config()
+function configure_app()
 {
-  local INSTALL_SCRIPT="$1"
-  local BACKTITLE="NextCloudPi installer configuration"
+  local ncp_app="$1"
+  local cfg_file="$CFGDIR/$ncp_app.cfg"
+  local backtitle="NextCloudPi installer configuration"
+  local ret=1
 
+  # checks
   type dialog &>/dev/null || { echo "please, install dialog for interactive configuration"; return 1; }
+  [[ -f "$cfg_file" ]]    || return 0;
 
-  test -f "$INSTALL_SCRIPT" || { echo "file $INSTALL_SCRIPT not found"; return 1; }
-  local VARS=( $( grep "^[[:alpha:]]\+_=" "$INSTALL_SCRIPT" | sed 's|_=.*$||' ) )
-  local VALS=( $( grep "^[[:alpha:]]\+_=" "$INSTALL_SCRIPT" | sed 's|^.*_=||' ) )
+  local cfg="$( cat "$cfg_file" )"
+  local len="$(jq  '.params | length' <<<"$cfg")"
+  [[ $len -eq 0 ]] && return
 
-  [[ "$NO_CONFIG" == "1" ]] || test ${#VARS[@]} -eq 0 && { INSTALLATION_CODE="$( cat "$INSTALL_SCRIPT" )"; return; }
-
-  for i in $( seq 1 1 ${#VARS[@]} ); do
-    local PARAM+="${VARS[$((i-1))]} $i 1 ${VALS[$((i-1))]} $i 15 60 120 "
+  # read cfg parameters
+  for (( i = 0 ; i < len ; i++ )); do
+    local var="$(jq -r ".params[$i].id"    <<<"$cfg")"
+    local val="$(jq -r ".params[$i].value" <<<"$cfg")"
+    local vars+=("$var")
+    local vals+=("$val")
+    local idx=$((i+1))
+    local parameters+="$var $idx 1 $val $idx 15 60 120 "
   done
 
+  # dialog
   local DIALOG_OK=0
   local DIALOG_CANCEL=1
   local DIALOG_ERROR=254
   local DIALOG_ESC=255
-  local RET=0
+  local res=0
 
-  while test $RET != 1 && test $RET != 250; do
+  while test $res != 1 && test $res != 250; do
     local value
     value="$( dialog --ok-label "Start" \
-                     --no-lines --backtitle "$BACKTITLE" \
-                     --form "Enter configuration for $( basename "$INSTALL_SCRIPT" .sh )" \
-                     20 70 0 $PARAM \
+                     --no-lines --backtitle "$backtitle" \
+                     --form "Enter configuration for $ncp_app" \
+                     20 70 0 $parameters \
                3>&1 1>&2 2>&3 )"
-    RET=$?
-    case $RET in
+    res=$?
+ 
+    case $res in
       $DIALOG_CANCEL)
-        return 1
+        break
         ;;
       $DIALOG_OK)
-        local RET_VALS=()
-        while read l; do RET_VALS+=("$l"); done < <( echo -e "$value" )
+        while read val; do local ret_vals+=("$val"); done <<<"$value"
 
-        for i in $( seq 0 1 $(( ${#RET_VALS[@]} - 1 )) ); do
-
+        for (( i = 0 ; i < len ; i++ )); do
           # check for invalid characters
-          grep -q "[&[:space:]]" <<< "${RET_VALS[$i]}" && { echo "Invalid characters in field ${VARS[$i]}"; return 1; }
+          grep -q "[;&[:space:]]" <<< "${ret_vals[$i]}" && { echo "Invalid characters in field ${vars[$i]}"; break; }
 
-          local SEDRULE+="s|^${VARS[$i]}_=.*|${VARS[$i]}_=${RET_VALS[$i]}|;"
+          cfg="$(jq ".params[$i].value = \"${ret_vals[$i]}\"" <<<"$cfg")"
         done
+        ret=0
         break
         ;;
       $DIALOG_ERROR)
         echo "ERROR!$value"
-        return 1
+        break
         ;;
       $DIALOG_ESC)
         echo "ESC pressed."
-        return 1
+        break
         ;;
       *)
-        echo "Return code was $RET"
-        return 1
+        echo "Return code was $res"
+        break
         ;;
     esac
   done
 
-  INSTALLATION_CODE="$( sed "$SEDRULE" "$INSTALL_SCRIPT" )"
+  echo "$cfg" > "$cfg_file"
+  printf '\033[2J' && tput cup 0 0             # clear screen, don't clear scroll, cursor on top
+  return $ret
 }
 
-function install_script()
+function run_app()
 {
-  (
-    local SCRIPT=$1
-    source ./"$SCRIPT"
-    echo -e "Installing $( basename "$SCRIPT" .sh )"
-    set +x
-    install
-  )
+  local ncp_app=$1
+  local script="$(find "$BINDIR" -name $ncp_app.sh)"
+
+  [[ -f "$script" ]] || { echo "file $script not found"; return 1; }
+
+  run_app_unsafe "$script"
 }
 
-function activate_script()
+# receives a script file, no security checks
+function run_app_unsafe()
 {
-  local SCRIPT=$1
-  echo -e "Activating $( basename "$SCRIPT" .sh )"
-  launch_script "$SCRIPT"
+  local script=$1
+  local ncp_app="$(basename "$script" .sh)"
+  local cfg_file="$CFGDIR/$ncp_app.cfg"
+  local log=/var/log/ncp.log
+
+  [[ -f "$script" ]] || { echo "file $script not found"; return 1; }
+
+  touch               $log
+  chmod 640           $log
+  chown root:www-data $log
+
+  echo "Running $ncp_app"
+  echo "[ $ncp_app ]" >> $log
+
+  # read script
+  unset configure
+  source "$script"
+
+  # read cfg parameters
+  [[ -f "$cfg_file" ]] && {
+    local cfg="$( cat "$cfg_file" )"
+    local len="$(jq  '.params | length' <<<"$cfg")"
+    for (( i = 0 ; i < len ; i++ )); do
+      local var="$(jq -r ".params[$i].id"    <<<"$cfg")"
+      local val="$(jq -r ".params[$i].value" <<<"$cfg")"
+      eval "$var=$val"
+    done
+  }
+
+  # run
+  configure 2>&1 | tee -a $log
+  local ret="${PIPESTATUS[0]}"
+
+  echo "" >> $log
+
+  return "$ret"
 }
 
-function is_active_script()
+function is_active_app()
 {
-  (
-    local SCRIPT=$1
-    unset is_active
-    source "$SCRIPT"
-    [[ $( type -t is_active ) == function ]] && {
-      is_active
-      return $?
-    }
-    grep -q "^ACTIVE_=yes" "$SCRIPT" && return 0
-  )
-}
+  local ncp_app=$1
+  local bin_dir=${2:-.}
+  local script="$bin_dir/$ncp_app.sh"
+  local cfg_file="$CFGDIR/$ncp_app.cfg"
 
-function run_and_log()
-{
-  local SCRIPT=$1
-  touch /var/log/ncp.log
-  chmod 640 /var/log/ncp.log
-  chown root:www-data /var/log/ncp.log
-  echo -e "[ $( basename "$SCRIPT" .sh ) ]" >> /var/log/ncp.log
-  configure 2>&1 | tee -a /var/log/ncp.log
-  local RET="${PIPESTATUS[0]}"
-  echo "" >> /var/log/ncp.log
-  return "$RET"
-}
+  [[ -f "$script" ]] || local script="$(find "$BINDIR" -name $ncp_app.sh)"
+  [[ -f "$script" ]] || { echo "file $script not found"; return 1; }
 
-function launch_script()
-{
-  (
-    local SCRIPT=$1
-    source ./"$SCRIPT"
-    set +x
-    run_and_log "$SCRIPT"
-  )
+  # function
+  unset is_active
+  source "$script"
+  [[ $( type -t is_active ) == function ]] && { is_active; return $?; }
+
+  # config
+  [[ -f "$cfg_file" ]] || return 1
+
+  local cfg="$( cat "$cfg_file" )"
+  [[ "$(jq -r ".params[0].id"    <<<"$cfg")" == "ACTIVE" ]] && \
+  [[ "$(jq -r ".params[0].value" <<<"$cfg")" == "yes"    ]] && \
+  return 0
 }
 
 # show an info box for a script if the INFO variable is set in the script
-function info_script()
+function info_app()
 {
-  (
-    local SCRIPT=$1
-    cd /usr/local/etc/ncp-config.d/ || return 1
-    unset show_info INFO INFOTITLE
-    source ./"$SCRIPT"
-    local INFOTITLE="${INFOTITLE:-Info}"
-    [[ "$INFO" == "" ]] && return 0
-    whiptail --yesno --backtitle "NextCloudPi configuration" --title "$INFOTITLE" "$INFO" 20 90
-  )
+  local ncp_app=$1
+  local cfg_file="$CFGDIR/$ncp_app.cfg"
+
+  local cfg="$( cat "$cfg_file" 2>/dev/null )"
+  local info=$( jq -r .info <<<"$cfg" )
+  local infotitle=$( jq -r .infotitle <<<"$cfg" )
+
+  [[ "$info"      == "" ]] || [[ "$info"      == "null" ]] && return 0
+  [[ "$infotitle" == "" ]] || [[ "$infotitle" == "null" ]] && infotitle="Info"
+
+  whiptail --yesno \
+	  --backtitle "NextCloudPi configuration" \
+	  --title "$infotitle" \
+	  --yes-button "I understand" \
+	  --no-button "Go back" \
+	  "$info" 20 90
 }
 
-function configure_script()
+function install_app()
 {
-  (
-    local SCRIPT=$1
-    cd /usr/local/etc/ncp-config.d/ || return 1
-    config "$SCRIPT" || return 1                 # writes "$INSTALLATION_CODE"
-    echo -e "$INSTALLATION_CODE" > "$SCRIPT"     # save configuration
-    source ./"$SCRIPT"                           # load configuration
-    printf '\033[2J' && tput cup 0 0             # clear screen, don't clear scroll, cursor on top
-    echo -e "Launching $( basename "$SCRIPT" .sh )"
-    set +x
-    run_and_log "$SCRIPT"
-    return 0
-  )
+  local ncp_app=$1
+
+  # $1 can be either an installed app name or an app script
+  if [[ -f "$ncp_app" ]]; then
+    local script="$ncp_app"
+    local ncp_app="$(basename "$script" .sh)"
+  else
+    local script="$(find "$BINDIR" -name $ncp_app.sh)"
+  fi
+
+  # do it
+  unset install
+  source "$script"
+  echo "Installing $ncp_app"
+  (install)
 }
 
 function cleanup_script()
 {
-  (
-    local SCRIPT=$1
-    cd /usr/local/etc/ncp-config.d/ || return 1
-    unset cleanup
-    source ./"$SCRIPT"
-    if [[ $( type -t cleanup ) == function ]]; then
-      cleanup
-      return $?
-    fi
-    return 0
-  )
+  local script=$1
+  unset cleanup
+  source "$script"
+  if [[ $( type -t cleanup ) == function ]]; then
+    cleanup
+    return $?
+  fi
+  return 0
 }
 
 function persistent_cfg()

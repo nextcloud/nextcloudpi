@@ -7,7 +7,8 @@ SHELL ["/bin/bash", "-c"]
 ENV DOCKERBUILD 1
 
 COPY etc/library.sh /usr/local/etc/
-COPY etc/ncp-config.d/nc-init.sh etc/ncp-config.d/nc-nextcloud.sh /
+COPY bin/ncp/CONFIG/nc-nextcloud.sh /
+COPY etc/ncp-config.d/nc-nextcloud.cfg /usr/local/etc/ncp-config.d/
 
 RUN \
 
@@ -16,11 +17,11 @@ touch /.ncp-image; \
 
 # installation ( /var/www/nextcloud -> /data/app which will be in a volume )
 apt-get update; \
-apt-get install --no-install-recommends -y wget ca-certificates sudo; \
+apt-get install --no-install-recommends -y wget ca-certificates sudo jq; \
 source /usr/local/etc/library.sh; \
 set +x; \
-install_script  /nc-nextcloud.sh; \
-activate_script /nc-nextcloud.sh; \
+install_app /nc-nextcloud.sh; \
+run_app_unsafe /nc-nextcloud.sh; \
 mv /var/www/nextcloud /data-ro/app; \
 ln -s /data-ro/app /var/www/nextcloud; \
 
@@ -38,7 +39,7 @@ rm -f /var/log/alternatives.log /var/log/apt/*; \
 
 # specific cleanup
 apt-get purge -y wget ca-certificates; \
-rm /nc-nextcloud.sh; \
+rm /nc-nextcloud.sh /usr/local/etc/ncp-config.d/nc-nextcloud.cfg; \
 rm /.ncp-image; 
 
 COPY docker-common/nextcloud/020nextcloud /etc/services-enabled.d/

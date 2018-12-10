@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 cleanup()
 {
   for file in $( ls -1rv /etc/services-enabled.d ); do

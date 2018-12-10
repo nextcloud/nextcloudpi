@@ -12,6 +12,7 @@ WEBADMIN=ncp
 WEBPASSWD=ownyourbits
 BRANCH=master
 
+BINDIR=/usr/local/bin/ncp
 CONFDIR=/usr/local/etc/ncp-config.d/
 APTINSTALL="apt-get install -y --no-install-recommends"
 export DEBIAN_FRONTEND=noninteractive
@@ -21,8 +22,8 @@ install()
 {
   # NCP-CONFIG
   apt-get update
-  $APTINSTALL git dialog whiptail
-  mkdir -p $CONFDIR
+  $APTINSTALL git dialog whiptail jq
+  mkdir -p "$CONFDIR" "$BINDIR"
 
   # include option in raspi-config (only Raspbian)
   test -f /usr/bin/raspi-config && {
@@ -129,12 +130,8 @@ EOF
 
   cat > /home/www/ncp-launcher.sh <<'EOF'
 #!/bin/bash
-DIR=/usr/local/etc/ncp-config.d
-[[ -f $DIR/$1  ]] || { echo "File not found"; exit 1; }
-[[ "$1" =~ ../ ]] && { echo "Forbidden path"; exit 2; }
 source /usr/local/etc/library.sh
-cd $DIR
-launch_script $1
+run_app $1
 EOF
   chmod 700 /home/www/ncp-launcher.sh
   echo "www-data ALL = NOPASSWD: /home/www/ncp-launcher.sh , /sbin/halt, /sbin/reboot" >> /etc/sudoers
@@ -169,7 +166,6 @@ cd /var/www/nextcloud
 sudo -u www-data php occ config:system:set trusted_domains 1 --value=$IP
 EOF
 
-  # make sure this is called on last re-boot
   [[ "$DOCKERBUILD" != 1 ]] && systemctl enable nextcloud-domain 
 
   # NEXTCLOUDPI UPDATES
