@@ -16,7 +16,7 @@ This code also generates the [NextCloudPi docker images](https://hub.docker.com/
  * Apache 2.4.25, with HTTP2 enabled
  * PHP 7.2
  * MariaDB 10
- * Redis memory cache ( NEW 11-12-2017 )
+ * Redis memory cache
  * ncp-config for easy setup ( RAM logs, USB drive and more )
  * Automatic redirection to HTTPS
  * ACPU PHP cache
@@ -24,44 +24,44 @@ This code also generates the [NextCloudPi docker images](https://hub.docker.com/
  * HSTS
  * Cron jobs for Nextcloud
  * Sane configuration defaults
- * Full emoji support ( NEW 05-24-2017 )
+ * Full emoji support
  * Postfix email
  * Secure
 
 ## Extras
 
- * Setup wizard ( NEW 09-27-2017 )
- * NextCloudPi Web Panel ( NEW 07-24-2017 )
- * Wi-Fi ready ( NEW 03-31-2017 )
- * Ram logs ( NEW 03-31-2017 )
- * Automatic security updates, activated by default. ( NEW 03-21-2017 )
- * Let’s Encrypt for trusted HTTPS certificates.(  NEW 03-16-2017 )
- * Fail2Ban protection against brute force attacks. ( NEW 02-24-2017 )
- * UFW firewall ( NEW 07-02-2018 )
- * Dynamic DNS support for no-ip.org ( NEW 03-05-2017 )
- * Dynamic DNS support for freeDNS ( NEW 09-05-2017 )
- * Dynamic DNS support for duckDNS ( NEW 09-27-2017 )
- * Dynamic DNS support for spDYN ( NEW 11-12-2017 )
- * dnsmasq DNS server with DNS cache ( NEW 03-09-2017 )
- * ModSecurity Web Application Firewall ( NEW 03-23-2017 )
- * NFS ready to mount your files over LAN ( NEW 04-13-2017 )
- * SAMBA ready to share your files with Windows/Mac/Linux ( NEW 04-16-2017 )
- * USB automount ( NEW 05-24-2017 )
- * Remote updates ( NEW 03-31-2017 )
- * Autoumatic NCP updates ( NEW 08-16-2017 )
- * Automatic Nextcloud updates ( NEW 05-29-2018 )
- * Update notifications ( NEW 08-16-2017 )
- * NextCloud backup and restore ( NEW 05-24-2017 )
- * NextCloud online installation ( NEW 05-24-2017 )
- * Format USB drive to BTRFS ( NEW 07-03-2017 )
- * BTRFS snapshots ( NEW 04-12-2017 )
- * Automatic BTRFS snapshots ( NEW 07-02-2018 )
- * BTRFS snapshot auto sync ( NEW 19-03-2018 )
- * scheduled rsync ( NEW 19-03-2018 )
- * ZRAM ( NEW 19-03-2018 )
- * UPnP automatic port forwarding ( NEW 07-03-2017 )
- * Security audits with Lynis and Debsecan ( NEW 07-02-2018 )
- * ZRAM ( NEW 19-03-2018 )
+ * Setup wizard
+ * NextCloudPi Web Panel
+ * Wi-Fi ready
+ * Ram logs
+ * Automatic security updates, activated by default.
+ * Let’s Encrypt for trusted HTTPS certificates.
+ * Fail2Ban protection against brute force attacks.
+ * UFW firewall
+ * Dynamic DNS support for no-ip.org
+ * Dynamic DNS support for freeDNS
+ * Dynamic DNS support for duckDNS
+ * Dynamic DNS support for spDYN
+ * dnsmasq DNS server with DNS cache
+ * ModSecurity Web Application Firewall
+ * NFS ready to mount your files over LAN
+ * SAMBA ready to share your files with Windows/Mac/Linux
+ * USB automount
+ * Remote updates
+ * Automatic NCP updates
+ * Automatic Nextcloud updates
+ * Update notifications
+ * NextCloud backup and restore
+ * NextCloud online installation
+ * Format USB drive to BTRFS
+ * BTRFS snapshots
+ * Automatic BTRFS snapshots
+ * BTRFS snapshot auto sync
+ * scheduled rsync
+ * UPnP automatic port forwarding
+ * Security audits with Lynis and Debsecan
+ * ZRAM
+ * SMART hard drive health monitoring
 
 Extras can be activated and configured using the web interface at HTTPS port 4443
 
