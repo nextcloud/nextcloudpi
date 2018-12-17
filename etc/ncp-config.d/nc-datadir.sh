@@ -95,7 +95,7 @@ configure()
   # tmp upload dir
   mkdir -p "$DATADIR_/tmp" 
   chown www-data:www-data "$DATADIR_/tmp"
-  sudo -u www-data php occ config:system:set tempdirectory "$DATADIR_/tmp"
+  sudo -u www-data php occ config:system:set tempdirectory --value "$DATADIR_/tmp"
   sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $DATADIR_/tmp|" /etc/php/${PHPVER}/cli/php.ini
   sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $DATADIR_/tmp|" /etc/php/${PHPVER}/fpm/php.ini
   sed -i "s|^;\?sys_temp_dir =.*$|sys_temp_dir = $DATADIR_/tmp|"     /etc/php/${PHPVER}/fpm/php.ini

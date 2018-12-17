@@ -1,5 +1,7 @@
 
-[v0.67.6](https://github.com/nextcloud/nextcloudpi/commit/f9f62eb) (2018-12-01) build: start sharing torrents automatically
+[v0.67.7](https://github.com/nextcloud/nextcloudpi/commit/99fb4a5) (2018-12-16) fix tempdir config
+
+[v0.67.6 ](https://github.com/nextcloud/nextcloudpi/commit/ca7bc90) (2018-12-06) nc-init: fix missing variable
 
 [v0.67.5 ](https://github.com/nextcloud/nextcloudpi/commit/d19a7f7) (2018-12-01) nc-datadir: also use tempdirectory setting
 

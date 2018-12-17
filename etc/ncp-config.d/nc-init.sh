@@ -107,7 +107,7 @@ EOF
   local UPLOADTMPDIR=/var/www/nextcloud/data/tmp
   mkdir -p "$UPLOADTMPDIR"
   chown www-data:www-data "$UPLOADTMPDIR"
-  sudo -u www-data php occ config:system:set tempdirectory "$UPLOADTMPDIR"
+  sudo -u www-data php occ config:system:set tempdirectory --value "$UPLOADTMPDIR"
   sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $UPLOADTMPDIR|" /etc/php/${PHPVER}/cli/php.ini
   sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $UPLOADTMPDIR|" /etc/php/${PHPVER}/fpm/php.ini
   sed -i "s|^;\?sys_temp_dir =.*$|sys_temp_dir = $UPLOADTMPDIR|"     /etc/php/${PHPVER}/fpm/php.ini
