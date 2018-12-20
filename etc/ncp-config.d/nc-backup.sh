@@ -61,7 +61,7 @@ FREE=$( df    "$DESTDIR" | tail -1 | awk '{ print $4 }' )
 
 # database
 $OCC maintenance:mode --on
-[[ -f /.docker-image ]] && mv /data/app /data/nextcloud
+[[ -f /.docker-image ]] && mv /data/app /data/nextcloud && DATADIR=/data/nextcloud/data
 [[ -f /.docker-image ]] && BASEDIR=/data || BASEDIR=/var/www
 cd "$BASEDIR" || exit 1
 echo "backup database..."
