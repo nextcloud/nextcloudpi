@@ -19,6 +19,21 @@ is_active()
   systemctl -q is-active log2ram &>/dev/null
 }
 
+find_unit_name()
+{
+  UNIT_NAME=""
+  entry=$(systemctl list-unit-files --no-pager | grep -e ramlog)
+  if [[ -z "$entry" ]]
+  then
+    UNIT_NAME=""
+  elif [[ $entry == *armbian-ramlog* ]]
+  then
+    UNIT_NAME=armbian-ramlog
+  else
+    UNIT_NAME=log2ram
+  fi
+}
+
 install()
 {
   [[ -d /var/log.hdd ]] || [[ -d /var/hdd.log ]] && { echo "log2ram detected, not installing"; return; }
@@ -36,14 +51,20 @@ install()
 
 configure()
 {
+  find_unit_name
+  if [[ -z "$UNIT_NAME" ]]
+  then
+    echo "ERROR: log2ram service not found!"
+  fi
+
   [[ $ACTIVE_ != "yes" ]] && {
-    systemctl disable log2ram
-    systemctl stop    log2ram
+    systemctl disable "$UNIT_NAME"
+    systemctl stop    "$UNIT_NAME"
     echo "Logs in SD. Reboot to take effect"
     return
   }
-  systemctl enable log2ram
-  systemctl start  log2ram
+  systemctl enable "$UNIT_NAME"
+  systemctl start  "$UNIT_NAME"
 
   echo "Logs in RAM. Reboot to take effect"
 }
@@ -64,4 +85,3 @@ configure()
 # along with this script; if not, write to the
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
-
