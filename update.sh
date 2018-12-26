@@ -134,6 +134,13 @@ EOF
   [[ ! -f /.docker-image ]] && {
     :
   }
+  
+  # Update cronfile for DDNS_spDYN if existing
+  cd /etc/cron.d
+  [[ -f spdnsupdater ]] && {
+    sed -i "s|.* [* * * *]|*/5 * * * *|" spdnsupdater
+  }
+  
 
   # update nc-restore
   cd "$CONFDIR" &>/dev/null
