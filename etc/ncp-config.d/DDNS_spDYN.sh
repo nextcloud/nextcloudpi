@@ -105,7 +105,7 @@ configure()
     
     # Adds file to cron to run script for DNS record updates and change permissions
     touch $CRONFILE
-    echo "10 * * * * root $INSTALLPATH/spdnsUpdater.sh $DOMAIN_ $TOKEN_ $IPv6_ >/dev/null 2>&1" > "$CRONFILE"
+    echo "*/5 * * * * root $INSTALLPATH/spdnsUpdater.sh $DOMAIN_ $TOKEN_ $IPv6_ >/dev/null 2>&1" > "$CRONFILE"
     chmod +x "$CRONFILE"
 
     # First-time execution of update script and print response from spdns.de server
