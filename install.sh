@@ -46,11 +46,14 @@ cd - && cd "$TMPDIR"/nextcloudpi-"$BRANCH"
 echo -e "\nInstalling NextCloudPi"
 source etc/library.sh
 
-install_app  lamp.sh
-install_app  etc/ncp-config.d/nc-nextcloud.sh
-run_app      etc/ncp-config.d/nc-nextcloud.sh
-install_app  ncp.sh
-run_app      etc/ncp-config.d/nc-init.sh
+mkdir -p /usr/local/etc/ncp-config.d/
+cp etc/ncp-config.d/nc-nextcloud.cfg /usr/local/etc/ncp-config.d/
+
+install_app    lamp.sh
+install_app    etc/ncp-config.d/nc-nextcloud.sh
+run_app_unsafe etc/ncp-config.d/nc-nextcloud.sh
+install_app    ncp.sh
+run_app_unsafe etc/ncp-config.d/nc-init.sh
 
 popd
 
