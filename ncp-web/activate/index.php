@@ -61,7 +61,7 @@ HTML;
     include('../csrf.php');
     echo '<input type="hidden" id="csrf-token" name="csrf-token" value="' . getCSRFToken() . '"/>';
   ?>
-  <script src="../minified.js"></script>
+  <script src="../js/minified.js"></script>
   <script src="JS.js"></script>
 </body>
 </html>
