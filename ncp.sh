@@ -178,8 +178,11 @@ EOF
   chown root:www-data /var/run/.ncp-latest-version
   chmod g+w           /var/run/.ncp-latest-version
 
-  # update to latest version from github as part of the build process
-  bin/ncp-update $BRANCH
+  # Install all ncp-apps
+  ./update.sh || exit 1
+  local VER=$( git describe --always --tags | grep -oP "v\d+\.\d+\.\d+" )
+  grep -qP "v\d+\.\d+\.\d+" <<< "$VER" || { echo "Invalid format"; exit 1; }
+  echo "$VER" > /usr/local/etc/ncp-version
 
   # LIMIT LOG SIZE
   grep -q maxsize /etc/logrotate.d/apache2 || sed -i /weekly/amaxsize2M /etc/logrotate.d/apache2

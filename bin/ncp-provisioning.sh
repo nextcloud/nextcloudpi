@@ -50,7 +50,7 @@ EOF
 ## nc.limits.sh (auto)adjustments: number of threads, memory limits...
 
 source /usr/local/etc/library.sh
-run_app nc-limits
+configure_app nc-limits && run_app nc-limits
 
 ## Check for interrupted upgrades and rollback
 BKP="$( ls -1t /var/www/nextcloud-bkp_*.tar.gz 2>/dev/null | head -1 )"
