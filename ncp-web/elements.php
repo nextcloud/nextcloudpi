@@ -36,6 +36,16 @@ HTML;
         $checked = 'checked';
       $ret .= "<td><input type=\"checkbox\" id=\"$ncp_app-$param[id]\" name=\"$param[name]\" value=\"$param[value]\" $checked></td>";
     }
+
+    // password
+    else if ($param['type'] == 'password')
+    {
+      $ret .= "<td>";
+      $ret .= "<input type=\"password\" name=\"$param[name]\" id=\"$ncp_app-$param[id]\" value=\"$param[value]\" size=\"40\">";
+      $ret .= "<img class=\"pwd-btn\" title=\"show password\" src=\"../img/info.svg\">";
+      $ret .= "</td>";
+    }
+
     $ret .= "</tr>";
   }
 

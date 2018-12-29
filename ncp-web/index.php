@@ -72,7 +72,7 @@
   <?php
     exec("ncp-test-updates", $output, $ret);
     if ($ret == 0) {
-      $version  = "v0.0";
+      $version  = "v0.0.0";
       $ver_file = '/var/run/.ncp-latest-version';
       if (file_exists($ver_file))
         $version = file_get_contents($ver_file);

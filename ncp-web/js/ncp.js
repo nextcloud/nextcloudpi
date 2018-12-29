@@ -252,6 +252,15 @@ $(function()
   });
 
   // Update notification
+  $( '.pwd-btn' ).on('click', function(e)
+    {
+      var input = this.trav('previousSibling', 1);
+      if ( input.get('.type') == 'password' )
+        input.set('.type', 'text');
+      else if ( input.get('.type') == 'text' )
+        input.set('.type', 'password');
+    });
+  // Update notification
   $( '#notification' ).on('click', function(e)
   {
     if ( lock ) return;

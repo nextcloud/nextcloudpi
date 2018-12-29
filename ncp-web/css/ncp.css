@@ -1064,7 +1064,7 @@ select {
   margin: 0 auto;
 }
 
-.table-wrapper input[type='text'] {
+.table-wrapper input[type='text'], .table-wrapper input[type='password'] {
   width: 100%;
 }
 
@@ -1335,4 +1335,8 @@ a#versionlink:hover {
 #language-selection {
   border: none;
   color: white;
+}
+
+.pwd-btn {
+  cursor: pointer;
 }

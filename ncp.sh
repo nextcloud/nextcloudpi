@@ -179,10 +179,7 @@ EOF
   chmod g+w           /var/run/.ncp-latest-version
 
   # Install all ncp-apps
-  ./update.sh || exit 1
-  local VER=$( git describe --always --tags | grep -oP "v\d+\.\d+\.\d+" )
-  grep -qP "v\d+\.\d+\.\d+" <<< "$VER" || { echo "Invalid format"; exit 1; }
-  echo "$VER" > /usr/local/etc/ncp-version
+  bin/ncp-update $BRANCH || exit 1
 
   # LIMIT LOG SIZE
   grep -q maxsize /etc/logrotate.d/apache2 || sed -i /weekly/amaxsize2M /etc/logrotate.d/apache2
