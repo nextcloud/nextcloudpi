@@ -125,7 +125,10 @@ function print_sidebar( $l /* translations l10n object */, $ticks /* wether to c
       } else if (sizeof($cfg['params']) > 0 && $cfg['params'][0]['id'] == 'ACTIVE' && $cfg['params'][0]['value'] == 'yes')
         $active = " ✓";
 
-      $ret .= "<ul id=\"$ncp_app\" class=\"nav-recent\">";
+      $selected = "";
+      if (array_key_exists('app',$_GET) && $_GET['app'] == $ncp_app)
+        $selected = "active";
+      $ret .= "<ul id=\"$ncp_app\" class=\"nav-recent $selected\">";
       $ret .=   "<a href=\"#\"> {$l->__($ncp_app, $ncp_app)}$active </a>";
       $ret .= "</ul>";
     }
