@@ -1,5 +1,15 @@
 
-[v0.67.7](https://github.com/nextcloud/nextcloudpi/commit/99fb4a5) (2018-12-16) fix tempdir config
+[v0.67.12](https://github.com/nextcloud/nextcloudpi/commit/d04ae7b) (2018-12-29) curl installer: add provisioning step
+
+[v0.67.11](https://github.com/nextcloud/nextcloudpi/commit/4307b14) (2018-12-27) dynDNS: pdate cron execution interval (#754)
+
+[v0.67.10](https://github.com/nextcloud/nextcloudpi/commit/2e9440d) (2018-12-23) log2ram:  adapt to new name in armbian (#749)
+
+[v0.67.9 ](https://github.com/nextcloud/nextcloudpi/commit/e87c972) (2018-12-21) docker: fix DATADIR variable in nc-backup (#746)
+
+[v0.67.8 ](https://github.com/nextcloud/nextcloudpi/commit/9766dc2) (2018-12-17) nc-init: update echo at end when init done. (#738)
+
+[v0.67.7 ](https://github.com/nextcloud/nextcloudpi/commit/d75ecc2) (2018-12-16) fix tempdir config
 
 [v0.67.6 ](https://github.com/nextcloud/nextcloudpi/commit/ca7bc90) (2018-12-06) nc-init: fix missing variable
 

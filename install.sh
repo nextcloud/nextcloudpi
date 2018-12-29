@@ -51,6 +51,7 @@ install_script  etc/ncp-config.d/nc-nextcloud.sh
 activate_script etc/ncp-config.d/nc-nextcloud.sh
 install_script  ncp.sh
 activate_script etc/ncp-config.d/nc-init.sh
+bash /usr/local/bin/ncp-provisioning.sh
 
 popd
 
