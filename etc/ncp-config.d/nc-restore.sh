@@ -161,6 +161,9 @@ sed -i "s|^;\?sys_temp_dir =.*$|sys_temp_dir = $DATADIR/tmp|"     /etc/php/${PHP
 # refresh nextcloud trusted domains
 bash /usr/local/bin/nextcloud-domain.sh
 
+# update the systems data-fingerprint
+sudo -u www-data php occ maintenance:data-fingerprint
+
 # restart PHP if needed
 [[ "$NEED_RESTART" == "1" ]] && \
   bash -c " sleep 3; service php${PHPVER}-fpm restart" &>/dev/null &
