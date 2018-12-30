@@ -16,7 +16,8 @@
     echo "No internet connectivity"
     exit 1
   }
-  cd "$TMPDIR"         # update locally during build
+
+  [[ -f /.ncp-image ]] || cd "$TMPDIR"         # update locally during build
 
   echo -e "Performing updates"
   ./update.sh && {

@@ -117,7 +117,7 @@ HTML;
       </a>
       <a id=versionlink target="_blank" href="https://github.com/nextcloud/nextcloudpi/blob/master/changelog.md">
         <?php
-          $version  = "v0.0";
+          $version  = "v0.0.0";
           $ver_file = "/usr/local/etc/ncp-version";
           if (file_exists($ver_file))
             $version = file_get_contents($ver_file);

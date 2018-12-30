@@ -34,7 +34,7 @@ function switch_to_section(section)
   $( '#dashboard-wrapper'       ).hide();
   $( '#nc-config-wrapper'       ).hide();
   $( '#' + section + '-wrapper' ).show();
-  $( '#' + selectedID ).set('-active');
+  $( '#app-navigation ul' ).set('-active');
   selectedID = null;
 }
 
@@ -102,7 +102,7 @@ function set_sidebar_click_handlers()
     if ( window.innerWidth <= 768 )
       close_menu();
 
-    $( '#' + selectedID ).set('-active');
+    $( '#app-navigation ul' ).set('-active');
     app_clicked(this);
     history.pushState(null, selectedID, "?app=" + selectedID);
   });
@@ -251,7 +251,7 @@ $(function()
       }).error( errorMsg );
   });
 
-  // Update notification
+  // Show password button
   $( '.pwd-btn' ).on('click', function(e)
     {
       var input = this.trav('previousSibling', 1);
@@ -260,13 +260,21 @@ $(function()
       else if ( input.get('.type') == 'text' )
         input.set('.type', 'password');
     });
+
+  // Reset to defaults button
+  $( '.default-btn' ).on('click', function(e)
+    {
+      var input = this.trav('previousSibling', 1);
+      input.set('.value', input.get('@default'));
+    });
+
   // Update notification
   $( '#notification' ).on('click', function(e)
   {
     if ( lock ) return;
     lock = true;
     
-    $( '#' + selectedID ).set('-active');
+    $( '#app-navigation ul' ).set('-active');
 
     app_clicked( $('#nc-update') );
 

@@ -1337,6 +1337,6 @@ a#versionlink:hover {
   color: white;
 }
 
-.pwd-btn {
+.pwd-btn, .default-btn {
   cursor: pointer;
 }

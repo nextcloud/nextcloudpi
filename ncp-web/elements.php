@@ -25,7 +25,29 @@ HTML;
     // default to text input
     if (!array_key_exists('type', $param))
     {
-      $ret .= "<td><input type=\"text\" name=\"$param[name]\" id=\"$ncp_app-$param[id]\" value=\"$param[value]\" size=\"40\"></td>";
+      $suggest = '';
+      if (array_key_exists('suggest', $param))
+        $suggest = $param['suggest'];
+
+      $default = '';
+      if (array_key_exists('default', $param))
+        $default = $param['default'];
+
+      $ret .= "<td>
+                <input type=\"text\"
+                  name=\"$param[name]\"
+                  id=\"$ncp_app-$param[id]\"
+                  value=\"$param[value]\"
+                  default=\"$default\"
+                  placeholder=\"$suggest\"
+                size=\"40\">";
+
+      if (array_key_exists('default', $param))
+      {
+        $ret .= "<img class=\"default-btn\" title=\"restore defaults\" src=\"../img/info.svg\">";
+      }
+
+      $ret .= "</td>";
     }
 
     // checkbox
@@ -34,14 +56,23 @@ HTML;
       $checked = "";
       if ($param['value'] == 'yes')
         $checked = 'checked';
-      $ret .= "<td><input type=\"checkbox\" id=\"$ncp_app-$param[id]\" name=\"$param[name]\" value=\"$param[value]\" $checked></td>";
+      $ret .= "<td><input type=\"checkbox\"
+                  id=\"$ncp_app-$param[id]\"
+                  name=\"$param[name]\"
+                  value=\"$param[value]\"
+                  $checked>
+                </td>";
     }
 
     // password
     else if ($param['type'] == 'password')
     {
       $ret .= "<td>";
-      $ret .= "<input type=\"password\" name=\"$param[name]\" id=\"$ncp_app-$param[id]\" value=\"$param[value]\" size=\"40\">";
+      $ret .= "<input type=\"password\"
+                name=\"$param[name]\"
+                id=\"$ncp_app-$param[id]\"
+                value=\"$param[value]\"
+              size=\"40\">";
       $ret .= "<img class=\"pwd-btn\" title=\"show password\" src=\"../img/info.svg\">";
       $ret .= "</td>";
     }
