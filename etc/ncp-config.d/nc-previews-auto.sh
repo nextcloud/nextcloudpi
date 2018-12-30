@@ -53,9 +53,9 @@ configure()
       sudo -u www-data php /var/www/nextcloud/occ config:app:set --value="128 256 512" previewgenerator widthSizes
       sudo -u www-data php /var/www/nextcloud/occ config:app:set --value="128 256" previewgenerator heightSizes
     else
-      sudo -u www-data php /var/www/nextcloud/occ config:system:delete previewgenerator squareSizes
-      sudo -u www-data php /var/www/nextcloud/occ config:system:delete previewgenerator widthSizes
-      sudo -u www-data php /var/www/nextcloud/occ config:system:delete previewgenerator heightSizes
+      sudo -u www-data php /var/www/nextcloud/occ config:app:delete previewgenerator squareSizes
+      sudo -u www-data php /var/www/nextcloud/occ config:app:delete previewgenerator widthSizes
+      sudo -u www-data php /var/www/nextcloud/occ config:app:delete previewgenerator heightSizes
   fi
    
 ### Optional use
