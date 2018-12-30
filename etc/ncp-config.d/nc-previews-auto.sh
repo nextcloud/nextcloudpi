@@ -9,8 +9,12 @@
 ACTIVE_=no
 STARTTIME_=210
 RUNTIME_=60
-SHOW_SMALLONLY_=yes
-GEN_SMALLONLY_=yes
+SMALLONLY_=yes
+  # Only use when not using SHOW_SMALLONLY_
+#GEN_SMALLONLY_=yes
+  # Only use in combination with SHOW_SMALLONLY_
+#SHOW_SMALLONLY_=yes
+  # Only use in combination with GEN_SMALLONLY_
 
 DESCRIPTION="Periodically generate previews for the gallery"
 INFO="Set the STARTTIME in minutes after midnight and RUNTIME in minutes.
@@ -29,8 +33,9 @@ isactive()
 configure()
 {
   [[ $ACTIVE_ != "yes" ]] && { 
-    rm /etc/cron.d/nc-previews-auto
+    rm -f /etc/cron.d/nc-previews-auto
     service cron restart
+    echo ""
     echo "Automatic preview generation disabled"
     return 0
   }
@@ -41,7 +46,8 @@ configure()
   #   Gallery folder preview: width 128, 256; heigth 128, 256
   #   Gallery preview: width 512; height 256
   # 
-  if [ $GEN_SMALLONLY_ == "yes" ]
+#  if [ $GEN_SMALLONLY_ == "yes" ] # Can be used in combination with SHOW_SMALLONLY_
+  if [ $SMALLONLY_ == "yes" ]
     then
       sudo -u www-data php /var/www/nextcloud/occ config:app:set --value="32"  previewgenerator squareSizes
       sudo -u www-data php /var/www/nextcloud/occ config:app:set --value="128 256 512" previewgenerator widthSizes
@@ -51,17 +57,18 @@ configure()
       sudo -u www-data php /var/www/nextcloud/occ config:system:delete previewgenerator widthSizes
       sudo -u www-data php /var/www/nextcloud/occ config:system:delete previewgenerator heightSizes
   fi
-  
-   if [ $SHOW_SMALLONLY_ == "yes" ]
-    then
-      sudo -u www-data php /var/www/nextcloud/occ config:system:set preview_max_x --value="1024"
-      sudo -u www-data php /var/www/nextcloud/occ config:system:set preview_max_y --value="768"
-      sudo -u www-data php /var/www/nextcloud/occ config:system:set preview_max_scale_factor --value="1"
-    else
-      sudo -u www-data php /var/www/nextcloud/occ config:system:delete preview_max_x
-      sudo -u www-data php /var/www/nextcloud/occ config:system:delete preview_max_y
-      sudo -u www-data php /var/www/nextcloud/occ config:system:delete preview_max_scale_factor
-  fi
+   
+### Optional use
+#   if [ $SHOW_SMALLONLY_ == "yes" ]
+#    then
+#      sudo -u www-data php /var/www/nextcloud/occ config:system:set preview_max_x --value="1024"
+#      sudo -u www-data php /var/www/nextcloud/occ config:system:set preview_max_y --value="768"
+#      sudo -u www-data php /var/www/nextcloud/occ config:system:set preview_max_scale_factor --value="1"
+#    else
+#      sudo -u www-data php /var/www/nextcloud/occ config:system:delete preview_max_x
+#      sudo -u www-data php /var/www/nextcloud/occ config:system:delete preview_max_y
+#      sudo -u www-data php /var/www/nextcloud/occ config:system:delete preview_max_scale_factor
+#  fi
   
   # set crontab
   local STARTHOUR STARTMIN STOPHOUR STOPMIN
@@ -76,6 +83,7 @@ configure()
   echo "${STOPMIN}   ${STOPHOUR}   *  *  *  root  /usr/bin/pkill -f \"occ preview\""                                                  >> /etc/cron.d/nc-previews-auto
   service cron restart
 
+  echo ""
   echo "Automatic preview generation enabled"
   return 0
 }
