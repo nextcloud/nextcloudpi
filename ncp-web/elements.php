@@ -23,7 +23,7 @@ HTML;
     $ret .= "<td><label for=\"$ncp_app-$param[id]\">$param[name]</label></td>";
 
     // default to text input
-    if (!array_key_exists('type', $param))
+    if (!array_key_exists('type', $param) || $param['type'] == 'directory' || $param['type'] == 'file')
     {
       $suggest = '';
       if (array_key_exists('suggest', $param))
@@ -43,8 +43,14 @@ HTML;
                 size=\"40\">";
 
       if (array_key_exists('default', $param))
-      {
         $ret .= "<img class=\"default-btn\" title=\"restore defaults\" src=\"../img/info.svg\">";
+
+      if ($param['type'] == 'directory')
+      {
+        if (file_exists($param['value']))
+          $ret .= "&nbsp;<span class=\"ok-field\">directory exists</span>";
+        else
+          $ret .= "&nbsp;<span class=\"error-field\">directory doesn't exist</span>";
       }
 
       $ret .= "</td>";
@@ -84,7 +90,7 @@ HTML;
       </table>
     </div>
     <div class="config-button-wrapper">
-      <button id="$ncp_app-config-button" class="config-button">Run</button>
+      <button id="$ncp_app-config-button" class="config-button">Apply</button>
       <img class="loading-gif" src="img/loading-small.gif">
       <div class="circle-retstatus" class="icon-red-circle"></div>
     </div>
