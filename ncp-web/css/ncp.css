@@ -1339,4 +1339,10 @@ a#versionlink:hover {
 
 .pwd-btn, .default-btn {
   cursor: pointer;
+  -ms-filter:'progid:DXImageTransform.Microsoft.Alpha(Opacity=50)';
+  opacity: 0.5;
+}
+.pwd-btn:hover, .default-btn:hover {
+  -ms-filter:'progid:DXImageTransform.Microsoft.Alpha(Opacity=100)';
+  opacity: 1;
 }

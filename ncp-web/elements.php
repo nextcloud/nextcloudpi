@@ -48,7 +48,7 @@ HTML;
                 size=\"40\">";
 
       if (array_key_exists('default', $param))
-        $ret .= "<img class=\"default-btn\" title=\"restore defaults\" src=\"../img/info.svg\">";
+        $ret .= "&nbsp;<img class=\"default-btn\" title=\"restore defaults\" src=\"../img/defaults.svg\">";
 
       if ($param['type'] == 'directory')
       {
@@ -84,7 +84,7 @@ HTML;
                 id=\"$ncp_app-$param[id]\"
                 value=\"$param[value]\"
               size=\"40\">";
-      $ret .= "<img class=\"pwd-btn\" title=\"show password\" src=\"../img/info.svg\">";
+      $ret .= "&nbsp;<img class=\"pwd-btn\" title=\"show password\" src=\"../img/toggle.svg\">";
       $ret .= "</td>";
     }
 

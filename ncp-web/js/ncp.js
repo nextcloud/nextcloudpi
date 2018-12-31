@@ -266,6 +266,7 @@ $(function()
     {
       var input = this.trav('previousSibling', 1);
       input.set('.value', input.get('@default'));
+      input.trigger('change');
     });
 
   // Path fields
