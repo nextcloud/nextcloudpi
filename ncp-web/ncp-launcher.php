@@ -148,6 +148,21 @@ else if ( $_POST['action'] == "cfg-ui" )
 }
 
 //
+// path field
+//
+else if ( $_POST['action'] == "path-exists" )
+{
+  if (file_exists($_POST['value']))
+    $ret = 0;
+  else
+    $ret = 1;
+
+  // return JSON
+  echo '{ "token": "' . getCSRFToken() . '",';               // Get new token
+  echo ' "ret": "'    . $ret           . '" }';
+}
+
+//
 // poweroff
 //
 else if ( $_POST['action'] == "poweroff" )

@@ -268,6 +268,43 @@ $(function()
       input.set('.value', input.get('@default'));
     });
 
+  // Path fields
+  $( '.path' ).on('|keydown', function(e)
+    {
+      var span = this.up().select('span', true);
+      span.fill();
+    }
+  );
+
+  // Path fields
+  $( '.path' ).on('change', function(e)
+    {
+      var span = this.up().select('span', true);
+      // request
+      $.request('post', 'ncp-launcher.php', { action:'path-exists',
+                                              value: this.get('.value'),
+                                              csrf_token: $( '#csrf-token-cfg' ).get( '.value' ) }).then(
+          function success( result )
+          {
+            var ret = $.parseJSON( result );
+            if ( ret.token )
+              $('#csrf-token-cfg').set( { value: ret.token } );
+            if ( ret.ret && ret.ret == '0' )                        // means that the process was launched
+            {
+              span.fill("path exists")
+              span.set('-error-field');
+              span.set('+ok-field');
+            }
+            else
+            {
+              span.fill("path doesn't exist")
+              span.set('-ok-field');
+              span.set('+error-field');
+            }
+          }
+      ).error( errorMsg )
+    } );
+
   // Update notification
   $( '#notification' ).on('click', function(e)
   {

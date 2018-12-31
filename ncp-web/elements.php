@@ -33,10 +33,15 @@ HTML;
       if (array_key_exists('default', $param))
         $default = $param['default'];
 
+      $class = '';
+      if ($param['type'] == 'directory' || $param['type'] == 'file')
+        $class = 'path';
+
       $ret .= "<td>
                 <input type=\"text\"
-                  name=\"$param[name]\"
                   id=\"$ncp_app-$param[id]\"
+                  name=\"$param[name]\"
+                  class=\"$class\"
                   value=\"$param[value]\"
                   default=\"$default\"
                   placeholder=\"$suggest\"
