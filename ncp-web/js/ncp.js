@@ -151,8 +151,6 @@ function app_clicked(item)
   selectedID = item.get('.id');
   item.set('+active');
   $('#' + selectedID + '-config-box').show();
-  var baseURL = 'https://github.com/nextcloud/nextcloudpi/wiki/Configuration-Reference#';
-  $('#' + selectedID + '-config-box .icon-info').up().set( '@href', baseURL + selectedID );
 }
 
 $(function() 

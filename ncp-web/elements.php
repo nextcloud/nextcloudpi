@@ -130,7 +130,7 @@ function print_config_forms( $l /* translations l10n object */ )
         <div id="$cfg[id]-config-box" class="$hidden">
           <h2 class="text-title">$cfg[description]</h2>
           <div class="config-box-info-txt">$cfg[info]</div>
-          <a href="#" target="_blank">
+          <a href="https://github.com/nextcloud/nextcloudpi/wiki/Configuration-Reference#$ncp_app" target="_blank">
             <div class="icon-info"></div>
           </a>
           <br/>
@@ -181,7 +181,7 @@ function print_sidebar( $l /* translations l10n object */, $ticks /* wether to c
       if (array_key_exists('app',$_GET) && $_GET['app'] == $ncp_app)
         $selected = "active";
       $ret .= "<ul id=\"$ncp_app\" class=\"nav-recent $selected\">";
-      $ret .=   "<a href=\"#\"> {$l->__($ncp_app, $ncp_app)}$active </a>";
+      $ret .=   "<a href=\"?app=$ncp_app\"> {$l->__($ncp_app, $ncp_app)}$active </a>";
       $ret .= "</ul>";
     }
     $ret .= "</li>";
