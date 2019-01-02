@@ -97,7 +97,7 @@ HTML;
     <div class="config-button-wrapper">
       <button id="$ncp_app-config-button" class="config-button">Apply</button>
       <img class="loading-gif" src="img/loading-small.gif">
-      <div class="circle-retstatus" class="icon-red-circle"></div>
+      <div class="circle-retstatus icon-red-circle"></div>
     </div>
   </form>
 HTML;

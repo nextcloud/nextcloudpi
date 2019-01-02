@@ -234,17 +234,20 @@ $(function()
             if( ret.ref && ret.ref == 'nc-update' )
               window.location.reload( true );
             reload_sidebar();
-            $('.circle-retstatus').set( '+icon-green-circle' );
+            $('.circle-retstatus').set('+icon-green-circle');
           }
           else 
-            $('.circle-retstatus').set( '-icon-green-circle' );
-          $('.circle-retstatus').show();
+            $('.circle-retstatus').set('-icon-green-circle');
         }
         else                                     // print error from server instead
+        {
           $('.details-box').fill(ret.output);
+          $('.circle-retstatus').set('-icon-green-circle');
+        }
         $( 'input' , '#config-box-wrapper' ).set('@disabled', null);
         $('.config-button').set('@disabled',null);
         $('.loading-gif').hide();
+        $('.circle-retstatus').show();
         lock = false;
       }).error( errorMsg );
   });
