@@ -1113,7 +1113,7 @@ select {
   flex: 0 0 auto;
 }
 
-#expand {
+.expand {
   position: relative;
   display: flex;
   align-items: center;
@@ -1121,13 +1121,17 @@ select {
   cursor: pointer;
 }
 
-#expand * {
+.expand * {
   cursor: pointer;
 }
 
-#expand:hover img,#expand:focus img,#expand:active img,#expand:hover #expandDisplayName,#expand:focus #expandDisplayName,#expand:active #expandDisplayName {
+.expand:hover img,.expand:focus img,.expand:active img,.expand:hover .expandDisplayName,.expand:focus .expandDisplayName,.expand:active .expandDisplayName {
  -ms-filter:'progid:DXImageTransform.Microsoft.Alpha(Opacity=100)';
  opacity:1
+}
+
+.search-div {
+  padding-right: 0px;
 }
 
 .icon-power-white {
@@ -1138,6 +1142,9 @@ select {
 }
 .icon-nc-info {
   background-image: url('../img/info-white.svg');
+}
+.icon-search {
+  background-image: url('../img/search.svg');
 }
 .icon-config {
   background-image: url('../img/settings-white.svg');
@@ -1170,7 +1177,7 @@ select {
   right: 1em;
 }
 
-#expand #expandDisplayName {
+.expand .expandDisplayName {
   padding: 8px;
   opacity: 0.6;
 }

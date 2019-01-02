@@ -128,6 +128,7 @@ function print_config_forms( $l /* translations l10n object */ )
         $hidden = '';
       $ret .= <<<HTML
         <div id="$cfg[id]-config-box" class="$hidden">
+          <br/>
           <h2 class="text-title">$cfg[description]</h2>
           <div class="config-box-info-txt">$cfg[info]</div>
           <a href="https://github.com/nextcloud/nextcloudpi/wiki/Configuration-Reference#$ncp_app" target="_blank">
@@ -160,7 +161,7 @@ function print_sidebar( $l /* translations l10n object */, $ticks /* wether to c
   $sections = array_diff(scandir($bin_dir), array('.', '..', 'l10n'));
   foreach ($sections as $section)
   {
-    $ret .= "<li id=\"$section\" class=\"nav-recent\"><span>{$l->__($section, $section)}</span>";
+    $ret .= "<li id=\"$section\"><span>{$l->__($section, $section)}</span>";
 
     $scripts = array_diff(scandir($bin_dir . $section), array('.', '..', 'nc-wifi.sh', 'nc-info.sh'));
     foreach ($scripts as $script)
@@ -180,7 +181,7 @@ function print_sidebar( $l /* translations l10n object */, $ticks /* wether to c
       $selected = "";
       if (array_key_exists('app',$_GET) && $_GET['app'] == $ncp_app)
         $selected = "active";
-      $ret .= "<ul id=\"$ncp_app\" class=\"nav-recent $selected\">";
+      $ret .= "<ul id=\"$ncp_app\" class=\"ncp-app-list-item $selected\">";
       $ret .=   "<a href=\"?app=$ncp_app\"> {$l->__($ncp_app, $ncp_app)}$active </a>";
       $ret .= "</ul>";
     }

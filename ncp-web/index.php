@@ -142,39 +142,46 @@ HTML;
     ?>
     </div>
     <div id="header-right">
+      <div id="search-btn" title="<?php echo $l->__("Search"); ?>">
+          <div class="expand search-div">
+              <div class="icon-search"></div>
+              &nbsp; &nbsp;
+              <input type="text" id="search-box" placeholder="find ncp-app" size="40">
+          </div>
+      </div>
       <a href="https://ownyourbits.com" id="nextcloud-btn" target="_blank" tabindex="1" title="<?php echo $l->__("Launch Nextcloud"); ?>">
         <div id="nc-button">
-            <div id="expand">
+            <div class="expand">
                 <div class="icon-nc-white"></div>
             </div>
         </div>
       </a>
       <div id="dashboard-btn" title="<?php echo $l->__("View System Info"); ?>">
-          <div id="expand">
+          <div class="expand">
               <div class="icon-dashboard"></div>
           </div>
       </div>
       <div id="config-btn" title="<?php echo $l->__("Nextcloud Configuration"); ?>">
-          <div id="expand">
+          <div class="expand">
               <div class="icon-config"></div>
           </div>
       </div>
       <a href="wizard" title="<?php echo $l->__("NextCloudPi Wizard"); ?>">
         <div class="wizard-btn">
-          <div id="expand">
+          <div class="expand">
             <div class="icon-wizard-white"></div>
           </div>
         </div>
       </a>
       <a href="https://github.com/nextcloud/nextcloudpi/wiki" target="_blank" tabindex="1"  title="<?php echo $l->__("NextCloudPi Wiki"); ?>">
         <div id="nc-button">
-            <div id="expand">
+            <div class="expand">
                 <div class="icon-nc-info"></div>
             </div>
         </div>
       </a>
       <div id="poweroff" title="<?php echo $l->__("Power Off"); ?>">
-          <div id="expand">
+          <div class="expand">
               <div class="icon-power-white"></div>
           </div>
       </div>

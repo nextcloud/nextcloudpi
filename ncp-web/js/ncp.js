@@ -138,6 +138,9 @@ function reload_sidebar()
         if ( ret.ret && ret.ret == '0' ) {
           $('#ncp-options').ht( ret.output );
           set_sidebar_click_handlers();
+
+          var ncp_app_list = $('.ncp-app-list-item');
+          filter_apps();
         }
       }).error( errorMsg );
 }
@@ -429,10 +432,28 @@ $(function()
           if ( ret.ret && ret.ret == '0' )                        // means that the process was launched
             window.location.reload( true );
           else
-            this.set( '.value', langold );
+            this.set('.value', langold);
         }
     ).error( errorMsg )
   } );
+
+  // search box
+ function filter_apps(e)
+  {
+    ncp_app_list.hide();
+    ncp_app_list.each( function(app){
+        if (app.id.indexOf(search_box.value) !== -1)
+          app.style.display = 'block';
+      }
+    );
+  }
+
+  var search_box = $$('#search-box');
+  var ncp_app_list = $('.ncp-app-list-item');
+  $('#search-box').on('|keyup', filter_apps );
+  search_box.value = '';
+  search_box.focus();
+  $('.icon-search').on('click', function(e) { search_box.focus(); });
 
   // load dashboard info
   print_dashboard();
