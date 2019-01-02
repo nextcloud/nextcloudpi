@@ -179,7 +179,7 @@ $(function()
 
   set_sidebar_click_handlers();
 
-  // Launch selected script
+  // Launch selected ncp_app
   $( '.config-button' ).on('click', function(e)
   {
     lock = true;
@@ -193,20 +193,9 @@ $(function()
       if( item.getAttribute('type') == 'checkbox' )
         item.value = item.checked ? 'yes' : 'no';
 
-      cfg[item.name] = item.value;
+      var shortID = item.id.replace(selectedID + '-', '');
+      cfg[shortID] = item.value;
     } );
-
-    $( 'select', '#config-box' ).each( function(item) {
-      var select = {
-        'id': item.name,
-        'value': []
-      };
-      $("#" + item.id + '>option').each(function(option) {
-        select.value.push(option.selected ? "_" + option.value + "_" : "" + option.value);
-      });
-      cfg[select.id] = select.value;
-    });
-
 
     // reset box
     $('.details-box').fill();
