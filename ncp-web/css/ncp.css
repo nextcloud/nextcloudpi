@@ -1087,6 +1087,10 @@ select {
   text-align: center;
 }
 
+.content-box {
+  margin-top: 1em;
+}
+
 .config-box-info-txt {
   white-space: pre-wrap;
   text-align: center;
@@ -1173,7 +1177,7 @@ select {
 .icon-info {
   background-image: url('../img/info.svg');
   position: absolute;
-  top: 5px;
+  top: 1em;
   right: 1em;
 }
 

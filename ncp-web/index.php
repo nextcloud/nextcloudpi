@@ -204,14 +204,14 @@ HTML;
           <?php echo print_config_forms($l); ?>
         </div>
 
-        <div id="dashboard-wrapper" <?php if(array_key_exists('app',$_GET) && ($_GET['app'] != 'dashboard')) echo 'class="hidden"'; ?>>
+        <div id="dashboard-wrapper" class="content-box <?php if(array_key_exists('app',$_GET) && ($_GET['app'] != 'dashboard')) echo 'hidden';?>">
           <h2 class="text-title"><?php echo $l->__("System Info"); ?></h2>
           <div id="dashboard-suggestions" class="table-wrapper"></div>
           <div id="dashboard-table" class="outputbox table-wrapper"></div>
           <div id="loading-info-gif"> <img src="img/loading-small.gif"> </div>
         </div>
 
-        <div id="nc-config-wrapper" <?php if($_GET['app'] != 'config') echo 'class="hidden"';?>>
+        <div id="nc-config-wrapper" class="content-box <?php if($_GET['app'] != 'config') echo 'hidden';?>">
           <h2 class="text-title"><?php echo $l->__("Nextcloud configuration"); ?></h2>
           <div id="nc-config-box" class="table-wrapper">
 <?php
