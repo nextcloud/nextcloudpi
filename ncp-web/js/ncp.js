@@ -440,6 +440,19 @@ $(function()
   // search box
  function filter_apps(e)
   {
+    if (e.key === 'Enter')
+    {
+      ncp_app_list.each( function(app){
+          if (app.id.indexOf(search_box.value) !== -1)
+          {
+            app_clicked($('#' + app.id)); // TODO only first one
+          }
+      } );
+      ncp_app_list.show();
+      search_box.value = '';
+      return;
+    }
+
     ncp_app_list.hide();
     ncp_app_list.each( function(app){
         if (app.id.indexOf(search_box.value) !== -1)
@@ -449,7 +462,7 @@ $(function()
   }
 
   var search_box = $$('#search-box');
-  var ncp_app_list = $('.ncp-app-list-item');
+  ncp_app_list = $('.ncp-app-list-item');
   $('#search-box').on('|keyup', filter_apps );
   search_box.value = '';
   search_box.focus();
