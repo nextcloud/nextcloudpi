@@ -4,7 +4,6 @@ source /usr/local/etc/library.sh
 
 # INIT NCP CONFIG (first run)
 persistent_cfg /usr/local/etc/ncp-config.d /data/ncp
-persistent_cfg /usr/local/bin /data/bin
 persistent_cfg /etc/services-enabled.d
 persistent_cfg /etc/letsencrypt                    # persist SSL certificates
 persistent_cfg /etc/shadow                         # persist ncp-web password
@@ -12,5 +11,15 @@ persistent_cfg /etc/cron.d
 persistent_cfg /etc/cron.daily
 persistent_cfg /etc/cron.hourly
 persistent_cfg /etc/cron.weekly
+
+# reset bin if we pull a more recent container
+[[ -d /data/bin ]] && {
+  date_img=$(date "+%s" -r /.docker-image)
+  date_per=$(date "+%s" -r /data/bin)
+  [[ $date_img -gt $date_per ]] && {
+    rm -r /data/bin
+  }
+}
+persistent_cfg /usr/local/bin /data/bin
 
 exit 0
