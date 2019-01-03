@@ -451,6 +451,11 @@ $(function()
       app_clicked($('#' + match.id));
       ncp_app_list.show();
       search_box.value = '';
+      var input = $$('#' + match.id + '-config-box input');
+      input.focus();
+      input.selectionStart = input.selectionEnd = input.value.length;
+      $('#search-box').animate( {$width: '0px'}, 150 ).then(function() { $('#search-box').hide(); });
+      history.pushState(null, selectedID, "?app=" + selectedID);
       return;
     }
 
@@ -465,9 +470,17 @@ $(function()
   var search_box = $$('#search-box');
   ncp_app_list = $('.ncp-app-list-item');
   $('#search-box').on('|keyup', filter_apps );
+  $('#search-box').on('|blur', function(e) {
+      $('#search-box').animate( {$width: '0px'}, 150 ).then(function() { $('#search-box').hide(); });
+  } );
   search_box.value = '';
   search_box.focus();
-  $('.icon-search').on('click', function(e) { search_box.focus(); });
+  $('.icon-search').on('click', function(e) {
+ 
+    $('#search-box').show();
+    search_box.focus();
+    $('#search-box').animate( {$width: '130px'}, 150 );
+  });
 
   // load dashboard info
   print_dashboard();
