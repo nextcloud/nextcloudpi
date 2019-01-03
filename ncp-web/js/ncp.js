@@ -121,7 +121,7 @@ function print_dashboard()
       $('#loading-info-gif').hide();
       $('#dashboard-table').ht( ret.table );
       $('#dashboard-suggestions').ht( ret.suggestions );
-      reload_sidebar();
+      //reload_sidebar(); // TODO
     } ).error( errorMsg );
 }
 
@@ -139,8 +139,8 @@ function reload_sidebar()
           $('#ncp-options').ht( ret.output );
           set_sidebar_click_handlers();
 
-          var ncp_app_list = $('.ncp-app-list-item');
-          filter_apps();
+          //var ncp_app_list = $('.ncp-app-list-item');
+          //filter_apps(); // TODO
         }
       }).error( errorMsg );
 }
@@ -442,12 +442,9 @@ $(function()
   {
     if (e.key === 'Enter')
     {
-      ncp_app_list.each( function(app){
-          if (app.id.indexOf(search_box.value) !== -1)
-          {
-            app_clicked($('#' + app.id)); // TODO only first one
-          }
-      } );
+      var match = ncp_app_list.find(function(app) { if (app.id.indexOf(search_box.value) !== -1) return app; });
+      if (!match) return;
+      app_clicked($('#' + match.id));
       ncp_app_list.show();
       search_box.value = '';
       return;
