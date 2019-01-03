@@ -14,13 +14,13 @@ var lock       = false;
 
 // URL based navigation
 window.onpopstate = function(event) {
-  var ncp_app = location.search.split('=')[1];
-  if (ncp_app == 'config')
+  selectedID = location.search.split('=')[1];
+  if (selectedID == 'config')
     switch_to_section('nc-config');
-  else if (ncp_app == 'dashboard')
+  else if (selectedID == 'dashboard')
     switch_to_section('dashboard');
   else
-    app_clicked($('#' + ncp_app));
+    app_clicked($('#' + selectedID));
 };
 
 function errorMsg()
@@ -158,6 +158,10 @@ function app_clicked(item)
 
 $(function() 
 {
+  // parse selected app from URL
+  if (location.search)
+    selectedID = location.search.split('=')[1];
+
   // Event source to receive process output in real time
   if (!!window.EventSource)
     var source = new EventSource('ncp-output.php');
