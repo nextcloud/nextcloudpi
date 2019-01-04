@@ -10,6 +10,8 @@
 var MINI = require('minified');
 var $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
 var selectedID = null;
+var ncp_app_list = null;
+var search_box = null;
 var lock       = false;
 
 // URL based navigation
@@ -121,15 +123,16 @@ function print_dashboard()
       $('#loading-info-gif').hide();
       $('#dashboard-table').ht( ret.table );
       $('#dashboard-suggestions').ht( ret.suggestions );
-      //reload_sidebar(); // TODO
+      reload_sidebar();
     } ).error( errorMsg );
 }
 
 function reload_sidebar()
 {
   // request
-  $.request('post', 'ncp-launcher.php', { action:'sidebar', 
-    csrf_token: $( '#csrf-token-ui' ).get( '.value' ) }).then( 
+  $.request('post', 'ncp-launcher.php', { action:'sidebar',
+                                          csrf_token: $('#csrf-token-ui').get('.value') }
+  ).then(
       function success( result ) 
       {
         var ret = $.parseJSON( result );
@@ -139,10 +142,35 @@ function reload_sidebar()
           $('#ncp-options').ht( ret.output );
           set_sidebar_click_handlers();
 
-          //var ncp_app_list = $('.ncp-app-list-item');
-          //filter_apps(); // TODO
+          ncp_app_list = $('.ncp-app-list-item');
+          filter_apps();
         }
       }).error( errorMsg );
+}
+
+function filter_apps(e)
+{
+  if (e && e.key === 'Enter')
+  {
+    var match = ncp_app_list.find(function(app) { if (app.id.indexOf(search_box.value) !== -1) return app; });
+    if (!match) return;
+    app_clicked($('#' + match.id));
+    ncp_app_list.show();
+    search_box.value = '';
+    var input = $$('#' + match.id + '-config-box input');
+    input.focus();
+    input.selectionStart = input.selectionEnd = input.value.length;
+    $('#search-box').animate( {$width: '0px'}, 150 ).then(function() { $('#search-box').hide(); });
+    history.pushState(null, selectedID, "?app=" + selectedID);
+    return;
+  }
+
+  ncp_app_list.hide();
+  ncp_app_list.each( function(app){
+      if (app.id.indexOf(search_box.value) !== -1)
+        app.style.display = 'block';
+    }
+  );
 }
 
 function app_clicked(item)
@@ -281,7 +309,7 @@ $(function()
       // request
       $.request('post', 'ncp-launcher.php', { action:'path-exists',
                                               value: this.get('.value'),
-                                              csrf_token: $( '#csrf-token-cfg' ).get( '.value' ) }).then(
+                                              csrf_token: $('#csrf-token-cfg').get('.value') }).then(
           function success( result )
           {
             var ret = $.parseJSON( result );
@@ -442,32 +470,7 @@ $(function()
   } );
 
   // search box
- function filter_apps(e)
-  {
-    if (e.key === 'Enter')
-    {
-      var match = ncp_app_list.find(function(app) { if (app.id.indexOf(search_box.value) !== -1) return app; });
-      if (!match) return;
-      app_clicked($('#' + match.id));
-      ncp_app_list.show();
-      search_box.value = '';
-      var input = $$('#' + match.id + '-config-box input');
-      input.focus();
-      input.selectionStart = input.selectionEnd = input.value.length;
-      $('#search-box').animate( {$width: '0px'}, 150 ).then(function() { $('#search-box').hide(); });
-      history.pushState(null, selectedID, "?app=" + selectedID);
-      return;
-    }
-
-    ncp_app_list.hide();
-    ncp_app_list.each( function(app){
-        if (app.id.indexOf(search_box.value) !== -1)
-          app.style.display = 'block';
-      }
-    );
-  }
-
-  var search_box = $$('#search-box');
+  search_box = $$('#search-box');
   ncp_app_list = $('.ncp-app-list-item');
   $('#search-box').on('|keyup', filter_apps );
   $('#search-box').on('|blur', function(e) {
