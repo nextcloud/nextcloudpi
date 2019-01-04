@@ -40,6 +40,57 @@ samba
 # check running apt
 pgrep apt &>/dev/null && { echo "apt is currently running. Try again later";  exit 1; }
 
+## TODO migration - temporary -
+# install new dependencies
+type jq &>/dev/null || {
+  apt-get update
+  apt-get install -y --no-install-recommends jq
+}
+
+# migrate to the new cfg format
+[[ -f "$CONFDIR"/dnsmasq.sh ]] && {
+
+  mv "$CONFDIR"/DDNS_duckDNS.sh "$CONFDIR"/duckDNS.sh
+  mv "$CONFDIR"/DDNS_freeDNS.sh "$CONFDIR"/freeDNS.sh
+  mv "$CONFDIR"/DDNS_no-ip.sh   "$CONFDIR"/no-ip.sh
+  mv "$CONFDIR"/DDNS_spDYN.sh   "$CONFDIR"/spDYN.sh
+
+  for file in "$CONFDIR"/*.sh; do
+          test -f $file || continue
+          app=$(basename $file .sh)
+
+          unset DESC INFO INFOTITLE cfg vars vals
+          source $file
+
+          cfg=$(echo '{}' | jq ".id = \"$app\"")
+
+          cfg=$(jq ".name = \"$app\"" <<<"$cfg")
+
+          cfg=$(jq ".title = \"$app\"" <<<"$cfg")
+
+          cfg=$(jq ".description = \"$DESCRIPTION\"" <<<"$cfg")
+
+          cfg=$(jq ".info = \"$INFO\"" <<<"$cfg")
+
+          cfg=$(jq ".infotitle = \"$INFOTITLE\"" <<<"$cfg")
+
+          cfg=$(jq ".params = []" <<<"$cfg")
+
+          vars=( $( grep "^[[:alpha:]]\+_=" "$file" | cut -d= -f1 | sed 's|_$||' ) )
+          vals=( $( grep "^[[:alpha:]]\+_=" "$file" | cut -d= -f2 ) )
+
+          for i in $( seq 0 1 $(( ${#vars[@]} - 1 )) ); do
+            cfg=$(jq ".params[$i].id = \"${vars[$i]}\"" <<<"$cfg")
+            cfg=$(jq ".params[$i].name = \"${vars[$i]}\"" <<<"$cfg")
+            cfg=$(jq ".params[$i].value = \"${vals[$i]}\"" <<<"$cfg")
+          done
+
+          echo "$cfg" > "$CONFDIR/$app.cfg"
+          rm $file
+  done
+}
+## TODO migration - end -
+
 cp etc/library.sh /usr/local/etc/
 
 source /usr/local/etc/library.sh
@@ -131,12 +182,6 @@ chmod 770                  /var/www/ncp-web
 
   # in NC14.0.4 the referrer policy is included in .htaccess
   grep -q Referrer-Policy /var/www/nextcloud/.htaccess && sed -i /Referrer-Policy/d /etc/apache2/apache2.conf
-
-  # install new dependencies
-  type jq &>/dev/null || {
-    apt-get update
-    apt-get install -y --no-install-recommends jq
-  }
 
 } # end - only live updates
 
