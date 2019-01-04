@@ -14,7 +14,8 @@ function print_config_form( $ncp_app, $cfg, $l )
 {
   $ret  = <<<HTML
     <div id="config-box">
-      <table>
+      <form>
+        <table>
 HTML;
 
   foreach ($cfg['params'] as $param)
@@ -34,7 +35,7 @@ HTML;
         $default = $param['default'];
 
       $class = '';
-      if ($param['type'] == 'directory' || $param['type'] == 'file')
+      if (array_key_exists('type', $param) && ($param['type'] == 'directory' || $param['type'] == 'file'))
         $class = 'path';
 
       $ret .= "<td>
@@ -50,7 +51,7 @@ HTML;
       if (array_key_exists('default', $param))
         $ret .= "&nbsp;<img class=\"default-btn\" title=\"restore defaults\" src=\"../img/defaults.svg\">";
 
-      if ($param['type'] == 'directory')
+      if (array_key_exists('type', $param) && $param['type'] == 'directory')
       {
         if (file_exists($param['value']))
           $ret .= "&nbsp;<span class=\"ok-field\">directory exists</span>";
