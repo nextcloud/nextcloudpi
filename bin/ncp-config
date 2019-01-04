@@ -96,7 +96,7 @@ function config_menu()
 
     # launch selected ncp_app
     info_app      "$ncp_app" || continue
-    configure_app "$ncp_app" || continue
+    configure_app "$ncp_app" && \
     run_app       "$ncp_app"
     echo "Done. Press any key..."
     read -r

@@ -58,7 +58,15 @@ if ( $_POST['action'] == "launch" && $_POST['config'] )
       or exit('{ "output": "Invalid request" }');
 
     foreach ($cfg['params'] as $index => $param)
-      $cfg['params'][$index]['value'] = $new_params[$cfg['params'][$index]['id']];
+    {
+      // sanitize
+      $val = trim(escapeshellarg($new_params[$cfg['params'][$index]['id']]),"'");
+      preg_match( '/ /' , $val , $matches )
+        and exit( '{ "output": "Invalid parameters" , "token": "' . getCSRFToken() . '" }' );
+
+      // save
+      $cfg['params'][$index]['value'] = $val;
+    }
 
     $cfg_str = json_encode($cfg)
       or exit('{ "output": "' . $ncp_app . ' internal error" }');
