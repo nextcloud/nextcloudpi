@@ -106,7 +106,7 @@ mkdir -p "$CONFDIR"
 
 # copy all files in bin and etc
 cp -r bin/* /usr/local/bin/
-find etc -maxdepth 1 -type f -exec echo cp '{}' /usr/local/ \;
+find etc -maxdepth 1 -type f -exec cp '{}' /usr/local/etc \;
 
 # install new entries of ncp-config and update others
 for file in etc/ncp-config.d/*; do
