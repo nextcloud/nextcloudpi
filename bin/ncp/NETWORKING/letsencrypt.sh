@@ -44,6 +44,8 @@ configure()
 {
   local DOMAIN_LOWERCASE="${DOMAIN,,}"
 
+  [[ "$DOMAIN" == "" ]] && { echo "empty domain"; return 1; }
+
   # Configure Apache
   grep -q ServerName $VHOSTCFG && \
     sed -i "s|ServerName .*|ServerName $DOMAIN|" $VHOSTCFG || \

@@ -12,6 +12,8 @@
 
 configure()
 {
+  [[ "$PASSWORD" == "" ]] && { echo "empty password"; return 1; }
+  [[ "$USER"     == "" ]] && { echo "empty user"    ; return 1; }
   [[ "$PASSWORD" == "$CONFIRM" ]] || { echo "passwords do not match"; return 1; }
 
   OC_PASS="$PASSWORD" \

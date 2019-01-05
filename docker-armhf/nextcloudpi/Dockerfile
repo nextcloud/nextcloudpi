@@ -35,6 +35,7 @@ install_app ncp.sh; \
 
 # fix default paths
 sed -i 's|/media/USBdrive|/data/backups|' /usr/local/etc/ncp-config.d/nc-backup.cfg; \
+sed -i 's|/media/USBdrive|/data/backups|' /usr/local/etc/ncp-config.d/nc-backup-auto.cfg; \
 
 # specific cleanup
 cd /; rm -r /tmp/ncp-build; \

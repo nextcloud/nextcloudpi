@@ -36,7 +36,7 @@ configure()
   sudo -u mysql test -x "$BASEDIR" || { echo -e "ERROR: the user mysql does not have access permissions over $BASEDIR"; return 1; }
 
   [[ $( stat -fc%d / ) == $( stat -fc%d "$BASEDIR" ) ]] && \
-    echo -e "INFO: moving database to another place in the same SD card\nIf you want to use an external mount, make sure it is properly set up"
+    echo -e "INFO: moving database to the SD card\nIf you want to use an external mount, make sure it is properly set up"
 
   cd /var/www/nextcloud
   sudo -u www-data php occ maintenance:mode --on
