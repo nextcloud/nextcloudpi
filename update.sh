@@ -168,10 +168,6 @@ chmod 770                  /var/www/ncp-web
     sed -i "s|.* [* * * *]|*/5 * * * *|" spdnsupdater
   }
 
-  # update nc-restore
-  install_app nc-backup
-  install_app nc-restore
-
   # update to NC14.0.4
   is_active_app nc-autoupdate-nc && run_app nc-autoupdate-nc
 
@@ -179,9 +175,6 @@ chmod 770                  /var/www/ncp-web
   # Bug #416 reappeared after we moved to php7.2 and debian buster packages. (keep last)
   [[ "$( ls -l /etc/php/7.2/fpm/conf.d/*-opcache.ini |  wc -l )" -gt 1 ]] && rm "$( ls /etc/php/7.2/fpm/conf.d/*-opcache.ini | tail -1 )"
   [[ "$( ls -l /etc/php/7.2/cli/conf.d/*-opcache.ini |  wc -l )" -gt 1 ]] && rm "$( ls /etc/php/7.2/cli/conf.d/*-opcache.ini | tail -1 )"
-
-  # in NC14.0.4 the referrer policy is included in .htaccess
-  grep -q Referrer-Policy /var/www/nextcloud/.htaccess && sed -i /Referrer-Policy/d /etc/apache2/apache2.conf
 
 } # end - only live updates
 
