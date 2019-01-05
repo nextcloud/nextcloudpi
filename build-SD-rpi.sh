@@ -34,7 +34,7 @@ rm -f ncp-web/{wizard.cfg,ncp-web.cfg}
 echo -e "\e[1m\n[ Build NCP ]\e[0m"
 prepare_chroot_raspbian "$IMG"
 
-mkdir raspbian_root/tmp/ncp-build raspbian_root/usr/local/etc/ncp-config.d
+mkdir raspbian_root/tmp/ncp-build
 cp -r *.sh etc bin ncp-web raspbian_root/tmp/ncp-build
 
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
@@ -57,6 +57,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
     # install everything
     cd /tmp/ncp-build || exit 1
     source etc/library.sh
+    mkdir -p /usr/local/etc/ncp-config.d
     cp etc/ncp-config.d/nc-nextcloud.cfg /usr/local/etc/ncp-config.d/
     install_app    lamp.sh
     install_app    bin/ncp/CONFIG/nc-nextcloud.sh
