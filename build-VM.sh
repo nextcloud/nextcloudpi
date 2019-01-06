@@ -33,6 +33,7 @@ echo -e "\e[1m\n[ Build NCP ]\e[0m"
 vagrant destroy -f
 vagrant box update
 vagrant up --provider=libvirt --provision
+sleep 10
 sudo qemu-img rebase -b "" "$VM"
 
 sudo chown "$USER" "$VM"
