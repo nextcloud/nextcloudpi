@@ -33,7 +33,9 @@ configure()
   # MAX PHP THREADS
   local CONF=/etc/php/${PHPVER}/fpm/pool.d/www.conf
   local CURRENT_THREADS=$( grep "^pm.max_children" "$CONF" | awk '{ print $3 }' )
-  [[ "$PHPTHREADS" == "0" ]] && PHPTHREADS=$( nproc ) && echo "Using $PHPTHREADS PHP threads"
+  [[ $PHPTHREADS -eq 0 ]] && PHPTHREADS=$( nproc )
+  [[ $PHPTHREADS -lt 3 ]] && PHPTHREADS=3
+  echo "Using $PHPTHREADS PHP threads"
   sed -i "s|^pm.max_children =.*|pm.max_children = $PHPTHREADS|"           "$CONF"
   sed -i "s|^pm.max_spare_servers =.*|pm.max_spare_servers = $PHPTHREADS|" "$CONF"
   sed -i "s|^pm.start_servers =.*|pm.start_servers = $PHPTHREADS|"         "$CONF"
