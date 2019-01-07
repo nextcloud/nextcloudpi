@@ -152,7 +152,8 @@ function filter_apps(e)
 {
   if (e && e.key === 'Enter')
   {
-    var match = ncp_app_list.find(function(app) { if (app.id.indexOf(search_box.value) !== -1) return app; });
+    if (search_box.value.length == 0 ) return;
+    var match = ncp_app_list.find(function(app) { if (app.id.toLowerCase().indexOf(search_box.value.toLowerCase()) !== -1) return app; });
     if (!match) return;
     app_clicked($('#' + match.id));
     ncp_app_list.show();
@@ -167,7 +168,7 @@ function filter_apps(e)
 
   ncp_app_list.hide();
   ncp_app_list.each( function(app){
-      if (app.id.indexOf(search_box.value) !== -1)
+      if (app.id.toLowerCase().indexOf(search_box.value.toLowerCase()) !== -1)
         app.style.display = 'block';
     }
   );
@@ -303,12 +304,46 @@ $(function()
   );
 
   // Path fields
-  $( '.path' ).on('change', function(e)
+  $('.directory').on('change', function(e)
     {
       var span = this.up().select('span', true);
+      var path = this.get('.value');
+
       // request
       $.request('post', 'ncp-launcher.php', { action:'path-exists',
-                                              value: this.get('.value'),
+                                              value: path,
+                                              csrf_token: $('#csrf-token-cfg').get('.value') }).then(
+          function success( result )
+          {
+            var ret = $.parseJSON( result );
+            if ( ret.token )
+              $('#csrf-token-cfg').set( { value: ret.token } );
+            if ( ret.ret && ret.ret == '0' )                        // means that the process was launched
+            {
+              span.fill("path exists")
+              span.set('-error-field');
+              span.set('+ok-field');
+            }
+            else
+            {
+              span.fill("path doesn't exist")
+              span.set('-ok-field');
+              span.set('+error-field');
+            }
+          }
+      ).error( errorMsg )
+    } );
+  $('.file').on('change', function(e)
+    {
+      function dirname(path) { return path.replace(/\\/g,'/').replace(/\/[^\/]*$/, ''); }
+
+      var span = this.up().select('span', true);
+      console.log(span);
+      var path = dirname(this.get('.value'));
+
+      // request
+      $.request('post', 'ncp-launcher.php', { action:'path-exists',
+                                              value: path,
                                               csrf_token: $('#csrf-token-cfg').get('.value') }).then(
           function success( result )
           {

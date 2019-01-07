@@ -36,7 +36,7 @@ HTML;
 
       $class = '';
       if (array_key_exists('type', $param) && ($param['type'] == 'directory' || $param['type'] == 'file'))
-        $class = 'path';
+        $class = $param['type'];
 
       $ret .= "<td>
                 <input type=\"text\"
@@ -54,9 +54,19 @@ HTML;
       if (array_key_exists('type', $param) && $param['type'] == 'directory')
       {
         if (file_exists($param['value']))
-          $ret .= "&nbsp;<span class=\"ok-field\">directory exists</span>";
+          $ret .= "&nbsp;<span class=\"ok-field\">path exists</span>";
         else
-          $ret .= "&nbsp;<span class=\"error-field\">directory doesn't exist</span>";
+          $ret .= "&nbsp;<span class=\"error-field\">path doesn't exist</span>";
+      }
+
+      if (array_key_exists('type', $param) && $param['type'] == 'file')
+      {
+        error_log($param['value']);
+        error_log(dirname($param['value']));
+        if (file_exists(dirname($param['value'])))
+          $ret .= "&nbsp;<span class=\"ok-field\">path exists</span>";
+        else
+          $ret .= "&nbsp;<span class=\"error-field\">path doesn't exist</span>";
       }
 
       $ret .= "</td>";
