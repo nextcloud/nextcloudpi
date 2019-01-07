@@ -127,8 +127,8 @@ EOF
     $APTINSTALL ssl-cert # self signed snakeoil certs
 
     # configure MariaDB ( UTF8 4 byte support )
-    cp /etc/mysql/mariadb.conf.d/50-server.cnf /etc/mysql/mariadb.conf.d/90-ncp.cnf
-    sed -i '/\[mysqld\]/ainnodb_large_prefix=on'       /etc/mysql/mariadb.conf.d/90-ncp.cnf
+    cp /etc/mysql/mariadb.conf.d/50-server.cnf         /etc/mysql/mariadb.conf.d/90-ncp.cnf
+    sed -i '/\[mysqld\]/ainnodb_large_prefix=true'     /etc/mysql/mariadb.conf.d/90-ncp.cnf
     sed -i '/\[mysqld\]/ainnodb_file_per_table=1'      /etc/mysql/mariadb.conf.d/90-ncp.cnf
     sed -i '/\[mysqld\]/ainnodb_file_format=barracuda' /etc/mysql/mariadb.conf.d/90-ncp.cnf
 
