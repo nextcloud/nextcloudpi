@@ -22,7 +22,7 @@ window.onpopstate = function(event) {
   else if (selectedID == 'dashboard')
     switch_to_section('dashboard');
   else
-    app_clicked($('#' + selectedID));
+    click_app($('#' + selectedID));
 };
 
 function errorMsg()
@@ -105,7 +105,7 @@ function set_sidebar_click_handlers()
       close_menu();
 
     $( '#app-navigation ul' ).set('-active');
-    app_clicked(this);
+    click_app(this);
     history.pushState(null, selectedID, "?app=" + selectedID);
   });
 }
@@ -141,6 +141,8 @@ function reload_sidebar()
         if ( ret.ret && ret.ret == '0' ) {
           $('#ncp-options').ht( ret.output );
           set_sidebar_click_handlers();
+          if (selectedID)
+            select_app($('#' + selectedID));
 
           ncp_app_list = $('.ncp-app-list-item');
           filter_apps();
@@ -150,12 +152,14 @@ function reload_sidebar()
 
 function filter_apps(e)
 {
+  var search_box_val = search_box.value.toLowerCase();
+
   if (e && e.key === 'Enter')
   {
     if (search_box.value.length == 0 ) return;
-    var match = ncp_app_list.find(function(app) { if (app.id.toLowerCase().indexOf(search_box.value.toLowerCase()) !== -1) return app; });
+    var match = ncp_app_list.find(function(app) { if (app.id.toLowerCase().indexOf(search_box_val) !== -1) return app; });
     if (!match) return;
-    app_clicked($('#' + match.id));
+    click_app($('#' + match.id));
     ncp_app_list.show();
     search_box.value = '';
     var input = $$('#' + match.id + '-config-box input');
@@ -168,16 +172,21 @@ function filter_apps(e)
 
   ncp_app_list.hide();
   ncp_app_list.each( function(app){
-      if (app.id.toLowerCase().indexOf(search_box.value.toLowerCase()) !== -1)
+      if (app.id.toLowerCase().indexOf(search_box_val) !== -1)
         app.style.display = 'block';
     }
   );
 }
 
-function app_clicked(item)
+function click_app(item)
 {
   $('.details-box').hide();
   $('.circle-retstatus').hide();
+  select_app(item);
+}
+
+function select_app(item)
+{
   $('#' + selectedID + '-config-box').hide();
   switch_to_section('config');
   selectedID = item.get('.id');
@@ -208,8 +217,10 @@ $(function()
         return;
       }
 
-      var box = $$('.details-box');
-      $('.details-box').ht( box.innerHTML + e.data + '<br>' );
+      if (!selectedID) return;
+      var box_l = $('#' + selectedID + '-details-box');
+      var box   = box_l[0];
+      box_l.ht( box.innerHTML + e.data + '<br>' );
       box.scrollTop = box.scrollHeight;
     }, false);
 
@@ -374,7 +385,7 @@ $(function()
     
     $( '#app-navigation ul' ).set('-active');
 
-    app_clicked( $('#nc-update') );
+    click_app( $('#nc-update') );
 
     //clear details box
     $('.details-box').hide( '' );
