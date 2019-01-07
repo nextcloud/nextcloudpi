@@ -54,6 +54,7 @@ install_app    bin/ncp/CONFIG/nc-nextcloud.sh
 run_app_unsafe bin/ncp/CONFIG/nc-nextcloud.sh
 install_app    ncp.sh
 run_app_unsafe bin/ncp/CONFIG/nc-init.sh
+bash /usr/local/bin/ncp-provisioning.sh
 
 popd
 
