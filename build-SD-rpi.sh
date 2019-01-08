@@ -70,9 +70,11 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
     sed -i 's|^#PermitRootLogin .*|PermitRootLogin no|' /etc/ssh/sshd_config
 
     # default user 'pi' for SSH
-    sed -i 's|^USER_=.*|USER_=pi|'              /usr/local/etc/ncp-config.d/SSH.sh
-    sed -i 's|^PASS_=.*|PASS_=raspberry|'       /usr/local/etc/ncp-config.d/SSH.sh
-    sed -i 's|^CONFIRM_=.*|CONFIRM_=raspberry|' /usr/local/etc/ncp-config.d/SSH.sh
+    cfg="$(jq '.' etc/ncp-config.d/SSH.cfg)"
+    cfg="$(jq '.params[1].value = "pi"'        <<<"$cfg")"
+    cfg="$(jq '.params[2].value = "raspberry"' <<<"$cfg")"
+    cfg="$(jq '.params[3].value = "raspberry"' <<<"$cfg")"
+    echo "$cfg" > etc/ncp-config.d/SSH.cfg
 
     rm -rf /tmp/ncp-build
 EOFCHROOT

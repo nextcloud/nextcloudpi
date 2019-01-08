@@ -88,6 +88,18 @@ type jq &>/dev/null || {
           echo "$cfg" > "$CONFDIR/$app.cfg"
           rm $file
   done
+
+  ## NCP LAUNCHER
+  mkdir -p /home/www
+  chown www-data:www-data /home/www
+  chmod 700 /home/www
+
+  cat > /home/www/ncp-launcher.sh <<'EOF'
+#!/bin/bash
+source /usr/local/etc/library.sh
+run_app $1
+EOF
+  chmod 700 /home/www/ncp-launcher.sh
 }
 ## TODO migration - end -
 
@@ -111,7 +123,9 @@ find etc -maxdepth 1 -type f -exec cp '{}' /usr/local/etc \;
 # install new entries of ncp-config and update others
 for file in etc/ncp-config.d/*; do
   [ -f "$file" ] || continue;    # skip dirs
-  [ -f /usr/local/"$file" ] || { # new entry
+
+  # install new ncp_apps
+  [ -f /usr/local/"$file" ] || {
     install_app "$(basename "$file" .cfg)"
 
     # configure if active by default
@@ -119,7 +133,18 @@ for file in etc/ncp-config.d/*; do
     [[ "$(jq -r ".params[0].value" "$file")" == "yes"    ]] && \
       run_app_unsafe "$file"
   }
+
+  # keep saved cfg values
+  [ -f /usr/local/"$file" ] && {
+    len="$(jq '.params | length' /usr/local/"$file")"
+    for (( i = 0 ; i < len ; i++ )); do
+      val="$(jq -r ".params[$i].value" /usr/local/"$file")"
+      cfg="$(jq ".params[$i].value = \"$val\"" "$file")"
+      echo "$cfg" > "$file"
+    done
+  }
   cp "$file" /usr/local/"$file"
+
 done
 
 # install localization files

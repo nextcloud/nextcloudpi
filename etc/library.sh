@@ -122,7 +122,7 @@ function run_app_unsafe()
   # read cfg parameters
   [[ -f "$cfg_file" ]] && {
     local cfg="$( cat "$cfg_file" )"
-    local len="$(jq  '.params | length' <<<"$cfg")"
+    local len="$(jq '.params | length' <<<"$cfg")"
     for (( i = 0 ; i < len ; i++ )); do
       local var="$(jq -r ".params[$i].id"    <<<"$cfg")"
       local val="$(jq -r ".params[$i].value" <<<"$cfg")"
