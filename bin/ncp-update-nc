@@ -61,6 +61,61 @@ echo "Current   Nextcloud version $CURRENT"
 echo "Available Nextcloud version $VER"
 [[ "$NEED_UPDATE" == "true" ]] || { echo "Nothing to update"; exit 1; }
 
+
+# app compatibility check
+##########################
+
+incompatibleApps=""
+
+#for a in a b c; do echo $a; done
+for jsonWord in $(ncc app:list --output="json_pretty" | grep \"disabled\": -B5000 | grep "        ")
+do
+  appQuoteStripped=${jsonWord//\"}
+  app=${appQuoteStripped//:} 
+
+  # if      line ends in ':'      and      app directory exist -> app is valid; else skip current app
+  [[ -z "${appQuoteStripped##*:}" && -d "/var/www/nextcloud/apps/$app" ]]       || continue
+
+  appDir=nextcloud/apps/$app
+  appInfoPath=$appDir/appinfo/info.xml
+  [[ -f "$appInfoPath" ]] || { echo "ERROR: info.xml not found for $app (searching in '$appInfoPath')!"; exit 1; }
+
+  versionXML=$(grep "$appInfoPath" -e '< *nextcloud *min-version="[0-9][0-9]*" *max-version="[0-9][0-9]*" */>' | tr -d "\n")
+  for word in $versionXML
+  do
+    minGrep=$(grep -o 'min-version="[0-9][0-9]*"' <<< $word | sed "s/min-version=\"//")
+    maxGrep=$(grep -o 'max-version="[0-9][0-9]*"' <<< $word | sed "s/max-version=\"//")
+    
+    if [[ ! -z "$minGrep" ]]; then
+      minVersion="${minGrep//\"}"
+    fi
+    if [[ ! -z "$maxGrep" ]]; then
+      maxVersion="${maxGrep//\"}"
+    fi
+
+  done
+
+  # verify min and max version are numbers
+  [[ ! -z "$minVersion" && ! -z "$maxVersion" && "$minVersion" -eq "$minVersion" && "$maxVersion" -eq "$maxVersion" ]] || {
+    echo "ERROR: Malformed compatibility info (min/max version) for app '$app'!"
+    exit 1 
+  }
+
+  if [[ "$MAJOR" -lt "$minVersion" || "$MAJOR" -gt "$maxVersion" ]]; then
+    incompatibleApps="$incompatibleApps$app (requires NC $minVersion-$maxVersion), "
+  fi
+
+done
+
+if [ "$incompatibleApps" != "" ]; then
+  echo "1 or more apps are not compatible with the latest Nextcloud version! Update will be held back..."
+  echo "Not compatible: ${incompatibleApps%, }"
+  exit 1
+else
+  echo "All apps are compatible with the new NC version. Proceeding..."
+fi
+
+
 # make sure that cron.php is not running and there are no pending jobs
 # https://github.com/nextcloud/server/issues/10949
 pgrep -cf cron.php &>/dev/null && { pkill -f cron.php; sleep 3; }
