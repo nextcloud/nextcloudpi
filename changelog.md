@@ -1,5 +1,9 @@
 
-[v0.67.12](https://github.com/nextcloud/nextcloudpi/commit/d04ae7b) (2018-12-29) curl installer: add provisioning step
+[v1.0.0](https://github.com/nextcloud/nextcloudpi/commit/5eb44b1) (2019-01-08) ncp-config: allow empty values
+
+[v0.67.13](https://github.com/nextcloud/nextcloudpi/commit/21fee19) (2018-12-31) ncp-web: new chinese translate and update chinese translate. (#721)
+
+[v0.67.12](https://github.com/nextcloud/nextcloudpi/commit/a38be5e) (2018-12-29) curl installer: add provisioning step
 
 [v0.67.11](https://github.com/nextcloud/nextcloudpi/commit/4307b14) (2018-12-27) dynDNS: pdate cron execution interval (#754)
 

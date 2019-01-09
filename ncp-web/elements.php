@@ -23,6 +23,10 @@ HTML;
     $ret .= "<tr>";
     $ret .= "<td><label for=\"$ncp_app-$param[id]\">$param[name]</label></td>";
 
+    $value = $param['value'];
+    if ( $value == '_')
+      $value = '';
+
     // default to text input
     if (!array_key_exists('type', $param) || $param['type'] == 'directory' || $param['type'] == 'file')
     {
@@ -43,7 +47,7 @@ HTML;
                   id=\"$ncp_app-$param[id]\"
                   name=\"$param[name]\"
                   class=\"$class\"
-                  value=\"$param[value]\"
+                  value=\"$value\"
                   default=\"$default\"
                   placeholder=\"$suggest\"
                 size=\"40\">";
@@ -53,7 +57,7 @@ HTML;
 
       if (array_key_exists('type', $param) && $param['type'] == 'directory')
       {
-        if (file_exists($param['value']))
+        if (file_exists($value))
           $ret .= "&nbsp;<span class=\"ok-field\">path exists</span>";
         else
           $ret .= "&nbsp;<span class=\"error-field\">path doesn't exist</span>";
@@ -61,9 +65,7 @@ HTML;
 
       if (array_key_exists('type', $param) && $param['type'] == 'file')
       {
-        error_log($param['value']);
-        error_log(dirname($param['value']));
-        if (file_exists(dirname($param['value'])))
+        if (file_exists(dirname($value)))
           $ret .= "&nbsp;<span class=\"ok-field\">path exists</span>";
         else
           $ret .= "&nbsp;<span class=\"error-field\">path doesn't exist</span>";
@@ -76,12 +78,12 @@ HTML;
     else if ($param['type'] == 'bool')
     {
       $checked = "";
-      if ($param['value'] == 'yes')
+      if ($value == 'yes')
         $checked = 'checked';
       $ret .= "<td><input type=\"checkbox\"
                   id=\"$ncp_app-$param[id]\"
                   name=\"$param[name]\"
-                  value=\"$param[value]\"
+                  value=\"$value\"
                   $checked>
                 </td>";
     }
@@ -93,7 +95,7 @@ HTML;
       $ret .= "<input type=\"password\"
                 name=\"$param[name]\"
                 id=\"$ncp_app-$param[id]\"
-                value=\"$param[value]\"
+                value=\"$value\"
               size=\"40\">";
       $ret .= "&nbsp;<img class=\"pwd-btn\" title=\"show password\" src=\"../img/toggle.svg\">";
       $ret .= "</td>";

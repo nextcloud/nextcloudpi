@@ -33,6 +33,7 @@ function configure_app()
     local vars+=("$var")
     local vals+=("$val")
     local idx=$((i+1))
+    [[ "$val" == "" ]] && val=_
     local parameters+="$var $idx 1 $val $idx 15 60 120 "
   done
 
