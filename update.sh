@@ -8,6 +8,8 @@
 # More at https://ownyourbits.com/
 #
 
+set -e
+
 CONFDIR=/usr/local/etc/ncp-config.d/
 
 # don't make sense in a docker container
