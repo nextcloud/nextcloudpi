@@ -1,5 +1,7 @@
 
-[v1.0.0](https://github.com/nextcloud/nextcloudpi/commit/5eb44b1) (2019-01-08) ncp-config: allow empty values
+[v1.0.1](https://github.com/nextcloud/nextcloudpi/commit/720b0db) (2019-01-08) nc-update-nc: remove backup after restoring
+
+[v1.0.0](https://github.com/nextcloud/nextcloudpi/commit/013198c) (2019-01-08) ncp-config: allow empty values
 
 [v0.67.13](https://github.com/nextcloud/nextcloudpi/commit/21fee19) (2018-12-31) ncp-web: new chinese translate and update chinese translate. (#721)
 

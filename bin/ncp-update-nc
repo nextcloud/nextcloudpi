@@ -163,6 +163,7 @@ rollback() {
   [[ "$DATADIR" == "/var/www/nextcloud/data" ]] && mv -T "$DATADIR" "$TMPDATA"
   ncp-restore "$BKP" || { echo "Rollback failed! Data left at $TMPDATA"; exit 1; }
   [[ "$DATADIR" == "/var/www/nextcloud/data" ]] && { rm -rf "$DATADIR"; mv -T "$TMPDATA" "$DATADIR"; }
+  rm "$BKP"
   echo "Rollback successful. Nothing was updated"
   exit 1
 }
