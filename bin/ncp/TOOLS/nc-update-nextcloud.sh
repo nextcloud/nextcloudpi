@@ -12,6 +12,7 @@ LATEST=14.0.4
 
 configure()
 {
+  [[ "$VERSION" == "0" ]] && VERSION="$LATEST"
   bash /usr/local/bin/ncp-update-nc "$VERSION"
 }
 
