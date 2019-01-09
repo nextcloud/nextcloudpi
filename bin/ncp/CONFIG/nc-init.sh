@@ -143,7 +143,6 @@ EOF
   sudo -u www-data php /var/www/nextcloud/occ app:install notes
   sudo -u www-data php /var/www/nextcloud/occ app:install tasks
   sudo -u www-data php /var/www/nextcloud/occ app:install news
-  sudo -u www-data php /var/www/nextcloud/occ app:install admin_notifications
   sudo -u www-data php /var/www/nextcloud/occ app:install previewgenerator
 
   sudo -u www-data php /var/www/nextcloud/occ app:enable calendar
@@ -151,11 +150,13 @@ EOF
   sudo -u www-data php /var/www/nextcloud/occ app:enable notes
   sudo -u www-data php /var/www/nextcloud/occ app:enable tasks
   sudo -u www-data php /var/www/nextcloud/occ app:enable news
-  sudo -u www-data php /var/www/nextcloud/occ app:enable admin_notifications
   sudo -u www-data php /var/www/nextcloud/occ app:enable previewgenerator
 
   # other
   sudo -u www-data php /var/www/nextcloud/occ config:system:set overwriteprotocol --value=https
+
+  # TODO temporary workaround for https://github.com/nextcloud/server/pull/13358
+  sudo -u www-data php /var/www/nextcloud/occ -n db:convert-filecache-bigint
 
   echo "NC init done"
 }

@@ -200,7 +200,7 @@ chmod 770                  /var/www/ncp-web
     sed -i "s|.* [* * * *]|*/5 * * * *|" spdnsupdater
   }
 
-  # update to NC14.0.4
+  # update to NC15
   is_active_app nc-autoupdate-nc && run_app nc-autoupdate-nc
 
   # remove redundant opcache configuration. Leave until update bug is fixed -> https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=815968
