@@ -101,7 +101,6 @@ EOF
   sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $UPLOADTMPDIR|" /etc/php/${PHPVER}/fpm/php.ini
   sed -i "s|^;\?sys_temp_dir =.*$|sys_temp_dir = $UPLOADTMPDIR|"     /etc/php/${PHPVER}/fpm/php.ini
 
-
   # 4 Byte UTF8 support
   sudo -u www-data php occ config:system:set mysql.utf8mb4 --type boolean --value="true"
 
@@ -136,6 +135,11 @@ replace into  oc_appconfig values ( 'theming', 'url'           , "https://ownyou
 replace into  oc_appconfig values ( 'theming', 'logoMime'      , "image/svg+xml"           );
 replace into  oc_appconfig values ( 'theming', 'backgroundMime', "image/png"               );
 EOF
+
+  # NCP app
+  cp -r /var/www/ncp-app /var/www/nextcloud/apps/nextcloudpi
+  chown -R www-data:     /var/www/nextcloud/apps/nextcloudpi
+  sudo -u www-data php /var/www/nextcloud/occ app:enable nextcloudpi
 
   # enable some apps by default
   sudo -u www-data php /var/www/nextcloud/occ app:install calendar

@@ -11,6 +11,7 @@ COPY bin/             /tmp/ncp-build/bin/
 COPY etc              /tmp/ncp-build/etc/
 COPY ncp.sh update.sh /tmp/ncp-build/
 COPY ncp-web          /tmp/ncp-build/ncp-web/
+COPY ncp-app          /tmp/ncp-build/ncp-app/
 COPY docker-common    /tmp/ncp-build/docker-common/
 
 RUN \

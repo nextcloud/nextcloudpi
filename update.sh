@@ -167,6 +167,10 @@ cp -r ncp-web /var/www/
 chown -R www-data:www-data /var/www/ncp-web
 chmod 770                  /var/www/ncp-web
 
+# install NC app
+rm -rf /var/www/ncp-app
+cp -r ncp-app /var/www/
+
 [[ -f /.docker-image ]] && {
   # remove unwanted ncp-apps for the docker version
   for opt in $EXCL_DOCKER; do
@@ -202,6 +206,13 @@ chmod 770                  /var/www/ncp-web
 
   # update to NC15
   is_active_app nc-autoupdate-nc && run_app nc-autoupdate-nc
+
+  # install NC app
+  [[ -d /var/www/nextcloud/apps/nextcloudpi ]] || {
+    cp -r /var/www/ncp-app /var/www/nextcloud/apps/nextcloudpi
+    chown -R www-data:     /var/www/nextcloud/apps/nextcloudpi
+    ncc app:enable nextcloudpi
+  }
 
   # remove redundant opcache configuration. Leave until update bug is fixed -> https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=815968
   # Bug #416 reappeared after we moved to php7.2 and debian buster packages. (keep last)
