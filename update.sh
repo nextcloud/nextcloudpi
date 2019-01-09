@@ -127,11 +127,6 @@ for file in etc/ncp-config.d/*; do
   # install new ncp_apps
   [ -f /usr/local/"$file" ] || {
     install_app "$(basename "$file" .cfg)"
-
-    # configure if active by default
-    [[ "$(jq -r ".params[0].id"    "$file")" == "active" ]] && \
-    [[ "$(jq -r ".params[0].value" "$file")" == "yes"    ]] && \
-      run_app_unsafe "$file"
   }
 
   # keep saved cfg values
@@ -143,6 +138,16 @@ for file in etc/ncp-config.d/*; do
       echo "$cfg" > "$file"
     done
   }
+
+  # configure if active by default
+  [ -f /usr/local/"$file" ] || {
+    [[ "$(jq -r ".params[0].id"    "$file")" == "ACTIVE" ]] && \
+    [[ "$(jq -r ".params[0].value" "$file")" == "yes"    ]] && {
+      cp "$file" /usr/local/"$file"
+      run_app "$(basename "$file" .cfg)"
+    }
+  }
+
   cp "$file" /usr/local/"$file"
 
 done
