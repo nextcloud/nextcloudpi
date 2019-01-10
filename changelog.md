@@ -1,7 +1,9 @@
 
-[v1.0.1](https://github.com/nextcloud/nextcloudpi/commit/720b0db) (2019-01-08) nc-update-nc: remove backup after restoring
+[v1.0.2](https://github.com/nextcloud/nextcloudpi/commit/a2f79d2) (2019-01-09) wizard: dont change missing parameters
 
-[v1.0.0](https://github.com/nextcloud/nextcloudpi/commit/013198c) (2019-01-08) ncp-config: allow empty values
+[v1.0.1](https://github.com/nextcloud/nextcloudpi/commit/f722c45) (2019-01-08) nc-update-nc: remove backup after restoring
+
+[v1.0.0  ](https://github.com/nextcloud/nextcloudpi/commit/013198c) (2019-01-08) ncp-config: allow empty values
 
 [v0.67.13](https://github.com/nextcloud/nextcloudpi/commit/21fee19) (2018-12-31) ncp-web: new chinese translate and update chinese translate. (#721)
 

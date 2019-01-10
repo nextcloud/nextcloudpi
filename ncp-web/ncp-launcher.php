@@ -59,8 +59,12 @@ if ( $_POST['action'] == "launch" && $_POST['config'] )
 
     foreach ($cfg['params'] as $index => $param)
     {
+      // don't touch missing parameters
+      $id = $cfg['params'][$index]['id'];
+      if (!array_key_exists($id, $new_params)) continue;
+
       // sanitize
-      $val = trim(escapeshellarg($new_params[$cfg['params'][$index]['id']]),"'");
+      $val = trim(escapeshellarg($new_params[$id]),"'");
       preg_match( '/ /' , $val , $matches )
         and exit( '{ "output": "Invalid parameters" , "token": "' . getCSRFToken() . '" }' );
 
