@@ -24,8 +24,8 @@ configure()
   }
 
   [[ "$ACTIVE" != yes ]] && {
-    systemctl disable smartd
-    systemctl stop smartd
+    update-rc.d  smartd disable
+    service      smartd stop
     echo "HDD monitor disabled"
     return 0
   }
@@ -58,8 +58,8 @@ EOF
 chmod +x /usr/local/etc/ncp-hdd-notif.sh
 
   for dr in "${DRIVES[@]}"; do smartctl --smart=on /dev/${dr} | sed 1,2d; done
-  systemctl enable smartd
-  systemctl start smartd
+  update-rc.d  smartd enable
+  service      smartd start
   echo "HDD monitor enabled"
 }
 

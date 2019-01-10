@@ -18,6 +18,8 @@ install()
 
   # Disable logging to kernel
   grep -q maxsize /etc/logrotate.d/ufw || sed -i /weekly/amaxsize2M /etc/logrotate.d/ufw
+
+  return 0
 }
 
 configure()

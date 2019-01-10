@@ -20,25 +20,23 @@
   [[ -f /.ncp-image ]] || cd "$TMPDIR"         # update locally during build
 
   echo -e "Performing updates"
-  ./update.sh && {
+  ./update.sh || exit 1
 
-    cd "$TMPDIR"
-    VER=$( git describe --always --tags | grep -oP "v\d+\.\d+\.\d+" )
-    grep -qP "v\d+\.\d+\.\d+" <<< "$VER" && {       # check format
-      echo "$VER" > /usr/local/etc/ncp-version
-      echo "$VER" > /var/run/.ncp-latest-version
+  cd "$TMPDIR"
+  VER=$( git describe --always --tags | grep -oP "v\d+\.\d+\.\d+" )
+  grep -qP "v\d+\.\d+\.\d+" <<< "$VER" && {       # check format
+    echo "$VER" > /usr/local/etc/ncp-version
+    echo "$VER" > /var/run/.ncp-latest-version
 
-      # write changelog
-      git log --graph --oneline --decorate \
-        --pretty=format:"[%D] %s" --date=short | \
-        grep 'tag: v' | \
-        sed '/HEAD ->\|origin/s|\[.*\(tag: v[0-9]\+\.[0-9]\+\.[0-9]\+\).*\]|[\1]|' | \
-        sed 's|* \[tag: |[|' > /usr/local/etc/ncp-changelog
-    }
-    echo -e "NextCloudPi updated to version $VER"
+    # write changelog
+    git log --graph --oneline --decorate \
+      --pretty=format:"[%D] %s" --date=short | \
+      grep 'tag: v' | \
+      sed '/HEAD ->\|origin/s|\[.*\(tag: v[0-9]\+\.[0-9]\+\.[0-9]\+\).*\]|[\1]|' | \
+      sed 's|* \[tag: |[|' > /usr/local/etc/ncp-changelog
   }
-
   cd /
 
-  exit 
+  echo -e "NextCloudPi updated to version $VER"
+  exit 0
 } # force to read the whole thing into memory, as its contents might change in update.sh

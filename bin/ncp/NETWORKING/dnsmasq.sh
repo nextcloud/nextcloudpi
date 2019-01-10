@@ -36,6 +36,7 @@ exit 0
 EOF
     chmod +x /etc/services-available.d/100dnsmasq
   }
+  return 0
 }
 
 configure()

@@ -69,6 +69,7 @@ exit 0
 EOF
     chmod +x /etc/services-available.d/100noip
   }
+  return 0
 }
 
 configure() 

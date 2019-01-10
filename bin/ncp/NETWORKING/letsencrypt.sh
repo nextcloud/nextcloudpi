@@ -37,6 +37,7 @@ exit 0
 EOF
     chmod +x /etc/services-available.d/009letsencrypt
   }
+  return 0
 }
 
 # tested with certbot 0.10.2
