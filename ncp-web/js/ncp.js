@@ -141,7 +141,7 @@ function reload_sidebar()
         if ( ret.ret && ret.ret == '0' ) {
           $('#ncp-options').ht( ret.output );
           set_sidebar_click_handlers();
-          if (selectedID)
+          if (selectedID && $$('#config-wrapper').style.display == 'block')
             select_app($('#' + selectedID));
 
           ncp_app_list = $('.ncp-app-list-item');
