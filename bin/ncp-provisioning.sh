@@ -56,7 +56,9 @@ run_app nc-limits
 BKP="$( ls -1t /var/www/nextcloud-bkp_*.tar.gz 2>/dev/null | head -1 )"
 [[ -f "$BKP" ]] && [[ "$( stat -c %U "$BKP" )" == "root" ]] && [[ "$( stat -c %a "$BKP" )" == 600 ]] && {
   echo "Detected interrupted upgrade. Restoring..."
-  ncp-restore "$BKP" && rm "$BKP"
+  BKP_NEW="failed_$BKP"
+  mv "$BKP" "$BKP_NEW"
+  ncp-restore "$BKP_NEW" && rm "$BKP_NEW"
 }
 
 exit 0

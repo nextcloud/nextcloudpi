@@ -1,7 +1,9 @@
 
-[v1.1.2](https://github.com/nextcloud/nextcloudpi/commit/57b26ef) (2019-01-10) ncp-web: fix section unselected when sidebar reloads
+[v1.1.3](https://github.com/nextcloud/nextcloudpi/commit/42b74e0) (2019-01-11) nc-update-nextcloud: only try to restore on reboot once
 
-[v1.1.1](https://github.com/nextcloud/nextcloudpi/commit/6ba0cb0) (2019-01-10) ncp-web: escape HTML in details box
+[v1.1.2](https://github.com/nextcloud/nextcloudpi/commit/228c818) (2019-01-10) ncp-web: fix section unselected when sidebar reloads
+
+[v1.1.1  ](https://github.com/nextcloud/nextcloudpi/commit/6ba0cb0) (2019-01-10) ncp-web: escape HTML in details box
 
 [v1.1.0  ](https://github.com/nextcloud/nextcloudpi/commit/0ff1df9) (2019-01-08) upgrade to NC15
 
