@@ -164,7 +164,8 @@ function filter_apps(e)
     search_box.value = '';
     var input = $$('#' + match.id + '-config-box input');
     input.focus();
-    input.selectionStart = input.selectionEnd = input.value.length;
+    if( input.getAttribute('type') != 'checkbox' )
+      input.selectionStart = input.selectionEnd = input.value.length;
     $('#search-box').animate( {$width: '0px'}, 150 ).then(function() { $('#search-box').hide(); });
     history.pushState(null, selectedID, "?app=" + selectedID);
     return;
@@ -209,6 +210,10 @@ $(function()
   $('#poweroff-dialog').hide();
   $('#overlay').hide();
 
+  function escapeHTML(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
   source.addEventListener('message', function(e) 
     {
       if ( e.origin != 'https://' + window.location.hostname + ':4443') 
@@ -220,7 +225,7 @@ $(function()
       if (!selectedID) return;
       var box_l = $('#' + selectedID + '-details-box');
       var box   = box_l[0];
-      box_l.ht( box.innerHTML + e.data + '<br>' );
+      box_l.ht( box.innerHTML + escapeHTML(e.data) + '<br>' );
       box.scrollTop = box.scrollHeight;
     }, false);
 

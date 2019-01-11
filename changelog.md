@@ -1,7 +1,11 @@
 
-[v1.0.2](https://github.com/nextcloud/nextcloudpi/commit/a2f79d2) (2019-01-09) wizard: dont change missing parameters
+[v1.1.1](https://github.com/nextcloud/nextcloudpi/commit/a95bc68) (2019-01-10) ncp-web: escape HTML in details box
 
-[v1.0.1](https://github.com/nextcloud/nextcloudpi/commit/f722c45) (2019-01-08) nc-update-nc: remove backup after restoring
+[v1.1.0](https://github.com/nextcloud/nextcloudpi/commit/0ff1df9) (2019-01-08) upgrade to NC15
+
+[v1.0.2  ](https://github.com/nextcloud/nextcloudpi/commit/06b00e4) (2019-01-09) wizard: dont change missing parameters
+
+[v1.0.1  ](https://github.com/nextcloud/nextcloudpi/commit/f722c45) (2019-01-08) nc-update-nc: remove backup after restoring
 
 [v1.0.0  ](https://github.com/nextcloud/nextcloudpi/commit/013198c) (2019-01-08) ncp-config: allow empty values
 
