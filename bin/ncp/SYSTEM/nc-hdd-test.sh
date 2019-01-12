@@ -14,8 +14,8 @@ install()
 {
   apt-get update
   apt-get install --no-install-recommends -y smartmontools
-  systemctl disable smartd
-  systemctl stop smartd
+  update-rc.d smartd disable
+  service     smartd stop
 }
 
 configure()
