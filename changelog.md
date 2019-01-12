@@ -1,5 +1,7 @@
 
-[v1.2.0](https://github.com/nextcloud/nextcloudpi/commit/1b307c1) (2019-01-08) add NCP Nextcloud app
+[v1.3.0](https://github.com/nextcloud/nextcloudpi/commit/8a49536) (2019-01-12) upgrade to NC15.0.2
+
+[v1.2.0](https://github.com/nextcloud/nextcloudpi/commit/9eaab31) (2019-01-08) add NCP Nextcloud app
 
 [v1.1.3  ](https://github.com/nextcloud/nextcloudpi/commit/d21592c) (2019-01-11) nc-update-nextcloud: only try to restore on reboot once
 
