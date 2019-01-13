@@ -10,6 +10,7 @@
 # More at https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/
 #
 
+set -e
 
 RELEASE=$1
 LINUXFAMILY=$2

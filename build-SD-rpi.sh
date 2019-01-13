@@ -17,6 +17,8 @@ IMG="NextCloudPi_RPi_$( date  "+%m-%d-%y" ).img"
 
 ##############################################################################
 
+pgrep -f qemu-arm-static &>/dev/null && { echo "qemu-arm-static already running. Abort"; exit 1; }
+
 ## preparations
 
 IMG=tmp/"$IMG"
@@ -35,10 +37,12 @@ echo -e "\e[1m\n[ Build NCP ]\e[0m"
 prepare_chroot_raspbian "$IMG"
 
 mkdir raspbian_root/tmp/ncp-build
-cp -r *.sh etc bin ncp-web raspbian_root/tmp/ncp-build
+rsync -Aax --exclude-from .gitignore --exclude *.img --exclude *.bz2 . raspbian_root/tmp/ncp-build
 
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
   sudo chroot raspbian_root /bin/bash <<'EOFCHROOT'
+    set -e
+
     # mark the image as an image build
     touch /.ncp-image
 
