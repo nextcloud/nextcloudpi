@@ -48,6 +48,10 @@ binaries_no_docker = [
         'wicd-curses',
         ]
 
+files_must_exist = [
+        '/usr/local/etc/ncp-version',
+        ]
+
 class tc:
     "terminal colors"
     brown='\033[33m'
@@ -64,6 +68,16 @@ def is_running(process):
     "check that a process is running"
     print("[running] " + tc.brown + "{:16}".format(process) + tc.normal, end=' ')
     result = run(pre_cmd + ['pgrep', '-cf', process], stdout=PIPE, stderr=PIPE)
+    if result.returncode == 0:
+        print(tc.green + "ok" + tc.normal)
+    else:
+        print(tc.red + "error" + tc.normal)
+    return result.returncode == 0
+
+def file_exists(file):
+    "check that a file exists"
+    print("[exists ] " + tc.brown + "{:16}".format(file) + tc.normal, end=' ')
+    result = run(pre_cmd + ['test', '-f', file], stdout=PIPE, stderr=PIPE)
     if result.returncode == 0:
         print(tc.green + "ok" + tc.normal)
     else:
@@ -93,6 +107,14 @@ def check_binaries_installed(binaries):
     ret = True
     for binary in binaries:
         if not is_installed(binary):
+            ret = False
+    return ret
+
+def check_files_exist(files):
+    "check that all the files exist"
+    ret = True
+    for file in files:
+        if not file_exists(file):
             ret = False
     return ret
 
@@ -172,8 +194,9 @@ if __name__ == "__main__":
     print("-------------------------")
     running_result = check_processes_running(processes_must_be_running)
     install_result = check_binaries_installed(binaries_must_be_installed)
+    files_result   = check_files_exist(files_must_exist)
 
-    if running_result and install_result:
+    if running_result and install_result and files_result:
         sys.exit(0)
     else:
         sys.exit(1)
