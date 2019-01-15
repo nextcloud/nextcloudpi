@@ -30,6 +30,7 @@ processes_must_be_running = [
         ]
 
 binaries_must_be_installed = [
+        'jq',
         'dialog',
         'dnsmasq',
         'git',
@@ -51,6 +52,11 @@ binaries_no_docker = [
 files_must_exist = [
         '/usr/local/etc/ncp-version',
         ]
+
+files_must_not_exist = [
+        '/.ncp-image',
+        ]
+
 
 class tc:
     "terminal colors"
@@ -79,6 +85,16 @@ def file_exists(file):
     print("[exists ] " + tc.brown + "{:16}".format(file) + tc.normal, end=' ')
     result = run(pre_cmd + ['test', '-f', file], stdout=PIPE, stderr=PIPE)
     if result.returncode == 0:
+        print(tc.green + "ok" + tc.normal)
+    else:
+        print(tc.red + "error" + tc.normal)
+    return result.returncode == 0
+
+def file_not_exists(file):
+    "check that a file doesn't exist"
+    print("[nexists] " + tc.brown + "{:16}".format(file) + tc.normal, end=' ')
+    result = run(pre_cmd + ['test', '-f', file], stdout=PIPE, stderr=PIPE)
+    if result.returncode != 0:
         print(tc.green + "ok" + tc.normal)
     else:
         print(tc.red + "error" + tc.normal)
@@ -115,6 +131,14 @@ def check_files_exist(files):
     ret = True
     for file in files:
         if not file_exists(file):
+            ret = False
+    return ret
+
+def check_files_dont_exist(files):
+    "check that all the files don't exist"
+    ret = True
+    for file in files:
+        if file_not_exists(file):
             ret = False
     return ret
 
@@ -194,9 +218,10 @@ if __name__ == "__main__":
     print("-------------------------")
     running_result = check_processes_running(processes_must_be_running)
     install_result = check_binaries_installed(binaries_must_be_installed)
-    files_result   = check_files_exist(files_must_exist)
+    files1_result  = check_files_exist(files_must_exist)
+    files2_result  = check_files_dont_exist(files_must_not_exist)
 
-    if running_result and install_result and files_result:
+    if running_result and install_result and files1_result and files2_result:
         sys.exit(0)
     else:
         sys.exit(1)
