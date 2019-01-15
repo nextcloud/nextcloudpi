@@ -1,7 +1,9 @@
 
-[v1.3.6](https://github.com/nextcloud/nextcloudpi/commit/fc80dc9) (2019-01-14) nc-automount: add delays to some services in a persistent way
+[v1.3.7](https://github.com/nextcloud/nextcloudpi/commit/05bfc13) (2019-01-14) ncp-web: allow private IPv6 addresses
 
-[v1.3.5](https://github.com/nextcloud/nextcloudpi/commit/6fb9c9b) (2019-01-14) nc-hdd-test: try to detect device type if auto doesnt work
+[v1.3.6](https://github.com/nextcloud/nextcloudpi/commit/34cba9f) (2019-01-14) nc-automount: add delays to some services in a persistent way
+
+[v1.3.5  ](https://github.com/nextcloud/nextcloudpi/commit/6fb9c9b) (2019-01-14) nc-hdd-test: try to detect device type if auto doesnt work
 
 [v1.3.4  ](https://github.com/nextcloud/nextcloudpi/commit/9b1ecbb) (2019-01-14) nc-info: fix automount reporting
 

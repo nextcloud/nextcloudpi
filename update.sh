@@ -214,6 +214,31 @@ cp -r ncp-app /var/www/
     ncc app:enable nextcloudpi
   }
 
+  # allow private IPv6 addresses
+  cat > /etc/apache2/sites-available/ncp-activation.conf <<EOF
+<VirtualHost _default_:443>
+  DocumentRoot /var/www/ncp-web/
+  SSLEngine on
+  SSLCertificateFile      /etc/ssl/certs/ssl-cert-snakeoil.pem
+  SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
+
+</VirtualHost>
+<Directory /var/www/ncp-web/>
+  <RequireAll>
+
+   <RequireAny>
+      Require host localhost
+      Require local
+      Require ip 192.168
+      Require ip 172
+      Require ip 10
+      Require ip fd00::/8
+   </RequireAny>
+
+  </RequireAll>
+</Directory>
+EOF
+
   # remove redundant opcache configuration. Leave until update bug is fixed -> https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=815968
   # Bug #416 reappeared after we moved to php7.2 and debian buster packages. (keep last)
   [[ "$( ls -l /etc/php/7.2/fpm/conf.d/*-opcache.ini |  wc -l )" -gt 1 ]] && rm "$( ls /etc/php/7.2/fpm/conf.d/*-opcache.ini | tail -1 )"
