@@ -12,22 +12,7 @@
 
 is_active()
 {
-  systemctl -q is-active log2ram &>/dev/null
-}
-
-find_unit_name()
-{
-  UNIT_NAME=""
-  entry=$(systemctl list-unit-files --no-pager | grep -e ramlog)
-  if [[ -z "$entry" ]]
-  then
-    UNIT_NAME=""
-  elif [[ $entry == *armbian-ramlog* ]]
-  then
-    UNIT_NAME=armbian-ramlog
-  else
-    UNIT_NAME=log2ram
-  fi
+  systemctl -q is-active log2ram &>/dev/null || systemctl -q is-active armbian-ramlog &>/dev/null
 }
 
 install()
@@ -53,8 +38,10 @@ configure()
     echo "Logs in SD. Reboot to take effect"
     return
   }
-  systemctl enable "$UNIT_NAME"
-  systemctl start  "$UNIT_NAME"
+
+  [[ -f /lib/systemd/system/armbian-ramlog.service ]] && local ramlog=armbian-ramlog || local ramlog=log2ram
+  systemctl enable "$ramlog"
+  systemctl start  "$ramlog"
 
   echo "Logs in RAM. Reboot to take effect"
 }

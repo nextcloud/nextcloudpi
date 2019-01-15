@@ -1,5 +1,7 @@
 
-[v1.3.2](https://github.com/nextcloud/nextcloudpi/commit/86c5bef) (2019-01-14) nc-automount: fix description
+[v1.3.3](https://github.com/nextcloud/nextcloudpi/commit/f53bfd2) (2019-01-14) nc-ramlog: adapt to armbian
+
+[v1.3.2](https://github.com/nextcloud/nextcloudpi/commit/be9a546) (2019-01-14) nc-automount: fix description
 
 [v1.3.1  ](https://github.com/nextcloud/nextcloudpi/commit/61e3ff3) (2019-01-13) ncp-update: fail if version cant be parsed
 
