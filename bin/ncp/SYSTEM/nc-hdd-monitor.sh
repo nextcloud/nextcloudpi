@@ -57,7 +57,14 @@ sudo -u www-data php /var/www/nextcloud/occ notification:generate \
 EOF
 chmod +x /usr/local/etc/ncp-hdd-notif.sh
 
-  for dr in "${DRIVES[@]}"; do smartctl --smart=on /dev/${dr} | sed 1,2d; done
+  for dr in "${DRIVES[@]}"; do
+    local type=""
+    smartctl -d test /dev/${dr} &>/dev/null || {
+      smartctl -d sat -i /dev/${dr} &>/dev/null && type="-d sat"
+    }
+    smartctl $type --smart=on /dev/${dr} | sed 1,2d;
+  done
+
   update-rc.d  smartd enable
   service      smartd start
   echo "HDD monitor enabled"

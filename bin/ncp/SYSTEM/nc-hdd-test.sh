@@ -31,18 +31,25 @@ configure()
   }
 
   for dr in "${DRIVES[@]}"; do
+
+    local type=""
+    smartctl -d test /dev/${dr} &>/dev/null || {
+      smartctl -d sat -i /dev/${dr} &>/dev/null || { echo "couldnt detect device type"; return 1; }
+      type="-d sat"
+    }
+
     smartctl --smart=on /dev/${dr} | sed 1,2d
     if [[ "$SHORTTEST" == yes ]]; then
       echo "* Starting test on $dr. Check results later"
-      smartctl -X "/dev/$dr" &>/dev/null
-      smartctl -t short "/dev/$dr" | sed 1,2d
+      smartctl $type -X "/dev/$dr" &>/dev/null
+      smartctl $type -t short "/dev/$dr" | sed 1,2d
     elif [[ "$LONGTEST" == yes ]]; then
       echo "* Starting test on $dr. Check results later"
-      smartctl -X "/dev/$dr" &>/dev/null
-      smartctl -t long "/dev/$dr" | sed 1,2d
+      smartctl $type -X "/dev/$dr" &>/dev/null
+      smartctl $type -t long "/dev/$dr" | sed 1,2d
     else
       echo "* Stats for $dr"
-      smartctl -a "/dev/$dr" | sed 1,2d
+      smartctl $type -a "/dev/$dr" | sed 1,2d
     fi
   done
 }
