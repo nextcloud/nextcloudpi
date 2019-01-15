@@ -97,7 +97,7 @@ configure()
   sed -i "s|^opcache.file_cache=.*|opcache.file_cache=$DATADIR/.opcache|" /etc/php/${PHPVER}/mods-available/opcache.ini
 
   # update fail2ban logpath
-  sed -i "s|logpath  =.*nextcloud.log|logpath  = $DATADIR/nextcloud.log|" /etc/fail2ban/jail.conf
+  sed -i "s|logpath  =.*nextcloud.log|logpath  = $DATADIR/nextcloud.log|" /etc/fail2ban/jail.local
 
   # datadir
   sudo -u www-data php occ config:system:set datadirectory --value="$DATADIR"

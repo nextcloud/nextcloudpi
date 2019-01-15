@@ -1,5 +1,7 @@
 
-[v1.3.7](https://github.com/nextcloud/nextcloudpi/commit/05bfc13) (2019-01-14) ncp-web: allow private IPv6 addresses
+[v1.3.8](https://github.com/nextcloud/nextcloudpi/commit/97c35c4) (2019-01-14) nc-datadir: fix fail2ban logpath
+
+[v1.3.7](https://github.com/nextcloud/nextcloudpi/commit/2ac9b8b) (2019-01-14) ncp-web: allow private IPv6 addresses
 
 [v1.3.6](https://github.com/nextcloud/nextcloudpi/commit/34cba9f) (2019-01-14) nc-automount: add delays to some services in a persistent way
 
