@@ -56,9 +56,6 @@ EOF
   grep -q actionstart_ "$F" || sed -i 's|actionstart|actionstart_|' "$F"
   grep -q actionstop_  "$F" || sed -i 's|actionstop|actionstop_|'   "$F"
 
-  # delay init because of automount
-  sed -i "/^ExecStart=/iExecStartPre=/bin/sleep 10" /lib/systemd/system/fail2ban.service
-
 }
 
 configure()

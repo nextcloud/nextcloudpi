@@ -15,9 +15,6 @@ install()
   apt-get install --no-install-recommends -y nfs-kernel-server 
   systemctl disable nfs-kernel-server
   systemctl mask nfs-blkmap
-
-  # delay init because of automount
-  sed -i 's|^ExecStartPre=.*|ExecStartPre=/bin/bash -c "/bin/sleep 30; /usr/sbin/exportfs -r"|' /lib/systemd/system/nfs-server.service
 }
 
 configure()

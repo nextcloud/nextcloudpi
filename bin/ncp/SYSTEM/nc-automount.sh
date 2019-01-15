@@ -80,10 +80,6 @@ inotifywait --monitor --event create --event delete --format '%f %e' /media/ | \
 done
 EOF
   chmod +x /usr/local/etc/nc-automount-links-mon
-
-  # delay init because of automount
-  sed -i "/^ExecStart=/iExecStartPre=/bin/sleep 20" /lib/systemd/system/mariadb.service
-  sed -i 's|^Restart=.*|Restart=on-failure|'        /lib/systemd/system/mariadb.service
 }
 
 configure()
@@ -93,6 +89,8 @@ configure()
     systemctl stop    nc-automount-links
     systemctl disable nc-automount
     systemctl disable nc-automount-links
+    rm -rf /etc/systemd/system/{mariadb,nfs-server,dphys-swapfile,fail2ban}.service.d
+    systemctl daemon-reload
     echo "automount disabled"
     return 0
   }
@@ -100,6 +98,34 @@ configure()
   systemctl enable  nc-automount-links
   systemctl start   nc-automount
   systemctl start   nc-automount-links
+
+  # create delays in some units
+  mkdir -p /etc/systemd/system/mariadb.service.d
+  cat > /etc/systemd/system/mariadb.service.d/ncp-delay-automount.conf <<'EOF'
+[Service]
+ExecStartPre=/bin/sleep 20
+Restart=on-failure
+EOF
+
+  mkdir -p /etc/systemd/system/nfs-server.service.d
+  cat > /etc/systemd/system/nfs-server.service.d/ncp-delay-automount.conf <<'EOF'
+[Service]
+ExecStartPre=/bin/bash -c "/bin/sleep 30; /usr/sbin/exportfs -r"
+EOF
+
+  mkdir -p /etc/systemd/system/dphys-swapfile.service.d
+  cat > /etc/systemd/system/dphys-swapfile.service.d/ncp-delay-automount.conf <<'EOF'
+[Service]
+ExecStartPre=/bin/sleep 30
+EOF
+
+  mkdir -p /etc/systemd/system/fail2ban.service.d
+  cat > /etc/systemd/system/fail2ban.service.d/ncp-delay-automount.conf <<'EOF'
+[Service]
+ExecStartPre=/bin/sleep 10
+EOF
+
+  systemctl daemon-reload
   echo "automount enabled"
 }
 

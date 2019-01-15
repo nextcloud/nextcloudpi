@@ -49,8 +49,6 @@ install()
 {
   apt-get update
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends dphys-swapfile
-  # delay init because of automount
-  sed -i "/\<start)/asleep 30" /etc/init.d/dphys-swapfile 
 }
 
 
