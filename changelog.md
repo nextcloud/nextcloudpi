@@ -1,5 +1,7 @@
 
-[v1.3.1](https://github.com/nextcloud/nextcloudpi/commit/bb69e8d) (2019-01-13) ncp-update: fail if version cant be parsed
+[v1.3.2](https://github.com/nextcloud/nextcloudpi/commit/86c5bef) (2019-01-14) nc-automount: fix description
+
+[v1.3.1  ](https://github.com/nextcloud/nextcloudpi/commit/61e3ff3) (2019-01-13) ncp-update: fail if version cant be parsed
 
 [v1.3.0  ](https://github.com/nextcloud/nextcloudpi/commit/2c943b7) (2019-01-12) upgrade to NC15.0.2
 
