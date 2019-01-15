@@ -11,10 +11,10 @@
 configure()
 { 
   # stop mysqld and redis
-  mysqladmin -u root shutdown
-  kill $( cat /run/redis/redis-server.pid )
+  mysqladmin -u root shutdown || true
+  kill $( cat /run/redis/redis-server.pid ) || true
   [[ -f /run/crond.pid ]] && kill $( cat /run/crond.pid )
-  pkill -f php-fpm
+  pkill -f php-fpm || true
 
   # cleanup all NCP extras
   source /usr/local/etc/library.sh
