@@ -1,7 +1,9 @@
 
-[v1.3.9](https://github.com/nextcloud/nextcloudpi/commit/983456b) (2019-01-15) build: add exfat utils for external storage
+[v1.3.10](https://github.com/nextcloud/nextcloudpi/commit/b9fd429) (2019-01-15) nc-backup: compress in place and exclude previews folder
 
-[v1.3.8](https://github.com/nextcloud/nextcloudpi/commit/193d89b) (2019-01-14) nc-datadir: fix fail2ban logpath
+[v1.3.9](https://github.com/nextcloud/nextcloudpi/commit/0b8252b) (2019-01-15) build: add exfat utils for external storage
+
+[v1.3.8  ](https://github.com/nextcloud/nextcloudpi/commit/193d89b) (2019-01-14) nc-datadir: fix fail2ban logpath
 
 [v1.3.7  ](https://github.com/nextcloud/nextcloudpi/commit/2ac9b8b) (2019-01-14) ncp-web: allow private IPv6 addresses
 

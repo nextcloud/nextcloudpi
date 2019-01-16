@@ -190,6 +190,12 @@ cp -r ncp-app /var/www/
 
   # docker images only
   [[ -f /.docker-image ]] && {
+    [[ -d /data/app ]] && {
+      [[ -d /data/nextcloud ]] && mv /data/nextcloud /data/nextcloud-old
+      mv /data/app /data/nextcloud && \
+        rm -f /var/www/nextcloud && \
+        ln -s /data/nextcloud /var/www/nextcloud
+    }
     :
   }
 
@@ -238,6 +244,13 @@ cp -r ncp-app /var/www/
   </RequireAll>
 </Directory>
 EOF
+
+  # re-enable automount
+  is_active_app nc-automount && run_app nc-automount
+
+  # update nc-backup
+  install_app nc-backup
+  install_app nc-restore
 
   # remove redundant opcache configuration. Leave until update bug is fixed -> https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=815968
   # Bug #416 reappeared after we moved to php7.2 and debian buster packages. (keep last)

@@ -23,7 +23,7 @@ PHPVER=7.2
 
 DIR="$( cd "$( dirname "$BACKUPFILE" )" &>/dev/null && pwd )" #abspath
 
-[[ -f /.docker-image ]] && NCDIR=/data/app || NCDIR=/var/www/nextcloud
+[[ -f /.docker-image ]] && NCDIR=/data/nextcloud || NCDIR=/var/www/nextcloud
 
 [[ $# -eq 0           ]] && { echo "missing first argument"         ; exit 1; }
 [[ -f "$BACKUPFILE"   ]] || { echo "$BACKUPFILE not found"          ; exit 1; }
@@ -38,16 +38,10 @@ trap cleanup INT TERM HUP ERR EXIT
 rm -rf "$TMPDIR" && mkdir -p "$TMPDIR"
 
 # EXTRACT FILES
-[[ "$BACKUPFILE" =~ ".tar.gz" ]] && COMPRESSED=1 || COMPRESSED=0
-[[ "$COMPRESSED" == "1" ]] && {
-  echo "decompressing backup file $BACKUPFILE..."
-  tar -xzf "$BACKUPFILE" -C "$TMPDIR" || exit 1
-  BACKUPFILE="$( ls "$TMPDIR"/*.tar 2>/dev/null )"
-  [[ -f "$BACKUPFILE" ]] || { echo "$BACKUPFILE not found"; exit 1; }
-}
-
 echo "extracting backup file $BACKUPFILE..."
-tar -xf "$BACKUPFILE" -C "$TMPDIR" || exit 1
+
+[[ "$BACKUPFILE" =~ ".tar.gz" ]] && z=z
+tar -x${z}f "$BACKUPFILE" -C "$TMPDIR" || exit 1
 
 ## SANITY CHECKS
 [[ -d "$TMPDIR"/nextcloud ]] && [[ -f "$( ls "$TMPDIR"/nextcloud-sqlbkp_*.bak 2>/dev/null )" ]] || {
@@ -92,7 +86,7 @@ cd "$NCDIR"
 
 ### INCLUDEDATA=yes situation
 
-NUMFILES=$(( 2 + COMPRESSED ))
+NUMFILES=2
 if [[ $( ls "$TMPDIR" | wc -l ) -eq $NUMFILES ]]; then
 
   DATADIR=$( grep datadirectory "$NCDIR"/config/config.php | awk '{ print $3 }' | grep -oP "[^']*[^']" | head -1 ) 
@@ -151,6 +145,9 @@ bash /usr/local/bin/nextcloud-domain.sh
 
 # update the systems data-fingerprint
 sudo -u www-data php occ maintenance:data-fingerprint
+
+# refresh thumbnails
+sudo -u www-data php occ files:scan-app-data
 
 # restart PHP if needed
 [[ "$NEED_RESTART" == "1" ]] && \

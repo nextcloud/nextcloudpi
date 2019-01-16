@@ -13,90 +13,87 @@ install()
 #!/bin/bash
 set -eE
 
-DESTDIR="${1:-/media/USBdrive/ncp-backups}"
-INCLUDEDATA="${2:-no}"
-COMPRESS="${3:-no}"
-BACKUPLIMIT="${4:-0}"
+destdir="${1:-/media/USBdrive/ncp-backups}"
+includedata="${2:-no}"
+compress="${3:-no}"
+backuplimit="${4:-0}"
 
-DESTFILE="$DESTDIR"/nextcloud-bkp_$( date +"%Y%m%d_%s" ).tar 
-DBBACKUP=nextcloud-sqlbkp_$( date +"%Y%m%d" ).bak
-OCC="sudo -u www-data php /var/www/nextcloud/occ"
+destfile="$destdir"/nextcloud-bkp_$( date +"%Y%m%d_%s" ).tar
+dbbackup=nextcloud-sqlbkp_$( date +"%Y%m%d" ).bak
+occ="sudo -u www-data php /var/www/nextcloud/occ"
+[[ -f /.docker-image ]] && basedir=/data || basedir=/var/www
 
-DATADIR=$( $OCC config:system:get datadirectory ) || {
+[[ "$compress" == "yes" ]] && destfile="$destfile".gz
+
+datadir=$( $occ config:system:get datadirectory ) || {
   echo "Error reading data directory. Is NextCloud running and configured?";
   exit 1;
 }
 
-cleanup(){ local RET=$?;                    rm -f "${DBBACKUP}"              ;[[ -f /.docker-image ]] && mv /data/nextcloud /data/app; $OCC maintenance:mode --off; exit $RET; }
-fail()   { local RET=$?; echo "Abort..."  ; rm -f "${DBBACKUP}" "${DESTFILE}";[[ -f /.docker-image ]] && mv /data/nextcloud /data/app; $OCC maintenance:mode --off; exit $RET; }
+cleanup(){ local ret=$?;                    rm -f "${dbbackup}"              ; $occ maintenance:mode --off; exit $ret; }
+fail()   { local ret=$?; echo "Abort..."  ; rm -f "${dbbackup}" "${destfile}"; $occ maintenance:mode --off; exit $ret; }
 trap cleanup EXIT
 trap fail INT TERM HUP ERR
 
-echo "check free space..." # allow at least ~500 MiB for backups without data
-mkdir -p "$DESTDIR"
-[[ "$INCLUDEDATA" == "yes" ]] && SIZE=$( du -s "$DATADIR" | awk '{ print $1 }' ) || SIZE=500000
-FREE=$( df    "$DESTDIR" | tail -1 | awk '{ print $4 }' )
+echo "check free space..." # allow at least ~100 extra MiB
+mkdir -p "$destdir"
+[[ "$includedata" == "yes" ]] && \
+  dsize=$(du -s "$datadir" | awk '{ print $1 }')
+nsize=$(du -s "$basedir/nextcloud" | awk '{ print $1 }')
+size=$((nsize + dsize + 100*1024))
+free=$( df "$destdir" | tail -1 | awk '{ print $4 }' )
 
-[ $SIZE -ge $FREE ] && { 
-  echo "free space check failed. Need $SIZE Bytes";
-  exit 1; 
+[ $size -ge $free ] && {
+  echo "free space check failed. Need $size Bytes";
+  exit 1;
 }
 
 # delete older backups
-[[ $BACKUPLIMIT != 0 ]] && {
-  NUMBKPS=$( ls "$DESTDIR"/nextcloud-bkp_* 2>/dev/null | wc -l )
-  [[ $NUMBKPS -ge $BACKUPLIMIT ]] && \
-    ls -t $DESTDIR/nextcloud-bkp_* | tail -$(( NUMBKPS - BACKUPLIMIT + 1 )) | while read -r f; do
+[[ $backuplimit != 0 ]] && {
+  numbkps=$( ls "$destdir"/nextcloud-bkp_* 2>/dev/null | wc -l )
+  [[ $numbkps -ge $backuplimit ]] && \
+    ls -t $destdir/nextcloud-bkp_* | tail -$(( numbkps - backuplimit + 1 )) | while read -r f; do
       echo "clean up old backup $f"
       rm "$f"
     done
 }
 
 # database
-$OCC maintenance:mode --on
-[[ -f /.docker-image ]] && mv /data/app /data/nextcloud && DATADIR=/data/nextcloud/data
-[[ -f /.docker-image ]] && BASEDIR=/data || BASEDIR=/var/www
-cd "$BASEDIR" || exit 1
+$occ maintenance:mode --on
+cd "$basedir" || exit 1
 echo "backup database..."
-mysqldump -u root --single-transaction nextcloud > "$DBBACKUP"
+mysqldump -u root --single-transaction nextcloud > "$dbbackup"
 
 # files
-echo "backup base files..."
-mkdir -p "$DESTDIR"
-tar --exclude "nextcloud/data/*/files/*" \
+echo "backup files..."
+[[ "$includedata" == "yes" ]] && data="$(basename "$datadir")"
+[[ "$compress"    == "yes" ]] && z=z
+mkdir -p "$destdir"
+tar -c${z}f "$destfile" \
+\
+    "$dbbackup" \
+\
+    --exclude "$data/.opcache" \
+    --exclude "$data/{access,error,nextcloud}.log" \
+    --exclude "$data/access.log" \
+    --exclude "$data/ncp-update-backups/" \
+    -C "$(dirname "$datadir"/)" $data \
+\
+    --exclude "nextcloud/data/*/files/*" \
     --exclude "nextcloud/data/.opcache" \
     --exclude "nextcloud/data/{access,error,nextcloud}.log" \
     --exclude "nextcloud/data/access.log" \
+    --exclude "nextcloud/data/appdata_*/previews/*" \
     --exclude "nextcloud/data/ncp-update-backups/" \
-    -cf "$DESTFILE" "$DBBACKUP" "nextcloud"/ \
+    -C $basedir nextcloud/ \
   || {
         echo "error generating backup"
         exit 1
       }
-rm "$DBBACKUP"
+rm "$dbbackup"
+chmod 600 "$destfile"
 
-[[ "$INCLUDEDATA" == "yes" ]] && {
-  echo "backup data files..."
-  tar --exclude "data/.opcache" \
-      --exclude "data/{access,error,nextcloud}.log" \
-      --exclude "data/access.log" \
-      --exclude "data/ncp-update-backups/" \
-      -rf "$DESTFILE" -C "$DATADIR"/.. "$( basename "$DATADIR" )" \
-  || {
-        echo "error generating backup"
-        exit 1
-      }
-} 
-
-[[ "$COMPRESS" == "yes" ]] && {
-  echo "compressing backup file..."
-  tar -czf "${DESTFILE}.gz" -C "$( dirname "$DESTFILE" )" "$( basename "$DESTFILE" )"
-  rm "$DESTFILE"
-  DESTFILE="${DESTFILE}.gz"
-}
-chmod 600 "$DESTFILE"
-
-echo "backup $DESTFILE generated"
+echo "backup $destfile generated"
 EOF
   chmod +x /usr/local/bin/ncp-backup
 }
