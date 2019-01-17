@@ -1,7 +1,9 @@
 
-[v1.3.11](https://github.com/nextcloud/nextcloudpi/commit/418aa74) (2019-01-16) nc-backup: parallel compression
+[v1.4.0](https://github.com/nextcloud/nextcloudpi/commit/2bd3e67) (2019-01-16) add nc-trusted-domains
 
-[v1.3.10](https://github.com/nextcloud/nextcloudpi/commit/2419e57) (2019-01-15) nc-backup: compress in place and exclude previews folder
+[v1.3.11](https://github.com/nextcloud/nextcloudpi/commit/84ac075) (2019-01-16) nc-backup: parallel compression
+
+[v1.3.10 ](https://github.com/nextcloud/nextcloudpi/commit/2419e57) (2019-01-15) nc-backup: compress in place and exclude previews folder
 
 [v1.3.9  ](https://github.com/nextcloud/nextcloudpi/commit/0b8252b) (2019-01-15) build: add exfat utils for external storage
 
