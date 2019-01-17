@@ -1,7 +1,9 @@
 
-[v1.4.0](https://github.com/nextcloud/nextcloudpi/commit/2bd3e67) (2019-01-16) add nc-trusted-domains
+[v1.4.1](https://github.com/nextcloud/nextcloudpi/commit/9e0c100) (2019-01-16) docker: support for ncp-update-nc
 
-[v1.3.11](https://github.com/nextcloud/nextcloudpi/commit/84ac075) (2019-01-16) nc-backup: parallel compression
+[v1.4.0](https://github.com/nextcloud/nextcloudpi/commit/1dd1bb7) (2019-01-16) add nc-trusted-domains
+
+[v1.3.11 ](https://github.com/nextcloud/nextcloudpi/commit/84ac075) (2019-01-16) nc-backup: parallel compression
 
 [v1.3.10 ](https://github.com/nextcloud/nextcloudpi/commit/2419e57) (2019-01-15) nc-backup: compress in place and exclude previews folder
 
