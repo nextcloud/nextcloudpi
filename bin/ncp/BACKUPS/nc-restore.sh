@@ -40,8 +40,8 @@ rm -rf "$TMPDIR" && mkdir -p "$TMPDIR"
 # EXTRACT FILES
 echo "extracting backup file $BACKUPFILE..."
 
-[[ "$BACKUPFILE" =~ ".tar.gz" ]] && z=z
-tar -x${z}f "$BACKUPFILE" -C "$TMPDIR" || exit 1
+[[ "$BACKUPFILE" =~ ".tar.gz" ]] && compress_arg="-I pigz"
+tar $compress_arg -xf "$BACKUPFILE" -C "$TMPDIR" || exit 1
 
 ## SANITY CHECKS
 [[ -d "$TMPDIR"/nextcloud ]] && [[ -f "$( ls "$TMPDIR"/nextcloud-sqlbkp_*.bak 2>/dev/null )" ]] || {

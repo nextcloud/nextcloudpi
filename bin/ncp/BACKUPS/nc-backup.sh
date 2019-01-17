@@ -9,6 +9,9 @@
 
 install()
 {
+  apt-get update
+  apt-get install -y --no-install-recommends pigz
+
   cat > /usr/local/bin/ncp-backup <<'EOF'
 #!/bin/bash
 set -eE
@@ -67,9 +70,9 @@ mysqldump -u root --single-transaction nextcloud > "$dbbackup"
 # files
 echo "backup files..."
 [[ "$includedata" == "yes" ]] && data="$(basename "$datadir")"
-[[ "$compress"    == "yes" ]] && z=z
+[[ "$compress"    == "yes" ]] && compress_arg="-I pigz"
 mkdir -p "$destdir"
-tar -c${z}f "$destfile" \
+tar $compress_arg -cf "$destfile" \
 \
     "$dbbackup" \
 \
