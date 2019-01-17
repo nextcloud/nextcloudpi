@@ -22,8 +22,8 @@ source /usr/local/etc/library.sh; \
 set +x; \
 install_app /nc-nextcloud.sh; \
 run_app_unsafe /nc-nextcloud.sh; \
-mv /var/www/nextcloud /data-ro/app; \
-ln -s /data-ro/app /var/www/nextcloud; \
+mv /var/www/nextcloud /data-ro/nextcloud; \
+ln -s /data-ro/nextcloud /var/www/nextcloud; \
 
 # stop mysqld
 mysqladmin -u root shutdown; \
@@ -46,7 +46,7 @@ COPY docker-common/nextcloud/020nextcloud /etc/services-enabled.d/
 COPY bin/ncp-provisioning.sh /usr/local/bin/
 
 # display message until first run initialization is complete
-COPY docker-common/nextcloud/ncp-wait-msg.html /data-ro/app
+COPY docker-common/nextcloud/ncp-wait-msg.html /data-ro/nextcloud
 RUN \
-mv /data-ro/app/index.php /; \
-mv /data-ro/app/ncp-wait-msg.html /data-ro/app/index.php;
+mv /data-ro/nextcloud/index.php /; \
+mv /data-ro/nextcloud/ncp-wait-msg.html /data-ro/nextcloud/index.php;

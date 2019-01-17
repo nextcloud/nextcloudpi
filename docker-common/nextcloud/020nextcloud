@@ -18,7 +18,7 @@ set -e
 
 # we want to work in the volume version of the code
 rm /var/www/nextcloud
-ln -s /data/app /var/www/nextcloud
+ln -s /data/nextcloud /var/www/nextcloud
 
 echo "Starting Redis"
 sed -i 's|^requirepass .*|requirepass default|' /etc/redis/redis.conf
@@ -33,7 +33,7 @@ echo "Starting Postfix"
 postfix start
 
 # INIT DATABASE AND NEXTCLOUD CONFIG (first run)
-test -f /data/app/config/config.php || {
+test -f /data/nextcloud/config/config.php || {
   echo "Uninitialized instance, running nc-init..."
   source /usr/local/etc/library.sh
   run_app_unsafe /nc-init.sh
@@ -41,8 +41,8 @@ test -f /data/app/config/config.php || {
 }
 
 # Better do real provisioning at the end, as it can restart PHP asynchronously
-sed -i "s|'password'.*|'password' => 'default',|"        /data/app/config/config.php
-sed -i "s|'dbpassword' =>.*|'dbpassword' => 'default',|" /data/app/config/config.php
+sed -i "s|'password'.*|'password' => 'default',|"        /data/nextcloud/config/config.php
+sed -i "s|'dbpassword' =>.*|'dbpassword' => 'default',|" /data/nextcloud/config/config.php
 echo -e "[client]\npassword=default" > /root/.my.cnf
 chmod 600 /root/.my.cnf
 DBPASSWD=default
@@ -69,6 +69,6 @@ echo "Provisioning"
 bash /usr/local/bin/ncp-provisioning.sh
 
 # Display NC logs in the docker logs
-tail -f -n0 /data/app/data/nextcloud.log &
+tail -f -n0 /data/nextcloud/data/nextcloud.log &
 
 exit 0

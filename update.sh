@@ -190,12 +190,18 @@ cp -r ncp-app /var/www/
 
   # docker images only
   [[ -f /.docker-image ]] && {
+
+    # fix dirs
     [[ -d /data/app ]] && {
+      ncc config:system:set datadirectory --value="/data/nextcloud/data"
       [[ -d /data/nextcloud ]] && mv /data/nextcloud /data/nextcloud-old
       mv /data/app /data/nextcloud && \
         rm -f /var/www/nextcloud && \
         ln -s /data/nextcloud /var/www/nextcloud
     }
+
+    # re-enable automount
+    is_active_app nc-automount && run_app nc-automount
     :
   }
 
@@ -244,9 +250,6 @@ cp -r ncp-app /var/www/
   </RequireAll>
 </Directory>
 EOF
-
-  # re-enable automount
-  is_active_app nc-automount && run_app nc-automount
 
   # update nc-backup
   install_app nc-backup
