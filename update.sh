@@ -199,14 +199,13 @@ cp -r ncp-app /var/www/
         rm -f /var/www/nextcloud && \
         ln -s /data/nextcloud /var/www/nextcloud
     }
-
-    # re-enable automount
-    is_active_app nc-automount && run_app nc-automount
     :
   }
 
   # for non docker images
   [[ ! -f /.docker-image ]] && {
+    # re-enable automount
+    is_active_app nc-automount && run_app nc-automount
     :
   }
   
