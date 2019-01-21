@@ -49,7 +49,8 @@ configure()
   }
 
   local IFACE=$( ip r | grep "default via"   | awk '{ print $5 }' | head -1 )
-  local IP=$( ip a show dev "$IFACE" | grep global | grep -oP '\d{1,3}(.\d{1,3}){3}' | head -1 )
+  local IP=$( sudo -u www-data php /var/www/nextcloud/occ config:system:get trusted_domains 6 | grep -oP '\d{1,3}(.\d{1,3}){3}' )
+  [[ "$IP" == "" ]] && IP=$( ip a show dev "$IFACE" | grep global | grep -oP '\d{1,3}(.\d{1,3}){3}' | head -1 )
 
   [[ "$IP" == "" ]] && { echo "could not detect IP"; return 1; }
   
