@@ -1,7 +1,9 @@
 
-[v1.4.4](https://github.com/nextcloud/nextcloudpi/commit/a5db49d) (2019-01-22) armbian: fix cron permissions bug
+[v1.4.5](https://github.com/nextcloud/nextcloudpi/commit/44ca547) (2019-01-22) armbian: fix cron permissions bug (2)
 
-[v1.4.3](https://github.com/nextcloud/nextcloudpi/commit/0e062aa) (2019-01-21) dnsmasq: detect IP from config file (#782)
+[v1.4.4  ](https://github.com/nextcloud/nextcloudpi/commit/af426a5) (2019-01-22) armbian: fix cron permissions bug
+
+[v1.4.3  ](https://github.com/nextcloud/nextcloudpi/commit/0e062aa) (2019-01-21) dnsmasq: detect IP from config file (#782)
 
 [v1.4.2  ](https://github.com/nextcloud/nextcloudpi/commit/57728e2) (2019-01-21) Proposed fix for issue #773 (#781)
 

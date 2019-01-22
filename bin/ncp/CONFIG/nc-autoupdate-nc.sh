@@ -35,7 +35,7 @@ if [[ \${PIPESTATUS[0]} -eq 0 ]]; then
 fi
 echo "" >> /var/log/ncp.log
 EOF
-  chmod 644 /etc/cron.daily/ncp-autoupdate-nc
+  chmod 755 /etc/cron.daily/ncp-autoupdate-nc
   echo "automatic Nextcloud updates enabled"
 }
 
