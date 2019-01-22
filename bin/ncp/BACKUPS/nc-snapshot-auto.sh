@@ -44,7 +44,7 @@ configure()
 /usr/local/bin/btrfs-snp $MOUNTPOINT weekly   4 604800  ../ncp-snapshots
 /usr/local/bin/btrfs-snp $MOUNTPOINT monthly 12 2592000 ../ncp-snapshots
 EOF
-  chmod +x /etc/cron.hourly/btrfs-snp
+  chmod 644 /etc/cron.hourly/btrfs-snp
   echo "automatic snapshots enabled"
 }
 

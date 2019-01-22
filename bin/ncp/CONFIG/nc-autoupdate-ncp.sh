@@ -26,7 +26,7 @@ if /usr/local/bin/ncp-test-updates; then
        -l "NextCloudPi was updated to \$( cat /usr/local/etc/ncp-version )"
 fi
 EOF
-  chmod a+x /etc/cron.daily/ncp-autoupdate
+  chmod 644 /etc/cron.daily/ncp-autoupdate
   echo "automatic NextCloudPi updates enabled"
 }
 

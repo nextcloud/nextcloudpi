@@ -33,6 +33,7 @@ configure()
   fi
 
   echo "${MINS}  ${HOUR}  ${DAYS}  *  *  root /usr/local/bin/ncp-scan" > /etc/cron.d/ncp-scan-auto
+  chmod 644 /etc/cron.d/ncp-scan-auto
   service cron restart
 
   echo "automatic scans enabled"

@@ -35,6 +35,7 @@ configure()
   }
 
   echo "0  5  */${SYNCDAYS}  *  *  root  /usr/bin/rsync -ax --delete \"$DATADIR\" \"$DESTINATION\"" > /etc/cron.d/ncp-rsync-auto
+  chmod 644 /etc/cron.d/ncp-rsync-auto
   service cron restart
 
   echo "automatic rsync enabled"

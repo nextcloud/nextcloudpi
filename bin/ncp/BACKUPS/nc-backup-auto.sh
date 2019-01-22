@@ -25,6 +25,7 @@ EOF
   chmod +x /usr/local/bin/ncp-backup-auto
 
   echo "0  3  */${BACKUPDAYS}  *  *  root  /usr/local/bin/ncp-backup-auto" > /etc/cron.d/ncp-backup-auto
+  chmod 644 /etc/cron.d/ncp-backup-auto
   service cron restart
 
   echo "automatic backups enabled"

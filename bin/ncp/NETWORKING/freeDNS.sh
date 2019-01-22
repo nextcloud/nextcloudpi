@@ -39,6 +39,7 @@ EOF
   chmod +744 /usr/local/bin/freedns.sh
 
   echo "*/${UPDATEINTERVAL}  *  *  *  *  root  /bin/bash /usr/local/bin/freedns.sh" > /etc/cron.d/freeDNS
+  chmod 644 /etc/cron.d/freeDNS
   service cron restart
 
   cd /var/www/nextcloud

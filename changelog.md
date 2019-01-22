@@ -1,7 +1,15 @@
 
-[v1.4.1](https://github.com/nextcloud/nextcloudpi/commit/9e0c100) (2019-01-16) docker: support for ncp-update-nc
+[v1.4.4](https://github.com/nextcloud/nextcloudpi/commit/a5db49d) (2019-01-22) armbian: fix cron permissions bug
 
-[v1.4.0](https://github.com/nextcloud/nextcloudpi/commit/1dd1bb7) (2019-01-16) add nc-trusted-domains
+[v1.4.3](https://github.com/nextcloud/nextcloudpi/commit/0e062aa) (2019-01-21) dnsmasq: detect IP from config file (#782)
+
+[v1.4.2  ](https://github.com/nextcloud/nextcloudpi/commit/57728e2) (2019-01-21) Proposed fix for issue #773 (#781)
+
+[v1.4.1  ](https://github.com/nextcloud/nextcloudpi/commit/d0ca44a) (2019-01-16) docker: support for ncp-update-nc
+
+[v1.4.0  ](https://github.com/nextcloud/nextcloudpi/commit/1dd1bb7) (2019-01-16) add nc-trusted-domains
+
+[v1.3.12 ](https://github.com/nextcloud/nextcloudpi/commit/1f11d40) (2019-01-16) add public IP to trusted domains
 
 [v1.3.11 ](https://github.com/nextcloud/nextcloudpi/commit/84ac075) (2019-01-16) nc-backup: parallel compression
 
@@ -13,7 +21,7 @@
 
 [v1.3.7  ](https://github.com/nextcloud/nextcloudpi/commit/2ac9b8b) (2019-01-14) ncp-web: allow private IPv6 addresses
 
-[v1.3.6](https://github.com/nextcloud/nextcloudpi/commit/34cba9f) (2019-01-14) nc-automount: add delays to some services in a persistent way
+[v1.3.6  ](https://github.com/nextcloud/nextcloudpi/commit/34cba9f) (2019-01-14) nc-automount: add delays to some services in a persistent way
 
 [v1.3.5  ](https://github.com/nextcloud/nextcloudpi/commit/6fb9c9b) (2019-01-14) nc-hdd-test: try to detect device type if auto doesnt work
 
