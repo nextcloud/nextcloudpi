@@ -1,5 +1,7 @@
 
-[v1.4.5](https://github.com/nextcloud/nextcloudpi/commit/44ca547) (2019-01-22) armbian: fix cron permissions bug (2)
+[v1.4.6](https://github.com/nextcloud/nextcloudpi/commit/d1a3e18) (2019-01-24) ncp-config: fix missing variable
+
+[v1.4.5  ](https://github.com/nextcloud/nextcloudpi/commit/b7efa7a) (2019-01-22) armbian: fix cron permissions bug (2)
 
 [v1.4.4  ](https://github.com/nextcloud/nextcloudpi/commit/af426a5) (2019-01-22) armbian: fix cron permissions bug
 

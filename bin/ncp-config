@@ -15,6 +15,9 @@ BINDIR=/usr/local/bin/ncp
 
 source /usr/local/etc/library.sh
 {
+  local latest_ver="$(cat /var/run/.ncp-latest-version)"
+  local ncpversion="$(cat /usr/local/etc/ncp-version  )"
+  local chlogfile=/usr/local/etc/ncp-changelog
   # ask for update if outdated
   ncp-test-updates 2>/dev/null && {
     [[ -f "$chlogfile" ]] && local changelog=$( head -4 "$chlogfile" )
@@ -57,10 +60,8 @@ function config_menu()
 {
   local dir="$1"
   local backtitle="NextCloudPi configuration ver. "
-  local latest_ver="$(cat /var/run/.ncp-latest-version)"
   local ncpversion="$(cat /usr/local/etc/ncp-version  )"
   local cfgdir=/usr/local/etc/ncp-config.d
-  local chlogfile=/usr/local/etc/ncp-changelog
   local dialog_ok=0
   local desc cfg ncp_app
 
