@@ -272,8 +272,9 @@ ncc config:system:set trusted_domains 1 --value=$ip
 EOF
 
   # fix Armbian cron bug
-  chmod 644 /etc/cron.d/*
-  chmod 755 /etc/cron.daily/* /etc/cron.hourly/*
+  [[ "$( ls -1 /etc/cron.d/ |  wc -l )" -gt 0 ]] && chmod 644 /etc/cron.d/*
+  [[ "$( ls -1 /etc/cron.daily/ |  wc -l )" -gt 0 ]] && chmod 755 /etc/cron.daily/*
+  [[ "$( ls -1 /etc/cron.hourly/ |  wc -l )" -gt 0 ]] && chmod 755 /etc/cron.hourly/*
 
   # remove redundant opcache configuration. Leave until update bug is fixed -> https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=815968
   # Bug #416 reappeared after we moved to php7.2 and debian buster packages. (keep last)
