@@ -8,10 +8,10 @@
 # More at https://ownyourbits.com/2017/03/17/lets-encrypt-installer-for-apache/
 
 
-NCDIR=/var/www/nextcloud
-OCC="$NCDIR/occ"
-VHOSTCFG=/etc/apache2/sites-available/nextcloud.conf
-VHOSTCFG2=/etc/apache2/sites-available/ncp.conf
+ncdir=/var/www/nextcloud
+vhostcfg=/etc/apache2/sites-available/nextcloud.conf
+vhostcfg2=/etc/apache2/sites-available/ncp.conf
+letsencrypt=/etc/letsencrypt/letsencrypt-auto
 
 is_active()
 {
@@ -22,7 +22,13 @@ install()
 {
   cd /etc || return 1
   apt-get update
-  apt-get install --no-install-recommends -y letsencrypt
+  apt-get install --no-install-recommends -y python3-minimal
+  wget -O- --content-disposition https://github.com/letsencrypt/letsencrypt/archive/master/latest.tar.gz \
+  | tar -xz \
+  || exit 1
+  mv certbot-master letsencrypt
+  export VIRTUALENV_NO_DOWNLOAD=1          # temporal workaround for https://github.com/certbot/certbot/issues/6682
+  $letsencrypt --help                      # do not actually run certbot, only install packages
   mkdir -p /etc/letsencrypt/live
 
   [[ "$DOCKERBUILD" == 1 ]] && {
@@ -40,7 +46,7 @@ EOF
   return 0
 }
 
-# tested with certbot 0.10.2
+# tested with certbot 0.30.0
 configure() 
 {
   local DOMAIN_LOWERCASE="${DOMAIN,,}"
@@ -48,57 +54,70 @@ configure()
   [[ "$DOMAIN" == "" ]] && { echo "empty domain"; return 1; }
 
   # Configure Apache
-  grep -q ServerName $VHOSTCFG && \
-    sed -i "s|ServerName .*|ServerName $DOMAIN|" $VHOSTCFG || \
-    sed -i "/DocumentRoot/aServerName $DOMAIN" $VHOSTCFG 
+  grep -q ServerName $vhostcfg && \
+    sed -i "s|ServerName .*|ServerName $DOMAIN|" $vhostcfg || \
+    sed -i "/DocumentRoot/aServerName $DOMAIN" $vhostcfg
 
   # Do it
-  letsencrypt certonly -n --no-self-upgrade --webroot -w $NCDIR --hsts --agree-tos -m $EMAIL -d $DOMAIN && {
+  $letsencrypt certonly -n --no-self-upgrade --webroot -w $ncdir --hsts --agree-tos -m $EMAIL -d $DOMAIN && {
 
     # Set up auto-renewal
     cat > /etc/cron.weekly/letsencrypt-ncp <<EOF
 #!/bin/bash
 
 # renew and notify
-/usr/bin/certbot renew --quiet --renew-hook '
-  sudo -u www-data php $OCC notification:generate \
-                            $NOTIFYUSER "SSL renewal" \
-                            -l "Your SSL certificate(s) \$RENEWED_DOMAINS has been renewed for another 90 days"
+$letsencrypt renew --quiet --deploy-hook '
+  ncc notification:generate \
+    $NOTIFYUSER "SSL renewal" \
+    -l "Your SSL certificate(s) \$RENEWED_DOMAINS has been renewed for another 90 days"
   '
 
 # notify if fails
-[[ \$? -ne 0 ]] && sudo -u www-data php $OCC notification:generate \
-                                             $NOTIFYUSER "SSL renewal error" \
-                                             -l "SSL certificate renewal failed. See /var/log/letsencrypt/letsencrypt.log"
+[[ \$? -ne 0 ]] && ncc notification:generate \
+                     $NOTIFYUSER "SSL renewal error" \
+                     -l "SSL certificate renewal failed. See /var/log/letsencrypt/letsencrypt.log"
 
 # cleanup
-rm -rf $NCDIR/.well-known
+rm -rf $ncdir/.well-known
 EOF
-    chmod +x /etc/cron.weekly/letsencrypt-ncp
+    chmod 755 /etc/cron.weekly/letsencrypt-ncp
 
     # Configure Apache
-    sed -i "s|SSLCertificateFile.*|SSLCertificateFile /etc/letsencrypt/live/$DOMAIN_LOWERCASE/fullchain.pem|" $VHOSTCFG
-    sed -i "s|SSLCertificateKeyFile.*|SSLCertificateKeyFile /etc/letsencrypt/live/$DOMAIN_LOWERCASE/privkey.pem|" $VHOSTCFG
+    sed -i "s|SSLCertificateFile.*|SSLCertificateFile /etc/letsencrypt/live/$DOMAIN_LOWERCASE/fullchain.pem|" $vhostcfg
+    sed -i "s|SSLCertificateKeyFile.*|SSLCertificateKeyFile /etc/letsencrypt/live/$DOMAIN_LOWERCASE/privkey.pem|" $vhostcfg
 
-    sed -i "s|SSLCertificateFile.*|SSLCertificateFile /etc/letsencrypt/live/$DOMAIN_LOWERCASE/fullchain.pem|" $VHOSTCFG2
-    sed -i "s|SSLCertificateKeyFile.*|SSLCertificateKeyFile /etc/letsencrypt/live/$DOMAIN_LOWERCASE/privkey.pem|" $VHOSTCFG2
+    sed -i "s|SSLCertificateFile.*|SSLCertificateFile /etc/letsencrypt/live/$DOMAIN_LOWERCASE/fullchain.pem|" $vhostcfg2
+    sed -i "s|SSLCertificateKeyFile.*|SSLCertificateKeyFile /etc/letsencrypt/live/$DOMAIN_LOWERCASE/privkey.pem|" $vhostcfg2
 
     # Configure Nextcloud
-    sudo -u www-data php $OCC config:system:set trusted_domains 4 --value=$DOMAIN
-    sudo -u www-data php $OCC config:system:set overwrite.cli.url --value=https://"$DOMAIN"/
+    ncc config:system:set trusted_domains 4 --value=$DOMAIN
+    ncc config:system:set overwrite.cli.url --value=https://"$DOMAIN"/
 
     # delayed in bg so it does not kill the connection, and we get AJAX response
     bash -c "sleep 2 && service apache2 reload" &>/dev/null &
-    rm -rf $NCDIR/.well-known
+    rm -rf $ncdir/.well-known
     
     # Update configuration
     [[ "$DOCKERBUILD" == 1 ]] && update-rc.d letsencrypt enable
 
     return 0
   }
-  rm -rf $NCDIR/.well-known
+  rm -rf $ncdir/.well-known
   return 1
 }
+
+cleanup()
+{
+  apt-get purge -y \
+    augeas-lenses \
+    libpython-dev \
+    libpython2.7-dev \
+    libssl-dev \
+    python-dev \
+    python2.7-dev \
+    python-pip-whl
+}
+
 
 # License
 #

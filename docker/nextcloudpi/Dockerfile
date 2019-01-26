@@ -46,6 +46,33 @@ rm /.ncp-image; \
 source /usr/local/etc/library.sh; \
 find /usr/local/bin/ncp -name '*.sh' | while read l; do cleanup_script $l; done; \
 
+# letsencrypt build artifacts cleanup
+apt-get purge -y \
+  make \
+  binutils \
+  cpp \
+  cpp-6 \
+  gcc \
+  gcc-6 \
+  libasan3 \
+  libaugeas0 \
+  libc-dev-bin \
+  libc6-dev \
+  libcc1-0 \
+  libexpat1-dev \
+  libffi-dev \
+  libgcc-6-dev \
+  libgomp1 \
+  libisl15 \
+  libmpc3 \
+  libubsan0 \
+  linux-libc-dev \
+  python-virtualenv \
+  python-pkg-resources \
+  python3-pkg-resources \
+  python3-virtualenv \
+  virtualenv; \
+
 # should be cleaned up in no-ip.sh, but breaks udiskie.
 # safe to do it here since no automount in docker
 apt-get purge -y make gcc libc-dev; \

@@ -1,7 +1,9 @@
 
-[v1.4.8](https://github.com/nextcloud/nextcloudpi/commit/ea9a1ea) (2019-01-26) ncp-update-nc: fix unnecessary quotes
+[v1.4.9](https://github.com/nextcloud/nextcloudpi/commit/c0f4b78) (2019-01-25) letsencrypt: use the latest github version
 
-[v1.4.7](https://github.com/nextcloud/nextcloudpi/commit/ffc1fa5) (2019-01-25) ncp-config: fix local variables
+[v1.4.8](https://github.com/nextcloud/nextcloudpi/commit/338da33) (2019-01-26) ncp-update-nc: fix unnecessary quotes
+
+[v1.4.7  ](https://github.com/nextcloud/nextcloudpi/commit/ffc1fa5) (2019-01-25) ncp-config: fix local variables
 
 [v1.4.6  ](https://github.com/nextcloud/nextcloudpi/commit/b338ede) (2019-01-24) ncp-config: fix missing variable
 

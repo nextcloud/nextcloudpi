@@ -276,6 +276,20 @@ EOF
   [[ "$( ls -1 /etc/cron.daily/ |  wc -l )" -gt 0 ]] && chmod 755 /etc/cron.daily/*
   [[ "$( ls -1 /etc/cron.hourly/ |  wc -l )" -gt 0 ]] && chmod 755 /etc/cron.hourly/*
 
+  # change letsencrypt from package based to git based
+  [[ -f /etc/letsencrypt/certbot-auto ]] || {
+    echo "updating letsencrypt..."
+    [[ -f /.docker-image ]] && mv "$(readlink /etc/letsencrypt)" /etc/letsencrypt-old
+    [[ -f /.docker-image ]] || mv /etc/letsencrypt /etc/letsencrypt-old
+    rm -f /etc/letsencrypt
+    apt-get remove -y letsencrypt
+    apt-get autoremove -y
+    install_app letsencrypt
+    cp -raT /etc/letsencrypt-old/live /etc/letsencrypt/live
+    [[ -f /.docker-image ]] && persistent_cfg /etc/letsencrypt
+    [[ -f /etc/cron.weekly/letsencrypt-ncp ]] && run_app letsencrypt
+  }
+
   # remove redundant opcache configuration. Leave until update bug is fixed -> https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=815968
   # Bug #416 reappeared after we moved to php7.2 and debian buster packages. (keep last)
   [[ "$( ls -l /etc/php/7.2/fpm/conf.d/*-opcache.ini |  wc -l )" -gt 1 ]] && rm "$( ls /etc/php/7.2/fpm/conf.d/*-opcache.ini | tail -1 )"
