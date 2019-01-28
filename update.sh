@@ -297,6 +297,13 @@ EOF
     bash -c "sleep 2 && service apache2 reload" &>/dev/null &
   }
 
+  # fix LE update bug (2)
+  if [[ -d /etc/letsencrypt/archive ]] && [[ "$(ls /etc/letsencrypt/archive/* 2>/dev/null | wc -l )" == "0" ]]; then
+    rmdir /etc/letsencrypt/archive
+    sleep 3
+    cp -ravT /etc/letsencrypt-old/archive /etc/letsencrypt/archive || true
+    bash -c "sleep 2 && service apache2 reload" &>/dev/null &
+  fi
 
   # remove redundant opcache configuration. Leave until update bug is fixed -> https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=815968
   # Bug #416 reappeared after we moved to php7.2 and debian buster packages. (keep last)
