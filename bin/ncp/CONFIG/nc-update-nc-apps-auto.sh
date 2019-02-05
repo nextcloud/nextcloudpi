@@ -8,7 +8,7 @@
 # More at: https://ownyourbits.com
 #
 
-cronfile=/etc/cron.weekly/ncp-autoupdate-apps
+cronfile=/etc/cron.daily/ncp-autoupdate-apps
 
 configure() 
 {
