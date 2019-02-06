@@ -26,7 +26,7 @@ configure()
     return 1;
   }
 
-  rsync -ax --delete "$DATADIR" "$DESTINATION"
+  rsync -ax -e "ssh -p $PORTNUMBER" --delete "$DATADIR" "$DESTINATION"
 
   sudo -u www-data php "$BASEDIR"/nextcloud/occ maintenance:mode --off
 }
