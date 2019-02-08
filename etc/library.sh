@@ -117,7 +117,7 @@ function run_app_unsafe()
   echo "[ $ncp_app ]" >> $log
 
   # Check if app is already running in tmux
-  tmux has-session -t="$ncp_app" && {
+  tmux has-session -t="$ncp_app" > /dev/null 2>&1 && {
     echo "Already running." >> $log
     echo "Abort." >> $log
     return 1
@@ -141,30 +141,32 @@ function run_app_unsafe()
 
     if [[ $use_tmux ]]
     then
-      echo "Running $ncp_app in tmux." | tee $log
-
+      # Run app in tmux
       tmux_log_file="$(dirname $CFGDIR)/ncp-tmux/tmux.${ncp_app}.log"
       export LIBDIR="$(dirname $CFGDIR)/library.sh"
       
       echo "" > "$tmux_log_file"
-      #tail -f "$tmux_log_file" &
 
       tmux new-session -d -s "$ncp_app" "bash -c '(
-      	trap \"echo \$? >> $tmux_log_file\" 0 1 2 3 4 6 9 11 15 19 29
+      	trap \"echo \$? >> $tmux_log_file\" 1 2 3 4 6 9 11 15 19 29
       	source \"$LIBDIR\"
       	source \"$script\"
 	configure 2>&1 | tee -a $log
+	echo "${PIPESTATUS[0]}" >> $tmux_log_file
       )' 2>&1 | tee $tmux_log_file"
 
-      ( while tmux has-session -t="$ncp_app" 2>&1 > /dev/null 
+      ( while tmux has-session -t="$ncp_app" > /dev/null 2>&1 
         do
           sleep 1
         done) &
+
+      # Follow log file until tmux session has terminated
       tail --lines=+0 -f "$tmux_log_file" --pid="$!"
 
       ret="$(tail -n 1 "$tmux_log_file")"
-
-      if [[ $ret =~ '^[0-9]+$' ]]
+      
+      # Read return value from tmux log file
+      if [[ $ret =~ ^[0-9]+$ ]]
       then
 	exit $ret
       fi
@@ -175,13 +177,14 @@ function run_app_unsafe()
       source "$script"
       # run
       configure 2>&1 | tee -a $log
+      local ret="${PIPESTATUS[0]}"
+      exit $ret
     fi
-    local ret="${PIPESTATUS[0]}"
-    exit $ret
   )
+  ret="$?"
   echo "" >> $log
 
-  return "$?"
+  return "$ret"
 }
 
 function is_active_app()
