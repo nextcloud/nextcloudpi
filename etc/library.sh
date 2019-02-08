@@ -116,28 +116,77 @@ function run_app_unsafe()
   echo "Running $ncp_app"
   echo "[ $ncp_app ]" >> $log
 
-  # read script
-  unset configure
-  source "$script"
-
-  # read cfg parameters
-  [[ -f "$cfg_file" ]] && {
-    local cfg="$( cat "$cfg_file" )"
-    local len="$(jq '.params | length' <<<"$cfg")"
-    for (( i = 0 ; i < len ; i++ )); do
-      local var="$(jq -r ".params[$i].id"    <<<"$cfg")"
-      local val="$(jq -r ".params[$i].value" <<<"$cfg")"
-      eval "$var=$val"
-    done
+  # Check if app is already running in termux
+  tmux has-session -t="$ncp_app" && {
+    echo "Already running." >> $log
+    echo "Abort." >> $log
+    return 1
   }
+  
 
-  # run
-  configure 2>&1 | tee -a $log
-  local ret="${PIPESTATUS[0]}"
+  unset configure
+  (
+    # read cfg parameters
+    [[ -f "$cfg_file" ]] && {
+      local cfg="$( cat "$cfg_file" )"
+      jq -e '.tmux' <<<"$cfg" > /dev/null 2>&1
+      use_tmux="$?"
+      local len="$(jq '.params | length' <<<"$cfg")"
+      for (( i = 0 ; i < len ; i++ )); do
+        local var="$(jq -r ".params[$i].id"    <<<"$cfg")"
+        local val="$(jq -r ".params[$i].value" <<<"$cfg")"
+        eval "export $var=$val"
+      done
+    }
 
+    if [[ $use_tmux ]]
+    then
+      echo "Running $ncp_app in tmux." | tee $log
+
+      tmux_log_file="$CFGDIR/../ncp-tmux/tmux.${ncp_app}.log"
+      export LIBDIR="$CFGDIR/../library.sh"
+      
+      echo "" > "$tmux_log_file"
+      #tail -f "$tmux_log_file" &
+
+      tmux new-session -d -s "$ncp_app" "bash -c '(
+      	trap \"echo \$?\" 0 1 2 3 4 6 9 11 15 19 29
+      	source \"$LIBDIR\"
+      	source \"$script\"
+	configure 2>&1 | tee -a $log
+      )' 2>&1 | tee $tmux_log_file"
+
+      (while tmux has-session -t="$ncp_app" 2>&1 > /dev/null 
+        do
+          sleep 1
+        done) &
+      tail --lines=+0 -f "$tmux_log_file" --pid="$!"
+
+      return "$(tail -n 1 "$tmux_log_file")"
+
+    else
+      # read script
+      source "$script"
+      # run
+      configure 2>&1 | tee -a $log
+    fi
+    local ret="${PIPESTATUS[0]}"
+    exit $ret
+  )
   echo "" >> $log
 
-  return "$ret"
+  return "$?"
+}
+
+function is_running_in_tmux()
+{
+  local ncp_app=$1
+  if [[ -f "/usr/local/etc/ncp-tmux/${ncp_app}.session" ]]
+  then
+    local session_name="$(cat /usr/local/etc/ncp-tmux/${ncp_app}.session)"
+    return $?
+  fi
+  return 1
 }
 
 function is_active_app()
