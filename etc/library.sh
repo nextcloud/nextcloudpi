@@ -156,7 +156,7 @@ function run_app_unsafe()
 	configure 2>&1 | tee -a $log
       )' 2>&1 | tee $tmux_log_file"
 
-      (while tmux has-session -t="$ncp_app" 2>&1 > /dev/null 
+      ( while tmux has-session -t="$ncp_app" 2>&1 > /dev/null 
         do
           sleep 1
         done) &
