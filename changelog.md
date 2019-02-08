@@ -1,7 +1,9 @@
 
-[v1.5.1](https://github.com/nextcloud/nextcloudpi/commit/975dbee) (2019-01-30) nc-update-nc-apps-auto: log upgrades
+[v1.5.2](https://github.com/nextcloud/nextcloudpi/commit/244e340) (2019-02-07) nc-trusted-domains: add description
 
-[v1.5.0](https://github.com/nextcloud/nextcloudpi/commit/8ca3535) (2019-01-30) added nc-update-nc-apps and nc-update-nc-apps-auto
+[v1.5.1  ](https://github.com/nextcloud/nextcloudpi/commit/a1842bc) (2019-01-30) nc-update-nc-apps-auto: log upgrades
+
+[v1.5.0  ](https://github.com/nextcloud/nextcloudpi/commit/8ca3535) (2019-01-30) added nc-update-nc-apps and nc-update-nc-apps-auto
 
 [v1.4.11 ](https://github.com/nextcloud/nextcloudpi/commit/6331ce5) (2019-01-28) update: make letsencrypt update more resiliant (2)
 
