@@ -116,7 +116,7 @@ function run_app_unsafe()
   echo "Running $ncp_app"
   echo "[ $ncp_app ]" >> $log
 
-  # Check if app is already running in termux
+  # Check if app is already running in tmux
   tmux has-session -t="$ncp_app" && {
     echo "Already running." >> $log
     echo "Abort." >> $log
@@ -143,8 +143,8 @@ function run_app_unsafe()
     then
       echo "Running $ncp_app in tmux." | tee $log
 
-      tmux_log_file="$CFGDIR/../ncp-tmux/tmux.${ncp_app}.log"
-      export LIBDIR="$CFGDIR/../library.sh"
+      tmux_log_file="$(dirname $CFGDIR)/ncp-tmux/tmux.${ncp_app}.log"
+      export LIBDIR="$(dirname $CFGDIR)/library.sh"
       
       echo "" > "$tmux_log_file"
       #tail -f "$tmux_log_file" &

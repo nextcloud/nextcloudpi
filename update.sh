@@ -46,7 +46,8 @@ pgrep apt &>/dev/null && { echo "apt is currently running. Try again later";  ex
 # install new dependencies
 type jq &>/dev/null || {
   apt-get update
-  apt-get install -y --no-install-recommends jq
+  apt-get install -y --no-install-recommends jq tmux locales-all
+  mkdir -p "$(dirname $CONFDIR)/ncp-tmux"
 }
 
 # migrate to the new cfg format

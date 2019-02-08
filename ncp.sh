@@ -22,8 +22,8 @@ install()
 {
   # NCP-CONFIG
   apt-get update
-  $APTINSTALL git dialog whiptail jq
-  mkdir -p "$CONFDIR" "$BINDIR"
+  $APTINSTALL git dialog whiptail jq tmux locales-all
+  mkdir -p "$CONFDIR" "$BINDIR" "$(dirname $CONFDIR)/ncp-tmux"
 
   # include option in raspi-config (only Raspbian)
   test -f /usr/bin/raspi-config && {
