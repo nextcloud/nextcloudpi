@@ -285,7 +285,7 @@ EOF
     apt-get remove -y letsencrypt
     apt-get autoremove -y
     install_app letsencrypt || { rm -rf /etc/letsencrypt; mv /etc/letsencrypt-old /etc/letsencrypt; exit 1; }
-    cp -raT /etc/letsencrypt-old/live /etc/letsencrypt/live
+    [[ -f /etc/letsencrypt-old/live ]] && cp -raT /etc/letsencrypt-old/live /etc/letsencrypt/live
     [[ -f /.docker-image ]] && persistent_cfg /etc/letsencrypt
     [[ -f /etc/cron.weekly/letsencrypt-ncp ]] && run_app letsencrypt
   }
