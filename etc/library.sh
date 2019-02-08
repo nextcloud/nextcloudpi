@@ -150,7 +150,7 @@ function run_app_unsafe()
       #tail -f "$tmux_log_file" &
 
       tmux new-session -d -s "$ncp_app" "bash -c '(
-      	trap \"echo \$?\" 0 1 2 3 4 6 9 11 15 19 29
+      	trap \"echo \$? >> $tmux_log_file\" 0 1 2 3 4 6 9 11 15 19 29
       	source \"$LIBDIR\"
       	source \"$script\"
 	configure 2>&1 | tee -a $log
@@ -162,7 +162,13 @@ function run_app_unsafe()
         done) &
       tail --lines=+0 -f "$tmux_log_file" --pid="$!"
 
-      return "$(tail -n 1 "$tmux_log_file")"
+      ret="$(tail -n 1 "$tmux_log_file")"
+
+      if [[ $ret =~ '^[0-9]+$' ]]
+      then
+	exit $ret
+      fi
+      exit 1
 
     else
       # read script
@@ -176,17 +182,6 @@ function run_app_unsafe()
   echo "" >> $log
 
   return "$?"
-}
-
-function is_running_in_tmux()
-{
-  local ncp_app=$1
-  if [[ -f "/usr/local/etc/ncp-tmux/${ncp_app}.session" ]]
-  then
-    local session_name="$(cat /usr/local/etc/ncp-tmux/${ncp_app}.session)"
-    return $?
-  fi
-  return 1
 }
 
 function is_active_app()
