@@ -12,7 +12,7 @@ This code also generates the NextCloudPi docker images for [ARM](https://hub.doc
 ## Features
 
  * Debian/Raspbian 9 stretch
- * Nextcloud 15.0.2
+ * Nextcloud 15.0.4
  * Apache 2.4.25, with HTTP2 enabled
  * PHP 7.2
  * MariaDB 10

@@ -10,7 +10,7 @@
 
 
 # just change this value and re-activate in update.sh to upgrade users
-VERSION=15.0.2
+VERSION=15.0.4
 
 configure() 
 {

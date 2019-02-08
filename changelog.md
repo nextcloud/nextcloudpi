@@ -1,5 +1,7 @@
 
-[v1.5.2](https://github.com/nextcloud/nextcloudpi/commit/244e340) (2019-02-07) nc-trusted-domains: add description
+[v1.6.0](https://github.com/nextcloud/nextcloudpi/commit/5118ddc) (2019-02-07) upgrade to NC15.0.4
+
+[v1.5.2  ](https://github.com/nextcloud/nextcloudpi/commit/1a6b7df) (2019-02-07) nc-trusted-domains: add description
 
 [v1.5.1  ](https://github.com/nextcloud/nextcloudpi/commit/a1842bc) (2019-01-30) nc-update-nc-apps-auto: log upgrades
 

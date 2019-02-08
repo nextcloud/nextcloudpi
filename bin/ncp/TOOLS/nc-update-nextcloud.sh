@@ -8,7 +8,7 @@
 # More at https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/
 #
 
-LATEST=15.0.2
+LATEST=15.0.4
 
 configure()
 {
