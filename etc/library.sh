@@ -117,10 +117,10 @@ function run_app_unsafe()
   echo "[ $ncp_app ]" >> $log
 
   # Check if app is already running in tmux
-  tmux has-session -t="$ncp_app" > /dev/null 2>&1 && {
-    echo "Already running." >> $log
-    echo "Abort." >> $log
-    return 1
+  which tmux && tmux has-session -t="$ncp_app" > /dev/null 2>&1 && {
+    echo "Already running. Attaching to output..." | tee $log
+    attach_to_app $ncp_app
+    return $?
   }
   
 
@@ -139,40 +139,29 @@ function run_app_unsafe()
       done
     }
 
-    if [[ $use_tmux ]]
+    if which tmux && [[ $use_tmux == 0 ]]
     then
+      echo "Running $ncp_app in tmux..." | tee $log
       # Run app in tmux
-      tmux_log_file="$(dirname $CFGDIR)/ncp-tmux/tmux.${ncp_app}.log"
-      export LIBDIR="$(dirname $CFGDIR)/library.sh"
+      local tmux_log_file="$(dirname "$CFGDIR")/ncp-tmux/tmux.${ncp_app}.log"
+      local tmux_status_file="$(dirname "$tmux_log_file")/tmux.${ncp_app}.status"
+      local LIBDIR="$(dirname $CFGDIR)/library.sh"
       
       echo "" > "$tmux_log_file"
 
       tmux new-session -d -s "$ncp_app" "bash -c '(
-      	trap \"echo \$? >> $tmux_log_file\" 1 2 3 4 6 9 11 15 19 29
+      	trap \"echo \$? >> $tmux_status_file\" 1 2 3 4 6 9 11 15 19 29
       	source \"$LIBDIR\"
       	source \"$script\"
 	configure 2>&1 | tee -a $log
-	echo "${PIPESTATUS[0]}" >> $tmux_log_file
+	echo "\${PIPESTATUS[0]}" >> $tmux_status_file
       )' 2>&1 | tee $tmux_log_file"
 
-      ( while tmux has-session -t="$ncp_app" > /dev/null 2>&1 
-        do
-          sleep 1
-        done) &
-
-      # Follow log file until tmux session has terminated
-      tail --lines=+0 -f "$tmux_log_file" --pid="$!"
-
-      ret="$(tail -n 1 "$tmux_log_file")"
-      
-      # Read return value from tmux log file
-      if [[ $ret =~ ^[0-9]+$ ]]
-      then
-	exit $ret
-      fi
-      exit 1
+      attach_to_app "$ncp_app"
+      exit $?
 
     else
+      echo "Running $ncp_app without tmux..." | tee $log
       # read script
       source "$script"
       # run
@@ -185,6 +174,28 @@ function run_app_unsafe()
   echo "" >> $log
 
   return "$ret"
+}
+
+function attach_to_app()
+{
+  local tmux_log_file="$(dirname "$CFGDIR")/ncp-tmux/tmux.${ncp_app}.log"
+  local tmux_status_file="$(dirname "$tmux_log_file")/tmux.${ncp_app}.status"
+
+  (while tmux has-session -t="$ncp_app" > /dev/null 2>&1 
+  do
+    sleep 1
+  done) &
+
+  # Follow log file until tmux session has terminated
+  tail --lines=+0 -f "$tmux_log_file" --pid="$!"
+
+  # Read return value from tmux log file
+  ret="$(tail -n 1 "$tmux_status_file")"
+  rm "$tmux_log_file"
+  rm "$tmux_status_file"
+
+  [[ $ret =~ ^[0-9]+$ ]] && return $ret
+  return 1
 }
 
 function is_active_app()
