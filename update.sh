@@ -29,6 +29,7 @@ nc-snapshot
 nc-snapshot-auto
 nc-audit
 nc-hdd-monitor
+nc-zram
 SSH
 fail2ban
 NFS
@@ -199,6 +200,9 @@ cp -r ncp-app /var/www/
         rm -f /var/www/nextcloud && \
         ln -s /data/nextcloud /var/www/nextcloud
     }
+
+    # shouldn't be present in docker
+    rm -f /usr/local/bin/ncp/SYSTEM/nc-zram.sh /usr/local/etc/ncp-config.d/nc-zram.cfg
     :
   }
 
