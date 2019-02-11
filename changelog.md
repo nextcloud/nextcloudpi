@@ -1,5 +1,7 @@
 
-[v1.6.0](https://github.com/nextcloud/nextcloudpi/commit/5118ddc) (2019-02-07) upgrade to NC15.0.4
+[v1.6.1](https://github.com/nextcloud/nextcloudpi/commit/d87df8d) (2019-02-10) nc-nextcloud: add a warning
+
+[v1.6.0  ](https://github.com/nextcloud/nextcloudpi/commit/b4bb86d) (2019-02-07) upgrade to NC15.0.4
 
 [v1.5.2  ](https://github.com/nextcloud/nextcloudpi/commit/1a6b7df) (2019-02-07) nc-trusted-domains: add description
 
