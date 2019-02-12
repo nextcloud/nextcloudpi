@@ -3,7 +3,7 @@
 
 ![NC Logo](https://ownyourbits.com/wp-content/uploads/2017/11/ncp-square.png)
 
-這裡是 [NextCloudPi](https://nextcloudpi.com) 的程式碼頁面。
+歡迎來到 [NextCloudPi](https://nextcloudpi.com)！
 
 NextCloudPi 是專門為 Raspberry Pi、Odroid HC1、rock64 以及其它單板電腦所製作的映象檔。
 
@@ -33,45 +33,45 @@ NextCloudPi 是專門為 Raspberry Pi、Odroid HC1、rock64 以及其它單板�
 
 ## 特別之處
 
- * 首次安裝導覽頁面 ( NEW 09-27-2017 )
- * NextCloudPi 網路 面板 ( NEW 07-24-2017 )
- * 可使用 Wi-Fi ( NEW 03-31-2017 )
- * Ram logs ( NEW 03-31-2017 )
- * 自動安裝安全更新，且預設如此。 ( NEW 03-21-2017 )
- * 內建 Let’s Encrypt，可使用此功能來建立受信任的 SSL 證書。(  NEW 03-16-2017 )
- * Fail2Ban protection against brute force attacks. ( NEW 02-24-2017 )
- * UFW firewall ( NEW 07-02-2018 )
- * Dynamic DNS support for no-ip.org ( NEW 03-05-2017 )
- * Dynamic DNS support for freeDNS ( NEW 09-05-2017 )
- * Dynamic DNS support for duckDNS ( NEW 09-27-2017 )
- * Dynamic DNS support for spDYN ( NEW 11-12-2017 )
- * dnsmasq DNS server with DNS cache ( NEW 03-09-2017 )
- * ModSecurity Web Application Firewall ( NEW 03-23-2017 )
- * NFS ready to mount your files over LAN ( NEW 04-13-2017 )
- * SAMBA ready to share your files with Windows/Mac/Linux ( NEW 04-16-2017 )
- * USB automount ( NEW 05-24-2017 )
- * Remote updates ( NEW 03-31-2017 )
- * Autoumatic NCP updates ( NEW 08-16-2017 )
- * Automatic Nextcloud updates ( NEW 05-29-2018 )
- * Update notifications ( NEW 08-16-2017 )
- * NextCloud backup and restore ( NEW 05-24-2017 )
- * NextCloud online installation ( NEW 05-24-2017 )
- * Format USB drive to BTRFS ( NEW 07-03-2017 )
- * BTRFS snapshots ( NEW 04-12-2017 )
- * Automatic BTRFS snapshots ( NEW 07-02-2018 )
- * BTRFS snapshot auto sync ( NEW 19-03-2018 )
- * scheduled rsync ( NEW 19-03-2018 )
- * ZRAM ( NEW 19-03-2018 )
- * UPnP automatic port forwarding ( NEW 07-03-2017 )
- * Security audits with Lynis and Debsecan ( NEW 07-02-2018 )
- * ZRAM ( NEW 19-03-2018 )
+ * 首次安裝導覽頁面 ( 新增於09-27-2017 )
+ * NextCloudPi 網路 面板 ( 新增於07-24-2017 )
+ * 可使用 Wi-Fi ( 新增於03-31-2017 )
+ * Ram logs ( 新增於03-31-2017 )
+ * 自動安裝安全更新，且預設如此。 ( 新增於03-21-2017 )
+ * 內建 Let’s Encrypt，可使用此功能來建立受信任的 SSL 證書。( 新增於03-16-2017 )
+ * 內建 Fail2Ban ，可保護您不受殭屍登入(SSH)的干擾及風險。(新增於 02-24-2017 )
+ * UFW 防火牆 ( 新增於07-02-2018 )
+ * 可使用no-ip.org 所提供的浮動IP連結功能 ( 新增於03-05-2017 )
+ * 可使用freeDNS 所提供的浮動IP連結功能 ( 新增於09-05-2017 )
+ * 可使用duckDNS 所提供的浮動IP連結功能  ( 新增於09-27-2017 )
+ * 可使用spDYN 所提供的浮動IP連結功能 ( 新增於11-12-2017 )
+ * 內建 dnsmasq DNS 伺服器快取 ( 新增於03-09-2017 )
+ * ModSecurity 網路應用程式防火牆 ( 新增於03-23-2017 )
+ * NFS ready to mount your files over LAN ( 新增於04-13-2017 )
+ * SAMBA ready to share your files with Windows/Mac/Linux ( 新增於04-16-2017 )
+ * USB 自動掛載 ( 新增於05-24-2017 )
+ * 遠端更新 ( 新增於03-31-2017 )
+ * 自動更新 NextCloudPi ( 新增於08-16-2017 )
+ * 自動更新 Nextcloud ( 新增於05-29-2018 )
+ * 更新通知 ( 新增於08-16-2017 )
+ * NextCloud 備份、復原備份 ( 新增於05-24-2017 )
+ * NextCloud 線上安裝 ( 新增於05-24-2017 )
+ * 格式化 USB 裝置成 BTRFS ( 新增於07-03-2017 )
+ * BTRFS 快照 ( 新增於04-12-2017 )
+ * 自動建立 BTRFS 快照 ( 新增於07-02-2018 )
+ * 自動同步 BTRFS 快照 ( 新增於19-03-2018 )
+ * 排程 rsync ( 新增於19-03-2018 )
+ * ZRAM ( 新增於19-03-2018 )
+ * UPnP 自動設定 Portautomatic port 轉發 ( 新增於07-03-2017 )
+ * 可建立Lynis 及 Debsecan 的安全審核報告 ( 新增於07-02-2018 )
+ * ZRAM ( 新增於19-03-2018 )
 
-Extras can be activated and configured using the web interface at HTTPS port 4443
+您可以使用瀏覽器HTTPS進入連接埠 :4443 ，就可以使用網路介面的更多設定。
 
 
 ![NCP-config](https://ownyourbits.com/wp-content/uploads/2017/07/web-letsencrypt.jpg)
 
-, or from the command line from
+或者使用指令來設定
 
 ```
 sudo ncp-config
@@ -80,9 +80,9 @@ sudo ncp-config
 ![NCP-config](https://ownyourbits.com/wp-content/uploads/2017/03/ncp-conf-700x456.jpg)
 
 
-## How to build
+## 如何建立 ?
 
-Install git, docker, qemu-user-static, chroot and all the usual building tools.
+安裝 git 、 docker 、 qemu-user-static 、 chroot 以及所有常用之建立工具
 
 ```
 git clone https://github.com/nextcloud/nextcloudpi.git
@@ -90,13 +90,13 @@ cd nextcloudpi
 ./build-SD-rpi.sh
 ```
 
-, or for an Armbian based board
+或者以Armbian為基礎的主機板
 
 ```
 ./build-SD-armbian.sh odroidxu4   # supported board code name
 ```
 
-In order to generate the Docker images
+建立 docker 映像檔
 
 ```
 git clone https://github.com/nextcloud/nextcloudpi.git
@@ -105,15 +105,15 @@ make                        # armhf version
 make nextcloudpi-x86        # x86   version
 ```
 
-NextCloudPi can be installed in any architecture running the latest Debian
+NextCloudPi 可以安裝在運行最新的 debian 的任何體系結構中
 
 ```
 # curl -sSL https://raw.githubusercontent.com/nextcloud/nextcloudpi/master/install.sh | bash
 ```
 
-## Downloads
+## 下載
 
-Get the image, find details and more instructions at
+取得映像檔，及更多有關詳細資訊及更多說明, 請參見
 
 https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/
 
@@ -125,6 +125,6 @@ https://hub.docker.com/r/ownyourbits/nextcloudpi-x86
 
 https://hub.docker.com/r/ownyourbits/nextcloudpi-armhf
 
-## Contact
+## 聯絡
 
-You can find us in the [forums](https://help.nextcloud.com/c/support/appliances-docker-snappy-vm) and a [Telegram group](https://t.me/NextCloudPi)
+你可以加入[Telegram 公共群組](https://t.me/NextCloudPi)，或者使用[論壇](https://help.nextcloud.com/c/support/appliances-docker-snappy-vm) and a [Telegram group](https://t.me/NextCloudPi)來找到我們。
