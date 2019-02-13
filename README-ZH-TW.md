@@ -130,4 +130,4 @@ https://hub.docker.com/r/ownyourbits/nextcloudpi-armhf
 
 ## 聯絡
 
-你可以加入[Telegram 公共群組](https://t.me/NextCloudPi)，或者使用[論壇](https://help.nextcloud.com/c/support/appliances-docker-snappy-vm) and a [Telegram group](https://t.me/NextCloudPi)來找到我們。
+你可以加入[Telegram 公共群組](https://t.me/NextCloudPi)，或者使用[論壇](https://help.nextcloud.com/c/support/appliances-docker-snappy-vm)來找到我們。
