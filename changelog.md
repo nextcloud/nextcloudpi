@@ -1,5 +1,7 @@
 
-[v1.6.2](https://github.com/nextcloud/nextcloudpi/commit/39966c8) (2019-02-13) nc-datadir: lift mountpoint restriction
+[v1.6.3](https://github.com/nextcloud/nextcloudpi/commit/a4f39c3) (2019-02-13) ncp-update-nc: BTRFS basedir not supported
+
+[v1.6.2](https://github.com/nextcloud/nextcloudpi/commit/b070387) (2019-02-13) nc-datadir: lift mountpoint restriction
 
 [v1.6.1  ](https://github.com/nextcloud/nextcloudpi/commit/3e566f5) (2019-02-10) nc-nextcloud: add a warning
 
