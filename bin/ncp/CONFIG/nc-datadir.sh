@@ -56,12 +56,6 @@ configure()
     return 1
   }
 
-  [[ "$DATADIR" != "/var/www/nextcloud/data" ]] && \
-  [[ $( stat -fc%d / ) == $( stat -fc%d "$BASEDIR" ) ]] && {
-    echo "Refusing to move to the SD card. Abort"
-    return 1
-  }
-
   # backup possibly existing datadir
   [ -d $DATADIR ] && {
     local BKP="${DATADIR}-$( date "+%m-%d-%y" )" 

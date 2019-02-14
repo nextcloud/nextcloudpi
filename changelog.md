@@ -1,5 +1,7 @@
 
-[v1.6.1](https://github.com/nextcloud/nextcloudpi/commit/d87df8d) (2019-02-10) nc-nextcloud: add a warning
+[v1.6.2](https://github.com/nextcloud/nextcloudpi/commit/39966c8) (2019-02-13) nc-datadir: lift mountpoint restriction
+
+[v1.6.1  ](https://github.com/nextcloud/nextcloudpi/commit/3e566f5) (2019-02-10) nc-nextcloud: add a warning
 
 [v1.6.0  ](https://github.com/nextcloud/nextcloudpi/commit/b4bb86d) (2019-02-07) upgrade to NC15.0.4
 
