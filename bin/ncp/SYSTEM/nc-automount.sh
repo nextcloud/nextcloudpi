@@ -110,6 +110,7 @@ EOF
   mkdir -p /etc/systemd/system/nfs-server.service.d
   cat > /etc/systemd/system/nfs-server.service.d/ncp-delay-automount.conf <<'EOF'
 [Service]
+ExecStartPre=
 ExecStartPre=/bin/bash -c "/bin/sleep 30; /usr/sbin/exportfs -r"
 EOF
 

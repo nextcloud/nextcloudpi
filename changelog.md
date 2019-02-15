@@ -1,7 +1,9 @@
 
-[v1.6.5](https://github.com/nextcloud/nextcloudpi/commit/a7a87d3) (2019-02-15) nc-trusted-domains: empty values by default
+[v1.6.6](https://github.com/nextcloud/nextcloudpi/commit/93cc781) (2019-02-15) nc-automount: fix NFS delay
 
-[v1.6.4](https://github.com/nextcloud/nextcloudpi/commit/4e04339) (2019-02-14) nc-nextcloud: update description
+[v1.6.5  ](https://github.com/nextcloud/nextcloudpi/commit/c28868d) (2019-02-15) nc-trusted-domains: empty values by default
+
+[v1.6.4  ](https://github.com/nextcloud/nextcloudpi/commit/4e04339) (2019-02-14) nc-nextcloud: update description
 
 [v1.6.3](https://github.com/nextcloud/nextcloudpi/commit/af5e35d) (2019-02-13) ncp-update-nc: BTRFS basedir not supported
 
