@@ -211,7 +211,7 @@ HTML;
           <div id="loading-info-gif"> <img src="img/loading-small.gif"> </div>
         </div>
 
-        <div id="nc-config-wrapper" class="content-box <?php if($_GET['app'] != 'config') echo 'hidden';?>">
+        <div id="nc-config-wrapper" class="content-box <?php if(!array_key_exists('app', $_GET) || $_GET['app'] != 'config') echo 'hidden';?>">
           <h2 class="text-title"><?php echo $l->__("Nextcloud configuration"); ?></h2>
           <div id="nc-config-box" class="table-wrapper">
 <?php
