@@ -131,8 +131,24 @@ EOF
 
   cat > /home/www/ncp-launcher.sh <<'EOF'
 #!/bin/bash
+
+check_running=false
+for arg in $@
+do
+  if [[ $arg=="--check-running"]]
+  then
+    check_running=true
+  fi
+done
+
 source /usr/local/etc/library.sh
-run_app $1
+if [[ $check_running=="true"]]
+then
+  which tmux && tmux has-session -t="$ncp_app" > /dev/null 2>&1
+  exit
+else
+  run_app $1
+fi
 EOF
   chmod 700 /home/www/ncp-launcher.sh
   echo "www-data ALL = NOPASSWD: /home/www/ncp-launcher.sh , /sbin/halt, /sbin/reboot" >> /etc/sudoers
