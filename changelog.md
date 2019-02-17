@@ -1,5 +1,7 @@
 
-[v1.6.6](https://github.com/nextcloud/nextcloudpi/commit/93cc781) (2019-02-15) nc-automount: fix NFS delay
+[v1.6.7](https://github.com/nextcloud/nextcloudpi/commit/3bcccdd) (2019-02-17) nc-backup-auto: notify failures
+
+[v1.6.6](https://github.com/nextcloud/nextcloudpi/commit/743cb24) (2019-02-15) nc-automount: fix NFS delay
 
 [v1.6.5  ](https://github.com/nextcloud/nextcloudpi/commit/c28868d) (2019-02-15) nc-trusted-domains: empty values by default
 

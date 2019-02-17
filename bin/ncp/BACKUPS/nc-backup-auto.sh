@@ -18,9 +18,11 @@ configure()
 
   cat > /usr/local/bin/ncp-backup-auto <<EOF
 #!/bin/bash
-sudo -u www-data php /var/www/nextcloud/occ maintenance:mode --on
-/usr/local/bin/ncp-backup "$DESTDIR" "$INCLUDEDATA" "$COMPRESS" "$BACKUPLIMIT"
-sudo -u www-data php /var/www/nextcloud/occ maintenance:mode --off
+ncc maintenance:mode --on
+/usr/local/bin/ncp-backup "$DESTDIR" "$INCLUDEDATA" "$COMPRESS" "$BACKUPLIMIT" || failed=true
+ncc maintenance:mode --off
+[[ "\$failed" == "true" ]] && \
+ ncc notification:generate "$NOTIFYUSER" "Auto-backup failed" -l "Your automatic backup failed"
 EOF
   chmod +x /usr/local/bin/ncp-backup-auto
 
