@@ -10,6 +10,7 @@
 
 CFGDIR=/usr/local/etc/ncp-config.d
 BINDIR=/usr/local/bin/ncp
+LOCK_FILE=/usr/local/etc/ncp.lock
 
 function configure_app()
 {
@@ -22,14 +23,16 @@ function configure_app()
   type dialog &>/dev/null || { echo "please, install dialog for interactive configuration"; return 1; }
   [[ -f "$cfg_file" ]]    || return 0;
 
-  local cfg="$( cat "$cfg_file" )"
-  local len="$(jq  '.params | length' <<<"$cfg")"
+  local cfg len
+  cfg="$( cat "$cfg_file" )"
+  len="$(jq  '.params | length' <<<"$cfg")"
   [[ $len -eq 0 ]] && return
 
   # read cfg parameters
   for (( i = 0 ; i < len ; i++ )); do
-    local var="$(jq -r ".params[$i].id"    <<<"$cfg")"
-    local val="$(jq -r ".params[$i].value" <<<"$cfg")"
+    local var val
+    var="$(jq -r ".params[$i].id"    <<<"$cfg")"
+    val="$(jq -r ".params[$i].value" <<<"$cfg")"
     local vars+=("$var")
     local vals+=("$val")
     local idx=$((i+1))
@@ -91,8 +94,9 @@ function configure_app()
 
 function run_app()
 {
-  local ncp_app=$1
-  local script="$(find "$BINDIR" -name $ncp_app.sh)"
+  local script ncp_app
+  ncp_app=$1
+  script="$(find "$BINDIR" -name "$ncp_app.sh")"
 
   [[ -f "$script" ]] || { echo "file $script not found"; return 1; }
 
@@ -102,10 +106,11 @@ function run_app()
 # receives a script file, no security checks
 function run_app_unsafe()
 {
-  local script=$1
-  local ncp_app="$(basename "$script" .sh)"
+  local script ncp_app
+  script=$1
+  ncp_app="$(basename "$script" .sh)"
   local cfg_file="$CFGDIR/$ncp_app.cfg"
-  local log=/var/log/ncp.log
+  local log=/var/log/ncp/ncp.log
 
   [[ -f "$script" ]] || { echo "file $script not found"; return 1; }
 
@@ -114,60 +119,93 @@ function run_app_unsafe()
   chown root:www-data $log
 
   echo "Running $ncp_app"
-  echo "[ $ncp_app ]" >> $log
 
   # Check if app is already running in tmux
-  which tmux && tmux has-session -t="$ncp_app" > /dev/null 2>&1 && {
-    echo "Already running. Attaching to output..." | tee -a $log
-    attach_to_app $ncp_app
+  running_app=$( [[ -f "$LOCK_FILE" ]] && cat "$LOCK_FILE" || echo "" )
+  [[ ! -z $running_app ]] && which tmux > /dev/null && tmux has-session -t="$running_app" > /dev/null 2>&1 && {
+    #echo "Already running. Attaching to output..." | tee -a $log
+    
+    local choice
+    [[ $ATTACH_TO_RUNNING == "1" ]] && choice="y"
+    [[ $ATTACH_TO_RUNNING == "0" ]] && choice="n"
+    question="An app ($running_app) is already running. Do you want to attach to it's output? <y/n>"
+    if [[ $choice == "y" ]] || [[ $choice == "n" ]]
+    then
+      echo "$question"
+      echo "Choice: <y>"
+    else
+      read -rp "$question" choice
+      while [[ "$choice" != "y" ]] && [[ "$choice" != "n" ]]
+      do
+        echo "choice was '$choice'"
+        read -rp "Invalid choice. y or n expected." choice
+      done
+    fi
+
+    if [[ "$choice" == "y" ]]
+    then
+      attach_to_app "$running_app"
+    fi
     return $?
   }
-  
 
   unset configure
   (
     # read cfg parameters
     [[ -f "$cfg_file" ]] && {
-      local cfg="$( cat "$cfg_file" )"
+      local len cfg
+      cfg="$( cat "$cfg_file" )"
       jq -e '.tmux' <<<"$cfg" > /dev/null 2>&1
       use_tmux="$?"
-      local len="$(jq '.params | length' <<<"$cfg")"
+      len="$(jq '.params | length' <<<"$cfg")"
       for (( i = 0 ; i < len ; i++ )); do
-        local var="$(jq -r ".params[$i].id"    <<<"$cfg")"
-        local val="$(jq -r ".params[$i].value" <<<"$cfg")"
+        local var val
+        var="$(jq -r ".params[$i].id"    <<<"$cfg")"
+        val="$(jq -r ".params[$i].value" <<<"$cfg")"
         eval "export $var=$val"
       done
     }
-
-    if which tmux && [[ $use_tmux == 0 ]]
+ 
+    echo "$ncp_app" > "$LOCK_FILE"
+    if which tmux > /dev/null && [[ $use_tmux == 0 ]]
     then
       echo "Running $ncp_app in tmux..." | tee -a $log
       # Run app in tmux
-      local tmux_log_file="$(dirname "$CFGDIR")/ncp-tmux/tmux.${ncp_app}.log"
-      local tmux_status_file="$(dirname "$tmux_log_file")/tmux.${ncp_app}.status"
-      local LIBDIR="$(dirname $CFGDIR)/library.sh"
+      local tmux_log_file tmux_status_file LIBPATH
+      tmux_log_file="/var/log/ncp/tmux.${ncp_app}.log"
+      tmux_status_file="/var/log/ncp/tmux.${ncp_app}.status"
+      LIBPATH="$(dirname $CFGDIR)/library.sh"
       
-      echo "" > "$tmux_log_file"
+      # Reset tmux output
+      echo "[ $ncp_app ]" | tee -a $log
+      echo "[ $ncp_app ]" > "$tmux_log_file"
+      echo "" > "$tmux_status_file"
+      chmod 640           "$tmux_log_file" "$tmux_status_file"
+      chown root:www-data "$tmux_log_file" "$tmux_status_file"
 
       tmux new-session -d -s "$ncp_app" "bash -c '(
-      	trap \"echo \$? >> $tmux_status_file\" 1 2 3 4 6 9 11 15 19 29
-      	source \"$LIBDIR\"
-      	source \"$script\"
-	configure 2>&1 | tee -a $log
-	echo "\${PIPESTATUS[0]}" >> $tmux_status_file
+        trap \"echo \\\$? > $tmux_status_file && rm $LOCK_FILE\" 1 2 3 4 6 9 11 15 19 29
+        source \"$LIBPATH\"
+        source \"$script\"
+        configure 2>&1 | tee -a $log
+        echo \"\${PIPESTATUS[0]}\" > $tmux_status_file
+        rm $LOCK_FILE
       )' 2>&1 | tee -a $tmux_log_file"
 
       attach_to_app "$ncp_app"
-      exit $?
+      exit
 
     else
-      echo "Running $ncp_app without tmux..." | tee -a $log
+      trap "rm '$LOCK_FILE'" 0 1 2 3 4 6 11 15 19 29
+      echo "[ $ncp_app ]" | tee -a $log
+      echo "Running $ncp_app directly..." | tee -a $log
       # read script
+      # shellcheck source=/dev/null
       source "$script"
       # run
       configure 2>&1 | tee -a $log
       local ret="${PIPESTATUS[0]}"
-      exit $ret
+      exit "$ret"
     fi
   )
   ret="$?"
@@ -178,21 +216,28 @@ function run_app_unsafe()
 
 function attach_to_app()
 {
-  local tmux_log_file="$(dirname "$CFGDIR")/ncp-tmux/tmux.${ncp_app}.log"
-  local tmux_status_file="$(dirname "$tmux_log_file")/tmux.${ncp_app}.status"
+  local tmux_log_file tmux_status_file
+  tmux_log_file="/var/log/ncp/tmux.${ncp_app}.log"
+  tmux_status_file="/var/log/ncp/tmux.${ncp_app}.status"
 
-  (while tmux has-session -t="$ncp_app" > /dev/null 2>&1 
-  do
-    sleep 1
-  done) &
+  if [[ "$ATTACH_NO_FOLLOW" == "1" ]]
+  then
+    cat "$tmux_log_file"
+    return 0
+  else
+    (while tmux has-session -t="$ncp_app" > /dev/null 2>&1 
+    do
+      sleep 1
+    done) &
 
-  # Follow log file until tmux session has terminated
-  tail --lines=+0 -f "$tmux_log_file" --pid="$!"
+    # Follow log file until tmux session has terminated
+    tail --lines=+0 -f "$tmux_log_file" --pid="$!"
+  fi
 
   # Read return value from tmux log file
   ret="$(tail -n 1 "$tmux_status_file")"
-  rm "$tmux_log_file"
-  rm "$tmux_status_file"
+  #rm "$tmux_log_file"
+  #rm "$tmux_status_file"
 
   [[ $ret =~ ^[0-9]+$ ]] && return $ret
   return 1
@@ -205,18 +250,20 @@ function is_active_app()
   local script="$bin_dir/$ncp_app.sh"
   local cfg_file="$CFGDIR/$ncp_app.cfg"
 
-  [[ -f "$script" ]] || local script="$(find "$BINDIR" -name $ncp_app.sh)"
+  [[ -f "$script" ]] || script="$(find "$BINDIR" -name $ncp_app.sh)"
   [[ -f "$script" ]] || { echo "file $script not found"; return 1; }
 
   # function
   unset is_active
+  # shellcheck source=/dev/null
   source "$script"
   [[ $( type -t is_active ) == function ]] && { is_active; return $?; }
 
   # config
   [[ -f "$cfg_file" ]] || return 1
 
-  local cfg="$( cat "$cfg_file" )"
+  local cfg
+  cfg="$( cat "$cfg_file" )"
   [[ "$(jq -r ".params[0].id"    <<<"$cfg")" == "ACTIVE" ]] && \
   [[ "$(jq -r ".params[0].value" <<<"$cfg")" == "yes"    ]] && \
   return 0
@@ -228,9 +275,10 @@ function info_app()
   local ncp_app=$1
   local cfg_file="$CFGDIR/$ncp_app.cfg"
 
-  local cfg="$( cat "$cfg_file" 2>/dev/null )"
-  local info=$( jq -r .info <<<"$cfg" )
-  local infotitle=$( jq -r .infotitle <<<"$cfg" )
+  local cfg info infotitle
+  cfg="$( cat "$cfg_file" 2>/dev/null )"
+  info=$( jq -r .info <<<"$cfg" )
+  infotitle=$( jq -r .infotitle <<<"$cfg" )
 
   [[ "$info"      == "" ]] || [[ "$info"      == "null" ]] && return 0
   [[ "$infotitle" == "" ]] || [[ "$infotitle" == "null" ]] && infotitle="Info"
@@ -245,18 +293,20 @@ function info_app()
 
 function install_app()
 {
+  local script
   local ncp_app=$1
 
   # $1 can be either an installed app name or an app script
   if [[ -f "$ncp_app" ]]; then
-    local script="$ncp_app"
-    local ncp_app="$(basename "$script" .sh)"
+    script="$ncp_app"
+    ncp_app="$(basename "$script" .sh)"
   else
-    local script="$(find "$BINDIR" -name $ncp_app.sh)"
+    script="$(find "$BINDIR" -name $ncp_app.sh)"
   fi
 
   # do it
   unset install
+  # shellcheck source=/dev/null
   source "$script"
   echo "Installing $ncp_app"
   (install)
@@ -266,6 +316,7 @@ function cleanup_script()
 {
   local script=$1
   unset cleanup
+  # shellcheck source=/dev/null
   source "$script"
   if [[ $( type -t cleanup ) == function ]]; then
     cleanup

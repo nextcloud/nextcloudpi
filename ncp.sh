@@ -14,6 +14,7 @@ BRANCH=master
 
 BINDIR=/usr/local/bin/ncp
 CONFDIR=/usr/local/etc/ncp-config.d/
+LOGDIR=/var/log/ncp
 APTINSTALL="apt-get install -y --no-install-recommends"
 export DEBIAN_FRONTEND=noninteractive
 
@@ -23,7 +24,7 @@ install()
   # NCP-CONFIG
   apt-get update
   $APTINSTALL git dialog whiptail jq tmux locales-all
-  mkdir -p "$CONFDIR" "$BINDIR" "$(dirname $CONFDIR)/ncp-tmux"
+  mkdir -p "$CONFDIR" "$BINDIR" "$LOGDIR"
 
   # include option in raspi-config (only Raspbian)
   test -f /usr/bin/raspi-config && {
@@ -132,23 +133,26 @@ EOF
   cat > /home/www/ncp-launcher.sh <<'EOF'
 #!/bin/bash
 
-check_running=false
+declare -a args
 for arg in $@
 do
-  if [[ $arg == "--check-running" ]]
+  if [[ $arg == "--auto-attach" ]]
   then
-    check_running=true
+    export ATTACH_TO_RUNNING=1
+  elif [[ $arg == "--no-attach" ]]
+  then
+    export ATTACH_TO_RUNNING=0
+  elif [[ $arg == "--no-follow" ]]
+  then
+    export ATTACH_NO_FOLLOW=1
+  else
+    args+="$arg"
   fi
 done
 
 source /usr/local/etc/library.sh
-if [[ $check_running == "true" ]]
-then
-  which tmux && tmux has-session -t="$ncp_app" > /dev/null 2>&1
-  exit $?
-else
-  run_app $1
-fi
+run_app ${args[0]}
+
 EOF
   chmod 700 /home/www/ncp-launcher.sh
   echo "www-data ALL = NOPASSWD: /home/www/ncp-launcher.sh , /sbin/halt, /sbin/reboot" >> /etc/sudoers
@@ -204,7 +208,7 @@ EOF
   # LIMIT LOG SIZE
   grep -q maxsize /etc/logrotate.d/apache2 || sed -i /weekly/amaxsize2M /etc/logrotate.d/apache2
   cat >> /etc/logrotate.d/ncp <<'EOF'
-/var/log/ncp.log
+/var/log/ncp/ncp.log
 {
         rotate 4
         size 500K
@@ -216,7 +220,7 @@ EOF
 
   # ONLY FOR IMAGE BUILDS
   if [[ -f /.ncp-image ]]; then
-    rm -rf /var/log/ncp.log
+    rm -rf /var/log/ncp/ncp.log
 
     ## NEXTCLOUDPI MOTD 
     rm -rf /etc/update-motd.d

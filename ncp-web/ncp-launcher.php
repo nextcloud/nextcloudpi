@@ -80,13 +80,33 @@ if ( $_POST['action'] == "launch" && $_POST['config'] )
   }
 
   // launch
-  echo '{ "token": "' . getCSRFToken() . '",';     // Get new token
-  echo ' "ref": "' . $ncp_app          . '",';
-  echo ' "output": "" , ';
-  echo ' "ret": ';
 
-  exec( 'bash -c "sudo /home/www/ncp-launcher.sh ' . $ncp_app . '"' , $output , $ret );
-  echo '"' . $ret . '" }';
+  $ret = null;
+  $output = null;
+  if( file_exists("/usr/local/etc/ncp.lock") )
+  {
+    $running = trim(file_get_contents("/usr/local/etc/ncp.lock"));
+    $output = "";
+    $output .= "An app ($running) is already running...".PHP_EOL;
+    if ( file_exists("/var/log/ncp/tmux.$running.log") )
+    {
+      $output .= "Attaching to its output:".PHP_EOL;
+      $output .= file_get_contents("/var/log/ncp/tmux.$running.log");
+    }
+    $ret=-1;
+  }
+  else
+  {
+    exec( 'sudo /home/www/ncp-launcher.sh ' . $ncp_app , $output , $ret );
+    $output = "";
+  }
+
+  echo json_encode(array(
+    "token" => getCSRFToken(),
+    "ref" => $ncp_app,
+    "output" => $output,
+    "ret" => $ret
+  ));
 }
 
 //

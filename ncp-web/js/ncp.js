@@ -25,8 +25,9 @@ window.onpopstate = function(event) {
     click_app($('#' + selectedID));
 };
 
-function errorMsg()
-{ 
+function errorMsg(e)
+{
+  console.log(e); 
   $('#config-box').fill( "Something went wrong. Try refreshing the page" ); 
 }
 
@@ -268,21 +269,36 @@ $(function()
         var ret = $.parseJSON( result );
         if ( ret.token )
           $('#csrf-token').set( { value: ret.token } );
-        if ( ret.ret )                           // means that the process was launched
+        if ( "ret" in ret )                           // means that the process was launched
         {
-          if ( ret.ret == '0' ) 
+          if ( ret.ret == 0 )
           {
             if( ret.ref && ret.ref == 'nc-update' )
               window.location.reload( true );
             reload_sidebar();
             $('.circle-retstatus').set('+icon-green-circle');
           }
-          else 
+          else if ( ret.ret == -1 )
+          {
+            if( ret.output )
+            {
+              var box_l = $('#' + selectedID + '-details-box');
+              var box   = box_l[0];
+              var lines = ret.output.split("\n");
+              lines.forEach(line => {
+                box_l.ht( box.innerHTML + escapeHTML(line) + '<br>' );
+              });
+              box.scrollTop = box.scrollHeight;
+            }
             $('.circle-retstatus').set('-icon-green-circle');
+          }
+          else
+          {
+            $('.circle-retstatus').set('-icon-green-circle');
+          }
         }
         else                                     // print error from server instead
         {
-          $('.details-box').fill(ret.output);
           $('.circle-retstatus').set('-icon-green-circle');
         }
         $( 'input' , '#config-box-wrapper' ).set('@disabled', null);

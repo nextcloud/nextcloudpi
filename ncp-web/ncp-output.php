@@ -79,7 +79,7 @@ function follow($file)
 session_write_close();
 echo str_pad('',1024*1024*4); // make sure the browser buffer becomes full
 
-$ncp_log = '/var/log/ncp.log';
+$ncp_log = '/var/log/ncp/ncp.log';
 if (!file_exists($ncp_log))
   touch($ncp_log);
 follow($ncp_log);
