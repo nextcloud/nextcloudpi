@@ -21,13 +21,9 @@ header('Cache-Control: no-cache'); // recommended to prevent caching of event da
  */
 function sendMsg($id, $msg) 
 {
-  echo 
-    "{"
-    . "messageType: 'log'"
-    . "id: $id,"
-    . "value: $msg"
-    . "}"
-    . PHP_EOL;  
+  echo "id: $id"    . PHP_EOL;
+  echo "data: $msg" . PHP_EOL;
+  echo PHP_EOL;
   ob_flush();
   flush();
 }

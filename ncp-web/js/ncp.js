@@ -10,7 +10,6 @@
 var MINI = require('minified');
 var $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
 var selectedID = null;
-var runningId = null;
 var ncp_app_list = null;
 var search_box = null;
 var lock       = false;
@@ -139,7 +138,7 @@ function reload_sidebar()
         var ret = $.parseJSON( result );
         if ( ret.token )
           $('#csrf-token-ui').set( { value: ret.token } );
-        if ( !ret.hasOwnProperty('error') || ret.error == null ) {
+        if ( ret.ret && ret.ret == '0' ) {
           $('#ncp-options').ht( ret.output );
           set_sidebar_click_handlers();
           if (selectedID && $$('#config-wrapper').style.display == 'block')
@@ -147,10 +146,6 @@ function reload_sidebar()
 
           ncp_app_list = $('.ncp-app-list-item');
           filter_apps();
-        }
-        else 
-        {
-          errorMsg(ret.error);
         }
       }).error( errorMsg );
 }
@@ -198,88 +193,7 @@ function select_app(item)
   selectedID = item.get('.id');
   item.set('+active');
   $('#' + selectedID + '-config-box').show();
-  check_is_running(selectedID);
 }
-
-function check_is_running(appId)
-{
-  lock = true;
-  $('.details-box').hide( '' );
-  $('.config-button').set('@disabled',true);
-  $('.loading-gif').set( { $display: 'inline' } );
-
-  // request
-  $.request('post', 'ncp-launcher.php', 
-  { 
-    action:'get_running_state', 
-    ref   : selectedID,
-    csrf_token: $( '#csrf-token' ).get( '.value' ) 
-  })
-  .then(
-    function success( response ) 
-    {
-      var result = $.parseJSON( response );
-      if ( result.token )
-        $('#csrf-token').set( { value: result.token } );
-      
-      if ( result.running ) // ncp-app is running already
-      {
-        if ( result.running == 'true' ) 
-        {
-          lock = true;
-          $('.details-box').hide( '' );
-          $('.config-button').set('@disabled',true);
-          $('.loading-gif').set( { $display: 'inline' } );
-          // reset box
-          $('.details-box').fill(result.output);
-          $('.details-box').show();
-          $('.details-box').set( {$height: '0vh'} );
-          $('.details-box').animate( {$height: '50vh'}, 150 );
-          $('.circle-retstatus').hide();
-          $( 'input' , '#config-box-wrapper' ).set('@disabled',true);
-          $('.loading-gif').show();
-        }
-      }
-      else                                     // print error from server instead
-      {
-        $('.details-box').fill(result.output);
-        $('.circle-retstatus').set('-icon-green-circle');
-      }
-    }
-  )
-  .error( errorMsg );
-}
-
-// listenForRunningApp()
-// {
-//   $.request('post', 'ncp-launcher.php', { action:'launch', 
-//   ref   : selectedID,
-//   config: $.toJSON(cfg),
-//   csrf_token: $( '#csrf-token' ).get( '.value' ) }).then(
-//     function success(response) {
-//       var result = $.parseJSON( response );
-      
-//       if( ! ( result.ref && result.running ) )
-//       {
-//         error("Invalid response received!");
-//         setTimeout(getAppStatus())
-//         return;
-//       }
-
-//     });
-
-
-//     if ( ret.ret == '0' ) 
-//       {
-//         if( ret.ref && ret.ref == 'nc-update' )
-//           window.location.reload( true );
-//         reload_sidebar();
-//         $('.circle-retstatus').set('+icon-green-circle');
-//       }
-//       else 
-//         $('.circle-retstatus').set('-icon-green-circle');
-//   }
-// }
 
 $(function() 
 {
@@ -302,8 +216,6 @@ $(function()
 
   source.addEventListener('message', function(e) 
     {
-      console.log("Message received:");
-      console.log(e.data);
       if ( e.origin != 'https://' + window.location.hostname + ':4443') 
       {
         $('.details-box').fill( "Invalid origin" ); 
@@ -311,22 +223,10 @@ $(function()
       }
 
       if (!selectedID) return;
-
-      var payload = JSON.parse(e.data);
-      if( !payload.hasOwnProperty('type') || !payload.hasOwnProperty('value') )
-        return;
-      if( payload.messageType == "log" )
-      {
-        var box_l = $('#' + selectedID + '-details-box');
-        var box   = box_l[0];
-        box_l.ht( box.innerHTML + escapeHTML(payload.value) + '<br>' );
-        box.scrollTop = box.scrollHeight;
-      }
-      else if( payload.messageType == "active_app" )
-      {
-        activeId = payload.value;
-      }
-
+      var box_l = $('#' + selectedID + '-details-box');
+      var box   = box_l[0];
+      box_l.ht( box.innerHTML + escapeHTML(e.data) + '<br>' );
+      box.scrollTop = box.scrollHeight;
     }, false);
 
   set_sidebar_click_handlers();
@@ -368,13 +268,21 @@ $(function()
         var ret = $.parseJSON( result );
         if ( ret.token )
           $('#csrf-token').set( { value: ret.token } );
-        if ( ! ret.error )                           // means that the process was launched
+        if ( ret.ret )                           // means that the process was launched
         {
-          wait_for_termination($ret.ref);
+          if ( ret.ret == '0' ) 
+          {
+            if( ret.ref && ret.ref == 'nc-update' )
+              window.location.reload( true );
+            reload_sidebar();
+            $('.circle-retstatus').set('+icon-green-circle');
+          }
+          else 
+            $('.circle-retstatus').set('-icon-green-circle');
         }
         else                                     // print error from server instead
         {
-          $('.details-box').fill(ret.error);
+          $('.details-box').fill(ret.output);
           $('.circle-retstatus').set('-icon-green-circle');
         }
         $( 'input' , '#config-box-wrapper' ).set('@disabled', null);

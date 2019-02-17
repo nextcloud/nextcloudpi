@@ -15,12 +15,6 @@ $cfg_dir = '/usr/local/etc/ncp-config.d/';
 $l10nDir = "l10n";
 ignore_user_abort(true);
 
-function is_app_running($ncp_app)
-{
-  exec( 'bash -c "sudo /home/www/ncp-launcher.sh --check-running ' . $ncp_app . '"' , $output , $ret );
-  return $ret;
-}
-
 // 
 // language
 //
@@ -34,7 +28,7 @@ try {
 // CSRF check
 $token = isset($_POST['csrf_token']) ? $_POST['csrf_token'] : '';
 if ( empty($token) || !validateCSRFToken($token) )
-  exit( '{ "error": "Unauthorized request. Try reloading the page" }' );
+  exit( '{ "output": "Unauthorized request. Try reloading the page" }' );
 
 //
 // launch
@@ -42,12 +36,12 @@ if ( empty($token) || !validateCSRFToken($token) )
 if ( $_POST['action'] == "launch" && $_POST['config'] )
 {
   // sanity checks
-  if ( !$_POST['ref'] ) exit( '{ "error": "Invalid request" }' );
+  if ( !$_POST['ref'] ) exit( '{ "output": "Invalid request" }' );
 
   $ncp_app = $_POST['ref'];
 
   preg_match( '/^[0-9A-Za-z_-]+$/' , $_POST['ref'] , $matches )
-    or exit( '{ "error": "Invalid input" , "token": "' . getCSRFToken() . '" }' );
+    or exit( '{ "output": "Invalid input" , "token": "' . getCSRFToken() . '" }' );
 
   // save new config
   if ( $_POST['config'] != "{}" )
@@ -55,13 +49,13 @@ if ( $_POST['action'] == "launch" && $_POST['config'] )
     $cfg_file = $cfg_dir . $ncp_app . '.cfg';
 
     $cfg_str = file_get_contents($cfg_file)
-      or exit('{ "error": "' . $ncp_app . ' read error" }');
+      or exit('{ "output": "' . $ncp_app . ' read error" }');
 
     $cfg = json_decode($cfg_str, true)
-      or exit('{ "error": "' . $ncp_app . ' read error" }');
+      or exit('{ "output": "' . $ncp_app . ' read error" }');
 
     $new_params = json_decode($_POST['config'], true)
-      or exit('{ "error": "Invalid request" }');
+      or exit('{ "output": "Invalid request" }');
 
     foreach ($cfg['params'] as $index => $param)
     {
@@ -72,66 +66,29 @@ if ( $_POST['action'] == "launch" && $_POST['config'] )
       // sanitize
       $val = trim(escapeshellarg($new_params[$id]),"'");
       preg_match( '/ /' , $val , $matches )
-        and exit( '{ "error": "Invalid parameters" , "token": "' . getCSRFToken() . '" }' );
+        and exit( '{ "output": "Invalid parameters" , "token": "' . getCSRFToken() . '" }' );
 
       // save
       $cfg['params'][$index]['value'] = $val;
     }
 
     $cfg_str = json_encode($cfg)
-      or exit('{ "error": "' . $ncp_app . ' internal error" }');
+      or exit('{ "output": "' . $ncp_app . ' internal error" }');
 
     file_put_contents($cfg_file, $cfg_str)
-      or exit('{ "error": "' . $ncp_app . ' write error" }');
+      or exit('{ "output": "' . $ncp_app . ' write error" }');
   }
 
-  $is_running = is_app_running($ncp_app);
-  $tmux_log_file = dirname($cfg_dir) . "/ncp-tmux/tmux.$ncp_app.log";
-  $app_output = "";
-  if ( $is_running && file_exists($tmux_log_file) )
-    $app_output = "App is already running...\n" . file_get_contents($tmux_log_file);
-
   // launch
   echo '{ "token": "' . getCSRFToken() . '",';     // Get new token
   echo ' "ref": "' . $ncp_app          . '",';
+  echo ' "output": "" , ';
+  echo ' "ret": ';
 
-  echo ' "output": "' . $app_output . '" }';
-
-  session_write_close();
-  exec( 'bash -c "sudo /home/www/ncp-launcher.sh ' . $ncp_app . '" > /dev/null &' , $output , $ret );
+  exec( 'bash -c "sudo /home/www/ncp-launcher.sh ' . $ncp_app . '"' , $output , $ret );
+  echo '"' . $ret . '" }';
 }
 
-//
-// get_running_status
-//
-else if ( $_POST['action'] == "get_app_status" )
-{
-
-  // sanity checks
-  if ( !$_POST['ref'] ) exit( '{ "error": "Invalid request" }' );
-
-  $ncp_app = $_POST['ref'];
-
-  preg_match( '/^[0-9A-Za-z_-]+$/' , $_POST['ref'] , $matches )
-    or exit( '{ "error": "Invalid input" , "token": "' . getCSRFToken() . '" }' );
-  
-  $tmux_log_file = dirname($cfg_dir) . "/ncp-tmux/tmux.$ncp_app.log";
-  $tmux_status_file = dirname($cfg_dir) . "/ncp-tmux/tmux.$ncp_app.log";
-  $past_output = "";
-  if ( $ret == 0 && file_exists($tmux_log_file) )
-    $past_output = file_get_contents();
-  
-  $status = "-1";
-  if ( $ret != 0 && file_exists($tmux_status_file) )
-    $status = file_get_contents($tmux_status_file);
-
-  // launch
-  echo '{ "token": "' . getCSRFToken() . '",';     // Get new token
-  echo ' "ref": "' . $ncp_app          . '",';
-  echo ' "output": "' . $past_output . '" , ';
-  echo ' "running": "' . $ret == 0 ? "true" : "false" . '"';
-  echo ' "exit: "' . $status . '" }';  
-}
 //
 // info
 //
