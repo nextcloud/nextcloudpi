@@ -135,17 +135,17 @@ EOF
 check_running=false
 for arg in $@
 do
-  if [[ $arg=="--check-running"]]
+  if [[ $arg == "--check-running" ]]
   then
     check_running=true
   fi
 done
 
 source /usr/local/etc/library.sh
-if [[ $check_running=="true"]]
+if [[ $check_running == "true" ]]
 then
   which tmux && tmux has-session -t="$ncp_app" > /dev/null 2>&1
-  exit
+  exit $?
 else
   run_app $1
 fi

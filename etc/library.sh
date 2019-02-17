@@ -118,7 +118,7 @@ function run_app_unsafe()
 
   # Check if app is already running in tmux
   which tmux && tmux has-session -t="$ncp_app" > /dev/null 2>&1 && {
-    echo "Already running. Attaching to output..." | tee $log
+    echo "Already running. Attaching to output..." | tee -a $log
     attach_to_app $ncp_app
     return $?
   }
@@ -141,7 +141,7 @@ function run_app_unsafe()
 
     if which tmux && [[ $use_tmux == 0 ]]
     then
-      echo "Running $ncp_app in tmux..." | tee $log
+      echo "Running $ncp_app in tmux..." | tee -a $log
       # Run app in tmux
       local tmux_log_file="$(dirname "$CFGDIR")/ncp-tmux/tmux.${ncp_app}.log"
       local tmux_status_file="$(dirname "$tmux_log_file")/tmux.${ncp_app}.status"
@@ -155,13 +155,13 @@ function run_app_unsafe()
       	source \"$script\"
 	configure 2>&1 | tee -a $log
 	echo "\${PIPESTATUS[0]}" >> $tmux_status_file
-      )' 2>&1 | tee $tmux_log_file"
+      )' 2>&1 | tee -a $tmux_log_file"
 
       attach_to_app "$ncp_app"
       exit $?
 
     else
-      echo "Running $ncp_app without tmux..." | tee $log
+      echo "Running $ncp_app without tmux..." | tee -a $log
       # read script
       source "$script"
       # run
