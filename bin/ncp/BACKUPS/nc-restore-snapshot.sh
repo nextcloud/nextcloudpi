@@ -1,40 +1,48 @@
 #!/bin/bash
 
-# Nextcloud BTRFS snapshots
+#!/bin/bash
+# Nextcloud restore backup
 #
-# Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
+# Copyleft 2019 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
 #
-# More at https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/
+# More at nextcloudpi.com
 #
 
-
-install()
-{
-  wget https://raw.githubusercontent.com/nachoparker/btrfs-snp/master/btrfs-snp -O /usr/local/bin/btrfs-snp
-  chmod +x /usr/local/bin/btrfs-snp
-}
+install() { :; }
 
 configure()
 {
-  ncc maintenance:mode --on
+  [[ -d "$SNAPSHOT" ]] || { echo "$SNAPSHOT doesn't exist"; return 1; }
 
-  local DATADIR MOUNTPOINT
-  DATADIR=$( ncc config:system:get datadirectory ) || {
+  local datadir mountpoint
+  datadir=$( ncc config:system:get datadirectory ) || {
     echo -e "Error reading data directory. Is NextCloud running?";
     return 1;
   }
 
   # file system check
-  MOUNTPOINT="$( stat -c "%m" "$DATADIR" )" || return 1
-  [[ "$( stat -fc%T "$MOUNTPOINT" )" != "btrfs" ]] && {
-    echo "$MOUNTPOINT is not in a BTRFS filesystem"
+  mountpoint="$( stat -c "%m" "$datadir" )" || return 1
+  [[ "$( stat -fc%T "$mountpoint" )" != "btrfs" ]] && {
+    echo "$datadir is not in a BTRFS filesystem"
     return 1
   }
 
-  btrfs-snp $MOUNTPOINT manual $LIMIT 0 ../ncp-snapshots
+  # file system check
+  btrfs subvolume show "$SNAPSHOT" &>/dev/null || {
+    echo "$SNAPSHOT is not a BTRFS snapshot"
+    return 1
+  }
 
+  btrfs-snp $mountpoint autobackup 0 0 ../ncp-snapshots || return 1
+
+  ncc maintenance:mode --on
+  btrfs subvolume delete   "$datadir" || return 1
+  btrfs subvolume snapshot "$SNAPSHOT" "$datadir"
   ncc maintenance:mode --off
+  ncp-scan
+
+  echo "snapshot $SNAPSHOT restored"
 }
 
 # License

@@ -91,6 +91,7 @@ configure()
   sed -i "s|^opcache.file_cache=.*|opcache.file_cache=$DATADIR/.opcache|" /etc/php/${PHPVER}/mods-available/opcache.ini
 
   # update fail2ban logpath
+  [[ -f /etc/fail2ban/jail.local ]] && \
   sed -i "s|logpath  =.*nextcloud.log|logpath  = $DATADIR/nextcloud.log|" /etc/fail2ban/jail.local
 
   # datadir
