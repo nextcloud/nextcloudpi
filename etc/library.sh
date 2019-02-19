@@ -236,8 +236,6 @@ function attach_to_app()
 
   # Read return value from tmux log file
   ret="$(tail -n 1 "$tmux_status_file")"
-  #rm "$tmux_log_file"
-  #rm "$tmux_status_file"
 
   [[ $ret =~ ^[0-9]+$ ]] && return $ret
   return 1
