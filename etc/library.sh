@@ -10,7 +10,7 @@
 
 CFGDIR=/usr/local/etc/ncp-config.d
 BINDIR=/usr/local/bin/ncp
-LOCK_FILE=/usr/local/etc/ncp.lock
+LOCK_FILE=/run/ncp.lock
 
 function configure_app()
 {

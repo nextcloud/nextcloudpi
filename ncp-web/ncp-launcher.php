@@ -81,16 +81,17 @@ if ( $_POST['action'] == "launch" && $_POST['config'] )
 
   // launch
 
-  if( file_exists("/usr/local/etc/ncp.lock") )
+  $lock_file = "/run/ncp.lock";
+  if( file_exists($lock_file) )
   {
-    $running = trim(file_get_contents("/usr/local/etc/ncp.lock"));
+    $running = trim(file_get_contents($lock_file));
     $output = "An app ($running) is already running...".PHP_EOL;
     if ( file_exists("/var/log/ncp/tmux.$running.log") )
     {
       $output .= "Attaching to its output:".PHP_EOL;
       $output .= file_get_contents("/var/log/ncp/tmux.$running.log");
     }
-    $ret=-1;
+    $ret = -1;
   }
   else
   {
