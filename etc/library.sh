@@ -11,6 +11,7 @@
 CFGDIR=/usr/local/etc/ncp-config.d
 BINDIR=/usr/local/bin/ncp
 LOCK_FILE=/run/ncp.lock
+LOG=/var/log/ncp/ncp.log
 
 function configure_app()
 {
@@ -110,44 +111,16 @@ function run_app_unsafe()
   script=$1
   ncp_app="$(basename "$script" .sh)"
   local cfg_file="$CFGDIR/$ncp_app.cfg"
-  local log=/var/log/ncp/ncp.log
 
   [[ -f "$script" ]] || { echo "file $script not found"; return 1; }
 
-  touch               $log
-  chmod 640           $log
-  chown root:www-data $log
+  touch               "$LOG"
+  chmod 640           "$LOG"
+  chown root:www-data "$LOG"
 
   echo "Running $ncp_app"
 
-  # Check if app is already running in tmux
-  local running_app
-  running_app=$( [[ -f "$LOCK_FILE" ]] && cat "$LOCK_FILE" || echo "" )
-  [[ ! -z $running_app ]] && which tmux >/dev/null && tmux has-session -t="$running_app" &>/dev/null && {
-    
-    local choice question
-    [[ $ATTACH_TO_RUNNING == "1" ]] && choice="y"
-    [[ $ATTACH_TO_RUNNING == "0" ]] && choice="n"
-    question="An app ($running_app) is already running. Do you want to attach to it's output? <y/n>"
-    if [[ $choice == "y" ]] || [[ $choice == "n" ]]
-    then
-      echo "$question"
-      echo "Choice: <$choice>"
-    else
-      read -rp "$question" choice
-      while [[ "$choice" != "y" ]] && [[ "$choice" != "n" ]]
-      do
-        echo "choice was '$choice'"
-        read -rp "Invalid choice. y or n expected." choice
-      done
-    fi
-
-    if [[ "$choice" == "y" ]]
-    then
-      attach_to_app "$running_app"
-    fi
-    return $?
-  }
+  attach_and_exit_if_running
 
   unset configure
   (
@@ -169,49 +142,90 @@ function run_app_unsafe()
     echo "$ncp_app" > "$LOCK_FILE"
     if which tmux > /dev/null && [[ $use_tmux == 0 ]]
     then
-      echo "Running $ncp_app in tmux..." | tee -a $log
-      # Run app in tmux
-      local tmux_log_file tmux_status_file LIBPATH
-      tmux_log_file="/var/log/ncp/tmux.${ncp_app}.log"
-      tmux_status_file="/var/log/ncp/tmux.${ncp_app}.status"
-      LIBPATH="$(dirname "$CFGDIR")/library.sh"
-      
-      # Reset tmux output
-      echo "[ $ncp_app ]" | tee -a "$log"
-      echo "[ $ncp_app ]" > "$tmux_log_file"
-      echo "" > "$tmux_status_file"
-      chmod 640           "$tmux_log_file" "$tmux_status_file"
-      chown root:www-data "$tmux_log_file" "$tmux_status_file"
-
-      tmux new-session -d -s "$ncp_app" "bash -c '(
-        trap \"echo \\\$? > $tmux_status_file && rm $LOCK_FILE\" 1 2 3 4 6 9 11 15 19 29
-        source \"$LIBPATH\"
-        source \"$script\"
-        configure 2>&1 | tee -a \"$log\"
-        echo \"\${PIPESTATUS[0]}\" > $tmux_status_file
-        rm $LOCK_FILE
-      )' 2>&1 | tee -a $tmux_log_file"
-
-      attach_to_app "$ncp_app"
-      exit
-
+      run_app_in_tmux "$ncp_app" "$script"
     else
-      trap "rm '$LOCK_FILE'" 0 1 2 3 4 6 11 15 19 29
-      echo "[ $ncp_app ]" | tee -a "$log"
-      echo "Running $ncp_app directly..." | tee -a "$log"
+      # shellcheck disable=SC2064
+      trap "rm '$LOCK_FILE'" EXIT SIGHUP SIGINT SIGQUIT SIGILL SIGABRT SIGSEV SIGTERM SIGIO
+      echo "[ $ncp_app ]" | tee -a "$LOG"
+      echo "Running $ncp_app directly..." | tee -a "$LOG"
       # read script
       # shellcheck source=/dev/null
       source "$script"
       # run
-      configure 2>&1 | tee -a $log
+      configure 2>&1 | tee -a "$LOG"
       local ret="${PIPESTATUS[0]}"
       exit "$ret"
     fi
   )
   ret="$?"
-  echo "" >> $log
+  echo "" >> "$LOG"
 
   return "$ret"
+}
+
+function run_app_in_tmux()
+{
+  local ncp_app="$1"
+  local script="$2"
+
+  echo "Running $ncp_app in tmux..." | tee -a "$LOG"
+    # Run app in tmux
+    local tmux_log_file tmux_status_file LIBPATH
+    tmux_log_file="/var/log/ncp/tmux.${ncp_app}.log"
+    tmux_status_file="/var/log/ncp/tmux.${ncp_app}.status"
+    LIBPATH="$(dirname "$CFGDIR")/library.sh"
+    
+    # Reset tmux output
+    echo "[ $ncp_app ]" >> "$LOG"
+    echo "[ $ncp_app ]" > "$tmux_log_file"
+    echo "" > "$tmux_status_file"
+    chmod 640           "$tmux_log_file" "$tmux_status_file"
+    chown root:www-data "$tmux_log_file" "$tmux_status_file"
+
+    tmux new-session -d -s "$ncp_app" "bash -c '(
+      trap \"echo \\\$? > $tmux_status_file && rm $LOCK_FILE\" 1 2 3 4 6 9 11 15 19 29
+      source \"$LIBPATH\"
+      source \"$script\"
+      configure 2>&1 | tee -a \"$LOG\"
+      echo \"\${PIPESTATUS[0]}\" > $tmux_status_file
+      rm $LOCK_FILE
+    )' 2>&1 | tee -a $tmux_log_file"
+
+    attach_to_app "$ncp_app"
+    return $?
+}
+
+function attach_and_exit_if_running()
+{
+  # Check if app is already running in tmux
+  local running_app
+  running_app=$( [[ -f "$LOCK_FILE" ]] && cat "$LOCK_FILE" || echo "" )
+  [[ ! -z $running_app ]] && which tmux >/dev/null && tmux has-session -t="$running_app" &>/dev/null && {
+    
+    local choice question
+    [[ $ATTACH_TO_RUNNING == "1" ]] && choice="y"
+    [[ $ATTACH_TO_RUNNING == "0" ]] && choice="n"
+    question="An app ($running_app) is already running. Do you want to attach to it's output? <y/n> "
+    if [[ $choice == "y" ]] || [[ $choice == "n" ]]
+    then
+      echo "$question"
+      echo "Choice: <$choice>"
+    else
+      read -rp "$question" choice
+      while [[ "$choice" != "y" ]] && [[ "$choice" != "n" ]]
+      do
+        echo "choice was '$choice'"
+        read -rp "Invalid choice. y or n expected." choice
+      done
+    fi
+
+    if [[ "$choice" == "y" ]]
+    then
+      attach_to_app "$running_app"
+    fi
+    exit $?
+  }
+  return 0
 }
 
 function attach_to_app()
