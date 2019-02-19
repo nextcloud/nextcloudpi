@@ -187,7 +187,7 @@ function run_app_unsafe()
         trap \"echo \\\$? > $tmux_status_file && rm $LOCK_FILE\" 1 2 3 4 6 9 11 15 19 29
         source \"$LIBPATH\"
         source \"$script\"
-        configure 2>&1 | tee -a "$log"
+        configure 2>&1 | tee -a \"$log\"
         echo \"\${PIPESTATUS[0]}\" > $tmux_status_file
         rm $LOCK_FILE
       )' 2>&1 | tee -a $tmux_log_file"
