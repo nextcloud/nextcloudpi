@@ -14,7 +14,7 @@ BRANCH=master
 
 BINDIR=/usr/local/bin/ncp
 CONFDIR=/usr/local/etc/ncp-config.d/
-LOGDIR=/var/log/ncp
+LOGFILE=/var/log/ncp/ncp.log
 APTINSTALL="apt-get install -y --no-install-recommends"
 export DEBIAN_FRONTEND=noninteractive
 
@@ -24,7 +24,7 @@ install()
   # NCP-CONFIG
   apt-get update
   $APTINSTALL git dialog whiptail jq tmux locales-all
-  mkdir -p "$CONFDIR" "$BINDIR" "$LOGDIR"
+  mkdir -p "$CONFDIR" "$BINDIR" "$(dirname LOGFILE)"
 
   # include option in raspi-config (only Raspbian)
   test -f /usr/bin/raspi-config && {
@@ -220,7 +220,7 @@ EOF
 
   # ONLY FOR IMAGE BUILDS
   if [[ -f /.ncp-image ]]; then
-    rm -rf /var/log/ncp/ncp.log
+    rm -rf "$LOGFILE"
 
     ## NEXTCLOUDPI MOTD 
     rm -rf /etc/update-motd.d

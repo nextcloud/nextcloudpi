@@ -11,6 +11,7 @@
 set -e
 
 CONFDIR=/usr/local/etc/ncp-config.d/
+LOGFILE=/var/log/ncp/ncp.log
 
 # don't make sense in a docker container
 EXCL_DOCKER="
@@ -47,7 +48,8 @@ pgrep apt &>/dev/null && { echo "apt is currently running. Try again later";  ex
 type jq &>/dev/null || {
   apt-get update
   apt-get install -y --no-install-recommends jq tmux locales-all
-  mkdir -p "$(dirname $CONFDIR)/ncp-tmux"
+  mkdir -p "$(dirname "$LOGFILE")"
+  [[ -f /var/log/ncp.log ]] && mv /var/log/ncp.log "$LOGFILE"
 }
 
 # migrate to the new cfg format
@@ -99,8 +101,26 @@ type jq &>/dev/null || {
 
   cat > /home/www/ncp-launcher.sh <<'EOF'
 #!/bin/bash
+
+declare -a args
+for arg in $@
+do
+  if [[ $arg == "--auto-attach" ]]
+  then
+    export ATTACH_TO_RUNNING=1
+  elif [[ $arg == "--no-attach" ]]
+  then
+    export ATTACH_TO_RUNNING=0
+  elif [[ $arg == "--no-follow" ]]
+  then
+    export ATTACH_NO_FOLLOW=1
+  else
+    args+="$arg"
+  fi
+done
+
 source /usr/local/etc/library.sh
-run_app $1
+run_app ${args[0]}
 EOF
   chmod 700 /home/www/ncp-launcher.sh
 }
