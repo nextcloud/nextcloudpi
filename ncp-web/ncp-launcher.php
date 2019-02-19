@@ -81,13 +81,10 @@ if ( $_POST['action'] == "launch" && $_POST['config'] )
 
   // launch
 
-  $ret = null;
-  $output = null;
   if( file_exists("/usr/local/etc/ncp.lock") )
   {
     $running = trim(file_get_contents("/usr/local/etc/ncp.lock"));
-    $output = "";
-    $output .= "An app ($running) is already running...".PHP_EOL;
+    $output = "An app ($running) is already running...".PHP_EOL;
     if ( file_exists("/var/log/ncp/tmux.$running.log") )
     {
       $output .= "Attaching to its output:".PHP_EOL;
@@ -97,8 +94,7 @@ if ( $_POST['action'] == "launch" && $_POST['config'] )
   }
   else
   {
-    exec( 'sudo /home/www/ncp-launcher.sh ' . $ncp_app , $output , $ret );
-    $output = "";
+    exec( 'sudo /home/www/ncp-launcher.sh ' . $ncp_app , $cmd_out , $ret );
   }
 
   echo json_encode(array(

@@ -27,7 +27,6 @@ window.onpopstate = function(event) {
 
 function errorMsg(e)
 {
-  console.log(e); 
   $('#config-box').fill( "Something went wrong. Try refreshing the page" ); 
 }
 
@@ -278,7 +277,7 @@ $(function()
             reload_sidebar();
             $('.circle-retstatus').set('+icon-green-circle');
           }
-          else if ( ret.ret == -1 )
+          else if ( ret.ret === -1 ) // means we attach to an already running app
           {
             if( ret.output )
             {
