@@ -121,18 +121,18 @@ function run_app_unsafe()
   echo "Running $ncp_app"
 
   # Check if app is already running in tmux
+  local running_app
   running_app=$( [[ -f "$LOCK_FILE" ]] && cat "$LOCK_FILE" || echo "" )
-  [[ ! -z $running_app ]] && which tmux > /dev/null && tmux has-session -t="$running_app" > /dev/null 2>&1 && {
-    #echo "Already running. Attaching to output..." | tee -a $log
+  [[ ! -z $running_app ]] && which tmux >/dev/null && tmux has-session -t="$running_app" &>/dev/null && {
     
-    local choice
+    local choice question
     [[ $ATTACH_TO_RUNNING == "1" ]] && choice="y"
     [[ $ATTACH_TO_RUNNING == "0" ]] && choice="n"
     question="An app ($running_app) is already running. Do you want to attach to it's output? <y/n>"
     if [[ $choice == "y" ]] || [[ $choice == "n" ]]
     then
       echo "$question"
-      echo "Choice: <y>"
+      echo "Choice: <$choice>"
     else
       read -rp "$question" choice
       while [[ "$choice" != "y" ]] && [[ "$choice" != "n" ]]
@@ -155,8 +155,8 @@ function run_app_unsafe()
     [[ -f "$cfg_file" ]] && {
       local len cfg
       cfg="$( cat "$cfg_file" )"
-      jq -e '.tmux' <<<"$cfg" > /dev/null 2>&1
-      use_tmux="$?"
+      jq -e '.tmux' <<<"$cfg" &>/dev/null
+      local use_tmux="$?"
       len="$(jq '.params | length' <<<"$cfg")"
       for (( i = 0 ; i < len ; i++ )); do
         local var val
@@ -174,10 +174,10 @@ function run_app_unsafe()
       local tmux_log_file tmux_status_file LIBPATH
       tmux_log_file="/var/log/ncp/tmux.${ncp_app}.log"
       tmux_status_file="/var/log/ncp/tmux.${ncp_app}.status"
-      LIBPATH="$(dirname $CFGDIR)/library.sh"
+      LIBPATH="$(dirname "$CFGDIR")/library.sh"
       
       # Reset tmux output
-      echo "[ $ncp_app ]" | tee -a $log
+      echo "[ $ncp_app ]" | tee -a "$log"
       echo "[ $ncp_app ]" > "$tmux_log_file"
       echo "" > "$tmux_status_file"
       chmod 640           "$tmux_log_file" "$tmux_status_file"
@@ -187,7 +187,7 @@ function run_app_unsafe()
         trap \"echo \\\$? > $tmux_status_file && rm $LOCK_FILE\" 1 2 3 4 6 9 11 15 19 29
         source \"$LIBPATH\"
         source \"$script\"
-        configure 2>&1 | tee -a $log
+        configure 2>&1 | tee -a "$log"
         echo \"\${PIPESTATUS[0]}\" > $tmux_status_file
         rm $LOCK_FILE
       )' 2>&1 | tee -a $tmux_log_file"
@@ -197,8 +197,8 @@ function run_app_unsafe()
 
     else
       trap "rm '$LOCK_FILE'" 0 1 2 3 4 6 11 15 19 29
-      echo "[ $ncp_app ]" | tee -a $log
-      echo "Running $ncp_app directly..." | tee -a $log
+      echo "[ $ncp_app ]" | tee -a "$log"
+      echo "Running $ncp_app directly..." | tee -a "$log"
       # read script
       # shellcheck source=/dev/null
       source "$script"
