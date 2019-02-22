@@ -20,9 +20,9 @@ configure()
 
   cat > "$cronfile" <<'EOF'
 #!/bin/bash
-echo "[ nc-update-nc-apps-auto ]" >> /var/log/ncp.log
-echo "checking for updates..."    >> /var/log/ncp.log
-ncc app:update --all -n           >> /var/log/ncp.log
+echo "[ nc-update-nc-apps-auto ]" >> /var/log/ncp/ncp.log
+echo "checking for updates..."    >> /var/log/ncp/ncp.log
+ncc app:update --all -n           >> /var/log/ncp/ncp.log
 EOF
   chmod 755 "$cronfile"
   echo "automatic app updates enabled"

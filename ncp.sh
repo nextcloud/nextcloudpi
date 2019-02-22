@@ -14,6 +14,7 @@ BRANCH=master
 
 BINDIR=/usr/local/bin/ncp
 CONFDIR=/usr/local/etc/ncp-config.d/
+LOGFILE=/var/log/ncp/ncp.log
 APTINSTALL="apt-get install -y --no-install-recommends"
 export DEBIAN_FRONTEND=noninteractive
 
@@ -22,8 +23,13 @@ install()
 {
   # NCP-CONFIG
   apt-get update
-  $APTINSTALL git dialog whiptail jq
-  mkdir -p "$CONFDIR" "$BINDIR"
+  $APTINSTALL git dialog whiptail jq tmux locale
+  # Install UTF-8 locale required by tmux
+  grep -v '#' /etc/locale.gen | grep -ie "en_US.UTF-8[[:blank:]]*UTF-8" &> /dev/null || {
+    echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
+    locale-gen
+  }
+  mkdir -p "$CONFDIR" "$BINDIR" "$(dirname LOGFILE)"
 
   # include option in raspi-config (only Raspbian)
   test -f /usr/bin/raspi-config && {
@@ -131,8 +137,9 @@ EOF
 
   cat > /home/www/ncp-launcher.sh <<'EOF'
 #!/bin/bash
+
 source /usr/local/etc/library.sh
-run_app $1
+run_app "$1"
 EOF
   chmod 700 /home/www/ncp-launcher.sh
   echo "www-data ALL = NOPASSWD: /home/www/ncp-launcher.sh , /sbin/halt, /sbin/reboot" >> /etc/sudoers
@@ -188,7 +195,7 @@ EOF
   # LIMIT LOG SIZE
   grep -q maxsize /etc/logrotate.d/apache2 || sed -i /weekly/amaxsize2M /etc/logrotate.d/apache2
   cat >> /etc/logrotate.d/ncp <<'EOF'
-/var/log/ncp.log
+/var/log/ncp/ncp.log
 {
         rotate 4
         size 500K
@@ -200,7 +207,7 @@ EOF
 
   # ONLY FOR IMAGE BUILDS
   if [[ -f /.ncp-image ]]; then
-    rm -rf /var/log/ncp.log
+    rm -rf "$LOGFILE"
 
     ## NEXTCLOUDPI MOTD 
     rm -rf /etc/update-motd.d
