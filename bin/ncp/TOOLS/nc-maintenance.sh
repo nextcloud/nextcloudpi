@@ -12,10 +12,10 @@
 configure()
 {
   [[ $ACTIVE != "yes" ]] && {
-    ncc --off
+    ncc maintenance:mode --off
     return 0 
   }
-  ncc --on 
+  ncc maintenance:mode --on 
 }
 
 # License
