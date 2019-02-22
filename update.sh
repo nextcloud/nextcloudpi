@@ -47,10 +47,26 @@ pgrep apt &>/dev/null && { echo "apt is currently running. Try again later";  ex
 # install new dependencies
 type jq &>/dev/null || {
   apt-get update
-  apt-get install -y --no-install-recommends jq tmux locales-all
+  apt-get install -y --no-install-recommends jq
+
+}
+
+which tmux || {
+  apt install tmux locale
+}
+
+# Install UTF-8 locale required by tmux
+grep -v '#' /etc/locale.gen | grep -ie "en_US.UTF-8[[:blank:]]*UTF-8" &> /dev/null || {
+  echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
+  locale-gen
+}
+
+# Migrate to new log location
+[[ -d /var/log/ncp ]] || {
   mkdir -p "$(dirname "$LOGFILE")"
   [[ -f /var/log/ncp.log ]] && mv /var/log/ncp.log "$LOGFILE"
 }
+
 
 # migrate to the new cfg format
 [[ -f "$CONFDIR"/dnsmasq.sh ]] && {

@@ -23,7 +23,12 @@ install()
 {
   # NCP-CONFIG
   apt-get update
-  $APTINSTALL git dialog whiptail jq tmux locales-all
+  $APTINSTALL git dialog whiptail jq tmux locale
+  # Install UTF-8 locale required by tmux
+  grep -v '#' /etc/locale.gen | grep -ie "en_US.UTF-8[[:blank:]]*UTF-8" &> /dev/null || {
+    echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
+    locale-gen
+  }
   mkdir -p "$CONFDIR" "$BINDIR" "$(dirname LOGFILE)"
 
   # include option in raspi-config (only Raspbian)
