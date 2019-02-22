@@ -23,8 +23,8 @@ configure()
   cat > /etc/cron.daily/ncp-autoupdate-nc <<EOF
 #!/bin/bash
 
-echo -e "[ncp-update-nc]"                          >> /var/log/ncp.log
-/usr/local/bin/ncp-update-nc "$VERSION" 2>&1 | tee -a /var/log/ncp.log
+echo -e "[ncp-update-nc]"                          >> /var/log/ncp/ncp.log
+/usr/local/bin/ncp-update-nc "$VERSION" 2>&1 | tee -a /var/log/ncp/ncp.log
 
 if [[ \${PIPESTATUS[0]} -eq 0 ]]; then
 
@@ -33,7 +33,7 @@ if [[ \${PIPESTATUS[0]} -eq 0 ]]; then
   sudo -u www-data php /var/www/nextcloud/occ notification:generate \
     "$NOTIFYUSER" "NextCloudPi" -l "Nextcloud was updated to \$VER"
 fi
-echo "" >> /var/log/ncp.log
+echo "" >> /var/log/ncp/ncp.log
 EOF
   chmod 755 /etc/cron.daily/ncp-autoupdate-nc
   echo "automatic Nextcloud updates enabled"

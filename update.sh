@@ -102,25 +102,8 @@ type jq &>/dev/null || {
   cat > /home/www/ncp-launcher.sh <<'EOF'
 #!/bin/bash
 
-declare -a args
-for arg in $@
-do
-  if [[ $arg == "--auto-attach" ]]
-  then
-    export ATTACH_TO_RUNNING=1
-  elif [[ $arg == "--no-attach" ]]
-  then
-    export ATTACH_TO_RUNNING=0
-  elif [[ $arg == "--no-follow" ]]
-  then
-    export ATTACH_NO_FOLLOW=1
-  else
-    args+="$arg"
-  fi
-done
-
 source /usr/local/etc/library.sh
-run_app ${args[0]}
+run_app "$1"
 EOF
   chmod 700 /home/www/ncp-launcher.sh
 }
