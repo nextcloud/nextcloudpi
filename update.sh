@@ -309,6 +309,36 @@ EOF
     bash -c "sleep 2 && service apache2 reload" &>/dev/null &
   fi
 
+  # configure MariaDB (UTF8 4 byte support)
+  grep -q max_heap_table_size /etc/mysql/mariadb.conf.d/90-ncp.cnf || {
+    cat > /etc/mysql/mariadb.conf.d/90-ncp.cnf <<EOF
+[mysqld]
+transaction_isolation = READ-COMMITTED
+innodb_large_prefix=true
+innodb_file_per_table=1
+innodb_file_format=barracuda
+
+[server]
+# innodb settings
+skip-name-resolve
+innodb_buffer_pool_size = 256M
+innodb_buffer_pool_instances = 1
+innodb_flush_log_at_trx_commit = 2
+innodb_log_buffer_size = 32M
+innodb_max_dirty_pages_pct = 90
+innodb_log_file_size = 32M
+
+# disable query cache
+query_cache_type = 0
+query_cache_size = 0
+
+# other
+tmp_table_size= 64M
+max_heap_table_size= 64M
+EOF
+    service mysqld restart
+  }
+
   # remove redundant opcache configuration. Leave until update bug is fixed -> https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=815968
   # Bug #416 reappeared after we moved to php7.2 and debian buster packages. (keep last)
   [[ "$( ls -l /etc/php/7.2/fpm/conf.d/*-opcache.ini |  wc -l )" -gt 1 ]] && rm "$( ls /etc/php/7.2/fpm/conf.d/*-opcache.ini | tail -1 )"
