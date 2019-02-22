@@ -147,7 +147,7 @@ function run_app_unsafe()
       # shellcheck disable=SC2064
       trap "rm '$LOCK_FILE'" EXIT SIGHUP SIGINT SIGQUIT SIGILL SIGABRT SIGSEV SIGTERM SIGIO
       echo "[ $ncp_app ]" | tee -a "$LOG"
-      echo "Running $ncp_app directly..." | tee -a "$LOG"
+      echo "Closing the browser/terminal session will interrupt $ncp_app!" | tee -a "$LOG"
       # read script
       # shellcheck source=/dev/null
       source "$script"
@@ -168,31 +168,32 @@ function run_app_in_tmux()
   local ncp_app="$1"
   local script="$2"
 
-  echo "Running $ncp_app in tmux..." | tee -a "$LOG"
-    # Run app in tmux
-    local tmux_log_file tmux_status_file LIBPATH
-    tmux_log_file="/var/log/ncp/tmux.${ncp_app}.log"
-    tmux_status_file="/var/log/ncp/tmux.${ncp_app}.status"
-    LIBPATH="$(dirname "$CFGDIR")/library.sh"
-    
-    # Reset tmux output
-    echo "[ $ncp_app ]" >> "$LOG"
-    echo "[ $ncp_app ]" > "$tmux_log_file"
-    echo "" > "$tmux_status_file"
-    chmod 640           "$tmux_log_file" "$tmux_status_file"
-    chown root:www-data "$tmux_log_file" "$tmux_status_file"
+  echo "You can safely exit. $ncp_app will keep running until it's done." | tee -a "$LOG"
+  echo "Reattach at any time by running the app again." | tee -a "$LOG"
+  # Run app in tmux
+  local tmux_log_file tmux_status_file LIBPATH
+  tmux_log_file="/var/log/ncp/tmux.${ncp_app}.log"
+  tmux_status_file="/var/log/ncp/tmux.${ncp_app}.status"
+  LIBPATH="$(dirname "$CFGDIR")/library.sh"
+  
+  # Reset tmux output
+  echo "[ $ncp_app ]" >> "$LOG"
+  echo "[ $ncp_app ]" > "$tmux_log_file"
+  echo "" > "$tmux_status_file"
+  chmod 640           "$tmux_log_file" "$tmux_status_file"
+  chown root:www-data "$tmux_log_file" "$tmux_status_file"
 
-    tmux new-session -d -s "$ncp_app" "bash -c '(
-      trap \"echo \\\$? > $tmux_status_file && rm $LOCK_FILE\" 1 2 3 4 6 9 11 15 19 29
-      source \"$LIBPATH\"
-      source \"$script\"
-      configure 2>&1 | tee -a \"$LOG\"
-      echo \"\${PIPESTATUS[0]}\" > $tmux_status_file
-      rm $LOCK_FILE
-    )' 2>&1 | tee -a $tmux_log_file"
+  tmux new-session -d -s "$ncp_app" "bash -c '(
+    trap \"echo \\\$? > $tmux_status_file && rm $LOCK_FILE\" 1 2 3 4 6 9 11 15 19 29
+    source \"$LIBPATH\"
+    source \"$script\"
+    configure 2>&1 | tee -a \"$LOG\"
+    echo \"\${PIPESTATUS[0]}\" > $tmux_status_file
+    rm $LOCK_FILE
+  )' 2>&1 | tee -a $tmux_log_file"
 
-    attach_to_app "$ncp_app"
-    return $?
+  attach_to_app "$ncp_app"
+  return $?
 }
 
 function attach_and_exit_if_running()
