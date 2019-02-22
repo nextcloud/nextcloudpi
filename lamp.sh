@@ -126,11 +126,37 @@ EOF
 
     $APTINSTALL ssl-cert # self signed snakeoil certs
 
-    # configure MariaDB ( UTF8 4 byte support )
-    cp /etc/mysql/mariadb.conf.d/50-server.cnf         /etc/mysql/mariadb.conf.d/90-ncp.cnf
-    sed -i '/\[mysqld\]/ainnodb_large_prefix=true'     /etc/mysql/mariadb.conf.d/90-ncp.cnf
-    sed -i '/\[mysqld\]/ainnodb_file_per_table=1'      /etc/mysql/mariadb.conf.d/90-ncp.cnf
-    sed -i '/\[mysqld\]/ainnodb_file_format=barracuda' /etc/mysql/mariadb.conf.d/90-ncp.cnf
+    # configure MariaDB (UTF8 4 byte support)
+    cat > /etc/mysql/mariadb.conf.d/90-ncp.cnf <<EOF
+[mysqld]
+datadir = /var/lib/mysql
+EOF
+    cat > /etc/mysql/mariadb.conf.d/91-ncp.cnf <<EOF
+[mysqld]
+transaction_isolation = READ-COMMITTED
+innodb_large_prefix=true
+innodb_file_per_table=1
+innodb_file_format=barracuda
+
+[server]
+# innodb settings
+skip-name-resolve
+innodb_buffer_pool_size = 256M
+innodb_buffer_pool_instances = 1
+innodb_flush_log_at_trx_commit = 2
+innodb_log_buffer_size = 32M
+innodb_max_dirty_pages_pct = 90
+innodb_log_file_size = 32M
+
+# disable query cache
+query_cache_type = 0
+query_cache_size = 0
+
+# other
+tmp_table_size= 64M
+max_heap_table_size= 64M
+EOF
+
 
   # launch mariadb if not already running
   if ! pgrep -c mysqld &>/dev/null; then

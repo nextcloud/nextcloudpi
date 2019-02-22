@@ -1,7 +1,9 @@
 
-[v1.7.0](https://github.com/nextcloud/nextcloudpi/commit/b0a83b0) (2019-02-17) add nc-restore-snapshot
+[v1.7.1](https://github.com/nextcloud/nextcloudpi/commit/a077130) (2019-02-22) lamp: adjust mariadb parameters
 
-[v1.6.7](https://github.com/nextcloud/nextcloudpi/commit/41a48c9) (2019-02-17) nc-backup-auto: notify failures
+[v1.7.0](https://github.com/nextcloud/nextcloudpi/commit/5e1ea77) (2019-02-17) add nc-restore-snapshot
+
+[v1.6.7  ](https://github.com/nextcloud/nextcloudpi/commit/41a48c9) (2019-02-17) nc-backup-auto: notify failures
 
 [v1.6.6  ](https://github.com/nextcloud/nextcloudpi/commit/743cb24) (2019-02-15) nc-automount: fix NFS delay
 
@@ -9,7 +11,7 @@
 
 [v1.6.4  ](https://github.com/nextcloud/nextcloudpi/commit/4e04339) (2019-02-14) nc-nextcloud: update description
 
-[v1.6.3](https://github.com/nextcloud/nextcloudpi/commit/af5e35d) (2019-02-13) ncp-update-nc: BTRFS basedir not supported
+[v1.6.3  ](https://github.com/nextcloud/nextcloudpi/commit/af5e35d) (2019-02-13) ncp-update-nc: BTRFS basedir not supported
 
 [v1.6.2  ](https://github.com/nextcloud/nextcloudpi/commit/b070387) (2019-02-13) nc-datadir: lift mountpoint restriction
 
