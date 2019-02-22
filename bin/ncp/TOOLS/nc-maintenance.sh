@@ -12,10 +12,10 @@
 configure()
 {
   [[ $ACTIVE != "yes" ]] && {
-    sudo -u www-data php /var/www/nextcloud/occ maintenance:mode --off
+    ncc --off
     return 0 
   }
-  sudo -u www-data php /var/www/nextcloud/occ maintenance:mode --on 
+  ncc --on 
 }
 
 # License
