@@ -43,69 +43,6 @@ samba
 # check running apt
 pgrep apt &>/dev/null && { echo "apt is currently running. Try again later";  exit 1; }
 
-## TODO migration - temporary -
-# install new dependencies
-type jq &>/dev/null || {
-  apt-get update
-  apt-get install -y --no-install-recommends jq
-}
-
-# migrate to the new cfg format
-[[ -f "$CONFDIR"/dnsmasq.sh ]] && {
-
-  mv "$CONFDIR"/DDNS_duckDNS.sh "$CONFDIR"/duckDNS.sh
-  mv "$CONFDIR"/DDNS_freeDNS.sh "$CONFDIR"/freeDNS.sh
-  mv "$CONFDIR"/DDNS_no-ip.sh   "$CONFDIR"/no-ip.sh
-  mv "$CONFDIR"/DDNS_spDYN.sh   "$CONFDIR"/spDYN.sh
-
-  for file in "$CONFDIR"/*.sh; do
-          test -f $file || continue
-          app=$(basename $file .sh)
-
-          unset DESC INFO INFOTITLE cfg vars vals
-          source $file
-
-          cfg=$(echo '{}' | jq ".id = \"$app\"")
-
-          cfg=$(jq ".name = \"$app\"" <<<"$cfg")
-
-          cfg=$(jq ".title = \"$app\"" <<<"$cfg")
-
-          cfg=$(jq ".description = \"$DESCRIPTION\"" <<<"$cfg")
-
-          cfg=$(jq ".info = \"$INFO\"" <<<"$cfg")
-
-          cfg=$(jq ".infotitle = \"$INFOTITLE\"" <<<"$cfg")
-
-          cfg=$(jq ".params = []" <<<"$cfg")
-
-          vars=( $( grep "^[[:alpha:]]\+_=" "$file" | cut -d= -f1 | sed 's|_$||' ) )
-          vals=( $( grep "^[[:alpha:]]\+_=" "$file" | cut -d= -f2 ) )
-
-          for i in $( seq 0 1 $(( ${#vars[@]} - 1 )) ); do
-            cfg=$(jq ".params[$i].id = \"${vars[$i]}\"" <<<"$cfg")
-            cfg=$(jq ".params[$i].name = \"${vars[$i]}\"" <<<"$cfg")
-            cfg=$(jq ".params[$i].value = \"${vals[$i]}\"" <<<"$cfg")
-          done
-
-          echo "$cfg" > "$CONFDIR/$app.cfg"
-          rm $file
-  done
-
-  ## NCP LAUNCHER
-  mkdir -p /home/www
-  chown www-data:www-data /home/www
-  chmod 700 /home/www
-
-  cat > /home/www/ncp-launcher.sh <<'EOF'
-#!/bin/bash
-source /usr/local/etc/library.sh
-run_app $1
-EOF
-  chmod 700 /home/www/ncp-launcher.sh
-}
-## TODO migration - end -
-
 cp etc/library.sh /usr/local/etc/
 
 source /usr/local/etc/library.sh
@@ -191,16 +128,6 @@ cp -r ncp-app /var/www/
 
   # docker images only
   [[ -f /.docker-image ]] && {
-
-    # fix dirs
-    [[ -d /data/app ]] && {
-      ncc config:system:set datadirectory --value="/data/nextcloud/data"
-      [[ -d /data/nextcloud ]] && mv /data/nextcloud /data/nextcloud-old
-      mv /data/app /data/nextcloud && \
-        rm -f /var/www/nextcloud && \
-        ln -s /data/nextcloud /var/www/nextcloud
-    }
-
     # shouldn't be present in docker
     rm -f /usr/local/bin/ncp/SYSTEM/nc-zram.sh /usr/local/etc/ncp-config.d/nc-zram.cfg
     :
@@ -208,72 +135,11 @@ cp -r ncp-app /var/www/
 
   # for non docker images
   [[ ! -f /.docker-image ]] && {
-    # re-enable automount
-    is_active_app nc-automount && run_app nc-automount
     :
   }
   
-  # Update cronfile for DDNS_spDYN if existing
-  cd /etc/cron.d
-  [[ -f spdnsupdater ]] && {
-    sed -i "s|.* [* * * *]|*/5 * * * *|" spdnsupdater
-  }
-
-  # update to NC15
+  # update to the latest version
   is_active_app nc-autoupdate-nc && run_app nc-autoupdate-nc
-
-  # install NC app
-  [[ -d /var/www/nextcloud/apps/nextcloudpi ]] || {
-    cp -r /var/www/ncp-app /var/www/nextcloud/apps/nextcloudpi
-    chown -R www-data:     /var/www/nextcloud/apps/nextcloudpi
-    ncc app:enable nextcloudpi
-  }
-
-  # allow private IPv6 addresses
-  cat > /etc/apache2/sites-available/ncp-activation.conf <<EOF
-<VirtualHost _default_:443>
-  DocumentRoot /var/www/ncp-web/
-  SSLEngine on
-  SSLCertificateFile      /etc/ssl/certs/ssl-cert-snakeoil.pem
-  SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
-
-</VirtualHost>
-<Directory /var/www/ncp-web/>
-  <RequireAll>
-
-   <RequireAny>
-      Require host localhost
-      Require local
-      Require ip 192.168
-      Require ip 172
-      Require ip 10
-      Require ip fd00::/8
-   </RequireAny>
-
-  </RequireAll>
-</Directory>
-EOF
-
-  # update nc-backup
-  install_app nc-backup
-  install_app nc-restore
-
-  # add public IP to trusted domains
-  cat > /usr/local/bin/nextcloud-domain.sh <<'EOF'
-#!/bin/bash
-# wicd service finishes before completing DHCP
-while :; do
-  iface="$( ip r | grep "default via" | awk '{ print $5 }' | head -1 )"
-  ip="$( ip a show dev "$iface" | grep global | grep -oP '\d{1,3}(.\d{1,3}){3}' | head -1 )"
-
-  public_ip="$(curl icanhazip.com 2>/dev/null)"
-  [[ "$public_ip" != "" ]] && ncc config:system:set trusted_domains 11 --value="$public_ip"
-
-  [[ "$ip" != "" ]] && break
-  sleep 3
-done
-ncc config:system:set trusted_domains 1 --value=$ip
-EOF
 
   # fix Armbian cron bug
   [[ "$( ls -1 /etc/cron.d/ |  wc -l )" -gt 0 ]] && chmod 644 /etc/cron.d/*
@@ -305,7 +171,7 @@ EOF
   if [[ -d /etc/letsencrypt/archive ]] && [[ "$(ls /etc/letsencrypt/archive/* 2>/dev/null | wc -l )" == "0" ]]; then
     rmdir /etc/letsencrypt/archive
     sleep 3
-    cp -ravT /etc/letsencrypt-old/archive /etc/letsencrypt/archive || true
+    cp -ravT /etc/letsencrypt-old/archive /etc/letsencrypt/archive &>/dev/null || true
     bash -c "sleep 2 && service apache2 reload" &>/dev/null &
   fi
 
