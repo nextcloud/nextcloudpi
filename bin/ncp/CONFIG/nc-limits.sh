@@ -18,12 +18,12 @@ configure()
   AUTOMEM=$(( TOTAL_MEM * 75 / 100 ))
 
   # MAX FILESIZE
-  local CONF=/var/www/nextcloud/.user.ini
+  local CONF=/etc/php/${PHPVER}/fpm/conf.d/90-ncp.ini
   local CURRENT_FILE_SIZE="$( grep "^upload_max_filesize" "$CONF" | sed 's|.*=||' )"
   [[ "$MAXFILESIZE" == "0" ]] && MAXFILESIZE=10G
 
   # MAX PHP MEMORY
-  local CONF=/var/www/nextcloud/.user.ini
+  local CONF=/etc/php/${PHPVER}/fpm/conf.d/90-ncp.ini
   local CURRENT_PHP_MEM="$( grep "^memory_limit" "$CONF" | sed 's|.*=||' )"
   [[ "$MEMORYLIMIT" == "0" ]] && MEMORYLIMIT=$AUTOMEM && echo "Using ${AUTOMEM}B for PHP"
   sed -i "s/^post_max_size=.*/post_max_size=$MAXFILESIZE/"             "$CONF" 

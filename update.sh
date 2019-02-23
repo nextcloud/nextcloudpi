@@ -163,7 +163,7 @@ cp -r ncp-app /var/www/
   # fix LE update bug
   [[ -d /etc/letsencrypt/archive ]] || {
     sleep 3
-    cp -ravT /etc/letsencrypt-old/archive /etc/letsencrypt/archive || true
+    cp -ravT /etc/letsencrypt-old/archive /etc/letsencrypt/archive &>/dev/null || true
     bash -c "sleep 2 && service apache2 reload" &>/dev/null &
   }
 
@@ -205,6 +205,31 @@ EOF
     ncc maintenance:mode --on
     service mysql restart
     ncc maintenance:mode --off
+  }
+
+  # disable .user.ini
+  PHPVER=7.2
+  [[ -f /etc/php/${PHPVER}/fpm/conf.d/90-ncp.ini ]] || {
+    MAXFILESIZE="$(grep upload_max_filesize /var/www/nextcloud/.user.ini | cut -d= -f2)"
+    MEMORYLIMIT="$(grep memory_limit        /var/www/nextcloud/.user.ini | cut -d= -f2)"
+    cat > /etc/php/${PHPVER}/fpm/conf.d/90-ncp.ini <<EOF
+; disable .user.ini files for performance and workaround NC update bugs
+user_ini.filename =
+
+; from Nextcloud .user.ini
+upload_max_filesize=$MAXFILESIZE
+post_max_size=$MAXFILESIZE
+memory_limit=$MEMORYLIMIT
+mbstring.func_overload=0
+always_populate_raw_post_data=-1
+default_charset='UTF-8'
+output_buffering=0
+
+; slow transfers will be killed after this time
+max_execution_time=3600
+max_input_time=3600
+EOF
+    bash -c "sleep 3 && service php$PHPVER-fpm restart" &
   }
 
   # remove redundant opcache configuration. Leave until update bug is fixed -> https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=815968

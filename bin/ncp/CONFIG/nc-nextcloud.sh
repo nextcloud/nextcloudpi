@@ -213,13 +213,23 @@ EOF
   echo "Setting up system..."
 
   ## SET LIMITS
-  sed -i "s/post_max_size=.*/post_max_size=$MAXFILESIZE/"             /var/www/nextcloud/.user.ini 
-  sed -i "s/upload_max_filesize=.*/upload_max_filesize=$MAXFILESIZE/" /var/www/nextcloud/.user.ini 
-  sed -i "s/memory_limit=.*/memory_limit=$MEMORYLIMIT/"               /var/www/nextcloud/.user.ini 
+  cat > /etc/php/${PHPVER}/fpm/conf.d/90-ncp.ini <<EOF
+; disable .user.ini files for performance and workaround NC update bugs
+user_ini.filename =
 
-  # slow transfers will be killed after this time
-  cat >> /var/www/nextcloud/.user.ini <<< "max_execution_time=$MAXTRANSFERTIME"
-  cat >> /var/www/nextcloud/.user.ini <<< "max_input_time=$MAXTRANSFERTIME"
+; from Nextcloud .user.ini
+upload_max_filesize=$MAXFILESIZE
+post_max_size=$MAXFILESIZE
+memory_limit=$MEMORYLIMIT
+mbstring.func_overload=0
+always_populate_raw_post_data=-1
+default_charset='UTF-8'
+output_buffering=0
+
+; slow transfers will be killed after this time
+max_execution_time=$MAXTRANSFERTIME
+max_input_time=$MAXTRANSFERTIME
+EOF
 
   ## SET CRON
   echo "*/15  *  *  *  * php -f /var/www/nextcloud/cron.php" > /tmp/crontab_http
