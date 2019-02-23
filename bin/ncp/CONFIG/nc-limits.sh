@@ -36,9 +36,18 @@ configure()
   [[ $PHPTHREADS -eq 0 ]] && PHPTHREADS=$( nproc )
   [[ $PHPTHREADS -lt 3 ]] && PHPTHREADS=3
   echo "Using $PHPTHREADS PHP threads"
-  sed -i "s|^pm.max_children =.*|pm.max_children = $PHPTHREADS|"           "$CONF"
-  sed -i "s|^pm.max_spare_servers =.*|pm.max_spare_servers = $PHPTHREADS|" "$CONF"
-  sed -i "s|^pm.start_servers =.*|pm.start_servers = $PHPTHREADS|"         "$CONF"
+  sed -i "s|^pm =.*|pm = static|"                                "$CONF"
+  sed -i "s|^pm.max_children =.*|pm.max_children = $PHPTHREADS|" "$CONF"
+
+  # DATABASE MEMORY
+  AUTOMEM=$(( TOTAL_MEM * 40 / 100 ))
+  local CONF=/etc/mysql/mariadb.conf.d/91-ncp.cnf
+  local CURRENT_DB_MEM=$(grep "^innodb_buffer_pool_size" "$CONF" | awk '{ print $3 }')
+  echo "Using $AUTOMEM memory for the database"
+  [[ "$CURRENT_DB_MEM" != "$AUTOMEM" ]] && {
+    sed -i "s|^innodb_buffer_pool_size =.*|innodb_buffer_pool_size = $AUTOMEM|" "$CONF"
+    service mysql restart
+  }
 
   # RESTART PHP
   [[ "$PHPTHREADS"  != "$CURRENT_THREADS"   ]] || \

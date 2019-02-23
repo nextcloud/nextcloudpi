@@ -1,5 +1,9 @@
 
-[v1.7.1](https://github.com/nextcloud/nextcloudpi/commit/a077130) (2019-02-22) lamp: adjust mariadb parameters
+[v1.8.2](https://github.com/nextcloud/nextcloudpi/commit/3315e2e) (2019-02-23) nc-limits: autocalculate database memory
+
+[v1.8.1  ](https://github.com/nextcloud/nextcloudpi/commit/2a0dc38) (2019-02-22) lamp: adjust mariadb parameters
+
+[v1.8.0  ](https://github.com/nextcloud/nextcloudpi/commit/602b3f2) (2019-02-23) add nc-maintenance-mode (#809)
 
 [v1.7.0](https://github.com/nextcloud/nextcloudpi/commit/5e1ea77) (2019-02-17) add nc-restore-snapshot
 
