@@ -1,13 +1,15 @@
 
-[v1.8.3](https://github.com/nextcloud/nextcloudpi/commit/978fb73) (2019-02-23) nc-nextcloud: disable .user.ini
+[v1.9.0](https://github.com/nextcloud/nextcloudpi/commit/6660bf1) (2019-03-03) upgrade to NC15.0.5
 
-[v1.8.2](https://github.com/nextcloud/nextcloudpi/commit/1dfa11a) (2019-02-23) nc-limits: autocalculate database memory
+[v1.8.3  ](https://github.com/nextcloud/nextcloudpi/commit/b2f38db) (2019-02-23) nc-nextcloud: disable .user.ini
+
+[v1.8.2  ](https://github.com/nextcloud/nextcloudpi/commit/1dfa11a) (2019-02-23) nc-limits: autocalculate database memory
 
 [v1.8.1  ](https://github.com/nextcloud/nextcloudpi/commit/2a0dc38) (2019-02-22) lamp: adjust mariadb parameters
 
-[v1.8.0  ](https://github.com/nextcloud/nextcloudpi/commit/602b3f2) (2019-02-23) add nc-maintenance-mode (#809)
+[v1.8.0](https://github.com/nextcloud/nextcloudpi/commit/602b3f2) (2019-02-23) add nc-maintenance-mode (#809)
 
-[v1.7.0](https://github.com/nextcloud/nextcloudpi/commit/5e1ea77) (2019-02-17) add nc-restore-snapshot
+[v1.7.0  ](https://github.com/nextcloud/nextcloudpi/commit/5e1ea77) (2019-02-17) add nc-restore-snapshot
 
 [v1.6.7  ](https://github.com/nextcloud/nextcloudpi/commit/41a48c9) (2019-02-17) nc-backup-auto: notify failures
 
