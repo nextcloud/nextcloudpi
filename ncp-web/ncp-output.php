@@ -8,6 +8,7 @@
 // More at https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/
 ///
 
+ob_start();
 header('Content-Type: text/event-stream; charset=utf-8');
 header('Cache-Control: no-cache'); // recommended to prevent caching of event data.
 

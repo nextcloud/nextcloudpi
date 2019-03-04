@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html class="ng-csp" data-placeholder-focus="false" lang="en">
 <head>
@@ -11,7 +12,6 @@
   <meta http-equiv="pragma" content="no-cache">
   <link rel="icon" type="image/png" href="img/favicon.png"/>
   <link rel="stylesheet" href="CSS.css">
-<?php session_start(); ?>
 </head>
 <body id="body-login">
   <noscript>

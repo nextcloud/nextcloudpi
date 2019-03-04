@@ -1,11 +1,23 @@
-<!--
+<?php
+/*
  NextCloudPi Web Panel frontend
 
  Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
  GPL licensed (see end of file) * Use at your own risk!
 
  More at https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/
--->
+
+**/
+
+// redirect to activation first time
+ob_start();
+exec("a2query -s ncp-activation", $output, $ret);
+if ($ret == 0) {
+  header("Location: activate");
+  exit();
+}
+
+?>
 
 <!DOCTYPE html>
 <html class="ng-csp" data-placeholder-focus="false" lang="en">
@@ -16,14 +28,7 @@
     <meta name="referrer" content="never">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
     <meta name="mobile-web-app-capable" content="yes">
-  <?php
-
-    // redirect to activation first time
-    exec("a2query -s ncp-activation", $output, $ret);
-    if ($ret == 0) {
-      header("Location: activate");
-      exit();
-    }
+<?php
     ini_set('session.cookie_httponly', 1);
     if (isset($_SERVER['HTTPS']))
       ini_set('session.cookie_secure', 1);

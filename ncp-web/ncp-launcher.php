@@ -10,6 +10,7 @@
 
 include ('csrf.php');
 
+ob_start();
 session_start();
 $cfg_dir = '/usr/local/etc/ncp-config.d/';
 $l10nDir = "l10n";
