@@ -62,7 +62,6 @@ apt-get purge -y \
   libexpat1-dev \
   libffi-dev \
   libgcc-6-dev \
-  libgomp1 \
   libisl15 \
   libmpc3 \
   libubsan0 \
