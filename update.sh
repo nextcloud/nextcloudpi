@@ -199,6 +199,7 @@ EOF
   }
 
   # fix LE cron
+  mkdir -p /etc/letsencrypt/live/
   is_active_app letsencrypt && run_app letsencrypt
 
 
