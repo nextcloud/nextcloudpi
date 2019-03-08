@@ -1,15 +1,19 @@
 
-[v1.9.1](https://github.com/nextcloud/nextcloudpi/commit/33663b1) (2019-03-03) fix LE cron
+[v1.9.2](https://github.com/nextcloud/nextcloudpi/commit/8e97067) (2019-03-08) cleanup update.sh
 
-[v1.9.0  ](https://github.com/nextcloud/nextcloudpi/commit/b6a8d63) (2019-03-03) upgrade to NC15.0.5
+[v1.9.1  ](https://github.com/nextcloud/nextcloudpi/commit/060f004) (2019-03-03) fix LE cron
 
-[v1.8.3  ](https://github.com/nextcloud/nextcloudpi/commit/19e5008) (2019-02-23) nc-nextcloud: disable .user.ini
+[v1.9.0  ](https://github.com/nextcloud/nextcloudpi/commit/a9d4775) (2019-03-03) upgrade to NC15.0.5
 
-[v1.8.2  ](https://github.com/nextcloud/nextcloudpi/commit/89d26b4) (2019-02-23) nc-limits: autocalculate database memory
+[v1.8.4  ](https://github.com/nextcloud/nextcloudpi/commit/9c39606) (2019-02-23) nc-nextcloud: disable .user.ini
 
-[v1.8.1  ](https://github.com/nextcloud/nextcloudpi/commit/64fa53d) (2019-02-22) lamp: adjust mariadb parameters
+[v1.8.3  ](https://github.com/nextcloud/nextcloudpi/commit/bf1fc1f) (2019-02-23) nc-limits: autocalculate database memory
 
-[v1.8.0](https://github.com/nextcloud/nextcloudpi/commit/602b3f2) (2019-02-23) add nc-maintenance-mode (#809)
+[v1.8.2  ](https://github.com/nextcloud/nextcloudpi/commit/e39c3ab) (2019-02-22) lamp: adjust mariadb parameters
+
+[v1.8.1  ](https://github.com/nextcloud/nextcloudpi/commit/160e295) (2019-03-05) nc-datadir: Add SATA to description (#822)
+
+[v1.8.0  ](https://github.com/nextcloud/nextcloudpi/commit/602b3f2) (2019-02-23) add nc-maintenance-mode (#809)
 
 [v1.7.0  ](https://github.com/nextcloud/nextcloudpi/commit/5e1ea77) (2019-02-17) add nc-restore-snapshot
 
