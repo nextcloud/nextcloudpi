@@ -14,7 +14,7 @@ set -e
 source buildlib.sh          # initializes $IMGNAME
 
 [[ "$FTPPASS" == "" ]] && {
-  echo -e "\e[1mNo FTPPASS variable found, FTP won't work.\nYou can to cancel now\e[0m"
+  echo -e "\e[1mNo FTPPASS variable found, FTP won't work.\nYou can ^C to cancel now\e[0m"
   sleep 5
 }
 
@@ -25,9 +25,10 @@ IMG="$( ls -1t tmp/*.img | head -1 )"
 
 # Armbian
 ./build-SD-armbian.sh odroidxu4 OdroidHC2
+./build-SD-armbian.sh rockpro64 RockPro64
 ./build-SD-armbian.sh rock64 Rock64
 ./build-SD-armbian.sh bananapi Bananapi
-./build-SD-armbian.sh orangepizeroplus2-h5 OrangePiZeroPlus2
+#./build-SD-armbian.sh orangepizeroplus2-h5 OrangePiZeroPlus2
 
 # VM
 ./build-VM.sh
@@ -37,10 +38,10 @@ make nextcloudpi-x86
 
 # TODO test first
 #&& {
-  #docker push ownyourbits/nextcloudpi-x86 
-  #docker push ownyourbits/nextcloud-x86 
-  #docker push ownyourbits/lamp-x86
-  #docker push ownyourbits/debian-ncp-x86
+  docker push ownyourbits/nextcloudpi-x86
+  docker push ownyourbits/nextcloud-x86 
+  docker push ownyourbits/lamp-x86
+  docker push ownyourbits/debian-ncp-x86
 #}
 
 # Docker armhf
@@ -48,10 +49,10 @@ cp -n /usr/bin/qemu-arm-static docker-armhf && \
 make nextcloudpi-armhf 
 
 # TODO test first && {
-  #docker push ownyourbits/nextcloudpi-armhf
-  #docker push ownyourbits/nextcloud-armhf
-  #docker push ownyourbits/lamp-armhf
-  #docker push ownyourbits/debian-ncp-armhf
+  docker push ownyourbits/nextcloudpi-armhf
+  docker push ownyourbits/nextcloud-armhf
+  docker push ownyourbits/lamp-armhf
+  docker push ownyourbits/debian-ncp-armhf
 #}
 rm -f docker-armhf/qemu-arm-static
 
