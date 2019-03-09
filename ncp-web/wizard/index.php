@@ -1,3 +1,29 @@
+<?php 
+/*
+ NextCloudPi Wizard
+
+ Copyleft 2017 by Pantelis Sarantos and Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
+ GPL licensed (see end of file) * Use at your own risk!
+
+ More at https://nextcloudpi.com
+
+**/
+
+    ini_set('session.cookie_httponly', 1);
+    if ( isset($_SERVER['HTTPS']) )
+      ini_set('session.cookie_secure', 1);
+
+    session_start();
+
+    // security headers
+    header("Content-Security-Policy: default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self'; object-src 'self';");
+    header("X-XSS-Protection: 1; mode=block");
+    header("X-Content-Type-Options: nosniff");
+    header("X-Robots-Tag: none");
+    header("X-Permitted-Cross-Domain-Policies: none");
+    header("X-Frame-Options: DENY");
+    header("Cache-Control: max-age=15778463");
+?>
 <!DOCTYPE html>
 <html>
 	<head>
@@ -7,22 +33,6 @@
 		<!-- Bootstrap -->
 		<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
 		<link href="CSS/wizard.css" rel="stylesheet">
-        <?php 
-            session_start();
-
-            ini_set('session.cookie_httponly', 1);
-            if ( isset($_SERVER['HTTPS']) )
-              ini_set('session.cookie_secure', 1);
-
-            // security headers
-            header("Content-Security-Policy: default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self'; object-src 'self';");
-            header("X-XSS-Protection: 1; mode=block");
-            header("X-Content-Type-Options: nosniff");
-            header("X-Robots-Tag: none");
-            header("X-Permitted-Cross-Domain-Policies: none");
-            header("X-Frame-Options: DENY");
-            header("Cache-Control: max-age=15778463");
-        ?>
         <link rel="icon" type="image/png" href="../img/favicon.png" />
 	</head>
 <body>

@@ -1,5 +1,7 @@
 
-[v1.9.2](https://github.com/nextcloud/nextcloudpi/commit/8e97067) (2019-03-08) cleanup update.sh
+[v1.9.3](https://github.com/nextcloud/nextcloudpi/commit/94bdbc3) (2019-03-09) wizard: fix headers
+
+[v1.9.2](https://github.com/nextcloud/nextcloudpi/commit/1a46667) (2019-03-08) cleanup update.sh
 
 [v1.9.1  ](https://github.com/nextcloud/nextcloudpi/commit/060f004) (2019-03-03) fix LE cron
 
