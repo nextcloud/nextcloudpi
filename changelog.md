@@ -1,7 +1,9 @@
 
-[v1.9.4](https://github.com/nextcloud/nextcloudpi/commit/97fe6a9) (2019-03-09) unattended upgrades: update labels
+[v1.9.5](https://github.com/nextcloud/nextcloudpi/commit/bf794ec) (2019-03-09) nc-init: previews settings
 
-[v1.9.3](https://github.com/nextcloud/nextcloudpi/commit/f5ba0b1) (2019-03-09) wizard: fix headers
+[v1.9.4](https://github.com/nextcloud/nextcloudpi/commit/c40c430) (2019-03-09) unattended upgrades: update labels
+
+[v1.9.3  ](https://github.com/nextcloud/nextcloudpi/commit/f5ba0b1) (2019-03-09) wizard: fix headers
 
 [v1.9.2  ](https://github.com/nextcloud/nextcloudpi/commit/1a46667) (2019-03-08) cleanup update.sh
 
