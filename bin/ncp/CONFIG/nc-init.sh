@@ -70,12 +70,12 @@ EOF
 
   cd /var/www/nextcloud/
   rm -f config/config.php
-  sudo -u www-data php occ maintenance:install --database \
+  ncc maintenance:install --database \
     "mysql" --database-name "nextcloud"  --database-user "$DBADMIN" --database-pass \
     "$DBPASSWD" --admin-user "$ADMINUSER" --admin-pass "$ADMINPASS"
 
   # cron jobs
-  sudo -u www-data php occ background:cron
+  ncc background:cron
 
   # redis cache
   sed -i '$d' config/config.php
@@ -96,28 +96,28 @@ EOF
   local UPLOADTMPDIR=/var/www/nextcloud/data/tmp
   mkdir -p "$UPLOADTMPDIR"
   chown www-data:www-data "$UPLOADTMPDIR"
-  sudo -u www-data php occ config:system:set tempdirectory --value "$UPLOADTMPDIR"
+  ncc config:system:set tempdirectory --value "$UPLOADTMPDIR"
   sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $UPLOADTMPDIR|" /etc/php/${PHPVER}/cli/php.ini
   sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $UPLOADTMPDIR|" /etc/php/${PHPVER}/fpm/php.ini
   sed -i "s|^;\?sys_temp_dir =.*$|sys_temp_dir = $UPLOADTMPDIR|"     /etc/php/${PHPVER}/fpm/php.ini
 
   # 4 Byte UTF8 support
-  sudo -u www-data php occ config:system:set mysql.utf8mb4 --type boolean --value="true"
+  ncc config:system:set mysql.utf8mb4 --type boolean --value="true"
 
   # Default trusted domain ( only from ncp-config )
   test -f /usr/local/bin/nextcloud-domain.sh && {
     test -f /.ncp-image || bash /usr/local/bin/nextcloud-domain.sh
   }
-  sudo -u www-data php occ config:system:set trusted_domains 5 --value="nextcloudpi.local"
+  ncc config:system:set trusted_domains 5 --value="nextcloudpi.local"
   # trusted_domains 6 used by docker
-  sudo -u www-data php occ config:system:set trusted_domains 7 --value="nextcloudpi"
-  sudo -u www-data php occ config:system:set trusted_domains 8 --value="nextcloudpi.lan"
+  ncc config:system:set trusted_domains 7 --value="nextcloudpi"
+  ncc config:system:set trusted_domains 8 --value="nextcloudpi.lan"
 
   # email
-  sudo -u www-data php occ config:system:set mail_smtpmode     --value="sendmail"
-  sudo -u www-data php occ config:system:set mail_smtpauthtype --value="LOGIN"
-  sudo -u www-data php occ config:system:set mail_from_address --value="admin"
-  sudo -u www-data php occ config:system:set mail_domain       --value="ownyourbits.com"
+  ncc config:system:set mail_smtpmode     --value="sendmail"
+  ncc config:system:set mail_smtpauthtype --value="LOGIN"
+  ncc config:system:set mail_from_address --value="admin"
+  ncc config:system:set mail_domain       --value="ownyourbits.com"
 
   # NCP theme
   [[ -e /usr/local/etc/logo ]] && {
@@ -139,28 +139,34 @@ EOF
   # NCP app
   cp -r /var/www/ncp-app /var/www/nextcloud/apps/nextcloudpi
   chown -R www-data:     /var/www/nextcloud/apps/nextcloudpi
-  sudo -u www-data php /var/www/nextcloud/occ app:enable nextcloudpi
+  ncc app:enable nextcloudpi
 
   # enable some apps by default
-  sudo -u www-data php /var/www/nextcloud/occ app:install calendar
-  sudo -u www-data php /var/www/nextcloud/occ app:install contacts
-  sudo -u www-data php /var/www/nextcloud/occ app:install notes
-  sudo -u www-data php /var/www/nextcloud/occ app:install tasks
-  sudo -u www-data php /var/www/nextcloud/occ app:install news
-  sudo -u www-data php /var/www/nextcloud/occ app:install previewgenerator
+  ncc app:install calendar
+  ncc app:install contacts
+  ncc app:install notes
+  ncc app:install tasks
+  ncc app:install news
+  ncc app:install previewgenerator
 
-  sudo -u www-data php /var/www/nextcloud/occ app:enable calendar
-  sudo -u www-data php /var/www/nextcloud/occ app:enable contacts
-  sudo -u www-data php /var/www/nextcloud/occ app:enable notes
-  sudo -u www-data php /var/www/nextcloud/occ app:enable tasks
-  sudo -u www-data php /var/www/nextcloud/occ app:enable news
-  sudo -u www-data php /var/www/nextcloud/occ app:enable previewgenerator
+  ncc app:enable calendar
+  ncc app:enable contacts
+  ncc app:enable notes
+  ncc app:enable tasks
+  ncc app:enable news
+  ncc app:enable previewgenerator
+
+  # previews
+  ncc config:app:set previewgenerator squareSizes --value="32"
+  ncc config:app:set previewgenerator widthSizes  --value="128 256 512"
+  ncc config:app:set previewgenerator heightSizes --value="128 256"
+  ncc config:system:set jpeg_quality --value 60
 
   # other
-  sudo -u www-data php /var/www/nextcloud/occ config:system:set overwriteprotocol --value=https
+  ncc config:system:set overwriteprotocol --value=https
 
   # TODO temporary workaround for https://github.com/nextcloud/server/pull/13358
-  sudo -u www-data php /var/www/nextcloud/occ -n db:convert-filecache-bigint
+  ncc -n db:convert-filecache-bigint
 
   echo "NC init done"
 }

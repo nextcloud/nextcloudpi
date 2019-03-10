@@ -198,6 +198,12 @@ EOF
     bash -c "sleep 3 && service php$PHPVER-fpm restart" &
   }
 
+  # previews settings
+  ncc config:app:set previewgenerator squareSizes --value="32"
+  ncc config:app:set previewgenerator widthSizes  --value="128 256 512"
+  ncc config:app:set previewgenerator heightSizes --value="128 256"
+  ncc config:system:set jpeg_quality --value 60
+
   # update unattended labels
   is_active_app unattended-upgrades && run_app unattended-upgrades
 
