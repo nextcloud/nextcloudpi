@@ -92,13 +92,13 @@ if [[ $( ls "$TMPDIR" | wc -l ) -eq $NUMFILES ]]; then
   DATADIR=$( grep datadirectory "$NCDIR"/config/config.php | awk '{ print $3 }' | grep -oP "[^']*[^']" | head -1 ) 
   [[ "$DATADIR" == "" ]] && { echo "Error reading data directory"; exit 1; }
 
-  echo "restore datadir to $DATADIR..."
-
   [[ -e "$DATADIR" ]] && { 
     echo "backing up existing $DATADIR to $DATADIR-$( date "+%m-%d-%y" )..."
     mv "$DATADIR" "$DATADIR-$( date "+%m-%d-%y" )" || exit 1
   }
 
+  echo "restore datadir to $DATADIR..."
+  
   mkdir -p "$DATADIR"
   [[ "$( stat -fc%T "$DATADIR" )" == "btrfs" ]] && {
     rmdir "$DATADIR"                  || exit 1
