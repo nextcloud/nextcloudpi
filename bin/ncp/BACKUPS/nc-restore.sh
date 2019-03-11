@@ -95,7 +95,7 @@ if [[ $( ls "$TMPDIR" | wc -l ) -eq $NUMFILES ]]; then
   echo "restore datadir to $DATADIR..."
 
   [[ -e "$DATADIR" ]] && { 
-    echo "backing up existing $DATADIR"
+    echo "backing up existing $DATADIR to $DATADIR-$( date "+%m-%d-%y" )..."
     mv "$DATADIR" "$DATADIR-$( date "+%m-%d-%y" )" || exit 1
   }
 
