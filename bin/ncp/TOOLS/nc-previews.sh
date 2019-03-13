@@ -11,7 +11,21 @@
 
 configure()
 {
-  sudo -u www-data php /var/www/nextcloud/occ preview:generate-all
+  [[ "$CLEAN" == "yes" ]] && {
+    local datadir
+    datadir=$( ncc config:system:get datadirectory ) || {
+      echo "data dir not found";
+      return 1;
+    }
+
+    rm -r "$datadir"/appdata_*/preview/* &>/dev/null
+    mysql nextcloud <<<"delete from oc_filecache where path like \"appdata_%/preview/%\""
+    ncc files:scan-app-data -n
+  }
+
+  [[ "$INCREMENTAL" == "yes" ]] && { ncc preview:pre-generate -n -vvv; return $?; }
+
+  ncc preview:generate-all -n -v -p "$PATH1"
 }
 
 install() { :; }
