@@ -1,7 +1,15 @@
 
-[v1.9.5](https://github.com/nextcloud/nextcloudpi/commit/bf794ec) (2019-03-09) nc-init: previews settings
+[v1.10.0](https://github.com/nextcloud/nextcloudpi/commit/b00c5f1) (2019-03-13) add nc-previews-auto
 
-[v1.9.4](https://github.com/nextcloud/nextcloudpi/commit/c40c430) (2019-03-09) unattended upgrades: update labels
+[v1.9.8  ](https://github.com/nextcloud/nextcloudpi/commit/d7bbe25) (2019-03-13) nc-scan: improvements
+
+[v1.9.7  ](https://github.com/nextcloud/nextcloudpi/commit/e03b095) (2019-03-13) nc-previews: improvements
+
+[v1.9.6  ](https://github.com/nextcloud/nextcloudpi/commit/ccb6fc1) (2019-03-13) nc-scan-auto: improvements
+
+[v1.9.5  ](https://github.com/nextcloud/nextcloudpi/commit/89cc042) (2019-03-09) nc-init: previews settings
+
+[v1.9.4  ](https://github.com/nextcloud/nextcloudpi/commit/0c95243) (2019-03-09) unattended upgrades: update labels
 
 [v1.9.3  ](https://github.com/nextcloud/nextcloudpi/commit/f5ba0b1) (2019-03-09) wizard: fix headers
 
