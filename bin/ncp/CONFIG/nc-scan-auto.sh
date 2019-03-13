@@ -20,19 +20,35 @@ configure()
   }
 
   # set crontab
-  local DAYS HOURS MINS
-  DAYS=$(( SCANINTERVAL / 1440 ))
-  if [[ "$DAYS" != "0" ]]; then 
-    DAYS="*/$DAYS" HOUR="1" MINS="15"
+  local days hour mins
+  days=$(( SCANINTERVAL / 1440 ))
+  if [[ "$days" != "0" ]]; then
+    days="*/$days" hour="1" mins="15"
   else
-    DAYS="*" 
-    HOUR=$(( SCANINTERVAL / 60   ))
-    MINS=$(( SCANINTERVAL % 60   ))
-    MINS="*/$MINS"
-    [[ $HOUR == 0 ]] && HOUR="*" || { HOUR="*/$HOUR" MINS="15"; }
+    days="*"
+    hour=$(( SCANINTERVAL / 60   ))
+    mins=$(( SCANINTERVAL % 60   ))
+    mins="*/$mins"
+    [[ $hour == 0 ]] && hour="*" || { hour="*/$hour" mins="15"; }
   fi
 
-  echo "${MINS}  ${HOUR}  ${DAYS}  *  *  root /usr/local/bin/ncp-scan" > /etc/cron.d/ncp-scan-auto
+  cat > /usr/local/bin/ncp-scan-auto <<EOF
+#!/bin/bash
+(
+
+  echo -e "\n[ nc-scan-auto ]"
+
+  [[ "$PATH1" != "" ]] && ncc files:scan -n -v -p "$PATH1"
+  [[ "$PATH2" != "" ]] && ncc files:scan -n -v -p "$PATH2"
+  [[ "$PATH3" != "" ]] && ncc files:scan -n -v -p "$PATH3"
+
+  [[ "${PATH1}${PATH2}${PATH3}" == "" ]] && ncc files:scan -n -v --all
+
+) 2>&1 >>/var/log/ncp.log
+EOF
+chmod +x /usr/local/bin/ncp-scan-auto
+
+  echo "${mins}  ${hour}  ${days}  *  *  root /usr/local/bin/ncp-scan-auto" > /etc/cron.d/ncp-scan-auto
   chmod 644 /etc/cron.d/ncp-scan-auto
   service cron restart
 
