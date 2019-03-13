@@ -329,8 +329,9 @@ function upload_ftp()
 {
   local IMGNAME="$1"
   echo -e "\n\e[1m[ Upload FTP ]\e[0m"
+  echo "* $IMGNAME..."
   [[ -f torrent/"$IMGNAME"/"$IMGNAME".tar.bz2 ]] || { echo "No image file found, abort"; return 1; }
-  [[ "$FTPPASS" == "" ]] && { echo "No FTPPASS variable found, abort"; return 1; }
+  [[ "$FTPPASS" == "" ]] && { echo "No FTPPASS variable found, abort"; return 0; }
 
   cd torrent
 

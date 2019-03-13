@@ -9,6 +9,8 @@ NextCloudPi is a ready to use image for Raspberry Pi, Odroid HC1, rock64 and oth
 
 This code also generates the NextCloudPi docker images for [ARM](https://hub.docker.com/r/ownyourbits/nextcloudpi-armhf) and [x86](https://hub.docker.com/r/ownyourbits/nextcloudpi-x86) platforms, and includes an installer for any Debian based system.
 
+Find the full documentation at [docs.nextcloudpi.com](http://docs.nextcloudpi.com)
+
 ## Features
 
  * Debian/Raspbian 9 stretch
@@ -116,7 +118,7 @@ https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/
 
 Pull the docker image
 
-https://ownyourbits.com/2017/06/08/nextcloudpi-docker-for-raspberry-pi/
+https://nextcloudpi.com
 
 https://hub.docker.com/r/ownyourbits/nextcloudpi-x86
 
