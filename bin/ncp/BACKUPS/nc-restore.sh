@@ -45,7 +45,7 @@ echo "extracting backup file $BACKUPFILE..."
 # CHECK FREE SPACE IN $TMPDIR
 
 echo "check free space..." # allow at least ~100 extra MiB
-extractedsize=$(tar $compress_arg -tvf "$BACKUPFILE" | awk '{s+=$3} END{print (s/1024)}') # Size of extracted files in "KB"
+extractedsize=$(tar $compress_arg -tvf "$BACKUPFILE" | awk '{s+=$3} END{print (s/1024)}') # Size of extracted files in KB
 size=$(($extractedsize + 100*1024))
 free=$( df "$TMPDIR" | tail -1 | awk '{ print $4 }' )
 [ $size -ge $free ] && {
