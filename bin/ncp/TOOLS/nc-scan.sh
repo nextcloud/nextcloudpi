@@ -11,17 +11,28 @@
 
 install() 
 { 
-  cat > /usr/local/bin/ncp-scan <<EOF
+  cat > /usr/local/bin/ncp-scan <<'EOF'
 #!/bin/bash
-cd /var/www/nextcloud
-sudo -u www-data php occ files:scan --all
+ncc files:scan -n -v --all
 EOF
   chmod +x /usr/local/bin/ncp-scan
 }
 
 configure() 
 {
-  /usr/local/bin/ncp-scan
+  [[ "$RECURSIVE"   == no  ]] && local recursive=--shallow
+  [[ "$NONEXTERNAL" == yes ]] && local non_external=--home-only
+
+  [[ "$PATH1" != "" ]] && \
+    ncc files:scan -n -v $recursive $non_external -p "$PATH1"
+
+  [[ "$PATH2" != "" ]] && \
+    ncc files:scan -n -v $recursive $non_external -p "$PATH2"
+
+  [[ "$PATH3" != "" ]] && \
+    ncc files:scan -n -v $recursive $non_external -p "$PATH3"
+
+  [[ "${PATH1}${PATH2}${PATH3}" == "" ]] && ncc files:scan -n -v --all
 }
 
 # License
