@@ -8,21 +8,27 @@
 # More at: https://ownyourbits.com
 #
 
-cronfile=/etc/cron.daily/ncp-autoupdate-apps
-
 configure() 
 {
+  local cronfile=/etc/cron.daily/ncp-autoupdate-apps
+
   [[ "$ACTIVE" != "yes" ]] && { 
     rm -f "$cronfile"
     echo "automatic app updates disabled"
     return 0
   }
 
-  cat > "$cronfile" <<'EOF'
+  cat > "$cronfile" <<EOF
 #!/bin/bash
-echo "[ nc-update-nc-apps-auto ]" >> /var/log/ncp.log
-echo "checking for updates..."    >> /var/log/ncp.log
-ncc app:update --all -n           >> /var/log/ncp.log
+OUT="\$(
+echo "[ nc-update-nc-apps-auto ]"
+echo "checking for updates..."
+ncc app:update --all -n
+)"
+echo "\$OUT" >> /var/log/ncp.log
+
+APPS=\$( echo "\$OUT" | grep 'updated\$' | awk '{ print \$1 }')
+ncc notification:generate "$USER" "Apps updated" -l "\$APPS"
 EOF
   chmod 755 "$cronfile"
   echo "automatic app updates enabled"

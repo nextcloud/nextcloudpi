@@ -1,5 +1,7 @@
 
-[v1.10.0](https://github.com/nextcloud/nextcloudpi/commit/b00c5f1) (2019-03-13) add nc-previews-auto
+[v1.10.1](https://github.com/nextcloud/nextcloudpi/commit/9003eb0) (2019-03-13) nc-update-nc-apps-auto: notify user
+
+[v1.10.0 ](https://github.com/nextcloud/nextcloudpi/commit/06073ed) (2019-03-13) add nc-previews-auto
 
 [v1.9.8  ](https://github.com/nextcloud/nextcloudpi/commit/d7bbe25) (2019-03-13) nc-scan: improvements
 

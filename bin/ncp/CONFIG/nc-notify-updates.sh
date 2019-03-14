@@ -43,7 +43,7 @@ echo "Found update from \$( cat \$VERFILE ) to \$( cat \$LATEST ). Sending notif
 IFACE=\$( ip r | grep "default via" | awk '{ print \$5 }' | head -1 )
 IP=\$( ip a show dev "\$IFACE" | grep global | grep -oP '\d{1,3}(\.\d{1,3}){3}' | head -1 )
 
-sudo -u www-data php /var/www/nextcloud/occ notification:generate \
+ncc notification:generate \
   $USER "NextCloudPi update" \
      -l "Update from \$( cat \$VERFILE ) to \$( cat \$LATEST ) is available. Update from https://\$IP:4443"
 
@@ -74,7 +74,7 @@ sed -i 's|INFO Packages that will be upgraded:|INFO Packages that will be upgrad
 echo -e "Packages automatically upgraded: \$PKGS\\n"
 
 # notify
-sudo -u www-data php /var/www/nextcloud/occ notification:generate \
+ncc notification:generate \
   $USER "NextCloudPi Unattended Upgrades" \
      -l "Packages automatically upgraded \$PKGS"
 EOF
