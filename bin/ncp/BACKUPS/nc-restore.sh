@@ -37,22 +37,20 @@ cleanup(){  local RET=$?; echo "Cleanup..."; rm -rf "${TMPDIR}"; trap "" EXIT; e
 trap cleanup INT TERM HUP ERR EXIT
 rm -rf "$TMPDIR" && mkdir -p "$TMPDIR"
 
-# EXTRACT FILES
-echo "extracting backup file $BACKUPFILE..."
-
 [[ "$BACKUPFILE" =~ ".tar.gz" ]] && compress_arg="-I pigz"
 
 # CHECK FREE SPACE IN $TMPDIR
-
 echo "check free space..." # allow at least ~100 extra MiB
-extractedsize=$(tar $compress_arg -tvf "$BACKUPFILE" | awk '{s+=$3} END{print (s/1024)}') # Size of extracted files in KB
+extractedsize=$(tar $compress_arg -tvf "$BACKUPFILE" | awk '{s+=$3} END{printf "%.0f", (s/1024)}') # Size of extracted files in "KB"
 size=$(($extractedsize + 100*1024))
 free=$( df "$TMPDIR" | tail -1 | awk '{ print $4 }' )
 [ $size -ge $free ] && {
-  echo "free space check failed. Need $size Bytes in $TMPDIR";
+  echo "free space check failed. Need $size KB in $TMPDIR";
   exit 1;
 }
 
+# EXTRACT FILES
+echo "extracting backup file $BACKUPFILE..."
 tar $compress_arg -xf "$BACKUPFILE" -C "$TMPDIR" || exit 1
 
 ## SANITY CHECKS
