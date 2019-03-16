@@ -7,9 +7,6 @@
 #
 
 
-UPDATEURL=https://freedns.afraid.org/dynamic/update.php
-URL="${UPDATEURL}?${UPDATEHASH}"
-
 install()
 {
   apt-get update
@@ -18,6 +15,9 @@ install()
 
 configure() 
 {
+  local updateurl=https://freedns.afraid.org/dynamic/update.php
+  local url="${updateurl}?${UPDATEHASH}"
+
   [[ $ACTIVE != "yes" ]] && { 
     rm -f /etc/cron.d/freeDNS
     service cron restart
@@ -28,11 +28,11 @@ configure()
   cat > /usr/local/bin/freedns.sh <<EOF
 #!/bin/bash
 echo "FreeDNS client started"
-echo "${URL}"
-registeredIP=$(dig +short "$DOMAIN"|tail -n1)
+echo "${url}"
+registeredIP=\$(dig +short "$DOMAIN"|tail -n1)
 currentIP=\$(wget -q -O - http://checkip.dyndns.org|sed s/[^0-9.]//g)
     [ "\$currentIP" != "\$registeredIP" ] && {
-        wget -q -O /dev/null ${URL}
+        wget -q -O /dev/null ${url}
   }
 echo "Registered IP: \$registeredIP | Current IP: \$currentIP"
 EOF

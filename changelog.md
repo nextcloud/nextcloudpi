@@ -1,5 +1,7 @@
 
-[v1.10.1](https://github.com/nextcloud/nextcloudpi/commit/9003eb0) (2019-03-13) nc-update-nc-apps-auto: notify user
+[v1.10.2](https://github.com/nextcloud/nextcloudpi/commit/f7baed0) (2019-03-16) freeDNS: fix hash
+
+[v1.10.1](https://github.com/nextcloud/nextcloudpi/commit/311ccc7) (2019-03-13) nc-update-nc-apps-auto: notify user
 
 [v1.10.0 ](https://github.com/nextcloud/nextcloudpi/commit/06073ed) (2019-03-13) add nc-previews-auto
 
