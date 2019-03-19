@@ -27,6 +27,8 @@ nc-init
 UFW
 nc-snapshot
 nc-snapshot-auto
+nc-snapshot-sync
+nc-restore-snapshot
 nc-audit
 nc-hdd-monitor
 nc-zram

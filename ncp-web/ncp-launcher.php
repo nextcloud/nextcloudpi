@@ -137,6 +137,21 @@ else if ( $_POST['action'] == "info" )
 }
 
 //
+// backups
+//
+else if ( $_POST['action'] == "backups" )
+{
+  ob_start();
+  include('backups.php');
+  $backups_page = ob_get_clean();
+
+  // return JSON
+  echo '{ "token": "' . getCSRFToken() . '",';               // Get new token
+  echo ' "output": '      . json_encode($backups_page) . ' , ';
+  echo ' "ret": "0" }';
+}
+
+//
 // sidebar
 //
 else if ( $_POST['action'] == "sidebar" )
@@ -169,6 +184,34 @@ else if ( $_POST['action'] == "path-exists" )
     $ret = 0;
   else
     $ret = 1;
+
+  // return JSON
+  echo '{ "token": "' . getCSRFToken() . '",';               // Get new token
+  echo ' "ret": "'    . $ret           . '" }';
+}
+
+//
+// del backup
+//
+else if ( $_POST['action'] == "del-bkp" )
+{
+  $file = escapeshellarg($_POST['value']);
+  $ret = 1;
+  exec("sudo /home/www/ncp-backup-launcher.sh del \"$file\"", $out, $ret);
+
+  // return JSON
+  echo '{ "token": "' . getCSRFToken() . '",';               // Get new token
+  echo ' "ret": "'    . $ret           . '" }';
+}
+
+//
+// del snapshot
+//
+else if ( $_POST['action'] == "del-bkp" )
+{
+  $file = escapeshellarg($_POST['value']);
+  $ret = 1;
+  exec("sudo /home/www/ncp-backup-launcher.sh delsnp \"$file\"", $out, $ret);
 
   // return JSON
   echo '{ "token": "' . getCSRFToken() . '",';               // Get new token

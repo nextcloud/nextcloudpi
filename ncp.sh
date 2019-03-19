@@ -22,7 +22,7 @@ install()
 {
   # NCP-CONFIG
   apt-get update
-  $APTINSTALL git dialog whiptail jq
+  $APTINSTALL git dialog whiptail jq file
   mkdir -p "$CONFDIR" "$BINDIR"
 
   # include option in raspi-config (only Raspbian)
@@ -135,7 +135,33 @@ source /usr/local/etc/library.sh
 run_app $1
 EOF
   chmod 700 /home/www/ncp-launcher.sh
-  echo "www-data ALL = NOPASSWD: /home/www/ncp-launcher.sh , /sbin/halt, /sbin/reboot" >> /etc/sudoers
+
+  cat > /home/www/ncp-backup-launcher.sh <<'EOF'
+#!/bin/bash
+action="${1}"
+file="${2}"
+compressed="${3}"
+[[ "$file" =~ ".." ]] && exit 1
+[[ "${action}" == "chksnp" ]] && {
+  btrfs subvolume show "$file" &>/dev/null || exit 1
+  exit
+}
+[[ "${action}" == "delsnp" ]] && {
+  btrfs subvolume delete "$file" || exit 1
+  exit
+}
+[[ -f "$file" ]] || exit 1
+[[ "$file" =~ ".tar" ]] || exit 1
+[[ "${action}" == "del" ]] && {
+  [[ "$(file "$file")" =~ "tar archive" ]] || [[ "$(file "$file")" =~ "gzip compressed data" ]] || exit 1
+  rm "$file"
+  exit
+}
+[[ "$compressed" != "" ]] && pigz="-I pigz"
+tar $pigz -tf "$file" data &>/dev/null
+EOF
+  chmod 700 /home/www/ncp-backup-launcher.sh
+  echo "www-data ALL = NOPASSWD: /home/www/ncp-launcher.sh , /home/www/ncp-backup-launcher.sh, /sbin/halt, /sbin/reboot" >> /etc/sudoers
 
   # NCP AUTO TRUSTED DOMAIN
   mkdir -p /usr/lib/systemd/system
