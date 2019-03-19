@@ -146,10 +146,10 @@ done
 
 # copy data if it was at the default location
 ####################
-[[ "$DATADIR" == "$BASEDIR/nextcloud/data" ]] && {
+if [[ "$DATADIR" == "/var/www/nextcloud/data" ]] || [[ "$DATADIR" == "/data/nextcloud/data" ]]; then
   echo "Restore data..."
   mv -T nextcloud-old/data nextcloud/data
-}
+fi
 
 # nc-restore if anything fails from here
 ####################
