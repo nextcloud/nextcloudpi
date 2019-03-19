@@ -1,5 +1,7 @@
 
-[v1.10.3](https://github.com/nextcloud/nextcloudpi/commit/925cf31) (2019-03-18) nc-update-nc: fix case where imported cfg from non docker to docker
+[v1.10.4](https://github.com/nextcloud/nextcloudpi/commit/5675383) (2019-03-18) nc-update-nc-apps-auto: only notify if there was update
+
+[v1.10.3](https://github.com/nextcloud/nextcloudpi/commit/4b6572a) (2019-03-18) nc-update-nc: fix case where imported cfg from non docker to docker
 
 [v1.10.2 ](https://github.com/nextcloud/nextcloudpi/commit/ec66e40) (2019-03-16) freeDNS: fix hash
 

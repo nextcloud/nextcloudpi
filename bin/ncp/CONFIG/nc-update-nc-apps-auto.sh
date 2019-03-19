@@ -28,7 +28,7 @@ ncc app:update --all -n
 echo "\$OUT" >> /var/log/ncp.log
 
 APPS=\$( echo "\$OUT" | grep 'updated\$' | awk '{ print \$1 }')
-ncc notification:generate "$USER" "Apps updated" -l "\$APPS"
+[[ "\$APPS" != "" ]] && ncc notification:generate "$USER" "Apps updated" -l "\$APPS"
 EOF
   chmod 755 "$cronfile"
   echo "automatic app updates enabled"
