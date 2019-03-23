@@ -66,11 +66,7 @@ configure()
 #!/bin/bash
 
 # renew and notify
-$letsencrypt renew --quiet --deploy-hook '
-  ncc notification:generate \
-    $NOTIFYUSER "SSL renewal" \
-    -l "Your SSL certificate(s) \$RENEWED_DOMAINS has been renewed for another 90 days"
-  '
+$letsencrypt renew --quiet
 
 # notify if fails
 [[ \$? -ne 0 ]] && ncc notification:generate \
@@ -81,6 +77,14 @@ $letsencrypt renew --quiet --deploy-hook '
 rm -rf $ncdir/.well-known
 EOF
     chmod 755 /etc/cron.weekly/letsencrypt-ncp
+
+    cat > /etc/letsencrypt/renewal-hooks/deploy/ncp <<EOF
+#!/bin/bash
+/usr/local/bin/ncc notification:generate \
+  $NOTIFYUSER "SSL renewal" \
+  -l "Your SSL certificate(s) \$RENEWED_DOMAINS has been renewed for another 90 days"
+EOF
+    chmod +x /etc/letsencrypt/renewal-hooks/deploy/ncp
 
     # Configure Apache
     sed -i "s|SSLCertificateFile.*|SSLCertificateFile /etc/letsencrypt/live/$DOMAIN_LOWERCASE/fullchain.pem|" $vhostcfg

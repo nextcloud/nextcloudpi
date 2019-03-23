@@ -218,6 +218,15 @@ EOF
   is_active_app nc-previews-auto && run_app nc-previews-auto
   is_active_app nc-update-nc-apps-auto && run_app nc-update-nc-apps-auto
 
+  # rework letsencrypt notification
+  USER="$(jq -r '.params[2].value' "$CONFDIR"/letsencrypt.cfg)"
+  cat > /etc/letsencrypt/renewal-hooks/deploy/ncp <<EOF
+#!/bin/bash
+/usr/local/bin/ncc notification:generate $USER "SSL renewal" -l "Your SSL certificate(s) \$RENEWED_DOMAINS has been renewed for another 90 days"
+EOF
+  chmod +x /etc/letsencrypt/renewal-hooks/deploy/ncp
+
+
   # remove redundant opcache configuration. Leave until update bug is fixed -> https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=815968
   # Bug #416 reappeared after we moved to php7.2 and debian buster packages. (keep last)
   [[ "$( ls -l /etc/php/7.2/fpm/conf.d/*-opcache.ini |  wc -l )" -gt 1 ]] && rm "$( ls /etc/php/7.2/fpm/conf.d/*-opcache.ini | tail -1 )"
