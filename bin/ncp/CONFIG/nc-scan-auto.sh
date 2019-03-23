@@ -38,11 +38,11 @@ configure()
 
   echo -e "\n[ nc-scan-auto ]"
 
-  [[ "$PATH1" != "" ]] && ncc files:scan -n -v -p "$PATH1"
-  [[ "$PATH2" != "" ]] && ncc files:scan -n -v -p "$PATH2"
-  [[ "$PATH3" != "" ]] && ncc files:scan -n -v -p "$PATH3"
+  [[ "$PATH1" != "" ]] && /usr/local/bin/ncc files:scan -n -v -p "$PATH1"
+  [[ "$PATH2" != "" ]] && /usr/local/bin/ncc files:scan -n -v -p "$PATH2"
+  [[ "$PATH3" != "" ]] && /usr/local/bin/ncc files:scan -n -v -p "$PATH3"
 
-  [[ "${PATH1}${PATH2}${PATH3}" == "" ]] && ncc files:scan -n -v --all
+  [[ "${PATH1}${PATH2}${PATH3}" == "" ]] && /usr/local/bin/ncc files:scan -n -v --all
 
 ) 2>&1 >>/var/log/ncp.log
 EOF

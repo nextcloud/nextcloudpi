@@ -210,6 +210,14 @@ EOF
   # update sury keys
   wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
 
+  # fix cron path
+  is_active_app nc-backup-auto && run_app nc-backup-auto
+  is_active_app nc-scan-auto && run_app nc-scan-auto
+  is_active_app nc-autoupdate-ncp && run_app nc-autoupdate-ncp
+  is_active_app nc-notify-updates && run_app nc-notify-updates
+  is_active_app nc-previews-auto && run_app nc-previews-auto
+  is_active_app nc-update-nc-apps-auto && run_app nc-update-nc-apps-auto
+
   # remove redundant opcache configuration. Leave until update bug is fixed -> https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=815968
   # Bug #416 reappeared after we moved to php7.2 and debian buster packages. (keep last)
   [[ "$( ls -l /etc/php/7.2/fpm/conf.d/*-opcache.ini |  wc -l )" -gt 1 ]] && rm "$( ls /etc/php/7.2/fpm/conf.d/*-opcache.ini | tail -1 )"

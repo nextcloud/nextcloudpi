@@ -28,7 +28,7 @@ echo -e "[ncp-update-nc]"                          >> /var/log/ncp.log
 
 if [[ \${PIPESTATUS[0]} -eq 0 ]]; then
 
-  VER="\$( sudo -u www-data php /var/www/nextcloud/occ status | grep "version:" | awk '{ print \$3 }' )"
+  VER="\$( /usr/local/bin/ncc status | grep "version:" | awk '{ print \$3 }' )"
 
   sudo -u www-data php /var/www/nextcloud/occ notification:generate \
     "$NOTIFYUSER" "NextCloudPi" -l "Nextcloud was updated to \$VER"

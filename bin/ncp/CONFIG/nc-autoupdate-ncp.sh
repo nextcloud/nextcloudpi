@@ -21,7 +21,7 @@ configure()
 #!/bin/bash
 if /usr/local/bin/ncp-test-updates; then
   /usr/local/bin/ncp-update || exit 1
-  sudo -u www-data php /var/www/nextcloud/occ notification:generate \
+  /usr/local/bin/ncc notification:generate \
     "$NOTIFYUSER" "NextCloudPi" \
        -l "NextCloudPi was updated to \$( cat /usr/local/etc/ncp-version )"
 fi
