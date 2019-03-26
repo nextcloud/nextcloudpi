@@ -220,6 +220,7 @@ EOF
 
   # rework letsencrypt notification
   USER="$(jq -r '.params[2].value' "$CONFDIR"/letsencrypt.cfg)"
+  mkdir -p /etc/letsencrypt/renewal-hooks/deploy/
   cat > /etc/letsencrypt/renewal-hooks/deploy/ncp <<EOF
 #!/bin/bash
 /usr/local/bin/ncc notification:generate $USER "SSL renewal" -l "Your SSL certificate(s) \$RENEWED_DOMAINS has been renewed for another 90 days"

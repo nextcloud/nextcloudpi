@@ -1,9 +1,11 @@
 
-[v1.10.6](https://github.com/nextcloud/nextcloudpi/commit/076aeb2) (2019-03-23) letsencrypt: rework notification
+[v1.10.7](https://github.com/nextcloud/nextcloudpi/commit/e0a692b) (2019-03-26) letsencrypt: make sure deploy dir exists
 
-[v1.10.5, master](https://github.com/nextcloud/nextcloudpi/commit/2460264) (2019-03-23) fix cron path
+[v1.10.6](https://github.com/nextcloud/nextcloudpi/commit/38799fd) (2019-03-23) letsencrypt: rework notification
 
-[v1.10.4](https://github.com/nextcloud/nextcloudpi/commit/f0b467b) (2019-03-18) nc-update-nc-apps-auto: only notify if there was update
+[v1.10.5 ](https://github.com/nextcloud/nextcloudpi/commit/2460264) (2019-03-23) fix cron path
+
+[v1.10.4 ](https://github.com/nextcloud/nextcloudpi/commit/f0b467b) (2019-03-18) nc-update-nc-apps-auto: only notify if there was update
 
 [v1.10.3 ](https://github.com/nextcloud/nextcloudpi/commit/4b6572a) (2019-03-18) nc-update-nc: fix case where imported cfg from non docker to docker
 

@@ -78,6 +78,7 @@ rm -rf $ncdir/.well-known
 EOF
     chmod 755 /etc/cron.weekly/letsencrypt-ncp
 
+    mkdir -p /etc/letsencrypt/renewal-hooks/deploy/ncp
     cat > /etc/letsencrypt/renewal-hooks/deploy/ncp <<EOF
 #!/bin/bash
 /usr/local/bin/ncc notification:generate \
