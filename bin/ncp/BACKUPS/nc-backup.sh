@@ -41,10 +41,10 @@ trap fail INT TERM HUP ERR
 echo "check free space..." # allow at least ~100 extra MiB
 mkdir -p "$destdir"
 [[ "$includedata" == "yes" ]] && \
-  dsize=$(du -s "$datadir" | awk '{ print $1 }')
-nsize=$(du -s "$basedir/nextcloud" | awk '{ print $1 }')
+  dsize=$(du -sb "$datadir" | awk '{ print $1 }')
+nsize=$(du -sb "$basedir/nextcloud" | awk '{ print $1 }')
 size=$((nsize + dsize + 100*1024))
-free=$( df "$destdir" | tail -1 | awk '{ print $4 }' )
+free=$( df -B1 "$destdir" | tail -1 | awk '{ print $4 }' )
 
 [ $size -ge $free ] && {
   echo "free space check failed. Need $size Bytes";
