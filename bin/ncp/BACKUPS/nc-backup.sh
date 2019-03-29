@@ -40,10 +40,24 @@ trap fail INT TERM HUP ERR
 
 echo "check free space..." # allow at least ~100 extra MiB
 mkdir -p "$destdir"
-[[ "$includedata" == "yes" ]] && \
-  dsize=$(du -s "$datadir" | awk '{ print $1 }')
+dsize=$(du -s "$datadir" | awk '{ print $1 }')
 nsize=$(du -s "$basedir/nextcloud" | awk '{ print $1 }')
-size=$((nsize + dsize + 100*1024))
+if [[ -f /.docker-image ]] 
+then
+  if [[ "$includedata" == "yes" ]]
+  then
+    size=$((nsize + 100*1024))
+  else #datadir is inside $basedir/nextcloud therefor substract
+    size=$((nsize - dsize + 100*1024))
+  fi
+else
+  if [[ "$includedata" == "yes" ]]
+  then
+    size=$((nsize + dsize + 100*1024))    
+  else
+    size=$((nsize + 100*1024))
+  fi
+fi
 free=$( df "$destdir" | tail -1 | awk '{ print $4 }' )
 
 [ $size -ge $free ] && {
