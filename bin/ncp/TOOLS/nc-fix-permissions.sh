@@ -13,7 +13,7 @@ configure()
 {
   local DATADIR
   DATADIR=$( cd /var/www/nextcloud; sudo -u www-data php occ config:system:get datadirectory ) || {
-    echo "data dir not found";
+    echo "data directory not found";
     return 1;
   }
   echo -ne "fixing permissions in $DATADIR... "

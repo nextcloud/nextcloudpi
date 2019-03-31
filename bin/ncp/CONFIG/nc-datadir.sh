@@ -68,7 +68,7 @@ configure()
   cd /var/www/nextcloud
   sudo -u www-data php occ maintenance:mode --on
 
-  echo "moving data dir from $SRCDIR to $DATADIR..."
+  echo "moving data directory from $SRCDIR to $DATADIR..."
 
   # use subvolumes, if BTRFS
   [[ "$( stat -fc%T "$BASEDIR" )" == "btrfs" ]] && {
