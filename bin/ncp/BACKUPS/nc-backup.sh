@@ -38,25 +38,16 @@ fail()   { local ret=$?; echo "Abort..."  ; rm -f "${dbbackup}" "${destfile}"; $
 trap cleanup EXIT
 trap fail INT TERM HUP ERR
 
-echo "check free space..." # allow at least ~100 extra MiB
+echo "check free space..." # allow at least ~500 extra MiB
 mkdir -p "$destdir"
 dsize=$(du -s "$datadir" | awk '{ print $1 }')
 nsize=$(du -s "$basedir/nextcloud" | awk '{ print $1 }')
-if [[ -f /.docker-image ]] 
+margin=$((500*1024))  # safety margin to allow additional space
+if [[ "$includedata" == "yes" ]]
 then
-  if [[ "$includedata" == "yes" ]]
-  then
-    size=$((nsize + 100*1024))
-  else #datadir is inside $basedir/nextcloud therefor substract
-    size=$((nsize - dsize + 100*1024))
-  fi
-else
-  if [[ "$includedata" == "yes" ]]
-  then
-    size=$((nsize + dsize + 100*1024))    
-  else
-    size=$((nsize + 100*1024))
-  fi
+  size=$((nsize + margin))
+else #datadir is inside $basedir/nextcloud therefor substract
+  size=$((nsize - dsize + margin))
 fi
 free=$( df "$destdir" | tail -1 | awk '{ print $4 }' )
 
