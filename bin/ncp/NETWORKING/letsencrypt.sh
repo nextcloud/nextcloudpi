@@ -78,12 +78,13 @@ rm -rf $ncdir/.well-known
 EOF
     chmod 755 /etc/cron.weekly/letsencrypt-ncp
 
-    mkdir -p /etc/letsencrypt/renewal-hooks/deploy/ncp
+    mkdir -p /etc/letsencrypt/renewal-hooks/deploy
     cat > /etc/letsencrypt/renewal-hooks/deploy/ncp <<EOF
 #!/bin/bash
 /usr/local/bin/ncc notification:generate \
   $NOTIFYUSER "SSL renewal" \
   -l "Your SSL certificate(s) \$RENEWED_DOMAINS has been renewed for another 90 days"
+exit 0
 EOF
     chmod +x /etc/letsencrypt/renewal-hooks/deploy/ncp
 
