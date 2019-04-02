@@ -1,7 +1,11 @@
 
-[v1.10.7](https://github.com/nextcloud/nextcloudpi/commit/e0a692b) (2019-03-26) letsencrypt: make sure deploy dir exists
+[v1.10.9](https://github.com/nextcloud/nextcloudpi/commit/2778a83) (2019-04-01) letsencrypt: dont return error if notif fails
 
-[v1.10.6](https://github.com/nextcloud/nextcloudpi/commit/38799fd) (2019-03-23) letsencrypt: rework notification
+[v1.10.8 ](https://github.com/nextcloud/nextcloudpi/commit/c18273a) (2019-03-26) nc-backup: fix space calculation
+
+[v1.10.7 ](https://github.com/nextcloud/nextcloudpi/commit/41a4e84) (2019-03-14) nc-restore: Check for free space in $TMPDIR before extracting tar file
+
+[v1.10.6 ](https://github.com/nextcloud/nextcloudpi/commit/38799fd) (2019-03-23) letsencrypt: rework notification
 
 [v1.10.5 ](https://github.com/nextcloud/nextcloudpi/commit/2460264) (2019-03-23) fix cron path
 

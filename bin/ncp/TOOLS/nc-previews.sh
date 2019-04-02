@@ -14,7 +14,7 @@ configure()
   [[ "$CLEAN" == "yes" ]] && {
     local datadir
     datadir=$( ncc config:system:get datadirectory ) || {
-      echo "data dir not found";
+      echo "data directory not found";
       return 1;
     }
 
