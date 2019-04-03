@@ -40,8 +40,8 @@ trap fail INT TERM HUP ERR
 
 echo "check free space..." # allow at least ~500 extra MiB
 mkdir -p "$destdir"
-dsize=$(du -s "$datadir" | awk '{ print $1 }')
-nsize=$(du -s "$basedir/nextcloud" | awk '{ print $1 }')
+dsize=$(du -sb "$datadir" | awk '{ print $1 }')
+nsize=$(du -sb "$basedir/nextcloud" | awk '{ print $1 }')
 margin=$((500*1024))  # safety margin to allow additional space
 if [[ "$includedata" == "yes" ]]
 then
@@ -49,7 +49,7 @@ then
 else #datadir is inside $basedir/nextcloud therefor substract
   size=$((nsize - dsize + margin))
 fi
-free=$( df "$destdir" | tail -1 | awk '{ print $4 }' )
+free=$( df -B1 "$destdir" | tail -1 | awk '{ print $4 }' )
 
 [ $size -ge $free ] && {
   echo "free space check failed. Need $size Bytes";
