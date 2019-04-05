@@ -1,5 +1,7 @@
 
-[v1.10.10](https://github.com/nextcloud/nextcloudpi/commit/e06a4f6) (2019-04-05) nc-backup: improve needed space calculation (#864)
+[v1.10.11](https://github.com/nextcloud/nextcloudpi/commit/d312af8) (2019-04-04) create UPDATE config section
+
+[v1.10.10](https://github.com/nextcloud/nextcloudpi/commit/b11c13e) (2019-04-05) nc-backup: improve needed space calculation (#864)
 
 [v1.10.9](https://github.com/nextcloud/nextcloudpi/commit/5af854b) (2019-04-01) letsencrypt: dont return error if notif fails
 
