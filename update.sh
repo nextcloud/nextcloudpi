@@ -174,7 +174,11 @@ EOF
   # create UPDATES section
   updates_dir=/usr/local/bin/ncp/UPDATES
   mkdir -p "$updates_dir"
-  mv /usr/local/bin/ncp/{SYSTEM/unattended-upgrades.sh,CONFIG/nc-autoupdate-nc.sh,CONFIG/nc-autoupdate-ncp.sh,CONFIG/nc-update-nc-apps-auto.sh} "$updates_dir"
+  (
+  mv /usr/local/bin/ncp/{SYSTEM/unattended-upgrades.sh,CONFIG/nc-autoupdate-nc.sh,CONFIG/nc-autoupdate-ncp.sh,CONFIG/nc-update-nc-apps-auto.sh} "$updates_dir" || true
+  mv /usr/local/bin/ncp/TOOLS/{nc-update-nc-apps,nc-update-nextcloud,nc-update}.sh "$updates_dir" || true
+  mv /usr/local/bin/ncp/CONFIG/nc-notify-updates.sh "$updates_dir" || true
+  ) &>/dev/null
 
   # remove redundant opcache configuration. Leave until update bug is fixed -> https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=815968
   # Bug #416 reappeared after we moved to php7.2 and debian buster packages. (keep last)
