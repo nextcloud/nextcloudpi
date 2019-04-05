@@ -1,5 +1,7 @@
 
-[v1.11.0](https://github.com/nextcloud/nextcloudpi/commit/54fdd52) (2019-04-05) upgrade to NC15.0.6
+[v1.11.1](https://github.com/nextcloud/nextcloudpi/commit/2694c6e) (2019-04-05) nc-backup: fix space calculation
+
+[v1.11.0](https://github.com/nextcloud/nextcloudpi/commit/5dedeaf) (2019-04-05) upgrade to NC15.0.6
 
 [v1.10.12](https://github.com/nextcloud/nextcloudpi/commit/a6e33b1) (2019-04-05) update UPDATE config section
 
