@@ -16,7 +16,7 @@ Find the full documentation at [docs.nextcloudpi.com](http://docs.nextcloudpi.co
 ## Features
 
  * Debian/Raspbian 9 stretch
- * Nextcloud 15.0.5
+ * Nextcloud 15.0.6
  * Apache 2.4.25, with HTTP2 enabled
  * PHP 7.2
  * MariaDB 10
