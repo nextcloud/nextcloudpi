@@ -227,6 +227,8 @@ EOF
 EOF
   chmod +x /etc/letsencrypt/renewal-hooks/deploy/ncp
 
+  # update nc-backup
+  install_app nc-backup
 
   # remove redundant opcache configuration. Leave until update bug is fixed -> https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=815968
   # Bug #416 reappeared after we moved to php7.2 and debian buster packages. (keep last)
