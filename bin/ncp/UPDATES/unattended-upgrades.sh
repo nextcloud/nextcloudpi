@@ -13,7 +13,7 @@ install()
 {
   apt-get update
   apt install -y --no-install-recommends unattended-upgrades 
-  rm /etc/apt/apt.conf.d/20auto-upgrades
+  rm -f /etc/apt/apt.conf.d/20auto-upgrades /etc/apt/apt.conf.d/02-armbian-periodic
 }
 
 configure() 
