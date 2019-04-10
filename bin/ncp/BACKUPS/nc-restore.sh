@@ -110,7 +110,7 @@ if [[ $( ls "$TMPDIR" | wc -l ) -eq $NUMFILES ]]; then
   echo "restore datadir to $DATADIR..."
   
   mkdir -p "$DATADIR"
-  [[ "$( stat -fc%T "$DATADIR" )" == "btrfs" ]] && {
+  [[ "$( stat -fc%T "$DATADIR" )" == "btrfs" ]] && which btrfs &>/dev/null && {
     rmdir "$DATADIR"                  || exit 1
     btrfs subvolume create "$DATADIR" || exit 1
   }
