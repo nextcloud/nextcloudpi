@@ -170,6 +170,7 @@ EOF
 
   # update nc-backup
   install_app nc-backup
+  install_app nc-restore
 
   # create UPDATES section
   updates_dir=/usr/local/bin/ncp/UPDATES
