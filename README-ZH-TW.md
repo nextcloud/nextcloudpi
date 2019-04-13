@@ -69,7 +69,7 @@ NextCloudPi 是專門為 Raspberry Pi、Odroid HC1、rock64 以及其它單板�
  * 排程 rsync
  * ZRAM
  * UPnP 自動設定 Portautomatic port 轉發
- * 可建立Lynis 及 Debsecan 的安全審核報告
+ * 可建立 Lynis 及 Debsecan 的安全審核報告
  * ZRAM
 
 您可以使用瀏覽器HTTPS進入連接埠 :4443 ，就可以使用網路介面的更多設定。
@@ -88,7 +88,7 @@ sudo ncp-config
 
 ## 如何建立 ?
 
-安裝 git 、 docker 、 qemu-user-static 、 chroot 以及所有常用之建立工具
+安裝 git、docker、qemu-user-static、chroot 以及所有常用之建立工具
 
 ```
 git clone https://github.com/nextcloud/nextcloudpi.git
@@ -96,7 +96,7 @@ cd nextcloudpi
 ./build-SD-rpi.sh
 ```
 
-或者以Armbian為基礎的主機板
+或者以 Armbian 為基礎的主機板
 
 ```
 ./build-SD-armbian.sh odroidxu4   # supported board code name
