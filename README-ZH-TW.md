@@ -12,12 +12,15 @@ NextCloudPi 是專門為 Raspberry Pi、Odroid HC1、rock64 以及其它單板�
 
 為了方便使用者簡單地安裝 NextCloud 所製作。
 
-這個映像檔還為 arm 及 x86 等平臺製作，適用 [NextCloudPi docker images](https://hub.docker.com/r/ownyourbits/nextcloudpi/) ，並且可安裝於任何為 Debian 作業系統為基底的電腦。
+這個映像檔還為 [ARM](https://hub.docker.com/r/ownyourbits/nextcloudpi-armhf) 及 [x86](https://hub.docker.com/r/ownyourbits/nextcloudpi-x86) 等平臺製作，並且可安裝於任何為 Debian 作業系統為基底的電腦。
+
+
+我們深知這個專案可能會對新手頭痛，因此我們有提供說明文件，方便你查詢解答。**網址是：[docs.nextcloudpi.com](docs.nextcloudpi.com)。**
 
 ## 功能
 
  * Raspbian 9 stretch
- * Nextcloud 15.0.4
+ * Nextcloud 15.0.6
  * Apache 2.4.25, with HTTP2 enabled
  * PHP 7.2
  * MariaDB 10
@@ -30,44 +33,44 @@ NextCloudPi 是專門為 Raspberry Pi、Odroid HC1、rock64 以及其它單板�
  * HSTS
  * Cron jobs for Nextcloud
  * Sane configuration defaults
- * 完整的表情符號支援 ( 新增於 05-24-2017 )
+ * 完整的表情符號支援
  * Postfix email
  * Secure
 
 ## 特別之處
 
- * 首次安裝導覽頁面 ( 新增於09-27-2017 )
- * NextCloudPi 網路 面板 ( 新增於07-24-2017 )
- * 可使用 Wi-Fi ( 新增於03-31-2017 )
- * Ram logs ( 新增於03-31-2017 )
- * 自動安裝安全更新，且預設如此。 ( 新增於03-21-2017 )
- * 內建 Let’s Encrypt，可使用此功能來建立受信任的 SSL 證書。( 新增於03-16-2017 )
- * 內建 Fail2Ban ，可保護您不受殭屍登入(SSH)的干擾及風險。(新增於 02-24-2017 )
- * UFW 防火牆 ( 新增於07-02-2018 )
- * 可使用no-ip.org 所提供的浮動IP連結功能 ( 新增於03-05-2017 )
- * 可使用freeDNS 所提供的浮動IP連結功能 ( 新增於09-05-2017 )
- * 可使用duckDNS 所提供的浮動IP連結功能  ( 新增於09-27-2017 )
- * 可使用spDYN 所提供的浮動IP連結功能 ( 新增於11-12-2017 )
- * 內建 dnsmasq DNS 伺服器快取 ( 新增於03-09-2017 )
- * ModSecurity 網路應用程式防火牆 ( 新增於03-23-2017 )
- * NFS ready to mount your files over LAN ( 新增於04-13-2017 )
- * SAMBA ready to share your files with Windows/Mac/Linux ( 新增於04-16-2017 )
- * USB 自動掛載 ( 新增於05-24-2017 )
- * 遠端更新 ( 新增於03-31-2017 )
- * 自動更新 NextCloudPi ( 新增於08-16-2017 )
- * 自動更新 Nextcloud ( 新增於05-29-2018 )
- * 更新通知 ( 新增於08-16-2017 )
- * NextCloud 備份、復原備份 ( 新增於05-24-2017 )
- * NextCloud 線上安裝 ( 新增於05-24-2017 )
- * 格式化 USB 裝置成 BTRFS ( 新增於07-03-2017 )
- * BTRFS 快照 ( 新增於04-12-2017 )
- * 自動建立 BTRFS 快照 ( 新增於07-02-2018 )
- * 自動同步 BTRFS 快照 ( 新增於19-03-2018 )
- * 排程 rsync ( 新增於19-03-2018 )
- * ZRAM ( 新增於19-03-2018 )
- * UPnP 自動設定 Portautomatic port 轉發 ( 新增於07-03-2017 )
- * 可建立Lynis 及 Debsecan 的安全審核報告 ( 新增於07-02-2018 )
- * ZRAM ( 新增於19-03-2018 )
+ * 首次安裝導覽頁面
+ * NextCloudPi 網路 面板
+ * 可使用 Wi-Fi
+ * Ram logs
+ * 自動安裝安全更新，且預設如此。
+ * 內建 Let’s Encrypt，可使用此功能來建立受信任的 SSL 證書。
+ * 內建 Fail2Ban ，可保護您不受殭屍登入(SSH)的干擾及風險。
+ * UFW 防火牆
+ * 可使用no-ip.org 所提供的浮動IP連結功能
+ * 可使用freeDNS 所提供的浮動IP連結功能
+ * 可使用duckDNS 所提供的浮動IP連結功能
+ * 可使用spDYN 所提供的浮動IP連結功能
+ * 內建 dnsmasq DNS 伺服器快取
+ * ModSecurity 網路應用程式防火牆
+ * NFS ready to mount your files over LAN
+ * SAMBA ready to share your files with Windows/Mac/Linux
+ * USB 自動掛載
+ * 遠端更新
+ * 自動更新 NextCloudPi
+ * 自動更新 Nextcloud
+ * 更新通知
+ * NextCloud 備份、復原備份
+ * NextCloud 線上安裝
+ * 格式化 USB 裝置成 BTRFS
+ * BTRFS 快照
+ * 自動建立 BTRFS 快照
+ * 自動同步 BTRFS 快照
+ * 排程 rsync
+ * ZRAM
+ * UPnP 自動設定 Portautomatic port 轉發
+ * 可建立Lynis 及 Debsecan 的安全審核報告
+ * ZRAM
 
 您可以使用瀏覽器HTTPS進入連接埠 :4443 ，就可以使用網路介面的更多設定。
 
@@ -122,7 +125,7 @@ https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/
 
 Pull the docker image
 
-https://ownyourbits.com/2017/06/08/nextcloudpi-docker-for-raspberry-pi/
+https://nextcloudpi.com
 
 https://hub.docker.com/r/ownyourbits/nextcloudpi-x86
 
@@ -130,4 +133,6 @@ https://hub.docker.com/r/ownyourbits/nextcloudpi-armhf
 
 ## 聯絡
 
-你可以加入[Telegram 公共群組](https://t.me/NextCloudPi)，或者使用[論壇](https://help.nextcloud.com/c/support/appliances-docker-snappy-vm)來找到我們。
+你可以加入[Telegram 群組](https://t.me/NextCloudPi)，或者使用[論壇](https://help.nextcloud.com/c/support/appliances-docker-snappy-vm)來找到我們。
+
+如果你也想為這個專案進行本地化，歡迎加入 Telegram [NCP Wiki Team](https://t.me/NCP_Wiki_Team) 群組，來洽詢更多身為本地化編輯員該做的事。
