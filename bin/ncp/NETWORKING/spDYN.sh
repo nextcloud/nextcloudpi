@@ -10,8 +10,7 @@
 #
 
 
-INSTALLDIR=spdnsupdater
-INSTALLPATH=/usr/local/etc/$INSTALLDIR
+INSTALLPATH=/usr/local/bin
 CRONFILE=/etc/cron.d/spdnsupdater
 
 install()
@@ -24,8 +23,7 @@ install()
 
 ### Usage
 #
-#	Recommended usage:	./spdnsUpdater.sh <hostname> <token>
-#	Alternative usage:	./spdnsUpdater.sh <hostname> <user> <passwd> (not implemented)
+#	Recommended usage:	./spdnsUpdater.sh <hostname> <token> <IPv6 yes/no>
 #
 
 ### Configuration
