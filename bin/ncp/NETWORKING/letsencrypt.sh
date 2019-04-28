@@ -11,7 +11,7 @@
 ncdir=/var/www/nextcloud
 vhostcfg=/etc/apache2/sites-available/nextcloud.conf
 vhostcfg2=/etc/apache2/sites-available/ncp.conf
-letsencrypt=/etc/letsencrypt/letsencrypt-auto
+letsencrypt=/usr/bin/letsencrypt
 
 is_active()
 {
@@ -22,13 +22,8 @@ install()
 {
   cd /etc || return 1
   apt-get update
-  apt-get install --no-install-recommends -y python3-minimal
-  wget -O- --content-disposition https://github.com/letsencrypt/letsencrypt/archive/master/latest.tar.gz \
-  | tar -xz \
-  || exit 1
-  mv certbot-master letsencrypt
-  export VIRTUALENV_NO_DOWNLOAD=1          # temporal workaround for https://github.com/certbot/certbot/issues/6682
-  $letsencrypt --help                      # do not actually run certbot, only install packages
+  apt-get install --no-install-recommends -y letsencrypt
+  rm -f /etc/cron.d/certbot
   mkdir -p /etc/letsencrypt/live
 
   [[ "$DOCKERBUILD" == 1 ]] && {
@@ -46,7 +41,7 @@ EOF
   return 0
 }
 
-# tested with certbot 0.30.0
+# tested with certbot 0.28.0
 configure() 
 {
   local DOMAIN_LOWERCASE="${DOMAIN,,}"
