@@ -104,7 +104,7 @@ if ($ret == 0) {
         <br>
         <a href="wizard"> <button type="button" class="wizard-btn" id="go-wizard">{$l->__("run")}  </button></a>
         <button type="button" class="first-run-close" id="skip-wizard" >{$l->__("skip")} </button>
-        <button type="button" class="first-run-close" id="close-wizard">{$l->__("close")}</button>
+        <button type="button" class="first-run-close close-dialog-x">{$l->__("close")}</button>
         <br><br>
       </div>
     </div>
@@ -112,6 +112,20 @@ HTML;
     touch('wizard.cfg');
   }
 ?>
+
+  <div id="confirmation-dialog" class="hidden">
+    <div class='dialog'>
+      <br><br>
+      <h2 id="config-box-title">Are you sure?</h2>
+      <br>
+      <p>Click OK to confirm this operation</p>
+      <br>
+      <button type="button" id="confirmation-dialog-ok"> OK </button>
+      <button type="button" class="confirmation-dialog-close"> Cancel </button>
+      <button type="button" class="confirmation-dialog-close close-dialog-x">Close</button>
+      <br><br>
+    </div>
+  </div>
 
   <header role="banner"><div id="header">
     <div id="header-left">
@@ -166,6 +180,11 @@ HTML;
               <div class="icon-dashboard"></div>
           </div>
       </div>
+      <div id="backups-btn" title="<?php echo $l->__("Backups and snapshots"); ?>">
+          <div class="expand">
+              <div class="icon-backups"></div>
+          </div>
+      </div>
       <div id="config-btn" title="<?php echo $l->__("Nextcloud Configuration"); ?>">
           <div class="expand">
               <div class="icon-config"></div>
@@ -213,7 +232,13 @@ HTML;
           <h2 class="text-title"><?php echo $l->__("System Info"); ?></h2>
           <div id="dashboard-suggestions" class="table-wrapper"></div>
           <div id="dashboard-table" class="outputbox table-wrapper"></div>
-          <div id="loading-info-gif"> <img src="img/loading-small.gif"> </div>
+          <div id="loading-info-gif" class="loading-section-gif"> <img src="img/loading-small.gif"> </div>
+        </div>
+
+        <div id="backups-wrapper" class="content-box <?php if($_GET['app'] != 'backups') echo 'hidden';?>">
+          <h2 class="text-title"><?php echo $l->__("Backups"); ?></h2>
+          <div id="backups-content" class="table-wrapper"></div>
+          <div id="loading-backups-gif" class="loading-section-gif"> <img src="img/loading-small.gif"> </div>
         </div>
 
         <div id="nc-config-wrapper" class="content-box <?php if($_GET['app'] != 'config') echo 'hidden';?>">

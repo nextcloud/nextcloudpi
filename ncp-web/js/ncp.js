@@ -4,20 +4,23 @@
 // Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 // GPL licensed (see end of file) * Use at your own risk!
 //
-// More at https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/
+// More at https://nextcloudpi.com
 ///
 
 var MINI = require('minified');
 var $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
-var selectedID = null;
+var selectedID   = null;
 var ncp_app_list = null;
-var search_box = null;
-var lock       = false;
+var search_box   = null;
+var lock         = false;
 
 // URL based navigation
+// TODO unify repeating code
 window.onpopstate = function(event) {
   selectedID = location.search.split('=')[1];
-  if (selectedID == 'config')
+  if (selectedID == 'backups')
+    switch_to_section('backups');
+  else if (selectedID == 'config')
     switch_to_section('nc-config');
   else if (selectedID == 'dashboard')
     switch_to_section('dashboard');
@@ -27,14 +30,16 @@ window.onpopstate = function(event) {
 
 function errorMsg()
 { 
-  $('#config-box').fill( "Something went wrong. Try refreshing the page" ); 
+  $('#app-content').fill( "Something went wrong. Try refreshing the page" ); 
 }
 
 function switch_to_section(section)
 {
+  // TODO unify repeating code
   $( '#config-wrapper > div'    ).hide();
   $( '#dashboard-wrapper'       ).hide();
   $( '#nc-config-wrapper'       ).hide();
+  $( '#backups-wrapper'         ).hide();
   $( '#' + section + '-wrapper' ).show();
   $( '#app-navigation ul' ).set('-active');
   selectedID = null;
@@ -123,8 +128,167 @@ function print_dashboard()
       $('#loading-info-gif').hide();
       $('#dashboard-table').ht( ret.table );
       $('#dashboard-suggestions').ht( ret.suggestions );
-      reload_sidebar();
+      print_backups();
     } ).error( errorMsg );
+}
+
+function del_bkp(button)
+{
+    var tr = button.up().up();
+    var path = tr.get('.id');
+    $.request('post', 'ncp-launcher.php', { action:'del-bkp',
+                                            value: path,
+                                            csrf_token: $( '#csrf-token' ).get( '.value' ) }).then(
+      function success( result )
+      {
+        var ret = $.parseJSON( result );
+        if ( ret.token )
+          $('#csrf-token').set( { value: ret.token } );
+        if ( ret.ret && ret.ret == '0' )                        // means that the process was launched
+          tr.remove();
+        else
+          console.log('failed removing ' + path);
+       }
+  ).error( errorMsg )
+}
+
+function restore_bkp(button)
+{
+  var tr = button.up().up();
+  var path = tr.get('.id');
+  click_app($('#nc-restore'));
+  history.pushState(null, selectedID, "?app=" + selectedID);
+  $('#nc-restore-BACKUPFILE').set({ value: path }); 
+  $('#nc-restore-config-button').trigger('click');
+}
+
+function restore_snap(button)
+{
+  var tr = button.up().up();
+  var path = tr.get('.id');
+  click_app($('#nc-restore-snapshot'));
+  history.pushState(null, selectedID, "?app=" + selectedID);
+  $('#nc-restore-snapshot-SNAPSHOT').set({ value: path }); 
+  $('#nc-restore-snapshot-config-button').trigger('click');
+}
+
+function del_snap(button)
+{
+    var tr = button.up().up();
+    var path = tr.get('.id');
+    $.request('post', 'ncp-launcher.php', { action:'del-snap',
+                                            value: path,
+                                            csrf_token: $('#csrf-token').get('.value') }).then(
+      function success( result )
+      {
+        var ret = $.parseJSON( result );
+        if ( ret.token )
+          $('#csrf-token').set( { value: ret.token } );
+        if ( ret.ret && ret.ret == '0' )                        // means that the process was launched
+          tr.remove();
+        else
+          console.log('failed removing ' + path);
+       }
+  ).error( errorMsg )
+}
+
+function restore_upload(button)
+{
+    var file = $$('#restore-upload').files[0];
+    if (!file) return;
+    var upload_token = $('#csrf-token').get('.value');
+    var form_data = new FormData();
+    form_data.append('backup', file);
+    form_data.append('csrf_token', upload_token);
+    $.request('post', 'upload.php', form_data).then(
+      function success( result )
+      {
+        var ret = $.parseJSON( result );
+        if ( ret.token )
+          $('#csrf-token').set( { value: ret.token } );
+        if ( ret.ret && ret.ret == '0' )                        // means that the process was launched
+        {
+          click_app($('#nc-restore'));
+          history.pushState(null, selectedID, "?app=" + selectedID);
+          $('#nc-restore-BACKUPFILE').set({ value: '/tmp/' + upload_token.replace('/', '') + file.name });
+          $('#nc-restore-config-button').trigger('click');
+        }
+        else
+          console.log('error uploading ' + file);
+      }
+  ).error( errorMsg )
+}
+
+clicked_dialog_button = null;
+clicked_dialog_action = null;
+
+function dialog_action(button)
+{
+  if ( clicked_dialog_action && clicked_dialog_button)
+    clicked_dialog_action(clicked_dialog_button);
+}
+
+// backups
+function set_backup_handlers()
+{
+  $( '.download-bkp' ).on('click', function(e)
+    {
+      var tr = this.up().up();
+      var path = tr.get('.id');
+      window.location.replace('download.php?bkp=' + encodeURIComponent(path) + '&token=' + encodeURIComponent(tr.next().get('.value')));
+    });
+  $( '.delete-bkp' ).on('click', function(e)
+    {
+      $('#confirmation-dialog').show();
+      clicked_dialog_action = del_bkp;
+      clicked_dialog_button = this;
+    });
+  $( '.restore-bkp' ).on('click', function(e)
+    {
+      $('#confirmation-dialog').show();
+      clicked_dialog_action = restore_bkp;
+      clicked_dialog_button = this;
+    });
+  $( '#restore-upload-btn' ).on('click', function(e)
+    {
+      var file = $$('#restore-upload').files[0];
+      if (!file) return;
+      $('#confirmation-dialog').show();
+      clicked_dialog_action = restore_upload;
+      clicked_dialog_button = this;
+    });
+  $( '.restore-snap' ).on('click', function(e)
+    {
+      $('#confirmation-dialog').show();
+      clicked_dialog_action = restore_snap;
+      clicked_dialog_button = this;
+    });
+  $( '.delete-snap' ).on('click', function(e)
+    {
+      $('#confirmation-dialog').show();
+      clicked_dialog_action = del_snap;
+      clicked_dialog_button = this;
+    });
+}
+
+function print_backups()
+{
+  // request
+  $.request('post', 'ncp-launcher.php', { action:'backups',
+                                          csrf_token: $('#csrf-token-ui').get('.value') }
+  ).then(
+      function success( result ) 
+      {
+        var ret = $.parseJSON( result );
+        if (ret.token)
+          $('#csrf-token-ui').set({ value: ret.token });
+        if (ret.ret && ret.ret == '0') {
+          $('#loading-backups-gif').hide();
+          $('#backups-content').ht(ret.output);
+          set_backup_handlers();
+          reload_sidebar();
+        }
+      }).error( errorMsg );
 }
 
 function reload_sidebar()
@@ -272,9 +436,16 @@ $(function()
         {
           if ( ret.ret == '0' ) 
           {
-            if( ret.ref && ret.ref == 'nc-update' )
-              window.location.reload( true );
-            reload_sidebar();
+            if (ret.ref)
+            {
+              if (ret.ref == 'nc-update')
+                window.location.reload( true );
+              else if(ret.ref == 'nc-backup')
+                print_backups();
+              if(ret.ref != 'nc-restore' && ret.ref != 'nc-backup') // FIXME PHP is reloaded asynchronously after nc-restore
+                reload_sidebar();
+            }
+
             $('.circle-retstatus').set('+icon-green-circle');
           }
           else 
@@ -354,7 +525,6 @@ $(function()
       function dirname(path) { return path.replace(/\\/g,'/').replace(/\/[^\/]*$/, ''); }
 
       var span = this.up().select('span', true);
-      console.log(span);
       var path = dirname(this.get('.value'));
 
       // request
@@ -470,6 +640,22 @@ $(function()
       $( '#first-run-wizard' ).hide();
   } );
 
+  // dialog confirmation
+  $( '#confirmation-dialog-ok' ).on('click', function(e)
+  {
+    $( '#confirmation-dialog' ).hide();
+    dialog_action();
+  } );
+  $( '.confirmation-dialog-close' ).on('click', function(e)
+  {
+    $( '#confirmation-dialog' ).hide();
+  } );
+  $( '#confirmation-dialog' ).on('|click', function(e)
+  {
+    if( e.target.id == 'confirmation-dialog' )
+      $( '#confirmation-dialog' ).hide();
+  } );
+
   // click to nextcloud button
   $('#nextcloud-btn').set( '@href', window.location.protocol + '//' + window.location.hostname );
 
@@ -482,6 +668,7 @@ $(function()
     history.pushState(null, selectedID, "?app=dashboard");
   } );
 
+  // TODO unify repeating code
   // config button
   $( '#config-btn' ).on('click', function(e)
   {
@@ -489,6 +676,15 @@ $(function()
     close_menu();
     switch_to_section( 'nc-config' );
     history.pushState(null, selectedID, "?app=config");
+  } );
+
+  // backups button
+  $( '#backups-btn' ).on('click', function(e)
+  {
+    if ( lock ) return;
+    close_menu();
+    switch_to_section( 'backups' );
+    history.pushState(null, selectedID, "?app=backups");
   } );
 
   // language selection

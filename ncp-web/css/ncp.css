@@ -1076,7 +1076,7 @@ select {
   display: none;
 }
 
-#loading-info-gif {
+.loading-section-gif {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1149,6 +1149,9 @@ select {
 }
 .icon-search {
   background-image: url('../img/search.svg');
+}
+.icon-backups {
+  background-image: url('../img/defaults-white.svg');
 }
 .icon-config {
   background-image: url('../img/settings-white.svg');
@@ -1223,6 +1226,18 @@ a#versionlink:hover {
   max-width: 210px;
 }
 
+#confirmation-dialog {
+  position:fixed;
+  top:0;
+  bottom:0;
+  height:100%;
+  width:100%;
+  background-color:rgba(0, 0, 0, 0.5);
+  z-index:9000;
+  text-align:center;
+  cursor:pointer;
+}
+
 .dialog {
   display:block;
   background: white;
@@ -1249,7 +1264,7 @@ a#versionlink:hover {
   opacity:0.75
 }
 
-#close-wizard {
+.close-dialog-x {
   position: absolute;
   top: 5px;
   right: 5px;
@@ -1319,6 +1334,23 @@ a#versionlink:hover {
   border-bottom: 1px solid #ebebeb;
 }
 
+.backuptable td {
+  text-align: right;
+}
+.text-align-left {
+  text-align: left !important;
+  padding-left: 1em;
+}
+.backuptable th {
+  text-align: center;
+}
+#backups-content div {
+  text-align: center;
+}
+.align-center {
+  text-align: center !important;
+}
+
 #dashboard-suggestions {
   margin-bottom: 1em;
 }
@@ -1353,7 +1385,23 @@ a#versionlink:hover {
   -ms-filter:'progid:DXImageTransform.Microsoft.Alpha(Opacity=50)';
   opacity: 0.5;
 }
+
+.hidden-btn {
+  cursor: pointer;
+  -ms-filter:'progid:DXImageTransform.Microsoft.Alpha(Opacity=0)';
+  opacity: 0;
+}
+
+.backuptable tr:hover img {
+  -ms-filter:'progid:DXImageTransform.Microsoft.Alpha(Opacity=50)';
+  opacity: 0.5;
+}
 .pwd-btn:hover, .default-btn:hover {
-  -ms-filter:'progid:DXImageTransform.Microsoft.Alpha(Opacity=100)';
-  opacity: 1;
+  -ms-filter:'progid:DXImageTransform.Microsoft.Alpha(Opacity=100)' !important;
+  opacity: 1 !important;
+}
+.restore-upload-btn-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }

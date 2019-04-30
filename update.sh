@@ -27,6 +27,8 @@ nc-init
 UFW
 nc-snapshot
 nc-snapshot-auto
+nc-snapshot-sync
+nc-restore-snapshot
 nc-audit
 nc-hdd-monitor
 nc-zram
@@ -186,6 +188,45 @@ EOF
 
   # switch back to the apt LE version
   which letsencrypt &>/dev/null || install_app letsencrypt
+
+  # update launchers
+  apt-get update
+  apt-get install -y --no-install-recommends file
+  cat > /home/www/ncp-launcher.sh <<'EOF'
+#!/bin/bash
+grep -q '[\\&#;`|*?~<>^()[{}$&[:space:]]' <<< "$*" && exit 1
+source /usr/local/etc/library.sh
+run_app $1
+EOF
+  chmod 700 /home/www/ncp-launcher.sh
+
+  cat > /home/www/ncp-backup-launcher.sh <<'EOF'
+#!/bin/bash
+action="${1}"
+file="${2}"
+compressed="${3}"
+grep -q '[\\&#;`|*?~<>^()[{}$&]' <<< "$*" && exit 1
+[[ "$file" =~ ".." ]] && exit 1
+[[ "${action}" == "chksnp" ]] && {
+  btrfs subvolume show "$file" &>/dev/null || exit 1
+  exit
+}
+[[ "${action}" == "delsnp" ]] && {
+  btrfs subvolume delete "$file" || exit 1
+  exit
+}
+[[ -f "$file" ]] || exit 1
+[[ "$file" =~ ".tar" ]] || exit 1
+[[ "${action}" == "del" ]] && {
+  [[ "$(file "$file")" =~ "tar archive" ]] || [[ "$(file "$file")" =~ "gzip compressed data" ]] || exit 1
+  rm "$file" || exit 1
+  exit
+}
+[[ "$compressed" != "" ]] && pigz="-I pigz"
+tar $pigz -tf "$file" data &>/dev/null
+EOF
+  chmod 700 /home/www/ncp-backup-launcher.sh
+  sed -i 's|www-data ALL = NOPASSWD: .*|www-data ALL = NOPASSWD: /home/www/ncp-launcher.sh , /home/www/ncp-backup-launcher.sh, /sbin/halt, /sbin/reboot|' /etc/sudoers
 
   # remove redundant opcache configuration. Leave until update bug is fixed -> https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=815968
   # Bug #416 reappeared after we moved to php7.2 and debian buster packages. (keep last)

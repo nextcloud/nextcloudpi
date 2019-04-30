@@ -123,7 +123,6 @@ function print_config_forms( $l /* translations l10n object */ )
   $cfg_dir    = '/usr/local/etc/ncp-config.d/';
   $d_iterator = new RecursiveDirectoryIterator($bin_dir);
   $iterator   = new RecursiveIteratorIterator($d_iterator);
-  $objects    = new RegexIterator($iterator, '/^.+\.sh$/i', RecursiveRegexIterator::GET_MATCH);
 
   $ret      = "";
   $sections = array_diff(scandir($bin_dir), array('.', '..', 'l10n'));
@@ -167,7 +166,6 @@ function print_sidebar( $l /* translations l10n object */, $ticks /* wether to c
   $cfg_dir    = '/usr/local/etc/ncp-config.d/';
   $d_iterator = new RecursiveDirectoryIterator($bin_dir);
   $iterator   = new RecursiveIteratorIterator($d_iterator);
-  $objects    = new RegexIterator($iterator, '/^.+\.sh$/i', RecursiveRegexIterator::GET_MATCH);
 
   $ret      = "";
   $sections = array_diff(scandir($bin_dir), array('.', '..', 'l10n'));

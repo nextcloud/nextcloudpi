@@ -100,7 +100,8 @@ tar $compress_arg -cf "$destfile" \
         exit 1
       }
 rm "$dbbackup"
-chmod 600 "$destfile"
+chmod 640 "$destfile"
+chown :www-data "$destfile"
 
 echo "backup $destfile generated"
 EOF

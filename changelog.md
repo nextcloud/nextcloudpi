@@ -1,9 +1,13 @@
 
-[v1.11.4](https://github.com/nextcloud/nextcloudpi/commit/62a7f45) (2019-04-28) letsencrypt: switch to apt version
+[v1.12.0](https://github.com/nextcloud/nextcloudpi/commit/703ff6f) (2019-04-29) ncp-web: add backups panel
 
-[v1.11.3 ](https://github.com/nextcloud/nextcloudpi/commit/71d8f52) (2019-04-09) nc-restore: check btrfs command
+[v1.11.5](https://github.com/nextcloud/nextcloudpi/commit/01cd421) (2019-04-29) letsencrypt: force renewal by default
 
-[v1.11.2, master](https://github.com/nextcloud/nextcloudpi/commit/3754609) (2019-04-06) armbian: fix uu
+[v1.11.4 ](https://github.com/nextcloud/nextcloudpi/commit/b3c7d13) (2019-04-28) letsencrypt: switch to apt version
+
+[v1.11.3 ](https://github.com/nextcloud/nextcloudpi/commit/02efd61) (2019-04-09) nc-restore: check btrfs command
+
+[v1.11.2 ](https://github.com/nextcloud/nextcloudpi/commit/3754609) (2019-04-06) armbian: fix uu
 
 [v1.11.1 ](https://github.com/nextcloud/nextcloudpi/commit/a712935) (2019-04-05) nc-backup: fix space calculation
 
