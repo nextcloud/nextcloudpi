@@ -54,7 +54,7 @@ configure()
     sed -i "/DocumentRoot/aServerName $DOMAIN" $vhostcfg
 
   # Do it
-  $letsencrypt certonly -n --no-self-upgrade --webroot -w $ncdir --hsts --agree-tos -m $EMAIL -d $DOMAIN && {
+  $letsencrypt certonly -n --force-renew --no-self-upgrade --webroot -w $ncdir --hsts --agree-tos -m $EMAIL -d $DOMAIN && {
 
     # Set up auto-renewal
     cat > /etc/cron.weekly/letsencrypt-ncp <<EOF
