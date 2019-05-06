@@ -18,6 +18,19 @@ debian-ncp-armhf:
 	docker build --pull . -f docker-armhf/debian-ncp/Dockerfile  -t ownyourbits/debian-ncp-armhf:latest
 
 
+nextcloudpi-aarch64: nextcloud-aarch64
+	docker build . -f docker-aarch64/nextcloudpi/Dockerfile   -t ownyourbits/nextcloudpi-aarch64:latest
+
+nextcloud-aarch64: lamp-aarch64
+	docker build . -f docker-aarch64/nextcloud/Dockerfile     -t ownyourbits/nextcloud-aarch64:latest
+
+lamp-aarch64: debian-ncp-aarch64
+	docker build . -f docker-aarch64/lamp/Dockerfile          -t ownyourbits/lamp-aarch64:latest
+
+debian-ncp-aarch64:
+	docker build --pull . -f docker-aarch64/debian-ncp/Dockerfile  -t ownyourbits/debian-ncp-aarch64:latest
+
+
 nextcloudpi-x86: nextcloud-x86
 	docker build . -f docker/nextcloudpi/Dockerfile       -t ownyourbits/nextcloudpi-x86:latest
 

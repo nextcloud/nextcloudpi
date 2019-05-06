@@ -1,0 +1,15 @@
+version: '3'
+services:
+  nextcloudpi:
+    image: ownyourbits/nextcloudpi-aarch64
+    command: "${IP}"
+    ports:
+     - "80:80"
+     - "443:443"
+     - "4443:4443"
+    volumes:
+     - ncdata:/data
+    container_name: nextcloudpi
+
+volumes:
+  ncdata:

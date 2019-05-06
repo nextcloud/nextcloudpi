@@ -48,14 +48,23 @@ make nextcloudpi-x86
 cp -n /usr/bin/qemu-arm-static docker-armhf && \
 make nextcloudpi-armhf 
 
+# Docker aarch64
+cp -n /usr/bin/qemu-aarch64-static docker-aarch64 && \
+make nextcloudpi-aarch64 
+
 # TODO test first && {
   docker push ownyourbits/nextcloudpi-armhf
   docker push ownyourbits/nextcloud-armhf
   docker push ownyourbits/lamp-armhf
   docker push ownyourbits/debian-ncp-armhf
+  
+  docker push ownyourbits/nextcloudpi-aarch64
+  docker push ownyourbits/nextcloud-aarch64
+  docker push ownyourbits/lamp-aarch64
+  docker push ownyourbits/debian-ncp-aarch64
 #}
 rm -f docker-armhf/qemu-arm-static
-
+rm -f docker-aarch64/qemu-aarch64-static
 # License
 #
 # This script is free software; you can redistribute it and/or modify it

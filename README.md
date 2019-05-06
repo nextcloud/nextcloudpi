@@ -9,7 +9,7 @@ This is the build code for [NextCloudPi](https://nextcloudpi.com).
 
 NextCloudPi is a ready to use image for Raspberry Pi, Odroid HC1, rock64 and other boards.
 
-This code also generates the NextCloudPi docker images for [ARM](https://hub.docker.com/r/ownyourbits/nextcloudpi-armhf) and [x86](https://hub.docker.com/r/ownyourbits/nextcloudpi-x86) platforms, and includes an installer for any Debian based system.
+This code also generates the NextCloudPi docker images for [ARM](https://hub.docker.com/r/ownyourbits/nextcloudpi-armhf), [ARM64](https://hub.docker.com/r/ownyourbits/nextcloudpi-aarch64) and [x86](https://hub.docker.com/r/ownyourbits/nextcloudpi-x86) platforms, and includes an installer for any Debian based system.
 
 Find the full documentation at [docs.nextcloudpi.com](http://docs.nextcloudpi.com)
 
@@ -103,6 +103,7 @@ In order to generate the Docker images
 git clone https://github.com/nextcloud/nextcloudpi.git
 cd nextcloudpi
 make                        # armhf version
+make nextcloudpi-aarch64    # aarch64 version
 make nextcloudpi-x86        # x86   version
 ```
 
@@ -125,6 +126,8 @@ https://nextcloudpi.com
 https://hub.docker.com/r/ownyourbits/nextcloudpi-x86
 
 https://hub.docker.com/r/ownyourbits/nextcloudpi-armhf
+
+https://hub.docker.com/r/ownyourbits/nextcloudpi-aarch64
 
 ## Contact
 

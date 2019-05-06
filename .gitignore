@@ -9,4 +9,5 @@ raspbian_boot
 ncp-web/wizard.cfg
 ncp-web/ncp-web.cfg
 docker-armhf/qemu-arm-static
+docker-aarch64/qemu-aarch64-static
 .vagrant/
