@@ -9,8 +9,8 @@
 #
 
 
-install() 
-{ 
+install()
+{
   cat > /usr/local/bin/ncp-scan <<'EOF'
 #!/bin/bash
 ncc files:scan -n -v --all
@@ -18,21 +18,34 @@ EOF
   chmod +x /usr/local/bin/ncp-scan
 }
 
-configure() 
+configure()
 {
+  local ret=0
+
   [[ "$RECURSIVE"   == no  ]] && local recursive=--shallow
   [[ "$NONEXTERNAL" == yes ]] && local non_external=--home-only
 
-  [[ "$PATH1" != "" ]] && \
+  [[ "$PATH1" != "" ]] && {
     ncc files:scan -n -v $recursive $non_external -p "$PATH1"
+    [[ $? -ne 0 ]] && ret=1
+  }
 
-  [[ "$PATH2" != "" ]] && \
+  [[ "$PATH2" != "" ]] && {
     ncc files:scan -n -v $recursive $non_external -p "$PATH2"
+    [[ $? -ne 0 ]] && ret=1
+  }
 
-  [[ "$PATH3" != "" ]] && \
+  [[ "$PATH3" != "" ]] && {
     ncc files:scan -n -v $recursive $non_external -p "$PATH3"
+    [[ $? -ne 0 ]] && ret=1
+  }
 
-  [[ "${PATH1}${PATH2}${PATH3}" == "" ]] && ncc files:scan -n -v --all
+  [[ "${PATH1}${PATH2}${PATH3}" == "" ]] && {
+    ncc files:scan -n -v $recursive $non_external --all
+    [[ $? -ne 0 ]] && ret=1
+  }
+
+  return ${ret}
 }
 
 # License

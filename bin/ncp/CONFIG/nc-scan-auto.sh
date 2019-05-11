@@ -32,17 +32,20 @@ configure()
     [[ $hour == 0 ]] && hour="*" || { hour="*/$hour" mins="15"; }
   fi
 
+  [[ "$RECURSIVE"   == no  ]] && local recursive=--shallow
+  [[ "$NONEXTERNAL" == yes ]] && local non_external=--home-only
+
   cat > /usr/local/bin/ncp-scan-auto <<EOF
 #!/bin/bash
 (
 
   echo -e "\n[ nc-scan-auto ]"
 
-  [[ "$PATH1" != "" ]] && /usr/local/bin/ncc files:scan -n -v -p "$PATH1"
-  [[ "$PATH2" != "" ]] && /usr/local/bin/ncc files:scan -n -v -p "$PATH2"
-  [[ "$PATH3" != "" ]] && /usr/local/bin/ncc files:scan -n -v -p "$PATH3"
+  [[ "$PATH1" != "" ]] && /usr/local/bin/ncc files:scan $recursive $non_external -n -v -p "$PATH1"
+  [[ "$PATH2" != "" ]] && /usr/local/bin/ncc files:scan $recursive $non_external -n -v -p "$PATH2"
+  [[ "$PATH3" != "" ]] && /usr/local/bin/ncc files:scan $recursive $non_external -n -v -p "$PATH3"
 
-  [[ "${PATH1}${PATH2}${PATH3}" == "" ]] && /usr/local/bin/ncc files:scan -n -v --all
+  [[ "${PATH1}${PATH2}${PATH3}" == "" ]] && /usr/local/bin/ncc files:scan $recursive $non_external -n -v --all
 
 ) 2>&1 >>/var/log/ncp.log
 EOF
