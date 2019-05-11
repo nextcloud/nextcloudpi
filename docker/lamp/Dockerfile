@@ -1,6 +1,10 @@
-FROM ownyourbits/debian-ncp-x86
+# syntax=docker/dockerfile:experimental
 
-MAINTAINER Ignacio Núñez Hernanz <nacho@ownyourbits.com>
+ARG arch=armhf
+
+FROM ownyourbits/debian-ncp-${arch}
+
+LABEL maintainer="Ignacio Núñez Hernanz <nacho@ownyourbits.com>"
 
 SHELL ["/bin/bash", "-c"]
 
@@ -8,7 +12,7 @@ ENV DOCKERBUILD 1
 
 COPY etc/library.sh lamp.sh /usr/local/etc/
 
-RUN \
+RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt \
 
 # installation
 source /usr/local/etc/library.sh; \
@@ -36,7 +40,7 @@ rm -f /var/log/alternatives.log /var/log/apt/*; \
 rm /data-ro/database/ib_logfile*; \
 rm /usr/local/etc/lamp.sh
 
-COPY docker-common/lamp/010lamp /etc/services-enabled.d/
+COPY docker/lamp/010lamp /etc/services-enabled.d/
 
 ENTRYPOINT ["/run-parts.sh"]
 

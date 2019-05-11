@@ -33,6 +33,7 @@ install()
     $APTINSTALL apt-transport-https gnupg2 wget ca-certificates
     echo "deb https://packages.sury.org/php/ stretch main" > /etc/apt/sources.list.d/php.list
     wget -q https://packages.sury.org/php/apt.gpg -O- | apt-key add -
+    wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
 
     # INSTALL 
     ##########################################

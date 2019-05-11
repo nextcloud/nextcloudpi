@@ -1,6 +1,10 @@
-FROM ownyourbits/lamp-x86
+# syntax=docker/dockerfile:experimental
 
-MAINTAINER Ignacio Núñez Hernanz <nacho@ownyourbits.com>
+ARG arch=armhf
+
+FROM ownyourbits/lamp-${arch}
+
+LABEL maintainer="Ignacio Núñez Hernanz <nacho@ownyourbits.com>"
 
 SHELL ["/bin/bash", "-c"]
 
@@ -10,7 +14,7 @@ COPY etc/library.sh /usr/local/etc/
 COPY bin/ncp/CONFIG/nc-nextcloud.sh /
 COPY etc/ncp-config.d/nc-nextcloud.cfg /usr/local/etc/ncp-config.d/
 
-RUN \
+RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt \
 
 # mark as image build
 touch /.ncp-image; \
@@ -42,11 +46,11 @@ apt-get purge -y wget ca-certificates; \
 rm /nc-nextcloud.sh /usr/local/etc/ncp-config.d/nc-nextcloud.cfg; \
 rm /.ncp-image; 
 
-COPY docker-common/nextcloud/020nextcloud /etc/services-enabled.d/
+COPY docker/nextcloud/020nextcloud /etc/services-enabled.d/
 COPY bin/ncp-provisioning.sh /usr/local/bin/
 
 # display message until first run initialization is complete
-COPY docker-common/nextcloud/ncp-wait-msg.html /data-ro/nextcloud
+COPY docker/nextcloud/ncp-wait-msg.html /data-ro/nextcloud
 RUN \
 mv /data-ro/nextcloud/index.php /; \
 mv /data-ro/nextcloud/ncp-wait-msg.html /data-ro/nextcloud/index.php;

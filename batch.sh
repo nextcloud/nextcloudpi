@@ -1,5 +1,4 @@
 #!/bin/bash
-
 # Batch creation of NextCloudPi images and containers
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
@@ -9,6 +8,9 @@
 #
 
 set -e
+
+version=$(git describe --tags --always)
+version=${version%-*-*}
 
 ## BUILDING
 source buildlib.sh          # initializes $IMGNAME
@@ -33,28 +35,61 @@ IMG="$( ls -1t tmp/*.img | head -1 )"
 # VM
 ./build-VM.sh
 
-# Docker x86
-make nextcloudpi-x86 
+# Docker
+./build-docker.sh x86
+./build-docker.sh armhf
+./build-docker.sh arm64
+
+[[ "$FTPPASS" == "" ]] && exit
+
+export DOCKER_CLI_EXPERIMENTAL=enabled
 
 # TODO test first
 #&& {
   docker push ownyourbits/nextcloudpi-x86
+  docker push ownyourbits/nextcloudpi-x86:${version}
   docker push ownyourbits/nextcloud-x86 
+  docker push ownyourbits/nextcloud-x86 :${version}
   docker push ownyourbits/lamp-x86
+  docker push ownyourbits/lamp-x86:${version}
   docker push ownyourbits/debian-ncp-x86
+  docker push ownyourbits/debian-ncp-x86:${version}
 #}
-
-# Docker armhf
-cp -n /usr/bin/qemu-arm-static docker-armhf && \
-make nextcloudpi-armhf 
 
 # TODO test first && {
   docker push ownyourbits/nextcloudpi-armhf
+  docker push ownyourbits/nextcloudpi-armhf:${version}
   docker push ownyourbits/nextcloud-armhf
+  docker push ownyourbits/nextcloud-armhf:${version}
   docker push ownyourbits/lamp-armhf
+  docker push ownyourbits/lamp-armhf:${version}
   docker push ownyourbits/debian-ncp-armhf
+  docker push ownyourbits/debian-ncp-armhf:${version}
 #}
-rm -f docker-armhf/qemu-arm-static
+
+# TODO test first && {
+  docker push ownyourbits/nextcloudpi-arm64
+  docker push ownyourbits/nextcloudpi-arm64:${version}
+  docker push ownyourbits/nextcloud-arm64
+  docker push ownyourbits/nextcloud-arm64:${version}
+  docker push ownyourbits/lamp-arm64
+  docker push ownyourbits/lamp-arm64:${version}
+  docker push ownyourbits/debian-ncp-arm64
+  docker push ownyourbits/debian-ncp-arm64:${version}
+#}
+
+# Docker multi-arch
+docker manifest create --amend ownyourbits/nextcloudpi \
+  ownyourbits/nextcloudpi-x86 \
+  ownyourbits/nextcloudpi-armhf \
+  ownyourbits/nextcloudpi-arm64
+
+
+docker manifest annotate ownyourbits/nextcloudpi ownyourbits/nextcloudpi-x86   --os linux --arch amd64
+docker manifest annotate ownyourbits/nextcloudpi ownyourbits/nextcloudpi-armhf --os linux --arch arm
+docker manifest annotate ownyourbits/nextcloudpi ownyourbits/nextcloudpi-arm64 --os linux --arch arm64v8
+
+docker manifest push -p ownyourbits/nextcloudpi
 
 # License
 #

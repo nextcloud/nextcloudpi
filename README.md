@@ -102,8 +102,9 @@ In order to generate the Docker images
 ```
 git clone https://github.com/nextcloud/nextcloudpi.git
 cd nextcloudpi
-make                        # armhf version
-make nextcloudpi-x86        # x86   version
+./build-docker.sh x86
+./build-docker.sh armhf
+./build-docker.sh arm64
 ```
 
 NextCloudPi can be installed in any architecture running the latest Debian
@@ -125,6 +126,8 @@ https://nextcloudpi.com
 https://hub.docker.com/r/ownyourbits/nextcloudpi-x86
 
 https://hub.docker.com/r/ownyourbits/nextcloudpi-armhf
+
+https://hub.docker.com/r/ownyourbits/nextcloudpi-arm64
 
 ## Contact
 

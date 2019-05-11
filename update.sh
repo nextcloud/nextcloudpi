@@ -119,7 +119,7 @@ cp -r ncp-app /var/www/
   done
 
   # update services
-  cp docker-common/{lamp/010lamp,nextcloud/020nextcloud,nextcloudpi/000ncp} /etc/services-enabled.d
+  cp docker/{lamp/010lamp,nextcloud/020nextcloud,nextcloudpi/000ncp} /etc/services-enabled.d
 
 }
 

@@ -1,6 +1,10 @@
-FROM ownyourbits/nextcloud-x86
+# syntax=docker/dockerfile:experimental
 
-MAINTAINER Ignacio Núñez Hernanz <nacho@ownyourbits.com>
+ARG arch=armhf
+
+FROM ownyourbits/nextcloud-${arch}
+
+LABEL maintainer="Ignacio Núñez Hernanz <nacho@ownyourbits.com>"
 
 SHELL ["/bin/bash", "-c"]
 
@@ -12,9 +16,9 @@ COPY etc              /tmp/ncp-build/etc/
 COPY ncp.sh update.sh /tmp/ncp-build/
 COPY ncp-web          /tmp/ncp-build/ncp-web/
 COPY ncp-app          /tmp/ncp-build/ncp-app/
-COPY docker-common    /tmp/ncp-build/docker-common/
+COPY docker           /tmp/ncp-build/docker/
 
-RUN \
+RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt \
 
 # make sure we don't accidentally disable first run wizard
 rm -f ncp-web/{wizard.cfg,ncp-web.cfg}; \
@@ -60,10 +64,9 @@ rm -rf /usr/share/doc/*; \
 rm -f /var/log/alternatives.log /var/log/apt/*; \
 rm /var/cache/debconf/*-old; 
 
-COPY docker-common/nextcloudpi/000ncp /etc/services-enabled.d/
+COPY docker/nextcloudpi/000ncp /etc/services-enabled.d/
 COPY bin/ncp/CONFIG/nc-init.sh /
 COPY etc/ncp-config.d/nc-init.cfg /usr/local/etc/ncp-config.d/
-
 
 # 4443 - ncp-web
 EXPOSE 80 443 4443
