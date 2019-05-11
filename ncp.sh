@@ -225,6 +225,7 @@ EOF
         compress
 }
 EOF
+  chmod 0444 /etc/logrotate.d/ncp
 
   # ONLY FOR IMAGE BUILDS
   if [[ -f /.ncp-image ]]; then
