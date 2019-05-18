@@ -1,0 +1,10 @@
+{
+    "translations": {
+        "ACTIVE": "Ativo",
+        "BANTIME": "Tempo de Bloqueio",
+        "FINDTIME": "Periodo encontrado",
+        "MAXRETRY": "Tentativas Maximas",
+        "EMAIL": "E-mail",
+        "MAILALERTS": "Alertas por email"
+    }
+}

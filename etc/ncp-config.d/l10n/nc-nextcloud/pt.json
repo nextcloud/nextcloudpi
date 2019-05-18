@@ -1,0 +1,13 @@
+{
+  "translations":{
+    "VER":"Version",
+    "BETA":"BETA",
+    "MAXFILESIZE":"Tamanho Maximo de Subida",
+    "MEMORYLIMIT":"Limite de Memória",
+    "MAXTRANSFERTIME":"Maximo Tempo de Transferência",
+    "NextCloud installation":"Instalação NextCloud",
+    "This new installation will cleanup current\nNextCloud instance, including files and database.\n\nYou can later use nc-init to configure to NextCloudPi defaults\n\n** perform backup before proceding **\n\nYou can use nc-backup ":"Esta nova instalação irá apagar intancia corrente \ndo NextCloud, incluindo os arquivos e o Banco de Dados\nVocê depois usar o nc-init para configurar os padrões do NextCloudPi\n\n**Realize Backup antes de Continuar **\n\nVocê pode usar o nc-backup",
+    "nc-nextcloud":"nc-nextcloud",
+    "Install any NextCloud version":"Instalar qualquer Versão NextCloud"
+  }
+}
