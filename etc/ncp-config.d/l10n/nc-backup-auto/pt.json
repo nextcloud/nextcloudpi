@@ -4,9 +4,9 @@
         "DESTDIR": "Destino",
         "INCLUDEDATA": "Incluír dados",
         "COMPRESS": "Comprimir",
-        "BACKUPDAYS": "cópia de segurança (backup) ",
-        "BACKUPLIMIT": "Limites cópia de segurança (backup) ",
-        "Periodic backups":"Backup periodicos",
+        "BACKUPDAYS": "Datas de backup",
+        "BACKUPLIMIT": "Limites de backup",
+        "Periodic backups":"Backup periódicos",
         "nc-backup-auto":"nc-backup-automatico"
         
     }

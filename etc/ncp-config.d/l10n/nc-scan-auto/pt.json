@@ -1,0 +1,10 @@
+{
+  "translations":{
+    "ACTIVE":"ativo",
+    "SCANINTERVAL":"Intervalo de escaneamento",
+    "Periodically scan NC for externally modified files":"Escanear periódicamente o NC por arquivos externamente modificados",
+    "Set the time in minutes in SCANINTERVAL.\n\n>>> If there are too many files this can greatly affect performance. <<<":"Defina o tempo em minutos no Intervalo de escaneamento.\n>>> Se houverem muitos arquivos, isso pode afetar muito o desempenho <<<",
+    "nc-scan-auto":"nc-scan-automático"
+
+  }
+}

@@ -1,0 +1,9 @@
+{"translations":{
+  "ACTIVE":"Ativo",
+  "USER":"Usuario",
+  "PASS":"Senha",
+  "CONFIRM":"Confirmar",
+  "Run":"Executar ",
+  "Activate or deactivate SSH":"Ativar ou desativar SSH",
+  "In order to enable SSH, the password for user 'pi' can NOT remain set to the default raspberry. \nYou HAVE to create a NEW password for 'pi' if you want this program to enable SSH, it will fail if you dont!\nThe same will happen with user 'root' and password '1234'\nNote: Use normal AlphaNumeric, the only special characters allowed are .,@-_/":"Para habilitar o SSH, a senha para o usuário 'pi' NÃO pode permanecer definida como raspberry padrão. \nVocê DEVE criar uma nova senha para 'pi' se quiser que este programa habilite o SSH, ele falhará se você não o fizer!\nO mesmo acontecerá com o usuário 'root' e a senha '1234'\nNota: Use Alfanuméricos normais, os únicos caracteres especiais permitidos são: . , @ - _ /"
+}

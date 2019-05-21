@@ -1,6 +1,6 @@
 {
     "translations": {
-        "SHORTTEST": "TesteCurto",
-        "LONGTEST":"TesteLongo"
+        "SHORTTEST": "Teste curto",
+        "LONGTEST":"Teste longo"
     }
 }

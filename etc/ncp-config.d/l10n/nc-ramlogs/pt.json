@@ -1,0 +1,8 @@
+{
+  "translations":{
+    "ACTIVE":"Ativo",
+    "mount logs in RAM to prevent SD degradation (faster, consumes more RAM)":"Montar logs na memória RAM para evitar a degradação do SD (Mas rápido, porém consome mais RAM)",
+    "You need to reboot for this change to take effect":"Você precisa reiniciar para que a alteração seja feita",
+    "nc-ramlogs":"nc-ramlogs"
+  }
+}

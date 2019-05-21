@@ -2,6 +2,6 @@
     "translations": {
         "ACTIVE": "Ativo",
         "Force HTTPS": "Forçar HTTPS",
-        "nc-httpsonly": "nc-httpsonly"
+        "nc-httpsonly": "nc-apenasHttps"
     }
 }

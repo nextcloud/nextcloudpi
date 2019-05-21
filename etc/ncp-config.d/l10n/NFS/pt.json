@@ -1,0 +1,12 @@
+{
+   "translations":{
+     "ACTIVE":"ativo",
+     "DIR":"Diretório",
+     "SUBNET":"Sub-rede",
+     "USER":"Usuário",
+     "GROUP":"Grupo",
+     "NFS network file system server (for Linux LAN)":"Servidor do sistema de arquivos de rede NFS (para LAN do Linux）",
+     "If we intend to modify the data folder through NFS,\nthen we have to synchronize NextCloud to make it aware of the changes.\n\nThis can be done manually or automatically using 'nc-scan' and 'nc-scan-auto'":"Se nós pretendemos modificar a pasta de dados através do NFS, então temos que sincronizar o NextCloud para torná-lo ciente das mudanças.\n\nIsso pode ser feito manualmente ou automaticamente usando 'nc-scan' e 'nc-scan-auto",
+     "Run":"Executar"
+   }
+ }
