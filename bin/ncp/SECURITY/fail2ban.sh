@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Fail2ban installation script for Raspbian 
+# Fail2ban for NextCloudPi
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -47,10 +47,18 @@ service fail2ban start
 
 exit 0
 EOF
+
+  cat > /etc/fail2ban/filter.d/ufwban.conf <<'EOF'
+[INCLUDES]
+before = common.conf
+[Definition]
+failregex = UFW BLOCK.* SRC=
+ignoreregex =
+EOF
     chmod +x /etc/services-available.d/100fail2ban
   }
 
-  # tweak fail2ban email 
+  # tweak fail2ban email
   local F=/etc/fail2ban/action.d/sendmail-common.conf
   sed -i 's|Fail2Ban|NextCloudPi|' /etc/fail2ban/action.d/sendmail-whois-lines.conf
   grep -q actionstart_ "$F" || sed -i 's|actionstart|actionstart_|' "$F"
@@ -60,11 +68,11 @@ EOF
 
 configure()
 {
-  [[ $ACTIVE != "yes" ]] && { 
+  [[ $ACTIVE != "yes" ]] && {
     service fail2ban stop
     update-rc.d fail2ban disable
     echo "fail2ban disabled"
-    return 
+    return
   }
 
   local NCLOG="/var/www/nextcloud/data/nextcloud.log"
@@ -144,6 +152,13 @@ port     = http,https
 filter   = nextcloud
 logpath  = $NCLOG
 maxretry = $MAXRETRY
+
+[ufwban]
+enabled = true
+port = ssh, http, https
+filter = ufwban
+logpath = /var/log/ufw.log
+action = ufw
 EOF
   cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
   update-rc.d fail2ban defaults

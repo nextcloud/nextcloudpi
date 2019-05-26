@@ -1,11 +1,17 @@
 
-[v1.12.3](https://github.com/nextcloud/nextcloudpi/commit/b797129) (2019-05-11) nc-scan-auto: recursive and home-only options
+[v1.12.6](https://github.com/nextcloud/nextcloudpi/commit/e6ddc93) (2019-05-25) fail2ban: add a ufw jail and filter (dmaroulidis)
+
+[v1.12.5 ](https://github.com/nextcloud/nextcloudpi/commit/30c0f57) (2019-05-25) ncp-web: update config reference URL
+
+[v1.12.4 ](https://github.com/nextcloud/nextcloudpi/commit/c8d6222) (2019-05-26) ncp-web: Pt Translate (#907)
+
+[v1.12.3 ](https://github.com/nextcloud/nextcloudpi/commit/d938481) (2019-05-11) nc-scan-auto: recursive and home-only options
 
 [v1.12.2 ](https://github.com/nextcloud/nextcloudpi/commit/7589081) (2019-05-11) fix logrotate files
 
-[v1.12.1](https://github.com/nextcloud/nextcloudpi/commit/1be5ddd) (2019-05-01) Rename configuration variables into self-documenting ones (#889)
+[v1.12.1 ](https://github.com/nextcloud/nextcloudpi/commit/1be5ddd) (2019-05-01) Rename configuration variables into self-documenting ones (#889)
 
-[v1.12.0](https://github.com/nextcloud/nextcloudpi/commit/f34354c) (2019-04-29) ncp-web: add backups panel
+[v1.12.0 ](https://github.com/nextcloud/nextcloudpi/commit/f34354c) (2019-04-29) ncp-web: add backups panel
 
 [v1.11.5 ](https://github.com/nextcloud/nextcloudpi/commit/01cd421) (2019-04-29) letsencrypt: force renewal by default
 
