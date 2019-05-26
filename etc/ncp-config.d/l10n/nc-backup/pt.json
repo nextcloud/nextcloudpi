@@ -1,0 +1,10 @@
+{
+    "translations": {
+        "BACKUPLIMIT": "Limites de backup",
+        "Backup this NC instance to a file": "Fazer uma cópia de segurança(backup) dessa instância NC num arquivo",
+        "COMPRESS": "Comprimir",
+        "DESTDIR": "Diretório de destino",
+        "INCLUDEDATA": "Incluír dados",
+        "nc-backup": "nc-backup"
+    }
+}

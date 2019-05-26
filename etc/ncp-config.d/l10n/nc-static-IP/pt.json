@@ -1,0 +1,8 @@
+{
+  "translations":{
+    "ACTIVE":"ativo",
+    "IP":"IP",
+    "Set up a static IP address (ACTIVE=yes), or DHCP (ACTIVE=no)":"Configure um endereço de IP estático(Ativo=yes, ou DHCP（Ativo=no）",
+    "nc-static-IP":"nc-IP-estático"
+  }
+}

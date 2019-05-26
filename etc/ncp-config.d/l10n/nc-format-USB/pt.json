@@ -1,0 +1,8 @@
+{
+    "translations":{
+        "LABEL":"Etiqueta",
+        "Format an external USB drive as a BTRFS partition (dangerous)":"Formata um USB externo como uma partição BTRFS (perigoso)",
+        "Make sure that ONLY the USB drive that you want to format is plugged in.\ncareful, this will destroy any data in the USB drive\n\n** YOU WILL LOSE ALL YOUR USB DATA **":"Tenha certeza que apenas o USB que deseja formatar está plugado.\n**Cuidado,isto vai distruir qualquer dado que esteja no USB**\n\n**PERDERÁ TODOS OS DADOS DO USB",
+        "nc-format-USB":"nc-formatar-USB"
+    }
+}

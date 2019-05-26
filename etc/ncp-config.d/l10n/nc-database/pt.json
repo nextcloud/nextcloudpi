@@ -1,0 +1,8 @@
+{
+    "translations": {
+        "DBDIR": "Diretório de banco de Dados",
+        "This utility allows you to move your database to a new location, like an external USB drive.": "Esta funcionalidade permite você mover o seu banco de dados para uma nova localização, como um dispositivo USB externo",
+        "Note that non Unix filesystems such as NTFS are not supported\nbecause they do not provide a compatible user/permissions system.\n\nYou need to use a USB drive that is permanently on and is responsive \nor the database will fail.\n\nPlease note that the default location, when first installed is /var/lib/mysql/. \nMove it to the desired location by editing the DBDIR= field, the one shown is an example.\n\n** If it ever fails with a white page, move the database back to the SD **": "Perceba que os sistemas de arquivos que não são baseados em unix como NSF não são suportados\nporquê eles não providenciam sistema de compatibilidade com usuários/permissões.\n\nVocê precisa usar um PenDrive que é permanente ligado e que seja responsivo\nou o banco de dados irá falhar\n\nPor Favor note que a localização padrão, quando feita a instalção padrão é /var/lib/mysql/.\nMova ele para a localização desejada, editando o campo  DBDIR, aquele mostrado no exemplo.\n\n** Se falhar com uma página em branco, mova o banco de dados de volta para o SD **",
+        "nc-database": "bancoDeDados-nc"
+    }
+}

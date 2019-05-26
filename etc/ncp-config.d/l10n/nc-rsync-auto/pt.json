@@ -1,0 +1,10 @@
+{
+  "translations":{
+    "ACTIVE":"Ativo",
+    "DESTINATION":"Destino",
+    "SYNCDAYS":"Dias de sincronização",
+    "Periodically sync Nextcloud data through rsync":"Sincronize periodicamente os dados do NextCloud através do rsync",
+    "DESTINATION can be a regular path for local sync\n'user' needs SSH autologin from the NCP 'root' user at 'ip'":"o Destino pode ser um caminho regular para a sincronização local\n'user' precisa de autenticação SSH do usuário 'root' do NCP em 'ip'",
+    "nc-rsync-auto":"nc-rsync-automático"
+  }
+}

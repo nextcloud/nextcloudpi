@@ -1,0 +1,6 @@
+{
+    "translations": {
+        "Fix permissions for NC data files, in case they were copied externally": "Consertar as permissões do arquivo de dados do NC, caso eles forem copiados externamente",
+        "nc-fix-permissions": "nc-permissões-consertada"
+    }
+}

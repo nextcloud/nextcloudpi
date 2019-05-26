@@ -1,0 +1,9 @@
+{
+    "translations": {
+        "For NextCloudPi to be able to setup your ports, UPnP must be activated\nin your router. Activate it now on your router admin webpage.\n\n** UPnP is considered a security risk **\n\nDon't forget to disable it afterwards": "Para o NextCloudPi conseguir configurar as portas, UPnp deve estar ativo\nno seu Roteador.A ativação é feita na pagina de Web administração do seu roteador\n\n**UPnP é considerado um risco de segurança**\n\nNão esqueça de desativá-lo depois.",
+        "HTTPPORT": "Porta http",
+        "HTTPSPORT": "Porta https",
+        "nc-forward-ports": "nc-portas-encaminhadas (UPnP)",
+        "Set port forwarding to access from outside (UPnP)":"Configurar a porta à ser encaminhada para acesso externo (UPnP）"
+    }
+}

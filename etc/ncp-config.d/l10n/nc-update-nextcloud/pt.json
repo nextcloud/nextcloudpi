@@ -1,0 +1,8 @@
+{
+  "translations":{
+      "Update current instance to a new Nextcloud version":"Atualizre a instâcia atual para uma nova versão Nextcloud",
+      "VERSION":"Versão",
+      "nc-update-nextcloud":"nc-atualização-nextcloud",
+      "Set to 0 to update to the latest avaliable version":"Defina como 0(zero) para atualizar para a versão mais recente disponível"
+  }
+}

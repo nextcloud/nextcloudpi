@@ -1,0 +1,8 @@
+{
+    "translations":{
+        "ACTIVE":"Ativo",
+        "USER":"Usuário",
+        "Notify in NC when a NextCloudPi update is available":"Notifica no NC quando uma atualização NextCloudPi está disponível",
+        "nc-notify-updates":"nc-notificar-atualizações"
+    }
+}

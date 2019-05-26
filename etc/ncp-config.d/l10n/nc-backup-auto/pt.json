@@ -1,0 +1,13 @@
+{
+    "translations": {
+        "ACTIVE": "Ativo",
+        "DESTDIR": "Destino",
+        "INCLUDEDATA": "Incluír dados",
+        "COMPRESS": "Comprimir",
+        "BACKUPDAYS": "Datas de backup",
+        "BACKUPLIMIT": "Limites de backup",
+        "Periodic backups":"Backup periódicos",
+        "nc-backup-auto":"nc-backup-automatico"
+        
+    }
+}

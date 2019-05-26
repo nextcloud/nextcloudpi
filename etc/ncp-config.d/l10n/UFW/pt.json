@@ -1,0 +1,11 @@
+{
+    "translations":{
+        "ACTIVE":"ativo",
+        "HTTP":"HTTP",
+        "HTTPS":"HTTPS",
+        "SSH":"SSH",
+        "Uncomplicated Firewall":"Firewall descomplicado(UFW)",
+        "Beware of blocking the SSH port you are using!":"Cuidado com o bloqueio da porta SSH que você está usando!",
+        "Run":"Executar"
+    }
+}

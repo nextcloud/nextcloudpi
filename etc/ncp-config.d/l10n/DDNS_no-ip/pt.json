@@ -1,0 +1,12 @@
+{
+    "translations": {
+        "ACTIVE": "Ativo",
+        "DDNS no-ip free provider (need account)": "Provedor gratuito de DDNS no-ip (conta requerida)",
+        "DOMAIN": "Domínio",
+        "For this step to succeed, you need to register a noip account first.\nInternet access is required for this configuration to complete.": "Para que este passo ocorra corretamente, é necessario registrar  uma conta no no-ip.org previamente.\nÉ requerido acesso  a internet para que esta configuração seja completa",
+        "PASS": "Senha",
+        "TIME": "Intervalo",
+        "USER": "Usuário ",
+        "no-ip": "no-ip"
+    }
+}
