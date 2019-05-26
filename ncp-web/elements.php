@@ -142,7 +142,7 @@ function print_config_forms( $l /* translations l10n object */ )
         <div id="$cfg[id]-config-box" class="content-box $hidden">
           <h2 class="text-title">$cfg[description]</h2>
           <div class="config-box-info-txt">$cfg[info]</div>
-          <a href="https://github.com/nextcloud/nextcloudpi/wiki/Configuration-Reference#$ncp_app" target="_blank">
+          <a href="https://docs.nextcloudpi.com/en/configuration-reference/#$ncp_app" target="_blank">
             <div class="icon-info"></div>
           </a>
           <br/>
