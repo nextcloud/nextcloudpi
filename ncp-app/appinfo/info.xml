@@ -12,7 +12,7 @@
     <category>tools</category>
     <bugs>https://github.com/nextcloud/nextcloudpi/issues</bugs>
     <dependencies>
-        <nextcloud min-version="14" max-version="15"/>
+        <nextcloud min-version="14" max-version="16"/>
     </dependencies>
     <navigations>
         <navigation>
