@@ -8,6 +8,7 @@ services:
      - "443:443"
     volumes:
      - ncdata:/data
+     - /etc/localtime:/etc/localtime:ro
     container_name: nextcloudpi
 
 volumes:

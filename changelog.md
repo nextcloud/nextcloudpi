@@ -1,7 +1,9 @@
 
-[v1.12.7](https://github.com/nextcloud/nextcloudpi/commit/6be6f1c) (2019-05-25) ncp-app: bump to NC16
+[v1.12.8](https://github.com/nextcloud/nextcloudpi/commit/97bbfa7) (2019-05-25) docker: mount timezone
 
-[v1.12.6](https://github.com/nextcloud/nextcloudpi/commit/da09dc9) (2019-05-25) fail2ban: add a ufw jail and filter (dmaroulidis)
+[v1.12.7](https://github.com/nextcloud/nextcloudpi/commit/76137ed) (2019-05-25) ncp-app: bump to NC16
+
+[v1.12.6 ](https://github.com/nextcloud/nextcloudpi/commit/da09dc9) (2019-05-25) fail2ban: add a ufw jail and filter (dmaroulidis)
 
 [v1.12.5 ](https://github.com/nextcloud/nextcloudpi/commit/30c0f57) (2019-05-25) ncp-web: update config reference URL
 

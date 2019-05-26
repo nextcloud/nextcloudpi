@@ -9,6 +9,7 @@ services:
      - "4443:4443"
     volumes:
      - ncdata:/data
+     - /etc/localtime:/etc/localtime:ro
     container_name: nextcloudpi
 
 volumes:
