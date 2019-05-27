@@ -1,5 +1,7 @@
 
-[v1.12.8](https://github.com/nextcloud/nextcloudpi/commit/97bbfa7) (2019-05-25) docker: mount timezone
+[v1.12.9](https://github.com/nextcloud/nextcloudpi/commit/cc89c7e) (2019-05-27) ncp-notify-updates: dont spam cron mail
+
+[v1.12.8](https://github.com/nextcloud/nextcloudpi/commit/bfdc475) (2019-05-25) docker: mount timezone
 
 [v1.12.7](https://github.com/nextcloud/nextcloudpi/commit/76137ed) (2019-05-25) ncp-app: bump to NC16
 

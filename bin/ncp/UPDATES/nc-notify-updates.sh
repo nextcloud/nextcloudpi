@@ -33,8 +33,8 @@ NOTIFIED=/var/run/.ncp-version-notified
 test -e \$LATEST || exit 0;
 /usr/local/bin/ncp-test-updates || { echo "NextCloudPi up to date"; exit 0; }
 
-test -e \$NOTIFIED && [[ "\$( cat \$LATEST )" == "\$( cat \$NOTIFIED )" ]] && { 
-  echo "Found update from \$( cat \$VERFILE ) to \$( cat \$LATEST ). Already notified" 
+test -e \$NOTIFIED && [[ "\$( cat \$LATEST )" == "\$( cat \$NOTIFIED )" ]] && {
+  echo "Found update from \$( cat \$VERFILE ) to \$( cat \$LATEST ). Already notified"
   exit 0
 }
 
@@ -81,7 +81,7 @@ EOF
   chmod +x /usr/local/bin/ncp-notify-unattended-upgrade
 
   # check every hour at 40th minute
-  echo "40  */${CHECKINTERVAL} *  *  *  root /usr/local/bin/ncp-notify-update && /usr/local/bin/ncp-notify-unattended-upgrade" > /etc/cron.d/ncp-notify-updates
+  echo -e "MAILTO=\"\"\n40  */${CHECKINTERVAL} *  *  *  root /usr/local/bin/ncp-notify-update && /usr/local/bin/ncp-notify-unattended-upgrade" > /etc/cron.d/ncp-notify-updates
   chmod 644 /etc/cron.d/ncp-notify-updates
   [[ -f /run/crond.pid ]] && service cron restart
 

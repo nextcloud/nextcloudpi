@@ -10,9 +10,9 @@
 
 
 
-configure() 
+configure()
 {
-    [[ $ACTIVE != "yes" ]] && { 
+    [[ $ACTIVE != "yes" ]] && {
     rm -f /etc/cron.d/ncp-scan-auto
     service cron restart
     echo "automatic scans disabled"
