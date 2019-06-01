@@ -66,7 +66,7 @@ if ( $_POST['action'] == "launch" && $_POST['config'] )
 
       // sanitize
       $val = trim(escapeshellarg($new_params[$id]),"'");
-      preg_match( '/ /' , $val , $matches )
+      preg_match( '/[\'" ]/' , $val , $matches )
         and exit( '{ "output": "Invalid parameters" , "token": "' . getCSRFToken() . '" }' );
 
       // save

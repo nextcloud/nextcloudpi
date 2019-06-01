@@ -62,7 +62,7 @@ function configure_app()
 
         for (( i = 0 ; i < len ; i++ )); do
           # check for invalid characters
-          grep -q '[\\&#;`|*?~<>^()[{}$&[:space:]]' <<< "${ret_vals[$i]}" && { echo "Invalid characters in field ${vars[$i]}"; return 1; }
+          grep -q '[\\&#;'"'"'`|*?~<>^"()[{}$&[:space:]]' <<< "${ret_vals[$i]}" && { echo "Invalid characters in field ${vars[$i]}"; return 1; }
 
           cfg="$(jq ".params[$i].value = \"${ret_vals[$i]}\"" <<<"$cfg")"
         done

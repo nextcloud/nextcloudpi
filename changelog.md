@@ -1,5 +1,7 @@
 
-[v1.13.0](https://github.com/nextcloud/nextcloudpi/commit/4572d74) (2019-06-01) upgrade to NC15.0.8
+[v1.13.1](https://github.com/nextcloud/nextcloudpi/commit/18172be) (2019-06-01) ncp-web: avoid quotes in fields
+
+[v1.13.0](https://github.com/nextcloud/nextcloudpi/commit/86f14ae) (2019-06-01) upgrade to NC15.0.8
 
 [v1.12.10](https://github.com/nextcloud/nextcloudpi/commit/5924131) (2019-06-01) fail2ban: fix missing ufw filter
 
