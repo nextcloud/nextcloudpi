@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Let's encrypt certbot installation on Raspbian 
+# Let's encrypt certbot installation on NextCloudPi
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -42,7 +42,7 @@ EOF
 }
 
 # tested with certbot 0.28.0
-configure() 
+configure()
 {
   local DOMAIN_LOWERCASE="${DOMAIN,,}"
 
@@ -97,7 +97,7 @@ EOF
     # delayed in bg so it does not kill the connection, and we get AJAX response
     bash -c "sleep 2 && service apache2 reload" &>/dev/null &
     rm -rf $ncdir/.well-known
-    
+
     # Update configuration
     [[ "$DOCKERBUILD" == 1 ]] && update-rc.d letsencrypt enable
 
