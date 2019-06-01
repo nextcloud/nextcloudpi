@@ -1,11 +1,13 @@
 
-[v1.12.10](https://github.com/nextcloud/nextcloudpi/commit/d826236) (2019-06-01) fail2ban: fix missing ufw filter
+[v1.13.0](https://github.com/nextcloud/nextcloudpi/commit/4572d74) (2019-06-01) upgrade to NC15.0.8
 
-[v1.12.9](https://github.com/nextcloud/nextcloudpi/commit/c71b37f) (2019-05-27) ncp-notify-updates: dont spam cron mail
+[v1.12.10](https://github.com/nextcloud/nextcloudpi/commit/5924131) (2019-06-01) fail2ban: fix missing ufw filter
+
+[v1.12.9 ](https://github.com/nextcloud/nextcloudpi/commit/c71b37f) (2019-05-27) ncp-notify-updates: dont spam cron mail
 
 [v1.12.8 ](https://github.com/nextcloud/nextcloudpi/commit/bfdc475) (2019-05-25) docker: mount timezone
 
-[v1.12.7](https://github.com/nextcloud/nextcloudpi/commit/76137ed) (2019-05-25) ncp-app: bump to NC16
+[v1.12.7 ](https://github.com/nextcloud/nextcloudpi/commit/76137ed) (2019-05-25) ncp-app: bump to NC16
 
 [v1.12.6 ](https://github.com/nextcloud/nextcloudpi/commit/da09dc9) (2019-05-25) fail2ban: add a ufw jail and filter (dmaroulidis)
 
