@@ -15,13 +15,16 @@ function build_arch()
 {
   local arch="${1}"
   local arch_qemu="${2}"
-  local ncp_tag="${3:-arch}"
+  local ncp_tag="${3:-$arch}"
 
   docker_build -f docker/debian-ncp/Dockerfile  -t ownyourbits/debian-ncp-${arch}:latest --pull --build-arg arch=${arch} --build-arg arch_qemu=${arch_qemu}
   docker_build -f docker/lamp/Dockerfile        -t ownyourbits/lamp-${arch}:latest              --build-arg arch=${arch}
   docker_build -f docker/nextcloud/Dockerfile   -t ownyourbits/nextcloud-${arch}:latest         --build-arg arch=${arch}
   docker_build -f docker/nextcloudpi/Dockerfile -t ownyourbits/nextcloudpi-${arch}:latest       --build-arg arch=${arch}
 
+  docker tag ownyourbits/debian-ncp-${arch}:latest ownyourbits/debian-ncp-${ncp_tag}:"${version}"
+  docker tag ownyourbits/lamp-${arch}:latest ownyourbits/lamp-${ncp_tag}:"${version}"
+  docker tag ownyourbits/nextcloud-${arch}:latest ownyourbits/nextcloud-${ncp_tag}:"${version}"
   docker tag ownyourbits/nextcloudpi-${arch}:latest ownyourbits/nextcloudpi-${ncp_tag}:"${version}"
 }
 
