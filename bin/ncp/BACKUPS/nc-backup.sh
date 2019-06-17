@@ -85,7 +85,7 @@ tar $compress_arg -cf "$destfile" \
     --exclude "$data/.opcache" \
     --exclude "$data/{access,error,nextcloud}.log" \
     --exclude "$data/access.log" \
-    --exclude "$data/ncp-update-backups/" \
+    --exclude "$data/ncp-update-backups" \
     -C "$(dirname "$datadir"/)" $data \
 \
     --exclude "nextcloud/data/*/files/*" \
@@ -93,7 +93,7 @@ tar $compress_arg -cf "$destfile" \
     --exclude "nextcloud/data/{access,error,nextcloud}.log" \
     --exclude "nextcloud/data/access.log" \
     --exclude "nextcloud/data/appdata_*/previews/*" \
-    --exclude "nextcloud/data/ncp-update-backups/" \
+    --exclude "nextcloud/data/ncp-update-backups" \
     -C $basedir nextcloud/ \
   || {
         echo "error generating backup"
