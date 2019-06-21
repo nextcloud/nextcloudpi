@@ -230,6 +230,33 @@ function persistent_cfg()
   ln -s "$DST" "$SRC"
 }
 
+function is_more_recent_than()
+{
+  local version_A="$1"
+  local version_B="$2"
+ 
+  local major_a=$( cut -d. -f1 <<<"$version_A" )
+  local minor_a=$( cut -d. -f2 <<<"$version_A" )
+  local patch_a=$( cut -d. -f3 <<<"$version_A" )
+
+  local major_b=$( cut -d. -f1 <<<"$version_B" )
+  local minor_b=$( cut -d. -f2 <<<"$version_B" )
+  local patch_b=$( cut -d. -f3 <<<"$version_B" )
+
+  # Compare version A with version B
+  # Return true if A is more recent than B
+
+  if [ "$major_b" -gt "$major_a" ]; then
+    return 1
+  elif [ "$major_b" -eq "$major_a" ] && [ "$minor_b" -gt "$minor_a" ]; then
+    return 1
+  elif [ "$major_b" -eq "$major_a" ] && [ "$minor_b" -eq "$minor_a" ] && [ "$patch_b" -gt "$patch_a" ]; then
+    return 1
+  fi
+
+  return 0
+}
+
 # License
 #
 # This script is free software; you can redistribute it and/or modify it
