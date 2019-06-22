@@ -49,7 +49,7 @@ cp etc/library.sh /usr/local/etc/
 
 source /usr/local/etc/library.sh
 
-./backward_updates.sh
+./run_update_history.sh "updates"
 
 mkdir -p "$CONFDIR"
 

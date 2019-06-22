@@ -235,26 +235,26 @@ function is_more_recent_than()
   local version_A="$1"
   local version_B="$2"
  
-  MAJOR_A=$( echo ${version_A} | cut -d. -f1 )
-  MINOR_A=$( echo ${version_A} | cut -d. -f2 )
-  PATCH_A=$( echo ${version_A} | cut -d. -f3 )
+  local major_a=$( echo ${version_A} | cut -d. -f1 )
+  local minor_a=$( echo ${version_A} | cut -d. -f2 )
+  local patch_a=$( echo ${version_A} | cut -d. -f3 )
 
-  MAJOR_B=$( echo ${version_B} | cut -d. -f1 )
-  MINOR_B=$( echo ${version_B} | cut -d. -f2 )
-  PATCH_B=$( echo ${version_B} | cut -d. -f3 )
+  local major_b=$( echo ${version_B} | cut -d. -f1 )
+  local minor_b=$( echo ${version_B} | cut -d. -f2 )
+  local patch_b=$( echo ${version_B} | cut -d. -f3 )
 
   # Compare version A with version B
   # Return true if A is more recent than B
 
-  if [ "$MAJOR_B" -gt "$MAJOR_A" ]; then
-    echo false
-  elif [ "$MAJOR_B" -eq "$MAJOR_A" ] && [ "$MINOR_B" -gt "$MINOR_A" ]; then
-    echo false
-  elif [ "$MAJOR_B" -eq "$MAJOR_A" ] && [ "$MINOR_B" -eq "$MINOR_A" ] && [ "$PATCH_B" -gt "$PATCH_A" ]; then
-    echo false
+  if [ "$major_b" -gt "$major_a" ]; then
+    return 1
+  elif [ "$major_b" -eq "$major_a" ] && [ "$minor_b" -gt "$minor_a" ]; then
+    return 1
+  elif [ "$major_b" -eq "$major_a" ] && [ "$minor_b" -eq "$minor_a" ] && [ "$patch_b" -gt "$patch_a" ]; then
+    return 1
   fi
 
-  echo true
+  return 0
 }
 
 # License

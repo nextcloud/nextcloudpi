@@ -5,19 +5,18 @@
 set -e
 
 source /usr/local/etc/library.sh
+updates="$1"
 
 # Get the array of updates dir
 # The files in updates dir are sorted by tag number
 # Files names follow the syntax of a tag: x.y.z.sh
-i=0
 while read line ; do
-  updates_list[ $i ]="$line"
-  (( i++ ))
-done < <( ls -1 updates | sort -V)
+  updates_list+=("$line")
+done < <( ls -1 ${updates} | sort -V)
 
 starting_checkpoint=0
 len=${#updates_list[@]}
-end_of_list=$(expr $len - 1)
+end_of_list=$((len - 1))
 
 # The latest checkpoint is the newer version in updates dir
 latest_checkpoint=${updates_list[$end_of_list]}
@@ -27,9 +26,7 @@ current_version=$( grep -oP "\d+\.\d+\.\d+" /usr/local/etc/ncp-version | cut -d'
 # Compare current version with latest checkpoint
 # If the current version is more recent than the latest checkpoint there is no need for backward updates
 
-BACKWARD_UPDATES=$( is_more_recent_than ${latest_checkpoint_version} ${current_version} )
-
-if $BACKWARD_UPDATES ; then
+if is_more_recent_than ${latest_checkpoint_version} ${current_version} ; then
 
   # Execute a series of updates of older versions
 
@@ -44,27 +41,24 @@ if $BACKWARD_UPDATES ; then
   lower_bound=0
   upper_bound=$end_of_list
   while [ $lower_bound -le $upper_bound ]; do
-    x=$(expr $upper_bound + $lower_bound)
-    mid=$(expr $x / 2 )
+    x=$((upper_bound + lower_bound))
+    mid=$((x / 2))
 
     #Compare mid's version with current version
 
     mid_version=$( basename ${updates_list[$mid]} .sh )
-    apply_update=$( is_more_recent_than ${mid_version} ${current_version} )
 
-    if $apply_update ; then 
+    if is_more_recent_than ${mid_version} ${current_version} ; then 
       # Mid's version update is applicable to the current version
       # Check if the previous checkpoint (mid-1) is applicable
 
-      previous=$(expr $mid - 1)
+      previous=$((mid - 1))
       previous_version=$( basename ${updates_list[$previous]} .sh )
       if [ "$mid" -gt 0 ] ; then
         #Compare previous's version with current version
-	applied=$( is_more_recent_than ${current_version} ${previous_version} )
-
 	# If the previous checkpoint is not applicable then mid is the starting checkpoint
 	# Otherwise keep on binary searching
-	if $applied ; then
+	if is_more_recent_than ${current_version} ${previous_version} ; then
           starting_checkpoint=$mid
 	  break
 	fi
@@ -74,23 +68,21 @@ if $BACKWARD_UPDATES ; then
 	break
       fi
       # Continue searching for starting checkpoint
-      upper_bound=$(expr $mid - 1)
+      upper_bound=$((mid - 1))
 
     else
       # Mid's version update is not applicable to the current version
       # Check if the next checkpoint (mid+1) is applicable
 
-      next=$(expr $mid + 1)
+      next=$((mid + 1))
       next_version=$( basename ${updates_list[$next]} .sh )
 
       #Compare next's version with current version
-      applied=$( is_more_recent_than ${current_version} ${next_version} )
-
       # If next checkpoint is not applicable then next is the starting checkpoint
       # Otherwise keep on binary searching
-      if $applied ; then
+      if is_more_recent_than ${current_version} ${next_version} ; then
         # Continue searching for starting checkpoint
-        lower_bound=$(expr $mid + 1)
+	lower_bound=$((mid + 1))
       else
         # The next version is the starting checkpoint
 	starting_checkpoint=$next
@@ -105,7 +97,7 @@ if $BACKWARD_UPDATES ; then
     update_file=${updates_list[i]}
     tag_update=$( basename ${update_file} .sh )
     echo "Update system to version ${tag_update}"
-    ./updates/${update_file} || exit 1
+    ./${updates}/${update_file} || exit 1
   done
 fi
 
