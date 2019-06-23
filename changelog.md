@@ -1,5 +1,7 @@
 
-[v1.13.2](https://github.com/nextcloud/nextcloudpi/commit/c24b3a3) (2019-06-17) nc-backup: fix exclusion of ncp backups
+[v1.13.3](https://github.com/nextcloud/nextcloudpi/commit/659d768) (2019-06-23) spDYN: remove unused IPV6 argument in spDYN.sh
+
+[v1.13.2](https://github.com/nextcloud/nextcloudpi/commit/c392529) (2019-06-17) nc-backup: fix exclusion of ncp backups
 
 [v1.13.1 ](https://github.com/nextcloud/nextcloudpi/commit/5de855f) (2019-06-01) ncp-web: avoid quotes in fields
 
