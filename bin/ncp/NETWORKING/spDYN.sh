@@ -31,14 +31,9 @@ install()
 ### Configuration
 HOST=$1
 TOKEN=$2
-IPv6=$3
 
 # Get current IP address from
-if [[ $IPv6 == "yes" ]];	then
-	get_ip_url="http://checkip6.spdyn.de"
-else
-	get_ip_url="http://checkip4.spdyn.de"
-fi
+get_ip_url="http://checkip.spdyn.de"
 
 update_url="https://update.spdyn.de/nic/update"
 
@@ -100,11 +95,11 @@ configure()
     
     # Adds file to cron to run script for DNS record updates and change permissions
     touch $CRONFILE
-    echo "10 * * * * root $INSTALLPATH/spdnsUpdater.sh $DOMAIN $TOKEN $IPv6 >/dev/null 2>&1" > "$CRONFILE"
+    echo "10 * * * * root $INSTALLPATH/spdnsUpdater.sh $DOMAIN $TOKEN >/dev/null 2>&1" > "$CRONFILE"
     chmod 644 "$CRONFILE"
 
     # First-time execution of update script and print response from spdns.de server
-    "$INSTALLPATH"/spdnsUpdater.sh "$DOMAIN" "$TOKEN" "$IPv6"
+    "$INSTALLPATH"/spdnsUpdater.sh "$DOMAIN" "$TOKEN"
 		
 		echo -e "\nspdnsUpdater is now enabled"
 
