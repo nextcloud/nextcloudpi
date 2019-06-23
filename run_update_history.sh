@@ -5,14 +5,17 @@
 set -e
 
 source /usr/local/etc/library.sh
+
+# Updates folder contains the "history" of updates
 updates="$1"
+[ -d "$updates" ] || exit 1
 
 # Get the array of updates dir
 # The files in updates dir are sorted by tag number
 # Files names follow the syntax of a tag: x.y.z.sh
 while read line ; do
   updates_list+=("$line")
-done < <( ls -1 ${updates} | sort -V)
+done < <( ls -1 "$updates" | sort -V)
 
 starting_checkpoint=0
 len=${#updates_list[@]}
@@ -20,13 +23,13 @@ end_of_list=$((len - 1))
 
 # The latest checkpoint is the newer version in updates dir
 latest_checkpoint=${updates_list[$end_of_list]}
-latest_checkpoint_version=$( basename ${latest_checkpoint} .sh )
+latest_checkpoint_version=$( basename "$latest_checkpoint" .sh )
 current_version=$( grep -oP "\d+\.\d+\.\d+" /usr/local/etc/ncp-version | cut -d'v' -f1 )
 
 # Compare current version with latest checkpoint
 # If the current version is more recent than the latest checkpoint there is no need for backward updates
 
-if is_more_recent_than ${latest_checkpoint_version} ${current_version} ; then
+if is_more_recent_than "$latest_checkpoint_version" "$current_version" ; then
 
   # Execute a series of updates of older versions
 
@@ -48,7 +51,7 @@ if is_more_recent_than ${latest_checkpoint_version} ${current_version} ; then
 
     mid_version=$( basename ${updates_list[$mid]} .sh )
 
-    if is_more_recent_than ${mid_version} ${current_version} ; then 
+    if is_more_recent_than "$mid_version" "$current_version" ; then 
       # Mid's version update is applicable to the current version
       # Check if the previous checkpoint (mid-1) is applicable
 
@@ -58,7 +61,7 @@ if is_more_recent_than ${latest_checkpoint_version} ${current_version} ; then
         #Compare previous's version with current version
 	# If the previous checkpoint is not applicable then mid is the starting checkpoint
 	# Otherwise keep on binary searching
-	if is_more_recent_than ${current_version} ${previous_version} ; then
+	if is_more_recent_than "$current_version" "$previous_version" ; then
           starting_checkpoint=$mid
 	  break
 	fi
@@ -80,7 +83,7 @@ if is_more_recent_than ${latest_checkpoint_version} ${current_version} ; then
       #Compare next's version with current version
       # If next checkpoint is not applicable then next is the starting checkpoint
       # Otherwise keep on binary searching
-      if is_more_recent_than ${current_version} ${next_version} ; then
+      if is_more_recent_than "$current_version" "$next_version" ; then
         # Continue searching for starting checkpoint
 	lower_bound=$((mid + 1))
       else
@@ -93,11 +96,13 @@ if is_more_recent_than ${latest_checkpoint_version} ${current_version} ; then
 
   # Starting checkpoint has been found so update the system for the rest updates
 
-  for(( i=${starting_checkpoint}; i<=${end_of_list}; i++)); do
+  for(( i="$starting_checkpoint"; i<="$end_of_list"; i++)); do
     update_file=${updates_list[i]}
-    tag_update=$( basename ${update_file} .sh )
-    echo "Update system to version ${tag_update}"
-    ./${updates}/${update_file} || exit 1
+    tag_update=$( basename "$update_file" .sh )
+    echo -e "Updating system to version $tag_update . . ."
+    ./"$updates"/"$update_file" || exit 1
+    echo -e "System updated successfully to version $tag_update"
+    echo "v$tag_update" > /usr/local/etc/ncp-version
   done
 fi
 

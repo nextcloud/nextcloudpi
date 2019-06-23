@@ -235,13 +235,13 @@ function is_more_recent_than()
   local version_A="$1"
   local version_B="$2"
  
-  local major_a=$( echo ${version_A} | cut -d. -f1 )
-  local minor_a=$( echo ${version_A} | cut -d. -f2 )
-  local patch_a=$( echo ${version_A} | cut -d. -f3 )
+  local major_a=$( echo "$version_A" | cut -d. -f1 )
+  local minor_a=$( echo "$version_A" | cut -d. -f2 )
+  local patch_a=$( echo "$version_A" | cut -d. -f3 )
 
-  local major_b=$( echo ${version_B} | cut -d. -f1 )
-  local minor_b=$( echo ${version_B} | cut -d. -f2 )
-  local patch_b=$( echo ${version_B} | cut -d. -f3 )
+  local major_b=$( echo "$version_B" | cut -d. -f1 )
+  local minor_b=$( echo "$version_B" | cut -d. -f2 )
+  local patch_b=$( echo "$version_B" | cut -d. -f3 )
 
   # Compare version A with version B
   # Return true if A is more recent than B
