@@ -8,7 +8,7 @@ source /usr/local/etc/library.sh
 
 # Updates folder contains the "history" of updates
 updates="$1"
-[ -d "$updates" ] || exit 1
+[ -d "$updates" ] || { echo "$updates does not exist. Abort" >&2; exit 1; }
 
 # Get the array of updates dir
 # The files in updates dir are sorted by tag number
