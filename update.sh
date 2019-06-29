@@ -11,6 +11,7 @@
 set -e
 
 CONFDIR=/usr/local/etc/ncp-config.d/
+UPDATESDIR=updates
 
 # don't make sense in a docker container
 EXCL_DOCKER="
@@ -48,8 +49,6 @@ pgrep apt &>/dev/null && { echo "apt is currently running. Try again later";  ex
 cp etc/library.sh /usr/local/etc/
 
 source /usr/local/etc/library.sh
-
-./run_update_history.sh "updates"
 
 mkdir -p "$CONFDIR"
 
@@ -122,6 +121,9 @@ cp -r ncp-app /var/www/
 
   # update services
   cp docker/{lamp/010lamp,nextcloud/020nextcloud,nextcloudpi/000ncp} /etc/services-enabled.d
+
+  # update old images
+  ./run_update_history.sh "$UPDATESDIR"
 
 }
 
