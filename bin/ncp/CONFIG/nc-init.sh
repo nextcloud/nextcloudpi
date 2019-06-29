@@ -157,9 +157,11 @@ EOF
   ncc app:enable previewgenerator
 
   # previews
-  ncc config:app:set previewgenerator squareSizes --value="32"
-  ncc config:app:set previewgenerator widthSizes  --value="128 256 512"
-  ncc config:app:set previewgenerator heightSizes --value="128 256"
+  ncc config:app:set previewgenerator squareSizes --value="32 256"
+  ncc config:app:set previewgenerator widthSizes  --value="256 384"
+  ncc config:app:set previewgenerator heightSizes --value="256"
+  ncc config:system:set preview_max_x --value 2048
+  ncc config:system:set preview_max_y --value 2048
   ncc config:system:set jpeg_quality --value 60
 
   # other

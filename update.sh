@@ -238,6 +238,17 @@ EOF
   # fix logrotate files
   chmod 0444 /etc/logrotate.d/*
 
+  # adjust preview sizes
+  [[ "$(ncc config:system:get preview_max_x)" == "" ]] && {
+    ncc config:app:set previewgenerator squareSizes --value="32 256"
+    ncc config:app:set previewgenerator widthSizes  --value="256 384"
+    ncc config:app:set previewgenerator heightSizes --value="256"
+    ncc config:system:set preview_max_x --value 2048
+    ncc config:system:set preview_max_y --value 2048
+    ncc config:system:set jpeg_quality --value 60
+  }
+
+
   # remove redundant opcache configuration. Leave until update bug is fixed -> https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=815968
   # Bug #416 reappeared after we moved to php7.2 and debian buster packages. (keep last)
   [[ "$( ls -l /etc/php/7.2/fpm/conf.d/*-opcache.ini |  wc -l )" -gt 1 ]] && rm "$( ls /etc/php/7.2/fpm/conf.d/*-opcache.ini | tail -1 )"
