@@ -7,15 +7,15 @@ set -e
 source /usr/local/etc/library.sh
 
 # Updates folder contains the "history" of updates
-updates="$1"
-[ -d "$updates" ] || { echo "$updates does not exist. Abort" >&2; exit 1; }
+updates_dir="$1"
+[ -d "$updates_dir" ] || { echo "$updates_dir does not exist. Abort" >&2; exit 1; }
 
 # Get the array of updates dir
 # The files in updates dir are sorted by tag number
 # Files names follow the syntax of a tag: x.y.z.sh
 while read line ; do
   updates_list+=("$line")
-done < <( ls -1 "$updates" | sort -V)
+done < <( ls -1 "$updates_dir" | sort -V)
 
 starting_checkpoint=0
 len=${#updates_list[@]}
@@ -40,7 +40,7 @@ if is_more_recent_than "$latest_checkpoint_version" "$current_version" ; then
 
   # An update is *applicable* when it is more recent than the current version
   # An older update/checkpoint is not *applicable* to our system
-    
+
   lower_bound=0
   upper_bound=$end_of_list
   while [ $lower_bound -le $upper_bound ]; do
@@ -97,12 +97,12 @@ if is_more_recent_than "$latest_checkpoint_version" "$current_version" ; then
   # Starting checkpoint has been found so update the system for the rest updates
 
   for(( i="$starting_checkpoint"; i<="$end_of_list"; i++)); do
-    update_file=${updates_list[i]}
+    update_file=${updates_list[$i]}
     tag_update=$( basename "$update_file" .sh )
     echo -e "Updating system to version $tag_update . . ."
-    ./"$updates"/"$update_file" || exit 1
-    echo -e "System updated successfully to version $tag_update"
+    bash "$updates_dir/$update_file" || exit 1
     echo "v$tag_update" > /usr/local/etc/ncp-version
+    echo -e "System updated successfully to version v$tag_update"
   done
 fi
 

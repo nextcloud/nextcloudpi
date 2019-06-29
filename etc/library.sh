@@ -92,7 +92,7 @@ function configure_app()
 function run_app()
 {
   local ncp_app=$1
-  local script="$(find "$BINDIR" -name $ncp_app.sh)"
+  local script="$(find "$BINDIR" -name $ncp_app.sh | head -1)"
 
   [[ -f "$script" ]] || { echo "file $script not found"; return 1; }
 
@@ -147,7 +147,7 @@ function is_active_app()
   local script="$bin_dir/$ncp_app.sh"
   local cfg_file="$CFGDIR/$ncp_app.cfg"
 
-  [[ -f "$script" ]] || local script="$(find "$BINDIR" -name $ncp_app.sh)"
+  [[ -f "$script" ]] || local script="$(find "$BINDIR" -name $ncp_app.sh | head -1)"
   [[ -f "$script" ]] || { echo "file $script not found"; return 1; }
 
   # function
@@ -194,7 +194,7 @@ function install_app()
     local script="$ncp_app"
     local ncp_app="$(basename "$script" .sh)"
   else
-    local script="$(find "$BINDIR" -name $ncp_app.sh)"
+    local script="$(find "$BINDIR" -name $ncp_app.sh | head -1)"
   fi
 
   # do it
@@ -234,7 +234,7 @@ function is_more_recent_than()
 {
   local version_A="$1"
   local version_B="$2"
- 
+
   local major_a=$( cut -d. -f1 <<<"$version_A" )
   local minor_a=$( cut -d. -f2 <<<"$version_A" )
   local patch_a=$( cut -d. -f3 <<<"$version_A" )
@@ -250,7 +250,7 @@ function is_more_recent_than()
     return 1
   elif [ "$major_b" -eq "$major_a" ] && [ "$minor_b" -gt "$minor_a" ]; then
     return 1
-  elif [ "$major_b" -eq "$major_a" ] && [ "$minor_b" -eq "$minor_a" ] && [ "$patch_b" -gt "$patch_a" ]; then
+  elif [ "$major_b" -eq "$major_a" ] && [ "$minor_b" -eq "$minor_a" ] && [ "$patch_b" -ge "$patch_a" ]; then
     return 1
   fi
 

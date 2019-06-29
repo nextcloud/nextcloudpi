@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 ## BACKWARD FIXES ( for older images )
 
 source /usr/local/etc/library.sh
@@ -23,6 +25,13 @@ ignoreregex =
 EOF
     :
   }
+
+  # remove files that have been moved
+  rm -f "$BINDIR"/CONFIG/nc-notify-updates.sh
+  rm -f "$BINDIR"/TOOLS/nc-update-nc-apps.sh
+  rm -f "$BINDIR"/TOOLS/nc-update-nextcloud.sh
+  rm -f "$BINDIR"/TOOLS/nc-update.sh
+  rm -f "$BINDIR"/{SYSTEM/unattended-upgrades.sh,CONFIG/nc-autoupdate-nc.sh,CONFIG/nc-autoupdate-ncp.sh,CONFIG/nc-update-nc-apps-auto.sh}
 
   # update to the latest version
   is_active_app nc-autoupdate-nc && run_app nc-autoupdate-nc
@@ -48,7 +57,7 @@ EOF
   is_active_app nc-update-nc-apps-auto && run_app nc-update-nc-apps-auto
 
   # rework letsencrypt notification
-  USER="$(jq -r '.params[2].value' "$CONFDIR"/letsencrypt.cfg)"
+  USER="$(jq -r '.params[2].value' "$CFGDIR"/letsencrypt.cfg)"
   mkdir -p /etc/letsencrypt/renewal-hooks/deploy/
   cat > /etc/letsencrypt/renewal-hooks/deploy/ncp <<EOF
 #!/bin/bash
@@ -117,9 +126,73 @@ EOF
   # fix logrotate files
   chmod 0444 /etc/logrotate.d/*
 
+  # adjust preview sizes
+  [[ "$(ncc config:system:get preview_max_x)" == "" ]] && {
+    ncc config:app:set previewgenerator squareSizes --value="32 256"
+    ncc config:app:set previewgenerator widthSizes  --value="256 384"
+    ncc config:app:set previewgenerator heightSizes --value="256"
+    ncc config:system:set preview_max_x --value 2048
+    ncc config:system:set preview_max_y --value 2048
+    ncc config:system:set jpeg_quality --value 60
+  }
+
+  # adjust local IPv6
+  cat > /etc/apache2/sites-available/ncp.conf <<EOF
+Listen 4443
+<VirtualHost _default_:4443>
+  DocumentRoot /var/www/ncp-web
+  SSLEngine on
+  SSLCertificateFile      /etc/ssl/certs/ssl-cert-snakeoil.pem
+  SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
+
+  # 2 days to avoid very big backups requests to timeout
+  TimeOut 172800
+
+  <IfModule mod_authnz_external.c>
+    DefineExternalAuth pwauth pipe /usr/sbin/pwauth
+  </IfModule>
+
+</VirtualHost>
+<Directory /var/www/ncp-web/>
+
+  AuthType Basic
+  AuthName "ncp-web login"
+  AuthBasicProvider external
+  AuthExternal pwauth
+
+  SetEnvIf Request_URI "^" noauth
+  SetEnvIf Request_URI "^index\.php$" !noauth
+  SetEnvIf Request_URI "^/$" !noauth
+  SetEnvIf Request_URI "^/wizard/index.php$" !noauth
+  SetEnvIf Request_URI "^/wizard/$" !noauth
+
+  <RequireAll>
+
+   <RequireAny>
+      Require host localhost
+      Require local
+      Require ip 192.168
+      Require ip 172
+      Require ip 10
+      Require ip fd00::/8
+      Require ip fe80::/10
+   </RequireAny>
+
+   <RequireAny>
+      Require env noauth
+      Require user ncp
+   </RequireAny>
+
+  </RequireAll>
+
+</Directory>
+EOF
+
   # remove redundant opcache configuration. Leave until update bug is fixed -> https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=815968
   # Bug #416 reappeared after we moved to php7.2 and debian buster packages. (keep last)
   [[ "$( ls -l /etc/php/7.2/fpm/conf.d/*-opcache.ini |  wc -l )" -gt 1 ]] && rm "$( ls /etc/php/7.2/fpm/conf.d/*-opcache.ini | tail -1 )"
   [[ "$( ls -l /etc/php/7.2/cli/conf.d/*-opcache.ini |  wc -l )" -gt 1 ]] && rm "$( ls /etc/php/7.2/cli/conf.d/*-opcache.ini | tail -1 )"
 
 } # end - only live updates
+
+exit 0
