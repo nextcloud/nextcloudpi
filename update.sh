@@ -248,6 +248,57 @@ EOF
     ncc config:system:set jpeg_quality --value 60
   }
 
+  # adjust local IPv6
+  cat > /etc/apache2/sites-available/ncp.conf <<EOF
+Listen 4443
+<VirtualHost _default_:4443>
+  DocumentRoot /var/www/ncp-web
+  SSLEngine on
+  SSLCertificateFile      /etc/ssl/certs/ssl-cert-snakeoil.pem
+  SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
+
+  # 2 days to avoid very big backups requests to timeout
+  TimeOut 172800
+
+  <IfModule mod_authnz_external.c>
+    DefineExternalAuth pwauth pipe /usr/sbin/pwauth
+  </IfModule>
+
+</VirtualHost>
+<Directory /var/www/ncp-web/>
+
+  AuthType Basic
+  AuthName "ncp-web login"
+  AuthBasicProvider external
+  AuthExternal pwauth
+
+  SetEnvIf Request_URI "^" noauth
+  SetEnvIf Request_URI "^index\.php$" !noauth
+  SetEnvIf Request_URI "^/$" !noauth
+  SetEnvIf Request_URI "^/wizard/index.php$" !noauth
+  SetEnvIf Request_URI "^/wizard/$" !noauth
+
+  <RequireAll>
+
+   <RequireAny>
+      Require host localhost
+      Require local
+      Require ip 192.168
+      Require ip 172
+      Require ip 10
+      Require ip fd00::/8
+      Require ip fe80::/10
+   </RequireAny>
+
+   <RequireAny>
+      Require env noauth
+      Require user ncp
+   </RequireAny>
+
+  </RequireAll>
+
+</Directory>
+EOF
 
   # remove redundant opcache configuration. Leave until update bug is fixed -> https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=815968
   # Bug #416 reappeared after we moved to php7.2 and debian buster packages. (keep last)

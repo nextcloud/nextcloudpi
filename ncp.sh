@@ -58,6 +58,7 @@ EOF
       Require ip 192.168
       Require ip 172
       Require ip 10
+      Require ip fe80::/10
       Require ip fd00::/8
    </RequireAny>
 
@@ -102,6 +103,8 @@ Listen 4443
       Require ip 192.168
       Require ip 172
       Require ip 10
+      Require ip fe80::/10
+      Require ip fd00::/8
    </RequireAny>
 
    <RequireAny>
