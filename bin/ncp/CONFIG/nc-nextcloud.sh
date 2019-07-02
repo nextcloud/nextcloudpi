@@ -10,7 +10,6 @@
 
 DBADMIN=ncadmin
 REDIS_MEM=3gb
-PHPVER=7.2
 
 APTINSTALL="apt-get install -y --no-install-recommends"
 export DEBIAN_FRONTEND=noninteractive
@@ -20,7 +19,7 @@ install()
   # During build, this step is run before ncp.sh. Avoid executing twice
   [[ -f /usr/lib/systemd/system/nc-provisioning.service ]] && return 0
 
-  local RELEASE=stretch
+  source /usr/local/etc/library.sh # sets PHPVER RELEASE
 
   # Optional packets for Nextcloud and Apps
   apt-get update
@@ -39,7 +38,7 @@ install()
     rm /usr/bin/newaliases
     mv /newaliases /usr/bin/newaliases
   }
- 
+
   $APTINSTALL redis-server
   $APTINSTALL -t $RELEASE php${PHPVER}-redis
 
@@ -59,7 +58,7 @@ install()
   service redis-server restart
   update-rc.d redis-server enable
   service php${PHPVER}-fpm restart
-  
+
   # service to randomize passwords on first boot
   mkdir -p /usr/lib/systemd/system
   cat > /usr/lib/systemd/system/nc-provisioning.service <<'EOF'
@@ -235,7 +234,7 @@ EOF
   echo "*/15  *  *  *  * php -f /var/www/nextcloud/cron.php" > /tmp/crontab_http
   crontab -u www-data /tmp/crontab_http
   rm /tmp/crontab_http
-  
+
   echo "Don't forget to run nc-init"
 }
 

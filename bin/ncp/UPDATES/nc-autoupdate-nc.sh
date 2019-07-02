@@ -8,13 +8,12 @@
 # More at: https://ownyourbits.com
 #
 
+# just change NCVER and re-activate in update.sh to upgrade users
+source /usr/local/etc/library.sh # sets NCVER
 
-# just change this value and re-activate in update.sh to upgrade users
-VERSION=15.0.8
-
-configure() 
+configure()
 {
-  [[ "$ACTIVE" != "yes" ]] && { 
+  [[ "$ACTIVE" != "yes" ]] && {
     rm -f /etc/cron.daily/ncp-autoupdate-nc
     echo "automatic Nextcloud updates disabled"
     return 0
@@ -24,7 +23,7 @@ configure()
 #!/bin/bash
 
 echo -e "[ncp-update-nc]"                          >> /var/log/ncp.log
-/usr/local/bin/ncp-update-nc "$VERSION" 2>&1 | tee -a /var/log/ncp.log
+/usr/local/bin/ncp-update-nc "$NCVER" 2>&1 | tee -a /var/log/ncp.log
 
 if [[ \${PIPESTATUS[0]} -eq 0 ]]; then
 

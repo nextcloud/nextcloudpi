@@ -4,6 +4,8 @@ ARG arch=armhf
 
 FROM ownyourbits/nextcloud-${arch}
 
+ARG ncp_ver=v0.0.0
+
 LABEL maintainer="Ignacio Núñez Hernanz <nacho@ownyourbits.com>"
 
 SHELL ["/bin/bash", "-c"]
@@ -62,7 +64,10 @@ find /var/log -type f -exec rm {} \; ; \
 rm -rf /usr/share/man/*; \
 rm -rf /usr/share/doc/*; \
 rm -f /var/log/alternatives.log /var/log/apt/*; \
-rm /var/cache/debconf/*-old; 
+rm /var/cache/debconf/*-old; \
+
+# set version
+echo "${ncp_ver}" > /usr/local/etc/ncp-version
 
 COPY docker/nextcloudpi/000ncp /etc/services-enabled.d/
 COPY bin/ncp/CONFIG/nc-init.sh /

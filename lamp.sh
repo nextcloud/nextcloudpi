@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# Nextcloud LAMP base installation on Raspbian 
+# Nextcloud LAMP base installation on Raspbian
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
 #
 # Usage:
-# 
+#
 #   ./installer.sh lamp.sh <IP> (<img>)
 #
 # See installer.sh instructions for details
@@ -19,25 +19,13 @@
 # More at https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/
 #
 
-PHPVER=7.2
+source /usr/local/etc/library.sh # sets PHPVER RELEASE
+
 APTINSTALL="apt-get install -y --no-install-recommends"
 export DEBIAN_FRONTEND=noninteractive
 
 install()
 {
-    # GET PHP 7.2 SOURCES
-    ##########################################
-
-    local RELEASE=stretch
-    apt-get update
-    $APTINSTALL apt-transport-https gnupg2 wget ca-certificates
-    echo "deb https://packages.sury.org/php/ stretch main" > /etc/apt/sources.list.d/php.list
-    wget -q https://packages.sury.org/php/apt.gpg -O- | apt-key add -
-    wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
-
-    # INSTALL 
-    ##########################################
-
     apt-get update
     $APTINSTALL apt-utils cron curl
     $APTINSTALL apache2
@@ -59,7 +47,7 @@ install()
     mkdir -p /run/mysqld
     chown mysql /run/mysqld
 
-    # CONFIGURE APACHE 
+    # CONFIGURE APACHE
     ##########################################
 
   cat >/etc/apache2/conf-available/http2.conf <<EOF
@@ -110,7 +98,7 @@ opcache.file_cache=/tmp;
 EOF
 
     a2enmod http2
-    a2enconf http2 
+    a2enconf http2
     a2enmod proxy_fcgi setenvif
     a2enconf php${PHPVER}-fpm
     a2enmod rewrite
@@ -118,7 +106,7 @@ EOF
     a2enmod dir
     a2enmod mime
     a2enmod ssl
-    
+
     echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
 
@@ -161,7 +149,7 @@ EOF
 
   # launch mariadb if not already running
   if ! pgrep -c mysqld &>/dev/null; then
-    mysqld & 
+    mysqld &
   fi
 
   # wait for mariadb
