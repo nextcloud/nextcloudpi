@@ -8,9 +8,6 @@
 # More at https://ownyourbits.com/2017/03/13/nextcloudpi-gets-nextcloudpi-config/
 #
 
-
-PHPVER=7.2
-
 is_active()
 {
   local SRCDIR
@@ -26,6 +23,8 @@ install()
 
 configure()
 {
+  source /usr/local/etc/library.sh # sets PHPVER
+
   ## CHECKS
   local SRCDIR
   SRCDIR=$( cd /var/www/nextcloud; sudo -u www-data php occ config:system:get datadirectory ) || {

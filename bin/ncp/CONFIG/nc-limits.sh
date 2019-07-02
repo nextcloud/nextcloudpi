@@ -8,11 +8,10 @@
 # More at https://ownyourbits.com/2017/03/13/nextcloudpi-gets-nextcloudpi-config/
 #
 
-PHPVER=7.2
-
-
 configure()
 {
+  source /usr/local/etc/library.sh # sets PHPVER
+
   # Set auto memory limit to 75% of the total memory
   local TOTAL_MEM="$( free -b | sed -n 2p | awk '{ print $2 }' )"
   AUTOMEM=$(( TOTAL_MEM * 75 / 100 ))

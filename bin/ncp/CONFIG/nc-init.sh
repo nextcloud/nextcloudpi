@@ -9,10 +9,11 @@
 #
 
 DBADMIN=ncadmin
-PHPVER=7.2
 
 configure()
 {
+  source /usr/local/etc/library.sh # sets PHPVER
+
   echo "Setting up a clean Nextcloud instance... wait until message 'NC init done'"
 
   # checks

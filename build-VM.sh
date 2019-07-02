@@ -30,6 +30,7 @@ prepare_dirs                   # tmp cache output
 ## BUILD NCP
 
 echo -e "\e[1m\n[ Build NCP ]\e[0m"
+export DEB_RELEASE=$(jq -r .release < etc/ncp.cfg)
 vagrant destroy -f
 vagrant box update
 vagrant up --provider=libvirt --provision

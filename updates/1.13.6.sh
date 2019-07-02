@@ -33,9 +33,6 @@ EOF
   rm -f "$BINDIR"/TOOLS/nc-update.sh
   rm -f "$BINDIR"/{SYSTEM/unattended-upgrades.sh,CONFIG/nc-autoupdate-nc.sh,CONFIG/nc-autoupdate-ncp.sh,CONFIG/nc-update-nc-apps-auto.sh}
 
-  # update to the latest version
-  is_active_app nc-autoupdate-nc && run_app nc-autoupdate-nc
-
   # previews settings
   ncc config:app:set previewgenerator squareSizes --value="32"
   ncc config:app:set previewgenerator widthSizes  --value="128 256 512"

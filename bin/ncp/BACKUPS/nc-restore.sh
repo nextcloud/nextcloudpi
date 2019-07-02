@@ -10,7 +10,7 @@
 #
 
 install()
-{ 
+{
   cat > /usr/local/bin/ncp-restore <<'EOF'
 #!/bin/bash
 set -eE
@@ -19,7 +19,8 @@ BACKUPFILE="$1"
 
 DBADMIN=ncadmin
 DBPASSWD="$( grep password /root/.my.cnf | sed 's|password=||' )"
-PHPVER=7.2
+
+source /usr/local/etc/library.sh # sets PHPVER
 
 DIR="$( cd "$( dirname "$BACKUPFILE" )" &>/dev/null && pwd )" #abspath
 
@@ -123,7 +124,7 @@ if [[ $( ls "$TMPDIR" | wc -l ) -eq $NUMFILES ]]; then
 
 ### INCLUDEDATA=no situation
 
-else      
+else
   echo "no datadir found in backup"
   DATADIR="$NCDIR"/data
 
@@ -138,7 +139,7 @@ fi
 sed -i "s|^opcache.file_cache=.*|opcache.file_cache=$DATADIR/.opcache|" /etc/php/${PHPVER}/mods-available/opcache.ini
 
 # tmp upload dir
-mkdir -p "$DATADIR/tmp" 
+mkdir -p "$DATADIR/tmp"
 chown www-data:www-data "$DATADIR/tmp"
 sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $DATADIR/tmp|" /etc/php/${PHPVER}/cli/php.ini
 sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $DATADIR/tmp|" /etc/php/${PHPVER}/fpm/php.ini
