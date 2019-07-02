@@ -43,11 +43,11 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
   sudo chroot raspbian_root /bin/bash <<'EOFCHROOT'
     set -e
 
+    # avoid constant annoying spam due to qemu bug - ERROR: ld.so: object '/usr/lib/arm-linux-gnueabihf/libarmmem-${PLATFORM}.so' from /etc/ld.so.preload
+    mv /etc/ld.so.preload /
+
     # mark the image as an image build
     touch /.ncp-image
-
-    # update packages
-    apt-get update
 
     # As of 10-2018 this upgrades raspi-kernel and messes up wifi and BTRFS
     #apt-get upgrade -y
@@ -60,9 +60,11 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
 
     # install everything
     cd /tmp/ncp-build || exit 1
-    source etc/library.sh
     mkdir -p /usr/local/etc/ncp-config.d
     cp etc/ncp-config.d/nc-nextcloud.cfg /usr/local/etc/ncp-config.d/
+    cp etc/ncp.cfg /usr/local/etc/
+    cp etc/library.sh /usr/local/etc/
+    source etc/library.sh
     install_app    lamp.sh
     install_app    bin/ncp/CONFIG/nc-nextcloud.sh
     run_app_unsafe bin/ncp/CONFIG/nc-nextcloud.sh
@@ -78,15 +80,17 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
     cfg="$(jq '.params[1].value = "pi"'        <<<"$cfg")"
     cfg="$(jq '.params[2].value = "raspberry"' <<<"$cfg")"
     cfg="$(jq '.params[3].value = "raspberry"' <<<"$cfg")"
-    echo "$cfg" > etc/ncp-config.d/SSH.cfg
+    echo "$cfg" > /usr/local/etc/ncp-config.d/SSH.cfg
 
     rm -rf /tmp/ncp-build
+
+    mv /ld.so.preload /etc
 EOFCHROOT
 
 clean_chroot_raspbian
 
 ## pack
- 
+
 TAR=output/"$( basename "$IMG" .img ).tar.bz2"
 pack_image "$IMG" "$TAR"
 

@@ -5,7 +5,7 @@
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
 #
-# Usage: ./install.sh 
+# Usage: ./install.sh
 #
 # more details at https://ownyourbits.com
 
@@ -22,12 +22,6 @@ trap "rm -rf \"${TMPDIR}\" ; exit 0" 0 1 2 3 15
   exit 1
 }
 
-# check_distro 
-grep -q -e "Debian GNU/Linux 9" -e "Raspbian GNU/Linux 9" /etc/issue || {
-  echo "distro not supported"; 
-  exit 1; 
-}
-
 # check installed software
 type mysqld  &>/dev/null && echo ">>> WARNING: existing mysqld configuration will be changed <<<"
 
@@ -37,17 +31,27 @@ apt-get update
 apt-get install --no-install-recommends -y wget ca-certificates sudo
 
 pushd "$TMPDIR"
-wget -O- --content-disposition https://github.com/nextcloud/nextcloudpi/archive/"$BRANCH"/latest.tar.gz \
+wget -qO- --content-disposition https://github.com/nextcloud/nextcloudpi/archive/"$BRANCH"/latest.tar.gz \
   | tar -xz \
   || exit 1
 cd - && cd "$TMPDIR"/nextcloudpi-"$BRANCH"
 
 # install NCP
-echo -e "\nInstalling NextCloudPi"
+echo -e "\nInstalling NextCloudPi..."
 source etc/library.sh
+
+# check distro
+check_distro etc/ncp.cfg || {
+  echo "ERROR: distro not supported:";
+  cat /etc/issue
+  exit 1;
+}
+
 
 mkdir -p /usr/local/etc/ncp-config.d/
 cp etc/ncp-config.d/nc-nextcloud.cfg /usr/local/etc/ncp-config.d/
+cp etc/library.sh /usr/local/etc/
+cp etc/ncp.cfg /usr/local/etc/
 
 install_app    lamp.sh
 install_app    bin/ncp/CONFIG/nc-nextcloud.sh
@@ -60,7 +64,7 @@ bash /usr/local/bin/ncp-provisioning.sh
 popd
 
 IFACE="$( ip r | grep "default via" | awk '{ print $5 }' | head -1 )"
-IP="$( ip a show dev "$IFACE" | grep global | grep -oP '\d{1,3}(.\d{1,3}){3}' | head -1 )" 
+IP="$( ip a show dev "$IFACE" | grep global | grep -oP '\d{1,3}(.\d{1,3}){3}' | head -1 )"
 
 echo "Done.
 

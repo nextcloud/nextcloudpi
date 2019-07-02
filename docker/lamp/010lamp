@@ -1,8 +1,6 @@
 #!/bin/bash
 
-source /usr/local/etc/library.sh
-
-PHPVER=7.2
+source /usr/local/etc/library.sh # sets PHPVER
 
 set -e
 

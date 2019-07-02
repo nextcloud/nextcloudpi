@@ -8,29 +8,31 @@ set -e
 
 version=$(git describe --tags --always)
 version=${version%-*-*}
+release=$(jq -r .release < etc/ncp.cfg)
 
 function docker_build() { DOCKER_BUILDKIT=1 docker build --progress=plain . "$@"; }
 
 function build_arch()
 {
-  local arch="${1}"
-  local arch_qemu="${2}"
-  local ncp_tag="${3:-$arch}"
+  local release="${1}"
+  local arch="${2}"
+  local arch_qemu="${3}"
+  local ncp_tag="${4:-$arch}"
 
-  docker_build -f docker/debian-ncp/Dockerfile  -t ownyourbits/debian-ncp-${arch}:latest --pull --build-arg arch=${arch} --build-arg arch_qemu=${arch_qemu}
-  docker_build -f docker/lamp/Dockerfile        -t ownyourbits/lamp-${arch}:latest              --build-arg arch=${arch}
-  docker_build -f docker/nextcloud/Dockerfile   -t ownyourbits/nextcloud-${arch}:latest         --build-arg arch=${arch}
-  docker_build -f docker/nextcloudpi/Dockerfile -t ownyourbits/nextcloudpi-${arch}:latest       --build-arg arch=${arch}
+  docker_build -f docker/debian-ncp/Dockerfile  -t ownyourbits/debian-ncp-${ncp_tag}:latest --pull --build-arg release=${release} --build-arg arch=${arch} --build-arg arch_qemu=${arch_qemu}
+  docker_build -f docker/lamp/Dockerfile        -t ownyourbits/lamp-${ncp_tag}:latest              --build-arg release=${release} --build-arg arch=${ncp_tag}
+  docker_build -f docker/nextcloud/Dockerfile   --no-cache -t ownyourbits/nextcloud-${ncp_tag}:latest         --build-arg release=${release} --build-arg arch=${ncp_tag}
+  docker_build -f docker/nextcloudpi/Dockerfile -t ownyourbits/nextcloudpi-${ncp_tag}:latest       --build-arg release=${release} --build-arg arch=${ncp_tag} --build-arg ncp_ver=${version}
 
-  docker tag ownyourbits/debian-ncp-${arch}:latest ownyourbits/debian-ncp-${ncp_tag}:"${version}"
-  docker tag ownyourbits/lamp-${arch}:latest ownyourbits/lamp-${ncp_tag}:"${version}"
-  docker tag ownyourbits/nextcloud-${arch}:latest ownyourbits/nextcloud-${ncp_tag}:"${version}"
-  docker tag ownyourbits/nextcloudpi-${arch}:latest ownyourbits/nextcloudpi-${ncp_tag}:"${version}"
+  docker tag ownyourbits/debian-ncp-${ncp_tag}:latest ownyourbits/debian-ncp-${ncp_tag}:"${version}"
+  docker tag ownyourbits/lamp-${ncp_tag}:latest ownyourbits/lamp-${ncp_tag}:"${version}"
+  docker tag ownyourbits/nextcloud-${ncp_tag}:latest ownyourbits/nextcloud-${ncp_tag}:"${version}"
+  docker tag ownyourbits/nextcloudpi-${ncp_tag}:latest ownyourbits/nextcloudpi-${ncp_tag}:"${version}"
 }
 
-[[ "$@" =~ "x86"   ]] && build_arch amd64   x86_64  x86
-[[ "$@" =~ "armhf" ]] && build_arch armhf   arm
-[[ "$@" =~ "arm64" ]] && build_arch arm64v8 aarch64 arm64
+[[ "$@" =~ "x86"   ]] && build_arch "${release}" amd64   x86_64  x86
+[[ "$@" =~ "armhf" ]] && build_arch "${release}" arm32v7 arm     armhf
+[[ "$@" =~ "arm64" ]] && build_arch "${release}" arm64v8 aarch64 arm64
 
 
 # License

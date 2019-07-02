@@ -13,7 +13,8 @@
 Vagrant.configure("2") do |config|
 
   vmname = "NCP Debian VM"
-  config.vm.box = "debian/stretch64"
+  release = ENV["DEB_RELEASE"]
+  config.vm.box = "debian/#{release}64"
   config.vm.box_check_update = false
   config.vm.hostname = "ncp-vm"
 
@@ -21,6 +22,7 @@ Vagrant.configure("2") do |config|
 
   $script = <<-SHELL
     sudo su
+    set -e
     BRANCH=master
     #BRANCH=devel  # uncomment to install devel
     apt-get update

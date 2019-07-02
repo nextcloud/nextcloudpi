@@ -1,10 +1,13 @@
 ARG arch=armhf
 ARG arch_qemu=arm
-FROM debian:stretch-slim AS qemu
+ARG release=buster
+FROM debian:${release}-slim AS qemu
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends qemu-user-static
 
-FROM ${arch}/debian:stretch-slim
+ARG release
+ARG arch_qemu
+FROM ${arch}/debian:${release}-slim
 
 ARG arch_qemu
 

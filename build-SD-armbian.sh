@@ -11,12 +11,14 @@
 #CLEAN=0                    # Pass this envvar to avoid cleaning download cache
 BOARD="$1"
 BNAME="${2:-$1}"
+NCPCFG=etc/ncp.cfg
 
 IMG="NextCloudPi_${BNAME}_$( date  "+%m-%d-%y" ).img"
 IMG=tmp/"$IMG"
 
 set -e
 source buildlib.sh
+source etc/library.sh # sets RELEASE
 
 prepare_dirs                   # tmp cache output
 
@@ -36,7 +38,7 @@ rsync -Aax --delete --exclude-from .gitignore --exclude *.img --exclude *.bz2 . 
 cat > armbian/config-docker-guest.conf <<EOF
 BOARD="$BOARD"
 BRANCH=default
-RELEASE=stretch
+RELEASE=$RELEASE
 KERNEL_ONLY=no
 KERNEL_CONFIGURE=no
 BUILD_DESKTOP=no

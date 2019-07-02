@@ -61,7 +61,18 @@ mkdir -p "$CONFDIR"
 
 # copy all files in bin and etc
 cp -r bin/* /usr/local/bin/
-find etc -maxdepth 1 -type f -exec cp '{}' /usr/local/etc \;
+find etc -maxdepth 1 -type f ! -path etc/ncp.cfg -exec cp '{}' /usr/local/etc \;
+cp -n etc/ncp.cfg /usr/local/etc
+
+# update NCVER in ncp.cfg and nc-nextcloud.cfg (for nc-autoupdate-nc and nc-update-nextcloud)
+nc_version=$(jq -r .nextcloud_version < etc/ncp.cfg)
+cfg="$(jq '.' /usr/local/etc/ncp.cfg)"
+cfg="$(jq ".nextcloud_version = \"$nc_version\"" <<<"$cfg")"
+echo "$cfg" > /usr/local/etc/ncp.cfg
+
+cfg="$(jq '.' etc/ncp-config.d/nc-nextcloud.cfg)"
+cfg="$(jq ".params[0].value = \"$nc_version\"" <<<"$cfg")"
+echo "$cfg" > /usr/local/etc/ncp-config.d/nc-nextcloud.cfg
 
 # install new entries of ncp-config and update others
 for file in etc/ncp-config.d/*; do
@@ -131,6 +142,8 @@ ncc app:enable nextcloudpi
   # update old images
   ./run_update_history.sh "$UPDATESDIR"
 
+  # update to the latest NC version
+  is_active_app nc-autoupdate-nc && run_app nc-autoupdate-nc
 }
 
 exit 0

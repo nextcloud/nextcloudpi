@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# no-ip.org installation on Raspbian 
+# no-ip.org installation on NextCloudPi
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -72,7 +72,7 @@ EOF
   return 0
 }
 
-configure() 
+configure()
 {
   service noip2 stop
   [[ $ACTIVE != "yes" ]] && { update-rc.d noip2 disable; return 0; }
@@ -94,10 +94,7 @@ configure()
 
 cleanup()
 {
-  # this uninstalls udiskie, commented out
- #  udiskie with these dependencies fixed in Buster
-  # apt-get purge -y make gcc libc-dev
-  :
+  apt-get purge -y make gcc libc-dev
 }
 
 # License

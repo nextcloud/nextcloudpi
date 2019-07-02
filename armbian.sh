@@ -12,12 +12,16 @@
 
 set -e
 
-RELEASE=$1
+ARMBIAN_RELEASE=$1
 LINUXFAMILY=$2
 BOARD=$3
 BUILD_DESKTOP=$4
 
-[[ "$RELEASE" != "stretch" ]] && { echo "Only stretch is supported by NextCloudPi" >&2; exit 1; }
+cd /tmp/overlay
+NCPCFG=etc/ncp.cfg
+source etc/library.sh # sets RELEASE
+
+[[ "$ARMBIAN_RELEASE" != "$RELEASE" ]] && { echo "Only $RELEASE is supported by NextCloudPi" >&2; exit 1; }
 
 # need sudo access that does not expire during build
 chage -d -1 root
@@ -26,12 +30,12 @@ chage -d -1 root
 touch /.ncp-image
 
 # install NCP
-cd /tmp/overlay
 echo -e "\nInstalling NextCloudPi"
-source etc/library.sh
 
 mkdir -p /usr/local/etc/ncp-config.d/
 cp etc/ncp-config.d/nc-nextcloud.cfg /usr/local/etc/ncp-config.d/
+cp etc/library.sh /usr/local/etc/
+cp etc/ncp.cfg /usr/local/etc/
 
 install_app    lamp.sh
 install_app    bin/ncp/CONFIG/nc-nextcloud.sh
