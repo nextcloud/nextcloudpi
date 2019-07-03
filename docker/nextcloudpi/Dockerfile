@@ -52,10 +52,6 @@ rm /.ncp-image; \
 source /usr/local/etc/library.sh; \
 find /usr/local/bin/ncp -name '*.sh' | while read l; do cleanup_script $l; done; \
 
-# should be cleaned up in no-ip.sh, but breaks udiskie.
-# safe to do it here since no automount in docker
-apt-get purge -y make gcc libc-dev; \
-
 # package clean up
 apt-get autoremove -y; \
 apt-get clean; \
