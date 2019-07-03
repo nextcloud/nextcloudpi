@@ -160,11 +160,24 @@ filter = ufwban
 logpath = /var/log/ufw.log
 action = ufw
 EOF
+  enable_ufw_jail
   cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
   update-rc.d fail2ban defaults
   update-rc.d fail2ban enable
   service fail2ban restart
   echo "fail2ban enabled"
+}
+
+enable_ufw_jail()
+{
+  if is_active_app UFW; then
+    UFW_ENABLED=true
+  else
+    UFW_ENABLED=false
+  fi
+
+  # find "[ufwban]", then modify the next "enabled"
+  sed -i -e "/^\[ufwban\]/,/^enabled/ s/^enabled.*/enabled = $UFW_ENABLED/" /etc/fail2ban/jail.conf
 }
 
 # License

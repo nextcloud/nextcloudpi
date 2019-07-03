@@ -56,6 +56,13 @@ configure()
   ufw allow proto udp from 192.168.0.0/16
 
   echo "UFW enabled"
+
+  FAIL2BAN=$(dirname $0)/fail2ban.sh
+  if [ -f $FAIL2BAN ]; then
+    source $FAIL2BAN
+    enable_ufw_jail
+    service fail2ban restart
+  fi
 }
 
 # License
