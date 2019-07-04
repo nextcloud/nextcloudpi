@@ -112,6 +112,12 @@ chmod 770                  /var/www/ncp-web
 rm -rf /var/www/ncp-app
 cp -r ncp-app /var/www/
 
+# copy NC app to nextcloud directory and enable it
+rm -rf /var/www/nextcloud/apps/nextcloudpi
+cp -r /var/www/ncp-app /var/www/nextcloud/apps/nextcloudpi
+chown -R www-data:     /var/www/nextcloud/apps/nextcloudpi
+ncc app:enable nextcloudpi
+
 [[ -f /.docker-image ]] && {
   # remove unwanted ncp-apps for the docker version
   for opt in $EXCL_DOCKER; do
