@@ -1,5 +1,7 @@
 
-[v1.14.2](https://github.com/nextcloud/nextcloudpi/commit/60898da) (2019-07-06) nc-hdd-monitor: fix detection
+[v1.14.3](https://github.com/nextcloud/nextcloudpi/commit/6a78953) (2019-07-06) nc-snapshot-sync: update btrfs-sync
+
+[v1.14.2](https://github.com/nextcloud/nextcloudpi/commit/53d02fe) (2019-07-06) nc-hdd-monitor: fix detection
 
 [v1.14.0 ](https://github.com/nextcloud/nextcloudpi/commit/fa9ddca) (2019-07-05) upgrade to NC16.0.2
 
