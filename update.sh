@@ -127,7 +127,11 @@ cp -r ncp-app /var/www/
 rm -rf /var/www/nextcloud/apps/nextcloudpi
 cp -r /var/www/ncp-app /var/www/nextcloud/apps/nextcloudpi
 chown -R www-data:     /var/www/nextcloud/apps/nextcloudpi
+
+# only enable app if nextcloud is already installed
+test -f /data/nextcloud/config/config.php || {
 ncc app:enable nextcloudpi
+}
 
 [[ -f /.docker-image ]] && {
   # remove unwanted ncp-apps for the docker version
