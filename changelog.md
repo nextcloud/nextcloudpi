@@ -1,7 +1,9 @@
 
-[v1.14.0](https://github.com/nextcloud/nextcloudpi/commit/22e9dca) (2019-07-05) upgrade to NC16.0.2
+[v1.14.2](https://github.com/nextcloud/nextcloudpi/commit/60898da) (2019-07-06) nc-hdd-monitor: fix detection
 
-[v1.13.6](https://github.com/nextcloud/nextcloudpi/commit/88da901) (2019-06-29) ncp-update: fixes on the new step based upgrade system
+[v1.14.0 ](https://github.com/nextcloud/nextcloudpi/commit/fa9ddca) (2019-07-05) upgrade to NC16.0.2
+
+[v1.13.6 ](https://github.com/nextcloud/nextcloudpi/commit/88da901) (2019-06-29) ncp-update: fixes on the new step based upgrade system
 
 [v1.13.5 ](https://github.com/nextcloud/nextcloudpi/commit/fbdab43) (2019-06-29) ncp-web: adjust ipv6 local restrictions
 

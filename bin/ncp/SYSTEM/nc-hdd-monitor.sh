@@ -24,16 +24,11 @@ configure()
   }
 
   [[ "$ACTIVE" != yes ]] && {
-    update-rc.d  smartd disable
-    service      smartd stop
+    systemctl disable smartd
+    service smartd stop
     echo "HDD monitor disabled"
     return 0
   }
-
-  cat > /etc/smartd.conf <<EOF
-# short scan every day at 1am, long one on sundays at 2am
-DEVICESCAN -a -m $EMAIL -M exec /usr/local/etc/ncp-hdd-notif.sh -s (S/../.././01|L/../../7/02)
-EOF
 
   cat > /usr/local/etc/ncp-hdd-notif.sh <<EOF
 #!/bin/bash
@@ -57,16 +52,25 @@ sudo -u www-data php /var/www/nextcloud/occ notification:generate \
 EOF
 chmod +x /usr/local/etc/ncp-hdd-notif.sh
 
+  cat > /etc/smartd.conf <<EOF
+# short scan every day at 1am, long one on sundays at 2am
+EOF
+
   for dr in "${DRIVES[@]}"; do
     local type=""
     smartctl -d test /dev/${dr} &>/dev/null || {
       smartctl -d sat -i /dev/${dr} &>/dev/null && type="-d sat"
     }
-    smartctl $type --smart=on /dev/${dr} | sed 1,2d;
+    smartctl ${type} --smart=on /dev/${dr} | sed 1,2d;
+
+    cat >> /etc/smartd.conf <<EOF
+/dev/${dr} -a ${type} -m ${EMAIL} -M exec /usr/local/etc/ncp-hdd-notif.sh -s (S/../.././01|L/../../7/02)
+EOF
+
   done
 
-  update-rc.d  smartd enable
-  service      smartd start
+  systemctl enable smartd
+  service smartd start
   echo "HDD monitor enabled"
 }
 
