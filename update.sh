@@ -138,13 +138,13 @@ ncc app:enable nextcloudpi
 
   # update services
   cp docker/{lamp/010lamp,nextcloud/020nextcloud,nextcloudpi/000ncp} /etc/services-enabled.d
-
-  # update old images
-  ./run_update_history.sh "$UPDATESDIR"
-
-  # update to the latest NC version
-  is_active_app nc-autoupdate-nc && run_app nc-autoupdate-nc
 }
+
+# update old images
+./run_update_history.sh "$UPDATESDIR"
+
+# update to the latest NC version
+is_active_app nc-autoupdate-nc && run_app nc-autoupdate-nc
 
 exit 0
 
