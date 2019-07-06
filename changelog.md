@@ -1,11 +1,13 @@
 
-[v1.13.6](https://github.com/nextcloud/nextcloudpi/commit/0b77407) (2019-06-29) ncp-update: fixes on the new step based upgrade system
+[v1.14.0](https://github.com/nextcloud/nextcloudpi/commit/22e9dca) (2019-07-05) upgrade to NC16.0.2
 
-[v1.13.5](https://github.com/nextcloud/nextcloudpi/commit/fbdab43) (2019-06-29) ncp-web: adjust ipv6 local restrictions
+[v1.13.6](https://github.com/nextcloud/nextcloudpi/commit/88da901) (2019-06-29) ncp-update: fixes on the new step based upgrade system
+
+[v1.13.5 ](https://github.com/nextcloud/nextcloudpi/commit/fbdab43) (2019-06-29) ncp-web: adjust ipv6 local restrictions
 
 [v1.13.4 ](https://github.com/nextcloud/nextcloudpi/commit/ce4477c) (2019-06-29) nc-previews: adjust preview sizes
 
-[v1.13.3](https://github.com/nextcloud/nextcloudpi/commit/0701949) (2019-06-23) spDYN: remove unused IPV6 argument in spDYN.sh
+[v1.13.3 ](https://github.com/nextcloud/nextcloudpi/commit/0701949) (2019-06-23) spDYN: remove unused IPV6 argument in spDYN.sh
 
 [v1.13.2 ](https://github.com/nextcloud/nextcloudpi/commit/c392529) (2019-06-17) nc-backup: fix exclusion of ncp backups
 
