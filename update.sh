@@ -146,6 +146,23 @@ chown -R www-data:     /var/www/nextcloud/apps/nextcloudpi
 # update to the latest NC version
 is_active_app nc-autoupdate-nc && run_app nc-autoupdate-nc
 
+# check dist-upgrade
+check_distro "$NCPCFG" || check_distro etc/ncp.cfg && {
+  php_ver_new=$(jq '.php_version'   < etc/ncp.cfg)
+  release_new=$(jq '.release'       < etc/ncp.cfg)
+  issue_new=$(  jq '.release_issue' < etc/ncp.cfg)
+
+  echo "Migrating to distro $release_new"
+
+  cfg="$(jq '.' "$NCPCFG")"
+  cfg="$(jq '.php_version   = "'$php_ver_new'"' <<<"$cfg")"
+  cfg="$(jq '.release       = "'$release_new'"' <<<"$cfg")"
+  cfg="$(jq '.release_issue = '"$issue_new"     <<<"$cfg")"
+  echo "$cfg" > "$NCPCFG"
+
+  is_active_app unattended-upgrades && run_app unattended-upgrades
+}
+
 exit 0
 
 # License
