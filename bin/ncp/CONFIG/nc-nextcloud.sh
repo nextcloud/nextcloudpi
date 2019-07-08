@@ -26,7 +26,7 @@ install()
   $APTINSTALL lbzip2 iputils-ping jq
   $APTINSTALL -t $RELEASE php-smbclient exfat-fuse exfat-utils                  # for external storage
   $APTINSTALL -t $RELEASE php${PHPVER}-exif                                     # for gallery
-  #$APTINSTALL -t imagemagick php${PHPVER}-imagick   # for gallery
+  #$APTINSTALL -t imagemagick php${PHPVER}-imagick ghostscript   # for gallery
 
 
   # POSTFIX
@@ -139,11 +139,11 @@ configure()
   mkdir -p $OPCACHEDIR
   chown -R www-data:www-data $OPCACHEDIR
 
-  ## RE-CREATE DATABASE TABLE 
+  ## RE-CREATE DATABASE TABLE
   # launch mariadb if not already running (for docker build)
   if ! pgrep -c mysqld &>/dev/null; then
     echo "Starting mariaDB"
-    mysqld & 
+    mysqld &
   fi
 
   # wait for mariadb

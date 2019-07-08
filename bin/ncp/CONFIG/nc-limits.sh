@@ -25,9 +25,9 @@ configure()
   local CONF=/etc/php/${PHPVER}/fpm/conf.d/90-ncp.ini
   local CURRENT_PHP_MEM="$( grep "^memory_limit" "$CONF" | sed 's|.*=||' )"
   [[ "$MEMORYLIMIT" == "0" ]] && MEMORYLIMIT=$AUTOMEM && echo "Using ${AUTOMEM}B for PHP"
-  sed -i "s/^post_max_size=.*/post_max_size=$MAXFILESIZE/"             "$CONF" 
-  sed -i "s/^upload_max_filesize=.*/upload_max_filesize=$MAXFILESIZE/" "$CONF" 
-  sed -i "s/^memory_limit=.*/memory_limit=$MEMORYLIMIT/"               "$CONF" 
+  sed -i "s/^post_max_size=.*/post_max_size=$MAXFILESIZE/"             "$CONF"
+  sed -i "s/^upload_max_filesize=.*/upload_max_filesize=$MAXFILESIZE/" "$CONF"
+  sed -i "s/^memory_limit=.*/memory_limit=$MEMORYLIMIT/"               "$CONF"
 
   # MAX PHP THREADS
   local CONF=/etc/php/${PHPVER}/fpm/pool.d/www.conf

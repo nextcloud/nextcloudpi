@@ -30,7 +30,7 @@ mkdir -p /data-ro /data; \
 mv /var/lib/mysql /data-ro/database; \
 sed -i "s|^datadir.*|datadir = /data-ro/database|" /etc/mysql/mariadb.conf.d/90-ncp.cnf; \
 
-# package cleanup 
+# package cleanup
 apt-get autoremove -y; \
 apt-get clean; \
 find /var/lib/apt/lists -type f | xargs rm; \

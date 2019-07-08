@@ -1,0 +1,119 @@
+#!/bin/bash
+
+set -eu -o pipefail
+
+[[ -f /.dockerenv ]] && { echo "Not supported in Docker. Upgrade the container instead"; exit 0; }
+
+new_cfg=/usr/local/etc/ncp-recommended.cfg
+[[ -f "${new_cfg}" ]] || { echo "Already on the lastest recommended distribution. Abort." >&2; exit 1; }
+
+APTINSTALL="apt-get install -y --no-install-recommends"
+export DEBIAN_FRONTEND=noninteractive
+
+echo "
+>>> ATTENTION <<<
+This is a dangerous process that is only guaranteed to work properly if you
+have not made manual changes in the system. Backup the SD card first and
+proceed at your own risk.
+
+Note that this is not a requirement for NCP to continue working properly.
+The current distribution will keep receiving updates for some time.
+
+Do you want to continue? [y/N]"
+
+read key
+[[ "$key" == y ]] || exit 0
+
+source /usr/local/etc/library.sh # sets NCPCFG RELEASE PHPVER
+old_cfg="${NCPCFG}"
+
+trap "echo 'Something went wrong. Fix it and try again'" EXIT
+
+ncc maintenance:mode --on || true
+
+apt-get update
+apt-get upgrade -y
+
+# remove old PHP version
+set +e
+apt-get purge -y php${PHPVER} php${PHPVER}-curl php${PHPVER}-gd php${PHPVER}-fpm php${PHPVER}-cli php${PHPVER}-opcache \
+	php${PHPVER}-mbstring php${PHPVER}-xml php${PHPVER}-zip php${PHPVER}-fileinfo php${PHPVER}-ldap \
+	php${PHPVER}-intl php${PHPVER}-bz2 php${PHPVER}-json
+apt-get purge -y php${PHPVER}-mysql
+apt-get purge -y php${PHPVER}-redis
+apt-get purge -y php${PHPVER}-exif
+apt-get purge -y php${PHPVER}-imagick
+set -e
+
+# update sources
+sed -i 's/stretch/buster/g' /etc/apt/sources.list
+rm -f /etc/apt/sources.list.d/php.list
+
+# install latest distro
+apt-get update
+apt-get dist-upgrade -y
+
+# install latest PHP version
+release_new=$(jq -r '.release'     < "${new_cfg}")
+php_ver_new=$(jq -r '.php_version' < "${new_cfg}")
+
+$APTINSTALL -t ${release_new} php${php_ver_new} php${php_ver_new}-curl php${php_ver_new}-gd php${php_ver_new}-fpm php${php_ver_new}-cli php${php_ver_new}-opcache \
+	php${php_ver_new}-mbstring php${php_ver_new}-xml php${php_ver_new}-zip php${php_ver_new}-fileinfo php${php_ver_new}-ldap \
+	php${php_ver_new}-intl php${php_ver_new}-bz2 php${php_ver_new}-json
+
+$APTINSTALL php${php_ver_new}-mysql
+$APTINSTALL -t ${release_new} php${php_ver_new}-redis
+
+$APTINSTALL -t ${release_new} php${php_ver_new}-exif
+#$APTINSTALL -t ${release_new} imagemagick php${php_ver_new}-imagick ghostscript
+
+apt-get autoremove -y
+apt-get clean
+
+# configure latest PHP version
+cat > /etc/php/${php_ver_new}/mods-available/opcache.ini <<EOF
+zend_extension=opcache.so
+opcache.enable=1
+opcache.enable_cli=1
+opcache.fast_shutdown=1
+opcache.interned_strings_buffer=8
+opcache.max_accelerated_files=10000
+opcache.memory_consumption=128
+opcache.save_comments=1
+opcache.revalidate_freq=1
+opcache.file_cache=/tmp;
+EOF
+
+cat > /etc/php/${php_ver_new}/fpm/conf.d/90-ncp.ini <<EOF
+; disable .user.ini files for performance and workaround NC update bugs
+user_ini.filename =
+
+; from Nextcloud .user.ini
+upload_max_filesize=10G
+post_max_size=10G
+memory_limit=768M
+mbstring.func_overload=0
+always_populate_raw_post_data=-1
+default_charset='UTF-8'
+output_buffering=0
+
+; slow transfers will be killed after this time
+max_execution_time=3600
+max_input_time=3600
+EOF
+
+# restart services
+service php${php_ver_new}-fpm restart
+a2enconf php${php_ver_new}-fpm
+service apache2 restart
+
+is_active_app unattended-upgrades && run_app unattended-upgrades || true
+
+# mark as successful
+mv "${new_cfg}" "${old_cfg}"
+
+run_app nc-limits
+ncc maintenance:mode --off || true
+
+echo "Upgrade to ${release_new} successful"
+trap '' EXIT

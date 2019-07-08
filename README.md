@@ -15,10 +15,10 @@ Find the full documentation at [docs.nextcloudpi.com](http://docs.nextcloudpi.co
 
 ## Features
 
- * Debian/Raspbian 9 stretch
- * Nextcloud 16.0.2
+ * Debian/Raspbian 10 Buster
+ * Nextcloud 16.0.3
  * Apache 2.4.25, with HTTP2 enabled
- * PHP 7.2
+ * PHP 7.3
  * MariaDB 10
  * Redis memory cache
  * ncp-config for easy setup ( RAM logs, USB drive and more )
