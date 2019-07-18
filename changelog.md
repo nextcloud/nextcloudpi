@@ -1,5 +1,9 @@
 
-[v1.15.0](https://github.com/nextcloud/nextcloudpi/commit/f6e76e7) (2019-07-08) move to buster/PHP7.3
+[v1.15.1](https://github.com/nextcloud/nextcloudpi/commit/dee51a3) (2019-07-17) exclude versions, trash, uploads from backups
+
+[v1.15.0 ](https://github.com/nextcloud/nextcloudpi/commit/402a2c3) (2019-07-08) move to buster/PHP7.3
+
+[v1.14.4 ](https://github.com/nextcloud/nextcloudpi/commit/68b3f8a) (2019-07-08) nc-previews: active by default
 
 [v1.14.3 ](https://github.com/nextcloud/nextcloudpi/commit/85ebb39) (2019-07-06) nc-snapshot-sync: update btrfs-sync
 

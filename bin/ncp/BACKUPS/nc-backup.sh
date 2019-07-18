@@ -92,7 +92,11 @@ tar $compress_arg -cf "$destfile" \
     --exclude "nextcloud/data/.opcache" \
     --exclude "nextcloud/data/{access,error,nextcloud}.log" \
     --exclude "nextcloud/data/access.log" \
-    --exclude "nextcloud/data/appdata_*/previews/*" \
+    --exclude "nextcloud/data/appdata_*/preview/*" \
+    --exclude "nextcloud/data/*/uploads/*" \
+    --exclude "nextcloud/data/*/cache/*" \
+    --exclude "nextcloud/data/*/files_trashbin/*" \
+    --exclude "nextcloud/data/*/files_versions/*" \
     --exclude "nextcloud/data/ncp-update-backups" \
     -C $basedir nextcloud/ \
   || {
