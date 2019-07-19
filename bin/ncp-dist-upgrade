@@ -115,5 +115,7 @@ mv "${new_cfg}" "${old_cfg}"
 run_app nc-limits
 ncc maintenance:mode --off || true
 
+rm -f /etc/update-motd.d/30ncp-dist-upgrade
+
 echo "Upgrade to ${release_new} successful"
 trap '' EXIT
