@@ -8,6 +8,10 @@ source /usr/local/etc/library.sh
 
 # all images
 
+# restore smbclient after dist upgrade
+apt-get update
+apt-get install -y --no-install-recommends php-smbclient exfat-fuse exfat-utils
+
 # docker images only
 [[ -f /.docker-image ]] && {
 :
