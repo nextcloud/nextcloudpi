@@ -160,7 +160,7 @@ chown -R www-data:     /var/www/nextcloud/apps/nextcloudpi
 is_active_app nc-autoupdate-nc && run_app nc-autoupdate-nc
 
 # check dist-upgrade
-check_distro "$NCPCFG" || check_distro etc/ncp.cfg && {
+check_distro "$NCPCFG" && check_distro etc/ncp.cfg || {
   php_ver_new=$(jq -r '.php_version'   < etc/ncp.cfg)
   release_new=$(jq -r '.release'       < etc/ncp.cfg)
   issue_new=$(  jq -r '.release_issue' < etc/ncp.cfg)
