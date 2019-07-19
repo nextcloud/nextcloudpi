@@ -1,7 +1,9 @@
 
-[v1.15.1](https://github.com/nextcloud/nextcloudpi/commit/dee51a3) (2019-07-17) exclude versions, trash, uploads from backups
+[v1.15.2](https://github.com/nextcloud/nextcloudpi/commit/7791e81) (2019-07-19) update: restore smbclient after dist upgrade
 
-[v1.15.0 ](https://github.com/nextcloud/nextcloudpi/commit/402a2c3) (2019-07-08) move to buster/PHP7.3
+[v1.15.1 ](https://github.com/nextcloud/nextcloudpi/commit/a00f240) (2019-07-17) exclude versions, trash, uploads from backups
+
+[v1.15.0 ](https://github.com/nextcloud/nextcloudpi/commit/e4bd5fe) (2019-07-08) move to buster/PHP7.3
 
 [v1.14.4 ](https://github.com/nextcloud/nextcloudpi/commit/68b3f8a) (2019-07-08) nc-previews: active by default
 

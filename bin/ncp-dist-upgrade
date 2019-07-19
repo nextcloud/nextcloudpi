@@ -64,6 +64,7 @@ $APTINSTALL -t ${release_new} php${php_ver_new} php${php_ver_new}-curl php${php_
 $APTINSTALL php${php_ver_new}-mysql
 $APTINSTALL -t ${release_new} php${php_ver_new}-redis
 
+$APTINSTALL -t ${release_new} php-smbclient exfat-fuse exfat-utils
 $APTINSTALL -t ${release_new} php${php_ver_new}-exif
 #$APTINSTALL -t ${release_new} imagemagick php${php_ver_new}-imagick ghostscript
 
