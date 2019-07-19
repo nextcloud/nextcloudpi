@@ -72,6 +72,13 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
     run_app_unsafe bin/ncp/CONFIG/nc-init.sh
     run_app_unsafe post-inst.sh
 
+    # work around dhcpcd Raspbian bug
+    # https://lb.raspberrypi.org/forums/viewtopic.php?t=230779
+    # https://github.com/nextcloud/nextcloudpi/issues/938
+    apt-get update
+    apt-get install -y --no-install-recommends haveged
+    systemctl enable haveged.service
+
     # harden SSH further for Raspbian
     sed -i 's|^#PermitRootLogin .*|PermitRootLogin no|' /etc/ssh/sshd_config
 
