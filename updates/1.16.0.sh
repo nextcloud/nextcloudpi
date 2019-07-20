@@ -27,7 +27,7 @@ apt-get install -y --no-install-recommends php-smbclient exfat-fuse exfat-utils
   # https://github.com/nextcloud/nextcloudpi/issues/938
   test -f /usr/bin/raspi-config && {
     apt-get update
-    apt-get install haveged
+    apt-get install -y haveged
     systemctl enable haveged.service
   }
 }
