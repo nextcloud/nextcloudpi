@@ -77,16 +77,6 @@ find etc -maxdepth 1 -type f ! -path etc/ncp.cfg -exec cp '{}' /usr/local/etc \;
 EOF
 cp -n etc/ncp.cfg /usr/local/etc
 
-# update NCVER in ncp.cfg and nc-nextcloud.cfg (for nc-autoupdate-nc and nc-update-nextcloud)
-nc_version=$(jq -r .nextcloud_version < etc/ncp.cfg)
-cfg="$(jq '.' /usr/local/etc/ncp.cfg)"
-cfg="$(jq ".nextcloud_version = \"$nc_version\"" <<<"$cfg")"
-echo "$cfg" > /usr/local/etc/ncp.cfg
-
-cfg="$(jq '.' etc/ncp-config.d/nc-nextcloud.cfg)"
-cfg="$(jq ".params[0].value = \"$nc_version\"" <<<"$cfg")"
-echo "$cfg" > /usr/local/etc/ncp-config.d/nc-nextcloud.cfg
-
 # install new entries of ncp-config and update others
 for file in etc/ncp-config.d/*; do
   [ -f "$file" ] || continue;    # skip dirs
@@ -119,6 +109,16 @@ for file in etc/ncp-config.d/*; do
 
 done
 
+# update NCVER in ncp.cfg and nc-nextcloud.cfg (for nc-autoupdate-nc and nc-update-nextcloud)
+nc_version=$(jq -r .nextcloud_version < etc/ncp.cfg)
+cfg="$(jq '.' /usr/local/etc/ncp.cfg)"
+cfg="$(jq ".nextcloud_version = \"$nc_version\"" <<<"$cfg")"
+echo "$cfg" > /usr/local/etc/ncp.cfg
+
+cfg="$(jq '.' etc/ncp-config.d/nc-nextcloud.cfg)"
+cfg="$(jq ".params[0].value = \"$nc_version\"" <<<"$cfg")"
+echo "$cfg" > /usr/local/etc/ncp-config.d/nc-nextcloud.cfg
+
 # install localization files
 cp -rT etc/ncp-config.d/l10n "$CONFDIR"/l10n
 
@@ -141,7 +141,6 @@ rm -rf /var/www/nextcloud/apps/nextcloudpi
 cp -r /var/www/ncp-app /var/www/nextcloud/apps/nextcloudpi
 chown -R www-data:     /var/www/nextcloud/apps/nextcloudpi
 
-
 [[ -f /.docker-image ]] && {
   # remove unwanted ncp-apps for the docker version
   for opt in $EXCL_DOCKER; do
@@ -153,8 +152,11 @@ chown -R www-data:     /var/www/nextcloud/apps/nextcloudpi
   cp docker/{lamp/010lamp,nextcloud/020nextcloud,nextcloudpi/000ncp} /etc/services-enabled.d
 }
 
-# update old images, only live updates
-[[ ! -f /.ncp-image ]] && ./run_update_history.sh "$UPDATESDIR"
+# only live updates from here
+[[ -f /.ncp-image ]] && exit 0
+
+# update old images
+./run_update_history.sh "$UPDATESDIR"
 
 # update to the latest NC version
 is_active_app nc-autoupdate-nc && run_app nc-autoupdate-nc

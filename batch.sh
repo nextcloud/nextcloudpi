@@ -48,7 +48,7 @@ export DOCKER_CLI_EXPERIMENTAL=enabled
 #&& {
   docker push ownyourbits/nextcloudpi-x86
   docker push ownyourbits/nextcloudpi-x86:${version}
-  docker push ownyourbits/nextcloud-x86 
+  docker push ownyourbits/nextcloud-x86
   docker push ownyourbits/nextcloud-x86 :${version}
   docker push ownyourbits/lamp-x86
   docker push ownyourbits/lamp-x86:${version}
