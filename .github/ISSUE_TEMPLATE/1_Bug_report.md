@@ -23,7 +23,7 @@ Please, look at the FAQ before posting a new issue. Also, make sure it has not b
 
 Keep in mind that many problems come from faulty power sources and corrupted SD cards, so make sure this is not the case for you before reporting.
 
-If you are running into problems, make sure to include the output of `sudo-ncp-report`
+If you are running into problems, make sure to include the output of `sudo ncp-report`
 -->
 
 **System information**
