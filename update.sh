@@ -165,12 +165,10 @@ is_active_app nc-autoupdate-nc && run_app nc-autoupdate-nc
 check_distro "$NCPCFG" && check_distro etc/ncp.cfg || {
   php_ver_new=$(jq -r '.php_version'   < etc/ncp.cfg)
   release_new=$(jq -r '.release'       < etc/ncp.cfg)
-  issue_new=$(  jq -r '.release_issue' < etc/ncp.cfg)
 
   cfg="$(jq '.' "$NCPCFG")"
   cfg="$(jq '.php_version   = "'$php_ver_new'"' <<<"$cfg")"
   cfg="$(jq '.release       = "'$release_new'"' <<<"$cfg")"
-  cfg="$(jq '.release_issue = '"$issue_new"     <<<"$cfg")"
   echo "$cfg" > /usr/local/etc/ncp-recommended.cfg
 
   [[ -f /.dockerenv ]] && \

@@ -12,6 +12,9 @@ source /usr/local/etc/library.sh
 apt-get update
 apt-get install -y --no-install-recommends php-smbclient exfat-fuse exfat-utils
 
+# install lsb-release
+apt-get install -y --no-install-recommends lsb-release
+
 # docker images only
 [[ -f /.docker-image ]] && {
 :
