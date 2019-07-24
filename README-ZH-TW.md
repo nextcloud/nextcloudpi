@@ -1,4 +1,4 @@
-[English](/README.md) | Chinese 中文
+[English](/README.md) | Traditional Chinese 繁體中文
 
 
 # NextCloudPi [![chatroom icon](https://patrolavia.github.io/telegram-badge/chat.png)](https://t.me/NextCloudPi) [![forums icon](https://img.shields.io/badge/help-forums-blue.svg)](https://help.nextcloud.com/c/support/appliances-docker-snappy-vm) [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=N8PJHSEQF4G7Y&lc=US&item_name=Own%20Your%20Bits&item_number=NextCloudPi&no_note=1&no_shipping=1&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted) [![blog](https://img.shields.io/badge/follow-blog-orange.svg)](https://ownyourbits.com)
@@ -19,10 +19,10 @@ NextCloudPi 是專門為 Raspberry Pi、Odroid HC1、rock64 以及其它單板�
 
 ## 功能
 
- * Raspbian 9 stretch
- * Nextcloud 15.0.6
+ * Debian/Raspbian 10 Buster
+ * Nextcloud 16.0.3
  * Apache 2.4.25, with HTTP2 enabled
- * PHP 7.2
+ * PHP 7.3
  * MariaDB 10
  * Redis memory cache ( NEW 11-12-2017 )
  * 4.9 Linux Kernel ( NEW 03-13-2017 )
@@ -107,8 +107,9 @@ cd nextcloudpi
 ```
 git clone https://github.com/nextcloud/nextcloudpi.git
 cd nextcloudpi
-make                        # armhf version
-make nextcloudpi-x86        # x86   version
+./build-docker.sh x86
+./build-docker.sh armhf
+./build-docker.sh arm64
 ```
 
 NextCloudPi 可以安裝在運行最新的 debian 的任何體系結構中
@@ -130,6 +131,8 @@ https://nextcloudpi.com
 https://hub.docker.com/r/ownyourbits/nextcloudpi-x86
 
 https://hub.docker.com/r/ownyourbits/nextcloudpi-armhf
+
+https://hub.docker.com/r/ownyourbits/nextcloudpi-arm64
 
 ## 聯絡
 
