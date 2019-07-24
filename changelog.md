@@ -1,7 +1,9 @@
 
-[v1.15.2](https://github.com/nextcloud/nextcloudpi/commit/7791e81) (2019-07-19) update: restore smbclient after dist upgrade
+[v1.15.3](https://github.com/nextcloud/nextcloudpi/commit/fdcde1b) (2019-07-24) nc-snapshot: update btrfs-snp
 
-[v1.15.1 ](https://github.com/nextcloud/nextcloudpi/commit/a00f240) (2019-07-17) exclude versions, trash, uploads from backups
+[v1.15.2 ](https://github.com/nextcloud/nextcloudpi/commit/212bd46) (2019-07-19) update: restore smbclient after dist upgrade
+
+[v1.15.1 ](https://github.com/nextcloud/nextcloudpi/commit/7663a90) (2019-07-17) exclude versions, trash, uploads from backups
 
 [v1.15.0 ](https://github.com/nextcloud/nextcloudpi/commit/e4bd5fe) (2019-07-08) move to buster/PHP7.3
 

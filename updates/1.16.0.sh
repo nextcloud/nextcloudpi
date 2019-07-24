@@ -24,6 +24,7 @@ apt-get install -y --no-install-recommends lsb-release
 [[ ! -f /.docker-image ]] && {
   # Update btrfs-sync
   wget -q https://raw.githubusercontent.com/nachoparker/btrfs-sync/master/btrfs-sync -O /usr/local/bin/btrfs-sync
+  chmod +x /usr/local/bin/btrfs-sync
 
   # work around dhcpcd Raspbian bug
   # https://lb.raspberrypi.org/forums/viewtopic.php?t=230779
@@ -33,6 +34,10 @@ apt-get install -y --no-install-recommends lsb-release
     apt-get install -y --no-install-recommends haveged
     systemctl enable haveged.service
   }
+
+  # Update btrfs-snp
+  wget https://raw.githubusercontent.com/nachoparker/btrfs-snp/master/btrfs-snp -O /usr/local/bin/btrfs-snp
+  chmod +x /usr/local/bin/btrfs-snp
 }
 
 exit 0
