@@ -81,6 +81,13 @@ sudo ncp-config
 ![NCP-config](https://ownyourbits.com/wp-content/uploads/2017/03/ncp-conf-700x456.jpg)
 
 
+## Run in docker
+
+```
+docker run -d -p 4443:4443 -p 443:443 -p 80:80 -v ncdata:/data --name nextcloudpi ownyourbits/nextcloudpi $DOMAIN
+```
+
+
 ## How to build
 
 Install git, docker, qemu-user-static, chroot and all the usual building tools.
@@ -123,11 +130,7 @@ Pull the docker image
 
 https://nextcloudpi.com
 
-https://hub.docker.com/r/ownyourbits/nextcloudpi-x86
-
-https://hub.docker.com/r/ownyourbits/nextcloudpi-armhf
-
-https://hub.docker.com/r/ownyourbits/nextcloudpi-arm64
+https://hub.docker.com/r/ownyourbits/nextcloudpi
 
 ## Contact
 
