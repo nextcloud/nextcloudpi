@@ -47,6 +47,7 @@ set -e
 
 # update sources
 sed -i 's/stretch/buster/g' /etc/apt/sources.list
+sed -i 's/stretch/buster/g' /etc/apt/sources.list.d/*
 rm -f /etc/apt/sources.list.d/php.list
 
 # install latest distro
