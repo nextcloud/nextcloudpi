@@ -15,6 +15,9 @@ apt-get install -y --no-install-recommends php-smbclient exfat-fuse exfat-utils
 # install lsb-release
 apt-get install -y --no-install-recommends lsb-release
 
+# missed some sources
+sed -i 's/stretch/buster/g' /etc/apt/sources.list.d/* &>/dev/null || true
+
 # docker images only
 [[ -f /.docker-image ]] && {
 :
