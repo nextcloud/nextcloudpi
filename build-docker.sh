@@ -21,7 +21,7 @@ function build_arch()
 
   docker_build -f docker/debian-ncp/Dockerfile  -t ownyourbits/debian-ncp-${ncp_tag}:latest --pull --build-arg release=${release} --build-arg arch=${arch} --build-arg arch_qemu=${arch_qemu}
   docker_build -f docker/lamp/Dockerfile        -t ownyourbits/lamp-${ncp_tag}:latest              --build-arg release=${release} --build-arg arch=${ncp_tag}
-  docker_build -f docker/nextcloud/Dockerfile   --no-cache -t ownyourbits/nextcloud-${ncp_tag}:latest         --build-arg release=${release} --build-arg arch=${ncp_tag}
+  docker_build -f docker/nextcloud/Dockerfile   -t ownyourbits/nextcloud-${ncp_tag}:latest         --build-arg release=${release} --build-arg arch=${ncp_tag}
   docker_build -f docker/nextcloudpi/Dockerfile -t ownyourbits/nextcloudpi-${ncp_tag}:latest       --build-arg release=${release} --build-arg arch=${ncp_tag} --build-arg ncp_ver=${version}
 
   docker tag ownyourbits/debian-ncp-${ncp_tag}:latest ownyourbits/debian-ncp-${ncp_tag}:"${version}"

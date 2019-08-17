@@ -273,11 +273,8 @@ function is_more_recent_than()
 function check_distro()
 {
   local cfg="${1:-$NCPCFG}"
-  local len="$(jq  '.release_issue | length' < "$cfg")"
-  for i in $(seq 0 $((len-1))); do
-    local supported=$(jq -r .release_issue[$i] < "$cfg")
-    grep -q "$supported" /etc/issue && return 0
-  done
+  local supported=$(jq -r .release < "$cfg")
+  grep -q "$supported" <(lsb_release -sc) && return 0
   return 1
 }
 

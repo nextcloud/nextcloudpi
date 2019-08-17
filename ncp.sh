@@ -22,7 +22,7 @@ install()
 {
   # NCP-CONFIG
   apt-get update
-  $APTINSTALL git dialog whiptail jq file
+  $APTINSTALL git dialog whiptail jq file lsb-release
   mkdir -p "$CONFDIR" "$BINDIR"
 
   # include option in raspi-config (only Raspbian)

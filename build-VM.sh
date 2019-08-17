@@ -41,7 +41,7 @@ sudo chown "$USER" "$VM"
 sudo cp -a --reflink=auto --sparse=auto "$VM" "$IMG"
 
 ## pack
- 
+
 TAR=output/"$( basename "$IMG" .img ).tar.bz2"
 pack_image "$IMG" "$TAR"
 

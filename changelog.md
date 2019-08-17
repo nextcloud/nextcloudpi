@@ -1,7 +1,17 @@
 
-[v1.14.3](https://github.com/nextcloud/nextcloudpi/commit/6a78953) (2019-07-06) nc-snapshot-sync: update btrfs-sync
+[v1.15.3](https://github.com/nextcloud/nextcloudpi/commit/fdcde1b) (2019-07-24) nc-snapshot: update btrfs-snp
 
-[v1.14.2](https://github.com/nextcloud/nextcloudpi/commit/53d02fe) (2019-07-06) nc-hdd-monitor: fix detection
+[v1.15.2 ](https://github.com/nextcloud/nextcloudpi/commit/212bd46) (2019-07-19) update: restore smbclient after dist upgrade
+
+[v1.15.1 ](https://github.com/nextcloud/nextcloudpi/commit/7663a90) (2019-07-17) exclude versions, trash, uploads from backups
+
+[v1.15.0 ](https://github.com/nextcloud/nextcloudpi/commit/e4bd5fe) (2019-07-08) move to buster/PHP7.3
+
+[v1.14.4 ](https://github.com/nextcloud/nextcloudpi/commit/68b3f8a) (2019-07-08) nc-previews: active by default
+
+[v1.14.3 ](https://github.com/nextcloud/nextcloudpi/commit/85ebb39) (2019-07-06) nc-snapshot-sync: update btrfs-sync
+
+[v1.14.2 ](https://github.com/nextcloud/nextcloudpi/commit/53d02fe) (2019-07-06) nc-hdd-monitor: fix detection
 
 [v1.14.0 ](https://github.com/nextcloud/nextcloudpi/commit/fa9ddca) (2019-07-05) upgrade to NC16.0.2
 

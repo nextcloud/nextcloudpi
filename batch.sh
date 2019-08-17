@@ -48,8 +48,8 @@ export DOCKER_CLI_EXPERIMENTAL=enabled
 #&& {
   docker push ownyourbits/nextcloudpi-x86
   docker push ownyourbits/nextcloudpi-x86:${version}
-  docker push ownyourbits/nextcloud-x86 
-  docker push ownyourbits/nextcloud-x86 :${version}
+  docker push ownyourbits/nextcloud-x86
+  docker push ownyourbits/nextcloud-x86:${version}
   docker push ownyourbits/lamp-x86
   docker push ownyourbits/lamp-x86:${version}
   docker push ownyourbits/debian-ncp-x86
@@ -87,7 +87,7 @@ docker manifest create --amend ownyourbits/nextcloudpi \
 
 docker manifest annotate ownyourbits/nextcloudpi ownyourbits/nextcloudpi-x86   --os linux --arch amd64
 docker manifest annotate ownyourbits/nextcloudpi ownyourbits/nextcloudpi-armhf --os linux --arch arm
-docker manifest annotate ownyourbits/nextcloudpi ownyourbits/nextcloudpi-arm64 --os linux --arch arm64v8
+docker manifest annotate ownyourbits/nextcloudpi ownyourbits/nextcloudpi-arm64 --os linux --arch arm64
 
 docker manifest push -p ownyourbits/nextcloudpi
 

@@ -345,7 +345,7 @@ rm  $IMGNAME.torrent
 put $IMGNAME.torrent
 bye
 EOF
-  cd - 
+  cd -
   cd torrent/$IMGNAME
 
   ftp -np ftp.ownyourbits.com <<EOF

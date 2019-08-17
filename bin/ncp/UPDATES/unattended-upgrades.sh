@@ -1,37 +1,39 @@
 #!/bin/bash
 
-# Unattended upgrades installation on Raspbian 
+# Unattended upgrades installation on NextCloudPi
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
 #
-# More at: ownyourbits.com 
+# More at: ownyourbits.com
 #
 
 
 install()
 {
   apt-get update
-  apt install -y --no-install-recommends unattended-upgrades 
+  apt install -y --no-install-recommends unattended-upgrades
   rm -f /etc/apt/apt.conf.d/20auto-upgrades /etc/apt/apt.conf.d/02-armbian-periodic
 }
 
-configure() 
-{ 
+configure()
+{
+  source /usr/local/etc/library.sh # sets RELEASE
+
   [[ $ACTIVE     == "yes" ]] && local AUTOUPGRADE=1   || local AUTOUPGRADE=0
   [[ $AUTOREBOOT == "yes" ]] && local AUTOREBOOT=true || local AUTOREBOOT=false
 
   cat > /etc/apt/apt.conf.d/20ncp-upgrades <<EOF
 APT::Periodic::Update-Package-Lists "1";
 APT::Periodic::Unattended-Upgrade "$AUTOUPGRADE";
-APT::Periodic::MaxAge "14"; 
+APT::Periodic::MaxAge "14";
 APT::Periodic::AutocleanInterval "7";
 Unattended-Upgrade::Automatic-Reboot "$AUTOREBOOT";
 Unattended-Upgrade::Automatic-Reboot-Time "04:00";
 Unattended-Upgrade::Origins-Pattern {
-o=Debian,n=stretch;
-o=deb.sury.org,n=stretch;
-o="Raspberry Pi Foundation",n=stretch;
+o=Debian,n=$RELEASE;
+o=deb.sury.org,n=$RELEASE;
+o="Raspberry Pi Foundation",n=$RELEASE;
 }
 Dpkg::Options {
    "--force-confdef";

@@ -33,7 +33,7 @@ touch /.docker-image; \
 
 apt-get update; \
 apt-get install --no-install-recommends -y wget ca-certificates; \
-      
+
 # install nextcloudpi
 source /usr/local/etc/library.sh; \
 set +x; \
@@ -68,6 +68,3 @@ echo "${ncp_ver}" > /usr/local/etc/ncp-version
 COPY docker/nextcloudpi/000ncp /etc/services-enabled.d/
 COPY bin/ncp/CONFIG/nc-init.sh /
 COPY etc/ncp-config.d/nc-init.cfg /usr/local/etc/ncp-config.d/
-
-# 4443 - ncp-web
-EXPOSE 80 443 4443

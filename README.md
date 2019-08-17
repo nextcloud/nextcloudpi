@@ -1,4 +1,4 @@
-English | [Chinese 繁體中文](/README-ZH-TW.md)
+English | [Traditional Chinese 繁體中文](/README-ZH-TW.md)
 
 # NextCloudPi [![chatroom icon](https://patrolavia.github.io/telegram-badge/chat.png)](https://t.me/NextCloudPi) [![forums icon](https://img.shields.io/badge/help-forums-blue.svg)](https://help.nextcloud.com/c/support/appliances-docker-snappy-vm) [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=N8PJHSEQF4G7Y&lc=US&item_name=Own%20Your%20Bits&item_number=NextCloudPi&no_note=1&no_shipping=1&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted) [![blog](https://img.shields.io/badge/follow-blog-orange.svg)](https://ownyourbits.com)
 
@@ -15,10 +15,10 @@ Find the full documentation at [docs.nextcloudpi.com](http://docs.nextcloudpi.co
 
 ## Features
 
- * Debian/Raspbian 9 stretch
- * Nextcloud 16.0.2
+ * Debian/Raspbian 10 Buster
+ * Nextcloud 16.0.3
  * Apache 2.4.25, with HTTP2 enabled
- * PHP 7.2
+ * PHP 7.3
  * MariaDB 10
  * Redis memory cache
  * ncp-config for easy setup ( RAM logs, USB drive and more )
@@ -81,6 +81,13 @@ sudo ncp-config
 ![NCP-config](https://ownyourbits.com/wp-content/uploads/2017/03/ncp-conf-700x456.jpg)
 
 
+## Run in docker
+
+```
+docker run -d -p 4443:4443 -p 443:443 -p 80:80 -v ncdata:/data --name nextcloudpi ownyourbits/nextcloudpi $DOMAIN
+```
+
+
 ## How to build
 
 Install git, docker, qemu-user-static, chroot and all the usual building tools.
@@ -123,11 +130,7 @@ Pull the docker image
 
 https://nextcloudpi.com
 
-https://hub.docker.com/r/ownyourbits/nextcloudpi-x86
-
-https://hub.docker.com/r/ownyourbits/nextcloudpi-armhf
-
-https://hub.docker.com/r/ownyourbits/nextcloudpi-arm64
+https://hub.docker.com/r/ownyourbits/nextcloudpi
 
 ## Contact
 

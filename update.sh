@@ -62,17 +62,20 @@ mkdir -p "$CONFDIR"
 # copy all files in bin and etc
 cp -r bin/* /usr/local/bin/
 find etc -maxdepth 1 -type f ! -path etc/ncp.cfg -exec cp '{}' /usr/local/etc \;
+
+# set initial config # TODO remove me after next NCP release
+[[ -f "${NCPCFG}" ]] || cat > /usr/local/etc/ncp.cfg <<EOF
+{
+	"nextcloud_version": "16.0.2",
+	"php_version": "7.2",
+	"release": "stretch",
+	"release_issue": [
+		"Debian GNU/Linux 9",
+		"Raspbian GNU/Linux 9"
+	]
+}
+EOF
 cp -n etc/ncp.cfg /usr/local/etc
-
-# update NCVER in ncp.cfg and nc-nextcloud.cfg (for nc-autoupdate-nc and nc-update-nextcloud)
-nc_version=$(jq -r .nextcloud_version < etc/ncp.cfg)
-cfg="$(jq '.' /usr/local/etc/ncp.cfg)"
-cfg="$(jq ".nextcloud_version = \"$nc_version\"" <<<"$cfg")"
-echo "$cfg" > /usr/local/etc/ncp.cfg
-
-cfg="$(jq '.' etc/ncp-config.d/nc-nextcloud.cfg)"
-cfg="$(jq ".params[0].value = \"$nc_version\"" <<<"$cfg")"
-echo "$cfg" > /usr/local/etc/ncp-config.d/nc-nextcloud.cfg
 
 # install new entries of ncp-config and update others
 for file in etc/ncp-config.d/*; do
@@ -106,6 +109,16 @@ for file in etc/ncp-config.d/*; do
 
 done
 
+# update NCVER in ncp.cfg and nc-nextcloud.cfg (for nc-autoupdate-nc and nc-update-nextcloud)
+nc_version=$(jq -r .nextcloud_version < etc/ncp.cfg)
+cfg="$(jq '.' /usr/local/etc/ncp.cfg)"
+cfg="$(jq ".nextcloud_version = \"$nc_version\"" <<<"$cfg")"
+echo "$cfg" > /usr/local/etc/ncp.cfg
+
+cfg="$(jq '.' etc/ncp-config.d/nc-nextcloud.cfg)"
+cfg="$(jq ".params[0].value = \"$nc_version\"" <<<"$cfg")"
+echo "$cfg" > /usr/local/etc/ncp-config.d/nc-nextcloud.cfg
+
 # install localization files
 cp -rT etc/ncp-config.d/l10n "$CONFDIR"/l10n
 
@@ -128,7 +141,6 @@ rm -rf /var/www/nextcloud/apps/nextcloudpi
 cp -r /var/www/ncp-app /var/www/nextcloud/apps/nextcloudpi
 chown -R www-data:     /var/www/nextcloud/apps/nextcloudpi
 
-
 [[ -f /.docker-image ]] && {
   # remove unwanted ncp-apps for the docker version
   for opt in $EXCL_DOCKER; do
@@ -140,11 +152,40 @@ chown -R www-data:     /var/www/nextcloud/apps/nextcloudpi
   cp docker/{lamp/010lamp,nextcloud/020nextcloud,nextcloudpi/000ncp} /etc/services-enabled.d
 }
 
+# only live updates from here
+[[ -f /.ncp-image ]] && exit 0
+
 # update old images
 ./run_update_history.sh "$UPDATESDIR"
 
 # update to the latest NC version
 is_active_app nc-autoupdate-nc && run_app nc-autoupdate-nc
+
+# check dist-upgrade
+check_distro "$NCPCFG" && check_distro etc/ncp.cfg || {
+  php_ver_new=$(jq -r '.php_version'   < etc/ncp.cfg)
+  release_new=$(jq -r '.release'       < etc/ncp.cfg)
+
+  cfg="$(jq '.' "$NCPCFG")"
+  cfg="$(jq '.php_version   = "'$php_ver_new'"' <<<"$cfg")"
+  cfg="$(jq '.release       = "'$release_new'"' <<<"$cfg")"
+  echo "$cfg" > /usr/local/etc/ncp-recommended.cfg
+
+  [[ -f /.dockerenv ]] && \
+    msg="Update to $release_new available. Get the latest container to upgrade" || \
+    msg="Update to $release_new available. Type 'sudo ncp-dist-upgrade' to upgrade"
+  echo "${msg}"
+  ncc notification:generate "ncp" "New distribution available" -l "${msg}"
+  wall "${msg}"
+  cat > /etc/update-motd.d/30ncp-dist-upgrade <<EOF
+#!/bin/bash
+new_cfg=/usr/local/etc/ncp-recommended.cfg
+[[ -f "\${new_cfg}" ]] || exit 0
+echo -e "${msg}"
+EOF
+chmod +x /etc/update-motd.d/30ncp-dist-upgrade
+} 
+
 
 exit 0
 
@@ -164,4 +205,3 @@ exit 0
 # along with this script; if not, write to the
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
-

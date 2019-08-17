@@ -47,9 +47,6 @@ run_app_unsafe post-inst.sh
 
 cd -
 
-# force change root password at first login (again)
-chage -d 0 root
-
 # disable SSH by default, it can be enabled through ncp-web
 systemctl disable ssh
 

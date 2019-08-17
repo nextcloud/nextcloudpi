@@ -15,7 +15,7 @@ Vagrant.configure("2") do |config|
   vmname = "NCP Debian VM"
   release = ENV["DEB_RELEASE"]
   config.vm.box = "debian/#{release}64"
-  config.vm.box_check_update = false
+  config.vm.box_check_update = true
   config.vm.hostname = "ncp-vm"
 
   config.vm.synced_folder '.', '/vagrant', disabled: true
