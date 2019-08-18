@@ -15,6 +15,9 @@ apt-get install -y --no-install-recommends php-smbclient exfat-fuse exfat-utils
 # install lsb-release
 apt-get install -y --no-install-recommends lsb-release
 
+# tweak previews
+ncc config:app:set preview jpeg_quality --value="60"
+
 # missed some sources
 sed -i 's/stretch/buster/g' /etc/apt/sources.list.d/* &>/dev/null || true
 

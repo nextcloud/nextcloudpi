@@ -164,6 +164,7 @@ EOF
   ncc config:system:set preview_max_x --value 2048
   ncc config:system:set preview_max_y --value 2048
   ncc config:system:set jpeg_quality --value 60
+  ncc config:app:set preview jpeg_quality --value="60"
 
   # other
   ncc config:system:set overwriteprotocol --value=https
