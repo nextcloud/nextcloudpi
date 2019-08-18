@@ -52,8 +52,12 @@ EOF
 [INCLUDES]
 before = common.conf
 [Definition]
-failregex = UFW BLOCK.* SRC=
+failregex = UFW BLOCK.* SRC=<HOST>
 ignoreregex =
+EOF
+  cat > /etc/systemd/system/fail2ban.service.d/touch-ufw-log.conf <<EOF
+[Service]
+ExecStartPre=/bin/touch /var/log/ufw.log
 EOF
     chmod +x /etc/services-available.d/100fail2ban
   }
