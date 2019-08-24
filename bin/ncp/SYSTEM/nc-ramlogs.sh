@@ -27,7 +27,7 @@ install()
   chmod +x install.sh && sudo ./install.sh
   cd ..
   rm -r log2ram-master log2ram.tar.gz
-  rm /etc/cron.hourly/log2ram /usr/local/bin/uninstall-log2ram.sh
+  rm /etc/cron.daily/log2ram /usr/local/bin/uninstall-log2ram.sh
 }
 
 configure()

@@ -184,8 +184,7 @@ new_cfg=/usr/local/etc/ncp-recommended.cfg
 echo -e "${msg}"
 EOF
 chmod +x /etc/update-motd.d/30ncp-dist-upgrade
-} 
-
+}
 
 exit 0
 
