@@ -1,5 +1,7 @@
 
-[v1.15.3](https://github.com/nextcloud/nextcloudpi/commit/fdcde1b) (2019-07-24) nc-snapshot: update btrfs-snp
+[v1.16.0](https://github.com/nextcloud/nextcloudpi/commit/52a82d9) (2019-08-23) upgrade to NC16.0.4
+
+[v1.15.3 ](https://github.com/nextcloud/nextcloudpi/commit/bcef6bf) (2019-07-24) nc-snapshot: update btrfs-snp
 
 [v1.15.2 ](https://github.com/nextcloud/nextcloudpi/commit/212bd46) (2019-07-19) update: restore smbclient after dist upgrade
 
