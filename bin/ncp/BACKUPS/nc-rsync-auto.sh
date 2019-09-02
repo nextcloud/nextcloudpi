@@ -30,7 +30,7 @@ configure()
 
   [[ "$DESTINATION" =~ : ]] && {
     local NET="$( sed 's|:.*||' <<<"$DESTINATION" )"
-    local SSH=( ssh -o "BatchMode=yes" "$NET" )
+    local SSH=( ssh -o "BatchMode=yes" -p "$PORTNUMBER" "$NET" )
     ${SSH[@]} : || { echo "SSH non-interactive not properly configured"; return 1; }
   }
 
