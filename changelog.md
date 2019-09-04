@@ -1,5 +1,13 @@
 
-[v1.16.0](https://github.com/nextcloud/nextcloudpi/commit/52a82d9) (2019-08-23) upgrade to NC16.0.4
+[v1.16.2](https://github.com/nextcloud/nextcloudpi/commit/d97e2c1) (2019-09-04) custom code before/after auto-backup
+
+[v1.16.1](https://github.com/nextcloud/nextcloudpi/commit/fd2b74b) (2019-09-02) Add missing port in nc-rsync-auto.sh (#983)
+
+[v1.16.0 ](https://github.com/nextcloud/nextcloudpi/commit/1a367a6) (2019-08-23) upgrade to NC16.0.4
+
+[v1.15.5 ](https://github.com/nextcloud/nextcloudpi/commit/954366e) (2019-08-18) make sure ufw.log always exists for fail2ban (#937)
+
+[v1.15.4 ](https://github.com/nextcloud/nextcloudpi/commit/bf30c4f) (2019-07-28) add warning to add LABEL when formating
 
 [v1.15.3 ](https://github.com/nextcloud/nextcloudpi/commit/bcef6bf) (2019-07-24) nc-snapshot: update btrfs-snp
 
