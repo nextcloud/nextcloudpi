@@ -18,11 +18,13 @@ configure()
 
   cat > /usr/local/bin/ncp-backup-auto <<EOF
 #!/bin/bash
+[ -x /usr/local/bin/ncp-backup-auto-before ] && /usr/local/bin/ncp-backup-auto-before
 /usr/local/bin/ncc maintenance:mode --on
 /usr/local/bin/ncp-backup "$DESTDIR" "$INCLUDEDATA" "$COMPRESS" "$BACKUPLIMIT" || failed=true
 /usr/local/bin/ncc maintenance:mode --off
 [[ "\$failed" == "true" ]] && \
  /usr/local/bin/ncc notification:generate "$NOTIFYUSER" "Auto-backup failed" -l "Your automatic backup failed"
+[ -x /usr/local/bin/ncp-backup-auto-after ] && /usr/local/bin/ncp-backup-auto-after
 EOF
   chmod +x /usr/local/bin/ncp-backup-auto
 
