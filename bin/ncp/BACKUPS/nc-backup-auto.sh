@@ -24,7 +24,7 @@ configure()
 /usr/local/bin/ncc maintenance:mode --off
 [[ "\$failed" == "true" ]] && \
  /usr/local/bin/ncc notification:generate "$NOTIFYUSER" "Auto-backup failed" -l "Your automatic backup failed"
-[ -x /usr/local/bin/ncp-backup-auto-after ] && /usr/local/bin/ncp-backup-auto-after 
+[ -x /usr/local/bin/ncp-backup-auto-after ] && /usr/local/bin/ncp-backup-auto-after
 EOF
   chmod +x /usr/local/bin/ncp-backup-auto
 
