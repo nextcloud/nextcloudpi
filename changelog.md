@@ -1,5 +1,7 @@
 
-[v1.16.2](https://github.com/nextcloud/nextcloudpi/commit/d97e2c1) (2019-09-04) custom code before/after auto-backup
+[v1.16.3](https://github.com/nextcloud/nextcloudpi/commit/835016c) (2019-09-09) bookmarks: install php-gmp
+
+[v1.16.2 ](https://github.com/nextcloud/nextcloudpi/commit/f4b4a65) (2019-09-04) custom code before/after auto-backup
 
 [v1.16.1](https://github.com/nextcloud/nextcloudpi/commit/fd2b74b) (2019-09-02) Add missing port in nc-rsync-auto.sh (#983)
 
