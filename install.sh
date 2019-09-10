@@ -22,6 +22,8 @@ trap "rm -rf \"${TMPDIR}\" ; exit 0" 0 1 2 3 15
   exit 1
 }
 
+export PATH="/usr/local/sbin:/usr/sbin:/sbin:${PATH}"
+
 # check installed software
 type mysqld  &>/dev/null && echo ">>> WARNING: existing mysqld configuration will be changed <<<"
 
