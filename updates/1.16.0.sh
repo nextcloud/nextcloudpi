@@ -19,7 +19,7 @@ apt-get install -y --no-install-recommends lsb-release
 ncc config:app:set preview jpeg_quality --value="60"
 
 # missed some sources
-sed -i 's/stretch/buster/g' /etc/apt/sources.list.d/* &>/dev/null || true
+sed -i "s/stretch/$RELEASE/g" /etc/apt/sources.list.d/* &>/dev/null || true
 
 # docker images only
 [[ -f /.docker-image ]] && {
