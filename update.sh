@@ -186,59 +186,6 @@ EOF
 chmod +x /etc/update-motd.d/30ncp-dist-upgrade
 }
 
-# Update modsecurity config file only if user is already in buster and is used.
-# https://github.com/nextcloud/nextcloudpi/issues/959
-check_distro "$NCPCFG" && {
-  [[ -f /etc/modsecurity/modsecurity_crs_99_whitelist.conf ]] && {
-    cat > /etc/modsecurity/modsecurity_crs_99_whitelist.conf <<EOF
-<Directory $NCDIR>
-  # VIDEOS
-  SecRuleRemoveById 958291             # Range Header Checks
-  SecRuleRemoveById 980120             # Correlated Attack Attempt
-
-  # PDF
-  SecRuleRemoveById 920230             # Check URL encodings
-
-  # ADMIN (webdav)
-  SecRuleRemoveById 960024             # Repeatative Non-Word Chars (heuristic)
-  SecRuleRemoveById 981173             # SQL Injection Character Anomaly Usage
-  SecRuleRemoveById 980130             # Correlated Attack Attempt
-  SecRuleRemoveById 981243             # PHPIDS - Converted SQLI Filters
-  SecRuleRemoveById 981245             # PHPIDS - Converted SQLI Filters
-  SecRuleRemoveById 981246             # PHPIDS - Converted SQLI Filters
-  SecRuleRemoveById 981318             # String Termination/Statement Ending Injection Testing
-  SecRuleRemoveById 973332             # XSS Filters from IE
-  SecRuleRemoveById 973338             # XSS Filters - Category 3
-  SecRuleRemoveById 981143             # CSRF Protections ( TODO edit LocationMatch filter )
-
-  # COMING BACK FROM OLD SESSION
-  SecRuleRemoveById 970903             # Microsoft Office document properties leakage
-
-  # NOTES APP
-  SecRuleRemoveById 981401             # Content-Type Response Header is Missing and X-Content-Type-Options is either missing or not set to 'nosniff'
-  SecRuleRemoveById 200002             # Failed to parse request body
-
-  # UPLOADS ( https://github.com/nextcloud/nextcloudpi/issues/959#issuecomment-529150562 )
-  SecRequestBodyNoFilesLimit 536870912
-
-  # GENERAL
-  SecRuleRemoveById 920350             # Host header is a numeric IP address
-
-  # REGISTERED WARNINGS, BUT DID NOT HAVE TO DISABLE THEM
-  #SecRuleRemoveById 981220 900046 981407
-  #SecRuleRemoveById 981222 981405 981185 949160
-
-</Directory>
-<Directory $NCPWB>
-  # GENERAL
-  SecRuleRemoveById 920350             # Host header is a numeric IP address
-</Directory>
-EOF
-    # restart apache2 so changes take effect
-    sleep 2 && service apache2 reload &>/dev/null
-  }
-}
-
 exit 0
 
 # License
