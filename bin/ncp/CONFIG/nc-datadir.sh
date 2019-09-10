@@ -15,9 +15,9 @@ is_active()
   [[ "$SRCDIR" != "/var/www/nextcloud/data" ]]
 }
 
-install() 
-{ 
-  apt-get update 
+install()
+{
+  apt-get update
   apt-get install -y --no-install-recommends btrfs-tools
 }
 
@@ -28,7 +28,7 @@ configure()
   ## CHECKS
   local SRCDIR
   SRCDIR=$( cd /var/www/nextcloud; sudo -u www-data php occ config:system:get datadirectory ) || {
-    echo -e "Error reading data directory. Is NextCloud running and configured?"; 
+    echo -e "Error reading data directory. Is NextCloud running and configured?";
     return 1;
   }
   [ -d "$SRCDIR" ] || { echo -e "data directory $SRCDIR not found"; return 1; }
@@ -57,7 +57,7 @@ configure()
 
   # backup possibly existing datadir
   [ -d $DATADIR ] && {
-    local BKP="${DATADIR}-$( date "+%m-%d-%y" )" 
+    local BKP="${DATADIR}-$( date "+%m-%d-%y" )"
     echo "INFO: $DATADIR is not empty. Creating backup $BKP"
     mv "$DATADIR" "$BKP"
   }
@@ -69,17 +69,20 @@ configure()
 
   echo "moving data directory from $SRCDIR to $DATADIR..."
 
+  # resolve symlinks and use the real path
+  DATADIR=$(cd "$DATADIR" && pwd -P)
+
   # use subvolumes, if BTRFS
   [[ "$( stat -fc%T "$BASEDIR" )" == "btrfs" ]] && {
     echo "BTRFS filesystem detected"
-    btrfs subvolume create "$DATADIR" || return 1
+    btrfs subvolume create "$DATADIR" || return  1
   }
 
   cp --reflink=auto -raT "$SRCDIR" "$DATADIR" || return 1
   chown www-data:www-data "$DATADIR"
- 
+
   # tmp upload dir
-  mkdir -p "$DATADIR/tmp" 
+  mkdir -p "$DATADIR/tmp"
   chown www-data:www-data "$DATADIR/tmp"
   sudo -u www-data php occ config:system:set tempdirectory --value "$DATADIR/tmp"
   sed -i "s|^;\?upload_tmp_dir =.*$|uploadtmp_dir = $DATADIR/tmp|" /etc/php/${PHPVER}/cli/php.ini
