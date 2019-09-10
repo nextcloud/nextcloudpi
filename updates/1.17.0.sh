@@ -15,6 +15,12 @@ sed -i "s/buster/$RELEASE/g" /etc/apt/sources.list.d/* &>/dev/null || true
 apt-get update
 apt-get install -y --no-install-recommends php${PHPVER}-gmp
 
+# fix fail2ban with UFW
+cat > /etc/systemd/system/fail2ban.service.d/touch-ufw-log.conf <<EOF
+[Service]
+ExecStartPre=/bin/touch /var/log/ufw.log
+EOF
+
 # docker images only
 [[ -f /.docker-image ]] && {
   :

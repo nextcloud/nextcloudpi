@@ -1,9 +1,11 @@
 
-[v1.16.3](https://github.com/nextcloud/nextcloudpi/commit/835016c) (2019-09-09) bookmarks: install php-gmp
+[v1.16.4](https://github.com/nextcloud/nextcloudpi/commit/682f803) (2019-09-10) fail2ban: fix missing ufw filter for old images
+
+[v1.16.3 ](https://github.com/nextcloud/nextcloudpi/commit/06005e1) (2019-09-09) nc-datadir: avoid using the symlink
 
 [v1.16.2 ](https://github.com/nextcloud/nextcloudpi/commit/f4b4a65) (2019-09-04) custom code before/after auto-backup
 
-[v1.16.1](https://github.com/nextcloud/nextcloudpi/commit/fd2b74b) (2019-09-02) Add missing port in nc-rsync-auto.sh (#983)
+[v1.16.1 ](https://github.com/nextcloud/nextcloudpi/commit/fd2b74b) (2019-09-02) Add missing port in nc-rsync-auto.sh (#983)
 
 [v1.16.0 ](https://github.com/nextcloud/nextcloudpi/commit/1a367a6) (2019-08-23) upgrade to NC16.0.4
 
