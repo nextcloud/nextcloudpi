@@ -70,8 +70,8 @@ configure()
   SecRuleRemoveById 981401             # Content-Type Response Header is Missing and X-Content-Type-Options is either missing or not set to 'nosniff'
   SecRuleRemoveById 200002             # Failed to parse request body
 
-  # UPLOADS ( 5 MB max excluding file size )
-  SecRequestBodyNoFilesLimit 5242880
+  # UPLOADS ( https://github.com/nextcloud/nextcloudpi/issues/959#issuecomment-529150562 )
+  SecRequestBodyNoFilesLimit 536870912
 
   # GENERAL
   SecRuleRemoveById 920350             # Host header is a numeric IP address

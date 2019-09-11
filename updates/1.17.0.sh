@@ -15,6 +15,11 @@ sed -i "s/buster/$RELEASE/g" /etc/apt/sources.list.d/* &>/dev/null || true
 apt-get update
 apt-get install -y --no-install-recommends php${PHPVER}-gmp
 
+# Update modsecurity config file only if user is already in buster and
+# modsecurity is used.
+# https://github.com/nextcloud/nextcloudpi/issues/959
+is_active_app modsecurity && run_app modsecurity
+
 # docker images only
 [[ -f /.docker-image ]] && {
   :

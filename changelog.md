@@ -1,7 +1,9 @@
 
-[v1.16.5](https://github.com/nextcloud/nextcloudpi/commit/15a1beb) (2019-09-12) nc-datadir: make sure dir exists before check
+[v1.16.6](https://github.com/nextcloud/nextcloudpi/commit/d3718d1) (2019-09-11) Increased modsecurity bodynofileslimit so larger files can be synced (#993)
 
-[v1.16.4](https://github.com/nextcloud/nextcloudpi/commit/4bd06e6) (2019-09-10) fail2ban: dont need ufw check in docker
+[v1.16.5](https://github.com/nextcloud/nextcloudpi/commit/789f0b5) (2019-09-12) nc-datadir: make sure dir exists before check
+
+[v1.16.4 ](https://github.com/nextcloud/nextcloudpi/commit/4bd06e6) (2019-09-10) fail2ban: dont need ufw check in docker
 
 [v1.16.3 ](https://github.com/nextcloud/nextcloudpi/commit/06005e1) (2019-09-09) nc-datadir: avoid using the symlink
 
