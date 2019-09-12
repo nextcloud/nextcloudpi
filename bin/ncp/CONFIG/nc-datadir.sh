@@ -70,6 +70,7 @@ configure()
   echo "moving data directory from $SRCDIR to $DATADIR..."
 
   # resolve symlinks and use the real path
+  mkdir -p "$DATADIR"
   DATADIR=$(cd "$DATADIR" && pwd -P)
 
   # use subvolumes, if BTRFS
