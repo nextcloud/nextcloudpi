@@ -39,6 +39,9 @@ Dpkg::Options {
    "--force-confdef";
    "--force-confold";
 };
+
+// Enable the update/upgrade script, disabled by Armbian in 02-armbian-periodic
+APT::Periodic::Enable "1";
 EOF
 
   echo "Unattended upgrades active: $ACTIVE (autoreboot $AUTOREBOOT)"

@@ -20,6 +20,8 @@ apt-get install -y --no-install-recommends php${PHPVER}-gmp
 # https://github.com/nextcloud/nextcloudpi/issues/959
 is_active_app modsecurity && run_app modsecurity
 
+# fix armbian disabling unattended-upgrades
+is_active_app unattended-upgrades && run_app unattended-upgrades
 # docker images only
 [[ -f /.docker-image ]] && {
   :

@@ -1,7 +1,11 @@
 
-[v1.16.6](https://github.com/nextcloud/nextcloudpi/commit/d3718d1) (2019-09-11) Increased modsecurity bodynofileslimit so larger files can be synced (#993)
+[v1.16.8](https://github.com/nextcloud/nextcloudpi/commit/c35c752) (2019-09-16) unattended-upgrades: fix armbian disabling UU
 
-[v1.16.5](https://github.com/nextcloud/nextcloudpi/commit/789f0b5) (2019-09-12) nc-datadir: make sure dir exists before check
+[v1.16.7](https://github.com/nextcloud/nextcloudpi/commit/9ee9947) (2019-09-11) Increased modsecurity bodynofileslimit so larger files can be synced (#993)
+
+[v1.16.6](https://github.com/nextcloud/nextcloudpi/commit/dbf129f) (2019-09-13) nc-datadir: fix
+
+[v1.16.5 ](https://github.com/nextcloud/nextcloudpi/commit/789f0b5) (2019-09-12) nc-datadir: make sure dir exists before check
 
 [v1.16.4 ](https://github.com/nextcloud/nextcloudpi/commit/4bd06e6) (2019-09-10) fail2ban: dont need ufw check in docker
 
