@@ -9,11 +9,10 @@ source /usr/local/etc/library.sh
 # all images
 
 # restore smbclient after dist upgrade
-apt-get update
-apt-get install -y --no-install-recommends php-smbclient exfat-fuse exfat-utils
+apt_install php-smbclient exfat-fuse exfat-utils
 
 # install lsb-release
-apt-get install -y --no-install-recommends lsb-release
+apt_install lsb-release
 
 # tweak previews
 ncc config:app:set preview jpeg_quality --value="60"
@@ -37,7 +36,7 @@ sed -i "s/stretch/$RELEASE/g" /etc/apt/sources.list.d/* &>/dev/null || true
   # https://github.com/nextcloud/nextcloudpi/issues/938
   test -f /usr/bin/raspi-config && {
     apt-get update
-    apt-get install -y --no-install-recommends haveged
+    apt_install haveged
     systemctl enable haveged.service
   }
 

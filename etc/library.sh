@@ -278,6 +278,12 @@ function check_distro()
   return 1
 }
 
+function apt_install()
+{
+  apt-get update
+  apt-get install -y --no-install-recommends -o Dpkg::Options::=--force-confdef
+}
+
 # License
 #
 # This script is free software; you can redistribute it and/or modify it

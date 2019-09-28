@@ -12,8 +12,7 @@ source /usr/local/etc/library.sh # sets NCVER PHPVER RELEASE
 sed -i "s/buster/$RELEASE/g" /etc/apt/sources.list.d/* &>/dev/null || true
 
 # restore smbclient after dist upgrade
-apt-get update
-apt-get install -y --no-install-recommends php${PHPVER}-gmp
+apt_install php${PHPVER}-gmp
 
 # Update modsecurity config file only if user is already in buster and
 # modsecurity is used.

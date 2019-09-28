@@ -83,7 +83,7 @@ EOF
 
   # update launchers
   apt-get update
-  apt-get install -y --no-install-recommends file
+  apt_install file
   cat > /home/www/ncp-launcher.sh <<'EOF'
 #!/bin/bash
 grep -q '[\\&#;`|*?~<>^()[{}$&[:space:]]' <<< "$*" && exit 1
