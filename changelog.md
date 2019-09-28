@@ -1,7 +1,9 @@
 
-[v1.16.9](https://github.com/nextcloud/nextcloudpi/commit/c855204) (2019-09-28) fix apt stuck in interactive conf file dialog
+[v1.17.0](https://github.com/nextcloud/nextcloudpi/commit/5867fc4) (2019-09-28) upgrade to NC16.0.5
 
-[v1.16.8](https://github.com/nextcloud/nextcloudpi/commit/f885861) (2019-09-16) unattended-upgrades: fix armbian disabling UU
+[v1.16.9](https://github.com/nextcloud/nextcloudpi/commit/46b2187) (2019-09-28) fix apt stuck in interactive conf file dialog
+
+[v1.16.8 ](https://github.com/nextcloud/nextcloudpi/commit/f885861) (2019-09-16) unattended-upgrades: fix armbian disabling UU
 
 [v1.16.7 ](https://github.com/nextcloud/nextcloudpi/commit/9ee9947) (2019-09-11) Increased modsecurity bodynofileslimit so larger files can be synced (#993)
 
