@@ -21,6 +21,10 @@ is_active_app modsecurity && run_app modsecurity
 
 # fix armbian disabling unattended-upgrades
 is_active_app unattended-upgrades && run_app unattended-upgrades
+
+# groupfolders fix
+install_app nc-backup
+
 # docker images only
 [[ -f /.docker-image ]] && {
   :

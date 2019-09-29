@@ -1,13 +1,15 @@
 
-[v1.17.0](https://github.com/nextcloud/nextcloudpi/commit/5867fc4) (2019-09-28) upgrade to NC16.0.5
+[v1.17.1](https://github.com/nextcloud/nextcloudpi/commit/b50801a) (2019-09-29) nc-backup: exclude group folders in dataless backup
 
-[v1.16.9](https://github.com/nextcloud/nextcloudpi/commit/46b2187) (2019-09-28) fix apt stuck in interactive conf file dialog
+[v1.17.0](https://github.com/nextcloud/nextcloudpi/commit/05e78cc) (2019-09-28) upgrade to NC16.0.5
+
+[v1.16.9 ](https://github.com/nextcloud/nextcloudpi/commit/46b2187) (2019-09-28) fix apt stuck in interactive conf file dialog
 
 [v1.16.8 ](https://github.com/nextcloud/nextcloudpi/commit/f885861) (2019-09-16) unattended-upgrades: fix armbian disabling UU
 
 [v1.16.7 ](https://github.com/nextcloud/nextcloudpi/commit/9ee9947) (2019-09-11) Increased modsecurity bodynofileslimit so larger files can be synced (#993)
 
-[v1.16.6](https://github.com/nextcloud/nextcloudpi/commit/dbf129f) (2019-09-13) nc-datadir: fix
+[v1.16.6 ](https://github.com/nextcloud/nextcloudpi/commit/dbf129f) (2019-09-13) nc-datadir: fix
 
 [v1.16.5 ](https://github.com/nextcloud/nextcloudpi/commit/789f0b5) (2019-09-12) nc-datadir: make sure dir exists before check
 
