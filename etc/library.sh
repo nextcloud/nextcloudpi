@@ -65,7 +65,7 @@ function configure_app()
                      20 70 0 $parameters \
                3>&1 1>&2 2>&3 )"
     res=$?
- 
+
     case $res in
       $DIALOG_CANCEL)
         break
@@ -273,7 +273,7 @@ function is_more_recent_than()
 function check_distro()
 {
   local cfg="${1:-$NCPCFG}"
-  local supported=$(jq -r .release < "$cfg")
+  local supported=$(jq -r .release "$cfg")
   grep -q "$supported" <(lsb_release -sc) && return 0
   return 1
 }
