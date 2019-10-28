@@ -29,7 +29,13 @@ configure()
   cat > /usr/local/bin/nc-previews <<EOF
 #!/bin/bash
 echo -e "\n[ nc-previews-auto ]" >> /var/log/ncp.log
-ionice -c3 nice -n20 /usr/local/bin/ncc preview:pre-generate -n -vvv 2>&1 >>/var/log/ncp.log &
+(
+    for i in \$(seq 1 \$(nproc)); do
+      ionice -c3 nice -n20 /usr/local/bin/ncc preview:pre-generate -n -vvv &
+    done
+    wait
+) 2>&1 >>/var/log/ncp.log &
+
 PID=\$!
 [[ "$RUNTIME" != 0 ]] && {
   for i in \$(seq 1 1 $RUNTIME); do

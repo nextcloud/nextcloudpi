@@ -148,13 +148,15 @@ EOF
   ncc app:install notes
   ncc app:install tasks
   ncc app:install news
-  ncc app:install previewgenerator
 
   ncc app:enable calendar
   ncc app:enable contacts
   ncc app:enable notes
   ncc app:enable tasks
   ncc app:enable news
+
+  # ncp-previewgenerator
+  cp -r /var/www/ncp-previewgenerator /var/www/nextcloud/apps/previewgenerator
   ncc app:enable previewgenerator
 
   # previews

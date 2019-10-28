@@ -1,7 +1,9 @@
 
-[v1.17.1](https://github.com/nextcloud/nextcloudpi/commit/b50801a) (2019-09-29) nc-backup: exclude group folders in dataless backup
+[v1.18.0](https://github.com/nextcloud/nextcloudpi/commit/c140109) (2019-10-27) add ncp-previews
 
-[v1.17.0](https://github.com/nextcloud/nextcloudpi/commit/05e78cc) (2019-09-28) upgrade to NC16.0.5
+[v1.17.1 ](https://github.com/nextcloud/nextcloudpi/commit/c63cb27) (2019-09-29) nc-backup: exclude group folders in dataless backup
+
+[v1.17.0 ](https://github.com/nextcloud/nextcloudpi/commit/05e78cc) (2019-09-28) upgrade to NC16.0.5
 
 [v1.16.9 ](https://github.com/nextcloud/nextcloudpi/commit/46b2187) (2019-09-28) fix apt stuck in interactive conf file dialog
 

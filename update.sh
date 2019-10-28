@@ -136,6 +136,11 @@ chmod 770                  /var/www/ncp-web
 rm -rf /var/www/ncp-app
 cp -r ncp-app /var/www/
 
+# install ncp-previewgenerator
+rm -rf /var/www/ncp-previewgenerator
+cp -r ncp-previewgenerator /var/www/
+chown -R www-data:         /var/www/ncp-previewgenerator
+
 # copy NC app to nextcloud directory and enable it
 rm -rf /var/www/nextcloud/apps/nextcloudpi
 cp -r /var/www/ncp-app /var/www/nextcloud/apps/nextcloudpi

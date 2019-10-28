@@ -13,12 +13,13 @@ SHELL ["/bin/bash", "-c"]
 ENV DOCKERBUILD 1
 
 RUN mkdir -p /tmp/ncp-build
-COPY bin/             /tmp/ncp-build/bin/
-COPY etc              /tmp/ncp-build/etc/
-COPY ncp.sh update.sh /tmp/ncp-build/
-COPY ncp-web          /tmp/ncp-build/ncp-web/
-COPY ncp-app          /tmp/ncp-build/ncp-app/
-COPY docker           /tmp/ncp-build/docker/
+COPY bin/                 /tmp/ncp-build/bin/
+COPY etc                  /tmp/ncp-build/etc/
+COPY ncp.sh update.sh     /tmp/ncp-build/
+COPY ncp-web              /tmp/ncp-build/ncp-web/
+COPY ncp-app              /tmp/ncp-build/ncp-app/
+COPY ncp-previewgenerator /tmp/ncp-build/ncp-previewgenerator/
+COPY docker               /tmp/ncp-build/docker/
 
 RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt \
 

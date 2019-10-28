@@ -11,6 +11,11 @@
 
 configure()
 {
+  pgrep -af preview:pre-generate &>/dev/null || pgrep -af preview:generate-all &>/dev/null && {
+    echo "nc-previews is already running"
+    return 1
+  }
+
   [[ "$CLEAN" == "yes" ]] && {
     local datadir
     datadir=$( ncc config:system:get datadirectory ) || {
@@ -23,9 +28,19 @@ configure()
     ncc files:scan-app-data -n
   }
 
-  [[ "$INCREMENTAL" == "yes" ]] && { ncc preview:pre-generate -n -vvv; return $?; }
+  [[ "$INCREMENTAL" == "yes" ]] && {
+    for i in $(seq 1 $(nproc)); do
+      ncc preview:pre-generate -n -vvv &
+    done
+    wait
+    return
+  }
 
-  ncc preview:generate-all -n -v -p "$PATH1"
+  for i in $(seq 1 $(nproc)); do
+    [[ "$PATH1" != "" ]] && PATH_ARG=(-p "$PATH1")
+    ncc preview:generate-all -n -v ${PATH_ARG[@]} &
+  done
+  wait
 }
 
 install() { :; }
