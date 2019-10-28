@@ -20,7 +20,7 @@ configure()
   local REDISPASS=$( grep "^requirepass" /etc/redis/redis.conf  | cut -d' ' -f2 )
   [[ "$REDISPASS" == "" ]] && { echo "redis server without a password. Abort"; return 1; }
 
-  ## RE-CREATE DATABASE TABLE 
+  ## RE-CREATE DATABASE TABLE
 
   echo "Setting up database..."
 

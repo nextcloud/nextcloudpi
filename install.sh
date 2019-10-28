@@ -30,7 +30,7 @@ type mysqld  &>/dev/null && echo ">>> WARNING: existing mysqld configuration wil
 # get install code
 echo "Getting build code..."
 apt-get update
-apt-get install --no-install-recommends -y wget ca-certificates sudo
+apt-get install --no-install-recommends -y wget ca-certificates sudo lsb-release
 
 pushd "$TMPDIR"
 wget -qO- --content-disposition https://github.com/nextcloud/nextcloudpi/archive/"$BRANCH"/latest.tar.gz \
