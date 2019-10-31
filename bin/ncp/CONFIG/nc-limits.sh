@@ -59,6 +59,7 @@ configure()
   local CURRENT_REDIS_MEM=$( grep "^maxmemory" "$CONF" | awk '{ print $2 }' )
   [[ "$REDISMEM" != "$CURRENT_REDIS_MEM" ]] && {
     sed -i "s|^maxmemory .*|maxmemory $REDISMEM|" "$CONF"
+    chown redis:redis $CONF
     service redis-server restart
   }
 }
