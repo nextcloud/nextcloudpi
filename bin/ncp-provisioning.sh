@@ -13,6 +13,7 @@ REDISPASS="$( grep "^requirepass" /etc/redis/redis.conf | cut -f2 -d' ' )"
   REDISPASS="$( openssl rand -base64 32 )"
   echo Provisioning Redis password
   sed -i -E "s|^requirepass .*|requirepass $REDISPASS|" /etc/redis/redis.conf
+  chown redis:redis /etc/redis/redis.conf
   [[ "$DOCKERBUILD" != 1 ]] && systemctl restart redis
 }
 
