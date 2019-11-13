@@ -28,10 +28,12 @@ configure()
     return 1;
   }
 
+  # Check if the ssh access is properly configured. For this purpose the command : or echo is called remotely.
+  # If one of the commands works, the test is successful.
   [[ "$DESTINATION" =~ : ]] && {
     local NET="$( sed 's|:.*||' <<<"$DESTINATION" )"
     local SSH=( ssh -o "BatchMode=yes" -p "$PORTNUMBER" "$NET" )
-    ${SSH[@]} : || { echo "SSH non-interactive not properly configured"; return 1; }
+    ${SSH[@]} : || ${SSH[@]} echo || { echo "SSH non-interactive not properly configured"; return 1; }
   }
 
   echo "0  5  */${SYNCDAYS}  *  *  root  /usr/bin/rsync -ax -e \"ssh -p $PORTNUMBER\" --delete \"$DATADIR\" \"$DESTINATION\"" > /etc/cron.d/ncp-rsync-auto
