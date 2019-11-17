@@ -99,7 +99,7 @@ EOF
     sed -i "s|SSLCertificateKeyFile.*|SSLCertificateKeyFile /etc/letsencrypt/live/$DOMAIN_LOWERCASE/privkey.pem|" $vhostcfg2
 
     # Configure Nextcloud
-    domain_index=12
+    local domain_index=12
     for dom in $DOMAIN $ADDITIONAL_DOMAIN; do
       [[ "$dom" != "" ]] && {
         ncc config:system:set trusted_domains $domain_index --value=$dom
