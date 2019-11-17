@@ -103,7 +103,7 @@ EOF
     for dom in $DOMAIN $ADDITIONAL_DOMAIN; do
       [[ "$dom" != "" ]] && {
         ncc config:system:set trusted_domains $domain_index --value=$dom
-        ((domain_index=domain_index+1))
+        ((domain_index++))
       }
     done
     ncc config:system:set overwrite.cli.url --value=https://"$DOMAIN"/
