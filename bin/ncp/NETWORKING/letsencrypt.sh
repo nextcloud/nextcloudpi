@@ -54,7 +54,7 @@ configure()
     sed -i "/DocumentRoot/aServerName $DOMAIN" $vhostcfg
 
   # Do it
-  domain_string=""
+  local domain_string=""
   for domain in $DOMAIN $ADDITIONAL_DOMAIN; do
     [[ "$domain" != "" ]] && {
       [[ $domain_string == "" ]] && \
