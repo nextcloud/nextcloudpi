@@ -54,7 +54,15 @@ configure()
     sed -i "/DocumentRoot/aServerName $DOMAIN" $vhostcfg
 
   # Do it
-  $letsencrypt certonly -n --force-renew --no-self-upgrade --webroot -w $ncdir --hsts --agree-tos -m $EMAIL -d $DOMAIN && {
+  local domain_string=""
+  for domain in $DOMAIN $OTHER_DOMAIN; do
+    [[ "$domain" != "" ]] && {
+      [[ $domain_string == "" ]] && \
+        domain_string+="${domain}" || \
+        domain_string+=",${domain}"
+    }
+  done
+  $letsencrypt certonly -n --force-renew --no-self-upgrade --webroot -w $ncdir --hsts --agree-tos -m $EMAIL -d $domain_string && {
 
     # Set up auto-renewal
     cat > /etc/cron.weekly/letsencrypt-ncp <<EOF
@@ -91,7 +99,13 @@ EOF
     sed -i "s|SSLCertificateKeyFile.*|SSLCertificateKeyFile /etc/letsencrypt/live/$DOMAIN_LOWERCASE/privkey.pem|" $vhostcfg2
 
     # Configure Nextcloud
-    ncc config:system:set trusted_domains 4 --value=$DOMAIN
+    local domain_index=12
+    for dom in $DOMAIN $OTHER_DOMAIN; do
+      [[ "$dom" != "" ]] && {
+        ncc config:system:set trusted_domains $domain_index --value=$dom
+        ((domain_index++))
+      }
+    done
     ncc config:system:set overwrite.cli.url --value=https://"$DOMAIN"/
 
     # delayed in bg so it does not kill the connection, and we get AJAX response

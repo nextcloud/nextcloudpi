@@ -1,5 +1,7 @@
 
-[v1.18.0](https://github.com/nextcloud/nextcloudpi/commit/c140109) (2019-10-27) add ncp-previews
+[v1.18.1](https://github.com/nextcloud/nextcloudpi/commit/ebe9592) (2019-11-18) Letsencrypt: support second domain (#1025)
+
+[v1.18.0, master](https://github.com/nextcloud/nextcloudpi/commit/0fc2390) (2019-10-27) add ncp-previews
 
 [v1.17.1 ](https://github.com/nextcloud/nextcloudpi/commit/c63cb27) (2019-09-29) nc-backup: exclude group folders in dataless backup
 
