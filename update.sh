@@ -90,8 +90,17 @@ for file in etc/ncp-config.d/*; do
   [ -f /usr/local/"$file" ] && {
     len="$(jq '.params | length' /usr/local/"$file")"
     for (( i = 0 ; i < len ; i++ )); do
+      id="$(jq -r ".params[$i].id" /usr/local/"$file")"
       val="$(jq -r ".params[$i].value" /usr/local/"$file")"
-      cfg="$(jq ".params[$i].value = \"$val\"" "$file")"
+
+      for (( j = 0 ; j < len ; j++ )); do
+        idnew="$(jq -r ".params[$j].id" "$file")"
+        [ "$idnew" == "$id" ] && {
+          cfg="$(jq ".params[$j].value = \"$val\"" "$file")"
+          break
+        }
+      done
+
       echo "$cfg" > "$file"
     done
   }
