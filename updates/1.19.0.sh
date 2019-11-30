@@ -18,6 +18,16 @@ source /usr/local/etc/library.sh # sets NCVER PHPVER RELEASE
   }
 }
 
+# if using NCP original logo, replace with the new version
+datadir=$(ncc config:system:get datadirectory)
+id=$(grep instanceid /var/www/nextcloud/config/config.php | awk -F "=> " '{ print $2 }' | sed "s|[,']||g")
+sum_orig=ca39ff587bd899cb92eb0f5a6d429824
+sum_curr=$(md5sum "${datadir}"/appdata_*/theming/images/logo | awk '{ print $1 }')
+[[ "${sum_orig}" == "${sum_curr}" ]] && {
+  cp etc/logo "${datadir}/appdata_${id}/theming/images/logo"
+  cp etc/logo "${datadir}/appdata_${id}/theming/images/logoheader"
+}
+
 # docker images only
 [[ -f /.docker-image ]] && {
   :

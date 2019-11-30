@@ -26,11 +26,11 @@ configure()
 
   # launch mariadb if not already running
   if ! pgrep -c mysqld &>/dev/null; then
-    mysqld & 
+    mysqld &
   fi
 
   # wait for mariadb
-  pgrep -x mysqld &>/dev/null || { 
+  pgrep -x mysqld &>/dev/null || {
     echo "mariaDB process not found. Waiting..."
     while :; do
       [[ -S /run/mysqld/mysqld.sock ]] && break
@@ -125,7 +125,9 @@ EOF
     local ID=$( grep instanceid config/config.php | awk -F "=> " '{ print $2 }' | sed "s|[,']||g" )
     [[ "$ID" == "" ]] && { echo "failed to get ID"; return 1; }
     mkdir -p data/appdata_${ID}/theming/images
-    cp /usr/local/etc/logo /usr/local/etc/background data/appdata_${ID}/theming/images
+    cp /usr/local/etc/background data/appdata_${ID}/theming/images
+    cp /usr/local/etc/logo data/appdata_${ID}/theming/images/logo
+    cp /usr/local/etc/logo data/appdata_${ID}/theming/images/logoheader
     chown -R www-data:www-data data/appdata_${ID}
   }
 

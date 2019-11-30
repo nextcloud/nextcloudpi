@@ -1,5 +1,7 @@
 
-[v1.18.2](https://github.com/nextcloud/nextcloudpi/commit/b737569) (2019-11-18) ncp-app: bump to NC17
+[v1.19.0](https://github.com/nextcloud/nextcloudpi/commit/c8e296c) (2019-11-30) upgrade to NC17.0.1
+
+[v1.18.2 ](https://github.com/nextcloud/nextcloudpi/commit/0fc4aea) (2019-11-18) ncp-app: bump to NC17
 
 [v1.18.1 ](https://github.com/nextcloud/nextcloudpi/commit/e975320) (2019-11-18) Letsencrypt: support second domain (#1025)
 
