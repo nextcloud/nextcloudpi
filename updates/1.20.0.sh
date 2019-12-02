@@ -18,6 +18,9 @@ source /usr/local/etc/library.sh # sets NCVER PHPVER RELEASE
   }
 }
 
+# reduce nc-scan-auto verbosity
+is_active_app nc-scan-auto && run_app nc-scan-auto
+
 # if using NCP original logo, replace with the new version
 datadir=$(ncc config:system:get datadirectory)
 id=$(grep instanceid /var/www/nextcloud/config/config.php | awk -F "=> " '{ print $2 }' | sed "s|[,']||g")

@@ -41,11 +41,11 @@ configure()
 
   echo -e "\n[ nc-scan-auto ]"
 
-  [[ "$PATH1" != "" ]] && /usr/local/bin/ncc files:scan $recursive $non_external -n -v -p "$PATH1"
-  [[ "$PATH2" != "" ]] && /usr/local/bin/ncc files:scan $recursive $non_external -n -v -p "$PATH2"
-  [[ "$PATH3" != "" ]] && /usr/local/bin/ncc files:scan $recursive $non_external -n -v -p "$PATH3"
+  [[ "$PATH1" != "" ]] && /usr/local/bin/ncc files:scan $recursive $non_external -n -p "$PATH1"
+  [[ "$PATH2" != "" ]] && /usr/local/bin/ncc files:scan $recursive $non_external -n -p "$PATH2"
+  [[ "$PATH3" != "" ]] && /usr/local/bin/ncc files:scan $recursive $non_external -n -p "$PATH3"
 
-  [[ "${PATH1}${PATH2}${PATH3}" == "" ]] && /usr/local/bin/ncc files:scan $recursive $non_external -n -v --all
+  [[ "${PATH1}${PATH2}${PATH3}" == "" ]] && /usr/local/bin/ncc files:scan $recursive $non_external -n --all
 
 ) 2>&1 >>/var/log/ncp.log
 EOF
