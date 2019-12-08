@@ -1,11 +1,13 @@
 
-[v1.19.0](https://github.com/nextcloud/nextcloudpi/commit/c8e296c) (2019-11-30) upgrade to NC17.0.1
+[v1.19.1](https://github.com/nextcloud/nextcloudpi/commit/ac2098b) (2019-12-08) pre-generate: fix permissions
 
-[v1.18.2 ](https://github.com/nextcloud/nextcloudpi/commit/0fc4aea) (2019-11-18) ncp-app: bump to NC17
+[v1.19.0 ](https://github.com/nextcloud/nextcloudpi/commit/72d2d00) (2019-11-30) upgrade to NC17.0.1
 
-[v1.18.1 ](https://github.com/nextcloud/nextcloudpi/commit/e975320) (2019-11-18) Letsencrypt: support second domain (#1025)
+[v1.18.2 ](https://github.com/nextcloud/nextcloudpi/commit/c42bcc1) (2019-11-17) update: fix matching values
 
-[v1.18.0, master](https://github.com/nextcloud/nextcloudpi/commit/0fc2390) (2019-10-27) add ncp-previews
+[v1.18.1 ](https://github.com/nextcloud/nextcloudpi/commit/310877f) (2019-11-18) Letsencrypt: support second domain (#1025)
+
+[v1.18.0 ](https://github.com/nextcloud/nextcloudpi/commit/0fc2390) (2019-10-27) add ncp-previews
 
 [v1.17.1 ](https://github.com/nextcloud/nextcloudpi/commit/c63cb27) (2019-09-29) nc-backup: exclude group folders in dataless backup
 

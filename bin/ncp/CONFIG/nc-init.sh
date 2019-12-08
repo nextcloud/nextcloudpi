@@ -160,6 +160,7 @@ EOF
   # ncp-previewgenerator
   cp -r /var/www/ncp-previewgenerator /var/www/nextcloud/apps/previewgenerator
   ncc app:enable previewgenerator
+  chown www-data:www-data /var/www/nextcloud/apps/previewgenerator
 
   # previews
   ncc config:app:set previewgenerator squareSizes --value="32 256"
