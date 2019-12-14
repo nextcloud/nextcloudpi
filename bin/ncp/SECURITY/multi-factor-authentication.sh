@@ -147,7 +147,7 @@ cleanup() {
 }
 
 install() {
-  apt install libpam-google-authenticator
+  apt install -y libpam-google-authenticator
 }
 
 is_active() {
