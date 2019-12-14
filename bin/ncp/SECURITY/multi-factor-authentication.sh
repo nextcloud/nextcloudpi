@@ -19,7 +19,8 @@ SSHD_CONFIG_PATH="./test/etc/ssh/sshd_config"
 patch_pam_ssh_config() {
   local cfg
 
-  if [[ "$1" == "--reset" ]]; then
+  if [[ "$1" == "--reset" ]]
+  then
     if [[ -f "${PAMD_BACKUP_PATH}/sshd" ]]; then
       echo "Restoring original configuration for '${PAMD_PATH}/sshd'..."
       mv "${PAMD_BACKUP_PATH}/sshd" "${PAMD_PATH}/sshd" || return 1
@@ -41,14 +42,20 @@ patch_pam_ssh_config() {
   }
 
   echo "Writing pam configuration..."
+  if [[ "$enable_totp_and_pw" != "yes" ]]
+  then
+    cp "${PAMD_BACKUP_PATH}/sshd" "${PAMD_PATH}/sshd" || return 1
+    [[ -f "${PAMD_PATH}/sshd-mfa" ]] && rm "${PAMD_PATH}/sshd-mfa"
+    return 0
+  fi
   echo "" > "${PAMD_PATH}/sshd-mfa" || return 1
 
-  if [[ "$ENABLE_TOTP_AND_PASSWORD" == "true" ]]; then
+  if [[ "$enable_totp_and_pw" == "yes" ]]; then
     echo "auth required pam_google_authenticator.so nullok" >> "${PAMD_PATH}/sshd-mfa"
   fi
   echo "@include common-auth" >> "${PAMD_PATH}/sshd-mfa"
 
-  sed -i 's/@include.*common-auth/@include sshd-mfa/g' "${PAMD_PATH}/sshd" || return 1
+  sed 's/@include.*common-auth/@include sshd-mfa/g' "${PAMD_BACKUP_PATH}/sshd" > "${PAMD_PATH}/sshd" || return 1
 
 
 }
@@ -114,10 +121,10 @@ setup_configuration() {
   local auth_method=""
 
   [[ "$enable_pubkey_only" ]] && auth_method="publickey"
-  [[ "$enable_password_only" ]] && auth_method="${auth_method} password"
+  [[ "$enable_pw_only" ]] && auth_method="${auth_method} password"
 
-  [[ "$ENABLE_TOTP_AND_PASSWORD" == "yes" ]] && auth_method="keyboard-interactive"
-  [[ "$ENABLE_PUBLIC_KEY_AND_PASSWORD" == "yes" ]] && auth_method="${auth_method} publickey,password"
+  [[ "$enable_totp_and_pw" == "yes" ]] && auth_method="keyboard-interactive"
+  [[ "$enable_pubkey_and_pw" == "yes" ]] && auth_method="${auth_method} publickey,password"
 
   patch_pam_ssh_config || return 2
   patch_sshd_config "$auth_method" || return 1
@@ -204,7 +211,7 @@ configure() {
   && [[ -f "~$SSH_USER/.google_authenticator" ]] \
   && su "$SSH_USER" -c "rm '~$SSH_USER/.google_authenticator'"
 
-  if [[ "$enable_totp_and_pw" ]] && [[ ! -f "~$SSH_USER/.google_authenticator" ]]
+  if [[ "$enable_totp_and_pw" == "yes" ]] && [[ ! -f "$(sudo -Hu "$SSH_USER" bash -c 'echo "$HOME"')/.google_authenticator" ]]
   then
     echo "We will now generate TOTP a client secret for your ssh user ('$SSH_USER')."
     echo "Please store the following information in a safe place. Use your secret key or scan the QR code (terminal only) to setup your authenticator app."
