@@ -278,6 +278,12 @@ function check_distro()
   return 1
 }
 
+function unescape()
+{
+  local str="${1?}"
+  echo "${str//"%SPACE%"/" "}"
+}
+
 function apt_install()
 {
   apt-get update

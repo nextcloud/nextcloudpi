@@ -174,13 +174,14 @@ is_active() {
 
 configure() {
 
-  local active enable_totp_and_pw enable_pubkey_and_pw enable_pubkey_only enable_pw_only reset_totp_secret
+  local active enable_totp_and_pw enable_pubkey_and_pw enable_pubkey_only enable_pw_only reset_totp_secret ssh_pubkey
   enable_totp_and_pw="$ENABLE_TOTP_AND_PASSWORD"
   enable_pubkey_and_pw="$ENABLE_PUBLIC_KEY_AND_PASSWORD"
   enable_pubkey_only="$ENABLE_PUBLIC_KEY_ONLY"
   enable_pw_only="$ENABLE_PASSWORD_ONLY"
   reset_totp_secret="$RESET_TOTP_SECRET"
   active="$ACTIVE"
+  ssh_pubkey="$(unescape "$SSH_PUBLIC_KEY")"
 
   trap 'restore' HUP INT QUIT PIPE TERM
 
@@ -234,10 +235,10 @@ configure() {
   }
 
   # Setup SSH public key if provided
-  if [[ -n "$SSH_PUBLIC_KEY" ]]
+  if [[ -n "$ssh_pubkey" ]]
   then
     echo "Setting up SSH public key..."
-    echo "$SSH_PUBLIC_KEY" > "${SSH_USER_HOME}/.ssh/authorized_keys"
+    echo "$ssh_pubkey" > "${SSH_USER_HOME}/.ssh/authorized_keys"
     chown "${SSH_USER}:" "${SSH_USER_HOME}/.ssh/authorized_keys"
   fi
 
