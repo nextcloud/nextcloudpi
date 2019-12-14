@@ -8,9 +8,9 @@
 # (* TOTP + Pubkey + Password) not yet supported
 # * TOTP + Password / TOTP + Pubkey
 
-PAMD_PATH="./test/etc/pam.d"
-PAMD_BACKUP_PATH="./test/etc/pam.backup"
-SSHD_CONFIG_PATH="./test/etc/ssh/sshd_config"
+PAMD_PATH="/etc/pam.d"
+PAMD_BACKUP_PATH="/etc/pam.backup"
+SSHD_CONFIG_PATH="/etc/ssh/sshd_config"
 
 
 # Configure pam.d/sshd config
@@ -130,6 +130,23 @@ setup_configuration() {
   patch_sshd_config "$auth_method" || return 1
 }
 
+setup_totp_secret() {
+  local ssh_user="${1?}"
+  local ssh_user_home="${2?}"
+
+  [[ "$reset_totp_secret" == "yes" ]] \
+  && [[ -f "$ssh_user_home/.google_authenticator" ]] \
+  && su "$ssh_user" -c "rm '${ssh_user_home}/.google_authenticator'"
+
+  if [[ "$enable_totp_and_pw" == "yes" ]] && [[ ! -f "${ssh_user_home}/.google_authenticator" ]]
+  then
+    echo "We will now generate TOTP a client secret for your ssh user ('$ssh_user')."
+    echo "Please store the following information in a safe place. Use your secret key or scan the QR code (terminal only) to setup your authenticator app."
+    echo ""
+    su "$ssh_user" -c "google-authenticator -tdf -w 1 --no-rate-limit"
+  fi
+}
+
 restore() {
   local ret=0
   patch_pam_ssh_config --reset
@@ -209,17 +226,21 @@ configure() {
 
   # TODO: Should we rather provider an input field for the SSH user (what happens if it is changed in the ssh config)?
   SSH_USER="$(jq -r '.params[] | select(.id == "USER") | .value' < /usr/local/etc/ncp-config.d/SSH.cfg)"
+  SSH_USER_HOME="$(sudo -Hu "$SSH_USER" bash -c 'echo "$HOME"')"
 
-  [[ "$reset_totp_secret" == "yes" ]] \
-  && [[ -f "~$SSH_USER/.google_authenticator" ]] \
-  && su "$SSH_USER" -c "rm '~$SSH_USER/.google_authenticator'"
-
-  if [[ "$enable_totp_and_pw" == "yes" ]] && [[ ! -f "$(sudo -Hu "$SSH_USER" bash -c 'echo "$HOME"')/.google_authenticator" ]]
+  if [[ -n "$SSH_USER" ]] && id -u "$SSH_USER" > /dev/null
   then
-    echo "We will now generate TOTP a client secret for your ssh user ('$SSH_USER')."
-    echo "Please store the following information in a safe place. Use your secret key or scan the QR code (terminal only) to setup your authenticator app."
-    echo ""
-    su "$SSH_USER" -c "google-authenticator -tdf -w 1 --no-rate-limit"
+    echo "Setup incomplete. Please configure SSH via the ncp app and rerun."
+    return 1
   fi
+
+  if [[ -n "$SSH_PUBLIC_KEY" ]]
+  then
+    echo "Setting up SSH public key..."
+    echo "$SSH_PUBLIC_KEY" > "${SSH_USER_HOME}/.ssh/authorized_keys"
+    chown "${SSH_USER}:" "${SSH_USER_HOME}/.ssh/authorized_keys"
+  fi
+
+  setup_totp_secret "$SSH_USER" "$SSH_USER_HOME"
 
 }
