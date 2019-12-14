@@ -228,12 +228,12 @@ configure() {
   SSH_USER="$(jq -r '.params[] | select(.id == "USER") | .value' < /usr/local/etc/ncp-config.d/SSH.cfg)"
   SSH_USER_HOME="$(sudo -Hu "$SSH_USER" bash -c 'echo "$HOME"')"
 
-  if [[ -n "$SSH_USER" ]] && id -u "$SSH_USER" > /dev/null
-  then
+  [[ -n "$SSH_USER" ]] || id -u "$SSH_USER" > /dev/null || {
     echo "Setup incomplete. Please configure SSH via the ncp app and rerun."
     return 1
-  fi
+  }
 
+  # Setup SSH public key if provided
   if [[ -n "$SSH_PUBLIC_KEY" ]]
   then
     echo "Setting up SSH public key..."
@@ -242,5 +242,7 @@ configure() {
   fi
 
   setup_totp_secret "$SSH_USER" "$SSH_USER_HOME"
+
+  echo "Done."
 
 }
