@@ -151,9 +151,7 @@ install() {
 }
 
 is_active() {
-  [[ ! -f "${SSHD_CONFIG_PATH}" ]] \
-  || [[ ! -f "${PAMD_PATH}/sshd" ]] \
-  || grep -q -e "AuthenticationMethods.*keyboard-interactive" -e "AuthenticationMethods.*publickey" "${SSHD_CONFIG_PATH}" \
+  grep -q -e "AuthenticationMethods.*keyboard-interactive" -e "AuthenticationMethods.*publickey" "${SSHD_CONFIG_PATH}" \
   || grep -q -e "sshd-mfa" "${PAMD_PATH}/sshd"
 }
 
