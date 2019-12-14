@@ -141,6 +141,11 @@ restore() {
 
 ################################################################
 
+cleanup() {
+  restore
+  [[ -d "${PAMD_BACKUP_PATH}" ]] && rm -r "${PAMD_BACKUP_PATH}"
+}
+
 install() {
   apt install libpam-google-authenticator
 }
