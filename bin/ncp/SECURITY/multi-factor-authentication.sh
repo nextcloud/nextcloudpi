@@ -208,7 +208,7 @@ configure() {
   systemctl is-enabled ssh -q && systemctl restart ssh
 
   # TODO: Should we rather provider an input field for the SSH user (what happens if it is changed in the ssh config)?
-  SSH_USER="$(jq '.params[] | select(.id == "USER") | .value' < /etc/ncp-config.d/SSH.cfg)"
+  SSH_USER="$(jq -r '.params[] | select(.id == "USER") | .value' < /usr/local/etc/ncp-config.d/SSH.cfg)"
 
   [[ "$reset_totp_secret" == "yes" ]] \
   && [[ -f "~$SSH_USER/.google_authenticator" ]] \
