@@ -260,12 +260,16 @@ configure() {
   echo "Restarting ssh service..."
   systemctl is-enabled ssh -q && systemctl restart ssh
 
-  # Setup SSH public key if provided
-  if [[ -n "$ssh_pubkey" ]]
+  # Setup SSH public key
+  if [[ -n "$SSH_PUBLIC_KEY" ]]
   then
     echo "Setting up SSH public key..."
     echo "$ssh_pubkey" > "${SSH_USER_HOME}/.ssh/authorized_keys"
     chown "${SSH_USER}:" "${SSH_USER_HOME}/.ssh/authorized_keys"
+  elif [[ -f "${SSH_USER_HOME}/.ssh/authorized_keys" ]]
+  then
+    echo "Removing authorized ssh public key"
+    rm "${SSH_USER_HOME}/.ssh/authorized_keys"
   fi
 
   setup_totp_secret "$SSH_USER" "$SSH_USER_HOME"
