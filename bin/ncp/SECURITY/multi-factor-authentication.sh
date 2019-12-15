@@ -96,8 +96,8 @@ patch_sshd_config() {
   cfg="$(
     grep -v -e "AuthenticationMethods" "${SSHD_CONFIG_PATH}.backup" |
       grep -v -e "ChallengeResponseAuthentication" |
-      grep -v -e "PubkeyAuthentication" |
       grep -v -e "PasswordAuthentication" |
+      grep -v -e "PubkeyAuthentication" |
       grep -v -e "UsePAM"
   )"
 
@@ -156,6 +156,21 @@ restore() {
   return $ret
 }
 
+check_configuration_is_valid() {
+    if { [[ "$enable_pubkey_and_pw" == "yes" ]] || [[ "$enable_pubkey_only" == "yes" ]]; } && [[ -z "$SSH_PUBLIC_KEY" ]]
+    then
+      echo "ERROR: Public key reliant authentication methods have been enabled, but no publick key has been specified. Aborting..."
+      return 1
+    fi
+
+    if [[ "$enable_totp_and_pw" == "yes" ]] && [[ "$enable_pubkey_and_pw" == "yes" ]]
+    then
+      echo "Due to limitations of the sshd configuration, totp+pw and other authentication methods involving a password can't be enabled at the same time."
+      echo "Aborting..."
+      return 1
+    fi
+}
+
 ################################################################
 
 cleanup() {
@@ -180,10 +195,28 @@ configure() {
   enable_pubkey_only="$ENABLE_PUBLIC_KEY_ONLY"
   enable_pw_only="$ENABLE_PASSWORD_ONLY"
   reset_totp_secret="$RESET_TOTP_SECRET"
-  active="$ACTIVE"
+  active="yes"
   ssh_pubkey="$(unescape "$SSH_PUBLIC_KEY")"
 
   trap 'restore' HUP INT QUIT PIPE TERM
+
+  if [[ -f "/usr/local/etc/ncp-config.d/SSH.cfg" ]]
+  then
+    # TODO: Should we rather provider an input field for the SSH user (what happens if it is changed in the ssh config)?
+    SSH_USER="$(jq -r '.params[] | select(.id == "USER") | .value' < /usr/local/etc/ncp-config.d/SSH.cfg)"
+    SSH_USER_HOME="$(sudo -Hu "$SSH_USER" bash -c 'echo "$HOME"')"
+  fi
+
+  [[ -n "$SSH_USER" ]] || id -u "$SSH_USER" > /dev/null || {
+    echo "Setup incomplete. Please configure SSH via the ncp app and rerun."
+    return 1
+  }
+
+  [[ "$enable_totp_and_pw" == "no" ]] && [[ "$enable_pubkey_and_pw" == "no" ]] \
+  && [[ "$enable_pubkey_only" == "no" ]] && [[ "$enable_pw_only" == "yes" ]] && {
+    echo "Default configuration has been detected. Restoring defaults..."
+    active="no"
+  }
 
   if [[ "$active" == "yes" ]] && [[ "$enable_totp_and_pw" != "yes" ]] \
   && [[ "$enable_pubkey_and_pw" != "yes" ]] && [[ "$enable_pubkey_only" != "yes" ]]
@@ -200,18 +233,20 @@ configure() {
     systemctl is-enabled ssh -q && systemctl restart ssh
     return $ret
   else
-#    ENABLE_TOTP_AND_PASSWORD=""
-#    ENABLE_PUBLIC_KEY_AND_PASSWORD=""
-#    ENABLE_PUBLIC_KEY_ONLY=""
 
-    if [[ "$enable_totp_and_pw" == "yes" ]] || [[ "$enable_pubkey_and_pw" ]]
+    check_configuration_is_valid || return 3
+
+    if [[ "$enable_totp_and_pw" == "yes" ]] || [[ "$enable_pubkey_and_pw" == "yes" ]]
     then
-      if [[ "$ENABLE_PUBLIC_KEY_ONLY" == "yes" ]]
-      then
-        echo "At least one multifactor authentication method has been enabled. Therefore, weaker authentication methods will be disabled automatically."
+      echo "At least one multifactor authentication method has been enabled. Therefore, weaker authentication methods will be disabled automatically."
+      [[ "$enable_pubkey_only" == "yes" ]] && {
         echo "Disabling 'public key only' authentication"
         enable_pubkey_only=no
-      fi
+      }
+      [[ "$enable_pw_only" == "yes" ]] && {
+        echo "Disabling 'password only' authentication"
+        enable_pw_only=no
+      }
     fi
   fi
 
@@ -224,15 +259,6 @@ configure() {
 
   echo "Restarting ssh service..."
   systemctl is-enabled ssh -q && systemctl restart ssh
-
-  # TODO: Should we rather provider an input field for the SSH user (what happens if it is changed in the ssh config)?
-  SSH_USER="$(jq -r '.params[] | select(.id == "USER") | .value' < /usr/local/etc/ncp-config.d/SSH.cfg)"
-  SSH_USER_HOME="$(sudo -Hu "$SSH_USER" bash -c 'echo "$HOME"')"
-
-  [[ -n "$SSH_USER" ]] || id -u "$SSH_USER" > /dev/null || {
-    echo "Setup incomplete. Please configure SSH via the ncp app and rerun."
-    return 1
-  }
 
   # Setup SSH public key if provided
   if [[ -n "$ssh_pubkey" ]]
