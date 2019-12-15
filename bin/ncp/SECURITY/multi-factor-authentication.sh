@@ -24,7 +24,7 @@ patch_pam_ssh_config() {
     if [[ -f "${PAMD_BACKUP_PATH}/sshd" ]]; then
       echo "Restoring original configuration for '${PAMD_PATH}/sshd'..."
       mv "${PAMD_BACKUP_PATH}/sshd" "${PAMD_PATH}/sshd" || return 1
-      rm "${PAMD_PATH}/sshd-mfa"
+      [[ -f "${PAMD_PATH}/sshd-mfa" ]] && rm "${PAMD_PATH}/sshd-mfa"
       return 0
     else
       echo "ERROR: Could not restore '${PAMD_PATH}/sshd' from backup '${PAMD_BACKUP_PATH}/sshd' (not found)!"
@@ -110,7 +110,7 @@ patch_sshd_config() {
 PasswordAuthentication yes
 PubkeyAuthentication yes
 ChallengeResponseAuthentication yes
-UsePAM yes
+UsePAM $enable_totp_and_pw
 AuthenticationMethods $auth_method
 
 EOF
@@ -120,8 +120,8 @@ EOF
 setup_configuration() {
   local auth_method=""
 
-  [[ "$enable_pubkey_only" ]] && auth_method="publickey"
-  [[ "$enable_pw_only" ]] && auth_method="${auth_method} password"
+  [[ "$enable_pubkey_only" == "yes" ]] && auth_method="publickey"
+  [[ "$enable_pw_only" == "yes" ]] && auth_method="${auth_method} password"
 
   [[ "$enable_totp_and_pw" == "yes" ]] && auth_method="keyboard-interactive"
   [[ "$enable_pubkey_and_pw" == "yes" ]] && auth_method="${auth_method} publickey,password"
