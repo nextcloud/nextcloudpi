@@ -136,7 +136,12 @@ setup_totp_secret() {
 
   [[ "$reset_totp_secret" == "yes" ]] \
   && [[ -f "$ssh_user_home/.google_authenticator" ]] \
-  && su "$ssh_user" -c "rm '${ssh_user_home}/.google_authenticator'"
+  && {
+    echo "Deleting google authenticator configuration"
+    su "$ssh_user" -c "chmod u+w '${ssh_user_home}/.google_authenticator'"
+    su "$ssh_user" -c "rm '${ssh_user_home}/.google_authenticator'"
+  }
+
 
   if [[ "$enable_totp_and_pw" == "yes" ]] && [[ ! -f "${ssh_user_home}/.google_authenticator" ]]
   then
