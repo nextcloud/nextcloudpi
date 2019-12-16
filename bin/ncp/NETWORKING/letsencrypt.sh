@@ -56,7 +56,7 @@ configure()
   # Do it
   local domain_string=""
   for domain in $DOMAIN $OTHER_DOMAIN; do
-    [[ "$domain" != "" ]] && {
+    [[ "$domain" != "" ]] && [[ "$domain" != "_" ]] && {
       [[ $domain_string == "" ]] && \
         domain_string+="${domain}" || \
         domain_string+=",${domain}"
