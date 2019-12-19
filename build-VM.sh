@@ -15,6 +15,9 @@ IP=${1:-192.168.0.145}      # For QEMU automated testing (optional)
 SIZE=3G                     # Raspbian image size
 #CLEAN=0                    # Pass this envvar to skip cleaning download cache
 IMG="NextCloudPi_RPi_$( date  "+%m-%d-%y" ).img"
+TAR=output/"$( basename "$IMG" .img ).tar.bz2"
+
+test -f "$TAR" && { echo "$TAR already exists. Skipping... "; exit 0; }
 
 ##############################################################################
 
@@ -24,6 +27,7 @@ IMG="NextCloudPi_VM_$( date  "+%m-%d-%y" ).img"
 IMG=tmp/"$IMG"
 VM="/var/lib/libvirt/images/nextcloudpi_default.img"
 
+test -f "$TAR" && { echo "$TAR already exists. Skipping... "; exit 0; }
 set -e
 prepare_dirs                   # tmp cache output
 
@@ -41,8 +45,6 @@ sudo chown "$USER" "$VM"
 sudo cp -a --reflink=auto --sparse=auto "$VM" "$IMG"
 
 ## pack
-
-TAR=output/"$( basename "$IMG" .img ).tar.bz2"
 pack_image "$IMG" "$TAR"
 
 ## test

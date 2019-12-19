@@ -17,8 +17,13 @@ source buildlib.sh          # initializes $IMGNAME
 
 [[ "$FTPPASS" == "" ]] && {
   echo -e "\e[1mNo FTPPASS variable found, FTP won't work.\nYou can ^C to cancel now\e[0m"
-  sleep 5
 }
+
+[[ "$CLEAN" != "0" ]] && {
+  echo -e "\e[1mNOTE: CLEAN is enabled\nYou can ^C to cancel now\e[0m"
+}
+
+sleep 5
 
 # Raspbian
 ./build-SD-rpi.sh

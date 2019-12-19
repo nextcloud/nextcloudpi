@@ -15,6 +15,9 @@ NCPCFG=etc/ncp.cfg
 
 IMG="NextCloudPi_${BNAME}_$( date  "+%m-%d-%y" ).img"
 IMG=tmp/"$IMG"
+TAR=output/"$( basename "$IMG" .img ).tar.bz2"
+
+test -f "$TAR" && { echo "$TAR already exists. Skipping... "; exit 0; }
 
 set -e
 source buildlib.sh
@@ -34,35 +37,37 @@ rsync -Aax --delete --exclude-from .gitignore --exclude *.img --exclude *.bz2 . 
 
 # GENERATE IMAGE
 
+CONF=armbian/userpatches/config-ncp.conf
+
 # default parameters
-cat > armbian/config-docker-guest.conf <<EOF
+cat > "$CONF" <<EOF
 BOARD="$BOARD"
-BRANCH=default
+BRANCH=current
 RELEASE=$RELEASE
 KERNEL_ONLY=no
 KERNEL_CONFIGURE=no
 BUILD_DESKTOP=no
+BUILD_MINIMAL=yes
 USE_CCACHE=yes
 EOF
 [[ "$CLEAN" == "0" ]] && {
-  cat >> armbian/config-docker-guest.conf <<EOF
+  cat >> "$CONF" <<EOF
   CLEAN_LEVEL=""          # study this: it is much faster, but generated images might be broken (#548)
   # NO_APT_CACHER=no      # this will also improve build times, but doesn't seem very reliable
 EOF
 }
 
 # board specific parameters
-CONF="config-$BOARD".conf
-[[ -f "$CONF" ]] && cat "$CONF" >> armbian/config-docker-guest.conf
+EXTRA_CONF="config-$BOARD".conf
+[[ -f "$EXTRA_CONF" ]] && cat "$EXTRA_CONF" >> "$CONF"
 
 # build
 rm -rf armbian/output/images
-armbian/compile.sh docker
-rm armbian/config-docker-guest.conf
+armbian/compile.sh docker ncp
+rm "$CONF"
 
 # pack image
 mv armbian/output/images/Armbian*.img "$IMG"
-TAR=output/"$( basename "$IMG" .img ).tar.bz2"
 pack_image "$IMG" "$TAR"
 
 # test

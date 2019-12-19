@@ -10,9 +10,12 @@
 
 SRC="$1"
 IMG="NextCloudPi_RPi_Berryboot_$( date  "+%m-%d-%y" ).img"
+TAR=output/"$( basename "$IMG" .img ).tar.bz2"
 
 set -e
 source buildlib.sh
+
+test -f "$TAR" && { echo "$TAR already exists. Skipping... "; exit 0; }
 
 [[ -f "$SRC" ]] || { echo "$SRC not found"; exit 1; }
 
@@ -30,8 +33,6 @@ sudo mksquashfs raspbian_root "$IMG"  -comp lzo -e lib/modules
 umount_raspbian
 
 ## pack
- 
-TAR=output/"$( basename "$IMG" .img ).tar.bz2"
 pack_image "$IMG" "$TAR"
 
 # upload

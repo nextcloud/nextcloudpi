@@ -14,15 +14,18 @@ source buildlib.sh
 SIZE=3G                     # Raspbian image size
 #CLEAN=0                    # Pass this envvar to skip cleaning download cache
 IMG="NextCloudPi_RPi_$( date  "+%m-%d-%y" ).img"
+TAR=output/"$( basename "$IMG" .img ).tar.bz2"
 
 ##############################################################################
 
+test -f "$TAR" && { echo "$TAR already exists. Skipping... "; exit 0; }
 pgrep -f qemu-arm-static &>/dev/null && { echo "qemu-arm-static already running. Abort"; exit 1; }
 
 ## preparations
 
 IMG=tmp/"$IMG"
 
+trap clean_chroot_raspbian EXIT
 prepare_dirs                   # tmp cache output
 download_raspbian "$IMG"
 resize_image      "$IMG" "$SIZE"
@@ -94,11 +97,10 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
     mv /ld.so.preload /etc
 EOFCHROOT
 
+trap '' EXIT
 clean_chroot_raspbian
 
 ## pack
-
-TAR=output/"$( basename "$IMG" .img ).tar.bz2"
 pack_image "$IMG" "$TAR"
 
 ## test

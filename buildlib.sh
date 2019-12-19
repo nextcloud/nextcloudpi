@@ -361,6 +361,21 @@ EOF
   cd -
 }
 
+upload_all()
+{
+  test -d output || { echo "No uploads found. Nothing to do"; return; }
+  [[ "$FTPPASS" == "" ]] && {
+    echo -e "\e[1mNo FTPPASS variable found, FTP won't work.\nYou can ^C to cancel now\e[0m"
+      sleep 5
+    }
+
+  mkdir -p archive
+  for img in $(find output -name '*.tar.bz2'); do
+    upload_ftp "${img}" && mv "${img}" archive
+  done
+}
+
+
 function test_image()
 {
   local IMG="$1"
