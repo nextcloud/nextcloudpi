@@ -148,7 +148,9 @@ setup_totp_secret() {
     echo "We will now generate TOTP a client secret for your ssh user ('$ssh_user')."
     echo "Please store the following information in a safe place. Use your secret key or scan the QR code (terminal only) to setup your authenticator app."
     echo ""
-    su "$ssh_user" -c "google-authenticator -tdf -w 1 --no-rate-limit"
+    echo "<pre style=\"font-family: mono;\">"
+    su "$ssh_user" -c "google-authenticator -tdf -Q UTF8 -w 1 --no-rate-limit"
+    echo "</pre>"
   fi
 }
 
