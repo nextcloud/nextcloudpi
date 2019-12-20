@@ -1,5 +1,9 @@
 
-[v1.19.1](https://github.com/nextcloud/nextcloudpi/commit/ac2098b) (2019-12-08) pre-generate: fix permissions
+[v1.20.1](https://github.com/nextcloud/nextcloudpi/commit/5fb675b) (2019-12-19) Revert "build: dont use empty values by default"
+
+[v1.20.0 ](https://github.com/nextcloud/nextcloudpi/commit/f75c415) (2019-12-19) upgrade to NC17.0.2
+
+[v1.19.1 ](https://github.com/nextcloud/nextcloudpi/commit/f9deb25) (2019-12-08) pre-generate: fix permissions
 
 [v1.19.0 ](https://github.com/nextcloud/nextcloudpi/commit/72d2d00) (2019-11-30) upgrade to NC17.0.1
 
