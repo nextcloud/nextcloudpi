@@ -146,7 +146,7 @@ setup_totp_secret() {
   if [[ "$enable_totp_and_pw" == "yes" ]] && [[ ! -f "${ssh_user_home}/.google_authenticator" ]]
   then
     echo "We will now generate TOTP a client secret for your ssh user ('$ssh_user')."
-    echo "Please store the following information in a safe place. Use your secret key or scan the QR code (terminal only) to setup your authenticator app."
+    echo "Please store the following information in a safe place. Use your secret key to setup your authenticator app."
     echo ""
     su "$ssh_user" -c "google-authenticator -tdf -w 1 --no-rate-limit"
   fi
