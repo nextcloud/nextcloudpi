@@ -331,7 +331,7 @@ function upload_ftp()
   echo -e "\n\e[1m[ Upload FTP ]\e[0m"
   echo "* $IMGNAME..."
   [[ -f torrent/"$IMGNAME"/"$IMGNAME".tar.bz2 ]] || { echo "No image file found, abort"; return 1; }
-  [[ "$FTPPASS" == "" ]] && { echo "No FTPPASS variable found, abort"; return 0; }
+  [[ "$FTPPASS" == "" ]] && { echo "No FTPPASS variable found, abort"; return 2; }
 
   cd torrent
 
@@ -371,7 +371,7 @@ upload_all()
 
   mkdir -p archive
   for img in $(find output -name '*.tar.bz2'); do
-    upload_ftp "${img}" && mv "${img}" archive
+    upload_ftp "$(basename ${img} .tar.bz2)" && mv "${img}" archive
   done
 }
 
