@@ -69,12 +69,12 @@ EOF
 
   for user in ${USERS[@]}; do
     # Exclude users not matching group filter (if enabled)
-    [[ -n "$FILTER_BY_GROUP" ]] \
-    && [[ -z "$(ncc user:info "$user" --output=json | jq ".groups[] | select( . == \"${FILTER_BY_GROUP}\" )")" ]] \
-    || {
+    if [[ -n "$FILTER_BY_GROUP" ]] \
+    && [[ -z "$(ncc user:info "$user" --output=json | jq ".groups[] | select( . == \"${FILTER_BY_GROUP}\" )")" ]]
+    then
       echo "Omitting user $user (not in group ${FILTER_BY_GROUP}...";
       continue;
-    }
+    fi
 
     echo "adding SAMBA share for user $user"
     local DIR="$DATADIR/$user/files"
