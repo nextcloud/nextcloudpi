@@ -201,7 +201,13 @@ configure() {
   enable_pw_only="$ENABLE_PASSWORD_ONLY"
   reset_totp_secret="$RESET_TOTP_SECRET"
   active="yes"
-  ssh_pubkey="$(unescape "$SSH_PUBLIC_KEY")"
+  ssh_pubkeys=("$(unescape "$SSH_PUBLIC_KEY_1")" \
+               "$(unescape "$SSH_PUBLIC_KEY_2")" \
+               "$(unescape "$SSH_PUBLIC_KEY_3")" \
+               "$(unescape "$SSH_PUBLIC_KEY_4")" \
+               "$(unescape "$SSH_PUBLIC_KEY_5")")
+  echo "SSH PUBKEYS:"
+  echo "${ssh_pubkeys[*]}"
 
   trap 'restore' HUP INT QUIT PIPE TERM
 
@@ -266,10 +272,13 @@ configure() {
   systemctl is-enabled ssh -q && systemctl restart ssh
 
   # Setup SSH public key
-  if [[ -n "$SSH_PUBLIC_KEY" ]]
+  if [[ -n "${ssh_pubkeys[*]}" ]]
   then
     echo "Setting up SSH public key..."
-    echo "$ssh_pubkey" > "${SSH_USER_HOME}/.ssh/authorized_keys"
+    local IFS_BK="$IFS"
+    IFS=$'\n'
+    echo "${ssh_pubkeys[*]}" > "${SSH_USER_HOME}/.ssh/authorized_keys"
+    IFS="$IFS_BK"
     chown "${SSH_USER}:" "${SSH_USER_HOME}/.ssh/authorized_keys"
   elif [[ -f "${SSH_USER_HOME}/.ssh/authorized_keys" ]]
   then
