@@ -73,8 +73,13 @@ function configure_app()
       $DIALOG_OK)
         while read val; do local ret_vals+=("$val"); done <<<"$value"
 
+        local allow_unsafe
+
         for (( i = 0 ; i < len ; i++ )); do
           # check for invalid characters
+          # check if unsafe characters (spaces) are allowed (will return 'null' if key not found)
+          allow_unsafe="$(jq -r .params[$i].allow_unsafe <<<"$cfg")"
+          [[ "${allow_unsafe}" == 'true' ]] && ret_vals[$i]="${ret_vals[$i]// /%SPACE%}"
           grep -q '[\\&#;'"'"'`|*?~<>^"()[{}$&[:space:]]' <<< "${ret_vals[$i]}" && { echo "Invalid characters in field ${vars[$i]}"; return 1; }
 
           cfg="$(jq ".params[$i].value = \"${ret_vals[$i]}\"" <<<"$cfg")"
