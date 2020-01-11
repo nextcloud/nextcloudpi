@@ -206,8 +206,6 @@ configure() {
                "$(unescape "$SSH_PUBLIC_KEY_3")" \
                "$(unescape "$SSH_PUBLIC_KEY_4")" \
                "$(unescape "$SSH_PUBLIC_KEY_5")")
-  echo "SSH PUBKEYS:"
-  echo "${ssh_pubkeys[*]}"
 
   trap 'restore' HUP INT QUIT PIPE TERM
 
