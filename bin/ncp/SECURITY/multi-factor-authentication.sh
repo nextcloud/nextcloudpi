@@ -194,7 +194,7 @@ is_active() {
 
 configure() {
 
-  local active enable_totp_and_pw enable_pubkey_and_pw enable_pubkey_only enable_pw_only reset_totp_secret ssh_pubkey
+  local active enable_totp_and_pw enable_pubkey_and_pw enable_pubkey_only enable_pw_only reset_totp_secret ssh_pubkeys
   enable_totp_and_pw="$ENABLE_TOTP_AND_PASSWORD"
   enable_pubkey_and_pw="$ENABLE_PUBLIC_KEY_AND_PASSWORD"
   enable_pubkey_only="$ENABLE_PUBLIC_KEY_ONLY"
