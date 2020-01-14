@@ -1,5 +1,7 @@
 
-[v1.20.2](https://github.com/nextcloud/nextcloudpi/commit/97cb2ff) (2019-11-13) Extend the ssh configuration check by calling the echo command if the first check fails.
+[v1.20.3](https://github.com/nextcloud/nextcloudpi/commit/780d475) (2020-01-14) nc-ramlogs: disable armbian-ramlog when inactive
+
+[v1.20.2](https://github.com/nextcloud/nextcloudpi/commit/953c47a) (2019-11-13) Extend the ssh configuration check by calling the echo command if the first check fails.
 
 [v1.20.1](https://github.com/nextcloud/nextcloudpi/commit/6d0bc6b) (2019-12-19) Revert "build: dont use empty values by default"
 

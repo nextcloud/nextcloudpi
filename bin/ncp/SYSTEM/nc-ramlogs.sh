@@ -32,14 +32,15 @@ install()
 
 configure()
 {
+  [[ -f /lib/systemd/system/armbian-ramlog.service ]] && local ramlog=armbian-ramlog || local ramlog=log2ram
+
   [[ $ACTIVE != "yes" ]] && {
-    systemctl disable log2ram
-    systemctl stop    log2ram
+    systemctl disable "$ramlog"
+    systemctl stop    "$ramlog"
     echo "Logs in SD. Reboot to take effect"
     return
   }
 
-  [[ -f /lib/systemd/system/armbian-ramlog.service ]] && local ramlog=armbian-ramlog || local ramlog=log2ram
   systemctl enable "$ramlog"
   systemctl start  "$ramlog"
 
