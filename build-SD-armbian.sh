@@ -42,7 +42,7 @@ CONF=armbian/userpatches/config-ncp.conf
 # default parameters
 cat > "$CONF" <<EOF
 BOARD="$BOARD"
-BRANCH=current
+BRANCH=legacy
 RELEASE=$RELEASE
 KERNEL_ONLY=no
 KERNEL_CONFIGURE=no
