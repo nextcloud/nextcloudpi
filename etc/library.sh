@@ -278,6 +278,17 @@ function check_distro()
   return 1
 }
 
+function clear_all_passwords()
+{
+  local script=$1
+  local ncp_app="$(basename "$script" .sh)"
+  local cfg_file="$CFGDIR/$ncp_app.cfg"
+  local log=/var/log/ncp.log
+
+  cfg="$(jq '.params[] | select(.type == "password") | .value = ""' <"$cfg_file")"
+  echo "$cfg">"$cfg_file"
+}
+
 function apt_install()
 {
   apt-get update
