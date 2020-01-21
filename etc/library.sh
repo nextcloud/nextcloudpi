@@ -150,6 +150,7 @@ function run_app_unsafe()
 
   echo "" >> $log
 
+  clear_password_fields "$cfg_file"
   return "$ret"
 }
 
@@ -278,14 +279,10 @@ function check_distro()
   return 1
 }
 
-function clear_all_passwords()
+function clear_password_fields()
 {
-  local script=$1
-  local ncp_app="$(basename "$script" .sh)"
-  local cfg_file="$CFGDIR/$ncp_app.cfg"
-  local log=/var/log/ncp.log
-
-  cfg="$(jq '.params[] | select(.type == "password") | .value = ""' <"$cfg_file")"
+  local cfg_file="$1"
+  local cfg="$(jq '.params[] | select(.type == "password") | .value = ""' < "$cfg_file")"
   echo "$cfg">"$cfg_file"
 }
 

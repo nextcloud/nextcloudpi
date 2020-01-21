@@ -8,16 +8,8 @@
 # More at: https://ownyourbits.com
 #
 
-cleanup()
-{
-  # Remove cleartext passwords from configuration
-  clear_all_passwords "$0"
-}
-
 configure()
 {
-  trap cleanup EXIT SIGHUP SIGABRT SIGINT
-
   # update password
   echo -e "$PASSWORD\n$CONFIRM" | passwd ncp &>/dev/null && \
     echo "password updated successfully" || \
