@@ -8,8 +8,6 @@
 # More at: https://ownyourbits.com
 #
 
-
-
 configure()
 {
   # update password

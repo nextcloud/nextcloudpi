@@ -150,6 +150,7 @@ function run_app_unsafe()
 
   echo "" >> $log
 
+  clear_password_fields "$cfg_file"
   return "$ret"
 }
 
@@ -276,6 +277,20 @@ function check_distro()
   local supported=$(jq -r .release "$cfg")
   grep -q "$supported" <(lsb_release -sc) && return 0
   return 1
+}
+
+function clear_password_fields()
+{
+  local cfg_file="$1"
+  local cfg="$(cat "$cfg_file")"
+  local len="$(jq '.params | length' <<<"$cfg")"
+  for (( i = 0 ; i < len ; i++ )); do
+    local type="$(jq -r ".params[$i].type"  <<<"$cfg")"
+    local val="$( jq -r ".params[$i].value" <<<"$cfg")"
+    [[ "$type" == "password" ]] && val=""
+    cfg="$(jq -r ".params[$i].value=\"$val\"" <<<"$cfg")"
+  done
+  echo "$cfg" > "$cfg_file"
 }
 
 function apt_install()
