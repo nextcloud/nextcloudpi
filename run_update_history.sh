@@ -24,7 +24,11 @@ end_of_list=$((len - 1))
 # The latest checkpoint is the newer version in updates dir
 latest_checkpoint=${updates_list[$end_of_list]}
 latest_checkpoint_version=$( basename "$latest_checkpoint" .sh )
-current_version=$( grep -oP "\d+\.\d+\.\d+" /usr/local/etc/ncp-version | cut -d'v' -f1 )
+if [[ -f /usr/local/etc/ncp-version ]]; then
+  current_version=$( grep -oP "\d+\.\d+\.\d+" /usr/local/etc/ncp-version | cut -d'v' -f1 )
+else
+  current_version="v0.0.0"
+fi
 
 # Compare current version with latest checkpoint
 # If the current version is more recent than the latest checkpoint there is no need for backward updates

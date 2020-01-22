@@ -16,7 +16,7 @@ $cfg_dir = '/usr/local/etc/ncp-config.d/';
 $l10nDir = "l10n";
 ignore_user_abort(true);
 
-// 
+//
 // language
 //
 require("L10N.php");

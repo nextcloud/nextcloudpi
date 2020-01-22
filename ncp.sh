@@ -123,7 +123,7 @@ EOF
   a2ensite ncp-activation
 
   ## NCP USER FOR AUTHENTICATION
-  useradd --home-dir /nonexistent "$WEBADMIN"
+  id -u "$WEBADMIN" &>/dev/null || useradd --home-dir /nonexistent "$WEBADMIN"
   echo -e "$WEBPASSWD\n$WEBPASSWD" | passwd "$WEBADMIN"
   chsh -s /usr/sbin/nologin "$WEBADMIN"
 

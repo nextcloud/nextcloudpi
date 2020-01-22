@@ -155,6 +155,7 @@ function run_app_unsafe()
 
   echo "" >> $log
 
+  clear_password_fields "$cfg_file"
   return "$ret"
 }
 
@@ -283,10 +284,26 @@ function check_distro()
   return 1
 }
 
+
 function unescape()
 {
   local str="${1?}"
   echo "${str//"%SPACE%"/" "}"
+}
+
+function clear_password_fields()
+{
+  local cfg_file="$1"
+  local cfg="$(cat "$cfg_file")"
+  local len="$(jq '.params | length' <<<"$cfg")"
+  for (( i = 0 ; i < len ; i++ )); do
+    local type="$(jq -r ".params[$i].type"  <<<"$cfg")"
+    local val="$( jq -r ".params[$i].value" <<<"$cfg")"
+    [[ "$type" == "password" ]] && val=""
+    cfg="$(jq -r ".params[$i].value=\"$val\"" <<<"$cfg")"
+  done
+  echo "$cfg" > "$cfg_file"
+
 }
 
 function apt_install()
