@@ -98,7 +98,7 @@ configure()
 before = common.conf
 
 [Definition]
-failregex = Login failed.*Remote IP.*'<HOST>'
+failregex = Login failed.*Remote IP.*<HOST>
 ignoreregex =
 EOF
 

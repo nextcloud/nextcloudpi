@@ -1,7 +1,15 @@
 
-[v1.20.3](https://github.com/nextcloud/nextcloudpi/commit/780d475) (2020-01-14) nc-ramlogs: disable armbian-ramlog when inactive
+[v1.20.7](https://github.com/nextcloud/nextcloudpi/commit/8ce053f) (2020-01-26) fail2ban: update regex for NC17
 
-[v1.20.2](https://github.com/nextcloud/nextcloudpi/commit/953c47a) (2019-11-13) Extend the ssh configuration check by calling the echo command if the first check fails.
+[v1.20.6 ](https://github.com/nextcloud/nextcloudpi/commit/4a99207) (2020-01-21) ncp-config: dont save passwords
+
+[v1.20.5 ](https://github.com/nextcloud/nextcloudpi/commit/a98baee) (2020-01-18) update: fix case where there is no current version file
+
+[v1.20.4 ](https://github.com/nextcloud/nextcloudpi/commit/e0ae40b) (2020-01-19) Add user only if it does not exist. (#1059)
+
+[v1.20.3 ](https://github.com/nextcloud/nextcloudpi/commit/6359ca3) (2020-01-14) nc-ramlogs: disable armbian-ramlog when inactive
+
+[v1.20.2 ](https://github.com/nextcloud/nextcloudpi/commit/953c47a) (2019-11-13) Extend the ssh configuration check by calling the echo command if the first check fails.
 
 [v1.20.1](https://github.com/nextcloud/nextcloudpi/commit/6d0bc6b) (2019-12-19) Revert "build: dont use empty values by default"
 
