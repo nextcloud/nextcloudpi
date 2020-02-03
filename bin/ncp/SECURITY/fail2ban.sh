@@ -95,10 +95,10 @@ configure()
 
   cat > /etc/fail2ban/filter.d/nextcloud.conf <<'EOF'
 [INCLUDES]
-before = common.conf
+#before = common.conf
 
 [Definition]
-failregex = Login failed.*Remote IP.*<HOST>
+failregex = ^{.*Login failed: .* \(Remote IP: <HOST>\).*}$
 ignoreregex =
 EOF
 
