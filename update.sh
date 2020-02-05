@@ -189,7 +189,7 @@ check_distro "$NCPCFG" && check_distro etc/ncp.cfg || {
     msg="Update to $release_new available. Get the latest container to upgrade" || \
     msg="Update to $release_new available. Type 'sudo ncp-dist-upgrade' to upgrade"
   echo "${msg}"
-  ncc notification:generate "ncp" "New distribution available" -l "${msg}"
+  notify_admin "New distribution available" "${msg}"
   wall "${msg}"
   cat > /etc/update-motd.d/30ncp-dist-upgrade <<EOF
 #!/bin/bash

@@ -26,6 +26,7 @@ configure()
   # code
   cat > /usr/local/bin/ncp-notify-update <<EOF
 #!/bin/bash
+source /usr/local/etc/library.sh
 VERFILE=/usr/local/etc/ncp-version
 LATEST=/var/run/.ncp-latest-version
 NOTIFIED=/var/run/.ncp-version-notified
@@ -43,9 +44,9 @@ echo "Found update from \$( cat \$VERFILE ) to \$( cat \$LATEST ). Sending notif
 IFACE=\$( ip r | grep "default via" | awk '{ print \$5 }' | head -1 )
 IP=\$( ip a show dev "\$IFACE" | grep global | grep -oP '\d{1,3}(\.\d{1,3}){3}' | head -1 )
 
-/usr/local/bin/ncc notification:generate \
-  $USER "NextCloudPi update" \
-     -l "Update from \$( cat \$VERFILE ) to \$( cat \$LATEST ) is available. Update from https://\$IP:4443"
+notify_admin \
+  "NextCloudPi update" \
+  "Update from \$( cat \$VERFILE ) to \$( cat \$LATEST ) is available. Update from https://\$IP:4443"
 
 cat \$LATEST > \$NOTIFIED
 EOF
@@ -53,6 +54,7 @@ EOF
 
   cat > /usr/local/bin/ncp-notify-unattended-upgrade <<EOF
 #!/bin/bash
+source /usr/local/etc/library.sh
 
 LOGFILE=/var/log/unattended-upgrades/unattended-upgrades.log
 STAMPFILE=/var/run/.ncp-notify-unattended-upgrades
@@ -74,9 +76,9 @@ sed -i 's|INFO Packages that will be upgraded:|INFO Packages that will be upgrad
 echo -e "Packages automatically upgraded: \$PKGS\\n"
 
 # notify
-/usr/local/bin/ncc notification:generate \
-  $USER "NextCloudPi Unattended Upgrades" \
-     -l "Packages automatically upgraded \$PKGS"
+notify_admin \
+  "NextCloudPi Unattended Upgrades" \
+  "Packages automatically upgraded \$PKGS"
 EOF
   chmod +x /usr/local/bin/ncp-notify-unattended-upgrade
 

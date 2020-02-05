@@ -67,14 +67,15 @@ configure()
     # Set up auto-renewal
     cat > /etc/cron.weekly/letsencrypt-ncp <<EOF
 #!/bin/bash
+source /usr/local/etc/library.sh
 
 # renew and notify
 $letsencrypt renew --quiet
 
 # notify if fails
-[[ \$? -ne 0 ]] && ncc notification:generate \
-                     $NOTIFYUSER "SSL renewal error" \
-                     -l "SSL certificate renewal failed. See /var/log/letsencrypt/letsencrypt.log"
+[[ \$? -ne 0 ]] && notify_admin \
+                     "SSL renewal error" \
+                     "SSL certificate renewal failed. See /var/log/letsencrypt/letsencrypt.log"
 
 # cleanup
 rm -rf $ncdir/.well-known
@@ -84,9 +85,10 @@ EOF
     mkdir -p /etc/letsencrypt/renewal-hooks/deploy
     cat > /etc/letsencrypt/renewal-hooks/deploy/ncp <<EOF
 #!/bin/bash
-/usr/local/bin/ncc notification:generate \
-  $NOTIFYUSER "SSL renewal" \
-  -l "Your SSL certificate(s) \$RENEWED_DOMAINS has been renewed for another 90 days"
+source /usr/local/etc/library.sh
+notify_admin \
+  "SSL renewal" \
+  "Your SSL certificate(s) \$RENEWED_DOMAINS has been renewed for another 90 days"
 exit 0
 EOF
     chmod +x /etc/letsencrypt/renewal-hooks/deploy/ncp

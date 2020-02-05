@@ -1,5 +1,9 @@
 
-[v1.20.7](https://github.com/nextcloud/nextcloudpi/commit/8ce053f) (2020-01-26) fail2ban: update regex for NC17
+[v1.20.9](https://github.com/nextcloud/nextcloudpi/commit/135f4d4) (2020-02-04) add notify_admin functionality
+
+[v1.20.8](https://github.com/nextcloud/nextcloudpi/commit/986046f) (2020-02-05) nc-backup: add more info to description (#1073)
+
+[v1.20.7](https://github.com/nextcloud/nextcloudpi/commit/b404765) (2020-01-26) fail2ban: update regex for NC17
 
 [v1.20.6 ](https://github.com/nextcloud/nextcloudpi/commit/4a99207) (2020-01-21) ncp-config: dont save passwords
 
@@ -11,7 +15,7 @@
 
 [v1.20.2 ](https://github.com/nextcloud/nextcloudpi/commit/953c47a) (2019-11-13) Extend the ssh configuration check by calling the echo command if the first check fails.
 
-[v1.20.1](https://github.com/nextcloud/nextcloudpi/commit/6d0bc6b) (2019-12-19) Revert "build: dont use empty values by default"
+[v1.20.1 ](https://github.com/nextcloud/nextcloudpi/commit/6d0bc6b) (2019-12-19) Revert "build: dont use empty values by default"
 
 [v1.20.0 ](https://github.com/nextcloud/nextcloudpi/commit/f75c415) (2019-12-19) upgrade to NC17.0.2
 

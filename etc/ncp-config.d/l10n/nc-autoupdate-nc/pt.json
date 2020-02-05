@@ -1,7 +1,6 @@
 {
     "translations":{
         "ACTIVE":"Ativo",
-        "NOTIFYUSER":"Noticar Usuario",
         "Automatically apply Nextcloud updates":"Aplicar atualizações automaticas ao Nextcloud",
         "nc-autoupdate-nc":"nc-autoupdate-nc"
     }

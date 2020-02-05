@@ -5,7 +5,6 @@
         "EMAIL": "電子郵件",
         "Internet access is required for this configuration to complete\nBoth ports 80 and 443 need to be accessible from the internet\n \nYour certificate will be automatically renewed every month": "使用letsencrypt提供的SSL證書\n在執行這個動作之前，請開啟網路且開啟Port 80和443\n完成此動作之後，SSL證書將每個月自動更新續期。",
         "Warning": "警告",
-        "letsencrypt": "SSL證書",
-        "NOTIFYUSER":"提醒用戶"
+        "letsencrypt": "SSL證書"
     }
 }

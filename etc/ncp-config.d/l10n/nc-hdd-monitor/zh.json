@@ -2,7 +2,6 @@
     "translations": {
         "ACTIVE": "開啟",
         "Monitor HDD health automatically":"定期檢查HDD硬碟狀態",
-        "NOTIFYUSER":"提示使用者",
         "EMAIL":"電子郵件"
     }
 }

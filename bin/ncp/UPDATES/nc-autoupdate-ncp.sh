@@ -19,11 +19,10 @@ configure()
 
   cat > /etc/cron.daily/ncp-autoupdate <<EOF
 #!/bin/bash
+source /usr/local/etc/library.sh
 if /usr/local/bin/ncp-test-updates; then
   /usr/local/bin/ncp-update || exit 1
-  /usr/local/bin/ncc notification:generate \
-    "$NOTIFYUSER" "NextCloudPi" \
-       -l "NextCloudPi was updated to \$( cat /usr/local/etc/ncp-version )"
+  notify_admin "NextCloudPi" "NextCloudPi was updated to \$(cat /usr/local/etc/ncp-version)"
 fi
 EOF
   chmod 755 /etc/cron.daily/ncp-autoupdate

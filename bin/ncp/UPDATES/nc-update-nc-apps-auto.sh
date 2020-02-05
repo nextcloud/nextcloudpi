@@ -20,6 +20,7 @@ configure()
 
   cat > "$cronfile" <<EOF
 #!/bin/bash
+source /usr/local/etc/library.sh
 OUT="\$(
 echo "[ nc-update-nc-apps-auto ]"
 echo "checking for updates..."
@@ -28,7 +29,7 @@ echo "checking for updates..."
 echo "\$OUT" >> /var/log/ncp.log
 
 APPS=\$( echo "\$OUT" | grep 'updated\$' | awk '{ print \$1 }')
-[[ "\$APPS" != "" ]] && /usr/local/bin/ncc notification:generate "$USER" "Apps updated" -l "\$APPS"
+[[ "\$APPS" != "" ]] && notify_admin "Apps updated" "\$APPS"
 EOF
   chmod 755 "$cronfile"
   echo "automatic app updates enabled"

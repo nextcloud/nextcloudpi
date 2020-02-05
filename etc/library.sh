@@ -299,6 +299,15 @@ function apt_install()
   apt-get install -y --no-install-recommends -o Dpkg::Options::=--force-confdef
 }
 
+function notify_admin()
+{
+  local header="$1"
+  local msg="$2"
+  local admin=$(mysql -u root nextcloud -Nse "select uid from oc_group_user where gid='admin' limit 1;")
+  [[ "${admin}" == "" ]] && { echo "admin user not found" >&2; return 0; }
+  ncc notification:generate "${admin}" "${header}" -l "${msg}" || true
+}
+
 # License
 #
 # This script is free software; you can redistribute it and/or modify it
