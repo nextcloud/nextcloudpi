@@ -98,7 +98,9 @@ configure()
 before = common.conf
 
 [Definition]
-failregex = Login failed.*Remote IP.*<HOST>
+_groupsre = (?:(?:,?\s*"\w+":(?:"[^"]+"|\w+))*)
+failregex = ^\{%(_groupsre)s,?\s*"remoteAddr":"<HOST>"%(_groupsre)s,?\s*"message":"Login failed:
+datepattern = ,?\s*"time"\s*:\s*"%%Y-%%m-%%d[T ]%%H:%%M:%%S(%%z)?"
 ignoreregex =
 EOF
 
