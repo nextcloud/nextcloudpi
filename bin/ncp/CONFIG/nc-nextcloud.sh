@@ -53,6 +53,7 @@ install()
   sed -i 's|# rename-command CONFIG ""|rename-command CONFIG ""|'  $REDIS_CONF
   sed -i "s|^port.*|port 0|"                                       $REDIS_CONF
   echo "maxmemory $REDIS_MEM" >> $REDIS_CONF
+  chown redis:redis $REDIS_CONF
   echo 'vm.overcommit_memory = 1' >> /etc/sysctl.conf
 
   usermod -a -G redis www-data
