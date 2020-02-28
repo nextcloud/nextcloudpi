@@ -1,7 +1,11 @@
 
-[v1.20.10](https://github.com/nextcloud/nextcloudpi/commit/e99d7a7) (2020-02-27) redis: make sure we have the right permissions for conf file
+[v1.21.0](https://github.com/nextcloud/nextcloudpi/commit/5046177) (2020-02-28) upgrade to NC18.0.1
 
-[v1.20.9](https://github.com/nextcloud/nextcloudpi/commit/0c538ae) (2020-02-04) add notify_admin functionality
+[v1.20.11](https://github.com/nextcloud/nextcloudpi/commit/f066b03) (2020-02-27) redis: make sure we have the right permissions for conf file
+
+[v1.20.10](https://github.com/nextcloud/nextcloudpi/commit/c0cee6b) (2020-02-12) fail2ban: fix regex for NC18
+
+[v1.20.9 ](https://github.com/nextcloud/nextcloudpi/commit/0c538ae) (2020-02-04) add notify_admin functionality
 
 [v1.20.8 ](https://github.com/nextcloud/nextcloudpi/commit/986046f) (2020-02-05) nc-backup: add more info to description (#1073)
 
