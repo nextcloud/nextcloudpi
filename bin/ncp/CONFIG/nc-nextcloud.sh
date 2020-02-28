@@ -55,6 +55,7 @@ install()
   echo "maxmemory $REDIS_MEM" >> $REDIS_CONF
   echo 'vm.overcommit_memory = 1' >> /etc/sysctl.conf
 
+  chown redis: "$REDIS_CONF"
   usermod -a -G redis www-data
 
   service redis-server restart
