@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #
-# NextCloudPi scheduled datadir BTRFS snapshots 
+# NextCloudPi scheduled datadir BTRFS snapshots
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -17,32 +17,31 @@ install()
 }
 
 configure()
-{ 
-  [[ $ACTIVE != "yes" ]] && { 
+{
+  [[ "$ACTIVE" != "yes" ]] && {
     rm -f /etc/cron.hourly/btrfs-snp
     echo "automatic snapshots disabled"
     return 0
   }
 
-  local DATADIR MOUNTPOINT
-  DATADIR=$( sudo -u www-data php /var/www/nextcloud/occ config:system:get datadirectory ) || {
-    echo -e "Error reading data directory. Is NextCloud running and configured?";
-    return 1;
-  }
-
-  # file system check
-  MOUNTPOINT="$( stat -c "%m" "$DATADIR" )" || return 1
-  [[ "$( stat -fc%T "$MOUNTPOINT" )" != "btrfs" ]] && {
-    echo "$MOUNTPOINT is not in a BTRFS filesystem"
-    return 1
-  }
-
   cat > /etc/cron.hourly/btrfs-snp <<EOF
 #!/bin/bash
-/usr/local/bin/btrfs-snp $MOUNTPOINT hourly  24 3600    ../ncp-snapshots
-/usr/local/bin/btrfs-snp $MOUNTPOINT daily    7 86400   ../ncp-snapshots
-/usr/local/bin/btrfs-snp $MOUNTPOINT weekly   4 604800  ../ncp-snapshots
-/usr/local/bin/btrfs-snp $MOUNTPOINT monthly 12 2592000 ../ncp-snapshots
+DATADIR=\$(ncc config:system:get datadirectory) || {
+  echo -e "Error reading data directory. Is NextCloud running and configured?";
+  exit 1;
+}
+
+# file system check
+MOUNTPOINT="\$(stat -c "%m" "\$DATADIR")" || return 1
+[[ "\$( stat -fc%T "\$MOUNTPOINT" )" != "btrfs" ]] && {
+  echo "\$MOUNTPOINT is not in a BTRFS filesystem"
+  exit 1
+}
+
+/usr/local/bin/btrfs-snp \$MOUNTPOINT hourly  24 3600    ../ncp-snapshots
+/usr/local/bin/btrfs-snp \$MOUNTPOINT daily    7 86400   ../ncp-snapshots
+/usr/local/bin/btrfs-snp \$MOUNTPOINT weekly   4 604800  ../ncp-snapshots
+/usr/local/bin/btrfs-snp \$MOUNTPOINT monthly 12 2592000 ../ncp-snapshots
 EOF
   chmod 755 /etc/cron.hourly/btrfs-snp
   echo "automatic snapshots enabled"
