@@ -9,13 +9,18 @@
 # Made in Taiwan (Republic of China)
 #
 
+is_active()
+{
+  grep -q enabled <(ncc maintenance:mode)
+}
+
 configure()
 {
-  [[ $ACTIVE != "yes" ]] && {
+  [[ "$ACTIVE" != "yes" ]] && {
     ncc maintenance:mode --off
-    return 0 
+    return $?
   }
-  ncc maintenance:mode --on 
+  ncc maintenance:mode --on
 }
 
 install(){ :; }
