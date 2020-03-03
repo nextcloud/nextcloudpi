@@ -68,6 +68,14 @@ EOF
   done < <( ls -d "$DATADIR"/*/files )
 
   for user in ${USERS[@]}; do
+    # Exclude users not matching group filter (if enabled)
+    if [[ -n "$FILTER_BY_GROUP" ]] \
+    && [[ -z "$(ncc user:info "$user" --output=json | jq ".groups[] | select( . == \"${FILTER_BY_GROUP}\" )")" ]]
+    then
+      echo "Omitting user $user (not in group ${FILTER_BY_GROUP})...";
+      continue;
+    fi
+
     echo "adding SAMBA share for user $user"
     local DIR="$DATADIR/$user/files"
     [ -d "$DIR" ] || { echo -e "INFO: directory $DIR does not exist."; return 1; }
@@ -122,4 +130,3 @@ EOF
 # along with this script; if not, write to the
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
-

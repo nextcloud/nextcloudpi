@@ -1,5 +1,7 @@
 
-[v1.22.0](https://github.com/nextcloud/nextcloudpi/commit/bd03e1c) (2020-03-03) Add nc-trusted-proxies (#1094)
+[v1.22.1](https://github.com/nextcloud/nextcloudpi/commit/e68d616) (2020-03-03) samba: option to apply only to a NC group (#1048)
+
+[v1.22.0 ](https://github.com/nextcloud/nextcloudpi/commit/9304c86) (2020-03-03) Add nc-trusted-proxies (#1094)
 
 [v1.21.0](https://github.com/nextcloud/nextcloudpi/commit/4a51c1f) (2020-02-28) upgrade to NC18.0.1
 
