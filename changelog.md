@@ -1,5 +1,7 @@
 
-[v1.21.0](https://github.com/nextcloud/nextcloudpi/commit/5046177) (2020-02-28) upgrade to NC18.0.1
+[v1.22.0](https://github.com/nextcloud/nextcloudpi/commit/bd03e1c) (2020-03-03) Add nc-trusted-proxies (#1094)
+
+[v1.21.0](https://github.com/nextcloud/nextcloudpi/commit/4a51c1f) (2020-02-28) upgrade to NC18.0.1
 
 [v1.20.11](https://github.com/nextcloud/nextcloudpi/commit/f066b03) (2020-02-27) redis: make sure we have the right permissions for conf file
 
@@ -9,7 +11,7 @@
 
 [v1.20.8 ](https://github.com/nextcloud/nextcloudpi/commit/986046f) (2020-02-05) nc-backup: add more info to description (#1073)
 
-[v1.20.7](https://github.com/nextcloud/nextcloudpi/commit/b404765) (2020-01-26) fail2ban: update regex for NC17
+[v1.20.7 ](https://github.com/nextcloud/nextcloudpi/commit/b404765) (2020-01-26) fail2ban: update regex for NC17
 
 [v1.20.6 ](https://github.com/nextcloud/nextcloudpi/commit/4a99207) (2020-01-21) ncp-config: dont save passwords
 
