@@ -33,7 +33,7 @@ configure()
 
   local FSTYPE="$( stat -fc%T "$BASEDIR" )"
 
-  grep -q -e btrfs <<<"$BASEDIR" && chattr +C "$BASEDIR"
+  grep -q -e btrfs <<<"$FSTYPE" && chattr +C "$BASEDIR"
 
   grep -q -e ext -e btrfs <<<"$BASEDIR" || { echo -e "Only ext/btrfs filesystems can hold the data directory"; return 1; }
   
@@ -72,4 +72,3 @@ install(){ :; }
 # along with this script; if not, write to the
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
-
