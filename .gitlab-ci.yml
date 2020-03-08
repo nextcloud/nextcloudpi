@@ -65,11 +65,12 @@ stages:
     - pip install selenium
     - apt update && apt install -y dnsutils
     - cat /etc/hosts
-    - host nextcloudpi || echo "host 'nextcloudpi' not found!"
-    - host ${CI_REGISTRY_IMAGE//\//-}-nextcloudpi-${ARCHITECTURE//\//-} || echo "host '${CI_REGISTRY_IMAGE//\//-}-nextcloudpi-${ARCHITECTURE//\//-}' not found!"
-    - host ${CI_REGISTRY_IMAGE//\//__}-nextcloudpi-${ARCHITECTURE//\//__}
-    - ./tests/activation_tests.py "nextcloudpi" "http://selenium:4444/wd/hub"
-    - ./tests/nextcloudpi_tests.py "nextcloudpi" "http://selenium:4444/wd/hub"
+    - NCP_IP="$(getent hosts localhost | cut -f1 -d ' ')"
+#    - host nextcloudpi || echo "host 'nextcloudpi' not found!"
+#    - host ${CI_REGISTRY_IMAGE//\//-}-nextcloudpi-${ARCHITECTURE//\//-} || echo "host '${CI_REGISTRY_IMAGE//\//-}-nextcloudpi-${ARCHITECTURE//\//-}' not found!"
+#    - host ${CI_REGISTRY_IMAGE//\//__}-nextcloudpi-${ARCHITECTURE//\//__}
+    - ./tests/activation_tests.py "$NCP_IP" "http://selenium:4444/wd/hub"
+    - ./tests/nextcloudpi_tests.py "$NCP_IP" "http://selenium:4444/wd/hub"
 
 .system-test-docker-tmpl: &system-test-docker-tmpl
   stage: pre-build
