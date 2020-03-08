@@ -27,6 +27,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import UnexpectedAlertPresentException
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 suite_name = "activation tests"
 test_cfg = 'test_cfg.txt'
@@ -82,12 +83,15 @@ def is_element_present(driver, how, what):
 def signal_handler(sig, frame):
         sys.exit(0)
 
-def test_activation(IP):
+def test_activation(IP, selenium_host):
     """ Activation process checks"""
 
     # activation page
     test = Test()
-    driver = webdriver.Firefox(service_log_path='/dev/null')
+    if selenium_host is None:
+        driver = webdriver.Firefox(service_log_path='/dev/null')
+    else:
+        driver = webdriver.Remote(command_executor=selenium_host, desired_capabilities=DesiredCapabilities.FIREFOX)
     driver.implicitly_wait(5)
     test.new("activation opens")
     driver.get("https://" + IP)
@@ -117,7 +121,7 @@ def test_activation(IP):
         wait = WebDriverWait(driver, 60)
         wait.until(EC.text_to_be_present_in_element((By.ID,'error-box'), "ACTIVATION SUCCESSFUL"))
         test.check(True)
-    except TimeoutException: 
+    except TimeoutException:
         test.check(False)
     except:
         test.check(True)
@@ -156,9 +160,10 @@ if __name__ == "__main__":
 
     # test
     IP = args[0] if len(args) > 0 else 'localhost'
+    selenium_host = args[1] if len(args) > 1 else None
     print("Activation tests " + tc.yellow + IP + tc.normal)
     print("---------------------------")
-    test_activation(IP)
+    test_activation(IP, selenium_host)
 
 # License
 #

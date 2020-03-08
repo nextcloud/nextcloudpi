@@ -24,6 +24,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 suite_name = "nextcloud tests"
 test_cfg = 'test_cfg.txt'
@@ -75,10 +76,13 @@ def usage():
 def signal_handler(sig, frame):
         sys.exit(0)
 
-def test_nextcloud(IP):
+def test_nextcloud(IP, selenium_host):
     """ Login and assert admin page checks"""
     test = Test()
-    driver = webdriver.Firefox(service_log_path='/dev/null')
+    if selenium_host is None:
+        driver = webdriver.Firefox(service_log_path='/dev/null')
+    else:
+        driver = webdriver.Remote(command_executor=selenium_host, desired_capabilities=DesiredCapabilities.FIREFOX)
     driver.implicitly_wait(60)
     test.new("nextcloud page")
     try:
@@ -155,9 +159,10 @@ if __name__ == "__main__":
 
     # test
     IP = args[0] if len(args) > 0 else 'localhost'
-    print("Nextcloud tests " + tc.yellow + IP + tc.normal)
+    selenium_host = args[1] if len(args) > 1 else None
+    print("Nextcloud tests " + tc.yellow + IP + tc.normal )
     print("---------------------------")
-    test_nextcloud(IP)
+    test_nextcloud(IP, selenium_host)
 
 # License
 #
