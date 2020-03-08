@@ -66,9 +66,8 @@ docker-build-docker-builder:
     - docker:dind
   script:
     - docker pull ${CI_REGISTRY_IMAGE}/docker-builder:latest || echo "docker-builder:latest not found in \"${CI_REGISTRY_IMAGE}\"!"
-    - docker pull docker:latest
     - CURRENT="$(docker inspect -f '{{ .DockerVersion }}' ${CI_REGISTRY_IMAGE}/docker-builder:latest)"
-    - LATEST="$(docker version -f '{{ .Client.Version }}'
+    - LATEST="$(docker version -f '{{ .Client.Version }})'
     - echo "$CURRENT"
     - echo "$LATEST"
     - |
