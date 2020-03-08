@@ -8,7 +8,7 @@ stages:
   services:
     - docker:dind
   script:
-    - apk add git jq
+    - apk add git jq bash
     - git fetch --tags
     - ./build-docker.sh "${ARCHITECTURE}" "${CI_REGISTRY}" --push
 #    - VERSION="$(git describe --tags --always)"
