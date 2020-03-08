@@ -54,7 +54,7 @@ stages:
     - docker push ${CI_REGISTRY_IMAGE}/nextcloudpi-${NCP_TAG?}
 
 .integration-tests-docker-tmpl: &integration-tests-docker-tmpl
-  stage: pre-build
+  stage: test
   services:
     - name: selenium/standalone-firefox
       alias: selenium
@@ -73,20 +73,23 @@ stages:
   script:
     - ./tests/sysyem_tests.py
 
-integration-tests-docker-amd64:
+test-docker-x86:
   << : *integration-tests-docker-tmpl
   variables:
     ARCHITECTURE: "x86"
+    NAME: nextcloudpi
 
-integration-tests-docker-armhf:
+test-docker-armhf:
   << : *integration-tests-docker-tmpl
   variables:
     ARCHITECTURE: "armhf"
+    NAME: nextcloudpi
 
-integration-tests-docker-arm64:
+test-docker-arm64:
   << : *integration-tests-docker-tmpl
   variables:
     ARCHITECTURE: "arm64"
+    NAME: nextcloudpi
 
 #system-tests-docker-amd64:
 #  << : *system-test-docker-tmpl
