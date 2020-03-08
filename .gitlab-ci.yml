@@ -10,7 +10,7 @@ stages:
   script:
     - apk add git jq bash
     - git fetch --tags
-    - ./build-docker.sh "${ARCHITECTURE}" "${CI_REGISTRY}" --push
+    - ./build-docker.sh "${ARCHITECTURE}" "${CI_REGISTRY_IMAGE}" --push
 #    - VERSION="$(git describe --tags --always)"
 #    - VERSION="${VERSION%-*-*}"
 #    - RELEASE=$(jq -r .release < etc/ncp.cfg)
