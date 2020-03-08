@@ -63,12 +63,7 @@ stages:
   image: python:3.8-buster
   script:
     - pip install selenium
-    - apt update && apt install -y dnsutils
-    - cat /etc/hosts
-    - NCP_IP="$(getent hosts localhost | cut -f1 -d ' ')"
-#    - host nextcloudpi || echo "host 'nextcloudpi' not found!"
-#    - host ${CI_REGISTRY_IMAGE//\//-}-nextcloudpi-${ARCHITECTURE//\//-} || echo "host '${CI_REGISTRY_IMAGE//\//-}-nextcloudpi-${ARCHITECTURE//\//-}' not found!"
-#    - host ${CI_REGISTRY_IMAGE//\//__}-nextcloudpi-${ARCHITECTURE//\//__}
+    - NCP_IP="$(getent hosts nextcloudpi | cut -f1 -d ' ')"
     - ./tests/activation_tests.py "$NCP_IP" "http://selenium:4444/wd/hub"
     - ./tests/nextcloudpi_tests.py "$NCP_IP" "http://selenium:4444/wd/hub"
 
