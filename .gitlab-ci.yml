@@ -10,6 +10,7 @@ stages:
   script:
     - apk add git jq bash
     - git fetch --tags
+    - echo "./build-docker.sh \"${ARCHITECTURE}\" \"${CI_REGISTRY}/${CI_REGISTRY_USER}\" --push"
     - ./build-docker.sh "${ARCHITECTURE}" "${CI_REGISTRY}/${CI_REGISTRY_USER}" --push
 #    - VERSION="$(git describe --tags --always)"
 #    - VERSION="${VERSION%-*-*}"
