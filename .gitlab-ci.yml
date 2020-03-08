@@ -1,6 +1,7 @@
 stages:
   - pre-build
   - build
+  - test
 
 
 .docker-build-tmpl: &docker-build-tmpl
@@ -19,6 +20,10 @@ stages:
     - '[[ "${ARCHITECTURE?}" == "armhf"   ]] && { ARCH=arm32v7; ARCH_QEMU=arm; NCP_TAG=armhf; }'
     - '[[ "${ARCHITECTURE?}" == "arm64"   ]] && { ARCH=arm64v8; ARCH_QEMU=aarch64; NCP_TAG=arm64; }'
     - docker login -u "${CI_REGISTRY_USER?}" -p "${CI_REGISTRY_PASSWORD?}" "${CI_REGISTRY?}"
+    - docker pull ${CI_REGISTRY_IMAGE}/debian-ncp-${NCP_TAG?}:latest
+    - docker pull ${CI_REGISTRY_IMAGE}/lamp-${NCP_TAG?}:latest
+    - docker pull ${CI_REGISTRY_IMAGE}/nextcloud-${NCP_TAG?}:latest
+    - docker pull ${CI_REGISTRY_IMAGE}/nextcloudpi-${NCP_TAG?}:latest
     - >
       DOCKER_BUILDKIT=1 docker build --progress=plain . -f docker/debian-ncp/Dockerfile --pull
       --build-arg release=${RELEASE?} --build-arg arch=${ARCH?} --build-arg arch_qemu=${ARCH_QEMU?}
@@ -47,6 +52,19 @@ stages:
     - docker push ${CI_REGISTRY_IMAGE}/lamp-${NCP_TAG?}
     - docker push ${CI_REGISTRY_IMAGE}/nextcloud-${NCP_TAG?}
     - docker push ${CI_REGISTRY_IMAGE}/nextcloudpi-${NCP_TAG?}
+
+.docker-test-tmpl: &docker-test-tmpl
+  stage: pre-build
+  services:
+    - docker:dind
+    - "${CI_REGISTRY_IMAGE}/nextcloudpi-${ARCHITECTURE?}:${CI_PIPELINE_IID}"
+  script:
+    - "docker ps -q | xargs -n 1 docker inspect --format '{{ .Name }} {{range .NetworkSettings.Networks}} {{.IPAddress}}{{end}}' | sed 's#^/##'"
+
+docker-test-amd64:
+  << : *docker-test-tmpl
+  variables:
+    ARCHITECTURE: "x86"
 
 docker-build-amd64:
   << : *docker-build-tmpl
