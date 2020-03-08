@@ -60,9 +60,10 @@ stages:
       alias: selenium
     - name: "${CI_REGISTRY_IMAGE}/nextcloudpi-${ARCHITECTURE}:latest"
       alias: nextcloudpi
-  image: python:3.8
+  image: python:3.8-buster
   script:
     - pip install selenium
+    - apt install -y dnsutils
     - host nextcloudpi
     - host ${CI_REGISTRY_IMAGE//\//-}-nextcloudpi-${ARCHITECTURE//\//-}
     - ./tests/activation_tests.py "nextcloudpi" "http://selenium:4444/wd/hub"
