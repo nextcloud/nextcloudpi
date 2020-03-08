@@ -64,6 +64,7 @@ stages:
   script:
     - pip install selenium
     - apt update && apt install -y dnsutils
+    - cat /etc/hosts
     - host nextcloudpi || echo "host 'nextcloudpi' not found!"
     - host ${CI_REGISTRY_IMAGE//\//-}-nextcloudpi-${ARCHITECTURE//\//-} || echo "host '${CI_REGISTRY_IMAGE//\//-}-nextcloudpi-${ARCHITECTURE//\//-}' not found!"
     - host ${CI_REGISTRY_IMAGE//\//__}-nextcloudpi-${ARCHITECTURE//\//__}
