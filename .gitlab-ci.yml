@@ -62,6 +62,8 @@ docker-build-docker-builder:
   services:
     - docker:dind
   script:
+    - docker pull ${CI_REGISTRY_IMAGE}/docker-builder:latest || echo "docker-builder:latest" not found in \"${CI_REGISTRY_IMAGE}\"!"
+    - docker pull docker:latest
     - |
       if [[ "$(docker inspect -f '{{ .DockerVersion }}' ${CI_REGISTRY_IMAGE}/docker-builder:latest)" != "$(docker inspect -f '{{ .DockerVersion }}' docker:latest)" ]]
       then
