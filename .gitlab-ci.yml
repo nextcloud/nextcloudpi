@@ -1,7 +1,3 @@
-
-variables:
-  CI_REGISTRY: thecalcaholic/ncp-fork
-
 stages:
   - build
 
