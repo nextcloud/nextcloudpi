@@ -43,6 +43,10 @@ stages:
       -t "${CI_REGISTRY_IMAGE}/nextcloudpi-${NCP_TAG?}:latest"
       -t "${CI_REGISTRY_IMAGE}/nextcloudpi-${NCP_TAG?}:${CI_PIPELINE_IID}"
       -t "${CI_REGISTRY_IMAGE}/nextcloudpi-${NCP_TAG?}:${VERSION?}"
+    - docker push ${CI_REGISTRY_IMAGE}/debian-ncp-${NCP_TAG?}
+    - docker push ${CI_REGISTRY_IMAGE}/lamp-${NCP_TAG?}
+    - docker push ${CI_REGISTRY_IMAGE}/nextcloud-${NCP_TAG?}
+    - docker push ${CI_REGISTRY_IMAGE}/nextcloudpi-${NCP_TAG?}
 
 docker-build-amd64:
   << : *docker-build-tmpl
