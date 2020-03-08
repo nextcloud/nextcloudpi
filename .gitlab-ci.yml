@@ -65,7 +65,7 @@ stages:
     - pip install selenium
     - NCP_IP="$(getent hosts nextcloudpi | cut -f1 -d ' ')"
     - ./tests/activation_tests.py "$NCP_IP" "http://selenium:4444/wd/hub"
-    - ./tests/nextcloudpi_tests.py "$NCP_IP" "http://selenium:4444/wd/hub"
+    - ./tests/nextcloud_tests.py "$NCP_IP" "http://selenium:4444/wd/hub"
 
 .system-test-docker-tmpl: &system-test-docker-tmpl
   stage: pre-build
