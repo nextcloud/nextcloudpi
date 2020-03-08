@@ -5,7 +5,7 @@
 # GPL licensed (see end of file) * Use at your own risk!
 #
 
-set -e
+set -xe
 
 version=$(git describe --tags --always)
 version=${version%-*-*}
