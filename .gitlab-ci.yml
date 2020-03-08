@@ -58,6 +58,7 @@ stages:
   services:
     - docker:dind
     - "${CI_REGISTRY_IMAGE}/nextcloudpi-${ARCHITECTURE?}:${CI_PIPELINE_IID}"
+  image: ${CI_REGISTRY_IMAGE}/docker-builder:latest
   script:
     - "docker ps -q | xargs -n 1 docker inspect --format '{{ .Name }} {{range .NetworkSettings.Networks}} {{.IPAddress}}{{end}}' | sed 's#^/##'"
 
