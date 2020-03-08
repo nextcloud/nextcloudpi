@@ -94,54 +94,51 @@ def test_activation(IP, selenium_host):
 
     # activation page
     test = Test()
-    driver = get_driver(selenium_host)
-    driver.implicitly_wait(5)
-    test.new("activation opens")
-    driver.get("https://" + IP)
-    test.check("NextCloudPi Activation" in driver.title)
-    try:
-        ncp_pass = driver.find_element_by_id("ncp-pwd").get_attribute("value")
-        nc_pass = driver.find_element_by_id("nc-pwd").get_attribute("value")
+    with get_driver(selenium_host) as driver:
+        driver.implicitly_wait(5)
+        test.new("activation opens")
+        driver.get("https://" + IP)
+        test.check("NextCloudPi Activation" in driver.title)
+        try:
+            ncp_pass = driver.find_element_by_id("ncp-pwd").get_attribute("value")
+            nc_pass = driver.find_element_by_id("nc-pwd").get_attribute("value")
 
-        config = configparser.ConfigParser()
-        if not config.has_section('credentials'):
-            config['credentials'] = {}
-        config['credentials']['ncp_user' ] = 'ncp'
-        config['credentials']['ncp_pass' ] = ncp_pass
-        config['credentials']['nc_user'  ] = 'ncp'
-        config['credentials']['nc_pass'  ] = nc_pass
-        with open(test_cfg, 'w') as configfile:
-            config.write(configfile)
+            config = configparser.ConfigParser()
+            if not config.has_section('credentials'):
+                config['credentials'] = {}
+            config['credentials']['ncp_user' ] = 'ncp'
+            config['credentials']['ncp_pass' ] = ncp_pass
+            config['credentials']['nc_user'  ] = 'ncp'
+            config['credentials']['nc_pass'  ] = nc_pass
+            with open(test_cfg, 'w') as configfile:
+                config.write(configfile)
 
-        driver.find_element_by_id("activate-ncp").click()
-        test.report("activation click", True)
-    except:
-        ncp_pass = ""
-        test.report("activation click", False)
+            driver.find_element_by_id("activate-ncp").click()
+            test.report("activation click", True)
+        except:
+            ncp_pass = ""
+            test.report("activation click", False)
 
-    test.new("activation ends")
-    try:
-        wait = WebDriverWait(driver, 60)
-        wait.until(EC.text_to_be_present_in_element((By.ID,'error-box'), "ACTIVATION SUCCESSFUL"))
-        test.check(True)
-    except TimeoutException:
-        test.check(False)
-    except:
-        test.check(True)
-    try: driver.close()
-    except: pass
+        test.new("activation ends")
+        try:
+            wait = WebDriverWait(driver, 60)
+            wait.until(EC.text_to_be_present_in_element((By.ID,'error-box'), "ACTIVATION SUCCESSFUL"))
+            test.check(True)
+        except TimeoutException:
+            test.check(False)
+        except:
+            test.check(True)
 
     # ncp-web
     test.new("ncp-web")
-    driver = get_driver(selenium_host)
-    try:
-        driver.get("https://ncp:" + urllib.parse.quote_plus(ncp_pass) + "@" + IP + ":4443")
-    except UnexpectedAlertPresentException:
-        pass
-    test.check("NextCloudPi Panel" in driver.title)
-    test.report("first run wizard", is_element_present(driver, By.ID, "first-run-wizard"))
+    with get_driver(selenium_host) as driver:
+        try:
+            driver.get("https://ncp:" + urllib.parse.quote_plus(ncp_pass) + "@" + IP + ":4443")
+        except UnexpectedAlertPresentException:
+            pass
+        test.check("NextCloudPi Panel" in driver.title)
+        test.report("first run wizard", is_element_present(driver, By.ID, "first-run-wizard"))
 
-    driver.close()
 
 if __name__ == "__main__":
     signal.signal(signal.SIGINT, signal_handler)
