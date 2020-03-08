@@ -25,6 +25,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.common.exceptions import NoSuchElementException
 
 suite_name = "nextcloud tests"
 test_cfg = 'test_cfg.txt'
@@ -37,6 +38,7 @@ class tc:
     green='\033[32m'
     red='\033[31m'
     normal='\033[0m'
+    blue = '\033[1;34m'
 
 class Test:
     title  = "test"
@@ -83,33 +85,56 @@ def test_nextcloud(IP, selenium_host):
         driver = webdriver.Firefox(service_log_path='/dev/null')
     else:
         driver = webdriver.Remote(command_executor=selenium_host, desired_capabilities=DesiredCapabilities.FIREFOX)
-    driver.implicitly_wait(60)
-    test.new("nextcloud page")
-    try:
-        driver.get("https://" + IP + "/index.php/settings/admin/overview")
-    except:
-        test.check(False)
-        print(tc.red + "error:" + tc.normal + " unable to reach " + tc.yellow + IP + tc.normal)
-        sys.exit(1)
-    test.check("NextCloudPi" in driver.title)
-    trusted_domain_str = "You are accessing the server from an untrusted domain"
-    test.report("trusted domain", trusted_domain_str not in driver.page_source)
-    try:
-        driver.find_element_by_id("user").send_keys(nc_user)
-        driver.find_element_by_id("password").send_keys(nc_pass)
-        driver.find_element_by_id("submit").click()
-    except: pass
-    test.report("password", "Wrong password" not in driver.page_source)
+    with driver:
+        driver.implicitly_wait(60)
+        test.new("nextcloud page")
+        try:
+            driver.get("https://" + IP + "/index.php/settings/admin/overview")
+        except:
+            test.check(False)
+            print(tc.red + "error:" + tc.normal + " unable to reach " + tc.yellow + IP + tc.normal)
+            sys.exit(1)
+        test.check("NextCloudPi" in driver.title)
+        trusted_domain_str = "You are accessing the server from an untrusted domain"
+        test.report("trusted domain", trusted_domain_str not in driver.page_source)
+        try:
+            driver.find_element_by_id("user").send_keys(nc_user)
+            driver.find_element_by_id("password").send_keys(nc_pass)
+            driver.find_element_by_id("submit").click()
+        except: pass
+        test.report("password", "Wrong password" not in driver.page_source)
 
-    test.new("settings config")
-    try:
-        wait = WebDriverWait(driver, 30)
-        wait.until(EC.visibility_of(driver.find_element_by_class_name("icon-checkmark-white")))
-        test.check(True)
-    except:
-        test.check(False)
+        test.new("settings config")
+        try:
+            wait = WebDriverWait(driver, 30)
+            wait.until(EC.visibility_of(driver.find_element_by_class_name("icon-checkmark-white")))
+            test.check(True)
+        except:
+            err_div = driver.find_element_by_id("security-warning-state-failure")
+            warn_div = driver.find_element_by_id("security-warning-state-warning")
+            if "hidden" not in err_div.get_attribute("class"):
+                print(tc.red + "error: " + tc.normal + err_div.text)
+            elif "hidden" not in warn_div.get_attribute("class"):
+                print(tc.yellow + "warn: " + tc.normal + warn_div.text)
+            else:
+                msg = "Unknown error"
+                print(tc.red + "error: " + tc.normal + "Unknown error")
 
-    driver.close()
+            errors = driver.find_elements_by_css_selector("#postsetupchecks>.errors:not(.hidden)>li")
+            warnings = driver.find_elements_by_css_selector("#postsetupchecks>.warnings:not(.hidden)>li")
+            notes = driver.find_elements_by_css_selector("#postsetupchecks>.info:not(.hidden)>li")
+            if len(errors) > 0:
+                line_start = "- " + tc.red + "err:  " + tc.normal
+                print(line_start + ("\n" + line_start).join([err.text for err in errors]))
+            if len(warnings) > 0:
+                line_start = "- " + tc.yellow + "warn: " + tc.normal
+                print(line_start + ("\n" + line_start).join([warning.text for warning in warnings]))
+            if len(notes) > 0:
+                line_start = "- " + tc.blue + "info: " + tc.normal
+                print(line_start + ("\n" + line_start).join([note.text for note in notes]))
+
+            test.check(False)
+
 
 if __name__ == "__main__":
     signal.signal(signal.SIGINT, signal_handler)
