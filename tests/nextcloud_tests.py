@@ -110,14 +110,16 @@ def test_nextcloud(IP, selenium_host):
             wait.until(EC.visibility_of(driver.find_element_by_class_name("icon-checkmark-white")))
             test.check(True)
         except:
+            driver.implicitly_wait(0)
+            is_warning = False
             err_div = driver.find_element_by_id("security-warning-state-failure")
             warn_div = driver.find_element_by_id("security-warning-state-warning")
             if "hidden" not in err_div.get_attribute("class"):
                 print(tc.red + "error: " + tc.normal + err_div.text)
             elif "hidden" not in warn_div.get_attribute("class"):
+                is_warning = True
                 print(tc.yellow + "warn: " + tc.normal + warn_div.text)
             else:
-                msg = "Unknown error"
                 print(tc.red + "error: " + tc.normal + "Unknown error")
 
             errors = driver.find_elements_by_css_selector("#postsetupchecks>.errors:not(.hidden)>li")
@@ -133,7 +135,17 @@ def test_nextcloud(IP, selenium_host):
                 line_start = "- " + tc.blue + "info: " + tc.normal
                 print(line_start + ("\n" + line_start).join([note.text for note in notes]))
 
-            test.check(False)
+            def shoud_ignore(line):
+                if "This instance is missing some recommended PHP modules." in line.text:
+                    child_list = line.find_elements_by_tag_name("li")
+                    return len(child_list) == 1 and "imagick" in child_list[0].text
+                return False
+
+            remaining_errors = [e for e in errors if not shoud_ignore(e)]
+            remaining_warnings = [w for w in warnings if not shoud_ignore(w)]
+            remaining_notes = [n for n in notes if not shoud_ignore(n)]
+
+            test.check(is_warning and len(remaining_errors) == len(remaining_warnings) == len(remaining_notes) == 0)
 
 
 if __name__ == "__main__":
