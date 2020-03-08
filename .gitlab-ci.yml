@@ -1,40 +1,45 @@
 stages:
+  - pre-build
   - build
 
 
 .docker-build-tmpl: &docker-build-tmpl
   stage: build
-  image: docker:latest
+  image: ${CI_REGISTRY_IMAGE}/docker-builder:latest
   services:
     - docker:dind
   script:
-    - apk add git jq bash
     - git fetch --tags
-    - docker login -u "${CI_REGISTRY_USER?}" -p "${CI_REGISTRY_PASSWORD?}" "${CI_REGISTRY?}"
-    - ./build-docker.sh "${ARCHITECTURE}" "${CI_REGISTRY_IMAGE}" --push
-#    - VERSION="$(git describe --tags --always)"
-#    - VERSION="${VERSION%-*-*}"
-#    - RELEASE=$(jq -r .release < etc/ncp.cfg)
 #    - docker login -u "${CI_REGISTRY_USER?}" -p "${CI_REGISTRY_PASSWORD?}" "${CI_REGISTRY?}"
-#    - >
-#      DOCKER_BUILDKIT=1 docker build --progress=plain . -f docker/debian-ncp/Dockerfile
-#      -t ${CI_REGISTRY?}/debian-ncp-${NCP_TAG?}:latest --pull --build-arg release=${RELEASE?} --build-arg arch=${ARCH?}
-#      --build-arg arch_qemu=${ARCH_QEMU?}
-#    - >
-#      DOCKER_BUILDKIT=1 docker build --progress=plain . -f docker/lamp/Dockerfile -t ${CI_REGISTRY?}/lamp-${NCP_TAG?}:latest
-#      --build-arg release=${RELEASE?} --build-arg arch=${NCP_TAG?}
-#    - >
-#      DOCKER_BUILDKIT=1 docker build --progress=plain . -f docker/nextcloud/Dockerfile
-#      -t ${CI_REGISTRY?}/nextcloud-${NCP_TAG?}:latest         --build-arg release=${RELEASE?} --build-arg arch=${NCP_TAG?}
-#    - >
-#      DOCKER_BUILDKIT=1 docker build --progress=plain . -f docker/nextcloudpi/Dockerfile
-#      -t ${CI_REGISTRY?}/nextcloudpi-${NCP_TAG?}:latest       --build-arg release=${RELEASE?} --build-arg arch=${NCP_TAG?}
-#      --build-arg ncp_ver=${VERSION?}
-#    # additional tags:
-#    - docker tag ${CI_REGISTRY?}/debian-ncp-${NCP_TAG?}:latest ${CI_REGISTRY?}/debian-ncp-${NCP_TAG?}:"${VERSION?}"
-#    - docker tag ${CI_REGISTRY?}/lamp-${NCP_TAG?}:latest ${CI_REGISTRY?}/lamp-${NCP_TAG?}:"${VERSION?}"
-#    - docker tag ${CI_REGISTRY?}/nextcloud-${NCP_TAG?}:latest ${CI_REGISTRY?}/nextcloud-${NCP_TAG?}:"${VERSION?}"
-#    - docker tag ${CI_REGISTRY?}/nextcloudpi-${NCP_TAG?}:latest ${CI_REGISTRY?}/nextcloudpi-${NCP_TAG?}:"${VERSION?}"
+#    - ./build-docker.sh "${ARCHITECTURE}" "${CI_REGISTRY_IMAGE}" --push
+    - VERSION="$(git describe --tags --always)"
+    - VERSION="${VERSION%-*-*}"
+    - RELEASE=$(jq -r .release < etc/ncp.cfg)
+    - docker login -u "${CI_REGISTRY_USER?}" -p "${CI_REGISTRY_PASSWORD?}" "${CI_REGISTRY?}"
+    - >
+      DOCKER_BUILDKIT=1 docker build --progress=plain . -f docker/debian-ncp/Dockerfile --pull
+      --build-arg release=${RELEASE?} --build-arg arch=${ARCH?} --build-arg arch_qemu=${ARCH_QEMU?}
+      -t "${CI_REGISTRY_IMAGE?}/debian-ncp-${NCP_TAG?}:latest"
+      -t "${CI_REGISTRY_IMAGE?}/debian-ncp-${NCP_TAG?}:${CI_PIPELINE_IID}"
+      -t "${CI_REGISTRY_IMAGE?}/debian-ncp-${NCP_TAG?}:${VERSION?}"
+    - >
+      DOCKER_BUILDKIT=1 docker build --progress=plain . -f docker/lamp/Dockerfile
+      --build-arg release=${RELEASE?} --build-arg arch=${NCP_TAG?}
+      -t "${CI_REGISTRY_IMAGE?}/lamp-${NCP_TAG?}:latest"
+      -t "${CI_REGISTRY_IMAGE?}/lamp-${NCP_TAG?}:${CI_PIPELINE_IID}"
+      -t "${CI_REGISTRY_IMAGE?}/lamp-${NCP_TAG?}:${VERSION?}"
+    - >
+      DOCKER_BUILDKIT=1 docker build --progress=plain . -f docker/nextcloud/Dockerfile
+      --build-arg release=${RELEASE?} --build-arg arch=${NCP_TAG?}
+      -t "${CI_REGISTRY_IMAGE?}/nextcloud-${NCP_TAG?}:latest"
+      -t "${CI_REGISTRY_IMAGE?}/nextcloud-${NCP_TAG}:${CI_PIPELINE_IID}"
+      -t "${CI_REGISTRY_IMAGE}/nextcloud-${NCP_TAG?}:${VERSION?}"
+    - >
+      DOCKER_BUILDKIT=1 docker build --progress=plain . -f docker/nextcloudpi/Dockerfile
+      --build-arg release=${RELEASE?} --build-arg arch=${NCP_TAG?} --build-arg ncp_ver=${VERSION?}
+      -t "${CI_REGISTRY_IMAGE}/nextcloudpi-${NCP_TAG?}:latest"
+      -t "${CI_REGISTRY_IMAGE}/nextcloudpi-${NCP_TAG?}:${CI_PIPELINE_IID}"
+      -t "${CI_REGISTRY_IMAGE}/nextcloudpi-${NCP_TAG?}:${VERSION?}"
 
 docker-build-amd64:
   << : *docker-build-tmpl
@@ -50,3 +55,15 @@ docker-build-arm64:
   <<: *docker-build-tmpl
   variables:
     ARCHITECTURE: "arm64"
+
+docker-build-docker-builder:
+  stage: pre-build
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - |
+      if [[ "$(docker inspect -f '{{ .DockerVersion }}' ${CI_REGISTRY_IMAGE}/docker-builder:latest)" != "$(docker inspect -f '{{ .DockerVersion }}' docker:latest)" ]]
+      then
+        docker build --progress=plain . -f ci/images/docker-builder/Dockerfile
+      fi
