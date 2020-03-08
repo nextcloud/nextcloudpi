@@ -68,5 +68,6 @@ docker-build-docker-builder:
       if [[ "$(docker inspect -f '{{ .DockerVersion }}' ${CI_REGISTRY_IMAGE}/docker-builder:latest)" != "$(docker inspect -f '{{ .DockerVersion }}' docker:latest)" ]]
       then
         docker build --progress=plain . -f ci/images/docker-builder/Dockerfile -t "${CI_REGISTRY_IMAGE}/docker-builder:latest"
+        docker login -u "${CI_REGISTRY_USER?}" -p "${CI_REGISTRY_PASSWORD?}" "${CI_REGISTRY?}"
         docker push "${CI_REGISTRY_IMAGE}/docker-builder:latest"
       fi
