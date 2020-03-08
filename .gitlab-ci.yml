@@ -11,8 +11,6 @@ stages:
     - docker:dind
   script:
     - git fetch --tags
-#    - docker login -u "${CI_REGISTRY_USER?}" -p "${CI_REGISTRY_PASSWORD?}" "${CI_REGISTRY?}"
-#    - ./build-docker.sh "${ARCHITECTURE}" "${CI_REGISTRY_IMAGE}" --push
     - VERSION="$(git describe --tags --always)"
     - VERSION="${VERSION%-*-*}"
     - RELEASE=$(jq -r .release < etc/ncp.cfg)
@@ -55,7 +53,7 @@ stages:
   services:
     - name: selenium/standalone-firefox
       alias: selenium
-    - name: "${CI_REGISTRY_IMAGE}/nextcloudpi-${ARCHITECTURE}:latest"
+    - name: "${CI_REGISTRY_IMAGE}/nextcloudpi-${ARCHITECTURE}:${CI_PIPELINE_IID}"
       alias: nextcloudpi
   image: python:3.8-buster
   script:
@@ -66,7 +64,7 @@ stages:
 
 .system-test-docker-tmpl: &system-test-docker-tmpl
   stage: pre-build
-  image: "${CI_REGISTRY_IMAGE}/nextcloudpi-${ARCHITECTURE}:latest"
+  image: "${CI_REGISTRY_IMAGE}/nextcloudpi-${ARCHITECTURE}:${CI_PIPELINE_IID}"
   script:
     - ./tests/sysyem_tests.py
 
