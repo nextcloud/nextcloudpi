@@ -15,6 +15,9 @@ stages:
     - VERSION="$(git describe --tags --always)"
     - VERSION="${VERSION%-*-*}"
     - RELEASE=$(jq -r .release < etc/ncp.cfg)
+    - '[[ "${ARCHITECTURE?}" == "x86"   ]] && { ARCH=amd64; QEMU_ARCH=x86_64; NCP_TAG=x86 }'
+    - '[[ "${ARCHITECTURE?}" == "armhf"   ]] && { ARCH=arm32v7; QEMU_ARCH=arm; NCP_TAG=armhf }'
+    - '[[ "${ARCHITECTURE?}" == "arm64"   ]] && { ARCH=arm64v8; QEMU_ARCH=aarch64; NCP_TAG=arm64 }'
     - docker login -u "${CI_REGISTRY_USER?}" -p "${CI_REGISTRY_PASSWORD?}" "${CI_REGISTRY?}"
     - >
       DOCKER_BUILDKIT=1 docker build --progress=plain . -f docker/debian-ncp/Dockerfile --pull
