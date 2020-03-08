@@ -63,7 +63,7 @@ stages:
   image: python:3.8-buster
   script:
     - pip install selenium
-    - apt install -y dnsutils
+    - apt update && apt install -y dnsutils
     - host nextcloudpi
     - host ${CI_REGISTRY_IMAGE//\//-}-nextcloudpi-${ARCHITECTURE//\//-}
     - ./tests/activation_tests.py "nextcloudpi" "http://selenium:4444/wd/hub"
