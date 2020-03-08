@@ -62,6 +62,7 @@ stages:
       alias: nextcloudpi
   image: python:3.8
   script:
+    - pip install selenium
     - ./tests/activation_tests.py "nextcloudpi" "selenium"
     - ./tests/nextcloudpi_tests.py "nextcloudpi" "selenium"
 
@@ -89,7 +90,7 @@ integration-tests-docker-arm64:
 system-tests-docker-amd64:
   << : *system-test-docker-tmpl
   variables:
-    ARCHITECTURE: "amd64"
+    ARCHITECTURE: "x86"
 
 docker-build-amd64:
   << : *docker-build-tmpl
