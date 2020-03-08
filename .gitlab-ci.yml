@@ -12,6 +12,7 @@ stages:
   services:
     - docker:dind
   script:
+    - apk add git jq
     - git fetch --tags
     - VERSION="$(git describe --tags --always)"
     - VERSION="${VERSION%-*-*}"
