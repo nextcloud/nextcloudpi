@@ -53,19 +53,43 @@ stages:
     - docker push ${CI_REGISTRY_IMAGE}/nextcloud-${NCP_TAG?}
     - docker push ${CI_REGISTRY_IMAGE}/nextcloudpi-${NCP_TAG?}
 
-.docker-test-tmpl: &docker-test-tmpl
+.integration-tests-docker-tmpl: &integration-tests-docker-tmpl
   stage: pre-build
   services:
-    - docker:dind
-    - "${CI_REGISTRY_IMAGE}/nextcloudpi-${ARCHITECTURE?}:${CI_PIPELINE_IID}"
-  image: ${CI_REGISTRY_IMAGE}/docker-builder:latest
+    - name: selenium/standalone-firefox
+      alias: selenium
+    - name: "${CI_REGISTRY_IMAGE}/nextcloudpi-${ARCHITECTURE}:${CI_PIPELINE_IID}"
+      alias: nextcloudpi
+  image: python:3.8
   script:
-    - "docker ps -q | xargs -n 1 docker inspect --format '{{ .Name }} {{range .NetworkSettings.Networks}} {{.IPAddress}}{{end}}' | sed 's#^/##'"
+    - ./tests/activation_tests.py "nextcloudpi" "selenium"
+    - ./tests/nextcloudpi_tests.py "nextcloudpi" "selenium"
 
-docker-test-amd64:
-  << : *docker-test-tmpl
+.system-test-docker-tmpl: &system-test-docker-tmpl
+  stage: pre-build
+  image: "${CI_REGISTRY_IMAGE}/nextcloudpi-${ARCHITECTURE}:${CI_PIPELINE_IID}"
+  script:
+    - ./tests/sysyem_tests.py
+
+integration-tests-docker-amd64:
+  << : *integration-tests-docker-tmpl
   variables:
     ARCHITECTURE: "x86"
+
+integration-tests-docker-armhf:
+  << : *integration-tests-docker-tmpl
+  variables:
+    ARCHITECTURE: "armhf"
+
+integration-tests-docker-arm64:
+  << : *integration-tests-docker-tmpl
+  variables:
+    ARCHITECTURE: "arm64"
+
+system-tests-docker-amd64:
+  << : *system-test-docker-tmpl
+  variables:
+    ARCHITECTURE: "amd64"
 
 docker-build-amd64:
   << : *docker-build-tmpl
