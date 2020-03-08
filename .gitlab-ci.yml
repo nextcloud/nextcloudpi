@@ -63,8 +63,8 @@ stages:
   image: python:3.8
   script:
     - pip install selenium
-    - ./tests/activation_tests.py "nextcloudpi" "selenium"
-    - ./tests/nextcloudpi_tests.py "nextcloudpi" "selenium"
+    - ./tests/activation_tests.py "nextcloudpi" "http://selenium:4444/wd/hub"
+    - ./tests/nextcloudpi_tests.py "nextcloudpi" "http://selenium:4444/wd/hub"
 
 .system-test-docker-tmpl: &system-test-docker-tmpl
   stage: pre-build
