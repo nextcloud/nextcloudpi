@@ -10,47 +10,42 @@ stages:
   script:
     - apk add git jq
     - git fetch --tags
-    - VERSION="$(git describe --tags --always)"
-    - VERSION="${VERSION%-*-*}"
-    - RELEASE=$(jq -r .release < etc/ncp.cfg)
-    - docker login -u "${CI_REGISTRY_USER?}" -p "${CI_REGISTRY_PASSWORD?}" "${CI_REGISTRY?}"
-    - >
-      DOCKER_BUILDKIT=1 docker build --progress=plain . -f docker/debian-ncp/Dockerfile
-      -t ${CI_REGISTRY?}/debian-ncp-${NCP_TAG?}:latest --pull --build-arg release=${RELEASE?} --build-arg arch=${ARCH?}
-      --build-arg arch_qemu=${ARCH_QEMU?}
-    - >
-      DOCKER_BUILDKIT=1 docker build --progress=plain . -f docker/lamp/Dockerfile -t ${CI_REGISTRY?}/lamp-${NCP_TAG?}:latest
-      --build-arg release=${RELEASE?} --build-arg arch=${NCP_TAG?}
-    - >
-      DOCKER_BUILDKIT=1 docker build --progress=plain . -f docker/nextcloud/Dockerfile
-      -t ${CI_REGISTRY?}/nextcloud-${NCP_TAG?}:latest         --build-arg release=${RELEASE?} --build-arg arch=${NCP_TAG?}
-    - >
-      DOCKER_BUILDKIT=1 docker build --progress=plain . -f docker/nextcloudpi/Dockerfile
-      -t ${CI_REGISTRY?}/nextcloudpi-${NCP_TAG?}:latest       --build-arg release=${RELEASE?} --build-arg arch=${NCP_TAG?}
-      --build-arg ncp_ver=${VERSION?}
-    # additional tags:
-    - docker tag ${CI_REGISTRY?}/debian-ncp-${NCP_TAG?}:latest ${CI_REGISTRY?}/debian-ncp-${NCP_TAG?}:"${VERSION?}"
-    - docker tag ${CI_REGISTRY?}/lamp-${NCP_TAG?}:latest ${CI_REGISTRY?}/lamp-${NCP_TAG?}:"${VERSION?}"
-    - docker tag ${CI_REGISTRY?}/nextcloud-${NCP_TAG?}:latest ${CI_REGISTRY?}/nextcloud-${NCP_TAG?}:"${VERSION?}"
-    - docker tag ${CI_REGISTRY?}/nextcloudpi-${NCP_TAG?}:latest ${CI_REGISTRY?}/nextcloudpi-${NCP_TAG?}:"${VERSION?}"
+    - ./build-docker.sh "${ARCHITECTURE}" "${CI_REGISTRY}" --push
+#    - VERSION="$(git describe --tags --always)"
+#    - VERSION="${VERSION%-*-*}"
+#    - RELEASE=$(jq -r .release < etc/ncp.cfg)
+#    - docker login -u "${CI_REGISTRY_USER?}" -p "${CI_REGISTRY_PASSWORD?}" "${CI_REGISTRY?}"
+#    - >
+#      DOCKER_BUILDKIT=1 docker build --progress=plain . -f docker/debian-ncp/Dockerfile
+#      -t ${CI_REGISTRY?}/debian-ncp-${NCP_TAG?}:latest --pull --build-arg release=${RELEASE?} --build-arg arch=${ARCH?}
+#      --build-arg arch_qemu=${ARCH_QEMU?}
+#    - >
+#      DOCKER_BUILDKIT=1 docker build --progress=plain . -f docker/lamp/Dockerfile -t ${CI_REGISTRY?}/lamp-${NCP_TAG?}:latest
+#      --build-arg release=${RELEASE?} --build-arg arch=${NCP_TAG?}
+#    - >
+#      DOCKER_BUILDKIT=1 docker build --progress=plain . -f docker/nextcloud/Dockerfile
+#      -t ${CI_REGISTRY?}/nextcloud-${NCP_TAG?}:latest         --build-arg release=${RELEASE?} --build-arg arch=${NCP_TAG?}
+#    - >
+#      DOCKER_BUILDKIT=1 docker build --progress=plain . -f docker/nextcloudpi/Dockerfile
+#      -t ${CI_REGISTRY?}/nextcloudpi-${NCP_TAG?}:latest       --build-arg release=${RELEASE?} --build-arg arch=${NCP_TAG?}
+#      --build-arg ncp_ver=${VERSION?}
+#    # additional tags:
+#    - docker tag ${CI_REGISTRY?}/debian-ncp-${NCP_TAG?}:latest ${CI_REGISTRY?}/debian-ncp-${NCP_TAG?}:"${VERSION?}"
+#    - docker tag ${CI_REGISTRY?}/lamp-${NCP_TAG?}:latest ${CI_REGISTRY?}/lamp-${NCP_TAG?}:"${VERSION?}"
+#    - docker tag ${CI_REGISTRY?}/nextcloud-${NCP_TAG?}:latest ${CI_REGISTRY?}/nextcloud-${NCP_TAG?}:"${VERSION?}"
+#    - docker tag ${CI_REGISTRY?}/nextcloudpi-${NCP_TAG?}:latest ${CI_REGISTRY?}/nextcloudpi-${NCP_TAG?}:"${VERSION?}"
 
 docker-build-amd64:
   << : *docker-build-tmpl
   variables:
-    ARCH: "amd64"
-    ARCH_QEMU: "x86_64"
-    NCP_TAG: "x86"
+    ARCHITECTURE: "x86"
 
 docker-build-armhf:
   <<: *docker-build-tmpl
   variables:
-    ARCH: "arm32v7"
-    ARCH_QEMU: "arm"
-    NCP_TAG: "armhf"
+    ARCHITECTURE: "armhf"
 
 docker-build-arm64:
   <<: *docker-build-tmpl
   variables:
-    ARCH: "arm64v8"
-    ARCH_QEMU: "aarch64"
-    NCP_TAG: "arm64"
+    ARCHITECTURE: "arm64"
