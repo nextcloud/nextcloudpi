@@ -58,7 +58,7 @@ stages:
   services:
     - name: selenium/standalone-firefox
       alias: selenium
-    - name: "${CI_REGISTRY_IMAGE}/nextcloudpi-${ARCHITECTURE}:${CI_PIPELINE_IID}"
+    - name: "${CI_REGISTRY_IMAGE}/nextcloudpi-${ARCHITECTURE}:latest"
       alias: nextcloudpi
   image: python:3.8
   script:
@@ -67,7 +67,7 @@ stages:
 
 .system-test-docker-tmpl: &system-test-docker-tmpl
   stage: pre-build
-  image: "${CI_REGISTRY_IMAGE}/nextcloudpi-${ARCHITECTURE}:${CI_PIPELINE_IID}"
+  image: "${CI_REGISTRY_IMAGE}/nextcloudpi-${ARCHITECTURE}:latest"
   script:
     - ./tests/sysyem_tests.py
 
