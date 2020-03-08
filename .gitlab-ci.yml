@@ -65,7 +65,8 @@ stages:
     - pip install selenium
     - apt update && apt install -y dnsutils
     - host nextcloudpi || echo "host 'nextcloudpi' not found!"
-    - host ${CI_REGISTRY_IMAGE//\//-}-nextcloudpi-${ARCHITECTURE//\//-}
+    - host ${CI_REGISTRY_IMAGE//\//-}-nextcloudpi-${ARCHITECTURE//\//-} || echo "host '${CI_REGISTRY_IMAGE//\//-}-nextcloudpi-${ARCHITECTURE//\//-}' not found!"
+    - host ${CI_REGISTRY_IMAGE//\//__}-nextcloudpi-${ARCHITECTURE//\//__}
     - ./tests/activation_tests.py "nextcloudpi" "http://selenium:4444/wd/hub"
     - ./tests/nextcloudpi_tests.py "nextcloudpi" "http://selenium:4444/wd/hub"
 
@@ -90,10 +91,10 @@ integration-tests-docker-arm64:
   variables:
     ARCHITECTURE: "arm64"
 
-system-tests-docker-amd64:
-  << : *system-test-docker-tmpl
-  variables:
-    ARCHITECTURE: "x86"
+#system-tests-docker-amd64:
+#  << : *system-test-docker-tmpl
+#  variables:
+#    ARCHITECTURE: "x86"
 
 docker-build-amd64:
   << : *docker-build-tmpl
