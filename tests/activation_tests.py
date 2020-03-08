@@ -83,15 +83,18 @@ def is_element_present(driver, how, what):
 def signal_handler(sig, frame):
         sys.exit(0)
 
+def get_driver(selenium_host):
+    if selenium_host is None:
+        return webdriver.Firefox(service_log_path='/dev/null')
+    else:
+        return webdriver.Remote(command_executor=selenium_host, desired_capabilities=DesiredCapabilities.FIREFOX)
+
 def test_activation(IP, selenium_host):
     """ Activation process checks"""
 
     # activation page
     test = Test()
-    if selenium_host is None:
-        driver = webdriver.Firefox(service_log_path='/dev/null')
-    else:
-        driver = webdriver.Remote(command_executor=selenium_host, desired_capabilities=DesiredCapabilities.FIREFOX)
+    driver = get_driver(selenium_host)
     driver.implicitly_wait(5)
     test.new("activation opens")
     driver.get("https://" + IP)
@@ -130,7 +133,7 @@ def test_activation(IP, selenium_host):
 
     # ncp-web
     test.new("ncp-web")
-    driver = webdriver.Firefox(service_log_path='/dev/null')
+    driver = get_driver(selenium_host)
     try:
         driver.get("https://ncp:" + urllib.parse.quote_plus(ncp_pass) + "@" + IP + ":4443")
     except UnexpectedAlertPresentException:
