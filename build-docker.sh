@@ -49,10 +49,10 @@ function build_arch()
 function push_arch() {
   local suffix="${1}"
 
-  docker push "${registry}/debian-ncp-${ncp_tag}"
-  docker push "${registry}/lamp-${ncp_tag}"
-  docker push "${registry}/nextcloud-${ncp_tag}"
-  docker push "${registry}/nextcloudpi-${ncp_tag}"
+  docker push "${registry}/debian-ncp-${suffix}"
+  docker push "${registry}/lamp-${suffix}"
+  docker push "${registry}/nextcloud-${suffix}"
+  docker push "${registry}/nextcloudpi-${suffix}"
 }
 
 [[ "$@" =~ "--help" ]] && show_help && exit 0
