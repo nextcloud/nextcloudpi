@@ -20,10 +20,7 @@ stages:
     - '[[ "${ARCHITECTURE?}" == "armhf"   ]] && { ARCH=arm32v7; ARCH_QEMU=arm; NCP_TAG=armhf; }'
     - '[[ "${ARCHITECTURE?}" == "arm64"   ]] && { ARCH=arm64v8; ARCH_QEMU=aarch64; NCP_TAG=arm64; }'
     - docker login -u "${CI_REGISTRY_USER?}" -p "${CI_REGISTRY_PASSWORD?}" "${CI_REGISTRY?}"
-    - docker pull ${CI_REGISTRY_IMAGE}/debian-ncp-${NCP_TAG?}:latest
-    - docker pull ${CI_REGISTRY_IMAGE}/lamp-${NCP_TAG?}:latest
-    - docker pull ${CI_REGISTRY_IMAGE}/nextcloud-${NCP_TAG?}:latest
-    - docker pull ${CI_REGISTRY_IMAGE}/nextcloudpi-${NCP_TAG?}:latest
+    - docker pull ${CI_REGISTRY_IMAGE}/nextcloudpi-${NCP_TAG?}:latest || true
     - >
       DOCKER_BUILDKIT=1 docker build --progress=plain . -f docker/debian-ncp/Dockerfile --pull
       --build-arg release=${RELEASE?} --build-arg arch=${ARCH?} --build-arg arch_qemu=${ARCH_QEMU?}
