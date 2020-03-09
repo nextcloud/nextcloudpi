@@ -31,5 +31,7 @@ jobs:
         mkdir -p ~/.ssh
         ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
         echo "${GITLAB_DEPLOY_KEY}" > ~/.ssh/id_ed25519
+        eval "$(ssh-agent -s)"
+        ssh-add ~/.ssh/id_ed25519
         git remote add gitlab git@gitlab.com:ncp-ci-bot/nextcloudpi-playground.git
         git push gitlab $GITHUB_REF
