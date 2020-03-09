@@ -27,6 +27,7 @@ jobs:
       env:
         GITLAB_DEPLOY_KEY: ${{ secrets.GITLAB_DEPLOY_KEY }}
       run: |
+        mkdir -p ~/.ssh
         echo "${GITLAB_DEPLOY_KEY}" > ~/.ssh/id_ed25519
         git remote add gitlab git@gitlab.com:ncp-ci-bot/nextcloudpi-playground.git
         git push gitlab $GITHUB_REF
