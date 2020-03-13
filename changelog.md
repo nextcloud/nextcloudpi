@@ -1,9 +1,11 @@
 
-[v1.22.3](https://github.com/nextcloud/nextcloudpi/commit/0e81bc1) (2020-03-02) nc-snapshot-auto: read datadir location during execution
+[v1.23.0](https://github.com/nextcloud/nextcloudpi/commit/a670258) (2020-03-13) upgrade to NC18.0.2
+
+[v1.22.3](https://github.com/nextcloud/nextcloudpi/commit/76d5da3) (2020-03-02) nc-snapshot-auto: read datadir location during execution
 
 [v1.22.2 ](https://github.com/nextcloud/nextcloudpi/commit/75b1a06) (2020-03-02) nc-maintenance: add is_active
 
-[v1.22.1](https://github.com/nextcloud/nextcloudpi/commit/49de98b) (2020-03-03) samba: option to apply only to a NC group (#1048)
+[v1.22.1 ](https://github.com/nextcloud/nextcloudpi/commit/49de98b) (2020-03-03) samba: option to apply only to a NC group (#1048)
 
 [v1.22.0 ](https://github.com/nextcloud/nextcloudpi/commit/9304c86) (2020-03-03) Add nc-trusted-proxies (#1094)
 
