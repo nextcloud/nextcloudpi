@@ -35,4 +35,4 @@ jobs:
         eval "$(ssh-agent -s)"
         ssh-add ~/.ssh/id_ed25519
         git remote add gitlab git@gitlab.com:ncp-ci-bot/nextcloudpi-playground.git
-        git push gitlab $GITHUB_REF
+        # git push gitlab $GITHUB_REF
