@@ -29,7 +29,7 @@ jobs:
       run: |
         set -xe
         mkdir -p ~/.ssh
-        ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+        ssh-keyscan -t rsa gitlab.com >> ~/.ssh/known_hosts
         echo "${GITLAB_DEPLOY_KEY}" > ~/.ssh/id_ed25519
         chmod 0600 ~/.ssh/id_ed25519
         eval "$(ssh-agent -s)"
