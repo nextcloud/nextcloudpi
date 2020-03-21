@@ -82,8 +82,8 @@ stages:
   services:
     - docker:dind
   script:
-    - [[ "${ARCHITECTURE?}" == "armhf" ]] && QEMU_ARCH="arm"     || true
-    - [[ "${ARCHITECTURE?}" == "arm64" ]] && QEMU_ARCH="aarch64" || true
+    - '[[ "${ARCHITECTURE?}" == "armhf" ]] && QEMU_ARCH="arm"     || true'
+    - '[[ "${ARCHITECTURE?}" == "arm64" ]] && QEMU_ARCH="aarch64" || true'
     - |
       docker build --progress=plain . -f - -t "${CI_REGISTRY_IMAGE}/ncp-testing-${ARCHITECTURE?}:${CI_PIPELINE_IID}" <<-EOF
         FROM ${CI_REGISTRY_IMAGE}/nextcloudpi-${ARCHITECTURE?}:${CI_PIPELINE_IID}";
