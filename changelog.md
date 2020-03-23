@@ -1,7 +1,9 @@
 
-[v1.23.1](https://github.com/nextcloud/nextcloudpi/commit/317c2aa) (2020-03-15) ncp-web: check for possibly missing index
+[v1.23.2](https://github.com/nextcloud/nextcloudpi/commit/0d9680d) (2020-03-22) lamp: disable old TLS versions
 
-[v1.23.0](https://github.com/nextcloud/nextcloudpi/commit/d108fad) (2020-03-13) upgrade to NC18.0.2
+[v1.23.1](https://github.com/nextcloud/nextcloudpi/commit/84e6b4e) (2020-03-15) ncp-web: check for possibly missing index
+
+[v1.23.0 ](https://github.com/nextcloud/nextcloudpi/commit/d108fad) (2020-03-13) upgrade to NC18.0.2
 
 [v1.22.3 ](https://github.com/nextcloud/nextcloudpi/commit/c09dfd9) (2020-03-02) nc-snapshot-auto: read datadir location during execution
 
@@ -11,7 +13,7 @@
 
 [v1.22.0 ](https://github.com/nextcloud/nextcloudpi/commit/9304c86) (2020-03-03) Add nc-trusted-proxies (#1094)
 
-[v1.21.0](https://github.com/nextcloud/nextcloudpi/commit/4a51c1f) (2020-02-28) upgrade to NC18.0.1
+[v1.21.0 ](https://github.com/nextcloud/nextcloudpi/commit/4a51c1f) (2020-02-28) upgrade to NC18.0.1
 
 [v1.20.11](https://github.com/nextcloud/nextcloudpi/commit/f066b03) (2020-02-27) redis: make sure we have the right permissions for conf file
 
