@@ -1,7 +1,9 @@
 
-[v1.23.2](https://github.com/nextcloud/nextcloudpi/commit/0d9680d) (2020-03-22) lamp: disable old TLS versions
+[v1.24.0](https://github.com/nextcloud/nextcloudpi/commit/b7afa52) (2020-03-24) upgrade to NC18.0.3
 
-[v1.23.1](https://github.com/nextcloud/nextcloudpi/commit/84e6b4e) (2020-03-15) ncp-web: check for possibly missing index
+[v1.23.2](https://github.com/nextcloud/nextcloudpi/commit/0a97f77) (2020-03-22) lamp: disable old TLS versions
+
+[v1.23.1 ](https://github.com/nextcloud/nextcloudpi/commit/84e6b4e) (2020-03-15) ncp-web: check for possibly missing index
 
 [v1.23.0 ](https://github.com/nextcloud/nextcloudpi/commit/d108fad) (2020-03-13) upgrade to NC18.0.2
 
