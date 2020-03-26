@@ -331,7 +331,7 @@ function upload_ftp()
   echo -e "\n\e[1m[ Upload FTP ]\e[0m"
   echo "* $IMGNAME..."
   [[ -f torrent/"$IMGNAME"/"$IMGNAME".tar.bz2 ]] || { echo "No image file found, abort"; return 1; }
-  [[ "$FTPPASS" == "" ]] && { echo "No FTPPASS variable found, abort"; return 2; }
+  [[ "$FTPPASS" == "" ]] && { echo "No FTPPASS variable found, skip upload"; return 0; }
 
   cd torrent
 

@@ -150,7 +150,7 @@ function run_app_unsafe()
 
   echo "" >> $log
 
-  clear_password_fields "$cfg_file"
+  [[ -f "$cfg_file" ]] && clear_password_fields "$cfg_file"
   return "$ret"
 }
 
