@@ -176,6 +176,7 @@ EOF
 
   # TODO temporary workaround for https://github.com/nextcloud/server/pull/13358
   ncc -n db:convert-filecache-bigint
+  ncc db:add-missing-indices
 
   echo "NC init done"
 }
