@@ -26,7 +26,7 @@ install()
   $APTINSTALL lbzip2 iputils-ping jq
   $APTINSTALL -t $RELEASE php-smbclient exfat-fuse exfat-utils                  # for external storage
   $APTINSTALL -t $RELEASE php${PHPVER}-exif                                     # for gallery
-  $APTINSTALL -t $RELEASE php${PHPVER}-gmp                                      # for bookmarks
+  $APTINSTALL -t $RELEASE php-gmp php${PHPVER}-gmp                                      # for bookmarks
   #$APTINSTALL -t imagemagick php${PHPVER}-imagick ghostscript   # for gallery
 
 
