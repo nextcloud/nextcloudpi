@@ -358,7 +358,9 @@ rm  md5sum
 put md5sum
 bye
 EOF
+  ret=$?
   cd -
+  return $ret
 }
 
 upload_all()

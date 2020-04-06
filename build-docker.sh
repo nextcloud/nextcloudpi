@@ -34,6 +34,7 @@ function build_arch()
 [[ "$@" =~ "armhf" ]] && build_arch "${release}" arm32v7 arm     armhf
 [[ "$@" =~ "arm64" ]] && build_arch "${release}" arm64v8 aarch64 arm64
 
+exit 0
 
 # License
 #
