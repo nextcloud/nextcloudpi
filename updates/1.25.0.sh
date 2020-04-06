@@ -15,6 +15,9 @@ grep -q '^SSLProtocol all -SSLv2 -SSLv3' "${file}" && {
   bash -c "sleep 10 && service apache2 reload" &>/dev/null &
 }
 
+# fix nc-backup-auto
+is_active_app nc-backup-auto && run_app nc-backup-auto
+
 # docker images only
 [[ -f /.docker-image ]] && {
   :
