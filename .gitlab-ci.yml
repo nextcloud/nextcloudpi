@@ -1,3 +1,5 @@
+# Gitlab CI Pipeline configuration
+
 variables:
   DOCKER_BUILDER_IMAGE: ${CI_REGISTRY_IMAGE}/docker-builder:latest
 
