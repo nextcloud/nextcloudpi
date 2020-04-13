@@ -9,7 +9,7 @@ stages:
 
 .docker-login-before-script: &docker-login-before-script
   before_script:
-    - docker login -u "${CI_REGISTRY_USER?}" -p "${CI_REGISTRY_PASSWORD?} "${CI_REGISTRY?}"
+    - docker login -u "${CI_REGISTRY_USER?}" -p "${CI_REGISTRY_PASSWORD?}" "${CI_REGISTRY?}"
 
 .docker-build-tmpl: &docker-build-tmpl
   << : *docker-login-before-script
