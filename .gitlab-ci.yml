@@ -36,7 +36,7 @@ stages:
           -t "${CI_REGISTRY_IMAGE?}/${TARGET}-${NCP_TAG?}:latest" \
           -t "${CI_REGISTRY_IMAGE?}/${TARGET}-${NCP_TAG?}:${CI_PIPELINE_IID}" \
           -t "${CI_REGISTRY_IMAGE?}/${TARGET}-${NCP_TAG?}:${VERSION?}";
-        docker push "${CI_REGISTRY_IMAGE?}/{TARGET}-${NCP_TAG?}";
+        docker push "${CI_REGISTRY_IMAGE?}/${TARGET}-${NCP_TAG?}";
       done
 
 .integration-tests-docker-tmpl: &integration-tests-docker-tmpl
