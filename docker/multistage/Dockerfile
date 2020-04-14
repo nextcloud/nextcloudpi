@@ -3,6 +3,8 @@
 ARG arch=armhf
 ARG arch_qemu=arm
 ARG release=buster
+ARG ncp_ver=v0.0.0
+
 FROM debian:${release}-slim AS qemu
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends qemu-user-static
@@ -132,7 +134,7 @@ mv /data-ro/nextcloud/ncp-wait-msg.html /data-ro/nextcloud/index.php;
 
 FROM nextcloud as nextcloudpi
 
-ARG ncp_ver=v0.0.0
+ARG ncp_ver
 
 LABEL maintainer="Ignacio Núñez Hernanz <nacho@ownyourbits.com>"
 
