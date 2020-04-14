@@ -75,23 +75,29 @@ stages:
       EOF
     - docker push "${CI_REGISTRY_IMAGE}/ncp-testing-${ARCHITECTURE?}";
 
-test-docker-x86:
+test-docker-amd64:
   << : *integration-tests-docker-tmpl
   variables:
     ARCHITECTURE: "x86"
     NAME: nextcloudpi
+  needs:
+    - docker-build-amd64
 
 test-docker-armhf:
   << : *integration-tests-docker-tmpl
   variables:
     ARCHITECTURE: "armhf"
     NAME: nextcloudpi
+  needs:
+    - docker-build-armhf
 
 test-docker-arm64:
   << : *integration-tests-docker-tmpl
   variables:
     ARCHITECTURE: "arm64"
     NAME: nextcloudpi
+  needs:
+    - docker-build-arm64
 
 #system-tests-docker-amd64:
 #  << : *system-test-docker-tmpl
