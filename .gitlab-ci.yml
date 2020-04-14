@@ -129,10 +129,6 @@ build-docker-builder:
     - docker pull ${CI_REGISTRY_IMAGE}/docker-builder:latest || echo "docker-builder:latest not found in \"${CI_REGISTRY_IMAGE}\"!"
     - CURRENT="$(docker inspect -f '{{ .DockerVersion }}' ${CI_REGISTRY_IMAGE}/docker-builder:latest || echo "NONE")"
     - LATEST="$(docker version -f '{{ .Client.Version }}')"
-    - echo "${CI_REGISTRY_IMAGE}"
-    - apk update && apk add curl
-    - 'curl --header "PRIVATE-TOKEN: ${CI_JOB_TOKEN}" "https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/registry/repositories"'
-    - 'curl --header "PRIVATE-TOKEN: ${CI_JOB_TOKEN}" "https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/registry/repositories/${CI_REGISTRY_IMAGE}/tags"'
     - |
       if [[ "$CURRENT" != "$LATEST" ]]
       then
