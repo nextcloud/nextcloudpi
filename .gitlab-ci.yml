@@ -5,6 +5,7 @@ variables:
 
 stages:
   - pre-build
+  - build-test-deploy
   - build
   - pre-test
   - test
@@ -16,7 +17,7 @@ stages:
 
 .docker-build-tmpl: &docker-build-tmpl
   << : *docker-login-before-script
-  stage: build
+  stage: build-test-deploy
   image: $DOCKER_BUILDER_IMAGE
   services:
     - docker:dind
@@ -41,7 +42,7 @@ stages:
       done
 
 .integration-tests-docker-tmpl: &integration-tests-docker-tmpl
-  stage: test
+  stage: build-test-deploy
   services:
     - name: selenium/standalone-firefox
       alias: selenium
@@ -62,7 +63,7 @@ stages:
 
 .docker-deploy-tmpl: &docker-deploy-tmpl
   << : *docker-login-before-script
-  stage: deploy
+  stage: build-test-deploy
   image: docker:latest
   services:
     - docker:dind
@@ -80,6 +81,41 @@ stages:
       when: manual
     - if: '$DEPLOYMENT_TESTING == "true"'
       when: manual
+
+build-docker-builder:
+  << : *docker-login-before-script
+  stage: pre-build
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - docker pull ${CI_REGISTRY_IMAGE}/docker-builder:latest || echo "docker-builder:latest not found in \"${CI_REGISTRY_IMAGE}\"!"
+    - CURRENT="$(docker inspect -f '{{ .DockerVersion }}' ${CI_REGISTRY_IMAGE}/docker-builder:latest || echo "NONE")"
+    - LATEST="$(docker version -f '{{ .Client.Version }}')"
+    - |
+      if [[ "$CURRENT" != "$LATEST" ]]
+      then
+        docker build --progress=plain . -f ci/docker/docker-builder/Dockerfile \
+          -t "${CI_REGISTRY_IMAGE}/docker-builder:latest" -t "${CI_REGISTRY_IMAGE}/docker-builder:${LATEST}"
+        docker push "${CI_REGISTRY_IMAGE}/docker-builder:latest"
+      else
+        echo "Image already exists for latests docker version ($LATEST). Not rebuilding."
+      fi
+
+docker-build-x86:
+  << : *docker-build-tmpl
+  variables:
+    ARCHITECTURE: "x86"
+
+docker-build-armhf:
+  <<: *docker-build-tmpl
+  variables:
+    ARCHITECTURE: "armhf"
+
+docker-build-arm64:
+  <<: *docker-build-tmpl
+  variables:
+    ARCHITECTURE: "arm64"
 
 docker-test-x86:
   << : *integration-tests-docker-tmpl
@@ -105,41 +141,6 @@ docker-test-arm64:
   needs:
     - docker-build-arm64
 
-docker-build-x86:
-  << : *docker-build-tmpl
-  variables:
-    ARCHITECTURE: "x86"
-
-docker-build-armhf:
-  <<: *docker-build-tmpl
-  variables:
-    ARCHITECTURE: "armhf"
-
-docker-build-arm64:
-  <<: *docker-build-tmpl
-  variables:
-    ARCHITECTURE: "arm64"
-
-build-docker-builder:
-  << : *docker-login-before-script
-  stage: pre-build
-  image: docker:latest
-  services:
-    - docker:dind
-  script:
-    - docker pull ${CI_REGISTRY_IMAGE}/docker-builder:latest || echo "docker-builder:latest not found in \"${CI_REGISTRY_IMAGE}\"!"
-    - CURRENT="$(docker inspect -f '{{ .DockerVersion }}' ${CI_REGISTRY_IMAGE}/docker-builder:latest || echo "NONE")"
-    - LATEST="$(docker version -f '{{ .Client.Version }}')"
-    - |
-      if [[ "$CURRENT" != "$LATEST" ]]
-      then
-        docker build --progress=plain . -f ci/docker/docker-builder/Dockerfile \
-          -t "${CI_REGISTRY_IMAGE}/docker-builder:latest" -t "${CI_REGISTRY_IMAGE}/docker-builder:${LATEST}"
-        docker push "${CI_REGISTRY_IMAGE}/docker-builder:latest"
-      else
-        echo "Image already exists for latests docker version ($LATEST). Not rebuilding."
-      fi
-
 docker-deploy-x86:
   <<: *docker-deploy-tmpl
   variables:
@@ -147,3 +148,19 @@ docker-deploy-x86:
     DEPLOYMENT_TESTING: "true"
   needs:
     - docker-test-x86
+
+docker-deploy-armhf:
+  <<: *docker-deploy-tmpl
+  variables:
+    ARCHITECTURE: armhf
+    DEPLOYMENT_TESTING: "true"
+  needs:
+    - docker-test-armhf
+
+docker-deploy-arm64:
+  <<: *docker-deploy-tmpl
+  variables:
+    ARCHITECTURE: arm64
+    DEPLOYMENT_TESTING: "true"
+  needs:
+    - docker-test-arm64
