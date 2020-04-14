@@ -33,7 +33,7 @@ stages:
       for TARGET in nextcloudpi debian-ncp lamp nextcloud
       do
         DOCKER_BUILDKIT=1 docker build --progress=plain . -f docker/multistage/Dockerfile --pull --target "${TARGET}" \
-          --build-arg release=${RELEASE?} --build-arg arch=${ARCH?} --build-arg arch_qemu=${ARCH_QEMU?} --build-arg "ncp_ver=${VERSION}" \
+          --build-arg release=${RELEASE?} --build-arg arch=${ARCH?} --build-arg arch_qemu=${ARCH_QEMU?} --build-arg "ncp_ver=${VERSION?}" \
           -t "${CI_REGISTRY_IMAGE?}/${TARGET}-${NCP_TAG?}:latest" \
           -t "${CI_REGISTRY_IMAGE?}/${TARGET}-${NCP_TAG?}:${CI_PIPELINE_IID}" \
           -t "${CI_REGISTRY_IMAGE?}/${TARGET}-${NCP_TAG?}:${VERSION?}"
@@ -67,14 +67,14 @@ stages:
   services:
     - docker:dind
   script:
-    - docker pull "${CI_REGISTRY_IMAGE}/nextcloudpi-${ARCHITECTURE}:${CI_PIPELINE_IID}"
+    - docker pull "${CI_REGISTRY_IMAGE}/nextcloudpi-${NCP_TAG?}:${CI_PIPELINE_IID}"
     - docker login -u "${DOCKERHUB_USER?}" -p "${DOCKERHUB_PASSWORD?}"
     - >
-      docker tag "${CI_REGISTRY_IMAGE}/nextcloudpi-${ARCHITECTURE}:${CI_PIPELINE_IID}" 
-      "${DOCKERHUB_NAMESPACE?}/nextcloudpi-${ARCHITECTURE}:latest"
+      docker tag "${CI_REGISTRY_IMAGE}/nextcloudpi-${NCP_TAG?}:${CI_PIPELINE_IID}"
+      "${DOCKERHUB_NAMESPACE?}/nextcloudpi-${NCP_TAG?}:latest"
     - >
-      docker tag "${CI_REGISTRY_IMAGE}/nextcloudpi-${ARCHITECTURE}:${CI_PIPELINE_IID}" 
-      "${DOCKERHUB_NAMESPACE?}/nextcloudpi-${ARCHITECTURE}:${CI_COMMIT_REF_NAME}"
+      docker tag "${CI_REGISTRY_IMAGE}/nextcloudpi-${NCP_TAG?}:${CI_PIPELINE_IID}"
+      "${DOCKERHUB_NAMESPACE?}/nextcloudpi-${NCP_TAG?}:${CI_COMMIT_REF_NAME}"
   rules:
     - if: '$CI_COMMIT_REF_NAME =~ /^v[0-9]+\.[0-9]+\.[0-9]+$/'
       when: manual
@@ -143,7 +143,7 @@ build-docker-builder:
 docker-deploy-x86:
   <<: *docker-deploy-tmpl
   variables:
-    ARCHITECTURE: amd64
+    NCP_TAG: x86
     DEPLOYMENT_TESTING: "true"
   needs:
     - docker-test-x86
