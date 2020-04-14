@@ -35,8 +35,8 @@ stages:
           --build-arg release=${RELEASE?} --build-arg arch=${ARCH?} --build-arg arch_qemu=${ARCH_QEMU?} \
           -t "${CI_REGISTRY_IMAGE?}/${TARGET}-${NCP_TAG?}:latest" \
           -t "${CI_REGISTRY_IMAGE?}/${TARGET}-${NCP_TAG?}:${CI_PIPELINE_IID}" \
-          -t "${CI_REGISTRY_IMAGE?}/${TARGET}-${NCP_TAG?}:${VERSION?}";
-        docker push "${CI_REGISTRY_IMAGE?}/${TARGET}-${NCP_TAG?}";
+          -t "${CI_REGISTRY_IMAGE?}/${TARGET}-${NCP_TAG?}:${VERSION?}"
+        docker push "${CI_REGISTRY_IMAGE?}/${TARGET}-${NCP_TAG?}"
       done
 
 .integration-tests-docker-tmpl: &integration-tests-docker-tmpl
@@ -70,10 +70,10 @@ stages:
     - '[[ "${ARCHITECTURE?}" == "arm64" ]] && QEMU_ARCH="aarch64" || true'
     - |
       docker build --progress=plain . -f - -t "${CI_REGISTRY_IMAGE}/ncp-testing-${ARCHITECTURE?}:${CI_PIPELINE_IID}" <<-EOF
-        FROM "${CI_REGISTRY_IMAGE}/nextcloudpi-${ARCHITECTURE?}:${CI_PIPELINE_IID}";
+        FROM "${CI_REGISTRY_IMAGE}/nextcloudpi-${ARCHITECTURE?}:${CI_PIPELINE_IID}"
         COPY qemu-${QEMU_ARCH?}-static /usr/bin
       EOF
-    - docker push "${CI_REGISTRY_IMAGE}/ncp-testing-${ARCHITECTURE?}";
+    - docker push "${CI_REGISTRY_IMAGE}/ncp-testing-${ARCHITECTURE?}"
 
 test-docker-x86:
   << : *integration-tests-docker-tmpl
@@ -136,7 +136,7 @@ build-docker-builder:
       if [[ "$CURRENT" != "$LATEST" ]]
       then
         docker build --progress=plain . -f ci/docker/docker-builder/Dockerfile \
-          -t "${CI_REGISTRY_IMAGE}/docker-builder:latest" -t "${CI_REGISTRY_IMAGE}/docker-builder:${LATEST}"
+        -t "${CI_REGISTRY_IMAGE}/docker-builder:latest" -t "${CI_REGISTRY_IMAGE}/docker-builder:${LATEST}"
         docker push "${CI_REGISTRY_IMAGE}/docker-builder:latest"
       else
         echo "Image already exists for latests docker version ($LATEST). Not rebuilding."
