@@ -196,3 +196,7 @@ echo "${ncp_ver}" > /usr/local/etc/ncp-version
 COPY docker/nextcloudpi/000ncp /etc/services-enabled.d/
 COPY bin/ncp/CONFIG/nc-init.sh /
 COPY etc/ncp-config.d/nc-init.cfg /usr/local/etc/ncp-config.d/
+
+EXPOSE 4443
+EXPOSE 80
+EXPOSE 443
