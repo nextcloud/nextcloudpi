@@ -129,10 +129,14 @@ build-docker-builder:
     - docker pull ${CI_REGISTRY_IMAGE}/docker-builder:latest || echo "docker-builder:latest not found in \"${CI_REGISTRY_IMAGE}\"!"
     - CURRENT="$(docker inspect -f '{{ .DockerVersion }}' ${CI_REGISTRY_IMAGE}/docker-builder:latest || echo "NONE")"
     - LATEST="$(docker version -f '{{ .Client.Version }}')"
+    - echo "${CI_REGISTRY_IMAGE}"
+    - curl --header "PRIVATE-TOKEN: ${CI_JOB_TOKEN}" "https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/registry/repositories"
+    - curl --header "PRIVATE-TOKEN: ${CI_JOB_TOKEN}" "https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/registry/repositories/${CI_REGISTRY_IMAGE}/tags"
     - |
       if [[ "$CURRENT" != "$LATEST" ]]
       then
-        docker build --progress=plain . -f ci/docker/docker-builder/Dockerfile -t "${CI_REGISTRY_IMAGE}/docker-builder:latest"
+        docker build --progress=plain . -f ci/docker/docker-builder/Dockerfile \
+          -t "${CI_REGISTRY_IMAGE}/docker-builder:latest" -t "${CI_REGISTRY_IMAGE}/docker-builder:${LATEST}"
         docker push "${CI_REGISTRY_IMAGE}/docker-builder:latest"
       else
         echo "Image already exists for latests docker version ($LATEST). Not rebuilding."
