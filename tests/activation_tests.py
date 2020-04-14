@@ -126,8 +126,11 @@ def test_activation(IP, selenium_host):
             test.check(True)
         except TimeoutException:
             test.check(False)
-        except:
+            print(driver.find_element_by_id('error-box').text)
+        except Exception as e:
             test.check(True)
+            exc_type, _, _ = sys.exc_info()
+            print(f"WARN: While performing this test, an {exc_type} occured: {e}")
 
     # ncp-web
     test.new("ncp-web")
