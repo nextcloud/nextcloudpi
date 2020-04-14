@@ -100,13 +100,13 @@ def test_nextcloud(IP, selenium_host):
         try:
             driver.find_element_by_id("user").send_keys(nc_user)
             driver.find_element_by_id("password").send_keys(nc_pass)
-            driver.find_element_by_id("submit").click()
+            driver.find_element_by_id("submit-form").click()
         except: pass
         test.report("password", "Wrong password" not in driver.page_source)
 
         test.new("settings config")
         try:
-            wait = WebDriverWait(driver, 60)
+            wait = WebDriverWait(driver, 30)
             wait.until(EC.visibility_of(driver.find_element_by_class_name("icon-checkmark-white")))
             test.check(True)
         except:
