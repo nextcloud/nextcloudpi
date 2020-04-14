@@ -32,10 +32,10 @@ stages:
       for TARGET in debian-ncp lamp nextcloud nextcloudpi
       do
         DOCKER_BUILDKIT=1 docker build --progress=plain . -f docker/multistage/Dockerfile --pull --target "${TARGET}" \
-        --build-arg release=${RELEASE?} --build-arg arch=${ARCH?} --build-arg arch_qemu=${ARCH_QEMU?} \
-        -t "${CI_REGISTRY_IMAGE?}/{TARGET}-${NCP_TAG?}:latest" \
-        -t "${CI_REGISTRY_IMAGE?}/${TARGET}-${NCP_TAG?}:${CI_PIPELINE_IID}" \
-        -t "${CI_REGISTRY_IMAGE?}/${TARGET}-${NCP_TAG?}:${VERSION?}";
+          --build-arg release=${RELEASE?} --build-arg arch=${ARCH?} --build-arg arch_qemu=${ARCH_QEMU?} \
+          -t "${CI_REGISTRY_IMAGE?}/${TARGET}-${NCP_TAG?}:latest" \
+          -t "${CI_REGISTRY_IMAGE?}/${TARGET}-${NCP_TAG?}:${CI_PIPELINE_IID}" \
+          -t "${CI_REGISTRY_IMAGE?}/${TARGET}-${NCP_TAG?}:${VERSION?}";
         docker push "${CI_REGISTRY_IMAGE?}/{TARGET}-${NCP_TAG?}";
       done
 
