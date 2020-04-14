@@ -88,7 +88,7 @@ stages:
     - '[[ "${ARCHITECTURE?}" == "arm64" ]] && QEMU_ARCH="aarch64" || true'
     - |
       docker build --progress=plain . -f - -t "${CI_REGISTRY_IMAGE}/ncp-testing-${ARCHITECTURE?}:${CI_PIPELINE_IID}" <<-EOF
-        FROM ${CI_REGISTRY_IMAGE}/nextcloudpi-${ARCHITECTURE?}:${CI_PIPELINE_IID}";
+        FROM "${CI_REGISTRY_IMAGE}/nextcloudpi-${ARCHITECTURE?}:${CI_PIPELINE_IID}";
         COPY qemu-${QEMU_ARCH?}-static /usr/bin
       EOF
     - docker push "${CI_REGISTRY_IMAGE}/ncp-testing-${ARCHITECTURE?}";
@@ -167,5 +167,5 @@ tag-amd64-test-image:
   services:
     - docker:dind
   script:
-    - docker tag "${CI_REGISTRY_IMAGE}/nextcloudpi-amd64:${CI_PIPELINE_IID}" "${CI_REGISTRY_IMAGE}/ncp-testing-amd64:${CI_PIPELINE_IID}"
-    - docker push "${CI_REGISTRY_IMAGE}/ncp-testing-amd64";
+    - docker tag "${CI_REGISTRY_IMAGE}/nextcloudpi-x86:${CI_PIPELINE_IID}" "${CI_REGISTRY_IMAGE}/ncp-testing-x86:${CI_PIPELINE_IID}"
+    - docker push "${CI_REGISTRY_IMAGE}/ncp-testing-x86";
