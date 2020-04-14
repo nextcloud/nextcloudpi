@@ -81,7 +81,7 @@ stages:
     - if: '$DEPLOYMENT_TESTING == "true"'
       when: manual
 
-test-docker-x86:
+docker-test-x86:
   << : *integration-tests-docker-tmpl
   variables:
     ARCHITECTURE: "x86"
@@ -89,7 +89,7 @@ test-docker-x86:
   needs:
     - docker-build-x86
 
-test-docker-armhf:
+docker-test-armhf:
   << : *integration-tests-docker-tmpl
   variables:
     ARCHITECTURE: "armhf"
@@ -97,7 +97,7 @@ test-docker-armhf:
   needs:
     - docker-build-armhf
 
-test-docker-arm64:
+docker-test-arm64:
   << : *integration-tests-docker-tmpl
   variables:
     ARCHITECTURE: "arm64"
@@ -145,3 +145,5 @@ docker-deploy-x86:
   variables:
     ARCHITECTURE: amd64
     DEPLOYMENT_TESTING: "true"
+  needs:
+    - docker-test-x86
