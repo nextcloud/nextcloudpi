@@ -13,51 +13,7 @@ stages:
   before_script:
     - docker login -u "${CI_REGISTRY_USER?}" -p "${CI_REGISTRY_PASSWORD?}" "${CI_REGISTRY?}"
 
-.docker-build-tmpl: &docker-build-tmpl-depr
-  << : *docker-login-before-script
-  stage: build
-  image: $DOCKER_BUILDER_IMAGE
-  services:
-    - docker:dind
-  script:
-    - git fetch --tags
-    - VERSION="$(git describe --tags --always)"
-    - VERSION="${VERSION%-*-*}"
-    - RELEASE=$(jq -r .release < etc/ncp.cfg)
-    - '[[ "${ARCHITECTURE?}" == "x86"   ]] && { ARCH=amd64; ARCH_QEMU=x86_64; NCP_TAG=x86; }'
-    - '[[ "${ARCHITECTURE?}" == "armhf"   ]] && { ARCH=arm32v7; ARCH_QEMU=arm; NCP_TAG=armhf; }'
-    - '[[ "${ARCHITECTURE?}" == "arm64"   ]] && { ARCH=arm64v8; ARCH_QEMU=aarch64; NCP_TAG=arm64; }'
-    - docker pull ${CI_REGISTRY_IMAGE}/nextcloudpi-${NCP_TAG?}:latest || true
-    - >
-      DOCKER_BUILDKIT=1 docker build --progress=plain . -f docker/debian-ncp/Dockerfile --pull
-      --build-arg release=${RELEASE?} --build-arg arch=${ARCH?} --build-arg arch_qemu=${ARCH_QEMU?}
-      -t "${CI_REGISTRY_IMAGE?}/debian-ncp-${NCP_TAG?}:latest"
-      -t "${CI_REGISTRY_IMAGE?}/debian-ncp-${NCP_TAG?}:${CI_PIPELINE_IID}"
-      -t "${CI_REGISTRY_IMAGE?}/debian-ncp-${NCP_TAG?}:${VERSION?}"
-    - >
-      DOCKER_BUILDKIT=1 docker build --progress=plain . -f docker/lamp/Dockerfile
-      --build-arg release=${RELEASE?} --build-arg arch=${NCP_TAG?}
-      -t "${CI_REGISTRY_IMAGE?}/lamp-${NCP_TAG?}:latest"
-      -t "${CI_REGISTRY_IMAGE?}/lamp-${NCP_TAG?}:${CI_PIPELINE_IID}"
-      -t "${CI_REGISTRY_IMAGE?}/lamp-${NCP_TAG?}:${VERSION?}"
-    - >
-      DOCKER_BUILDKIT=1 docker build --progress=plain . -f docker/nextcloud/Dockerfile
-      --build-arg release=${RELEASE?} --build-arg arch=${NCP_TAG?}
-      -t "${CI_REGISTRY_IMAGE?}/nextcloud-${NCP_TAG?}:latest"
-      -t "${CI_REGISTRY_IMAGE?}/nextcloud-${NCP_TAG}:${CI_PIPELINE_IID}"
-      -t "${CI_REGISTRY_IMAGE}/nextcloud-${NCP_TAG?}:${VERSION?}"
-    - >
-      DOCKER_BUILDKIT=1 docker build --progress=plain . -f docker/nextcloudpi/Dockerfile
-      --build-arg release=${RELEASE?} --build-arg arch=${NCP_TAG?} --build-arg ncp_ver=${VERSION?}
-      -t "${CI_REGISTRY_IMAGE}/nextcloudpi-${NCP_TAG?}:latest"
-      -t "${CI_REGISTRY_IMAGE}/nextcloudpi-${NCP_TAG?}:${CI_PIPELINE_IID}"
-      -t "${CI_REGISTRY_IMAGE}/nextcloudpi-${NCP_TAG?}:${VERSION?}"
-    - docker push ${CI_REGISTRY_IMAGE}/debian-ncp-${NCP_TAG?}
-    - docker push ${CI_REGISTRY_IMAGE}/lamp-${NCP_TAG?}
-    - docker push ${CI_REGISTRY_IMAGE}/nextcloud-${NCP_TAG?}
-    - docker push ${CI_REGISTRY_IMAGE}/nextcloudpi-${NCP_TAG?}
-
-    .docker-build-multistage-tmpl: &docker-build-tmpl
+    .docker-build-tmpl: &docker-build-tmpl
     << : *docker-login-before-script
     stage: build
     image: $DOCKER_BUILDER_IMAGE
@@ -79,7 +35,7 @@ stages:
           --build-arg release=${RELEASE?} --build-arg arch=${ARCH?} --build-arg arch_qemu=${ARCH_QEMU?} \
           -t "${CI_REGISTRY_IMAGE?}/{TARGET}-${NCP_TAG?}:latest" \
           -t "${CI_REGISTRY_IMAGE?}/${TARGET}-${NCP_TAG?}:${CI_PIPELINE_IID}" \
-          -t "${CI_REGISTRY_IMAGE?}/${TARGET}-${NCP_TAG?}:${VERSION?}"
+          -t "${CI_REGISTRY_IMAGE?}/${TARGET}-${NCP_TAG?}:${VERSION?}";
         done
 
 .integration-tests-docker-tmpl: &integration-tests-docker-tmpl
