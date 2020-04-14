@@ -148,3 +148,19 @@ docker-deploy-x86:
     DEPLOYMENT_TESTING: "true"
   needs:
     - docker-test-x86
+
+docker-deploy-arm64:
+  <<: *docker-deploy-tmpl
+  variables:
+    NCP_TAG: arm64
+    DEPLOYMENT_TESTING: "true"
+  needs:
+    - docker-test-arm64
+
+docker-deploy-armhf:
+  <<: *docker-deploy-tmpl
+  variables:
+    NCP_TAG: armhf
+    DEPLOYMENT_TESTING: "true"
+  needs:
+    - docker-test-armhf
