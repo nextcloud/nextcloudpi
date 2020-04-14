@@ -13,7 +13,7 @@ stages:
   before_script:
     - docker login -u "${CI_REGISTRY_USER?}" -p "${CI_REGISTRY_PASSWORD?}" "${CI_REGISTRY?}"
 
-.docker-build-tmpl: &docker-build-tmpl
+.docker-build-tmpl: &docker-build-tmpl-depr
   << : *docker-login-before-script
   stage: build
   image: $DOCKER_BUILDER_IMAGE
@@ -57,12 +57,37 @@ stages:
     - docker push ${CI_REGISTRY_IMAGE}/nextcloud-${NCP_TAG?}
     - docker push ${CI_REGISTRY_IMAGE}/nextcloudpi-${NCP_TAG?}
 
+    .docker-build-multistage-tmpl: &docker-build-tmpl
+    << : *docker-login-before-script
+    stage: build
+    image: $DOCKER_BUILDER_IMAGE
+    services:
+      - docker:dind
+    script:
+      - git fetch --tags
+      - VERSION="$(git describe --tags --always)"
+      - VERSION="${VERSION%-*-*}"
+      - RELEASE=$(jq -r .release < etc/ncp.cfg)
+      - '[[ "${ARCHITECTURE?}" == "x86"   ]] && { ARCH=amd64; ARCH_QEMU=x86_64; NCP_TAG=x86; }'
+      - '[[ "${ARCHITECTURE?}" == "armhf"   ]] && { ARCH=arm32v7; ARCH_QEMU=arm; NCP_TAG=armhf; }'
+      - '[[ "${ARCHITECTURE?}" == "arm64"   ]] && { ARCH=arm64v8; ARCH_QEMU=aarch64; NCP_TAG=arm64; }'
+      - docker pull ${CI_REGISTRY_IMAGE}/nextcloudpi-${NCP_TAG?}:latest || true
+      - |
+        for TARGET in debian-ncp lamp nextcloud nextcloudpi
+        do
+          DOCKER_BUILDKIT=1 docker build --progress=plain . -f docker/multistage/Dockerfile --pull --target "${TARGET}" \
+          --build-arg release=${RELEASE?} --build-arg arch=${ARCH?} --build-arg arch_qemu=${ARCH_QEMU?} \
+          -t "${CI_REGISTRY_IMAGE?}/{TARGET}-${NCP_TAG?}:latest" \
+          -t "${CI_REGISTRY_IMAGE?}/${TARGET}-${NCP_TAG?}:${CI_PIPELINE_IID}" \
+          -t "${CI_REGISTRY_IMAGE?}/${TARGET}-${NCP_TAG?}:${VERSION?}"
+        done
+
 .integration-tests-docker-tmpl: &integration-tests-docker-tmpl
   stage: test
   services:
     - name: selenium/standalone-firefox
       alias: selenium
-    - name: "${CI_REGISTRY_IMAGE}/ncp-testing-${ARCHITECTURE}:${CI_PIPELINE_IID}"
+    - name: "${CI_REGISTRY_IMAGE}/nextcloudpi-${ARCHITECTURE}:${CI_PIPELINE_IID}"
       alias: nextcloudpi
   image: python:3.8-buster
   script:
@@ -141,31 +166,31 @@ build-docker-builder:
     - docker pull ${CI_REGISTRY_IMAGE}/docker-builder:latest || echo "docker-builder:latest not found in \"${CI_REGISTRY_IMAGE}\"!"
     - CURRENT="$(docker inspect -f '{{ .DockerVersion }}' ${CI_REGISTRY_IMAGE}/docker-builder:latest || echo "NONE")"
     - LATEST="$(docker version -f '{{ .Client.Version }}')"
-    - echo "$CURRENT"
-    - echo "$LATEST"
     - |
       if [[ "$CURRENT" != "$LATEST" ]]
       then
         docker build --progress=plain . -f ci/docker/docker-builder/Dockerfile -t "${CI_REGISTRY_IMAGE}/docker-builder:latest"
         docker push "${CI_REGISTRY_IMAGE}/docker-builder:latest"
+      else
+        echo "Image already exists for latests docker version ($LATEST). Not rebuilding."
       fi
 
-build-arm64-test-image:
-  << : *build-test-image-tmpl
-  variables:
-    ARCHITECTURE: arm64
+# build-arm64-test-image:
+#   << : *build-test-image-tmpl
+#   variables:
+#     ARCHITECTURE: arm64
 
-build-armhf-test-image:
-  << : *build-test-image-tmpl
-  variables:
-    ARCHITECTURE: armhf
+# build-armhf-test-image:
+#   << : *build-test-image-tmpl
+#   variables:
+#     ARCHITECTURE: armhf
 
-tag-amd64-test-image:
-  << : *docker-login-before-script
-  stage: pre-test
-  image: $DOCKER_BUILDER_IMAGE
-  services:
-    - docker:dind
-  script:
-    - docker tag "${CI_REGISTRY_IMAGE}/nextcloudpi-x86:${CI_PIPELINE_IID}" "${CI_REGISTRY_IMAGE}/ncp-testing-x86:${CI_PIPELINE_IID}"
-    - docker push "${CI_REGISTRY_IMAGE}/ncp-testing-x86";
+# tag-amd64-test-image:
+#   << : *docker-login-before-script
+#   stage: pre-test
+#   image: $DOCKER_BUILDER_IMAGE
+#   services:
+#     - docker:dind
+#   script:
+#     - docker tag "${CI_REGISTRY_IMAGE}/nextcloudpi-x86:${CI_PIPELINE_IID}" "${CI_REGISTRY_IMAGE}/ncp-testing-x86:${CI_PIPELINE_IID}"
+#     - docker push "${CI_REGISTRY_IMAGE}/ncp-testing-x86";
