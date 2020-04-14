@@ -88,6 +88,8 @@ COPY etc/ncp-config.d/nc-nextcloud.cfg /usr/local/etc/ncp-config.d/
 
 RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt \
 
+set -x;
+
 # mark as image build
 touch /.ncp-image; \
 

@@ -1,0 +1,40 @@
+#!/bin/bash
+
+source /usr/local/etc/library.sh # sets PHPVER
+
+set -e
+
+[[ "$1" == "stop" ]] && {
+  echo "Stopping apache"
+  apachectl graceful-stop
+  echo "Stopping PHP-fpm"
+  pkill -f php-fpm
+  echo "Stopping mariaDB"
+  mysqladmin -u root shutdown
+  echo "LAMP cleanup complete"
+  exit 0
+}
+
+# MOVE CONFIGS TO PERSISTENT VOLUME
+persistent_cfg /etc/apache2
+
+echo "Starting PHP-fpm"
+php-fpm${PHPVER}
+
+echo "Starting Apache"
+/usr/sbin/apache2ctl start
+
+# adjust the dbdir to the persistent storage
+sed -i "s|^datadir.*|datadir = /data/database|" /etc/mysql/mariadb.conf.d/90-ncp.cnf
+
+# start
+echo "Starting mariaDB"
+mysqld &
+
+# wait for mariadb
+while :; do
+  [[ -S /var/run/mysqld/mysqld.sock ]] && break
+  sleep 0.5
+done
+
+exit 0
