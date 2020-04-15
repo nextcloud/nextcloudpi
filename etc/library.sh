@@ -154,6 +154,21 @@ function run_app_unsafe()
   return "$ret"
 }
 
+function get_internal_ip()
+{
+  local iface, linked_ip, ip
+  iface="$( ip r | grep "default via" | awk '{ print $5 }' | head -1 )"
+  linked_ip="$(ip r | grep -e "$iface" -e "link src")"
+  if [[ -n "$linked_ip" ]]
+  then
+    ip="${linked_ip##*link src }"
+    ip="${ip// /}"
+  else
+    ip="$( ip a show dev "$iface" | grep global | grep -oP '\d{1,3}(.\d{1,3}){3}' | head -1 )"
+  fi
+  echo "$ip"
+}
+
 function is_active_app()
 {
   local ncp_app=$1
