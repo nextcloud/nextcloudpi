@@ -2,10 +2,11 @@
 
 ARG arch=armhf
 ARG arch_qemu=arm
+ARG debian_release_qemu=bullseye
 ARG release=buster
 ARG ncp_ver=v0.0.0
 
-FROM debian:${release}-slim AS qemu
+FROM debian:${debian_release_qemu}-slim AS qemu
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends qemu-user-static
 
