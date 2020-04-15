@@ -58,7 +58,7 @@ stages:
         echo "NCP is not initialized yet, waiting..."
         sleep 3
       done
-    - [[ "$i" == "30" ]] && { echo "Timeout while waiting for ncp initialization. Exiting..."; exit 1; }
+    - '[[ "$i" == "30" ]] && { echo "Timeout while waiting for ncp initialization. Exiting..."; exit 1; }'
     - ./tests/activation_tests.py "$NCP_IP" "http://selenium:4444/wd/hub"
     - ./tests/nextcloud_tests.py "$NCP_IP" "http://selenium:4444/wd/hub"
 
