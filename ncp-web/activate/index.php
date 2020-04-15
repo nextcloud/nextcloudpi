@@ -26,16 +26,9 @@
         <div id="header">
           <img id="ncp-logo" src="../img/ncp-logo.svg">
 <?php
-    if ( ! file_exists("./initialized.html") ) {
-        echo <<<HTML
-          <h1>NextCloudPi Activation</h1>
-          <p>NextcloudPi is still being initialized. Please wait some time and refresh this page</p>
-          <img src="../img/loading-small.gif">
-HTML;
-    } else {
-        $nc_pwd  = rtrim( base64_encode( random_bytes(32) ) , '=' ); // remove last '='. Remove rtrim in the future
-        $ncp_pwd = rtrim( base64_encode( random_bytes(32) ) , '=' ); // remove last '='. Remove rtrim in the future
-        echo <<<HTML
+    $nc_pwd  = rtrim( base64_encode( random_bytes(32) ) , '=' ); // remove last '='. Remove rtrim in the future
+    $ncp_pwd = rtrim( base64_encode( random_bytes(32) ) , '=' ); // remove last '='. Remove rtrim in the future
+    echo <<<HTML
           <h1>NextCloudPi Activation</h1>
           <p>Your NextCloudPi user     is </p><input readonly              type="text" size=32 value="ncp">
           <p>Your NextCloudPi password is </p><input readonly id="ncp-pwd" type="text" size=32 value="{$ncp_pwd}">&nbsp;&nbsp;<img id="cp-ncp" src="../img/clippy.svg"><span id="cp-ncp-ok"></span>
@@ -55,7 +48,6 @@ HTML;
           <img id="loading-gif" src="../img/loading-small.gif">
           <div id="error-box"></div>
 HTML;
-    }
 ?>
         </div>
       </header>

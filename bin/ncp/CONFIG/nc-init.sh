@@ -178,9 +178,6 @@ EOF
   ncc -n db:convert-filecache-bigint
   ncc db:add-missing-indices
 
-  echo "true" >> /var/www/ncp-web/activate/initialized.html
-  chown www-data: /var/www/ncp-web/activate/initialized.html
-
   echo "NC init done"
 }
 
