@@ -51,6 +51,14 @@ stages:
   script:
     - pip install selenium
     - NCP_IP="$(getent hosts nextcloudpi | cut -f1 -d ' ')"
+    - |
+      for i in {1..30}
+      do
+        [[ "$(curl  -ks -w "%{http_code}" -o /dev/null https:/${NCP_IP}/activate/initialized.html)" == 200 ]] && break
+        echo "NCP is not initialized yet, waiting..."
+        sleep 3
+      done
+    - [[ "$i" == "30" ]] && { echo "Timeout while waiting for ncp initialization. Exiting..."; exit 1; }
     - ./tests/activation_tests.py "$NCP_IP" "http://selenium:4444/wd/hub"
     - ./tests/nextcloud_tests.py "$NCP_IP" "http://selenium:4444/wd/hub"
 
@@ -58,7 +66,7 @@ stages:
   stage: pre-build
   image: "${CI_REGISTRY_IMAGE}/nextcloudpi-${ARCHITECTURE}:${CI_PIPELINE_IID}"
   script:
-    - ./tests/sysyem_tests.py
+    - ./tests/system_tests.py
 
 .docker-deploy-tmpl: &docker-deploy-tmpl
   << : *docker-login-before-script
