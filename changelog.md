@@ -1,5 +1,7 @@
 
-[v1.24.2](https://github.com/nextcloud/nextcloudpi/commit/1b9de02) (2020-04-06) build: small tweaks
+[v1.24.3](https://github.com/nextcloud/nextcloudpi/commit/d6a8d3d) (2020-04-18) ncp-web: cache backup info
+
+[v1.24.2 ](https://github.com/nextcloud/nextcloudpi/commit/ff565d6) (2020-04-06) build: small tweaks
 
 [v1.24.1 ](https://github.com/nextcloud/nextcloudpi/commit/ae6c88f) (2020-04-06) nc-backup-auto: fix notify_admin
 

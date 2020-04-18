@@ -41,8 +41,17 @@ echo <<<HTML
   <table class="dashtable backuptable">
   <th>Date</th><th>Size</th><th>Compressed</th><th>Data</th><th></th>
 HTML;
-  foreach ($bkps as $bkp)
-  {
+
+  $cache_file = '/var/www/ncp-web/backup-info-cache.cfg';
+  if (file_exists($cache_file)) {
+    $cache_str = file_get_contents($cache_file)
+      or exit("error opening ${cache_file}");
+
+    $cache = json_decode($cache_str, true) or [];
+  } else {
+    $cache = [];
+  }
+  foreach ($bkps as $bkp) {
     $extension = pathinfo($bkp, PATHINFO_EXTENSION);
     if ($extension === "tar" || $extension === "gz")
     {
@@ -54,7 +63,18 @@ HTML;
       $size = round(filesize($bkp)/1024/1024) . " MiB";
 
       $has_data = '';
-      exec("sudo /home/www/ncp-backup-launcher.sh bkp " . escapeshellarg($bkp) . " \"$compressed\"", $output, $ret);
+      $ret = null;
+
+      if (array_key_exists($bkp, $cache)) {
+        $ret = $cache[$bkp];
+        $cache_new[$bkp] = $ret;
+      }
+
+      if ($ret === null)
+      {
+        exec("sudo /home/www/ncp-backup-launcher.sh bkp " . escapeshellarg($bkp) . " \"$compressed\"", $output, $ret);
+        $cache_new[$bkp] = $ret;
+      }
       if ($ret == 0)
         $has_data = '✓';
 
@@ -74,6 +94,11 @@ HTML;
       echo '<input type="hidden" name="csrf-token" value="' . getCSRFToken() . '"/>';
     }
   }
+  $cache_str = json_encode($cache_new)
+    or exit('internal error');
+
+  file_put_contents($cache_file, $cache_str)
+    or exit("error writing ${cache_file}");
 echo <<<HTML
     </table>
   </div>
