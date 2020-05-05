@@ -29,7 +29,10 @@ echo "checking for updates..."
 echo "\$OUT" >> /var/log/ncp.log
 
 APPS=\$( echo "\$OUT" | grep 'updated\$' | awk '{ print \$1 }')
-[[ "\$APPS" != "" ]] && notify_admin "Apps updated" "\$APPS"
+if [[ "\$APPS" != "" ]]
+then
+  notify_admin "Apps updated" "\$APPS"
+fi
 EOF
   chmod 755 "$cronfile"
   echo "automatic app updates enabled"
