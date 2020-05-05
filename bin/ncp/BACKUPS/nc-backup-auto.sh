@@ -19,17 +19,28 @@ configure()
   cat > /usr/local/bin/ncp-backup-auto <<EOF
 #!/bin/bash
 source /usr/local/etc/library.sh
-[ -x /usr/local/bin/ncp-backup-auto-before ] && /usr/local/bin/ncp-backup-auto-before
+failed=
+run_script()
+{
+        if [ -x /usr/local/bin/ncp-backup-auto-\$1 ]
+        then
+                /usr/local/bin/ncp-backup-auto-\$1 || failed="\$failed\${failed:+, } \$1"
+        fi
+}
+
+run_script before
 /usr/local/bin/ncc maintenance:mode --on
-/usr/local/bin/ncp-backup "$DESTDIR" "$INCLUDEDATA" "$COMPRESS" "$BACKUPLIMIT" || failed=true
+/usr/local/bin/ncp-backup "$DESTDIR" "$INCLUDEDATA" "$COMPRESS" "$BACKUPLIMIT" || failed="\$failed\${failed:+, } main"
 /usr/local/bin/ncc maintenance:mode --off
-[[ "\$failed" == "true" ]] && \
- notify_admin "Auto-backup failed" "Your automatic backup failed"
-[ -x /usr/local/bin/ncp-backup-auto-after ] && /usr/local/bin/ncp-backup-auto-after
+run_script after
+if [[ -n "\$failed" ]]
+then
+  notify_admin "Auto-backup failed" "The \$failed backup script(s) failed"
+fi
 EOF
   chmod +x /usr/local/bin/ncp-backup-auto
 
-  echo "0  3  */${BACKUPDAYS}  *  *  root  /usr/local/bin/ncp-backup-auto" > /etc/cron.d/ncp-backup-auto
+  echo "0  3  */${BACKUPDAYS}  *  *  root  /usr/local/bin/ncp-backup-auto > /var/log/ncp-backup-auto.log 2>&1" > /etc/cron.d/ncp-backup-auto
   chmod 644 /etc/cron.d/ncp-backup-auto
   service cron restart
 
