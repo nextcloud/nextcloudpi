@@ -20,6 +20,10 @@ install()
 
 configure()
 {
+  [[ $INCLUDEDB != "yes" && $INCLUDEDATA != "yes"  ]] && { 
+    echo "no sync content selected"
+    return 0
+  }
   sudo -u www-data php "$BASEDIR"/nextcloud/occ maintenance:mode --on
 
   local DATADIR
@@ -28,10 +32,24 @@ configure()
     return 1;
   }
   
-  ( duplicity full --rsync-options="-ax" --ssh-options="-p $PORTNUMBER" --encrypt-key "$GPGKEY" "$DATADIR" rsync://"$DESTINATION" ) || {
-    echo -e "If incomplete backup sets exist in the remote folder please continue the backup manually with the command:\n\nduplicity full --rsync-options=\"-ax\" --ssh-options=\"-p $PORTNUMBER\" --encrypt-key "$GPGKEY" "$DATADIR" rsync://"$DESTINATION"\n";
-	sudo -u www-data php "$BASEDIR"/nextcloud/occ maintenance:mode --off;
-    return 1;
+  [[ "$INCLUDEDB" == "yes" ]] && {
+    dbdestination="/$( sed 's|.*//||' <<<$DESTINATION )"/database 
+    dbbackup=nextcloud-sqlbkp_$( date +"%Y%m%d" ).bak
+    mysqldump --single-transaction nextcloud > /var/www/"$dbbackup"
+    ( duplicity full --rsync-options="-ax --rsync-path=\"mkdir -p \"$dbdestination\" && rsync\"" --ssh-options="-p $PORTNUMBER" --encrypt-key "$GPGKEY" /var/www/"$dbbackup" rsync://"$DESTINATION"database ) || {
+      echo -e "If incomplete backup sets exist in the remote folder please continue the backup manually with the command:\n\nduplicity full --rsync-options=\"-ax\" --ssh-options=\"-p $PORTNUMBER\" --encrypt-key "$GPGKEY" /var/www/"$dbbackup" rsync://"$DESTINATION"database\n";
+	  sudo -u www-data php "$BASEDIR"/nextcloud/occ maintenance:mode --off;
+      return 1;
+	}
+    rm /var/www/"$dbbackup"
+  }
+  [[ "$INCLUDEDATA" == "yes" ]] && {
+    datadestination="/$( sed 's|.*//||' <<<$DESTINATION )"/data 
+    ( duplicity full --rsync-options="-ax --rsync-path=\"mkdir -p \"$datadestination\" && rsync\"" --ssh-options="-p $PORTNUMBER" --encrypt-key "$GPGKEY" "$DATADIR" rsync://"$DESTINATION"data ) || {
+      echo -e "If incomplete backup sets exist in the remote folder please continue the backup manually with the command:\n\nduplicity full --rsync-options=\"-ax\" --ssh-options=\"-p $PORTNUMBER\" --encrypt-key "$GPGKEY" "$DATADIR" rsync://"$DESTINATION"data\n";
+	  sudo -u www-data php "$BASEDIR"/nextcloud/occ maintenance:mode --off;
+      return 1;
+	}
   }
 
   sudo -u www-data php "$BASEDIR"/nextcloud/occ maintenance:mode --off

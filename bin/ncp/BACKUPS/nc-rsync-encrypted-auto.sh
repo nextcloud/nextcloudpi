@@ -18,9 +18,11 @@ install()
 
 configure()
 {
-  [[ $ACTIVE != "yes" ]] && { 
+  [[ $ACTIVE != "yes" || ( $INCLUDEDB != "yes" && $INCLUDEDATA != "yes" ) ]] && { 
 	rm -f /root/.passphrase
     rm -f /etc/cron.d/ncp-rsync-encrypted-auto
+	rm -f /usr/local/bin/ncp-rsync-encrypted-full
+	rm -f /usr/local/bin/ncp-rsync-encrypted-incr
     echo "automatic encrypted rsync disabled"
     return 0
   }
@@ -43,7 +45,80 @@ configure()
   echo "PASSPHRASE="$GPGPASSPHRASE"" > /root/.passphrase
   chmod 700 /root/.passphrase
   
-  echo -e "0  5  */${SYNCDAYSFULL}  *  *  root . /root/.passphrase;/usr/bin/duplicity full --rsync-options=\"-ax\" --ssh-options=\"-p $PORTNUMBER\" --encrypt-key "$GPGKEY" "$DATADIR" rsync://"$DESTINATION";/usr/bin/duplicity remove-all-but-n-full 1 --ssh-options=\"-p $PORTNUMBER\" --encrypt-key="$GPGKEY" --force rsync://$"DESTINATION";unset PASSPHRASE\n0  4  */${SYNCDAYSINCR}  *  *  root  . /root/.passphrase;/usr/bin/duplicity --rsync-options=\"-ax\" --ssh-options=\"-p $PORTNUMBER\" --encrypt-key "$GPGKEY" "$DATADIR" rsync://"$DESTINATION";unset PASSPHRASE" > /etc/cron.d/ncp-rsync-encrypted-auto
+  # Create file containing full sync commands
+  cat > /usr/local/bin/ncp-rsync-encrypted-full <<'EOF'
+#!/bin/bash
+while getopts p:k:s:d:D:B: option
+do
+case "${option}"
+in
+p) PORTNUMBER=${OPTARG};;
+k) GPGKEY=${OPTARG};;
+s) DATADIR=${OPTARG};;
+d) DESTINATION=${OPTARG};;
+D) INCLUDEDATA=${OPTARG};;
+B) INCLUDEDB=${OPTARG};;
+esac
+done
+
+. /root/.passphrase
+export PASSPHRASE
+sudo -u www-data php /var/www/nextcloud/occ maintenance:mode --on
+[[ "$INCLUDEDB" == "yes" ]] && { 
+  dbdestination="/$( sed 's|.*//||' <<<$DESTINATION )"/database
+  dbbackup=nextcloud-sqlbkp_$( date +"%Y%m%d" ).bak
+  mysqldump --single-transaction nextcloud > /var/www/"$dbbackup"
+  duplicity full --rsync-options="-ax --rsync-path=\"mkdir -p \"$dbdestination\" && rsync\"" --ssh-options="-p $PORTNUMBER" --encrypt-key "$GPGKEY" /var/www/"$dbbackup" rsync://"$DESTINATION"database
+  duplicity remove-all-but-n-full 1 --ssh-options="-p $PORTNUMBER" --encrypt-key="$GPGKEY" --force rsync://"$DESTINATION"database
+  rm /var/www/"$dbbackup"
+}
+[[ "$INCLUDEDATA" == "yes" ]] && { 
+  datadestination="/$( sed 's|.*//||' <<<$DESTINATION )"/data
+  duplicity full --rsync-options="-ax --rsync-path=\"mkdir -p \"$datadestination\" && rsync\"" --ssh-options="-p $PORTNUMBER" --encrypt-key "$GPGKEY" "$DATADIR" rsync://"$DESTINATION"data
+  duplicity remove-all-but-n-full 1 --ssh-options="-p $PORTNUMBER" --encrypt-key="$GPGKEY" --force rsync://$"DESTINATION"data
+}
+sudo -u www-data php /var/www/nextcloud/occ maintenance:mode --off
+unset PASSPHRASE
+EOF
+  chmod 755 /usr/local/bin/ncp-rsync-encrypted-full
+  
+  # Create file containing incremental sync commands
+  cat > /usr/local/bin/ncp-rsync-encrypted-incr <<'EOF'
+#!/bin/bash
+while getopts p:k:s:d:D:B: option
+do
+case "${option}"
+in
+p) PORTNUMBER=${OPTARG};;
+k) GPGKEY=${OPTARG};;
+s) DATADIR=${OPTARG};;
+d) DESTINATION=${OPTARG};;
+D) INCLUDEDATA=${OPTARG};;
+B) INCLUDEDB=${OPTARG};;
+esac
+done
+
+. /root/.passphrase
+export PASSPHRASE
+sudo -u www-data php /var/www/nextcloud/occ maintenance:mode --on
+[[ "$INCLUDEDB" == "yes" ]] && { 
+  dbdestination="/$( sed 's|.*//||' <<<$DESTINATION )"/database
+  dbbackup=nextcloud-sqlbkp_$( date +"%Y%m%d" ).bak
+  mysqldump --single-transaction nextcloud > /var/www/"$dbbackup"
+  duplicity --rsync-options="-ax --rsync-path=\"mkdir -p \"$dbdestination\" && rsync\"" --ssh-options="-p $PORTNUMBER" --encrypt-key "$GPGKEY" /var/www/"$dbbackup" rsync://"$DESTINATION"database
+  rm /var/www/"$dbbackup"
+}
+[[ "$INCLUDEDATA" == "yes" ]] && { 
+  datadestination="/$( sed 's|.*//||' <<<$DESTINATION )"/data
+  duplicity --rsync-options="-ax --rsync-path=\"mkdir -p \"$datadestination\" && rsync\"" --ssh-options="-p $PORTNUMBER" --encrypt-key "$GPGKEY" "$DATADIR" rsync://"$DESTINATION"data
+}
+sudo -u www-data php /var/www/nextcloud/occ maintenance:mode --off
+unset PASSPHRASE
+EOF
+  chmod 755 /usr/local/bin/ncp-rsync-encrypted-incr
+  
+  # Create cron entry to call sync files
+  echo -e "0  5  */${SYNCDAYSFULL}  *  *  root /usr/local/bin/ncp-rsync-encrypted-full -p $PORTNUMBER -k $GPGKEY -s $DATADIR -d $DESTINATION -D $INCLUDEDATA -B $INCLUDEDB\n0  4  */${SYNCDAYSINCR}  *  *  root /usr/local/bin/ncp-rsync-encrypted-incr -p $PORTNUMBER -k $GPGKEY -s $DATADIR -d $DESTINATION -D $INCLUDEDATA -B $INCLUDEDB" > /etc/cron.d/ncp-rsync-encrypted-auto
   chmod 644 /etc/cron.d/ncp-rsync-encrypted-auto
   service cron restart
 
