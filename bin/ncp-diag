@@ -65,7 +65,7 @@ echo "internet check|$( ping -W 2 -w 1 -q github.com &>/dev/null && echo ok || e
 function is_port_open()
 {
   PORT=$1
-  wget -T2 -t1 -q  https://portchecker.co/check --post-data "port=$PORT" -O - \
+  wget -T2 -t1 -q  https://portchecker.co --post-data "port=$PORT" -O - \
   | grep -q '<span class="green">open</span>' && { echo "open"; return 1; }
   echo "closed"
 }
