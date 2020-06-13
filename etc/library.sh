@@ -127,7 +127,7 @@ function run_app_unsafe()
   chown root:www-data $log
 
   echo "Running $ncp_app"
-  echo "[ $ncp_app ]" >> $log
+  echo "[ $ncp_app ] ($(date))" >> $log
 
   # read script
   unset configure

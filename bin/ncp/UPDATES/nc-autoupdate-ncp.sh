@@ -20,6 +20,9 @@ configure()
   cat > /etc/cron.daily/ncp-autoupdate <<EOF
 #!/bin/bash
 source /usr/local/etc/library.sh
+# Forward all output to the ncp log
+exec > /var/log/ncp.log 2>&1
+echo "\$(date) - Running \$0..."
 if /usr/local/bin/ncp-test-updates; then
   /usr/local/bin/ncp-update || exit 1
   notify_admin "NextCloudPi" "NextCloudPi was updated to \$(cat /usr/local/etc/ncp-version)"

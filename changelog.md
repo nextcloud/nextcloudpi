@@ -1,7 +1,9 @@
 
-[v1.26.1](https://github.com/nextcloud/nextcloudpi/commit/8e36668) (2020-06-13) ncp-web: fix port checking
+[v1.26.2](https://github.com/nextcloud/nextcloudpi/commit/d1a46c6) (2020-06-13) ncp-autoupdate: cronjob write to the log only (#1144)
 
-[v1.26.0](https://github.com/nextcloud/nextcloudpi/commit/aedd8f0) (2020-06-11) upgrade to NC18.0.5
+[v1.26.1](https://github.com/nextcloud/nextcloudpi/commit/4e79386) (2020-06-13) ncp-web: fix port checking
+
+[v1.26.0 ](https://github.com/nextcloud/nextcloudpi/commit/aedd8f0) (2020-06-11) upgrade to NC18.0.5
 
 [v1.25.0 ](https://github.com/nextcloud/nextcloudpi/commit/ed3619f) (2020-04-24) upgrade to NC18.0.4
 
