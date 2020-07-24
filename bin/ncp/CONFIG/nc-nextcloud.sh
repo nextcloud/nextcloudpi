@@ -196,8 +196,6 @@ EOF
   <IfModule mod_headers.c>
     Header always set Strict-Transport-Security "max-age=15768000; includeSubDomains"
   </IfModule>
-EOF
-
 </IfModule>
 EOF
   a2ensite nextcloud
