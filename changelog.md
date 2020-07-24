@@ -1,5 +1,7 @@
 
-[v1.29.6](https://github.com/nextcloud/nextcloudpi/commit/55e16b2) (2020-08-29) ncp-web: Fix the style of the language selection dropdown (chrome)
+[v1.29.7](https://github.com/nextcloud/nextcloudpi/commit/d98e7ad) (2020-07-24) do not hsts preload by default, only serve hsts header over https
+
+[v1.29.6](https://github.com/nextcloud/nextcloudpi/commit/14b78e3) (2020-08-29) ncp-web: Fix the style of the language selection dropdown (chrome)
 
 [v1.29.5 ](https://github.com/nextcloud/nextcloudpi/commit/34e84ba) (2020-08-30) ncp-web: fix initial screen displaying all sections
 

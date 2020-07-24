@@ -73,6 +73,9 @@ Listen 4443
   SSLEngine on
   SSLCertificateFile      /etc/ssl/certs/ssl-cert-snakeoil.pem
   SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
+  <IfModule mod_headers.c>
+    Header always set Strict-Transport-Security "max-age=15768000; includeSubDomains"
+  </IfModule>
 
   # 2 days to avoid very big backups requests to timeout
   TimeOut 172800

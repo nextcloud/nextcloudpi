@@ -194,6 +194,9 @@ EOF
     LimitRequestBody 0
     SSLRenegBufferSize 10486000
   </Directory>
+  <IfModule mod_headers.c>
+    Header always set Strict-Transport-Security "max-age=15768000; includeSubDomains"
+  </IfModule>
 </IfModule>
 EOF
   a2ensite nextcloud
@@ -206,6 +209,14 @@ EOF
     RewriteCond %{HTTPS} !=on
     RewriteRule ^/?(.*) https://%{SERVER_NAME}/$1 [R,L]
   </IfModule>
+  <Directory /var/www/nextcloud/>
+    Options +FollowSymlinks
+    AllowOverride All
+    <IfModule mod_dav.c>
+      Dav off
+    </IfModule>
+    LimitRequestBody 0
+  </Directory>
 </VirtualHost>
 EOF
 
