@@ -75,12 +75,6 @@ SSLStaplingReturnResponderErrors off
 SSLStaplingCache        shmcb:/var/run/ocsp(128000)
 EOF
 
-    cat >> /etc/apache2/apache2.conf <<EOF
-<IfModule mod_headers.c>
-  Header always set Strict-Transport-Security "max-age=15768000; includeSubDomains; preload"
-</IfModule>
-EOF
-
     # CONFIGURE PHP7
     ##########################################
 
