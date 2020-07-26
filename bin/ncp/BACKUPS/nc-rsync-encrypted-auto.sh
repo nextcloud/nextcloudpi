@@ -105,7 +105,7 @@ sudo -u www-data php /var/www/nextcloud/occ maintenance:mode --on
   dbdestination="/$( sed 's|.*//||' <<<$DESTINATION )"/database
   dbbackup=nextcloud-sqlbkp_$( date +"%Y%m%d" ).bak
   mysqldump --single-transaction nextcloud > /var/www/"$dbbackup"
-  duplicity --rsync-options="-ax --rsync-path=\"mkdir -p \"$dbdestination\" && rsync\"" --ssh-options="-p $PORTNUMBER" --encrypt-key "$GPGKEY" /var/www/"$dbbackup" rsync://"$DESTINATION"database
+  duplicity full --rsync-options="-ax --rsync-path=\"mkdir -p \"$dbdestination\" && rsync\"" --ssh-options="-p $PORTNUMBER" --encrypt-key "$GPGKEY" /var/www/"$dbbackup" rsync://"$DESTINATION"database
   rm /var/www/"$dbbackup"
 }
 [[ "$INCLUDEDATA" == "yes" ]] && { 
