@@ -118,7 +118,7 @@ EOF
   chmod 755 /usr/local/bin/ncp-rsync-encrypted-incr
   
   # Create cron entry to call sync files
-  echo -e "0  5  */${SYNCDAYSFULL}  *  *  root /usr/local/bin/ncp-rsync-encrypted-full -p $PORTNUMBER -k $GPGKEY -s $DATADIR -d $DESTINATION -D $INCLUDEDATA -B $INCLUDEDB\n0  4  */${SYNCDAYSINCR}  *  *  root /usr/local/bin/ncp-rsync-encrypted-incr -p $PORTNUMBER -k $GPGKEY -s $DATADIR -d $DESTINATION -D $INCLUDEDATA -B $INCLUDEDB" > /etc/cron.d/ncp-rsync-encrypted-auto
+  echo -e "30  4  */${SYNCDAYSFULL}  *  *  root /usr/local/bin/ncp-rsync-encrypted-full -p $PORTNUMBER -k $GPGKEY -s $DATADIR -d $DESTINATION -D $INCLUDEDATA -B $INCLUDEDB\n0  5  */${SYNCDAYSINCR}  *  *  root /usr/local/bin/ncp-rsync-encrypted-incr -p $PORTNUMBER -k $GPGKEY -s $DATADIR -d $DESTINATION -D $INCLUDEDATA -B $INCLUDEDB" > /etc/cron.d/ncp-rsync-encrypted-auto
   chmod 644 /etc/cron.d/ncp-rsync-encrypted-auto
   service cron restart
 
