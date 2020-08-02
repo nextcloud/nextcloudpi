@@ -38,8 +38,11 @@ configure()
   sed -i "s|^pm =.*|pm = static|"                                "$CONF"
   sed -i "s|^pm.max_children =.*|pm.max_children = $PHPTHREADS|" "$CONF"
 
-  # DATABASE MEMORY
-  AUTOMEM=$(( TOTAL_MEM * 40 / 100 ))
+  # DATABASE MEMORY (25%)
+  AUTOMEM=$(( TOTAL_MEM * 25 / 100 ))
+  # Maximum MySQL Memory Usage = innodb_buffer_pool_size + key_buffer_size + (read_buffer_size + sort_buffer_size) X max_connections
+  # leave 16MiB for key_buffer_size and a bit more
+  AUTOMEM=$(( AUTOMEM - (16 + 32) * 1024 * 1024 ))
   local CONF=/etc/mysql/mariadb.conf.d/91-ncp.cnf
   local CURRENT_DB_MEM=$(grep "^innodb_buffer_pool_size" "$CONF" | awk '{ print $3 }')
   echo "Using $AUTOMEM memory for the database"
