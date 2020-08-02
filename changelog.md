@@ -1,5 +1,7 @@
 
-[v1.28.2](https://github.com/nextcloud/nextcloudpi/commit/a2e6356) (2020-08-02) nc-limits: adjust db size
+[v1.28.3](https://github.com/nextcloud/nextcloudpi/commit/cb25e3f) (2020-08-02) ncp-autoupdate-apps: dont fail cron if no updates
+
+[v1.28.2](https://github.com/nextcloud/nextcloudpi/commit/06017a4) (2020-08-02) nc-limits: adjust db size
 
 [v1.28.1](https://github.com/nextcloud/nextcloudpi/commit/dda010b) (2020-08-02) nc-ramlogs: pin version
 
