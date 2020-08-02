@@ -1,5 +1,7 @@
 
-[v1.27.0](https://github.com/nextcloud/nextcloudpi/commit/765c5a3) (2020-07-05) upgrade to NC18.0.6
+[v1.27.1](https://github.com/nextcloud/nextcloudpi/commit/c63ebcb) (2020-08-02) nc-ramlogs: pin version
+
+[v1.27.0](https://github.com/nextcloud/nextcloudpi/commit/3c96d2e) (2020-07-05) upgrade to NC18.0.6
 
 [v1.26.2](https://github.com/nextcloud/nextcloudpi/commit/337ffeb) (2020-06-13) ncp-autoupdate: cronjob write to the log only (#1144)
 
