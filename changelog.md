@@ -1,9 +1,11 @@
 
-[v1.28.0](https://github.com/nextcloud/nextcloudpi/commit/8a0c09c) (2020-07-23) upgrade to NC18.0.7
+[v1.28.1](https://github.com/nextcloud/nextcloudpi/commit/2528f18) (2020-08-02) nc-ramlogs: pin version
 
-[v1.27.0](https://github.com/nextcloud/nextcloudpi/commit/3c96d2e) (2020-07-05) upgrade to NC18.0.6
+[v1.28.0](https://github.com/nextcloud/nextcloudpi/commit/99cfe9b) (2020-07-23) upgrade to NC18.0.7
 
-[v1.26.2](https://github.com/nextcloud/nextcloudpi/commit/337ffeb) (2020-06-13) ncp-autoupdate: cronjob write to the log only (#1144)
+[v1.27.0 ](https://github.com/nextcloud/nextcloudpi/commit/3c96d2e) (2020-07-05) upgrade to NC18.0.6
+
+[v1.26.2, master](https://github.com/nextcloud/nextcloudpi/commit/337ffeb) (2020-06-13) ncp-autoupdate: cronjob write to the log only (#1144)
 
 [v1.26.1 ](https://github.com/nextcloud/nextcloudpi/commit/4e79386) (2020-06-13) ncp-web: fix port checking
 

@@ -17,16 +17,17 @@ is_active()
 
 install()
 {
+  VERSION=1.5.2
   [[ -d /var/log.hdd ]] || [[ -d /var/hdd.log ]] && { echo "log2ram detected, not installing"; return; }
   cd /tmp
-  curl -Lo log2ram.tar.gz https://github.com/azlux/log2ram/archive/master.tar.gz
+  curl -Lo log2ram.tar.gz https://github.com/azlux/log2ram/archive/${VERSION}.tar.gz
   tar xf log2ram.tar.gz
-  cd log2ram-master
+  cd log2ram-${VERSION}
   sed -i '/systemctl -q is-active log2ram/d' install.sh
   sed -i '/systemctl enable log2ram/d' install.sh
   chmod +x install.sh && sudo ./install.sh
   cd ..
-  rm -r log2ram-master log2ram.tar.gz
+  rm -r log2ram-${VERSION} log2ram.tar.gz
   rm /etc/cron.daily/log2ram /usr/local/bin/uninstall-log2ram.sh
 }
 
