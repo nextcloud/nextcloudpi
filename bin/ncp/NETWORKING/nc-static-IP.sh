@@ -12,7 +12,7 @@
 
 configure() 
 {
-  local GW="$( ip r | grep "default via"   | awk '{ print $3 }' )"
+  local GW="$( ip r | grep "default via"   | awk '{ print $3 }' | head -1 )"
   local DNS="$( grep nameserver /etc/resolv.conf | head -1 | awk '{ print $2 }' )"
   [[ "$DNS" == "" ]] && DNS="$GW"
   local IFACE="$( ip r | grep "default via" | awk '{ print $5 }' | head -1 )"
