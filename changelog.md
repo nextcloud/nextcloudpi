@@ -1,9 +1,15 @@
 
-[v1.28.3](https://github.com/nextcloud/nextcloudpi/commit/cb25e3f) (2020-08-02) ncp-autoupdate-apps: dont fail cron if no updates
+[v1.29.3](https://github.com/nextcloud/nextcloudpi/commit/e0370bb) (2020-08-26) nc-static-IP: Restricting gateway to one
 
-[v1.28.2](https://github.com/nextcloud/nextcloudpi/commit/06017a4) (2020-08-02) nc-limits: adjust db size
+[v1.29.0](https://github.com/nextcloud/nextcloudpi/commit/3cf269a) (2020-08-28) upgrade to NC19.0.2
 
-[v1.28.1](https://github.com/nextcloud/nextcloudpi/commit/dda010b) (2020-08-02) nc-ramlogs: pin version
+[v1.28.4 ](https://github.com/nextcloud/nextcloudpi/commit/4c5b207) (2020-08-02) ncp-backup-auto: fix exit status for cron
+
+[v1.28.3 ](https://github.com/nextcloud/nextcloudpi/commit/81fcd14) (2020-08-02) ncp-autoupdate-apps: dont fail cron if no updates
+
+[v1.28.2 ](https://github.com/nextcloud/nextcloudpi/commit/06017a4) (2020-08-02) nc-limits: adjust db size
+
+[v1.28.1 ](https://github.com/nextcloud/nextcloudpi/commit/dda010b) (2020-08-02) nc-ramlogs: pin version
 
 [v1.28.0 ](https://github.com/nextcloud/nextcloudpi/commit/99cfe9b) (2020-07-23) upgrade to NC18.0.7
 
