@@ -20,6 +20,7 @@ COPY ncp-web              /tmp/ncp-build/ncp-web/
 COPY ncp-app              /tmp/ncp-build/ncp-app/
 COPY ncp-previewgenerator /tmp/ncp-build/ncp-previewgenerator/
 COPY docker               /tmp/ncp-build/docker/
+COPY etc/ncp-config.d/nc-init.cfg /usr/local/etc/ncp-config.d/nc-init-copy.cfg
 
 RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt \
 
@@ -37,9 +38,11 @@ apt-get install --no-install-recommends -y wget ca-certificates; \
 
 # install nextcloudpi
 source /usr/local/etc/library.sh; \
-set +x; \
 cd /tmp/ncp-build/; \
 install_app ncp.sh; \
+
+mv /usr/local/etc/ncp-config.d/nc-init-copy.cfg /usr/local/etc/ncp-config.d/nc-init.cfg; \
+run_app_unsafe bin/ncp/CONFIG/nc-init.sh; \
 
 # fix default paths
 sed -i 's|/media/USBdrive|/data/backups|' /usr/local/etc/ncp-config.d/nc-backup.cfg; \
@@ -47,6 +50,7 @@ sed -i 's|/media/USBdrive|/data/backups|' /usr/local/etc/ncp-config.d/nc-backup-
 
 # specific cleanup
 cd /; rm -r /tmp/ncp-build; \
+rm /usr/local/etc/ncp-config.d/nc-init.cfg; \
 rm /.ncp-image; \
 
 # cleanup all NCP extras
@@ -67,5 +71,3 @@ rm /var/cache/debconf/*-old; \
 echo "${ncp_ver}" > /usr/local/etc/ncp-version
 
 COPY docker/nextcloudpi/000ncp /etc/services-enabled.d/
-COPY bin/ncp/CONFIG/nc-init.sh /
-COPY etc/ncp-config.d/nc-init.cfg /usr/local/etc/ncp-config.d/

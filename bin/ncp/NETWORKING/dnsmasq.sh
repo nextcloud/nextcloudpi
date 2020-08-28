@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# dnsmasq DNS server with cache installation on Raspbian 
+# dnsmasq DNS server with cache installation on Raspbian
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -41,7 +41,7 @@ EOF
 
 configure()
 {
-  [[ $ACTIVE != "yes" ]] && { 
+  [[ $ACTIVE != "yes" ]] && {
     service dnsmasq stop
     update-rc.d dnsmasq disable
     echo "dnmasq disabled"
@@ -53,14 +53,14 @@ configure()
   [[ "$IP" == "" ]] && IP=$( ip a show dev "$IFACE" | grep global | grep -oP '\d{1,3}(.\d{1,3}){3}' | head -1 )
 
   [[ "$IP" == "" ]] && { echo "could not detect IP"; return 1; }
-  
+
   cat > /etc/dnsmasq.conf <<EOF
 interface=$IFACE
 domain-needed         # Never forward plain names (without a dot or domain part)
 bogus-priv            # Never forward addresses in the non-routed address spaces.
 no-poll               # Don't poll for changes in /etc/resolv.conf
 no-resolv             # Don't use /etc/resolv.conf or any other file
-cache-size=$CACHESIZE 
+cache-size=$CACHESIZE
 server=$DNSSERVER
 address=/$DOMAIN/$IP  # This is optional if we add it to /etc/hosts
 EOF

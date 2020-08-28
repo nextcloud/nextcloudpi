@@ -48,9 +48,3 @@ rm /.ncp-image;
 
 COPY docker/nextcloud/020nextcloud /etc/services-enabled.d/
 COPY bin/ncp-provisioning.sh /usr/local/bin/
-
-# display message until first run initialization is complete
-COPY docker/nextcloud/ncp-wait-msg.html /data-ro/nextcloud
-RUN \
-mv /data-ro/nextcloud/index.php /; \
-mv /data-ro/nextcloud/ncp-wait-msg.html /data-ro/nextcloud/index.php;

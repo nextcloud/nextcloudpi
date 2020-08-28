@@ -30,13 +30,11 @@ configure()
   fi
 
   # wait for mariadb
-  pgrep -x mysqld &>/dev/null || {
-    echo "mariaDB process not found. Waiting..."
-    while :; do
-      [[ -S /run/mysqld/mysqld.sock ]] && break
-      sleep 0.5
-    done
-  }
+  while :; do
+    [[ -S /run/mysqld/mysqld.sock ]] && break
+    sleep 0.5
+  done
+  sleep 1
 
   # workaround to emulate DROP USER IF EXISTS ..;)
   local DBPASSWD=$( grep password /root/.my.cnf | sed 's|password=||' )
@@ -159,8 +157,8 @@ EOF
 
   # ncp-previewgenerator
   cp -r /var/www/ncp-previewgenerator /var/www/nextcloud/apps/previewgenerator
-  ncc app:enable previewgenerator
   chown www-data:www-data /var/www/nextcloud/apps/previewgenerator
+  ncc app:enable previewgenerator
 
   # previews
   ncc config:app:set previewgenerator squareSizes --value="32 256"

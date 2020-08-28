@@ -33,14 +33,6 @@ cron
 echo "Starting Postfix"
 postfix start
 
-# INIT DATABASE AND NEXTCLOUD CONFIG (first run)
-test -f /data/nextcloud/config/config.php || {
-  echo "Uninitialized instance, running nc-init..."
-  source /usr/local/etc/library.sh
-  run_app_unsafe /nc-init.sh
-  mv /index.php /var/www/nextcloud/    # restore this file after init
-}
-
 # Better do real provisioning at the end, as it can restart PHP asynchronously
 sed -i "s|'password'.*|'password' => 'default',|"        /data/nextcloud/config/config.php
 sed -i "s|'dbpassword' =>.*|'dbpassword' => 'default',|" /data/nextcloud/config/config.php
