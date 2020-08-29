@@ -1377,6 +1377,10 @@ a#versionlink:hover {
 
 #language-selection {
   border: none;
+}
+
+/* Show selected language in white color because the background is blue. If the selection is active, don't change the color because the background is white. */
+#language-selection:not(:active) {
   color: white;
 }
 
