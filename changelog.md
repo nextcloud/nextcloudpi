@@ -1,5 +1,9 @@
 
-[v1.29.4](https://github.com/nextcloud/nextcloudpi/commit/0cb48d9) (2020-08-30) ncp-update-nc: check for ncc commands before using them
+[v1.29.6](https://github.com/nextcloud/nextcloudpi/commit/55e16b2) (2020-08-29) ncp-web: Fix the style of the language selection dropdown (chrome)
+
+[v1.29.5 ](https://github.com/nextcloud/nextcloudpi/commit/34e84ba) (2020-08-30) ncp-web: fix initial screen displaying all sections
+
+[v1.29.4 ](https://github.com/nextcloud/nextcloudpi/commit/17aae56) (2020-08-30) ncp-update-nc: check for ncc commands before using them
 
 [v1.29.3 ](https://github.com/nextcloud/nextcloudpi/commit/76ffaec) (2020-08-26) nc-static-IP: Restricting gateway to one
 
