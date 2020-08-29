@@ -24,7 +24,7 @@ The first time you activate this app through 'nc-previews-auto', you properly wa
 	</types>
 	<dependencies>
 		<php min-version="7.0"/>
-		<nextcloud min-version="14" max-version="18" />
+		<nextcloud min-version="14" max-version="19" />
 	</dependencies>
 
 	<commands>

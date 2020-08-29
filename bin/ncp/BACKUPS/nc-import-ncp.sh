@@ -11,7 +11,7 @@
 
 CFGDIR="/usr/local/etc/ncp-config.d"
 
-configure() 
+configure()
 {
   [[ -f "$FILE" ]] || { echo "export file $FILE does not exist"; return 1; }
 

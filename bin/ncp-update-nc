@@ -181,6 +181,7 @@ find nextcloud/ -type f -exec chmod 640 {} \;
 echo "Upgrade..."
 sudo -u www-data php nextcloud/occ upgrade      # && false # test point 
 sudo -u www-data php nextcloud/occ db:add-missing-indices
+sudo -u www-data php nextcloud/occ db:add-missing-columns
 
 # done
 ####################
