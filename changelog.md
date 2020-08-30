@@ -1,5 +1,7 @@
 
-[v1.29.3](https://github.com/nextcloud/nextcloudpi/commit/e0370bb) (2020-08-26) nc-static-IP: Restricting gateway to one
+[v1.29.4](https://github.com/nextcloud/nextcloudpi/commit/0cb48d9) (2020-08-30) ncp-update-nc: check for ncc commands before using them
+
+[v1.29.3 ](https://github.com/nextcloud/nextcloudpi/commit/76ffaec) (2020-08-26) nc-static-IP: Restricting gateway to one
 
 [v1.29.0](https://github.com/nextcloud/nextcloudpi/commit/3cf269a) (2020-08-28) upgrade to NC19.0.2
 
