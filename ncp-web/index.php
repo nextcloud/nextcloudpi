@@ -228,20 +228,20 @@ HTML;
           <?php echo print_config_forms($l); ?>
         </div>
 
-        <div id="dashboard-wrapper" class="content-box <?php if(array_key_exists('app',$_GET) && ($_GET['app'] != 'dashboard')) echo 'hidden';?>">
+        <div id="dashboard-wrapper" class="content-box <?php if(array_key_exists('app',$_GET) && $_GET['app'] != 'dashboard') echo 'hidden';?>">
           <h2 class="text-title"><?php echo $l->__("System Info"); ?></h2>
           <div id="dashboard-suggestions" class="table-wrapper"></div>
           <div id="dashboard-table" class="outputbox table-wrapper"></div>
           <div id="loading-info-gif" class="loading-section-gif"> <img src="img/loading-small.gif"> </div>
         </div>
 
-        <div id="backups-wrapper" class="content-box <?php if(array_key_exists('app',$_GET) && ($_GET['app'] != 'backups')) echo 'hidden';?>">
+        <div id="backups-wrapper" class="content-box <?php if(!array_key_exists('app',$_GET) || (array_key_exists('app',$_GET) && $_GET['app'] != 'backups')) echo 'hidden';?>">
           <h2 class="text-title"><?php echo $l->__("Backups"); ?></h2>
           <div id="backups-content" class="table-wrapper"></div>
           <div id="loading-backups-gif" class="loading-section-gif"> <img src="img/loading-small.gif"> </div>
         </div>
 
-        <div id="nc-config-wrapper" class="content-box <?php if(array_key_exists('app',$_GET) && ($_GET['app'] != 'config')) echo 'hidden';?>">
+        <div id="nc-config-wrapper" class="content-box <?php if(!array_key_exists('app',$_GET) || (array_key_exists('app',$_GET) && $_GET['app'] != 'config')) echo 'hidden';?>">
           <h2 class="text-title"><?php echo $l->__("Nextcloud configuration"); ?></h2>
           <div id="nc-config-box" class="table-wrapper">
 <?php
