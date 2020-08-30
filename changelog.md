@@ -1,7 +1,7 @@
 
-[v1.29.7](https://github.com/nextcloud/nextcloudpi/commit/d98e7ad) (2020-07-24) do not hsts preload by default, only serve hsts header over https
+[v1.29.8](https://github.com/nextcloud/nextcloudpi/commit/90ca096) (2020-08-30) nc-limits: minimum 6 PHP threads (for NC talk)
 
-[v1.29.6](https://github.com/nextcloud/nextcloudpi/commit/14b78e3) (2020-08-29) ncp-web: Fix the style of the language selection dropdown (chrome)
+[v1.29.6 ](https://github.com/nextcloud/nextcloudpi/commit/14b78e3) (2020-08-29) ncp-web: Fix the style of the language selection dropdown (chrome)
 
 [v1.29.5 ](https://github.com/nextcloud/nextcloudpi/commit/34e84ba) (2020-08-30) ncp-web: fix initial screen displaying all sections
 
@@ -9,7 +9,7 @@
 
 [v1.29.3 ](https://github.com/nextcloud/nextcloudpi/commit/76ffaec) (2020-08-26) nc-static-IP: Restricting gateway to one
 
-[v1.29.0](https://github.com/nextcloud/nextcloudpi/commit/3cf269a) (2020-08-28) upgrade to NC19.0.2
+[v1.29.0 ](https://github.com/nextcloud/nextcloudpi/commit/3cf269a) (2020-08-28) upgrade to NC19.0.2
 
 [v1.28.4 ](https://github.com/nextcloud/nextcloudpi/commit/4c5b207) (2020-08-02) ncp-backup-auto: fix exit status for cron
 
