@@ -13,7 +13,7 @@ The first time you activate this app through 'nc-previews-auto', you properly wa
 	</description>
 	<licence>AGPL</licence>
 	<author>Roeland Jago Douma and Ignacio Nunez</author>
-	<version>102.2.0</version>
+	<version>102.2.1</version>
 	<namespace>PreviewGenerator</namespace>
 	<category>multimedia</category>
 	<website>https://nextcloudpi.com</website>
