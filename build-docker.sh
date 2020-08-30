@@ -30,6 +30,9 @@ function build_arch()
   docker tag ownyourbits/nextcloudpi-${ncp_tag}:latest ownyourbits/nextcloudpi-${ncp_tag}:"${version}"
 }
 
+# make sure we don't accidentally include this
+rm -f ncp-web/wizard.cfg
+
 [[ "$@" =~ "x86"   ]] && build_arch "${release}" amd64   x86_64  x86
 [[ "$@" =~ "armhf" ]] && build_arch "${release}" arm32v7 arm     armhf
 [[ "$@" =~ "arm64" ]] && build_arch "${release}" arm64v8 aarch64 arm64

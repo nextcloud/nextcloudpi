@@ -25,6 +25,9 @@ source buildlib.sh          # initializes $IMGNAME
 
 sleep 5
 
+# make sure we don't accidentally include this
+rm -f ncp-web/wizard.cfg
+
 # Raspbian
 ./build-SD-rpi.sh
 IMG="$( ls -1t tmp/*.img | head -1 )"
