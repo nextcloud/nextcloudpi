@@ -1,7 +1,8 @@
 {"translations": {
-    "nc-backup": "Backup erstellen",
+    "nc-backup": "Sicherung erstellen",
     "DESTDIR": "Zielverzeichnis",
     "INCLUDEDATA": "Inkl. Dateien",
     "COMPRESS": "Komprimieren",
-    "BACKUPLIMIT": "Maximale Anzahl"
+    "BACKUPLIMIT": "Maximale Anzahl an Sicherungen",
+    "Backup this NC instance to a file": "Sichere die NCP-Instanz in eine Datei"
 }}
