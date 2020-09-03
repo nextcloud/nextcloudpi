@@ -1,5 +1,9 @@
 
-[v1.29.8](https://github.com/nextcloud/nextcloudpi/commit/90ca096) (2020-08-30) nc-limits: minimum 6 PHP threads (for NC talk)
+[v1.29.11](https://github.com/nextcloud/nextcloudpi/commit/17b6c71) (2020-09-03) ncp-web: added a lot of german locales
+
+[v1.29.9 ](https://github.com/nextcloud/nextcloudpi/commit/3706ed0) (2020-09-12) nc-previews: fix killing generate-all
+
+[v1.29.8](https://github.com/nextcloud/nextcloudpi/commit/21a791d) (2020-08-30) nc-limits: minimum 6 PHP threads (for NC talk)
 
 [v1.29.6 ](https://github.com/nextcloud/nextcloudpi/commit/14b78e3) (2020-08-29) ncp-web: Fix the style of the language selection dropdown (chrome)
 
