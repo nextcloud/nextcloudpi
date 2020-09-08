@@ -109,7 +109,7 @@ if [[ $( ls "$TMPDIR" | wc -l ) -eq $NUMFILES ]]; then
   }
 
   echo "restore datadir to $DATADIR..."
-  
+
   mkdir -p "$DATADIR"
   [[ "$( stat -fc%T "$DATADIR" )" == "btrfs" ]] && which btrfs &>/dev/null && {
     rmdir "$DATADIR"                  || exit 1
@@ -141,6 +141,7 @@ sed -i "s|^opcache.file_cache=.*|opcache.file_cache=$DATADIR/.opcache|" /etc/php
 # tmp upload dir
 mkdir -p "$DATADIR/tmp"
 chown www-data:www-data "$DATADIR/tmp"
+sudo -u www-data php occ config:system:set tempdirectory --value "$DATADIR/tmp"
 sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $DATADIR/tmp|" /etc/php/${PHPVER}/cli/php.ini
 sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $DATADIR/tmp|" /etc/php/${PHPVER}/fpm/php.ini
 sed -i "s|^;\?sys_temp_dir =.*$|sys_temp_dir = $DATADIR/tmp|"     /etc/php/${PHPVER}/fpm/php.ini
