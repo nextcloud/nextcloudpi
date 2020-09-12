@@ -43,6 +43,7 @@ PID=\$!
     kill -0 "\$PID" &>/dev/null || break
   done
   pkill -f preview:pre-generate
+  pkill -f preview:generate-all
 }
 wait "\$PID"
 EOF
