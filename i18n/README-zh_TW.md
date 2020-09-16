@@ -51,6 +51,7 @@ NextCloudPi 是專門為 Raspberry Pi、Odroid HC1、rock64 以及其它單板�
  * 可使用freeDNS 所提供的浮動IP連結功能
  * 可使用duckDNS 所提供的浮動IP連結功能
  * 可使用spDYN 所提供的浮動IP連結功能
+ * 可使用Namecheap DNS 所提供的浮動IP連結功能
  * 內建 dnsmasq DNS 伺服器快取
  * ModSecurity 網路應用程式防火牆
  * NFS ready to mount your files over LAN

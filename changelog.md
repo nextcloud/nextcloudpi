@@ -1,5 +1,7 @@
 
-[v1.35.2](https://github.com/nextcloud/nextcloudpi/commit/3f345eb) (2021-04-29) ncp-web: fix display of big files for 32 bit
+[v1.36.0](https://github.com/nextcloud/nextcloudpi/commit/5709e46) (2020-09-16) Namecheap dynamic DNS client
+
+[v1.35.2](https://github.com/nextcloud/nextcloudpi/commit/bfab195) (2021-04-29) ncp-web: fix display of big files for 32 bit
 
 [v1.35.1 ](https://github.com/nextcloud/nextcloudpi/commit/e64ca34) (2021-04-29) ncp-web: fix backup download for big files in 32-bit
 
@@ -25,6 +27,8 @@
 
 [v1.34.0 ](https://github.com/nextcloud/nextcloudpi/commit/ec428a2) (2021-01-01) upgrade to NC20.0.4
 
+[v1.33.2 ](https://github.com/nextcloud/nextcloudpi/commit/82d00c8) (2021-01-01) ncp-config: fix empty values
+
 [v1.33.1 ](https://github.com/nextcloud/nextcloudpi/commit/42fd597) (2020-12-12) nc-update-nc: improve error messages
 
 [v1.33.0 ](https://github.com/nextcloud/nextcloudpi/commit/ffd0b44) (2020-12-10) upgrade to NC20.0.3
@@ -39,9 +43,11 @@
 
 [v1.30.0 ](https://github.com/nextcloud/nextcloudpi/commit/f00fe21) (2020-09-19) upgrade to NC19.0.2
 
-[v1.29.10](https://github.com/nextcloud/nextcloudpi/commit/82baebf) (2020-09-03) ncp-web: added a lot of german locales
+[v1.29.11](https://github.com/nextcloud/nextcloudpi/commit/82baebf) (2020-09-03) ncp-web: added a lot of german locales
 
-[v1.29.9 ](https://github.com/nextcloud/nextcloudpi/commit/3706ed0) (2020-09-12) nc-previews: fix killing generate-all
+[v1.29.10](https://github.com/nextcloud/nextcloudpi/commit/3706ed0) (2020-09-12) nc-previews: fix killing generate-all
+
+[v1.29.9 ](https://github.com/nextcloud/nextcloudpi/commit/9d65011) (2020-09-07) nc-restore: also set tempdirectory
 
 [v1.29.8 ](https://github.com/nextcloud/nextcloudpi/commit/21a791d) (2020-08-30) nc-limits: minimum 6 PHP threads (for NC talk)
 
