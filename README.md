@@ -1,4 +1,4 @@
-English | [Traditional Chinese 繁體中文](/README-ZH-TW.md)
+English | [Traditional Chinese 繁體中文](i18n/README-zh_TW.md) | [Simplified Chinese 简体中文](i18n/README-zh_CN.md)
 
 # NextCloudPi [![chatroom icon](https://patrolavia.github.io/telegram-badge/chat.png)](https://t.me/NextCloudPi) [![forums icon](https://img.shields.io/badge/help-forums-blue.svg)](https://help.nextcloud.com/c/support/appliances-docker-snappy-vm) [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=N8PJHSEQF4G7Y&lc=US&item_name=Own%20Your%20Bits&item_number=NextCloudPi&no_note=1&no_shipping=1&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted) [![blog](https://img.shields.io/badge/follow-blog-orange.svg)](https://ownyourbits.com)
 
@@ -123,12 +123,6 @@ _Note: this assumes a clean Debian install, and there is no rollback method_
 ```
 
 ## Downloads
-
-Get the image, find details and more instructions at
-
-https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/
-
-Pull the docker image
 
 https://nextcloudpi.com
 
