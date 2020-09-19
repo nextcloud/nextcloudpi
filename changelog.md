@@ -1,5 +1,7 @@
 
-[v1.29.11](https://github.com/nextcloud/nextcloudpi/commit/17b6c71) (2020-09-03) ncp-web: added a lot of german locales
+[v1.30.0](https://github.com/nextcloud/nextcloudpi/commit/bb96f7a) (2020-09-19) upgrade to NC19.0.2
+
+[v1.29.10](https://github.com/nextcloud/nextcloudpi/commit/82baebf) (2020-09-03) ncp-web: added a lot of german locales
 
 [v1.29.9 ](https://github.com/nextcloud/nextcloudpi/commit/3706ed0) (2020-09-12) nc-previews: fix killing generate-all
 
