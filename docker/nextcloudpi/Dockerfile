@@ -33,7 +33,7 @@ touch /.ncp-image; \
 touch /.docker-image; \
 
 apt-get update; \
-apt-get install --no-install-recommends -y wget ca-certificates; \
+apt-get install --no-install-recommends -y wget ca-certificates smbclient; \
 
 # install nextcloudpi
 source /usr/local/etc/library.sh; \
