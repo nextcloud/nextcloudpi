@@ -33,9 +33,10 @@ configure()
 
   local FSTYPE="$( stat -fc%T "$BASEDIR" )"
 
-  grep -q -e btrfs <<<"$FSTYPE" && chattr +C "$BASEDIR"
-
-  grep -q -e ext -e btrfs <<<"$BASEDIR" || { echo -e "Only ext/btrfs filesystems can hold the data directory"; return 1; }
+  grep -q -e ext -e btrfs <<<"$FSTYPE" || { echo -e "Only ext/btrfs filesystems can hold the data directory"; return 1; }
+  
+  # Set NOCOW flag on DBDIR if it is located on a btrfs file system
+  grep -q -e btrfs <<<"$FSTYPE" && chattr +C "$DBDIR"
   
   sudo -u mysql test -x "$BASEDIR" || { echo -e "ERROR: the user mysql does not have access permissions over $BASEDIR"; return 1; }
 
