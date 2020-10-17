@@ -35,20 +35,21 @@ configure()
 
   grep -q -e ext -e btrfs <<<"$FSTYPE" || { echo -e "Only ext/btrfs filesystems can hold the data directory"; return 1; }
   
-  # Set NOCOW flag on DBDIR if it is located on a btrfs file system
-  grep -q -e btrfs <<<"$FSTYPE" && chattr +C "$DBDIR"
-  
   sudo -u mysql test -x "$BASEDIR" || { echo -e "ERROR: the user mysql does not have access permissions over $BASEDIR"; return 1; }
 
   [[ $( stat -fc%d / ) == $( stat -fc%d "$BASEDIR" ) ]] && \
     echo -e "INFO: moving database to the SD card\nIf you want to use an external mount, make sure it is properly set up"
+  
+  # Set NOCOW flag on DBDIR if it is located on a btrfs file system
+  mkdir -p "$DBDIR"
+  grep -q -e btrfs <<<"$FSTYPE" && chattr +C "$DBDIR"
 
   cd /var/www/nextcloud
   sudo -u www-data php occ maintenance:mode --on
 
   echo "moving database to $DBDIR..."
   service mysql stop
-  mv "$SRCDIR" "$DBDIR" && \
+  mv -T "$SRCDIR" "$DBDIR" && \
     sed -i "s|^datadir.*|datadir = $DBDIR|" /etc/mysql/mariadb.conf.d/90-ncp.cnf
   service mysql start 
 
