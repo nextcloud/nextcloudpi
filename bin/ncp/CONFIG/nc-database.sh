@@ -55,7 +55,7 @@ configure()
   shopt -s dotglob
   mv "$SRCDIR"/* "$DBDIR/" && \
     sed -i "s|^datadir.*|datadir = $DBDIR|" /etc/mysql/mariadb.conf.d/90-ncp.cnf && \
-    rm -r "$SRCDIR"
+    rm -d "$SRCDIR"
   shopt -u dotglob
   service mysql start 
 
