@@ -42,8 +42,8 @@ configure()
   
   # Set NOCOW flag on DBDIR if it is located on a btrfs file system
   mkdir -p "$DBDIR"
-  chown --reference="$SRCDIR"
-  chmod --reference="$SRCDIR"
+  chown --reference="$SRCDIR" "$DBDIR"
+  chmod --reference="$SRCDIR" "$DBDIR"
 
   grep -q -e btrfs <<<"$FSTYPE" && chattr +C "$DBDIR"
 
