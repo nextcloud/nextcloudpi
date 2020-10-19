@@ -42,6 +42,9 @@ configure()
   
   # Set NOCOW flag on DBDIR if it is located on a btrfs file system
   mkdir -p "$DBDIR"
+  chown --reference="$SRCDIR"
+  chmod --reference="$SRCDIR"
+
   grep -q -e btrfs <<<"$FSTYPE" && chattr +C "$DBDIR"
 
   cd /var/www/nextcloud
@@ -49,8 +52,11 @@ configure()
 
   echo "moving database to $DBDIR..."
   service mysql stop
-  mv -T "$SRCDIR" "$DBDIR" && \
-    sed -i "s|^datadir.*|datadir = $DBDIR|" /etc/mysql/mariadb.conf.d/90-ncp.cnf
+  shopt -s dotglob
+  mv "$SRCDIR"/* "$DBDIR/" && \
+    sed -i "s|^datadir.*|datadir = $DBDIR|" /etc/mysql/mariadb.conf.d/90-ncp.cnf && \
+    rm -r "$SRCDIR"
+  shopt -u dotglob
   service mysql start 
 
   sudo -u www-data php occ maintenance:mode --off
