@@ -1,11 +1,13 @@
 
-[v1.30.0](https://github.com/nextcloud/nextcloudpi/commit/bb96f7a) (2020-09-19) upgrade to NC19.0.2
+[v1.30.1](https://github.com/nextcloud/nextcloudpi/commit/fab4457) (2020-10-20) nc-info: fixed api change for portchecker (#1194)
+
+[v1.30.0](https://github.com/nextcloud/nextcloudpi/commit/f00fe21) (2020-09-19) upgrade to NC19.0.2
 
 [v1.29.10](https://github.com/nextcloud/nextcloudpi/commit/82baebf) (2020-09-03) ncp-web: added a lot of german locales
 
 [v1.29.9 ](https://github.com/nextcloud/nextcloudpi/commit/3706ed0) (2020-09-12) nc-previews: fix killing generate-all
 
-[v1.29.8](https://github.com/nextcloud/nextcloudpi/commit/21a791d) (2020-08-30) nc-limits: minimum 6 PHP threads (for NC talk)
+[v1.29.8, master](https://github.com/nextcloud/nextcloudpi/commit/21a791d) (2020-08-30) nc-limits: minimum 6 PHP threads (for NC talk)
 
 [v1.29.6 ](https://github.com/nextcloud/nextcloudpi/commit/14b78e3) (2020-08-29) ncp-web: Fix the style of the language selection dropdown (chrome)
 

@@ -65,9 +65,12 @@ echo "internet check|$( ping -W 2 -w 1 -q github.com &>/dev/null && echo ok || e
 function is_port_open()
 {
   PORT=$1
-  wget -T2 -t1 -q  https://portchecker.co --post-data "port=$PORT" -O - \
+  tmp_file=$(mktemp)
+  v=$(wget -T2 -t1 -q --keep-session-cookies --save-cookies $tmp_file https://portchecker.co -O - | grep -oP "_csrf\" value=\"\K.*\"")
+  wget -T2 -t1 -q   --load-cookies $tmp_file https://portchecker.co --post-data "port=$PORT&_csrf=${v::-1}" -O - \
   | grep -q '<span class="green">open</span>' && { echo "open"; return 1; }
   echo "closed"
+  rm $tmp_file
 }
 
 echo "port check 80|$( is_port_open 80 )"
