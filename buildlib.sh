@@ -23,7 +23,7 @@ function launch_install_qemu()
   IMGOUT="$IMG-$( date +%s )"
   cp --reflink=auto -v "$IMG" "$IMGOUT" || return 1
 
-  pgrep qemu-system-arm &>/dev/null && { echo -e "QEMU instance already running. Abort..."; return 1; }
+  pgrep qemu-system-aarch64 &>/dev/null && { echo -e "QEMU instance already running. Abort..."; return 1; }
   launch_qemu "$IMGOUT" &
   sleep 10
   wait_SSH "$IP"
@@ -135,7 +135,7 @@ function mount_raspbian()
   local OFFSET=$(( SECTOR * 512 ))
   mkdir -p "$MP"
   sudo mount $IMG -o offset=$OFFSET "$MP" || return 1
-  echo "Raspbian image mounted"
+  echo "RaspiOS image mounted"
 }
 
 function mount_raspbian_boot()
@@ -150,7 +150,7 @@ function mount_raspbian_boot()
   local OFFSET=$(( SECTOR * 512 ))
   mkdir -p "$MP"
   sudo mount $IMG -o offset=$OFFSET "$MP" || return 1
-  echo "Raspbian image mounted"
+  echo "RaspiOS image mounted"
 }
 
 function umount_raspbian()
@@ -158,7 +158,7 @@ function umount_raspbian()
   [[ -d raspbian_root ]] || [[ -d raspbian_boot ]] || { echo "Nothing to umount"; return 0; }
   [[ -d raspbian_root ]] && { sudo umount -l raspbian_root; rmdir raspbian_root || return 1; }
   [[ -d raspbian_boot ]] && { sudo umount -l raspbian_boot; rmdir raspbian_boot || return 1; }
-  echo "Raspbian image umounted"
+  echo "RaspiOS image umounted"
 }
 
 function prepare_chroot_raspbian()
@@ -170,7 +170,7 @@ function prepare_chroot_raspbian()
   sudo mount -o bind /dev     raspbian_root/dev/
   sudo mount -o bind /dev/pts raspbian_root/dev/pts
 
-  sudo cp /usr/bin/qemu-arm-static raspbian_root/usr/bin
+  sudo cp /usr/bin/qemu-aarch64-static raspbian_root/usr/bin
 
   # Prevent services from auto-starting
   sudo bash -c "echo -e '#!/bin/sh\nexit 101' > raspbian_root/usr/sbin/policy-rc.d"
@@ -179,7 +179,7 @@ function prepare_chroot_raspbian()
 
 function clean_chroot_raspbian()
 {
-  sudo rm -f raspbian_root/usr/bin/qemu-arm-static
+  sudo rm -f raspbian_root/usr/bin/qemu-aarch64-static
   sudo rm -f raspbian_root/usr/sbin/policy-rc.d
   sudo umount -l raspbian_root/{proc,sys,dev/pts,dev}
   umount_raspbian
@@ -268,11 +268,12 @@ function deactivate_unattended_upgrades()
 
 function download_raspbian()
 {
-  local IMGFILE=$1
-  local IMG_CACHE=cache/raspbian_lite.img
-  local ZIP_CACHE=cache/raspbian_lite.zip
+  local URL=$1
+  local IMGFILE=$2
+  local IMG_CACHE=cache/raspios_lite.img
+  local ZIP_CACHE=cache/raspios_lite.zip
 
-  echo -e "\n\e[1m[ Download Raspbian ]\e[0m"
+  echo -e "\n\e[1m[ Download RaspiOS ]\e[0m"
   mkdir -p cache
   test -f $IMG_CACHE && \
     echo -e "INFO: $IMG_CACHE already exists. Skipping download ..." && \
@@ -282,11 +283,11 @@ function download_raspbian()
   test -f "$ZIP_CACHE" && {
     echo -e "INFO: $ZIP_CACHE already exists. Skipping download ..."
   } || {
-    wget https://downloads.raspberrypi.org/raspbian_lite_latest -O "$ZIP_CACHE" || return 1
+    wget "$URL" -O "$ZIP_CACHE" || return 1
   }
 
   unzip -o "$ZIP_CACHE" && \
-    mv *-raspbian-*.img $IMG_CACHE && \
+    mv *-raspios-*.img $IMG_CACHE && \
     cp -v --reflink=auto $IMG_CACHE "$IMGFILE" 
 }
 

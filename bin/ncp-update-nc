@@ -77,7 +77,7 @@ cleanup() {
   trap "" EXIT
   exit $RET
 }
-trap cleanup EXIT 
+trap cleanup EXIT
 
 # get new code
 ####################
