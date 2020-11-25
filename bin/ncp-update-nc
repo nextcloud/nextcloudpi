@@ -132,16 +132,10 @@ cp nextcloud-old/config/config.php nextcloud/config/
 ####################
 cp -raT nextcloud-old/themes/ nextcloud/themes/
 
-# copy apps
+# copy old NCP apps
 ####################
-echo "Restore apps..."
-for app in $( ls nextcloud-old/apps/*/ -d ); do
-  app=$( basename "$app" )
-  [[ ! -d nextcloud/apps/$app ]] && {
-    echo " * $app"
-    cp -r nextcloud-old/apps/$app nextcloud/apps
-  }
-done
+cp -r nextcloud-old/apps/{nextcloudpi,previewgenerator} /var/www/nextcloud/apps/
+
 #false # test point
 
 # copy data if it was at the default location
@@ -183,6 +177,7 @@ ncc='sudo -u www-data php nextcloud/occ'
 $ncc upgrade      # && false # test point
 $ncc db:add-missing-indices
 $ncc | grep -q db:add-missing-columns && $ncc db:add-missing-columns
+$ncc | grep -q db:add-missing-primary-keys && $ncc db:add-missing-primary-keys
 
 # done
 ####################
