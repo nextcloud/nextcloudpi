@@ -134,7 +134,11 @@ cp -raT nextcloud-old/themes/ nextcloud/themes/
 
 # copy old NCP apps
 ####################
-cp -r nextcloud-old/apps/{nextcloudpi,previewgenerator} /var/www/nextcloud/apps/
+for app in nextcloudpi previewgenerator; do
+  if [[ -d nextcloud-old/apps/"${app}" ]]; then
+    cp -r nextcloud-old/apps/"${app}" /var/www/nextcloud/apps/
+  fi
+done
 
 #false # test point
 

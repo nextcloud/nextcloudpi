@@ -1,7 +1,9 @@
 
-[v1.32.0](https://github.com/nextcloud/nextcloudpi/commit/3d6f3d4) (2020-11-24) upgrade to NC20.0.2
+[v1.32.1](https://github.com/nextcloud/nextcloudpi/commit/b507966) (2020-11-30) nc-update-nc: ncp apps might not exist
 
-[v1.31.0](https://github.com/nextcloud/nextcloudpi/commit/ab9184c) (2020-10-19) upgrade to NC19.0.4
+[v1.32.0](https://github.com/nextcloud/nextcloudpi/commit/7afdc0f) (2020-11-24) upgrade to NC20.0.2
+
+[v1.31.0 ](https://github.com/nextcloud/nextcloudpi/commit/ab9184c) (2020-10-19) upgrade to NC19.0.4
 
 [v1.30.1 ](https://github.com/nextcloud/nextcloudpi/commit/9450613) (2020-10-20) nc-info: fixed api change for portchecker (#1194)
 
