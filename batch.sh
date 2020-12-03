@@ -54,35 +54,35 @@ export DOCKER_CLI_EXPERIMENTAL=enabled
 
 # TODO test first
 #&& {
-  docker push ownyourbits/nextcloudpi-x86
+  docker push ownyourbits/nextcloudpi-x86:latest
   docker push ownyourbits/nextcloudpi-x86:${version}
-  docker push ownyourbits/nextcloud-x86
+  docker push ownyourbits/nextcloud-x86:latest
   docker push ownyourbits/nextcloud-x86:${version}
-  docker push ownyourbits/lamp-x86
+  docker push ownyourbits/lamp-x86:latest
   docker push ownyourbits/lamp-x86:${version}
-  docker push ownyourbits/debian-ncp-x86
+  docker push ownyourbits/debian-ncp-x86:latest
   docker push ownyourbits/debian-ncp-x86:${version}
 #}
 
 # TODO test first && {
-  docker push ownyourbits/nextcloudpi-armhf
+  docker push ownyourbits/nextcloudpi-armhf:latest
   docker push ownyourbits/nextcloudpi-armhf:${version}
-  docker push ownyourbits/nextcloud-armhf
+  docker push ownyourbits/nextcloud-armhf:latest
   docker push ownyourbits/nextcloud-armhf:${version}
-  docker push ownyourbits/lamp-armhf
+  docker push ownyourbits/lamp-armhf:latest
   docker push ownyourbits/lamp-armhf:${version}
-  docker push ownyourbits/debian-ncp-armhf
+  docker push ownyourbits/debian-ncp-armhf:latest
   docker push ownyourbits/debian-ncp-armhf:${version}
 #}
 
 # TODO test first && {
-  docker push ownyourbits/nextcloudpi-arm64
+  docker push ownyourbits/nextcloudpi-arm64:latest
   docker push ownyourbits/nextcloudpi-arm64:${version}
-  docker push ownyourbits/nextcloud-arm64
+  docker push ownyourbits/nextcloud-arm64:latest
   docker push ownyourbits/nextcloud-arm64:${version}
-  docker push ownyourbits/lamp-arm64
+  docker push ownyourbits/lamp-arm64:latest
   docker push ownyourbits/lamp-arm64:${version}
-  docker push ownyourbits/debian-ncp-arm64
+  docker push ownyourbits/debian-ncp-arm64:latest
   docker push ownyourbits/debian-ncp-arm64:${version}
 #}
 
