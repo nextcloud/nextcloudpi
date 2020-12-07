@@ -11,20 +11,14 @@ source /usr/local/etc/library.sh # sets NCVER PHPVER RELEASE
 
 cd "/var/www/nextcloud"
 
-patch -p1 <<EOF
-diff --git a/lib/private/Session/CryptoSessionData.php b/lib/private/Session/CryptoSessionData.php
-index fc7693b71b2..2b5b5c7b5e7 100644
---- a/lib/private/Session/CryptoSessionData.php
-+++ b/lib/private/Session/CryptoSessionData.php
-@@ -87,6 +87,7 @@ protected function initializeSession() {
- 			);
- 		} catch (\Exception $e) {
- 			$this->sessionValues = [];
-+			$this->regenerateId(true, false);
- 		}
- 	}
- 
-EOF
+echo "ZGlmZiAtLWdpdCBhL2xpYi9wcml2YXRlL1Nlc3Npb24vQ3J5cHRvU2Vzc2lvbkRhdGEucGhwIGIv
+bGliL3ByaXZhdGUvU2Vzc2lvbi9DcnlwdG9TZXNzaW9uRGF0YS5waHAKaW5kZXggZmM3NjkzYjcx
+YjIuLjJiNWI1YzdiNWU3IDEwMDY0NAotLS0gYS9saWIvcHJpdmF0ZS9TZXNzaW9uL0NyeXB0b1Nl
+c3Npb25EYXRhLnBocAorKysgYi9saWIvcHJpdmF0ZS9TZXNzaW9uL0NyeXB0b1Nlc3Npb25EYXRh
+LnBocApAQCAtODcsNiArODcsNyBAQCBwcm90ZWN0ZWQgZnVuY3Rpb24gaW5pdGlhbGl6ZVNlc3Np
+b24oKSB7CiAJCQkpOwogCQl9IGNhdGNoIChcRXhjZXB0aW9uICRlKSB7CiAJCQkkdGhpcy0+c2Vz
+c2lvblZhbHVlcyA9IFtdOworCQkJJHRoaXMtPnJlZ2VuZXJhdGVJZCh0cnVlLCBmYWxzZSk7CiAJ
+CX0KIAl9CiAK" | base64 -d | patch -p1
 
 # docker images only
 [[ -f /.docker-image ]] && {
