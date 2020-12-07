@@ -9,6 +9,14 @@ source /usr/local/etc/library.sh # sets NCVER PHPVER RELEASE
   exit 1;
 }
 
+MINOR="${NCVER%.*}"
+MINOR="${MINOR#*.}"
+if [[ "${NCVER%%.*}" -eq 20 ]] && ( [[ "${MINOR}" -gt 0 ]] || [[ "${NCVER##*.}" -gt 2 ]] )
+then
+  echo "NC version not affected by issue fixed in nextcloud/server/pull/24550. Skipping patch..."
+  exit 0
+fi
+
 cd "/var/www/nextcloud"
 
 if [[ "$(grep -n '$this->regenerateId(true, false);' "lib/private/Session/CryptoSessionData.php")" =~ ^90:.* ]]
