@@ -11,6 +11,12 @@ source /usr/local/etc/library.sh # sets NCVER PHPVER RELEASE
 
 cd "/var/www/nextcloud"
 
+if [[ "$(grep -n '$this->regenerateId(true, false);' "lib/private/Session/CryptoSessionData.php")" =~ ^90:.* ]]
+then
+  echo "Patch has already been applied. Skipping..."
+  exit 0
+fi
+
 echo "ZGlmZiAtLWdpdCBhL2xpYi9wcml2YXRlL1Nlc3Npb24vQ3J5cHRvU2Vzc2lvbkRhdGEucGhwIGIv
 bGliL3ByaXZhdGUvU2Vzc2lvbi9DcnlwdG9TZXNzaW9uRGF0YS5waHAKaW5kZXggZmM3NjkzYjcx
 YjIuLjJiNWI1YzdiNWU3IDEwMDY0NAotLS0gYS9saWIvcHJpdmF0ZS9TZXNzaW9uL0NyeXB0b1Nl
