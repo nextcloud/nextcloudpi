@@ -1,7 +1,9 @@
 
-[v1.32.1](https://github.com/nextcloud/nextcloudpi/commit/b507966) (2020-11-30) nc-update-nc: ncp apps might not exist
+[v1.33.0](https://github.com/nextcloud/nextcloudpi/commit/c1b6239) (2020-12-10) upgrade to NC20.0.3
 
-[v1.32.0](https://github.com/nextcloud/nextcloudpi/commit/7afdc0f) (2020-11-24) upgrade to NC20.0.2
+[v1.32.1](https://github.com/nextcloud/nextcloudpi/commit/35c0d96) (2020-11-30) nc-update-nc: ncp apps might not exist
+
+[v1.32.0 ](https://github.com/nextcloud/nextcloudpi/commit/7afdc0f) (2020-11-24) upgrade to NC20.0.2
 
 [v1.31.0 ](https://github.com/nextcloud/nextcloudpi/commit/ab9184c) (2020-10-19) upgrade to NC19.0.4
 
