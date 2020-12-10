@@ -21,8 +21,8 @@ includedata="${2:-no}"
 compress="${3:-no}"
 backuplimit="${4:-0}"
 
-destfile="$destdir"/nextcloud-bkp_$( date +"%Y%m%d_%s" ).tar
-dbbackup=nextcloud-sqlbkp_$( date +"%Y%m%d" ).bak
+destfile="$destdir"/nextcloud-bkp_$( date +"%Y%m%d_%H%M%S" ).tar
+dbbackup=nextcloud-sqlbkp_$( date +"%Y%m%d_%H%M%S" ).bak
 occ="sudo -u www-data php /var/www/nextcloud/occ"
 [[ -f /.docker-image ]] && basedir=/data || basedir=/var/www
 
