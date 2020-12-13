@@ -6,7 +6,7 @@
 # GPL licensed (see end of file) * Use at your own risk!
 #
 # Usage:
-#       bash ncp-update-nc <version>
+#       ncp-update-nc <version>
 #
 # More at https://ownyourbits.com
 #
@@ -20,13 +20,15 @@
 set -eE
 
 VER="$1"
+BIN="${0##*/}"
 
 # pre-checks
 ####################
+[[ "$VER" == "" ]] && { echo "Usage ${BIN} <version>"; exit 1; }
 [[ -f /.docker-image ]] && BASEDIR=/data || BASEDIR=/var/www
 cd "$BASEDIR"
 DATADIR="$( grep datadirectory nextcloud/config/config.php | awk '{ print $3 }' | grep -oP "[^']*[^']" | head -1 )"
-[[ -d /var/www/nextcloud-old ]] && { echo "Nextcloud backup directory found. Interrupted installation?"; exit 1; }
+[[ -d /var/www/nextcloud-old ]] && { echo "Nextcloud backup directory found. Interrupted or already running installation?"; exit 1; }
 [[ -d /var/www/nextcloud     ]] || { echo "Nextcloud directory not found"                              ; exit 1; }
 [[ -d "$DATADIR"             ]] || { echo "Nextcloud data directory not found"                         ; exit 1; }
 [[ "$(stat -fc%T "$BASEDIR")" == "btrfs" ]] && { echo "BTRFS not supported"                            ; exit 1; }
@@ -56,7 +58,7 @@ elif [ "$MAJOR" -eq "$MAJ" ] && [ "$MINOR" -gt "$MIN" ]; then
 elif [ "$MAJOR" -eq "$MAJ" ] && [ "$MINOR" -eq "$MIN" ] && [ "$PATCH" -gt "$PAT" ]; then
   NEED_UPDATE=true
 fi
- 
+
 echo "Current   Nextcloud version $CURRENT"
 echo "Available Nextcloud version $VER"
 [[ "$NEED_UPDATE" == "true" ]] || { echo "Nothing to update"; exit 1; }
@@ -179,9 +181,10 @@ find nextcloud/ -type f -exec chmod 640 {} \;
 echo "Upgrade..."
 ncc='sudo -u www-data php nextcloud/occ'
 $ncc upgrade      # && false # test point
-$ncc db:add-missing-indices
+$ncc | grep -q db:add-missing-indices && $ncc db:add-missing-indices
 $ncc | grep -q db:add-missing-columns && $ncc db:add-missing-columns
 $ncc | grep -q db:add-missing-primary-keys && $ncc db:add-missing-primary-keys
+$ncc | grep -q db:convert-filecache-bigint && $ncc db:convert-filecache-bigint
 
 # done
 ####################
