@@ -33,7 +33,7 @@ Unattended-Upgrade::Automatic-Reboot-Time "04:00";
 Unattended-Upgrade::Origins-Pattern {
 o=Debian,n=$RELEASE;
 o=deb.sury.org,n=$RELEASE;
-o="Raspberry Pi Foundation",n=$RELEASE;
+o="Raspbian",n=$RELEASE;
 }
 Dpkg::Options {
    "--force-confdef";

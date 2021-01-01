@@ -1,7 +1,9 @@
 
-[v1.34.0](https://github.com/nextcloud/nextcloudpi/commit/68181eb) (2021-01-01) upgrade to NC20.0.4
+[v1.34.1](https://github.com/nextcloud/nextcloudpi/commit/37c2e4f) (2021-01-01) unattended-upgrades: fix raspbian origin
 
-[v1.33.2](https://github.com/nextcloud/nextcloudpi/commit/08e5a36) (2021-01-01) ncp-config: fix empty values
+[v1.34.0](https://github.com/nextcloud/nextcloudpi/commit/ec428a2) (2021-01-01) upgrade to NC20.0.4
+
+[v1.33.2 ](https://github.com/nextcloud/nextcloudpi/commit/82d00c8) (2021-01-01) ncp-config: fix empty values
 
 [v1.33.1 ](https://github.com/nextcloud/nextcloudpi/commit/42fd597) (2020-12-12) nc-update-nc: improve error messages
 
