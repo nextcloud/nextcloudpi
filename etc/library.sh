@@ -40,14 +40,14 @@ function configure_app()
   [[ $len -eq 0 ]] && return
 
   # read cfg parameters
+  local parameters=()
   for (( i = 0 ; i < len ; i++ )); do
     local var="$(jq -r ".params[$i].id"    <<<"$cfg")"
     local val="$(jq -r ".params[$i].value" <<<"$cfg")"
     local vars+=("$var")
     local vals+=("$val")
     local idx=$((i+1))
-    [[ "$val" == "" ]] && val=_
-    local parameters+="$var $idx 1 $val $idx 15 60 120 "
+    parameters+=("$var" "$idx" 1 "$val" "$idx" 15 60 120)
   done
 
   # dialog
@@ -62,7 +62,7 @@ function configure_app()
     value="$( dialog --ok-label "Start" \
                      --no-lines --backtitle "$backtitle" \
                      --form "Enter configuration for $ncp_app" \
-                     20 70 0 $parameters \
+                     20 70 0 "${parameters[@]}" \
                3>&1 1>&2 2>&3 )"
     res=$?
 
