@@ -181,10 +181,10 @@ find nextcloud/ -type f -exec chmod 640 {} \;
 echo "Upgrade..."
 ncc='sudo -u www-data php nextcloud/occ'
 $ncc upgrade      # && false # test point
-$ncc | grep -q db:add-missing-indices && $ncc db:add-missing-indices
-$ncc | grep -q db:add-missing-columns && $ncc db:add-missing-columns
-$ncc | grep -q db:add-missing-primary-keys && $ncc db:add-missing-primary-keys
-$ncc | grep -q db:convert-filecache-bigint && $ncc db:convert-filecache-bigint
+$ncc | grep -q db:add-missing-indices && $ncc db:add-missing-indices -n
+$ncc | grep -q db:add-missing-columns && $ncc db:add-missing-columns -n
+$ncc | grep -q db:add-missing-primary-keys && $ncc db:add-missing-primary-keys -n
+$ncc | grep -q db:convert-filecache-bigint && $ncc db:convert-filecache-bigint -n
 
 # done
 ####################

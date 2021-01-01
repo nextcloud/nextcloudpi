@@ -1,5 +1,9 @@
 
-[v1.33.1](https://github.com/nextcloud/nextcloudpi/commit/6891f49) (2020-12-12) nc-update-nc: improve error messages
+[v1.34.0](https://github.com/nextcloud/nextcloudpi/commit/68181eb) (2021-01-01) upgrade to NC20.0.4
+
+[v1.33.2](https://github.com/nextcloud/nextcloudpi/commit/08e5a36) (2021-01-01) ncp-config: fix empty values
+
+[v1.33.1 ](https://github.com/nextcloud/nextcloudpi/commit/42fd597) (2020-12-12) nc-update-nc: improve error messages
 
 [v1.33.0](https://github.com/nextcloud/nextcloudpi/commit/ffd0b44) (2020-12-10) upgrade to NC20.0.3
 
