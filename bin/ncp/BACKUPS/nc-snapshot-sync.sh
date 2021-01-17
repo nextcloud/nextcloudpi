@@ -15,12 +15,12 @@ install()
   apt-get install -y --no-install-recommends pv openssh-client
   wget https://raw.githubusercontent.com/nachoparker/btrfs-sync/master/btrfs-sync -O /usr/local/bin/btrfs-sync
   chmod +x /usr/local/bin/btrfs-sync
-  ssh-keygen -N "" -f /root/.ssh/id_rsa 
+  if ! [[ -f /root/.ssh/id_rsa ]]; then ssh-keygen -N "" -f /root/.ssh/id_rsa; fi
 }
 
 configure()
 {
-  [[ $ACTIVE != "yes" ]] && { 
+  [[ $ACTIVE != "yes" ]] && {
     rm -f /etc/cron.d/ncp-snapsync-auto
     service cron restart
     echo "snapshot sync disabled"
