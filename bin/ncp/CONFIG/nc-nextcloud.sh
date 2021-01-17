@@ -246,7 +246,7 @@ max_input_time=$MAXTRANSFERTIME
 EOF
 
   ## SET CRON
-  echo "*/15  *  *  *  * php -f /var/www/nextcloud/cron.php" > /tmp/crontab_http
+  echo "*/5  *  *  *  * php -f /var/www/nextcloud/cron.php" > /tmp/crontab_http
   crontab -u www-data /tmp/crontab_http
   rm /tmp/crontab_http
 

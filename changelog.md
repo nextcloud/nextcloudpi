@@ -1,7 +1,9 @@
 
-[v1.33.2](https://github.com/nextcloud/nextcloudpi/commit/a975b0c) (2021-01-17) wizard: fix letsencrypt empty email
+[v1.33.3](https://github.com/nextcloud/nextcloudpi/commit/863d91f) (2021-01-17) update cron interval
 
-[v1.33.1](https://github.com/nextcloud/nextcloudpi/commit/42fd597) (2020-12-12) nc-update-nc: improve error messages
+[v1.33.2](https://github.com/nextcloud/nextcloudpi/commit/8e2d639) (2021-01-17) wizard: fix letsencrypt empty email
+
+[v1.33.1 ](https://github.com/nextcloud/nextcloudpi/commit/42fd597) (2020-12-12) nc-update-nc: improve error messages
 
 [v1.33.0](https://github.com/nextcloud/nextcloudpi/commit/ffd0b44) (2020-12-10) upgrade to NC20.0.3
 
