@@ -204,7 +204,7 @@ done
 ncc config:system:set trusted_domains 1 --value=$ip
 EOF
 
-  [[ "$DOCKERBUILD" != 1 ]] && systemctl enable nextcloud-domain 
+  [[ "$DOCKERBUILD" != 1 ]] && systemctl enable nextcloud-domain
 
   # NEXTCLOUDPI UPDATES
   cat > /etc/cron.daily/ncp-check-version <<EOF

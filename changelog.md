@@ -1,11 +1,7 @@
 
-[v1.34.1](https://github.com/nextcloud/nextcloudpi/commit/37c2e4f) (2021-01-01) unattended-upgrades: fix raspbian origin
+[v1.33.2](https://github.com/nextcloud/nextcloudpi/commit/a975b0c) (2021-01-17) wizard: fix letsencrypt empty email
 
-[v1.34.0](https://github.com/nextcloud/nextcloudpi/commit/ec428a2) (2021-01-01) upgrade to NC20.0.4
-
-[v1.33.2 ](https://github.com/nextcloud/nextcloudpi/commit/82d00c8) (2021-01-01) ncp-config: fix empty values
-
-[v1.33.1 ](https://github.com/nextcloud/nextcloudpi/commit/42fd597) (2020-12-12) nc-update-nc: improve error messages
+[v1.33.1](https://github.com/nextcloud/nextcloudpi/commit/42fd597) (2020-12-12) nc-update-nc: improve error messages
 
 [v1.33.0](https://github.com/nextcloud/nextcloudpi/commit/ffd0b44) (2020-12-10) upgrade to NC20.0.3
 

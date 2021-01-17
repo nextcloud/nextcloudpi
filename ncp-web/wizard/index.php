@@ -172,7 +172,7 @@ HTML
                         </div>
                     </div>
 
-                    <!-- Configure No-IP -->	
+                    <!-- Configure No-IP -->
                     <div class="ncp-hidden" id="noip">
                         <div class="buttons-area">
                             <div class="ddns-form">
@@ -184,14 +184,14 @@ HTML
                                         </tr>
                                         <tr>
                                             <td><label for="noip-password">Password</label></td>
-                                            <td><input type="text" id="noip-password" placeholder="secret"></td>
+                                            <td><input type="password" id="noip-password" placeholder="secret"></td>
                                         </tr>
                                     </table>
                                     <div class="buttons-area">
                                         <button class="btn" id="ddns-enable-noip">Finish</button>
                                     </div>
                                 </form>
-                            </div>	
+                            </div>
                         </div>
                     </div>
                 </div>

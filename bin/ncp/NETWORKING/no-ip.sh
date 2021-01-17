@@ -37,7 +37,7 @@ install()
 ### END INIT INFO
 EOF
 
-  cat debian.noip2.sh >> /etc/init.d/noip2 
+  cat debian.noip2.sh >> /etc/init.d/noip2
 
   chmod +x /etc/init.d/noip2
   cd -
