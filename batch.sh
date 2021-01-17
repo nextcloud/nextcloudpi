@@ -38,6 +38,9 @@ IMG="$( ls -1t tmp/*.img | head -1 )"
 ./build-SD-armbian.sh rockpro64 RockPro64
 ./build-SD-armbian.sh rock64 Rock64
 ./build-SD-armbian.sh bananapi Bananapi
+./build-SD-armbian.sh odroidhc4 OdroidHC4
+./build-SD-armbian.sh odroidc4 OdroidC4
+./build-SD-armbian.sh odroidc2 OdroidC2
 #./build-SD-armbian.sh orangepizeroplus2-h5 OrangePiZeroPlus2
 
 # VM
