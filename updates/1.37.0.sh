@@ -20,6 +20,8 @@ rm "${crontab_tmp}"
 
 # docker images only
 [[ -f /.docker-image ]] && {
+  # fix build bug on v1.32.0
+  sed -i 's|data-ro|data|' /data/nextcloud/config/config.php
   :
 }
 

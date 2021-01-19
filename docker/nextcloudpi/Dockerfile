@@ -43,6 +43,7 @@ install_app ncp.sh; \
 
 mv /usr/local/etc/ncp-config.d/nc-init-copy.cfg /usr/local/etc/ncp-config.d/nc-init.cfg; \
 run_app_unsafe bin/ncp/CONFIG/nc-init.sh; \
+sed -i 's|data-ro|data|' /data-ro/nextcloud/config/config.php; \
 
 # fix default paths
 sed -i 's|/media/USBdrive|/data/backups|' /usr/local/etc/ncp-config.d/nc-backup.cfg; \
