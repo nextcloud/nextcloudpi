@@ -21,7 +21,7 @@ configure()
 #!/bin/bash
 source /usr/local/etc/library.sh
 # Forward all output to the ncp log
-exec > /var/log/ncp.log 2>&1
+exec >> /var/log/ncp.log 2>&1
 echo "\$(date) - Running \$0..."
 if /usr/local/bin/ncp-test-updates; then
   /usr/local/bin/ncp-update || exit 1
