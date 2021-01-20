@@ -26,7 +26,7 @@ Before=mysqld.service dphys-swapfile.service fail2ban.service smbd.service nfs-s
 [Service]
 Restart=always
 ExecStartPre=/bin/bash -c "rmdir /media/* || true"
-ExecStart=/usr/bin/udiskie -NTF
+ExecStart=/usr/bin/udiskie -NTFv
 
 [Install]
 WantedBy=multi-user.target
@@ -85,19 +85,15 @@ EOF
 configure()
 {
   [[ $ACTIVE != "yes" ]] && {
-    systemctl stop    nc-automount
-    systemctl stop    nc-automount-links
-    systemctl disable nc-automount
-    systemctl disable nc-automount-links
+    systemctl disable --now nc-automount
+    systemctl disable --now nc-automount-links
     rm -rf /etc/systemd/system/{mariadb,nfs-server,dphys-swapfile,fail2ban}.service.d
     systemctl daemon-reload
     echo "automount disabled"
     return 0
   }
-  systemctl enable  nc-automount
-  systemctl enable  nc-automount-links
-  systemctl start   nc-automount
-  systemctl start   nc-automount-links
+  systemctl enable  --now nc-automount
+  systemctl enable  --now nc-automount-links
 
   # create delays in some units
   mkdir -p /etc/systemd/system/mariadb.service.d
