@@ -62,19 +62,6 @@ mkdir -p "$CONFDIR"
 # copy all files in bin and etc
 cp -r bin/* /usr/local/bin/
 find etc -maxdepth 1 -type f ! -path etc/ncp.cfg -exec cp '{}' /usr/local/etc \;
-
-# set initial config # TODO remove me after next NCP release
-[[ -f "${NCPCFG}" ]] || cat > /usr/local/etc/ncp.cfg <<EOF
-{
-	"nextcloud_version": "16.0.2",
-	"php_version": "7.2",
-	"release": "stretch",
-	"release_issue": [
-		"Debian GNU/Linux 9",
-		"Raspbian GNU/Linux 9"
-	]
-}
-EOF
 cp -n etc/ncp.cfg /usr/local/etc
 
 # install new entries of ncp-config and update others
