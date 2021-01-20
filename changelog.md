@@ -1,11 +1,23 @@
 
-[v1.33.3](https://github.com/nextcloud/nextcloudpi/commit/863d91f) (2021-01-17) update cron interval
+[v1.34.7](https://github.com/nextcloud/nextcloudpi/commit/0cce679) (2021-01-19) docker: fix datadir path contents
 
-[v1.33.2](https://github.com/nextcloud/nextcloudpi/commit/8e2d639) (2021-01-17) wizard: fix letsencrypt empty email
+[v1.34.6](https://github.com/nextcloud/nextcloudpi/commit/84ccf94) (2021-01-18) docker: fix datadir path
+
+[v1.34.5 ](https://github.com/nextcloud/nextcloudpi/commit/afa39fb) (2021-01-18) ncp-config: shorten descriptions
+
+[v1.34.4 ](https://github.com/nextcloud/nextcloudpi/commit/3a3b6a7) (2021-01-17) btrfs-sync: check for existing keys
+
+[v1.34.3 ](https://github.com/nextcloud/nextcloudpi/commit/6cb682a) (2021-01-17) update cron interval
+
+[v1.34.2 ](https://github.com/nextcloud/nextcloudpi/commit/20bd14f) (2021-01-17) wizard: fix letsencrypt empty email
+
+[v1.34.1](https://github.com/nextcloud/nextcloudpi/commit/23eecff) (2021-01-01) unattended-upgrades: fix raspbian origin
+
+[v1.34.0 ](https://github.com/nextcloud/nextcloudpi/commit/ec428a2) (2021-01-01) upgrade to NC20.0.4
 
 [v1.33.1 ](https://github.com/nextcloud/nextcloudpi/commit/42fd597) (2020-12-12) nc-update-nc: improve error messages
 
-[v1.33.0](https://github.com/nextcloud/nextcloudpi/commit/ffd0b44) (2020-12-10) upgrade to NC20.0.3
+[v1.33.0 ](https://github.com/nextcloud/nextcloudpi/commit/ffd0b44) (2020-12-10) upgrade to NC20.0.3
 
 [v1.32.1 ](https://github.com/nextcloud/nextcloudpi/commit/35c0d96) (2020-11-30) nc-update-nc: ncp apps might not exist
 
