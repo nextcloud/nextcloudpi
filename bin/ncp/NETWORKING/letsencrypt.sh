@@ -46,7 +46,13 @@ configure()
 {
   local DOMAIN_LOWERCASE="${DOMAIN,,}"
 
-  [[ "$DOMAIN" == "" ]] && { echo "empty domain"; return 1; }
+  [[ "$DOMAIN" == "" ]] && {
+     echo "empty domain"; 
+     rm -f /etc/cron.weekly/letsencrypt-ncp
+     rm -f /etc/letsencrypt/renewal-hooks/deploy/ncp  
+     [[ "$DOCKERBUILD" == 1 ]] && update-rc.d letsencrypt disable
+     return 1; 
+  }
 
   # Configure Apache
   grep -q ServerName $vhostcfg && \
