@@ -90,17 +90,28 @@ export DOCKER_CLI_EXPERIMENTAL=enabled
 #}
 
 # Docker multi-arch
-docker manifest create --amend ownyourbits/nextcloudpi \
-  ownyourbits/nextcloudpi-x86 \
-  ownyourbits/nextcloudpi-armhf \
-  ownyourbits/nextcloudpi-arm64
+docker manifest create --amend ownyourbits/nextcloudpi:${version} \
+  --amend ownyourbits/nextcloudpi-x86:${version} \
+  --amend ownyourbits/nextcloudpi-armhf:${version} \
+  --amend ownyourbits/nextcloudpi-arm64:${version}
+
+docker manifest create --amend ownyourbits/nextcloudpi:latest \
+  --amend ownyourbits/nextcloudpi-x86:latest \
+  --amend ownyourbits/nextcloudpi-armhf:latest \
+  --amend ownyourbits/nextcloudpi-arm64:latest
 
 
-docker manifest annotate ownyourbits/nextcloudpi ownyourbits/nextcloudpi-x86   --os linux --arch amd64
-docker manifest annotate ownyourbits/nextcloudpi ownyourbits/nextcloudpi-armhf --os linux --arch arm
-docker manifest annotate ownyourbits/nextcloudpi ownyourbits/nextcloudpi-arm64 --os linux --arch arm64
+docker manifest annotate ownyourbits/nextcloudpi:${version} ownyourbits/nextcloudpi-x86:${version}   --os linux --arch amd64
+docker manifest annotate ownyourbits/nextcloudpi:${version} ownyourbits/nextcloudpi-armhf:${version} --os linux --arch arm
+docker manifest annotate ownyourbits/nextcloudpi:${version} ownyourbits/nextcloudpi-arm64:${version} --os linux --arch arm64
 
-docker manifest push -p ownyourbits/nextcloudpi
+docker manifest annotate ownyourbits/nextcloudpi:latest ownyourbits/nextcloudpi-x86:latest   --os linux --arch amd64
+docker manifest annotate ownyourbits/nextcloudpi:latest ownyourbits/nextcloudpi-armhf:latest --os linux --arch arm
+docker manifest annotate ownyourbits/nextcloudpi:latest ownyourbits/nextcloudpi-arm64:latest --os linux --arch arm64
+
+docker manifest push -p ownyourbits/nextcloudpi:${version}
+docker manifest push -p ownyourbits/nextcloudpi:latest
+
 
 # License
 #
