@@ -20,6 +20,7 @@ destdir="${1:-/media/USBdrive/ncp-backups}"
 includedata="${2:-no}"
 compress="${3:-no}"
 backuplimit="${4:-0}"
+delete_on_failure="${5:-yes}"
 
 destfile="$destdir"/nextcloud-bkp_$( date +"%Y%m%d_%s" ).tar
 dbbackup=nextcloud-sqlbkp_$( date +"%Y%m%d" ).bak
@@ -34,7 +35,17 @@ datadir=$( $occ config:system:get datadirectory ) || {
 }
 
 cleanup(){ local ret=$?;                    rm -f "${dbbackup}"              ; $occ maintenance:mode --off; exit $ret; }
-fail()   { local ret=$?; echo "Abort..."  ; rm -f "${dbbackup}" "${destfile}"; $occ maintenance:mode --off; exit $ret; }
+fail(){
+  local ret=$?;
+  echo "Abort..."  ;
+  if [[ "$delete_on_failure" == "yes" ]]; then
+   rm -f "${dbbackup}" "${destfile}";
+  else
+   rm -f "${dbbackup}";
+  fi
+  $occ maintenance:mode --off;
+  exit $ret;
+}
 trap cleanup EXIT
 trap fail INT TERM HUP ERR
 
