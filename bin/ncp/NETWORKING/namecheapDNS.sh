@@ -28,7 +28,7 @@ configure()
 
   [[ $ACTIVE != "yes" ]] && { 
     rm -f /etc/cron.d/namecheapDNS
-    service cron restart
+    systemctl restart cron
     echo "Namecheap DNS client is disabled"
     return 0
   }
@@ -48,7 +48,7 @@ EOF
 
   echo "*/${UPDATEINTERVAL}  *  *  *  *  root  /bin/bash /usr/local/bin/namecheapdns.sh" > /etc/cron.d/namecheapDNS
   chmod 644 /etc/cron.d/namecheapDNS
-  service cron restart
+  systemctl restart cron
 
   cd /var/www/nextcloud
   sudo -u www-data php occ config:system:set trusted_domains 3 --value="$FULLDOMAIN"
