@@ -1,7 +1,17 @@
 
-[v1.34.7](https://github.com/nextcloud/nextcloudpi/commit/0cce679) (2021-01-19) docker: fix datadir path contents
+[v1.35.2](https://github.com/nextcloud/nextcloudpi/commit/3f345eb) (2021-04-29) ncp-web: fix display of big files for 32 bit
 
-[v1.34.6](https://github.com/nextcloud/nextcloudpi/commit/84ccf94) (2021-01-18) docker: fix datadir path
+[v1.35.1 ](https://github.com/nextcloud/nextcloudpi/commit/e64ca34) (2021-04-29) ncp-web: fix backup download for big files in 32-bit
+
+[v1.35.0](https://github.com/nextcloud/nextcloudpi/commit/be30663) (2021-02-27) upgrade to NC20.0.8
+
+[v1.34.9 ](https://github.com/nextcloud/nextcloudpi/commit/7d15924) (2021-01-19) nc-autoupdate-ncp: Append to log instead of replace
+
+[v1.34.8 ](https://github.com/nextcloud/nextcloudpi/commit/117b8ea) (2021-01-20) nc-automount: udiskie verbose output
+
+[v1.34.7, master](https://github.com/nextcloud/nextcloudpi/commit/b978184) (2021-01-19) docker: fix datadir path contents
+
+[v1.34.6 ](https://github.com/nextcloud/nextcloudpi/commit/84ccf94) (2021-01-18) docker: fix datadir path
 
 [v1.34.5 ](https://github.com/nextcloud/nextcloudpi/commit/afa39fb) (2021-01-18) ncp-config: shorten descriptions
 
@@ -34,6 +44,8 @@
 [v1.29.9 ](https://github.com/nextcloud/nextcloudpi/commit/3706ed0) (2020-09-12) nc-previews: fix killing generate-all
 
 [v1.29.8 ](https://github.com/nextcloud/nextcloudpi/commit/21a791d) (2020-08-30) nc-limits: minimum 6 PHP threads (for NC talk)
+
+[v1.29.7 ](https://github.com/nextcloud/nextcloudpi/commit/c143acc) (2020-07-24) do not hsts preload by default, only serve hsts header over https
 
 [v1.29.6 ](https://github.com/nextcloud/nextcloudpi/commit/14b78e3) (2020-08-29) ncp-web: Fix the style of the language selection dropdown (chrome)
 

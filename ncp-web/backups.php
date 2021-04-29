@@ -20,6 +20,14 @@ $bkp_auto_dir = $bkp_auto_json['params'][1]['value'];
 $bkps = array();
 $bkps_auto = array();
 
+function filesize_compat($file)
+{
+  if(PHP_INT_SIZE === 4) # workaround for 32-bit architectures
+    return trim(shell_exec("stat -c%s " . escapeshellarg($file)));
+  else
+    return filesize($file);
+}
+
 if (file_exists($bkp_dir))
 {
   $bkps = array_diff(scandir($bkp_dir), array('.', '..'));
@@ -60,7 +68,7 @@ HTML;
         $compressed = '✓';
 
       $date = date("Y M d  @ H:i", filemtime($bkp));
-      $size = round(filesize($bkp)/1024/1024) . " MiB";
+      $size = round(filesize_compat($bkp)/1024/1024) . " MiB";
 
       $has_data = '';
       $ret = null;
