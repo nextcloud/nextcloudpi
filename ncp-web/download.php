@@ -27,7 +27,15 @@ if (!file_exists($file))
 if (!is_readable($file))
     die('NCP does not have read permissions on this file');
 
-$size = filesize($file);
+function filesize_compat($file)
+{
+  if(PHP_INT_SIZE === 4) # workaround for 32-bit architectures
+    return trim(shell_exec("stat -c%s " . escapeshellarg($file)));
+  else
+    return filesize($file);
+}
+
+$size = filesize_compat($file);
 
 $extension = pathinfo($file, PATHINFO_EXTENSION);
 if ($extension === "tar" )
@@ -41,7 +49,7 @@ ob_start();
 ob_clean();
 header('Content-Description: File Transfer');
 header('Content-Type: ' . $mime_type);
-header("Content-Transfer-Encoding: Binary"); 
+header("Content-Transfer-Encoding: Binary");
 header("Content-disposition: attachment; filename=\"" . basename($file) . "\"");
 header('Content-Length: ' . $size);
 header('Expires: 0');
@@ -49,20 +57,21 @@ header('Cache-Control: must-revalidate');
 header('Pragma: public');
 
 $chunksize = 8 * (1024 * 1024);
-if($size > $chunksize)
+
+if($size > $chunksize || PHP_INT_SIZE === 4) # always chunk for 32-bit architectures
 {
   $handle = fopen($file, 'rb') or die("Error opening file");
 
   while (!feof($handle))
-  { 
+  {
     $buffer = fread($handle, $chunksize);
     echo $buffer;
 
     ob_flush();
     flush();
-  } 
+  }
 
-  fclose($handle); 
+  fclose($handle);
 }
 else
   readfile($file);
