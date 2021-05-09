@@ -1,7 +1,9 @@
 
-[v1.36.0](https://github.com/nextcloud/nextcloudpi/commit/5709e46) (2020-09-16) Namecheap dynamic DNS client
+[v1.36.1](https://github.com/nextcloud/nextcloudpi/commit/8e7579d) (2021-05-09) lamp: allow only TLSv12 and TLSv13
 
-[v1.35.2](https://github.com/nextcloud/nextcloudpi/commit/bfab195) (2021-04-29) ncp-web: fix display of big files for 32 bit
+[v1.36.0](https://github.com/nextcloud/nextcloudpi/commit/24b6018) (2020-09-16) Namecheap dynamic DNS client
+
+[v1.35.2 ](https://github.com/nextcloud/nextcloudpi/commit/bfab195) (2021-04-29) ncp-web: fix display of big files for 32 bit
 
 [v1.35.1 ](https://github.com/nextcloud/nextcloudpi/commit/e64ca34) (2021-04-29) ncp-web: fix backup download for big files in 32-bit
 
@@ -11,7 +13,7 @@
 
 [v1.34.8 ](https://github.com/nextcloud/nextcloudpi/commit/117b8ea) (2021-01-20) nc-automount: udiskie verbose output
 
-[v1.34.7, master](https://github.com/nextcloud/nextcloudpi/commit/b978184) (2021-01-19) docker: fix datadir path contents
+[v1.34.7 ](https://github.com/nextcloud/nextcloudpi/commit/b978184) (2021-01-19) docker: fix datadir path contents
 
 [v1.34.6 ](https://github.com/nextcloud/nextcloudpi/commit/84ccf94) (2021-01-18) docker: fix datadir path
 

@@ -237,7 +237,7 @@ EOF
   if [[ -f /.ncp-image ]]; then
     rm -rf /var/log/ncp.log
 
-    ## NEXTCLOUDPI MOTD 
+    ## NEXTCLOUDPI MOTD
     rm -rf /etc/update-motd.d
     mkdir /etc/update-motd.d
     rm /etc/motd

@@ -31,4 +31,8 @@ rm "${crontab_tmp}"
   :
 }
 
+## enable TLSv1.3
+sed -i 's|SSLProtocol -all.*|SSLProtocol -all +TLSv1.2 +TLSv1.3|' /etc/apache2/conf-available/http2.conf
+bash -c "sleep 2 && service apache2 reload" &>/dev/null &
+
 exit 0
