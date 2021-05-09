@@ -13,6 +13,7 @@ ENV DOCKERBUILD 1
 COPY etc/ncp.cfg etc/library.sh lamp.sh /usr/local/etc/
 
 RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt \
+set -e; \
 
 # installation
 apt-get update; \

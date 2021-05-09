@@ -23,6 +23,7 @@ COPY docker               /tmp/ncp-build/docker/
 COPY etc/ncp-config.d/nc-init.cfg /usr/local/etc/ncp-config.d/nc-init-copy.cfg
 
 RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt \
+set -e; \
 
 # make sure we don't accidentally disable first run wizard
 rm -f ncp-web/{wizard.cfg,ncp-web.cfg}; \

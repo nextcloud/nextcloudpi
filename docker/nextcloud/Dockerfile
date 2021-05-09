@@ -15,6 +15,7 @@ COPY bin/ncp/CONFIG/nc-nextcloud.sh /
 COPY etc/ncp-config.d/nc-nextcloud.cfg /usr/local/etc/ncp-config.d/
 
 RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt \
+set -e; \
 
 # mark as image build
 touch /.ncp-image; \
@@ -23,7 +24,6 @@ touch /.ncp-image; \
 apt-get update; \
 apt-get install --no-install-recommends -y wget ca-certificates sudo jq; \
 source /usr/local/etc/library.sh; \
-set +x; \
 install_app /nc-nextcloud.sh; \
 run_app_unsafe /nc-nextcloud.sh; \
 mv /var/www/nextcloud /data-ro/nextcloud; \
