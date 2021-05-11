@@ -1,7 +1,9 @@
 
-[v1.36.1](https://github.com/nextcloud/nextcloudpi/commit/8e7579d) (2021-05-09) lamp: allow only TLSv12 and TLSv13
+[v1.36.2](https://github.com/nextcloud/nextcloudpi/commit/fccc04c) (2021-05-11) ncp-web: fix port checking
 
-[v1.36.0](https://github.com/nextcloud/nextcloudpi/commit/24b6018) (2020-09-16) Namecheap dynamic DNS client
+[v1.36.1](https://github.com/nextcloud/nextcloudpi/commit/c7f2939) (2021-05-09) lamp: allow only TLSv12 and TLSv13
+
+[v1.36.0 ](https://github.com/nextcloud/nextcloudpi/commit/24b6018) (2020-09-16) Namecheap dynamic DNS client
 
 [v1.35.2 ](https://github.com/nextcloud/nextcloudpi/commit/bfab195) (2021-04-29) ncp-web: fix display of big files for 32 bit
 

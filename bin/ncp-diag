@@ -64,15 +64,19 @@ echo "internet check|$( ping -W 2 -w 1 -q github.com &>/dev/null && echo ok || e
 
 function is_port_open()
 {
-  local PORT=$1
+  local port=$1
+  local public_ip
+  public_ip="$(curl icanhazip.com 2>/dev/null)" || { echo "closed"; return 1; }
+
   local tmp_file=$(mktemp)
-  local v=$(wget -T2 -t1 -q --keep-session-cookies --save-cookies $tmp_file https://portchecker.co -O - | grep -oP "_csrf\" value=\"\K.*\"")
-  if [[ "$v" != "" ]]; then
-    wget -T2 -t1 -q   --load-cookies $tmp_file https://portchecker.co --post-data "port=$PORT&_csrf=${v::-1}" -O - \
+  local token=$(wget -T2 -t1 -qO- --keep-session-cookies --save-cookies $tmp_file https://portchecker.co | grep -oP "_csrf\" value=\"\K.*\"")
+  rm $tmp_file
+
+  if [[ "${token}" != "" ]]; then
+    wget -T2 -t1 -qO- --load-cookies $tmp_file https://portchecker.co --post-data "target_ip=${public_ip}&port=${port}&_csrf=${token::-1}" \
     | grep -q '<span class="green">open</span>' && { echo "open"; return 1; }
   fi
   echo "closed"
-  rm $tmp_file
 }
 
 echo "port check 80|$( is_port_open 80 )"
