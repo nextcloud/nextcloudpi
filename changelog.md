@@ -1,15 +1,17 @@
 
-[v1.36.2](https://github.com/nextcloud/nextcloudpi/commit/fccc04c) (2021-05-11) ncp-web: fix port checking
+[v1.36.3](https://github.com/nextcloud/nextcloudpi/commit/4d4717d) (2021-05-13) ncp-web: fix port checking for IPv6 dual stack
 
-[v1.36.1](https://github.com/nextcloud/nextcloudpi/commit/c7f2939) (2021-05-09) lamp: allow only TLSv12 and TLSv13
+[v1.36.2](https://github.com/nextcloud/nextcloudpi/commit/1a8ac71) (2021-05-11) ncp-web: fix port checking
 
-[v1.36.0 ](https://github.com/nextcloud/nextcloudpi/commit/24b6018) (2020-09-16) Namecheap dynamic DNS client
+[v1.36.1 ](https://github.com/nextcloud/nextcloudpi/commit/67aa599) (2021-05-09) lamp: allow only TLSv12 and TLSv13
 
-[v1.35.2 ](https://github.com/nextcloud/nextcloudpi/commit/bfab195) (2021-04-29) ncp-web: fix display of big files for 32 bit
+[v1.36.0 ](https://github.com/nextcloud/nextcloudpi/commit/7aef967) (2020-09-16) Namecheap dynamic DNS client
 
-[v1.35.1 ](https://github.com/nextcloud/nextcloudpi/commit/e64ca34) (2021-04-29) ncp-web: fix backup download for big files in 32-bit
+[v1.35.2 ](https://github.com/nextcloud/nextcloudpi/commit/8d76a6b) (2021-04-29) ncp-web: fix display of big files for 32 bit
 
-[v1.35.0](https://github.com/nextcloud/nextcloudpi/commit/be30663) (2021-02-27) upgrade to NC20.0.8
+[v1.35.1 ](https://github.com/nextcloud/nextcloudpi/commit/0ee3aa9) (2021-04-29) ncp-web: fix backup download for big files in 32-bit
+
+[v1.35.0 ](https://github.com/nextcloud/nextcloudpi/commit/be30663) (2021-02-27) upgrade to NC20.0.8
 
 [v1.34.9 ](https://github.com/nextcloud/nextcloudpi/commit/7d15924) (2021-01-19) nc-autoupdate-ncp: Append to log instead of replace
 

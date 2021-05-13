@@ -111,7 +111,8 @@ else if ( $_POST['action'] == "info" )
       || strpos( $fields[1], "open" ) !== false )
       $class = 'ok-field';
     if ( strpos( $fields[1], "down"  ) !== false
-      || strpos( $fields[1], "error" ) !== false )
+      || strpos( $fields[1], "error" ) !== false
+      || strpos( $fields[1], "closed") !== false )
       $class = 'error-field';
 
     $table .= "<td class=\"$class\">$fields[1]</td>";
