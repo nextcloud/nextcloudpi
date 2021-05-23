@@ -34,7 +34,6 @@ use OCP\IPreview;
 use OCP\IUserManager;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class PreGenerate extends Command {
@@ -131,7 +130,7 @@ class PreGenerate extends Command {
 		// random sleep between 0 and 50ms to avoid collision between 2 processes
 		usleep(rand(0,50000));
 
-		while(true) {
+		while (true) {
 			$qb = $this->connection->getQueryBuilder();
 			$row = $qb->select('*')
 				->from('preview_generation')
@@ -144,17 +143,17 @@ class PreGenerate extends Command {
 				break;
 			}
 
-			$qb->update('preview_generation')
-			   ->where($qb->expr()->eq('id', $qb->createNamedParameter($row['id'])))
-			   ->set('locked', $qb->createNamedParameter(true))
-			   ->execute();
+                       $qb->update('preview_generation')
+                          ->where($qb->expr()->eq('id', $qb->createNamedParameter($row['id'])))
+                          ->set('locked', $qb->createNamedParameter(true))
+                          ->execute();
                         try {
-				$this->processRow($row);
-			} finally {
-				$qb->delete('preview_generation')
-			            ->where($qb->expr()->eq('id', $qb->createNamedParameter($row['id'])))
-				    ->execute();
-			}
+                                $this->processRow($row);
+                       } finally {
+                               $qb->delete('preview_generation')
+                                   ->where($qb->expr()->eq('id', $qb->createNamedParameter($row['id'])))
+                                   ->execute();
+                       }
 		}
 	}
 
@@ -165,6 +164,9 @@ class PreGenerate extends Command {
 		if ($user === null) {
 			return;
 		}
+
+		\OC_Util::tearDownFS();
+		\OC_Util::setupFS($row['uid']);
 
 		try {
 			$userFolder = $this->rootFolder->getUserFolder($user->getUID());
@@ -193,24 +195,20 @@ class PreGenerate extends Command {
 			}
 
 			try {
-				foreach ($this->sizes['square'] as $size) {
-					$this->previewGenerator->getPreview($file, $size, $size, true);
-				}
-
-				// Height previews
-				foreach ($this->sizes['height'] as $height) {
-					$this->previewGenerator->getPreview($file, -1, $height, false);
-				}
-
-				// Width previews
-				foreach ($this->sizes['width'] as $width) {
-					$this->previewGenerator->getPreview($file, $width, -1, false);
-				}
+				$specifications = array_merge(
+					array_map(function ($squareSize) {
+						return ['width' => $squareSize, 'height' => $squareSize, 'crop' => true];
+					}, $this->sizes['square']),
+					array_map(function ($heightSize) {
+						return ['width' => -1, 'height' => $heightSize, 'crop' => false];
+					}, $this->sizes['height']),
+					array_map(function ($widthSize) {
+						return ['width' => $widthSize, 'height' => -1, 'crop' => false];
+					}, $this->sizes['width'])
+				);
+				$this->previewGenerator->generatePreviews($file, $specifications);
 			} catch (NotFoundException $e) {
-                            if ($this->output->getVerbosity() > OutputInterface::VERBOSITY_VERBOSE) {
-				$error = $e->getMessage();
-				$this->output->writeln("<error>${error} " . $file->getPath() . " not found.</error>");
-                            }
+				// Maybe log that previews could not be generated?
 			} catch (\InvalidArgumentException $e) {
 				$error = $e->getMessage();
 				$this->output->writeln("<error>${error}</error>");

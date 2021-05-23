@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * @copyright Copyright (c) 2016, Roeland Jago Douma <roeland@famdouma.nl>
@@ -21,14 +22,16 @@ declare(strict_types=1);
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-namespace OCA\PreviewGenerator;
+namespace OCA\PreviewGenerator\Listeners;
 
+use OCP\EventDispatcher\Event;
+use OCP\EventDispatcher\IEventListener;
+use OCP\Files\Events\Node\NodeWrittenEvent;
 use OCP\Files\Folder;
-use OCP\Files\Node;
 use OCP\IDBConnection;
 use OCP\IUserManager;
 
-class Watcher {
+class PostWriteListener implements IEventListener {
 
 	/** @var IDBConnection */
 	private $connection;
@@ -42,7 +45,12 @@ class Watcher {
 		$this->userManager = $userManager;
 	}
 
-	public function postWrite(Node $node) {
+	public function handle(Event $event): void {
+		if (!($event instanceof NodeWrittenEvent)) {
+			return;
+		}
+
+		$node = $event->getNode();
 		$absPath = ltrim($node->getPath(), '/');
 		$owner = explode('/', $absPath)[0];
 
