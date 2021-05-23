@@ -30,6 +30,7 @@ use OCP\Files\File;
 use OCP\Files\Folder;
 use OCP\Files\IRootFolder;
 use OCP\Files\NotFoundException;
+use OCP\Files\StorageNotAvailableException;
 use OCP\IConfig;
 use OCP\IDBConnection;
 use OCP\IPreview;
@@ -115,7 +116,7 @@ class Generate extends Command {
 		$inputPath = $input->getOption('path');
 		if ($inputPath) {
 			$inputPath = '/' . trim($inputPath, '/');
-			list (, $userId,) = explode('/', $inputPath, 3);
+			[, $userId,] = explode('/', $inputPath, 3);
 			$user = $this->userManager->get($userId);
 			if ($user !== null) {
 				$this->generatePathPreviews($user, $inputPath);
@@ -148,7 +149,7 @@ class Generate extends Command {
 			return;
 		}
 		$pathFolder = $userFolder->get($relativePath);
-		$this->processFolder($pathFolder, $user);
+		$this->parseFolder($pathFolder, $user);
 	}
 
 	private function generateUserPreviews(IUser $user) {
@@ -156,88 +157,94 @@ class Generate extends Command {
 		\OC_Util::setupFS($user->getUID());
 
 		$userFolder = $this->rootFolder->getUserFolder($user->getUID());
-		$this->processFolder($userFolder, $user);
+		$this->parseFolder($userFolder, $user);
 	}
 
-	private function processFolder(Folder $folder, IUser $user) {
-		// Respect the '.nomedia' file. If present don't traverse the folder
-		if ($folder->nodeExists('.nomedia')) {
-			$this->output->writeln('Skipping folder ' . $folder->getPath());
-			return;
-		}
+	private function parseFolder(Folder $folder, IUser $user) {
+		try {
+			// Respect the '.nomedia' file. If present don't traverse the folder
+			if ($folder->nodeExists('.nomedia')) {
+				$this->output->writeln('Skipping folder ' . $folder->getPath());
+				return;
+			}
 
-		// random sleep between 0 and 50ms to avoid collision between 2 processes
-		usleep(rand(0,50000));
+			// random sleep between 0 and 50ms to avoid collision between 2 processes
+			usleep(rand(0,50000));
 
-		$this->output->writeln('Scanning folder ' . $folder->getPath());
+			$this->output->writeln('Scanning folder ' . $folder->getPath());
 
-		$nodes = $folder->getDirectoryListing();
+			$nodes = $folder->getDirectoryListing();
 
-		foreach ($nodes as $node) {
-			if ($node instanceof Folder) {
-				$this->processFolder($node, $user);
-			} else if ($node instanceof File) {
-				$is_locked = false;
-				$qb = $this->connection->getQueryBuilder();
-				$row = $qb->select('*')
-                                  ->from('preview_generation')
-                                  ->where($qb->expr()->eq('file_id', $qb->createNamedParameter($node->getId())))
-                                  ->setMaxResults(1)
-                                  ->execute()
-                                  ->fetch();
-				if ($row !== false) {
-					if ($row['locked'] == 1) {
-						// already being processed
-						$is_locked = true;
+			foreach ($nodes as $node) {
+				if ($node instanceof Folder) {
+					$this->parseFolder($node, $user);
+				} else if ($node instanceof File) {
+					$is_locked = false;
+					$qb = $this->connection->getQueryBuilder();
+					$row = $qb->select('*')
+					  ->from('preview_generation')
+					  ->where($qb->expr()->eq('file_id', $qb->createNamedParameter($node->getId())))
+					  ->setMaxResults(1)
+					  ->execute()
+					  ->fetch();
+					if ($row !== false) {
+						if ($row['locked'] == 1) {
+							// already being processed
+							$is_locked = true;
+						} else {
+							$qb->update('preview_generation')
+							   ->where($qb->expr()->eq('file_id', $qb->createNamedParameter($node->getId())))
+							   ->set('locked', $qb->createNamedParameter(true))
+							   ->execute();
+						}
 					} else {
-						$qb->update('preview_generation')
-						   ->where($qb->expr()->eq('file_id', $qb->createNamedParameter($node->getId())))
-						   ->set('locked', $qb->createNamedParameter(true))
+						$qb->insert('preview_generation')
+						   ->values([
+						       'uid'     => $qb->createNamedParameter($user->getUID()),
+						       'file_id' => $qb->createNamedParameter($node->getId()),
+						       'locked'  => $qb->createNamedParameter(true),
+						   ])
 						   ->execute();
 					}
-				} else {
-					$qb->insert('preview_generation')
-				           ->values([
-					       'uid'     => $qb->createNamedParameter($user->getUID()),
-					       'file_id' => $qb->createNamedParameter($node->getId()),
-					       'locked'  => $qb->createNamedParameter(true),
-				           ])
-					   ->execute();
-				}
 
-				if ($is_locked === false) {
-					try {
-						$this->processFile($node);
-					} finally {
-						$qb->delete('preview_generation')
-	 					    ->where($qb->expr()->eq('file_id', $qb->createNamedParameter($node->getId())))
-						    ->execute();
+					if ($is_locked === false) {
+						try {
+							$this->parseFile($node);
+						} finally {
+							$qb->delete('preview_generation')
+							    ->where($qb->expr()->eq('file_id', $qb->createNamedParameter($node->getId())))
+							    ->execute();
+						}
 					}
 				}
 			}
+		} catch (StorageNotAvailableException $e) {
+			$this->output->writeln(sprintf('<error>Storage for folder folder %s is not available: %s</error>',
+				$folder->getPath(),
+				$e->getHint()
+			));
 		}
 	}
 
-	private function processFile(File $file) {
+	private function parseFile(File $file) {
 		if ($this->previewGenerator->isMimeSupported($file->getMimeType())) {
 			if ($this->output->getVerbosity() > OutputInterface::VERBOSITY_VERBOSE) {
 				$this->output->writeln('Generating previews for ' . $file->getPath());
 			}
 
 			try {
-				foreach ($this->sizes['square'] as $size) {
-					$this->previewGenerator->getPreview($file, $size, $size, true);
-				}
-
-				// Height previews
-				foreach ($this->sizes['height'] as $height) {
-					$this->previewGenerator->getPreview($file, -1, $height, false);
-				}
-
-				// Width previews
-				foreach ($this->sizes['width'] as $width) {
-					$this->previewGenerator->getPreview($file, $width, -1, false);
-				}
+				$specifications = array_merge(
+					array_map(function ($squareSize) {
+						return ['width' => $squareSize, 'height' => $squareSize, 'crop' => true];
+					}, $this->sizes['square']),
+					array_map(function ($heightSize) {
+						return ['width' => -1, 'height' => $heightSize, 'crop' => false];
+					}, $this->sizes['height']),
+					array_map(function ($widthSize) {
+						return ['width' => $widthSize, 'height' => -1, 'crop' => false];
+					}, $this->sizes['width'])
+				);
+				$this->previewGenerator->generatePreviews($file, $specifications);
 			} catch (NotFoundException $e) {
 				// Maybe log that previews could not be generated?
 			} catch (\InvalidArgumentException $e) {
@@ -246,5 +253,4 @@ class Generate extends Command {
 			}
 		}
 	}
-
 }

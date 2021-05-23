@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * @copyright Copyright (c) 2016, Roeland Jago Douma <roeland@famdouma.nl>
@@ -23,30 +24,24 @@ declare(strict_types=1);
  */
 namespace OCA\PreviewGenerator\AppInfo;
 
-use OCA\PreviewGenerator\Watcher;
+use OCA\PreviewGenerator\Listeners\PostWriteListener;
 use OCP\AppFramework\App;
-use OCP\AppFramework\IAppContainer;
-use OCP\Files\IRootFolder;
-use OCP\Files\Node;
+use OCP\AppFramework\Bootstrap\IBootContext;
+use OCP\AppFramework\Bootstrap\IBootstrap;
+use OCP\AppFramework\Bootstrap\IRegistrationContext;
+use OCP\Files\Events\Node\NodeWrittenEvent;
 
-class Application extends App {
-
-	const APPNAME='previewgenerator';
+class Application extends App implements IBootstrap {
+	public const APPNAME='previewgenerator';
 
 	public function __construct() {
 		parent::__construct(self::APPNAME);
-
-		$container = $this->getContainer();
-		$this->connectWatcher($container);
 	}
 
-	private function connectWatcher(IAppContainer $container) {
-		/** @var IRootFolder $root */
-		$root = $container->query(IRootFolder::class);
-		$root->listen('\OC\Files', 'postWrite', function (Node $node) use ($container) {
-			/** @var Watcher $watcher */
-			$watcher = $container->query(Watcher::class);
-			$watcher->postWrite($node);
-		});
+	public function register(IRegistrationContext $context): void {
+		$context->registerEventListener(NodeWrittenEvent::class, PostWriteListener::class);
+	}
+
+	public function boot(IBootContext $context): void {
 	}
 }

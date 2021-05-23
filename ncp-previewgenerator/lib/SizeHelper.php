@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * @copyright Copyright (c) 2017, Roeland Jago Douma <roeland@famdouma.nl>
@@ -27,7 +28,6 @@ namespace OCA\PreviewGenerator;
 use OCP\IConfig;
 
 class SizeHelper {
-
 	public static function calculateSizes(IConfig $config): array {
 		/*
 		 * First calculate the systems max sizes
@@ -43,19 +43,19 @@ class SizeHelper {
 		$maxH = (int)$config->getSystemValue('preview_max_y', 4096);
 
 		$s = 32;
-		while($s <= $maxW || $s <= $maxH) {
+		while ($s <= $maxW || $s <= $maxH) {
 			$sizes['square'][] = $s;
 			$s *= 2;
 		}
 
 		$w = 32;
-		while($w <= $maxW) {
+		while ($w <= $maxW) {
 			$sizes['width'][] = $w;
 			$w *= 2;
 		}
 
 		$h = 32;
-		while($h <= $maxH) {
+		while ($h <= $maxH) {
 			$sizes['height'][] = $h;
 			$h *= 2;
 		}
@@ -66,7 +66,7 @@ class SizeHelper {
 		 * Note that only powers of 2 matter but if users supply different
 		 * stuff it is their own fault and we just ignore it
 		 */
-		$getCustomSizes = function(IConfig $config, $key) {
+		$getCustomSizes = function (IConfig $config, $key) {
 			$TXT = $config->getAppValue('previewgenerator', $key, '');
 			$values = [];
 			if ($TXT !== '') {

@@ -1,3 +1,32 @@
+## 3.1.1 - 2021-01-27
+### Changed
+- Use new batch preview method
+
+### Fixed
+- Init filesystem for the users
+- Handle unavailable storages more graceful
+
+## 3.1.0 -2020-12-21
+### Added
+- Nextcloud 21 support
+
+## 3.0.0 - 2020-08-31
+### Added
+- Nextcloud 20 support
+- IBootstap support
+- Listen to new events hence only initialize the FS if needed
+
+### Removed
+- Nextcloud <20 support
+
+## 2.3.0 - 2020-04-03
+### Added
+- Nextcloud 19 support
+
+## 2.2.0 - 2019-12-05
+### Added
+- Nextcloud 18 support
+
 ## 2.1.0 - 2019-03-05
 ### Added
 - Nextcloud 16 support
