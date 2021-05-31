@@ -66,18 +66,7 @@ function is_port_open()
 {
   local port=$1
   local public_ip
-  public_ip="$(dig +short -4 @resolver1.opendns.com a myip.opendns.com)"
-  [[ "$public_ip" =~ ^([0-9]{1,3}).([0-9]{1,3}).([0-9]{1,3}).([0-9]{1,3})$ ]] \
-    || public_ip="$(dig +short -6 @resolver1.opendns.com aaaa myip.opendns.com)"
-  
-  if [[ "$public_ip" =~ ^";;" ]]
-  then
-    echo "closed"
-    return 1
-  fi
-  
-  public_ip="$(dig +short -4 @resolver1.opendns.com a myip.opendns.com)"
-  [[ 
+  public_ip="$(curl https://icanhazip.com 2>/dev/null)" || { echo "closed"; return 1; }
 
   local tmp_file=$(mktemp)
   local token=$(wget -T2 -t1 -qO- --keep-session-cookies --save-cookies $tmp_file https://portchecker.co | grep -oP "_csrf\" value=\"\K.*\"")
