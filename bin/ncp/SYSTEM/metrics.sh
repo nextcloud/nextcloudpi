@@ -23,7 +23,8 @@ install() {
 
   a2enmod proxy_http
 
-  service prometheus-node-exporter disable
+  # TODO: Docker support?
+  systemctl disable prometheus-node-exporter
   service prometheus-node-exporter stop
   service apache2 restart
 
@@ -36,7 +37,7 @@ configure() {
   then
     bash /usr/local/etc/ncp-templates/nextcloud.conf.sh --defaults > /etc/apache2/sites-available/nextcloud.conf
 
-    service prometheus-node-exporter disable
+    systemctl disable prometheus-node-exporter
     service prometheus-node-exporter stop
   else
     [[ -n "$USER" ]] || {
@@ -64,7 +65,7 @@ configure() {
       return 1
     }
 
-    service prometheus-node-exporter enable
+    systemctl enable prometheus-node-exporter
     service prometheus-node-exporter start
 
     echo "Metric endpoint enabled. You can test it at https://nextcloudpi.local/metrics/system (or under your NC domain under the same path)"
