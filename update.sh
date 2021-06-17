@@ -63,7 +63,7 @@ mkdir -p "$CONFDIR"
 cp -r bin/* /usr/local/bin/
 find etc -maxdepth 1 -type f ! -path etc/ncp.cfg -exec cp '{}' /usr/local/etc \;
 cp -n etc/ncp.cfg /usr/local/etc
-cp -r etc/ncp-templates/* /usr/local/etc/
+cp -r etc/ncp-templates /usr/local/etc/
 
 # install new entries of ncp-config and update others
 for file in etc/ncp-config.d/*; do
