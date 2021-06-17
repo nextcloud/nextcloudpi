@@ -18,7 +18,9 @@ install() {
   (
 
   set -e
-  cp /usr/local/etc/ncp-templates/prometheus-node-exporter.defaults /etc/default/prometheus-node-exporter
+  cat > /etc/default/prometheus-node-exporter <<'EOF'
+ARGS="--collector.filesystem.ignored-mount-points=\"^/(dev|proc|run|sys|mnt|var/log|var/lib/docker)($|/)\""
+EOF
   apt-get update && apt-get install -y --no-install-recommends prometheus-node-exporter
 
   # TODO: Docker support?
