@@ -20,10 +20,11 @@ install() {
   set -e
   cp /usr/local/etc/ncp-templates/prometheus-node-exporter.defaults /etc/default/prometheus-node-exporter
   apt-get update && apt-get install -y --no-install-recommends prometheus-node-exporter
-    service prometheus-node-exporter disable
-    service prometheus-node-exporter stop
 
   a2enmod proxy_http
+
+  service prometheus-node-exporter disable
+  service prometheus-node-exporter stop
   service apache2 restart
 
   )

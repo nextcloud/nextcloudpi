@@ -36,6 +36,7 @@ nc-zram
 SSH
 fail2ban
 NFS
+metrics
 "
 
 # better use a designated container
