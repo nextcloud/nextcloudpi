@@ -24,6 +24,7 @@ install() {
     service prometheus-node-exporter stop
 
   a2enmod proxy_http
+  service apache2 restart
 
   )
 }
