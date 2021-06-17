@@ -21,12 +21,9 @@ install() {
   cp /usr/local/etc/ncp-templates/prometheus-node-exporter.defaults /etc/default/prometheus-node-exporter
   apt-get update && apt-get install -y --no-install-recommends prometheus-node-exporter
 
-  a2enmod proxy_http
-
   # TODO: Docker support?
   systemctl disable prometheus-node-exporter
   service prometheus-node-exporter stop
-  service apache2 restart
 
   )
 }
