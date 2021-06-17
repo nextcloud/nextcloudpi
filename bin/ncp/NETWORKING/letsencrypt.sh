@@ -54,11 +54,6 @@ configure()
   local DOMAIN_LOWERCASE="${DOMAIN,,}"
 
   [[ "$DOMAIN" == "" ]] && { echo "empty domain"; return 1; }
-#
-#  # Configure Apache
-#  grep -q ServerName $nc_vhostcfg && \
-#    sed -i "s|ServerName .*|ServerName $DOMAIN|" $nc_vhostcfg || \
-#    sed -i "/DocumentRoot/aServerName $DOMAIN" $nc_vhostcfg
 
   # Do it
   local domain_string=""
