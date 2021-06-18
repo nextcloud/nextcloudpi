@@ -3,7 +3,13 @@
 set -e
 source /usr/local/etc/library.sh
 source "${BINDIR}/NETWORKING/letsencrypt.sh"
-source "${BINDIR}/SYSTEM/metrics.sh"
+
+if [[ "$DOCKERBUILD" == 1 ]]
+then
+  source "${BINDIR}/SYSTEM/metrics.sh"
+else
+  tmpl_metrics_enabled(){ return 1; }
+fi
 
 echo "### DO NOT EDIT! THIS FILE HAS BEEN AUTOMATICALLY GENERATED. CHANGES WILL BE OVERWRITTEN ###"
 echo ""
