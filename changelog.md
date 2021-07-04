@@ -1,7 +1,9 @@
 
-[v1.36.3](https://github.com/nextcloud/nextcloudpi/commit/4d4717d) (2021-05-13) ncp-web: fix port checking for IPv6 dual stack
+[v1.37.0](https://github.com/nextcloud/nextcloudpi/commit/adcb3e2) (2021-07-03) upgrade to NC20.0.11
 
-[v1.36.2](https://github.com/nextcloud/nextcloudpi/commit/1a8ac71) (2021-05-11) ncp-web: fix port checking
+[v1.36.3](https://github.com/nextcloud/nextcloudpi/commit/7b809d1) (2021-05-13) ncp-web: fix port checking for IPv6 dual stack
+
+[v1.36.2 ](https://github.com/nextcloud/nextcloudpi/commit/1a8ac71) (2021-05-11) ncp-web: fix port checking
 
 [v1.36.1 ](https://github.com/nextcloud/nextcloudpi/commit/67aa599) (2021-05-09) lamp: allow only TLSv12 and TLSv13
 
