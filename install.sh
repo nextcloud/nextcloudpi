@@ -15,7 +15,7 @@ BRANCH="${BRANCH:-master}"
 set -e$DBG
 
 TMPDIR="$(mktemp -d /tmp/nextcloudpi.XXXXXX || (echo "Failed to create temp dir. Exiting" >&2 ; exit 1) )"
-trap "rm -rf \"${TMPDIR}\" ; exit 0" 0 1 2 3 15
+trap "rm -rf \"${TMPDIR}\"" 0 1 2 3 15
 
 [[ ${EUID} -ne 0 ]] && {
   printf "Must be run as root. Try 'sudo $0'\n"
