@@ -29,6 +29,7 @@ suite_name = "nextcloud tests"
 test_cfg = 'test_cfg.txt'
 test_log = 'test_log.txt'
 
+
 class tc:
     "terminal colors"
     brown='\033[33m'
@@ -36,6 +37,7 @@ class tc:
     green='\033[32m'
     red='\033[31m'
     normal='\033[0m'
+
 
 class Test:
     title  = "test"
@@ -67,22 +69,25 @@ class Test:
         with open(test_log, 'w') as logfile:
             config.write(logfile)
 
+
 def usage():
     "Print usage"
     print("usage: nextcloud_tests.py [--new] [ip]")
     print("--new removes saved configuration")
 
+
 def signal_handler(sig, frame):
         sys.exit(0)
 
-def test_nextcloud(IP):
+
+def test_nextcloud(IP, nc_port):
     """ Login and assert admin page checks"""
     test = Test()
     driver = webdriver.Firefox(service_log_path='/dev/null')
     driver.implicitly_wait(60)
     test.new("nextcloud page")
     try:
-        driver.get("https://" + IP + "/index.php/settings/admin/overview")
+        driver.get(f"https://{IP}:{nc_port}/index.php/settings/admin/overview")
     except:
         test.check(False)
         print(tc.red + "error:" + tc.normal + " unable to reach " + tc.yellow + IP + tc.normal)
@@ -106,6 +111,7 @@ def test_nextcloud(IP):
         test.check(False)
 
     driver.close()
+
 
 if __name__ == "__main__":
     signal.signal(signal.SIGINT, signal_handler)
@@ -155,9 +161,10 @@ if __name__ == "__main__":
 
     # test
     IP = args[0] if len(args) > 0 else 'localhost'
+    nc_port = args[1] if len(args) > 1 else "443"
     print("Nextcloud tests " + tc.yellow + IP + tc.normal)
     print("---------------------------")
-    test_nextcloud(IP)
+    test_nextcloud(IP, nc_port)
 
 # License
 #

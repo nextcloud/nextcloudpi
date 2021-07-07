@@ -32,6 +32,7 @@ suite_name = "activation tests"
 test_cfg = 'test_cfg.txt'
 test_log = 'test_log.txt'
 
+
 class tc:
     "terminal colors"
     brown='\033[33m'
@@ -40,9 +41,11 @@ class tc:
     red='\033[31m'
     normal='\033[0m'
 
+
 def usage():
     "Print usage"
-    print("usage: activation_tests.py [ip]")
+    print("usage: activation_tests.py [ip [nc-port [admin-port]]]")
+
 
 class Test:
     title  = "test"
@@ -74,15 +77,18 @@ class Test:
         with open(test_log, 'w') as logfile:
             config.write(logfile)
 
+
 def is_element_present(driver, how, what):
     try: driver.find_element(by=how, value=what)
     except NoSuchElementException: return False
     return True
 
+
 def signal_handler(sig, frame):
         sys.exit(0)
 
-def test_activation(IP):
+
+def test_activation(IP, nc_port, admin_port):
     """ Activation process checks"""
 
     # activation page
@@ -90,7 +96,7 @@ def test_activation(IP):
     driver = webdriver.Firefox(service_log_path='/dev/null')
     driver.implicitly_wait(5)
     test.new("activation opens")
-    driver.get("https://" + IP)
+    driver.get(f"https://{IP}:{nc_port}")
     test.check("NextCloudPi Activation" in driver.title)
     try:
         ncp_pass = driver.find_element_by_id("ncp-pwd").get_attribute("value")
@@ -128,13 +134,14 @@ def test_activation(IP):
     test.new("ncp-web")
     driver = webdriver.Firefox(service_log_path='/dev/null')
     try:
-        driver.get("https://ncp:" + urllib.parse.quote_plus(ncp_pass) + "@" + IP + ":4443")
+        driver.get(f"https://ncp:{urllib.parse.quote_plus(ncp_pass)}@{IP}:{admin_port}")
     except UnexpectedAlertPresentException:
         pass
     test.check("NextCloudPi Panel" in driver.title)
     test.report("first run wizard", is_element_present(driver, By.ID, "first-run-wizard"))
 
     driver.close()
+
 
 if __name__ == "__main__":
     signal.signal(signal.SIGINT, signal_handler)
@@ -155,10 +162,13 @@ if __name__ == "__main__":
             sys.exit(2)
 
     # test
+
     IP = args[0] if len(args) > 0 else 'localhost'
+    nc_port = args[1] if len(args) > 1 else "443"
+    admin_port = args[2] if len(args) > 2 else "4443"
     print("Activation tests " + tc.yellow + IP + tc.normal)
     print("---------------------------")
-    test_activation(IP)
+    test_activation(IP, nc_port, admin_port)
 
 # License
 #

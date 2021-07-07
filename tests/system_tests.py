@@ -66,9 +66,11 @@ class tc:
     red='\033[31m'
     normal='\033[0m'
 
+
 def usage():
     "Print usage"
     print("usage: system_tests.py [user@ip]")
+
 
 def is_running(process):
     "check that a process is running"
@@ -80,6 +82,7 @@ def is_running(process):
         print(tc.red + "error" + tc.normal)
     return result.returncode == 0
 
+
 def file_exists(file):
     "check that a file exists"
     print("[exists ] " + tc.brown + "{:16}".format(file) + tc.normal, end=' ')
@@ -89,6 +92,7 @@ def file_exists(file):
     else:
         print(tc.red + "error" + tc.normal)
     return result.returncode == 0
+
 
 def file_not_exists(file):
     "check that a file doesn't exist"
@@ -100,6 +104,7 @@ def file_not_exists(file):
         print(tc.red + "error" + tc.normal)
     return result.returncode == 0
 
+
 def check_processes_running(processes):
     "check that all processes are running"
     ret = True
@@ -107,6 +112,7 @@ def check_processes_running(processes):
         if not is_running(process):
             ret = False
     return ret
+
 
 def is_installed(binary):
     "check that a binary is installed"
@@ -118,6 +124,7 @@ def is_installed(binary):
         print(tc.red + "error" + tc.normal)
     return result.returncode == 0
 
+
 def check_binaries_installed(binaries):
     "check that all the binaries are installed"
     ret = True
@@ -125,6 +132,7 @@ def check_binaries_installed(binaries):
         if not is_installed(binary):
             ret = False
     return ret
+
 
 def check_files_exist(files):
     "check that all the files exist"
@@ -134,6 +142,7 @@ def check_files_exist(files):
             ret = False
     return ret
 
+
 def check_files_dont_exist(files):
     "check that all the files don't exist"
     ret = True
@@ -142,8 +151,10 @@ def check_files_dont_exist(files):
             ret = False
     return ret
 
+
 def signal_handler(sig, frame):
         sys.exit(0)
+
 
 if __name__ == "__main__":
 
