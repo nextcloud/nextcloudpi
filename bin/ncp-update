@@ -9,7 +9,7 @@
   [[ "$BRANCH" != "master" ]] && echo "INFO: updating to development branch '$BRANCH'"
 
   TMPDIR="$( mktemp -d /tmp/ncp-update.XXXXXX || ( echo "Failed to create temp dir. Exiting" >&2; exit 1 ) )"
-  trap 'ret=$?; cd /; rm -rf "${TMPDIR}"; exit $ret' EXIT
+  trap 'cd /; rm -rf "${TMPDIR}"' EXIT
 
   echo -e "Downloading updates"
   git clone --depth 20 -b "$BRANCH" -q https://github.com/nextcloud/nextcloudpi.git "$TMPDIR" || {
@@ -23,10 +23,11 @@
   ./update.sh || exit $?
 
   cd "$TMPDIR"
-  VER=$( git describe --always --tags | grep -oP "v\d+\.\d+\.\d+" )
+  git describe --always --tags --abbrev=0 2>/dev/null | grep -oP "v\d+\.\d+\.\d+" || git fetch --unshallow --tags
+  VER=$( git describe --always --tags --abbrev=0 | grep -oP "v\d+\.\d+\.\d+" )
 
   # check format
-  grep -qP "v\d+\.\d+\.\d+" <<< "$VER" || { "Error: missing version"; exit 1; }
+  grep -qP "v\d+\.\d+\.\d+" <<< "$VER" || { echo "Error: missing version"; exit 1; }
 
   echo "$VER" > /usr/local/etc/ncp-version
   echo "$VER" > /var/run/.ncp-latest-version
