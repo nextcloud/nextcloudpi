@@ -304,6 +304,10 @@ EOF
     ## other tweaks
     sed -i "s|^UMASK.*|UMASK           027|" /etc/login.defs
   fi
+
+  [[ "$ncp_update_success" == true ]] || exit 5
+
+  exit
 }
 
 configure() { :; }
