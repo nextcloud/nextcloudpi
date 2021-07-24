@@ -65,6 +65,7 @@ if [[ "$ncp_rc" == 5 ]]
 then
   /usr/local/bin/ncp-update "$BRANCH"
 fi
+run_app_unsafe post-inst.sh
 bash /usr/local/bin/ncp-provisioning.sh
 rm /.ncp-image
 
