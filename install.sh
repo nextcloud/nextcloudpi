@@ -58,7 +58,6 @@ install_app    lamp.sh
 install_app    bin/ncp/CONFIG/nc-nextcloud.sh
 run_app_unsafe bin/ncp/CONFIG/nc-nextcloud.sh
 systemctl restart mysqld # TODO this shouldn't be necessary, but somehow it's needed in Debian 9.6. Fixme
-ncp_rc=0
 install_app    ncp.sh
 run_app_unsafe bin/ncp/CONFIG/nc-init.sh
 run_app_unsafe post-inst.sh
