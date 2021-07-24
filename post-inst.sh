@@ -28,7 +28,7 @@ configure()
   find /var/log -type f -exec rm {} \;
 
   # clean build flags
-  rm /.ncp-image
+  rm -f /.ncp-image
 }
 
 # License

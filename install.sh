@@ -9,7 +9,7 @@
 #
 # more details at https://ownyourbits.com
 
-BRANCH=master
+BRANCH="${BRANCH:-master}"
 #DBG=x
 
 set -e$DBG
@@ -30,13 +30,10 @@ type mysqld  &>/dev/null && echo ">>> WARNING: existing mysqld configuration wil
 # get install code
 echo "Getting build code..."
 apt-get update
-apt-get install --no-install-recommends -y wget ca-certificates sudo lsb-release
+apt-get install --no-install-recommends -y git ca-certificates sudo lsb-release
 
-pushd "$TMPDIR"
-wget -qO- --content-disposition https://github.com/nextcloud/nextcloudpi/archive/"$BRANCH"/latest.tar.gz \
-  | tar -xz \
-  || exit 1
-cd - && cd "$TMPDIR"/nextcloudpi-"$BRANCH"
+git clone -b "${BRANCH}" https://github.com/nextcloud/nextcloudpi.git "${TMPDIR}"/nextcloudpi
+cd "${TMPDIR}"/nextcloudpi
 
 # install NCP
 echo -e "\nInstalling NextCloudPi..."
@@ -49,6 +46,8 @@ check_distro etc/ncp.cfg || {
   exit 1;
 }
 
+# indicate that this will be an image build
+touch /.ncp-image
 
 mkdir -p /usr/local/etc/ncp-config.d/
 cp etc/ncp-config.d/nc-nextcloud.cfg /usr/local/etc/ncp-config.d/
@@ -62,8 +61,10 @@ systemctl restart mysqld # TODO this shouldn't be necessary, but somehow it's ne
 install_app    ncp.sh
 run_app_unsafe bin/ncp/CONFIG/nc-init.sh
 bash /usr/local/bin/ncp-provisioning.sh
+rm /.ncp-image
 
-popd
+cd -
+rm -rf "${TMPDIR}"
 
 IFACE="$( ip r | grep "default via" | awk '{ print $5 }' | head -1 )"
 IP="$( ip a show dev "$IFACE" | grep global | grep -oP '\d{1,3}(.\d{1,3}){3}' | head -1 )"
@@ -78,8 +79,6 @@ Note: You will have to add an exception, to bypass your browser warning when you
 first load the activation and :4443 pages. You can run letsencrypt to get rid of
 the warning if you have a (sub)domain available.
 "
-
-exit 0
 
 # License
 #

@@ -9,7 +9,7 @@
   [[ "$BRANCH" != "master" ]] && echo "INFO: updating to development branch '$BRANCH'"
 
   TMPDIR="$( mktemp -d /tmp/ncp-update.XXXXXX || ( echo "Failed to create temp dir. Exiting" >&2; exit 1 ) )"
-  trap "cd /; rm -rf \"${TMPDIR}\"; exit 0" 0 1 2 3 15
+  trap 'ret=$?; cd /; rm -rf "${TMPDIR}"; exit $ret' EXIT
 
   echo -e "Downloading updates"
   git clone --depth 20 -b "$BRANCH" -q https://github.com/nextcloud/nextcloudpi.git "$TMPDIR" || {
@@ -20,7 +20,7 @@
   [[ -f /.ncp-image ]] || cd "$TMPDIR"         # update locally during build
 
   echo -e "Performing updates"
-  ./update.sh || exit 1
+  ./update.sh || exit $?
 
   cd "$TMPDIR"
   VER=$( git describe --always --tags | grep -oP "v\d+\.\d+\.\d+" )

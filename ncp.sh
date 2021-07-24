@@ -217,7 +217,7 @@ EOF
   chmod g+w           /var/run/.ncp-latest-version
 
   # Install all ncp-apps
-  bin/ncp-update $BRANCH || exit 1
+  bin/ncp-update $BRANCH || exit $?
 
   # LIMIT LOG SIZE
   grep -q maxsize /etc/logrotate.d/apache2 || sed -i /weekly/amaxsize2M /etc/logrotate.d/apache2
