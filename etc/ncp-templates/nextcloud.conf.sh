@@ -47,15 +47,20 @@ cat <<EOF
     CustomLog /var/log/apache2/nc-access.log combined
     ErrorLog  /var/log/apache2/nc-error.log
     SSLEngine on
+    SSLProxyEngine on
     SSLCertificateFile      ${LETSENCRYPT_CERT_PATH:-/etc/ssl/certs/ssl-cert-snakeoil.pem}
     SSLCertificateKeyFile ${LETSENCRYPT_KEY_PATH:-/etc/ssl/private/ssl-cert-snakeoil.key}
+
+    # For notify_push app in NC21
+    ProxyPass /push/ws ws://127.0.0.1:7867/ws
+    ProxyPass /push/ http://127.0.0.1:7867/
+    ProxyPassReverse /push/ http://127.0.0.1:7867/
 EOF
 
 if [[ "$1" != "--defaults" ]] && [[ "$METRICS_IS_ENABLED" == yes ]]
 then
 
   cat <<EOF
-    SSLProxyEngine on
 
     <Location /metrics/system>
       ProxyPass http://localhost:9100/metrics

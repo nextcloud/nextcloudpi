@@ -37,7 +37,7 @@ Vagrant.configure("2") do |config|
     # cleanup
     source etc/library.sh
     run_app_unsafe post-inst.sh
-    cd -
+    cd /
     rm -r /tmp/nextcloudpi
     systemctl disable sshd
     poweroff

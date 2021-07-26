@@ -148,12 +148,14 @@ EOF
   ncc app:install notes
   ncc app:install tasks
   ncc app:install news
+  ncc app:install notify_push
 
   ncc app:enable calendar
   ncc app:enable contacts
   ncc app:enable notes
   ncc app:enable tasks
   ncc app:enable news
+  ncc app:enable notify_push # TODO add to nc-update-nextcloud # TODO double check existence everywhere
 
   # ncp-previewgenerator
   cp -r /var/www/ncp-previewgenerator /var/www/nextcloud/apps/previewgenerator
@@ -171,6 +173,8 @@ EOF
 
   # other
   ncc config:system:set overwriteprotocol --value=https
+  ncc config:system:set overwrite.cli.url --value=https://nextcloudpi/
+  ncc config:system:set trusted_proxies 10 --value="127.0.0.1"
 
   # TODO temporary workaround for https://github.com/nextcloud/server/pull/13358
   ncc -n db:convert-filecache-bigint

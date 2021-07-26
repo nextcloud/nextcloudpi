@@ -203,6 +203,25 @@ EOF
 </VirtualHost>
 EOF
 
+  # for notify_push app in NC21
+  a2enmod proxy
+  a2enmod proxy_http
+  a2enmod proxy_wstunnel
+
+  cat > /etc/systemd/system/notify_push.service <<EOF
+[Unit]
+Description = Push daemon for Nextcloud clients
+
+[Service]
+Environment = PORT=7867 # Change if you already have something running on this port
+ExecStart = /path/to/push/binary/notify_push /path/to/nextcloud/config/config.php
+User=www-data
+
+[Install]
+WantedBy = multi-user.target
+EOF
+  [[ -f /.docker-image ]] || systemctl enable notify_push # TODO in docker
+
   # some added security
   sed -i 's|^ServerSignature .*|ServerSignature Off|' /etc/apache2/conf-enabled/security.conf
   sed -i 's|^ServerTokens .*|ServerTokens Prod|'      /etc/apache2/conf-enabled/security.conf
