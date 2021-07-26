@@ -20,7 +20,6 @@
   [[ -f /.ncp-image ]] || cd "$TMPDIR"         # update locally during build
 
   echo -e "Performing updates"
-  [[ -f "/usr/local/etc/ncp-version" ]] || echo "v0.0.0" > /usr/local/etc/ncp-version
   ./update.sh || exit $?
 
   cd "$TMPDIR"
