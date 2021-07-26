@@ -24,10 +24,10 @@
   ./update.sh || exit $?
 
   cd "$TMPDIR"
-  VER=$( git describe --always --tags | grep -oP "v\d+\.\d+\.\d+" )
+  VER=$( git describe --always --tags --abbrev=0 | grep -oP "v\d+\.\d+\.\d+" )
 
   # check format
-  grep -qP "v\d+\.\d+\.\d+" <<< "$VER" || { "Error: missing version"; exit 1; }
+  grep -qP "v\d+\.\d+\.\d+" <<< "$VER" || { echo "Error: missing version"; exit 1; }
 
   echo "$VER" > /usr/local/etc/ncp-version
   echo "$VER" > /var/run/.ncp-latest-version
