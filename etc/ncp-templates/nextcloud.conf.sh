@@ -48,6 +48,11 @@ cat <<EOF
     SSLEngine on
     SSLCertificateFile      ${LETSENCRYPT_CERT_PATH:-/etc/ssl/certs/ssl-cert-snakeoil.pem}
     SSLCertificateKeyFile ${LETSENCRYPT_KEY_PATH:-/etc/ssl/private/ssl-cert-snakeoil.key}
+
+    # For notify_push app in NC21
+    ProxyPass /push/ws ws://127.0.0.1:7867/ws
+    ProxyPass /push/ http://127.0.0.1:7867/
+    ProxyPassReverse /push/ http://127.0.0.1:7867/
 EOF
 
 if [[ "$1" != "--defaults" ]] && [[ "$METRICS_IS_ENABLED" == yes ]]
@@ -93,5 +98,5 @@ cat <<EOF
 </IfModule>
 EOF
 
-echo "Apache self check:" > /var/log/ncp.log
-apache2ctl -t > /var/log/ncp.log 2>&1
+echo "Apache self check:" >> /var/log/ncp.log
+apache2ctl -t >> /var/log/ncp.log 2>&1

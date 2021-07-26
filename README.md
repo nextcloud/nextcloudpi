@@ -16,7 +16,7 @@ Find the full documentation at [docs.nextcloudpi.com](http://docs.nextcloudpi.co
 ## Features
 
  * Debian/Raspbian 10 Buster
- * Nextcloud 20.0.12
+ * Nextcloud 21.0.2
  * Apache 2.4.25, with HTTP2 enabled
  * PHP 7.3
  * MariaDB 10
