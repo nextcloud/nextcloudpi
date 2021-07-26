@@ -256,9 +256,12 @@ EOF
     chmod a+x /etc/update-motd.d/*
 
     ## HOSTNAME AND mDNS
-    [[ -f /.docker-image ]] || $APTINSTALL avahi-daemon
+    [[ -f /.docker-image ]] || {
+      $APTINSTALL avahi-daemon
+      sed -i '/^127.0.1.1/d'           /etc/hosts
+      sed -i '$a127.0.1.1 nextcloudpi' /etc/hosts
+    }
     echo nextcloudpi > /etc/hostname
-    sed -i '$c127.0.1.1 nextcloudpi' /etc/hosts
 
     ## tag image
     [[ -f /.docker-image ]] && local DOCKER_TAG="_docker"
