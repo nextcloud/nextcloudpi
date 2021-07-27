@@ -27,7 +27,6 @@ REDISPASS="$( grep "^requirepass" /etc/redis/redis.conf | cut -f2 -d' ' )"
 
 DBADMIN=ncadmin
 DBPASSWD=$( grep password /root/.my.cnf | sed 's|password=||' )
-systemctl status mysql
 systemctl start mysql
 
 [[ "$DBPASSWD" == "default" ]] && {
