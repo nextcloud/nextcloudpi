@@ -27,7 +27,7 @@ REDISPASS="$( grep "^requirepass" /etc/redis/redis.conf | cut -f2 -d' ' )"
 
 DBADMIN=ncadmin
 DBPASSWD=$( grep password /root/.my.cnf | sed 's|password=||' )
-systemctl start mysql
+[[ -f /.docker-image ]] || systemctl start mysql
 
 [[ "$DBPASSWD" == "default" ]] && {
   DBPASSWD=$( openssl rand -base64 32 )
