@@ -62,7 +62,6 @@ install_app    ncp.sh
 run_app_unsafe bin/ncp/CONFIG/nc-init.sh
 run_app_unsafe post-inst.sh
 bash /usr/local/bin/ncp-provisioning.sh
-rm /.ncp-image
 
 cd -
 rm -rf "${TMPDIR}"
