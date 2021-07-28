@@ -15,7 +15,7 @@ BRANCH="${BRANCH:-master}"
 set -e$DBG
 
 TMPDIR="$(mktemp -d /tmp/nextcloudpi.XXXXXX || (echo "Failed to create temp dir. Exiting" >&2 ; exit 1) )"
-trap "rm -rf \"${TMPDIR}\"" 0 1 2 3 15
+trap "rm -rf \"${TMPDIR}\" ; exit 0" 0 1 2 3 15
 
 [[ ${EUID} -ne 0 ]] && {
   printf "Must be run as root. Try 'sudo $0'\n"
@@ -60,8 +60,8 @@ run_app_unsafe bin/ncp/CONFIG/nc-nextcloud.sh
 systemctl restart mysqld # TODO this shouldn't be necessary, but somehow it's needed in Debian 9.6. Fixme
 install_app    ncp.sh
 run_app_unsafe bin/ncp/CONFIG/nc-init.sh
-run_app_unsafe post-inst.sh
 bash /usr/local/bin/ncp-provisioning.sh
+rm /.ncp-image
 
 cd -
 rm -rf "${TMPDIR}"
