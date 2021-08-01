@@ -1,5 +1,7 @@
 
-[v1.37.1](https://github.com/nextcloud/nextcloudpi/commit/0a0cc5a) (2021-07-06) ncp-app: bump to NC21
+[v1.37.2](https://github.com/nextcloud/nextcloudpi/commit/637ccfe) (2021-07-31) unattended-upgrades: update raspbian origins
+
+[v1.37.1 ](https://github.com/nextcloud/nextcloudpi/commit/b1ffd70) (2021-07-06) ncp-app: bump to NC21
 
 [v1.37.0 ](https://github.com/nextcloud/nextcloudpi/commit/effdd6c) (2021-07-03) upgrade to NC20.0.11
 
