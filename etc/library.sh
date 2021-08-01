@@ -141,7 +141,7 @@ find_app_param()
   local ncp_app="$(basename "$script" .sh)"
   local cfg_file="$CFGDIR/$ncp_app.cfg"
 
-  p_num="$(find_app_param_num "$script" "$param_id")" || return 1
+  local p_num="$(find_app_param_num "$script" "$param_id")" || return 1
   jq -r ".params[$p_num].value" < "$cfg_file"
 }
 

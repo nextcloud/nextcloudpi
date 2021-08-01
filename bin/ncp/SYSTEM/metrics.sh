@@ -1,6 +1,7 @@
 #!/bin/bash
 
 is_active() {
+  systemctl is-active -q prometheus-node-exporter || return 0
   return 1
 }
 
@@ -21,7 +22,7 @@ install() {
   cat > /etc/default/prometheus-node-exporter <<'EOF'
 ARGS="--collector.filesystem.ignored-mount-points=\"^/(dev|proc|run|sys|mnt|var/log|var/lib/docker)($|/)\""
 EOF
-  apt-get update && apt-get install -y --no-install-recommends prometheus-node-exporter
+  apt_install prometheus-node-exporter
 
   # TODO: Docker support?
   systemctl disable prometheus-node-exporter
@@ -55,7 +56,7 @@ configure() {
     }
 
     local htpasswd_file="/usr/local/etc/metrics.htpasswd"
-    [[ -f "${htpasswd_file}" ]] && rm "${htpasswd_file}"
+    rm -f "${htpasswd_file}"
     echo "$PASSWORD" | htpasswd -ciB "${htpasswd_file}" metrics
 
     bash /usr/local/etc/ncp-templates/nextcloud.conf.sh > /etc/apache2/sites-available/nextcloud.conf || {
@@ -69,7 +70,9 @@ configure() {
 
     echo "Metric endpoint enabled. You can test it at https://nextcloudpi.local/metrics/system (or under your NC domain under the same path)"
   fi
-  service apache2 reload
+  echo "Apache Test:"
+  apache2ctl -t
+  bash -c "sleep 2 && service apache2 reload" &>/dev/null &
 
 
 }

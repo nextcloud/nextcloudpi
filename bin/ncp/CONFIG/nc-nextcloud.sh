@@ -179,6 +179,7 @@ EOF
     echo "ERROR: An error occured while generating the nextcloud apache2 config. Attempting safe mode..."
     bash /usr/local/etc/nextcloud.conf.sh --defaults > /etc/apache2/sites-available/nextcloud.conf || {
       echo "ERROR: Safe mode templating failed as well. Nextcloud will not work."
+      exit 1
     }
   }
   a2ensite nextcloud
