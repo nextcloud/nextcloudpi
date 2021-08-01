@@ -20,7 +20,7 @@ cat <<EOF
     DocumentRoot /var/www/nextcloud
 EOF
 
-LETSENCRYPT_DOMAIN="$(tmpl_letsencrypt_domain || true)"
+LETSENCRYPT_DOMAIN="$(tmpl_letsencrypt_domain)"
 if [[ "$1" != "--defaults" ]] && [[ -n "$LETSENCRYPT_DOMAIN" ]]
 then
   echo "    ServerName ${LETSENCRYPT_DOMAIN}"
