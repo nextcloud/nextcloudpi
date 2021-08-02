@@ -57,7 +57,7 @@ configure() {
 
     local htpasswd_file="/usr/local/etc/metrics.htpasswd"
     rm -f "${htpasswd_file}"
-    echo "$PASSWORD" | htpasswd -ciB "${htpasswd_file}" metrics
+    echo "$PASSWORD" | htpasswd -ciB "${htpasswd_file}" "$USER"
 
     bash /usr/local/etc/ncp-templates/nextcloud.conf.sh > /etc/apache2/sites-available/nextcloud.conf || {
       echo "An unexpected error occurred while configuring apache. Rolling back..." >&2
