@@ -1,8 +1,8 @@
 #!/bin/bash
 
 is_active() {
-  systemctl is-active -q prometheus-node-exporter || return 0
-  return 1
+  systemctl is-active -q prometheus-node-exporter || return 1
+  return 0
 }
 
 tmpl_metrics_enabled() {
