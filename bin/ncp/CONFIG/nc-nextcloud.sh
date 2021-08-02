@@ -175,30 +175,13 @@ EOF
 
 ## SET APACHE VHOST
   echo "Setting up Apache..."
-  cat > /etc/apache2/sites-available/nextcloud.conf <<'EOF'
-<IfModule mod_ssl.c>
-  <VirtualHost _default_:443>
-    DocumentRoot /var/www/nextcloud
-    CustomLog /var/log/apache2/nc-access.log combined
-    ErrorLog  /var/log/apache2/nc-error.log
-    SSLEngine on
-    SSLCertificateFile      /etc/ssl/certs/ssl-cert-snakeoil.pem
-    SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
-  </VirtualHost>
-  <Directory /var/www/nextcloud/>
-    Options +FollowSymlinks
-    AllowOverride All
-    <IfModule mod_dav.c>
-      Dav off
-    </IfModule>
-    LimitRequestBody 0
-    SSLRenegBufferSize 10486000
-  </Directory>
-  <IfModule mod_headers.c>
-    Header always set Strict-Transport-Security "max-age=15768000; includeSubDomains"
-  </IfModule>
-</IfModule>
-EOF
+  bash /usr/local/etc/nextcloud.conf.sh > /etc/apache2/sites-available/nextcloud.conf || {
+    echo "ERROR: An error occured while generating the nextcloud apache2 config. Attempting safe mode..."
+    bash /usr/local/etc/nextcloud.conf.sh --defaults > /etc/apache2/sites-available/nextcloud.conf || {
+      echo "ERROR: Safe mode templating failed as well. Nextcloud will not work."
+      exit 1
+    }
+  }
   a2ensite nextcloud
 
   cat > /etc/apache2/sites-available/000-default.conf <<'EOF'

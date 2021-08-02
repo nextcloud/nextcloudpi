@@ -8,10 +8,9 @@
 # More at ownyourbits.com
 #
 
-NCPCFG=${NCPCFG:-/usr/local/etc/ncp.cfg}
-CFGDIR=/usr/local/etc/ncp-config.d
-BINDIR=/usr/local/bin/ncp
-BINDIR=/usr/local/bin/ncp
+export NCPCFG=${NCPCFG:-/usr/local/etc/ncp.cfg}
+export CFGDIR=/usr/local/etc/ncp-config.d
+export BINDIR=/usr/local/bin/ncp
 
 command -v jq &>/dev/null || {
   apt-get update
@@ -110,6 +109,40 @@ function run_app()
   [[ -f "$script" ]] || { echo "file $script not found"; return 1; }
 
   run_app_unsafe "$script"
+}
+
+function find_app_param_num()
+{
+  local script="${1?}"
+  local param_id="${2?}"
+  local ncp_app="$(basename "$script" .sh)"
+  local cfg_file="$CFGDIR/$ncp_app.cfg"
+  [[ -f "$cfg_file" ]] && {
+    local cfg="$( cat "$cfg_file" )"
+    local len="$(jq '.params | length' <<<"$cfg")"
+    for (( i = 0 ; i < len ; i++ )); do
+      local p_id="$(jq -r ".params[$i].id"    <<<"$cfg")"
+      if [[ "${param_id}" == "${p_id}" ]]
+      then
+        echo "$i"
+        return 0
+      fi
+    done
+  }
+
+  return 1
+
+}
+
+find_app_param()
+{
+  local script="${1?}"
+  local param_id="${2?}"
+  local ncp_app="$(basename "$script" .sh)"
+  local cfg_file="$CFGDIR/$ncp_app.cfg"
+
+  local p_num="$(find_app_param_num "$script" "$param_id")" || return 1
+  jq -r ".params[$p_num].value" < "$cfg_file"
 }
 
 # receives a script file, no security checks

@@ -9,13 +9,23 @@
 
 
 ncdir=/var/www/nextcloud
-vhostcfg=/etc/apache2/sites-available/nextcloud.conf
+nc_vhostcfg=/etc/apache2/sites-available/nextcloud.conf
 vhostcfg2=/etc/apache2/sites-available/ncp.conf
 letsencrypt=/usr/bin/letsencrypt
 
 is_active()
 {
   [[ $( find /etc/letsencrypt/live/ -maxdepth 0 -empty | wc -l ) == 0 ]]
+}
+
+tmpl_letsencrypt_domain() {
+  (
+  . /usr/local/etc/library.sh
+  if is_active
+  then
+    find_app_param letsencrypt DOMAIN
+  fi
+  )
 }
 
 install()
@@ -47,11 +57,6 @@ configure()
   local DOMAIN_LOWERCASE="${DOMAIN,,}"
 
   [[ "$DOMAIN" == "" ]] && { echo "empty domain"; return 1; }
-
-  # Configure Apache
-  grep -q ServerName $vhostcfg && \
-    sed -i "s|ServerName .*|ServerName $DOMAIN|" $vhostcfg || \
-    sed -i "/DocumentRoot/aServerName $DOMAIN" $vhostcfg
 
   # Do it
   local domain_string=""
@@ -94,9 +99,7 @@ EOF
     chmod +x /etc/letsencrypt/renewal-hooks/deploy/ncp
 
     # Configure Apache
-    sed -i "s|SSLCertificateFile.*|SSLCertificateFile /etc/letsencrypt/live/$DOMAIN_LOWERCASE/fullchain.pem|" $vhostcfg
-    sed -i "s|SSLCertificateKeyFile.*|SSLCertificateKeyFile /etc/letsencrypt/live/$DOMAIN_LOWERCASE/privkey.pem|" $vhostcfg
-
+    bash /usr/local/etc/ncp-templates/nextcloud.conf.sh > ${nc_vhostcfg}
     sed -i "s|SSLCertificateFile.*|SSLCertificateFile /etc/letsencrypt/live/$DOMAIN_LOWERCASE/fullchain.pem|" $vhostcfg2
     sed -i "s|SSLCertificateKeyFile.*|SSLCertificateKeyFile /etc/letsencrypt/live/$DOMAIN_LOWERCASE/privkey.pem|" $vhostcfg2
 
