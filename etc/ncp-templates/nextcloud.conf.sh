@@ -28,6 +28,8 @@ then
   LETSENCRYPT_CERT_PATH="${LETSENCRYPT_CERT_BASE_PATH}/fullchain.pem"
   LETSENCRYPT_KEY_PATH="${LETSENCRYPT_CERT_BASE_PATH}/privkey.pem"
 else
+  # Make sure the default snakeoil cert exists
+  [ -f /etc/ssl/certs/ssl-cert-snakeoil.pem ] || make-ssl-cert generate-default-snakeoil --force-overwrite
   unset LETSENCRYPT_DOMAIN
 fi
 
