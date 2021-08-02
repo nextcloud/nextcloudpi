@@ -2,13 +2,21 @@
 
 set -e
 source /usr/local/etc/library.sh
+
+LETSENCRYPT_DOMAIN="$(
 source "${BINDIR}/NETWORKING/letsencrypt.sh"
+tmpl_letsencrypt_domain
+)"
+
 
 if [[ "$DOCKERBUILD" != 1 ]]
 then
+  METRICS_IS_ENABLED="$(
   source "${BINDIR}/SYSTEM/metrics.sh"
+  tmpl_metrics_enabled && echo yes || echo no
+  )"
 else
-  tmpl_metrics_enabled(){ return 1; }
+  METRICS_IS_ENABLED=no
 fi
 
 echo "### DO NOT EDIT! THIS FILE HAS BEEN AUTOMATICALLY GENERATED. CHANGES WILL BE OVERWRITTEN ###"
@@ -20,7 +28,6 @@ cat <<EOF
     DocumentRoot /var/www/nextcloud
 EOF
 
-LETSENCRYPT_DOMAIN="$(tmpl_letsencrypt_domain)"
 if [[ "$1" != "--defaults" ]] && [[ -n "$LETSENCRYPT_DOMAIN" ]]
 then
   echo "    ServerName ${LETSENCRYPT_DOMAIN}"
@@ -41,7 +48,7 @@ cat <<EOF
     SSLCertificateKeyFile ${LETSENCRYPT_KEY_PATH:-/etc/ssl/private/ssl-cert-snakeoil.key}
 EOF
 
-if [[ "$1" != "--defaults" ]] && tmpl_metrics_enabled
+if [[ "$1" != "--defaults" ]] && [[ "$METRICS_IS_ENABLED" == yes ]]
 then
 
   cat <<EOF
