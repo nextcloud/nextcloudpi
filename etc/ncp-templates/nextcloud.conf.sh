@@ -4,7 +4,7 @@ set -e
 source /usr/local/etc/library.sh
 source "${BINDIR}/NETWORKING/letsencrypt.sh"
 
-if [[ "$DOCKERBUILD" == 1 ]]
+if [[ "$DOCKERBUILD" != 1 ]]
 then
   source "${BINDIR}/SYSTEM/metrics.sh"
 else
