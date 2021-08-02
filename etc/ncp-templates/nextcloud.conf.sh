@@ -65,7 +65,7 @@ then
       <RequireAll>
         <RequireAny>
           Require host localhost
-          Require user metrics
+          Require valid-user
         </RequireAny>
       </RequireAll>
 
