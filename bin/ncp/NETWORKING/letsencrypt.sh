@@ -21,8 +21,7 @@ is_active()
 tmpl_letsencrypt_domain() {
   (
   . /usr/local/etc/library.sh
-  if is_active
-  then
+  if is_active; then
     find_app_param letsencrypt DOMAIN
   fi
   )
