@@ -3,13 +3,16 @@
 set -e
 source /usr/local/etc/library.sh
 
-LETSENCRYPT_DOMAIN="$(
-source "${BINDIR}/NETWORKING/letsencrypt.sh"
-tmpl_letsencrypt_domain
-)"
+if [[ "$1" != "--defaults" ]]
+then
+  LETSENCRYPT_DOMAIN="$(
+    source "${BINDIR}/NETWORKING/letsencrypt.sh"
+    tmpl_letsencrypt_domain
+  )"
+fi
 
 
-if [[ "$DOCKERBUILD" != 1 ]]
+if [[ "$DOCKERBUILD" != 1 ]] && [[ "$1" != "--defaults" ]]
 then
   METRICS_IS_ENABLED="$(
   source "${BINDIR}/SYSTEM/metrics.sh"
