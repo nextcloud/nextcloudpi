@@ -19,6 +19,7 @@ import os
 import getopt
 import configparser
 import signal
+import re
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
@@ -145,15 +146,20 @@ def test_nextcloud(IP, nc_port, driver):
                 raise ConfigTestFailure("There have been errors or warnings")
 
             infos = driver.find_elements_by_css_selector("#postsetupchecks > .info > li")
-            if len(infos) != 1:
-                raise ConfigTestFailure("Warnings are shown, but there isn't exactly one info message")
+            for info in infos:
+                if re.match(r'.*Your installation has no default phone region set.*', info.text):
+                    continue
+                else:
 
-            php_modules = infos[0].find_elements_by_css_selector("li")
-            if len(php_modules) != 1:
-                raise ConfigTestFailure(f"Could not find the list of php modules within the info message "
-                                        f"'{infos[0].text}'")
-            if php_modules[0].text != "imagick":
-                raise ConfigTestFailure("The list of php_modules does not equal [imagick]")
+                    # if len(infos) != 1:
+                    #     raise ConfigTestFailure("Warnings are shown, but there isn't exactly one info message")
+
+                    php_modules = infos[0].find_elements_by_css_selector("li")
+                    if len(php_modules) != 1:
+                        raise ConfigTestFailure(f"Could not find the list of php modules within the info message "
+                                                f"'{infos[0].text}'")
+                    if php_modules[0].text != "imagick":
+                        raise ConfigTestFailure("The list of php_modules does not equal [imagick]")
 
         elif not element_ok.is_displayed():
             raise ConfigTestFailure("Neither the warnings nor the ok status is displayed "
