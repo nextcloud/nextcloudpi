@@ -151,10 +151,7 @@ def test_nextcloud(IP, nc_port, driver):
                     continue
                 else:
 
-                    # if len(infos) != 1:
-                    #     raise ConfigTestFailure("Warnings are shown, but there isn't exactly one info message")
-
-                    php_modules = infos[0].find_elements_by_css_selector("li")
+                    php_modules = info.find_elements_by_css_selector("li")
                     if len(php_modules) != 1:
                         raise ConfigTestFailure(f"Could not find the list of php modules within the info message "
                                                 f"'{infos[0].text}'")
