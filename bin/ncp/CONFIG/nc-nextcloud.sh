@@ -175,9 +175,9 @@ EOF
 
 ## SET APACHE VHOST
   echo "Setting up Apache..."
-  bash /usr/local/etc/nextcloud.conf.sh > /etc/apache2/sites-available/nextcloud.conf || {
+  bash /usr/local/etc/ncp-templates/nextcloud.conf.sh > /etc/apache2/sites-available/nextcloud.conf || {
     echo "ERROR: An error occured while generating the nextcloud apache2 config. Attempting safe mode..."
-    bash /usr/local/etc/nextcloud.conf.sh --defaults > /etc/apache2/sites-available/nextcloud.conf || {
+    bash /usr/local/etc/ncp-templates/nextcloud.conf.sh --defaults > /etc/apache2/sites-available/nextcloud.conf || {
       echo "ERROR: Safe mode templating failed as well. Nextcloud will not work."
       exit 1
     }
