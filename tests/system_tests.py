@@ -164,6 +164,7 @@ def check_notify_push():
     else:
         print(tc.red + "error" + tc.normal)
         print(result.stderr)
+        print(result.stdout)
         return False
 
 
