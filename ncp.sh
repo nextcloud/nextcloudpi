@@ -201,6 +201,7 @@ while :; do
   [[ "$ip" != "" ]] && break
   sleep 3
 done
+# set "${TRUSTED_DOMAINS[ip]}"
 ncc config:system:set trusted_domains 1 --value=$ip
 EOF
 

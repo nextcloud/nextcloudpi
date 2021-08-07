@@ -104,16 +104,14 @@ EOF
     sed -i "s|SSLCertificateKeyFile.*|SSLCertificateKeyFile /etc/letsencrypt/live/$DOMAIN_LOWERCASE/privkey.pem|" $vhostcfg2
 
     # Configure Nextcloud
-    local domain_index=12
+    local domain_index="${TRUSTED_DOMAINS[letsencrypt_1]}"
     for dom in $DOMAIN $OTHER_DOMAIN; do
       [[ "$dom" != "" ]] && {
         ncc config:system:set trusted_domains $domain_index --value=$dom
         ((domain_index++))
       }
     done
-    ncc config:system:set overwrite.cli.url --value="https://${DOMAIN}/"
-    # TODO add this everywhere
-    ncc notify_push:setup "https://${DOMAIN}/push"
+    set-nc-domain "$DOMAIN"
 
     # delayed in bg so it does not kill the connection, and we get AJAX response
     bash -c "sleep 2 && service apache2 reload" &>/dev/null &

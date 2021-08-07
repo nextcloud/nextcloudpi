@@ -10,9 +10,9 @@
 
 configure()
 {
-  [[ "$DOMAIN1" != "" ]] && ncc config:system:set trusted_domains 20 --value="$DOMAIN1"
-  [[ "$DOMAIN2" != "" ]] && ncc config:system:set trusted_domains 21 --value="$DOMAIN2"
-  [[ "$DOMAIN3" != "" ]] && ncc config:system:set trusted_domains 22 --value="$DOMAIN3"
+  [[ "$DOMAIN1" != "" ]] && ncc config:system:set trusted_domains "${TRUSTED_DOMAINS[trusted_domain_1]}" --value="$DOMAIN1"
+  [[ "$DOMAIN2" != "" ]] && ncc config:system:set trusted_domains "${TRUSTED_DOMAINS[trusted_domain_2]}" --value="$DOMAIN2"
+  [[ "$DOMAIN3" != "" ]] && ncc config:system:set trusted_domains "${TRUSTED_DOMAINS[trusted_domain_3]}" --value="$DOMAIN3"
 }
 
 install(){ :; }

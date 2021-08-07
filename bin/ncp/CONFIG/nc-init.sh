@@ -107,10 +107,10 @@ EOF
   test -f /usr/local/bin/nextcloud-domain.sh && {
     test -f /.ncp-image || bash /usr/local/bin/nextcloud-domain.sh
   }
-  ncc config:system:set trusted_domains 5 --value="nextcloudpi.local"
+  ncc config:system:set trusted_domains "${TRUSTED_DOMAINS[nextcloudpi.local]}" --value="nextcloudpi.local"
   # trusted_domains 6 used by docker
-  ncc config:system:set trusted_domains 7 --value="nextcloudpi"
-  ncc config:system:set trusted_domains 8 --value="nextcloudpi.lan"
+  ncc config:system:set trusted_domains "${TRUSTED_DOMAINS[nextcloudpi]}" --value="nextcloudpi"
+  ncc config:system:set trusted_domains "${TRUSTED_DOMAINS[nextcloudpi.lan]}" --value="nextcloudpi.lan"
 
   # email
   ncc config:system:set mail_smtpmode     --value="sendmail"
@@ -173,7 +173,9 @@ EOF
 
   # other
   ncc config:system:set overwriteprotocol --value=https
-  ncc config:system:set overwrite.cli.url --value=https://nextcloudpi/
+  # TODO: Should we do it manually here?
+  # ncc config:system:set overwrite.cli.url --value=https://nextcloudpi/
+  set-nc-domain nextcloudpi
   ncc config:system:set trusted_proxies 10 --value="127.0.0.1"
 
   # TODO temporary workaround for https://github.com/nextcloud/server/pull/13358
