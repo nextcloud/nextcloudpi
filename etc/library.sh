@@ -110,7 +110,7 @@ function set-nc-domain() {
   local DOMAIN="${1?}"
   URL="https://${DOMAIN%*/}"
   # trusted_domain no 3 will always contain the overwrite domain
-  [[ "$2" == "--no-trusted-domain" ]] || ncc trusted_domains 3 --value="${DOMAIN%*/}"
+  [[ "$2" == "--no-trusted-domain" ]] || ncc config:system:set trusted_domains 3 --value="${DOMAIN%*/}"
   ncc config:system:set overwrite.cli.url --value="${URL}/"
   if ncc app:enable -q notify_push
   then
