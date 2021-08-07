@@ -173,7 +173,7 @@ EOF
   # other
   ncc config:system:set overwriteprotocol --value=https
   # TODO: Is that a good idea?
-  set-nc-domain "$(hostname)"
+  set-nc-domain "nextcloudpi"
 
   # TODO temporary workaround for https://github.com/nextcloud/server/pull/13358
   ncc -n db:convert-filecache-bigint

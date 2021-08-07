@@ -260,7 +260,7 @@ EOF
     [[ -f /.docker-image ]] || {
       $APTINSTALL avahi-daemon
       sed -i '/^127.0.1.1/d'           /etc/hosts
-      sed -i '$a127.0.1.1 nextcloudpi' /etc/hosts
+      sed -i "\$a127.0.1.1 nextcloudpi $(hostname)" /etc/hosts
     }
     echo nextcloudpi > /etc/hostname
 
