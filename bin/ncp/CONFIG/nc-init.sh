@@ -155,7 +155,6 @@ EOF
   ncc app:enable notes
   ncc app:enable tasks
   ncc app:enable news
-  ncc app:enable notify_push # TODO add to nc-update-nextcloud # TODO double check existence everywhere
 
   # ncp-previewgenerator
   cp -r /var/www/ncp-previewgenerator /var/www/nextcloud/apps/previewgenerator
@@ -173,10 +172,7 @@ EOF
 
   # other
   ncc config:system:set overwriteprotocol --value=https
-  # TODO: Should we do it manually here?
-  # ncc config:system:set overwrite.cli.url --value=https://nextcloudpi/
   set-nc-domain nextcloudpi
-  ncc config:system:set trusted_proxies 10 --value="127.0.0.1"
 
   # TODO temporary workaround for https://github.com/nextcloud/server/pull/13358
   ncc -n db:convert-filecache-bigint

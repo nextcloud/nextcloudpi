@@ -114,6 +114,7 @@ function set-nc-domain() {
   ncc config:system:set overwrite.cli.url --value="${URL}/"
   if ncc app:enable -q notify_push
   then
+    ncc config:system:set trusted_proxies 11 --value="127.0.0.1"
     ncc notify_push:setup "${URL}/push"
   fi
 }
