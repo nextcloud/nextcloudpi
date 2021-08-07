@@ -28,9 +28,10 @@ configure()
 
     a2dissite ncp-activation
     a2ensite  ncp nextcloud
+    nc_domain="$(ncc config:system:get trusted_domains "${TRUSTED_DOMAINS[nc_domain]}")"
     bash -c "sleep 1.5 && service apache2 reload \
     && ncc config:system:set trusted_proxies 10 --value=$(dig nextcloudpi +short) >> /var/log/ncp.log \
-    && ncc notify_push:setup https://nextcloudpi/push >> /var/log/ncp.log
+    && . /usr/local/etc/library.sh && set-nc-domain '${nc_domain}' >> /var/log/ncp.log
     " &>/dev/null &
   fi
 }
