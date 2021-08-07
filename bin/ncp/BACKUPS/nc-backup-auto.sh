@@ -40,7 +40,7 @@ fi
 EOF
   chmod +x /usr/local/bin/ncp-backup-auto
 
-  echo "0  3  */${BACKUPDAYS}  *  *  root  /usr/local/bin/ncp-backup-auto > /var/log/ncp.log 2>&1" > /etc/cron.d/ncp-backup-auto
+  echo "0  3  */${BACKUPDAYS}  *  *  root  /usr/local/bin/ncp-backup-auto >> /var/log/ncp.log 2>&1" > /etc/cron.d/ncp-backup-auto
   chmod 644 /etc/cron.d/ncp-backup-auto
   service cron restart
 
