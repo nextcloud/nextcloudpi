@@ -186,6 +186,12 @@ $ncc | grep -q db:add-missing-columns && $ncc db:add-missing-columns -n
 $ncc | grep -q db:add-missing-primary-keys && $ncc db:add-missing-primary-keys -n
 $ncc | grep -q db:convert-filecache-bigint && $ncc db:convert-filecache-bigint -n
 
+# Make sure, the standard for trusted domains is used and notify_push is enabled if possible
+nc_domain="$(ncc config:system:get overwrite.cli.url)"
+nc_domain="${nc_domain#http?://*}"
+nc_domain="${nc_domain%%/*}"
+set-nc-domain "${nc_domain}"
+
 # done
 ####################
 mkdir -p  "$DATADIR"/ncp-update-backups
