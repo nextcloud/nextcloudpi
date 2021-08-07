@@ -173,7 +173,7 @@ EOF
   # other
   ncc config:system:set overwriteprotocol --value=https
   ncc config:system:set overwrite.cli.url --value="https://nextcloudpi/"
-  ncc config:system:set trusted_domains "${TRUSTED_DOMAINS[nc_domain]}" --value="https://nextcloudpi/"
+  ncc config:system:set trusted_domains "${TRUSTED_DOMAINS[nc_domain]}" --value="nextcloudpi"
 
   # TODO temporary workaround for https://github.com/nextcloud/server/pull/13358
   ncc -n db:convert-filecache-bigint
