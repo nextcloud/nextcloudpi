@@ -13,8 +13,8 @@ export CFGDIR=/usr/local/etc/ncp-config.d
 export BINDIR=/usr/local/bin/ncp
 
 export TRUSTED_DOMAINS=(
-  [ip]=1 [dnsmasq]=2 [nc_domain]=3 ["nextcloudpi.local"]=5 [docker_overwrite]=6
-  [nextcloudpi]=7 ["nextcloudpi.lan"]=8 [public_ip]=11 [letsencrypt_1]=12
+  [ip]=1 [dnsmasq]=2 [nc_domain]=3 [nextcloudpi-local]=5 [docker_overwrite]=6
+  [nextcloudpi]=7 [nextcloudpi-lan]=8 [public_ip]=11 [letsencrypt_1]=12
   [letsencrypt_2]=13 [trusted_domain_1]=20 [trusted_domain_1]=21 [trusted_domain_1]=22)
 
 command -v jq &>/dev/null || {
