@@ -1,5 +1,7 @@
 
-[v1.37.9](https://github.com/nextcloud/nextcloudpi/commit/c08363e) (2021-08-09) letsencrypt: ability to disable it and roll back to self-signed certificates
+[v1.38.0](https://github.com/nextcloud/nextcloudpi/commit/d5f50a1) (2021-08-09) upgrade to NC20.0.12
+
+[v1.37.9](https://github.com/nextcloud/nextcloudpi/commit/b8c1409) (2021-08-09) letsencrypt: ability to disable it and roll back to self-signed certificates
 
 [v1.37.8 ](https://github.com/nextcloud/nextcloudpi/commit/5a05b89) (2021-08-08) nextcloud: remove beta option
 
