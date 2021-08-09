@@ -1,5 +1,19 @@
 
-[v1.37.2](https://github.com/nextcloud/nextcloudpi/commit/637ccfe) (2021-07-31) unattended-upgrades: update raspbian origins
+[v1.37.9](https://github.com/nextcloud/nextcloudpi/commit/c08363e) (2021-08-09) letsencrypt: ability to disable it and roll back to self-signed certificates
+
+[v1.37.8 ](https://github.com/nextcloud/nextcloudpi/commit/5a05b89) (2021-08-08) nextcloud: remove beta option
+
+[v1.37.7 ](https://github.com/nextcloud/nextcloudpi/commit/1d696f0) (2021-08-07) nc-backup-auto.sh: don't smash ncp.log
+
+[v1.37.6 ](https://github.com/nextcloud/nextcloudpi/commit/b840245) (2021-08-03) metrics.sh: Fix inverted is_active result
+
+[v1.37.5 ](https://github.com/nextcloud/nextcloudpi/commit/fb102d2) (2021-08-03) metrics.sh: Fix USER variable being ignored
+
+[v1.37.4 ](https://github.com/nextcloud/nextcloudpi/commit/e492032) (2021-08-02) nextcloud.conf.sh: Allow any user name for metrics endpoint and fix docker build
+
+[v1.37.3 ](https://github.com/nextcloud/nextcloudpi/commit/b8a990e) (2021-08-02) Add ncp-app for prometheus (system) metrics
+
+[v1.37.2](https://github.com/nextcloud/nextcloudpi/commit/4300e30) (2021-07-31) unattended-upgrades: update raspbian origins
 
 [v1.37.1 ](https://github.com/nextcloud/nextcloudpi/commit/b1ffd70) (2021-07-06) ncp-app: bump to NC21
 

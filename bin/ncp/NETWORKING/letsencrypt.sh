@@ -53,6 +53,15 @@ EOF
 # tested with certbot 0.28.0
 configure()
 {
+  [[ "${ACTIVE}" != "yes" ]] && {
+    rm -rf /etc/letsencrypt/live/*
+    rm -f /etc/cron.weekly/letsencrypt-ncp
+    rm -f /etc/letsencrypt/renewal-hooks/deploy/ncp
+    [[ "$DOCKERBUILD" == 1 ]] && update-rc.d letsencrypt disable
+    bash /usr/local/etc/ncp-templates/nextcloud.conf.sh > ${nc_vhostcfg}
+    echo "letsencrypt certificates disabled. Using self-signed certificates instead."
+    exit 0
+  }
   local DOMAIN_LOWERCASE="${DOMAIN,,}"
 
   [[ "$DOMAIN" == "" ]] && { echo "empty domain"; return 1; }
