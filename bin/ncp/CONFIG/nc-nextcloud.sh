@@ -83,9 +83,6 @@ EOF
 
 configure()
 {
-  ## IF BETA SELECTED ADD "pre" to DOWNLOAD PATH
-  [[ "$BETA" == yes ]] && local PREFIX="pre"
-
   ## DOWNLOAD AND (OVER)WRITE NEXTCLOUD
   cd /var/www/
 
