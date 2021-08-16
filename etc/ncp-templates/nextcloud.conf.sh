@@ -93,4 +93,5 @@ cat <<EOF
 </IfModule>
 EOF
 
-apache2ctl -t
+echo "Apache self check:" > /var/log/ncp.log
+apache2ctl -t > /var/log/ncp.log 2>&1
