@@ -16,6 +16,7 @@ install()
 set -eE
 
 BACKUPFILE="$1"
+CURRENTDATADIR="$2"
 
 DBADMIN=ncadmin
 DBPASSWD="$( grep password /root/.my.cnf | sed 's|password=||' )"
@@ -60,6 +61,20 @@ tar $compress_arg -xf "$BACKUPFILE" -C "$TMPDIR" || exit 1
   exit 1
 }
 
+## SET DATADIR VARIABLE
+
+# Read out data directory from the backupfile
+SOURCEDATADIR=$( grep datadirectory "$TMPDIR"/nextcloud/config/config.php | awk '{ print $3 }' | grep -oP "[^']*[^']" | head -1 )
+
+# Test, if data directory should be read out from the backup
+if [[ "$CURRENTDATADIR" == "no" ]]; then
+	# Use data directory from the backup, which will be restored
+	DATADIR=$SOURCEDATADIR
+else
+	# Read current data directory out of the running NC instance 'config.php'
+	DATADIR=$( grep datadirectory /var/www/nextcloud/config/config.php | awk '{ print $3 }' | grep -oP "[^']*[^']" | head -1 )
+fi
+
 ## RESTORE FILES
 
 echo "restore files..."
@@ -100,7 +115,6 @@ cd "$NCDIR"
 NUMFILES=2
 if [[ $( ls "$TMPDIR" | wc -l ) -eq $NUMFILES ]]; then
 
-  DATADIR=$( grep datadirectory "$NCDIR"/config/config.php | awk '{ print $3 }' | grep -oP "[^']*[^']" | head -1 ) 
   [[ "$DATADIR" == "" ]] && { echo "Error reading data directory"; exit 1; }
 
   [[ -e "$DATADIR" ]] && { 
@@ -116,12 +130,15 @@ if [[ $( ls "$TMPDIR" | wc -l ) -eq $NUMFILES ]]; then
     btrfs subvolume create "$DATADIR" || exit 1
   }
   chown www-data:www-data "$DATADIR"
-  TMPDATA="$TMPDIR/$( basename "$DATADIR" )"
+  TMPDATA="$TMPDIR/$( basename "$SOURCEDATADIR" )"
   mv "$TMPDATA"/* "$TMPDATA"/.[!.]* "$DATADIR" || exit 1
   rmdir "$TMPDATA"                             || exit 1
 
   sudo -u www-data php occ maintenance:mode --off
 
+  sudo -u www-data php occ config:system:set datadirectory --value="$DATADIR"
+  sudo -u www-data php occ config:system:set logfile --value="$DATADIR/nextcloud.log"
+  
 ### INCLUDEDATA=no situation
 
 else
@@ -170,7 +187,7 @@ EOF
 
 configure()
 {
-  ncp-restore "$BACKUPFILE"
+  ncp-restore "$BACKUPFILE" "$CURRENTDATADIR"
 }
 
 # License
