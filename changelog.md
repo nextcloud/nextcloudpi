@@ -1,5 +1,7 @@
 
-[v1.38.4](https://github.com/nextcloud/nextcloudpi/commit/42b6038) (2021-08-17) build: make sure we clean /.ncp-image in old builds
+[v1.38.5](https://github.com/nextcloud/nextcloudpi/commit/2b45f65) (2021-08-17) nc-init: drop News for 32-bit :(
+
+[v1.38.4](https://github.com/nextcloud/nextcloudpi/commit/bb720be) (2021-08-17) build: make sure we clean /.ncp-image in old builds
 
 [v1.38.3](https://github.com/nextcloud/nextcloudpi/commit/9642cf9) (2021-08-17) unattended-upgrades: update raspbian origins
 

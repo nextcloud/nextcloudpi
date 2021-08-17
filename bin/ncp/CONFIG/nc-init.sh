@@ -144,16 +144,19 @@ EOF
 
   # enable some apps by default
   ncc app:install calendar
+  ncc app:enable  calendar
   ncc app:install contacts
+  ncc app:enable  contacts
   ncc app:install notes
+  ncc app:enable  notes
   ncc app:install tasks
-  ncc app:install news
+  ncc app:enable  tasks
 
-  ncc app:enable calendar
-  ncc app:enable contacts
-  ncc app:enable notes
-  ncc app:enable tasks
-  ncc app:enable news
+  # News dropped support for 32-bit -> https://github.com/nextcloud/news/issues/1423
+  if ! [[ "$(uname -m)" =~ "armv7" ]]; then
+    ncc app:install news
+    ncc app:enable  news
+  fi
 
   # ncp-previewgenerator
   cp -r /var/www/ncp-previewgenerator /var/www/nextcloud/apps/previewgenerator
