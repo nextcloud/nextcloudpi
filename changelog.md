@@ -1,9 +1,11 @@
 
-[v1.38.2](https://github.com/nextcloud/nextcloudpi/commit/537925c) (2021-08-16) nc-restore: try to detect old datadir in dataless restoration
+[v1.38.3](https://github.com/nextcloud/nextcloudpi/commit/1a2304a) (2021-08-17) unattended-upgrades: update raspbian origins
+
+[v1.38.2](https://github.com/nextcloud/nextcloudpi/commit/956eea4) (2021-08-16) nc-restore: try to detect old datadir in dataless restoration
 
 [v1.38.1 ](https://github.com/nextcloud/nextcloudpi/commit/4f29d94) (2021-08-16) nextcloud.conf.sh: Prevent apache config test output to end up in generated template
 
-[v1.38.0](https://github.com/nextcloud/nextcloudpi/commit/6e2dca5) (2021-08-09) upgrade to NC20.0.12
+[v1.38.0 ](https://github.com/nextcloud/nextcloudpi/commit/6e2dca5) (2021-08-09) upgrade to NC20.0.12
 
 [v1.37.9 ](https://github.com/nextcloud/nextcloudpi/commit/b8c1409) (2021-08-09) letsencrypt: ability to disable it and roll back to self-signed certificates
 
