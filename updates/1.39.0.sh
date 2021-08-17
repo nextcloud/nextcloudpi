@@ -20,6 +20,9 @@ rm "${crontab_tmp}"
 ## update nc-restore
 install_app nc-restore
 
+## make sure old images clear the ncp-image flag
+rm -f /.ncp-image
+
 # docker images only
 [[ -f /.docker-image ]] && {
   # fix build bug on v1.32.0

@@ -1,7 +1,9 @@
 
-[v1.38.3](https://github.com/nextcloud/nextcloudpi/commit/1a2304a) (2021-08-17) unattended-upgrades: update raspbian origins
+[v1.38.4](https://github.com/nextcloud/nextcloudpi/commit/42b6038) (2021-08-17) build: make sure we clean /.ncp-image in old builds
 
-[v1.38.2](https://github.com/nextcloud/nextcloudpi/commit/956eea4) (2021-08-16) nc-restore: try to detect old datadir in dataless restoration
+[v1.38.3](https://github.com/nextcloud/nextcloudpi/commit/9642cf9) (2021-08-17) unattended-upgrades: update raspbian origins
+
+[v1.38.2 ](https://github.com/nextcloud/nextcloudpi/commit/956eea4) (2021-08-16) nc-restore: try to detect old datadir in dataless restoration
 
 [v1.38.1 ](https://github.com/nextcloud/nextcloudpi/commit/4f29d94) (2021-08-16) nextcloud.conf.sh: Prevent apache config test output to end up in generated template
 
