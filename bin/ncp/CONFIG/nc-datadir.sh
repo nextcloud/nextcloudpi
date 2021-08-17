@@ -27,7 +27,7 @@ configure()
 
   ## CHECKS
   local SRCDIR
-  SRCDIR=$( cd /var/www/nextcloud; sudo -u www-data php occ config:system:get datadirectory ) || {
+  SRCDIR=$( cd /var/www/nextcloud; ncc config:system:get datadirectory ) || {
     echo -e "Error reading data directory. Is NextCloud running and configured?";
     return 1;
   }
@@ -65,7 +65,7 @@ configure()
 
   ## COPY
   cd /var/www/nextcloud
-  sudo -u www-data php occ maintenance:mode --on
+  ncc maintenance:mode --on
 
   echo "moving data directory from $SRCDIR to $DATADIR..."
 
@@ -86,7 +86,7 @@ configure()
   # tmp upload dir
   mkdir -p "$DATADIR/tmp"
   chown www-data:www-data "$DATADIR/tmp"
-  sudo -u www-data php occ config:system:set tempdirectory --value "$DATADIR/tmp"
+  ncc config:system:set tempdirectory --value "$DATADIR/tmp"
   sed -i "s|^;\?upload_tmp_dir =.*$|uploadtmp_dir = $DATADIR/tmp|" /etc/php/${PHPVER}/cli/php.ini
   sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $DATADIR/tmp|" /etc/php/${PHPVER}/fpm/php.ini
   sed -i "s|^;\?sys_temp_dir =.*$|sys_temp_dir = $DATADIR/tmp|"     /etc/php/${PHPVER}/fpm/php.ini
@@ -99,9 +99,9 @@ configure()
   sed -i "s|logpath  =.*nextcloud.log|logpath  = $DATADIR/nextcloud.log|" /etc/fail2ban/jail.local
 
   # datadir
-  sudo -u www-data php occ config:system:set datadirectory --value="$DATADIR"
-  sudo -u www-data php occ config:system:set logfile --value="$DATADIR/nextcloud.log"
-  sudo -u www-data php occ maintenance:mode --off
+  ncc config:system:set datadirectory --value="$DATADIR"
+  ncc config:system:set logfile --value="$DATADIR/nextcloud.log"
+  ncc maintenance:mode --off
 }
 
 # License
