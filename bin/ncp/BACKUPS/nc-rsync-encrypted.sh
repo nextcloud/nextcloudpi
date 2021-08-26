@@ -45,7 +45,7 @@ configure()
   }
   [[ "$INCLUDEDATA" == "yes" ]] && {
     datadestination="/$( sed 's|.*//||' <<<$DESTINATION )"/data 
-    ( duplicity full --rsync-options="-ax --rsync-path=\"mkdir -p \"$datadestination\" && rsync\"" --ssh-options="-p $PORTNUMBER" --encrypt-key "$GPGKEY" "$DATADIR" rsync://"$DESTINATION"data ) || {
+    ( duplicity full --rsync-options="-ax --rsync-path=\"mkdir -p \"$datadestination\" && rsync\"" --ssh-options="-p $PORTNUMBER" --encrypt-key "$GPGKEY" --asynchronous-upload "$DATADIR" rsync://"$DESTINATION"data ) || {
       echo -e "If incomplete backup sets exist in the remote folder please continue the backup manually with the command:\n\nduplicity full --rsync-options=\"-ax\" --ssh-options=\"-p $PORTNUMBER\" --encrypt-key "$GPGKEY" "$DATADIR" rsync://"$DESTINATION"data\n";
 	  sudo -u www-data php "$BASEDIR"/nextcloud/occ maintenance:mode --off;
       return 1;

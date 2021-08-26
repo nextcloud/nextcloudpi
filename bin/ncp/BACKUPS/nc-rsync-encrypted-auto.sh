@@ -72,10 +72,13 @@ sudo -u www-data php /var/www/nextcloud/occ maintenance:mode --on
   duplicity remove-all-but-n-full 1 --ssh-options="-p $PORTNUMBER" --encrypt-key="$GPGKEY" --force rsync://"$DESTINATION"database
   rm /var/www/"$dbbackup"
 }
+sudo -u www-data php /var/www/nextcloud/occ maintenance:mode --off
 [[ "$INCLUDEDATA" == "yes" ]] && { 
   datadestination="/$( sed 's|.*//||' <<<$DESTINATION )"/data
-  duplicity full --rsync-options="-ax --rsync-path=\"mkdir -p \"$datadestination\" && rsync\"" --ssh-options="-p $PORTNUMBER" --encrypt-key "$GPGKEY" "$DATADIR" rsync://"$DESTINATION"data
+  duplicity full --rsync-options="-ax --rsync-path=\"mkdir -p \"$datadestination\" && rsync\"" --ssh-options="-p $PORTNUMBER" --encrypt-key "$GPGKEY" --asynchronous-upload "$DATADIR" rsync://"$DESTINATION"data
   duplicity remove-all-but-n-full 1 --ssh-options="-p $PORTNUMBER" --encrypt-key="$GPGKEY" --force rsync://"$DESTINATION"data
+  sudo -u www-data php /var/www/nextcloud/occ maintenance:mode --on
+  duplicity --rsync-options="-ax --rsync-path=\"mkdir -p \"$datadestination\" && rsync\"" --ssh-options="-p $PORTNUMBER" --encrypt-key "$GPGKEY" --asynchronous-upload "$DATADIR" rsync://"$DESTINATION"data
 }
 sudo -u www-data php /var/www/nextcloud/occ maintenance:mode --off
 unset PASSPHRASE
@@ -109,9 +112,12 @@ sudo -u www-data php /var/www/nextcloud/occ maintenance:mode --on
   duplicity remove-all-but-n-full 1 --ssh-options="-p $PORTNUMBER" --encrypt-key="$GPGKEY" --force rsync://"$DESTINATION"database
   rm /var/www/"$dbbackup"
 }
+sudo -u www-data php /var/www/nextcloud/occ maintenance:mode --off
 [[ "$INCLUDEDATA" == "yes" ]] && { 
   datadestination="/$( sed 's|.*//||' <<<$DESTINATION )"/data
-  duplicity --rsync-options="-ax --rsync-path=\"mkdir -p \"$datadestination\" && rsync\"" --ssh-options="-p $PORTNUMBER" --encrypt-key "$GPGKEY" "$DATADIR" rsync://"$DESTINATION"data
+  duplicity --rsync-options="-ax --rsync-path=\"mkdir -p \"$datadestination\" && rsync\"" --ssh-options="-p $PORTNUMBER" --encrypt-key "$GPGKEY" --asynchronous-upload "$DATADIR" rsync://"$DESTINATION"data
+  sudo -u www-data php /var/www/nextcloud/occ maintenance:mode --on
+  duplicity --rsync-options="-ax --rsync-path=\"mkdir -p \"$datadestination\" && rsync\"" --ssh-options="-p $PORTNUMBER" --encrypt-key "$GPGKEY" --asynchronous-upload "$DATADIR" rsync://"$DESTINATION"data
 }
 sudo -u www-data php /var/www/nextcloud/occ maintenance:mode --off
 unset PASSPHRASE
