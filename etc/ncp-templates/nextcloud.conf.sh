@@ -3,17 +3,17 @@
 set -e
 source /usr/local/etc/library.sh
 
-if [[ "$1" != "--defaults" ]]
-then
+if [[ "$1" != "--defaults" ]]; then
   LETSENCRYPT_DOMAIN="$(
-    source "${BINDIR}/NETWORKING/letsencrypt.sh"
-    tmpl_letsencrypt_domain
+    # force defaults during initial build
+    if ! [[ -f /.ncp-image ]]; then
+      source "${BINDIR}/NETWORKING/letsencrypt.sh"
+      tmpl_letsencrypt_domain
+    fi
   )"
 fi
 
-
-if [[ "$DOCKERBUILD" != 1 ]] && [[ "$1" != "--defaults" ]]
-then
+if [[ "$DOCKERBUILD" != 1 ]] && [[ "$1" != "--defaults" ]]; then
   METRICS_IS_ENABLED="$(
   source "${BINDIR}/SYSTEM/metrics.sh"
   tmpl_metrics_enabled && echo yes || echo no
@@ -31,8 +31,7 @@ cat <<EOF
     DocumentRoot /var/www/nextcloud
 EOF
 
-if [[ "$1" != "--defaults" ]] && [[ -n "$LETSENCRYPT_DOMAIN" ]]
-then
+if [[ "$1" != "--defaults" ]] && [[ -n "$LETSENCRYPT_DOMAIN" ]]; then
   echo "    ServerName ${LETSENCRYPT_DOMAIN}"
   LETSENCRYPT_CERT_BASE_PATH="/etc/letsencrypt/live/${LETSENCRYPT_DOMAIN,,}"
   LETSENCRYPT_CERT_PATH="${LETSENCRYPT_CERT_BASE_PATH}/fullchain.pem"
@@ -99,4 +98,5 @@ cat <<EOF
 </IfModule>
 EOF
 
-apache2ctl -t
+echo "Apache self check:" >> /var/log/ncp.log
+apache2ctl -t >> /var/log/ncp.log 2>&1

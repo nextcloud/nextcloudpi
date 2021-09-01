@@ -348,7 +348,7 @@ function clear_password_fields()
 
 function apt_install()
 {
-  apt-get update
+  apt-get update --allow-releaseinfo-change
   apt-get install -y --no-install-recommends -o Dpkg::Options::=--force-confdef -o Dpkg::Options::="--force-confold" "$@"
 }
 

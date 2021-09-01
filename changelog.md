@@ -1,5 +1,33 @@
 
-[v1.37.2](https://github.com/nextcloud/nextcloudpi/commit/637ccfe) (2021-07-31) unattended-upgrades: update raspbian origins
+[v1.38.6](https://github.com/nextcloud/nextcloudpi/commit/79a5020) (2021-08-25) raspi: allow oldstable origins
+
+[v1.38.5](https://github.com/nextcloud/nextcloudpi/commit/e23b252) (2021-08-17) nc-init: drop News for 32-bit :(
+
+[v1.38.4 ](https://github.com/nextcloud/nextcloudpi/commit/bb720be) (2021-08-17) build: make sure we clean /.ncp-image in old builds
+
+[v1.38.3](https://github.com/nextcloud/nextcloudpi/commit/9642cf9) (2021-08-17) unattended-upgrades: update raspbian origins
+
+[v1.38.2 ](https://github.com/nextcloud/nextcloudpi/commit/956eea4) (2021-08-16) nc-restore: try to detect old datadir in dataless restoration
+
+[v1.38.1 ](https://github.com/nextcloud/nextcloudpi/commit/4f29d94) (2021-08-16) nextcloud.conf.sh: Prevent apache config test output to end up in generated template
+
+[v1.38.0 ](https://github.com/nextcloud/nextcloudpi/commit/6e2dca5) (2021-08-09) upgrade to NC20.0.12
+
+[v1.37.9 ](https://github.com/nextcloud/nextcloudpi/commit/b8c1409) (2021-08-09) letsencrypt: ability to disable it and roll back to self-signed certificates
+
+[v1.37.8 ](https://github.com/nextcloud/nextcloudpi/commit/5a05b89) (2021-08-08) nextcloud: remove beta option
+
+[v1.37.7 ](https://github.com/nextcloud/nextcloudpi/commit/1d696f0) (2021-08-07) nc-backup-auto.sh: don't smash ncp.log
+
+[v1.37.6 ](https://github.com/nextcloud/nextcloudpi/commit/b840245) (2021-08-03) metrics.sh: Fix inverted is_active result
+
+[v1.37.5 ](https://github.com/nextcloud/nextcloudpi/commit/fb102d2) (2021-08-03) metrics.sh: Fix USER variable being ignored
+
+[v1.37.4 ](https://github.com/nextcloud/nextcloudpi/commit/e492032) (2021-08-02) nextcloud.conf.sh: Allow any user name for metrics endpoint and fix docker build
+
+[v1.37.3 ](https://github.com/nextcloud/nextcloudpi/commit/b8a990e) (2021-08-02) Add ncp-app for prometheus (system) metrics
+
+[v1.37.2](https://github.com/nextcloud/nextcloudpi/commit/4300e30) (2021-07-31) unattended-upgrades: update raspbian origins
 
 [v1.37.1 ](https://github.com/nextcloud/nextcloudpi/commit/b1ffd70) (2021-07-06) ncp-app: bump to NC21
 

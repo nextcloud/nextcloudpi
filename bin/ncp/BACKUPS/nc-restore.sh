@@ -93,15 +93,15 @@ mysql -u root nextcloud <  "$TMPDIR"/nextcloud-sqlbkp_*.bak || { echo "Error res
 
 ## RESTORE DATADIR
 
+DATADIR=$( grep datadirectory "$NCDIR"/config/config.php | awk '{ print $3 }' | grep -oP "[^']*[^']" | head -1 ) 
+[[ "$DATADIR" == "" ]] && { echo "Error reading data directory"; exit 1; }
+
 cd "$NCDIR"
 
 ### INCLUDEDATA=yes situation
 
 NUMFILES=2
 if [[ $( ls "$TMPDIR" | wc -l ) -eq $NUMFILES ]]; then
-
-  DATADIR=$( grep datadirectory "$NCDIR"/config/config.php | awk '{ print $3 }' | grep -oP "[^']*[^']" | head -1 ) 
-  [[ "$DATADIR" == "" ]] && { echo "Error reading data directory"; exit 1; }
 
   [[ -e "$DATADIR" ]] && { 
     echo "backing up existing $DATADIR to $DATADIR-$( date "+%m-%d-%y" )..."
@@ -115,21 +115,29 @@ if [[ $( ls "$TMPDIR" | wc -l ) -eq $NUMFILES ]]; then
     rmdir "$DATADIR"                  || exit 1
     btrfs subvolume create "$DATADIR" || exit 1
   }
-  chown www-data:www-data "$DATADIR"
+  chown www-data: "$DATADIR"
   TMPDATA="$TMPDIR/$( basename "$DATADIR" )"
   mv "$TMPDATA"/* "$TMPDATA"/.[!.]* "$DATADIR" || exit 1
   rmdir "$TMPDATA"                             || exit 1
 
-  sudo -u www-data php occ maintenance:mode --off
+  ncc maintenance:mode --off
 
 ### INCLUDEDATA=no situation
 
 else
-  echo "no datadir found in backup"
-  DATADIR="$NCDIR"/data
+  echo "No datadir found in backup"
 
-  sudo -u www-data php occ maintenance:mode --off
-  sudo -u www-data php occ files:scan --all
+  [[ -e "$DATADIR" ]] || {
+    echo "${DATADIR} not found. Resetting to ${NCDIR}/data"
+    DATADIR="$NCDIR"/data
+    mkdir -p "${DATADIR}"
+    touch "${DATADIR}"/.ocdata
+    chown -R www-data: "${DATADIR}"
+    sed -i "s|'datadirectory' =>.*|'datadirectory' => '${DATADIR}',|" "$NCDIR"/config/config.php
+  }
+
+  ncc maintenance:mode --off
+  ncc files:scan --all
 
   # cache needs to be cleaned as of NC 12
   NEED_RESTART=1
@@ -140,11 +148,14 @@ sed -i "s|^opcache.file_cache=.*|opcache.file_cache=$DATADIR/.opcache|" /etc/php
 
 # tmp upload dir
 mkdir -p "$DATADIR/tmp"
-chown www-data:www-data "$DATADIR/tmp"
-sudo -u www-data php occ config:system:set tempdirectory --value "$DATADIR/tmp"
+chown www-data: "$DATADIR/tmp"
+ncc config:system:set tempdirectory --value "$DATADIR/tmp"
 sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $DATADIR/tmp|" /etc/php/${PHPVER}/cli/php.ini
 sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $DATADIR/tmp|" /etc/php/${PHPVER}/fpm/php.ini
 sed -i "s|^;\?sys_temp_dir =.*$|sys_temp_dir = $DATADIR/tmp|"     /etc/php/${PHPVER}/fpm/php.ini
+
+# logs
+ncc config:system:set logfile --value="$DATADIR/nextcloud.log"
 
 # update fail2ban logpath
 [[ ! -f /.docker-image ]] && {
@@ -156,10 +167,10 @@ sed -i "s|^;\?sys_temp_dir =.*$|sys_temp_dir = $DATADIR/tmp|"     /etc/php/${PHP
 bash /usr/local/bin/nextcloud-domain.sh
 
 # update the systems data-fingerprint
-sudo -u www-data php occ maintenance:data-fingerprint
+ncc maintenance:data-fingerprint
 
 # refresh thumbnails
-sudo -u www-data php occ files:scan-app-data
+ncc files:scan-app-data
 
 # restart PHP if needed
 [[ "$NEED_RESTART" == "1" ]] && \

@@ -17,6 +17,11 @@ echo "*/5  *  *  *  * php -f /var/www/nextcloud/cron.php" > "${crontab_tmp}"
 crontab -u www-data "${crontab_tmp}"
 rm "${crontab_tmp}"
 
+## update nc-restore
+install_app nc-restore
+
+## make sure old images clear the ncp-image flag
+rm -f /.ncp-image
 
 # docker images only
 [[ -f /.docker-image ]] && {
