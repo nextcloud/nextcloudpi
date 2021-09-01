@@ -4,7 +4,7 @@ set -e
 
 ## BACKWARD FIXES ( for older images )
 
-source /usr/local/etc/library.sh # sets NCVER PHPVER RELEASE
+source /usr/local/etc/library.sh # sets NCLATESTVER PHPVER RELEASE
 
 # all images
 

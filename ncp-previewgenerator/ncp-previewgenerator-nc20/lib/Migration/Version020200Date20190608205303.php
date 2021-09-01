@@ -27,7 +27,7 @@ namespace OCA\PreviewGenerator\Migration;
 use OCP\DB\ISchemaWrapper;
 use OCP\Migration\SimpleMigrationStep;
 use OCP\Migration\IOutput;
-use OCP\DB\Types;
+use Doctrine\DBAL\Types\Type;
 
 class Version020200Date20190608205303 extends SimpleMigrationStep {
 
@@ -43,7 +43,7 @@ class Version020200Date20190608205303 extends SimpleMigrationStep {
 		$table = $schema->getTable('preview_generation');
 
 		if (!$table->hasColumn('locked')) {
-			$table->addColumn('locked', Types::BOOLEAN, [
+			$table->addColumn('locked', Type::BOOLEAN, [
 				'notnull' => true,
 				'default' => 0,
 			]);

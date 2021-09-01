@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 /**
  * @copyright Copyright (c) 2016, Roeland Jago Douma <roeland@famdouma.nl>
@@ -93,4 +92,6 @@ class DeleteOld extends Command {
 			//Ignore
 		}
 	}
+
+
 }

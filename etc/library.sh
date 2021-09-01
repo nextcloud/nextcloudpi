@@ -23,10 +23,11 @@ command -v jq &>/dev/null || {
 }
 
 [[ -f "$NCPCFG" ]] && {
-  NCVER=$(  jq -r .nextcloud_version < "$NCPCFG")
-  PHPVER=$( jq -r .php_version       < "$NCPCFG")
-  RELEASE=$(jq -r .release           < "$NCPCFG")
+  NCLATESTVER=$(jq -r .nextcloud_version < "$NCPCFG")
+  PHPVER=$(     jq -r .php_version       < "$NCPCFG")
+  RELEASE=$(    jq -r .release           < "$NCPCFG")
 }
+command -v ncc &>/dev/null && NCVER="$(ncc status | grep "version:" | awk '{ print $3 }')"
 
 function configure_app()
 {
@@ -112,8 +113,7 @@ function set-nc-domain() {
   # trusted_domain no 3 will always contain the overwrite domain
   [[ "$2" == "--no-trusted-domain" ]] || ncc config:system:set trusted_domains 3 --value="${DOMAIN%*/}"
   ncc config:system:set overwrite.cli.url --value="${URL}/"
-  if ncc app:enable -q notify_push
-  then
+  if ncc | grep -q notify_push; then
     ncc config:system:set trusted_proxies 11 --value="127.0.0.1"
     ncc notify_push:setup "${URL}/push"
   fi

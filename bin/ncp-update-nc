@@ -22,6 +22,8 @@ set -eE
 VER="$1"
 BIN="${0##*/}"
 
+source /usr/local/etc/library.sh
+
 # pre-checks
 ####################
 [[ "$VER" == "" ]] && { echo "Usage ${BIN} <version>"; exit 1; }
@@ -185,6 +187,18 @@ $ncc | grep -q db:add-missing-indices && $ncc db:add-missing-indices -n
 $ncc | grep -q db:add-missing-columns && $ncc db:add-missing-columns -n
 $ncc | grep -q db:add-missing-primary-keys && $ncc db:add-missing-primary-keys -n
 $ncc | grep -q db:convert-filecache-bigint && $ncc db:convert-filecache-bigint -n
+
+
+# use the correct version for custom apps
+NCVER="$(ncc status | grep "version:" | awk '{ print $3 }')"
+if is_more_recent_than "21.0.0" "${NCVER}"; then
+  NCPREV=/var/www/ncp-previewgenerator/ncp-previewgenerator-nc20
+else
+  ncc app:install notify_push
+  ncc app:enable  notify_push
+  NCPREV=/var/www/ncp-previewgenerator/ncp-previewgenerator-nc21
+fi
+ln -snf "${NCPREV}" /var/www/nextcloud/apps/previewgenerator
 
 # Make sure, the standard for trusted domains is used and notify_push is enabled if possible
 nc_domain="$(ncc config:system:get overwrite.cli.url)"

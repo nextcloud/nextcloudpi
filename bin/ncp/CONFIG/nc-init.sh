@@ -12,7 +12,7 @@ DBADMIN=ncadmin
 
 configure()
 {
-  source /usr/local/etc/library.sh # sets PHPVER
+  source /usr/local/etc/library.sh # sets PHPVER NCVER
 
   echo "Setting up a clean Nextcloud instance... wait until message 'NC init done'"
 
@@ -151,8 +151,6 @@ EOF
   ncc app:enable  notes
   ncc app:install tasks
   ncc app:enable  tasks
-  ncc app:install notify_push
-  ncc app:enable notify_push # TODO add to nc-update-nextcloud # TODO double check existence everywhere
 
   # News dropped support for 32-bit -> https://github.com/nextcloud/news/issues/1423
   if ! [[ "$(uname -m)" =~ "armv7" ]]; then
@@ -161,8 +159,14 @@ EOF
   fi
 
   # ncp-previewgenerator
-  cp -r /var/www/ncp-previewgenerator /var/www/nextcloud/apps/previewgenerator
-  chown www-data:www-data /var/www/nextcloud/apps/previewgenerator
+  if is_more_recent_than "21.0.0" "$NCVER"; then
+    local NCPREV=/var/www/ncp-previewgenerator/ncp-previewgenerator-nc20
+  else
+    ncc app:install notify_push
+    ncc app:enable  notify_push
+    local NCPREV=/var/www/ncp-previewgenerator/ncp-previewgenerator-nc21
+  fi
+  ln -snf "${NCPREV}" /var/www/nextcloud/apps/previewgenerator
   ncc app:enable previewgenerator
 
   # previews
