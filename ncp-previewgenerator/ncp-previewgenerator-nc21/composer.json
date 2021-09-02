@@ -1,0 +1,18 @@
+{
+	"name": "rullzer/previewgenerator",
+	"config": {
+		"optimize-autoloader": true,
+		"classmap-authoritative": true,
+		"platform": {
+			"php": "7.3"
+		}
+	},
+	"scripts": {
+		"cs:fix": "php-cs-fixer fix",
+		"cs:check": "php-cs-fixer fix --dry-run --diff",
+		"lint": "find . -name \\*.php -not -path './vendor/*' -print0 | xargs -0 -n1 php -l"
+	},
+	"require-dev": {
+		"nextcloud/coding-standard": "^0.3.0"
+	}
+}

@@ -87,8 +87,7 @@ EOF
   }
  
   ncc config:system:set trusted_domains "${TRUSTED_DOMAINS[ip]}" --value="$IP"
-  # TODO: Should we really overwrite potentially configured domains here?
-  set-nc-domain "$IP"
+  ncc config:system:set overwrite.cli.url --value=https://"$IP"/
   echo "Static IP set to $IP"
 }
 

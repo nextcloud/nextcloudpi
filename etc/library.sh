@@ -11,6 +11,7 @@
 export NCPCFG=${NCPCFG:-/usr/local/etc/ncp.cfg}
 export CFGDIR=/usr/local/etc/ncp-config.d
 export BINDIR=/usr/local/bin/ncp
+export NCDIR=/var/www/nextcloud
 
 export TRUSTED_DOMAINS=(
   [ip]=1 [dnsmasq]=2 [nc_domain]=3 [nextcloudpi-local]=5 [docker_overwrite]=6
@@ -108,18 +109,16 @@ function configure_app()
 }
 
 function set-nc-domain() {
-  local DOMAIN="${1?}"
-  URL="https://${DOMAIN%*/}"
+  local domain="${1?}"
+  local url="https://${domain%*/}"
   # trusted_domain no 3 will always contain the overwrite domain
-  [[ "$2" == "--no-trusted-domain" ]] || ncc config:system:set trusted_domains 3 --value="${DOMAIN%*/}"
-  ncc config:system:set overwrite.cli.url --value="${URL}/"
-  if ncc | grep -q notify_push; then
+  [[ "$2" == "--no-trusted-domain" ]] || ncc config:system:set trusted_domains 3 --value="${domain%*/}"
+  ncc config:system:set overwrite.cli.url --value="${url}/"
+  if is_app_enabled notify_push; then
     ncc config:system:set trusted_proxies 11 --value="127.0.0.1"
-    ncc notify_push:setup "${URL}/push"
+    ncc notify_push:setup "${url}/push"
   fi
 }
-
-
 
 function run_app()
 {
@@ -324,12 +323,23 @@ function is_more_recent_than()
   return 0
 }
 
+function is_app_enabled()
+{
+  local app="$1"
+   ncc app:list | sed '0,/Disabled/!d' | grep -q "${app}"
+}
+
 function check_distro()
 {
   local cfg="${1:-$NCPCFG}"
   local supported=$(jq -r .release "$cfg")
   grep -q "$supported" <(lsb_release -sc) && return 0
   return 1
+}
+
+function nc_version()
+{
+  ncc status | grep "version:" | awk '{ print $3 }'
 }
 
 function clear_password_fields()

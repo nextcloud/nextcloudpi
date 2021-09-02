@@ -62,7 +62,9 @@ echo "Provisioning"
 bash /usr/local/bin/ncp-provisioning.sh
 
 echo "Starting notify_push daemon"
-sudo -u www-data /data/nextcloud/apps/notify_push/bin/$(uname -m)/notify_push --allow-self-signed /data/nextcloud/config/config.php &>/dev/null &
+sudo -u www-data /data/nextcloud/apps/notify_push/bin/"$(uname -m)"/notify_push --allow-self-signed /data/nextcloud/config/config.php &>/dev/null &
+
+echo "Nextcloud version $(nc_version). NextCloudPi version $(cat /usr/local/etc/ncp-version)"
 
 # Display NC logs in the docker logs
 tail -f -n0 /data/nextcloud/data/nextcloud.log &

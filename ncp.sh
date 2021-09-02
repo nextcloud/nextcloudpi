@@ -272,7 +272,7 @@ EOF
     cat > /etc/systemd/system/notify_push.service <<EOF
 [Unit]
 Description = Push daemon for Nextcloud clients
-After=mysqld.service 
+After=mysqld.service
 
 [Service]
 Environment = PORT=7867 # Change if you already have something running on this port
@@ -282,7 +282,7 @@ User=www-data
 [Install]
 WantedBy = multi-user.target
 EOF
-    [[ "$DOCKERBUILD" != 1 ]] && systemctl enable notify_push # TODO need to restart after changes?
+    [[ "$DOCKERBUILD" != 1 ]] && systemctl enable notify_push
 
     ## SSH hardening
     if [[ -f /etc/ssh/sshd_config ]]; then

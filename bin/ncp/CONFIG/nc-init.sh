@@ -160,13 +160,14 @@ EOF
 
   # ncp-previewgenerator
   if is_more_recent_than "21.0.0" "$NCVER"; then
-    local NCPREV=/var/www/ncp-previewgenerator/ncp-previewgenerator-nc20
+    local ncprev=/var/www/ncp-previewgenerator/ncp-previewgenerator-nc20
   else
     ncc app:install notify_push
     ncc app:enable  notify_push
-    local NCPREV=/var/www/ncp-previewgenerator/ncp-previewgenerator-nc21
+    local ncprev=/var/www/ncp-previewgenerator/ncp-previewgenerator-nc21
   fi
-  ln -snf "${NCPREV}" /var/www/nextcloud/apps/previewgenerator
+  ln -snf "${ncprev}" /var/www/nextcloud/apps/previewgenerator
+  chown -R www-data: /var/www/nextcloud/apps/previewgenerator
   ncc app:enable previewgenerator
 
   # previews

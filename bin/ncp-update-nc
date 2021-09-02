@@ -161,7 +161,8 @@ rollback() {
   echo -e "Abort\nClean up..."
   rm -rf /var/www/nextcloud.tar.bz2 "$BASEDIR"/nextcloud-old
   echo "Rolling back to backup $BKP..."
-  local TMPDATA="$( mktemp -d "/var/www/ncp-data.XXXXXX" )" || { echo "Failed to create temp dir" >&2; exit 1; }
+  local TMPDATA
+  TMPDATA="$( mktemp -d "/var/www/ncp-data.XXXXXX" )" || { echo "Failed to create temp dir" >&2; exit 1; }
   [[ "$DATADIR" == "$BASEDIR/nextcloud/data" ]] && mv -T "$DATADIR" "$TMPDATA"
   ncp-restore "$BKP" || { echo "Rollback failed! Data left at $TMPDATA"; exit 1; }
   [[ "$DATADIR" == "$BASEDIR/nextcloud/data" ]] && { rm -rf "$DATADIR"; mv -T "$TMPDATA" "$DATADIR"; }
@@ -194,17 +195,26 @@ NCVER="$(ncc status | grep "version:" | awk '{ print $3 }')"
 if is_more_recent_than "21.0.0" "${NCVER}"; then
   NCPREV=/var/www/ncp-previewgenerator/ncp-previewgenerator-nc20
 else
-  ncc app:install notify_push
-  ncc app:enable  notify_push
+  # Install notify_push if not installed
+  if ! is_app_enabled notify_push; then
+    ncc app:install notify_push
+    ncc app:enable  notify_push
+    bash /usr/local/etc/ncp-templates/nextcloud.conf.sh > /etc/apache2/sites-available/nextcloud.conf
+    a2enmod proxy proxy_http proxy_wstunnel
+    apachectl -k graceful
+    ## make sure the notify_push daemon is runnnig
+    sudo -u www-data /var/www/nextcloud/apps/notify_push/bin/"$(uname -m)"/notify_push --allow-self-signed /var/www/nextcloud/config/config.php &>/dev/null &
+
+    nc_domain="$(ncc config:system:get overwrite.cli.url)"
+    nc_domain="$(sed 's|http.\?://||;s|\(/.*\)||' <<<"${nc_domain}")"
+    sleep 5 # apparently we need to make sure we wait until the database is written or something
+    set-nc-domain "${nc_domain}"
+
+  fi
   NCPREV=/var/www/ncp-previewgenerator/ncp-previewgenerator-nc21
 fi
+rm -rf /var/www/nextcloud/apps/previewgenerator
 ln -snf "${NCPREV}" /var/www/nextcloud/apps/previewgenerator
-
-# Make sure, the standard for trusted domains is used and notify_push is enabled if possible
-nc_domain="$(ncc config:system:get overwrite.cli.url)"
-nc_domain="${nc_domain#http?://*}"
-nc_domain="${nc_domain%%/*}"
-set-nc-domain "${nc_domain}"
 
 # done
 ####################

@@ -201,9 +201,7 @@ EOF
 EOF
 
   # for notify_push app in NC21
-  a2enmod proxy
-  a2enmod proxy_http
-  a2enmod proxy_wstunnel
+  a2enmod proxy proxy_http proxy_wstunnel
 
   cat > /etc/systemd/system/notify_push.service <<EOF
 [Unit]
@@ -217,7 +215,7 @@ User=www-data
 [Install]
 WantedBy = multi-user.target
 EOF
-  [[ -f /.docker-image ]] || systemctl enable notify_push # TODO in docker
+  [[ -f /.docker-image ]] || systemctl enable notify_push
 
   # some added security
   sed -i 's|^ServerSignature .*|ServerSignature Off|' /etc/apache2/conf-enabled/security.conf

@@ -74,7 +74,6 @@ EOF
   update-rc.d dnsmasq enable
   service dnsmasq restart
   ncc config:system:set trusted_domains "${TRUSTED_DOMAINS[dnsmasq]}" --value="$DOMAIN"
-  #TODO: Is this really desirable?
   set-nc-domain "$DOMAIN" --no-trusted-domain
   echo "dnsmasq enabled"
 }
