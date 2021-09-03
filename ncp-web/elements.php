@@ -24,6 +24,8 @@ HTML;
     $ret .= "<td><label for=\"$ncp_app-$param[id]\">$param[name]</label></td>";
 
     $value = $param['value'];
+    if (array_key_exists('allow_unsafe', $param) && $param['allow_unsafe'] == "true")
+        $value = str_replace("%SPACE%", " ", $value);
     if ( $value == '_')
       $value = '';
 
