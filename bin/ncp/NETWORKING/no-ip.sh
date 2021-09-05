@@ -85,9 +85,7 @@ configure()
 
   update-rc.d noip2 enable
   service noip2 restart
-  cd /var/www/nextcloud
-  sudo -u www-data php occ config:system:set trusted_domains 3 --value="$DOMAIN"
-  sudo -u www-data php occ config:system:set overwrite.cli.url --value=https://"$DOMAIN"/
+  set-nc-domain "$DOMAIN"
   echo "noip DDNS enabled"
 
 }

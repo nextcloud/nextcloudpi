@@ -21,13 +21,18 @@ configure()
     ln -s /data/etc/shadow /etc/shadow
   }
 
-  # Run cron.php once now to get all checks right in CI.
-  sudo -u www-data php /var/www/nextcloud/cron.php
-
   # activate NCP
-  a2ensite  ncp nextcloud
-  a2dissite ncp-activation
-  bash -c "sleep 1.5 && service apache2 reload" &>/dev/null &
+  if ! is_ncp_activated; then
+    # Run cron.php once now to get all checks right in CI.
+    sudo -u www-data php /var/www/nextcloud/cron.php
+
+    a2dissite ncp-activation
+    a2ensite  ncp nextcloud
+    apachectl -k graceful
+
+    # Trusted Domain (local/public IP), also configures notify_push
+    bash /usr/local/bin/nextcloud-domain.sh
+  fi
 }
 
 install() { :; }

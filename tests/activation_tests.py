@@ -127,8 +127,10 @@ def test_activation(IP, nc_port, admin_port):
         test.check(False)
     except:
         test.check(True)
-    try: driver.close()
-    except: pass
+    try:
+        driver.close()
+    except Exception as e:
+        print(f"Could not close driver: {e}")
 
     # ncp-web
     test.new("ncp-web")

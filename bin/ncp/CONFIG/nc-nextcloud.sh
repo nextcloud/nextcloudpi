@@ -200,6 +200,26 @@ EOF
 </VirtualHost>
 EOF
 
+  # for notify_push app in NC21
+  a2enmod proxy proxy_http proxy_wstunnel
+
+  arch="$(uname -m)"
+  [[ "${arch}" =~ "armv7" ]] && arch="armv7"
+  cat > /etc/systemd/system/notify_push.service <<EOF
+[Unit]
+Description = Push daemon for Nextcloud clients
+After = mysql.service
+
+[Service]
+Environment = PORT=7867
+ExecStart = /var/www/nextcloud/apps/notify_push/bin/"${arch}"/notify_push --allow-self-signed /var/www/nextcloud/config/config.php
+User=www-data
+
+[Install]
+WantedBy = multi-user.target
+EOF
+  [[ -f /.docker-image ]] || systemctl enable notify_push
+
   # some added security
   sed -i 's|^ServerSignature .*|ServerSignature Off|' /etc/apache2/conf-enabled/security.conf
   sed -i 's|^ServerTokens .*|ServerTokens Prod|'      /etc/apache2/conf-enabled/security.conf

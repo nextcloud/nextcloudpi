@@ -12,7 +12,7 @@ DBADMIN=ncadmin
 
 configure()
 {
-  source /usr/local/etc/library.sh # sets PHPVER
+  source /usr/local/etc/library.sh # sets PHPVER NCVER
 
   echo "Setting up a clean Nextcloud instance... wait until message 'NC init done'"
 
@@ -103,14 +103,10 @@ EOF
   # 4 Byte UTF8 support
   ncc config:system:set mysql.utf8mb4 --type boolean --value="true"
 
-  # Default trusted domain ( only from ncp-config )
-  test -f /usr/local/bin/nextcloud-domain.sh && {
-    test -f /.ncp-image || bash /usr/local/bin/nextcloud-domain.sh
-  }
-  ncc config:system:set trusted_domains 5 --value="nextcloudpi.local"
+  ncc config:system:set trusted_domains "${TRUSTED_DOMAINS[nextcloudpi-local]}" --value="nextcloudpi.local"
   # trusted_domains 6 used by docker
-  ncc config:system:set trusted_domains 7 --value="nextcloudpi"
-  ncc config:system:set trusted_domains 8 --value="nextcloudpi.lan"
+  ncc config:system:set trusted_domains "${TRUSTED_DOMAINS[nextcloudpi]}" --value="nextcloudpi"
+  ncc config:system:set trusted_domains "${TRUSTED_DOMAINS[nextcloudpi-lan]}" --value="nextcloudpi.lan"
 
   # email
   ncc config:system:set mail_smtpmode     --value="sendmail"
@@ -159,8 +155,16 @@ EOF
   fi
 
   # ncp-previewgenerator
-  cp -r /var/www/ncp-previewgenerator /var/www/nextcloud/apps/previewgenerator
-  chown www-data:www-data /var/www/nextcloud/apps/previewgenerator
+  if is_more_recent_than "21.0.0" "$NCVER"; then
+    local ncprev=/var/www/ncp-previewgenerator/ncp-previewgenerator-nc20
+  else
+    ncc app:install notify_push
+    ncc app:enable  notify_push
+    test -f /.ncp-image || start_notify_push # don't start during build
+    local ncprev=/var/www/ncp-previewgenerator/ncp-previewgenerator-nc21
+  fi
+  ln -snf "${ncprev}" /var/www/nextcloud/apps/previewgenerator
+  chown -R www-data: /var/www/nextcloud/apps/previewgenerator
   ncc app:enable previewgenerator
 
   # previews
@@ -174,11 +178,17 @@ EOF
 
   # other
   ncc config:system:set overwriteprotocol --value=https
+  ncc config:system:set overwrite.cli.url --value="https://nextcloudpi/"
+  ncc config:system:set trusted_domains "${TRUSTED_DOMAINS[nc_domain]}" --value="nextcloudpi"
 
   # TODO temporary workaround for https://github.com/nextcloud/server/pull/13358
   ncc -n db:convert-filecache-bigint
   ncc db:add-missing-indices
 
+  # Default trusted domain (only from ncp-config)
+  test -f /usr/local/bin/nextcloud-domain.sh && {
+    test -f /.ncp-image || bash /usr/local/bin/nextcloud-domain.sh
+  }
   echo "NC init done"
 }
 

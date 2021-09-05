@@ -8,8 +8,8 @@
 # More at https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/
 #
 
-source /usr/local/etc/library.sh # sets NCVER
-LATEST="$NCVER"
+source /usr/local/etc/library.sh # sets NCLATESTVER
+LATEST="$NCLATESTVER"
 
 configure()
 {

@@ -50,9 +50,7 @@ EOF
   chmod 644 /etc/cron.d/namecheapDNS
   service cron restart
 
-  cd /var/www/nextcloud
-  sudo -u www-data php occ config:system:set trusted_domains 3 --value="$FULLDOMAIN"
-  sudo -u www-data php occ config:system:set overwrite.cli.url --value=https://"$FULLDOMAIN"/
+  set-nc-domain "$FULLDOMAIN"
 
   echo "Namecheap DNS client is enabled"
 }

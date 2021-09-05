@@ -8,8 +8,8 @@
 # More at: https://ownyourbits.com
 #
 
-# just change NCVER and re-activate in update.sh to upgrade users
-source /usr/local/etc/library.sh # sets NCVER
+# just change NCLATESTVER and re-activate in update.sh to upgrade users
+source /usr/local/etc/library.sh # sets NCLATESTVER
 
 configure()
 {
@@ -23,8 +23,8 @@ configure()
 #!/bin/bash
 source /usr/local/etc/library.sh
 
-echo -e "[ncp-update-nc]"                          >> /var/log/ncp.log
-/usr/local/bin/ncp-update-nc "$NCVER" 2>&1 | tee -a /var/log/ncp.log
+echo -e "[ncp-update-nc]"                              >> /var/log/ncp.log
+/usr/local/bin/ncp-update-nc "$NCLATESTVER" 2>&1 | tee -a /var/log/ncp.log
 
 if [[ \${PIPESTATUS[0]} -eq 0 ]]; then
 

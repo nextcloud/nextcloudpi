@@ -15,7 +15,7 @@ ENV DOCKERBUILD 1
 RUN mkdir -p /tmp/ncp-build
 COPY bin/                 /tmp/ncp-build/bin/
 COPY etc                  /tmp/ncp-build/etc/
-COPY ncp.sh update.sh     /tmp/ncp-build/
+COPY ncp.sh update.sh post-inst.sh    /tmp/ncp-build/
 COPY ncp-web              /tmp/ncp-build/ncp-web/
 COPY ncp-app              /tmp/ncp-build/ncp-app/
 COPY ncp-previewgenerator /tmp/ncp-build/ncp-previewgenerator/
@@ -50,20 +50,14 @@ sed -i 's|data-ro|data|' /data-ro/nextcloud/config/config.php; \
 sed -i 's|/media/USBdrive|/data/backups|' /usr/local/etc/ncp-config.d/nc-backup.cfg; \
 sed -i 's|/media/USBdrive|/data/backups|' /usr/local/etc/ncp-config.d/nc-backup-auto.cfg; \
 
+# cleanup all NCP extras
+run_app_unsafe post-inst.sh; \
+
 # specific cleanup
 cd /; rm -r /tmp/ncp-build; \
 rm /usr/local/etc/ncp-config.d/nc-init.cfg; \
-rm /.ncp-image; \
 
-# cleanup all NCP extras
-source /usr/local/etc/library.sh; \
-find /usr/local/bin/ncp -name '*.sh' | while read l; do cleanup_script $l; done; \
-
-# package clean up
-apt-get autoremove -y; \
-apt-get clean; \
-find /var/lib/apt/lists -type f | xargs rm; \
-find /var/log -type f -exec rm {} \; ; \
+# package installation clean up
 rm -rf /usr/share/man/*; \
 rm -rf /usr/share/doc/*; \
 rm -f /var/log/alternatives.log /var/log/apt/*; \

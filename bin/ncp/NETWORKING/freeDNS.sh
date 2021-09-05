@@ -42,9 +42,7 @@ EOF
   chmod 644 /etc/cron.d/freeDNS
   service cron restart
 
-  cd /var/www/nextcloud
-  sudo -u www-data php occ config:system:set trusted_domains 3 --value="$DOMAIN"
-  sudo -u www-data php occ config:system:set overwrite.cli.url --value=https://"$DOMAIN"/
+  set-nc-domain "$DOMAIN"
 
   echo "FreeDNS client is enabled"
 }

@@ -1,7 +1,9 @@
 
-[v1.38.6](https://github.com/nextcloud/nextcloudpi/commit/79a5020) (2021-08-25) raspi: allow oldstable origins
+[v1.39.0](https://github.com/nextcloud/nextcloudpi/commit/e4d6e31) (2021-09-05) upgrade to NC21.0.4
 
-[v1.38.5](https://github.com/nextcloud/nextcloudpi/commit/e23b252) (2021-08-17) nc-init: drop News for 32-bit :(
+[v1.38.6](https://github.com/nextcloud/nextcloudpi/commit/3bf746b) (2021-08-25) raspi: allow oldstable origins
+
+[v1.38.5 ](https://github.com/nextcloud/nextcloudpi/commit/e23b252) (2021-08-17) nc-init: drop News for 32-bit :(
 
 [v1.38.4 ](https://github.com/nextcloud/nextcloudpi/commit/bb720be) (2021-08-17) build: make sure we clean /.ncp-image in old builds
 

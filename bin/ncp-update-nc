@@ -22,6 +22,8 @@ set -eE
 VER="$1"
 BIN="${0##*/}"
 
+source /usr/local/etc/library.sh
+
 # pre-checks
 ####################
 [[ "$VER" == "" ]] && { echo "Usage ${BIN} <version>"; exit 1; }
@@ -61,7 +63,7 @@ fi
 
 echo "Current   Nextcloud version $CURRENT"
 echo "Available Nextcloud version $VER"
-[[ "$NEED_UPDATE" == "true" ]] || { echo "Nothing to update"; exit 1; }
+[[ "$NEED_UPDATE" == "true" ]] || { echo "Nothing to update"; exit; }
 
 # make sure that cron.php is not running and there are no pending jobs
 # https://github.com/nextcloud/server/issues/10949
@@ -159,7 +161,8 @@ rollback() {
   echo -e "Abort\nClean up..."
   rm -rf /var/www/nextcloud.tar.bz2 "$BASEDIR"/nextcloud-old
   echo "Rolling back to backup $BKP..."
-  local TMPDATA="$( mktemp -d "/var/www/ncp-data.XXXXXX" )" || { echo "Failed to create temp dir" >&2; exit 1; }
+  local TMPDATA
+  TMPDATA="$( mktemp -d "/var/www/ncp-data.XXXXXX" )" || { echo "Failed to create temp dir" >&2; exit 1; }
   [[ "$DATADIR" == "$BASEDIR/nextcloud/data" ]] && mv -T "$DATADIR" "$TMPDATA"
   ncp-restore "$BKP" || { echo "Rollback failed! Data left at $TMPDATA"; exit 1; }
   [[ "$DATADIR" == "$BASEDIR/nextcloud/data" ]] && { rm -rf "$DATADIR"; mv -T "$TMPDATA" "$DATADIR"; }
@@ -185,6 +188,50 @@ $ncc | grep -q db:add-missing-indices && $ncc db:add-missing-indices -n
 $ncc | grep -q db:add-missing-columns && $ncc db:add-missing-columns -n
 $ncc | grep -q db:add-missing-primary-keys && $ncc db:add-missing-primary-keys -n
 $ncc | grep -q db:convert-filecache-bigint && $ncc db:convert-filecache-bigint -n
+
+
+# use the correct version for custom apps
+NCVER="$(ncc status | grep "version:" | awk '{ print $3 }')"
+if is_more_recent_than "21.0.0" "${NCVER}"; then
+  NCPREV=/var/www/ncp-previewgenerator/ncp-previewgenerator-nc20
+else
+  # Install notify_push if not installed
+  if ! is_app_enabled notify_push; then
+    ncc app:install notify_push
+    ncc app:enable  notify_push
+    bash /usr/local/etc/ncp-templates/nextcloud.conf.sh > /etc/apache2/sites-available/nextcloud.conf
+    a2enmod proxy proxy_http proxy_wstunnel
+    apachectl -k graceful
+    ## make sure the notify_push daemon is runnnig
+
+    arch="$(uname -m)"
+    [[ "${arch}" =~ "armv7" ]] && arch="armv7"
+    cat > /etc/systemd/system/notify_push.service <<EOF
+[Unit]
+Description = Push daemon for Nextcloud clients
+After = mysql.service
+
+[Service]
+Environment = PORT=7867
+ExecStart = /var/www/nextcloud/apps/notify_push/bin/"${arch}"/notify_push --allow-self-signed /var/www/nextcloud/config/config.php
+User=www-data
+
+[Install]
+WantedBy = multi-user.target
+EOF
+    start_notify_push
+    nc_domain="$(ncc config:system:get overwrite.cli.url)"
+    set-nc-domain "${nc_domain}" || {
+      echo "notify_push setup failed. You are probably behind a proxy"
+      echo "Run 'ncc config:system:set trusted_proxies 15 --value=<proxy_IP>' and then 'ncc notify_push:setup https://<domain>/push to enable"
+      echo "Check https://help.nextcloud.com/tags/ncp for support"
+    }
+
+  fi
+  NCPREV=/var/www/ncp-previewgenerator/ncp-previewgenerator-nc21
+fi
+rm -rf /var/www/nextcloud/apps/previewgenerator
+ln -snf "${NCPREV}" /var/www/nextcloud/apps/previewgenerator
 
 # done
 ####################

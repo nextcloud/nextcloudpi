@@ -18,6 +18,7 @@ import sys
 import getopt
 import os
 import signal
+from urllib.request import urlopen
 from subprocess import run, PIPE
 
 processes_must_be_running = [
@@ -152,6 +153,21 @@ def check_files_dont_exist(files):
     return ret
 
 
+def check_notify_push():
+    "check that notify_push is installed and set up"
+    result = run(pre_cmd + ['ncc', 'notify_push:self-test'], stdout=PIPE, stderr=PIPE)
+
+    print("[push   ] " + tc.brown + "notify_push self-test" + tc.normal, end=' ')
+    if result.returncode == 0:
+        print(tc.green + "ok" + tc.normal)
+        return True
+    else:
+        print(tc.red + "error" + tc.normal)
+        print(result.stderr)
+        print(result.stdout)
+        return False
+
+
 def signal_handler(sig, frame):
         sys.exit(0)
 
@@ -231,8 +247,9 @@ if __name__ == "__main__":
     install_result = check_binaries_installed(binaries_must_be_installed)
     files1_result  = check_files_exist(files_must_exist)
     files2_result  = check_files_dont_exist(files_must_not_exist)
+    notify_push_result = check_notify_push()
 
-    if running_result and install_result and files1_result and files2_result:
+    if running_result and install_result and files1_result and files2_result and notify_push_result:
         sys.exit(0)
     else:
         sys.exit(1)
