@@ -24,7 +24,7 @@ Vagrant.configure("2") do |config|
     sudo su
     set -e
     BRANCH=master
-    BRANCH=nc-21  # uncomment to install devel
+    #BRANCH=devel  # uncomment to install devel
     apt-get update
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends git
 

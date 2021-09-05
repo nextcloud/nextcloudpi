@@ -206,10 +206,11 @@ EOF
   cat > /etc/systemd/system/notify_push.service <<EOF
 [Unit]
 Description = Push daemon for Nextcloud clients
+After = mysql.service
 
 [Service]
-Environment = PORT=7867 # Change if you already have something running on this port
-ExecStart = /path/to/push/binary/notify_push /path/to/nextcloud/config/config.php
+Environment = PORT=7867
+ExecStart = /var/www/nextcloud/apps/notify_push/bin/"$(uname -m)"/notify_push --allow-self-signed /var/www/nextcloud/config/config.php
 User=www-data
 
 [Install]

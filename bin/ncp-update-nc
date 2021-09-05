@@ -203,7 +203,25 @@ else
     a2enmod proxy proxy_http proxy_wstunnel
     apachectl -k graceful
     ## make sure the notify_push daemon is runnnig
-    sudo -u www-data /var/www/nextcloud/apps/notify_push/bin/"$(uname -m)"/notify_push --allow-self-signed /var/www/nextcloud/config/config.php &>/dev/null &
+
+    cat > /etc/systemd/system/notify_push.service <<EOF
+[Unit]
+Description = Push daemon for Nextcloud clients
+After = mysql.service
+
+[Service]
+Environment = PORT=7867
+ExecStart = /var/www/nextcloud/apps/notify_push/bin/"$(uname -m)"/notify_push --allow-self-signed /var/www/nextcloud/config/config.php
+User=www-data
+
+[Install]
+WantedBy = multi-user.target
+EOF
+    if [[ -f /.docker-image ]]; then
+      sudo -u www-data /var/www/nextcloud/apps/notify_push/bin/"$(uname -m)"/notify_push --allow-self-signed /var/www/nextcloud/config/config.php &>/dev/null &
+    else
+      systemctl enable --now notify_push
+    fi
 
     nc_domain="$(ncc config:system:get overwrite.cli.url)"
     nc_domain="$(sed 's|http.\?://||;s|\(/.*\)||' <<<"${nc_domain}")"
