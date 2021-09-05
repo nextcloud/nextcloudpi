@@ -197,7 +197,7 @@ HTML;
           </div>
         </div>
       </a>
-      <a href="https://github.com/nextcloud/nextcloudpi/wiki" target="_blank" tabindex="1"  title="<?php echo $l->__("NextCloudPi Wiki"); ?>">
+      <a href="https://docs.nextcloudpi.com/" target="_blank" tabindex="1"  title="<?php echo $l->__("NextCloudPi Wiki"); ?>">
         <div id="nc-button">
             <div class="expand">
                 <div class="icon-nc-info"></div>
