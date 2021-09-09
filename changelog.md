@@ -1,5 +1,7 @@
 
-[v1.39.0](https://github.com/nextcloud/nextcloudpi/commit/e4d6e31) (2021-09-05) upgrade to NC21.0.4
+[v1.39.1](https://github.com/nextcloud/nextcloudpi/commit/79ee5c5) (2021-09-09) nc-static-IP: take into account httpsonly
+
+[v1.39.0 ](https://github.com/nextcloud/nextcloudpi/commit/3ef774c) (2021-09-05) upgrade to NC21.0.4
 
 [v1.38.6](https://github.com/nextcloud/nextcloudpi/commit/3bf746b) (2021-08-25) raspi: allow oldstable origins
 

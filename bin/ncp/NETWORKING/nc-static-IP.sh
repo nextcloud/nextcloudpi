@@ -8,7 +8,7 @@
 # More at: https://ownyourbits.com
 #
 
-
+source /usr/local/etc/library.sh
 
 configure() 
 {
@@ -87,7 +87,7 @@ EOF
   }
  
   ncc config:system:set trusted_domains "${TRUSTED_DOMAINS[ip]}" --value="$IP"
-  ncc config:system:set overwrite.cli.url --value=https://"$IP"/
+  set-nc-domain "${IP}"
   echo "Static IP set to $IP"
 }
 
