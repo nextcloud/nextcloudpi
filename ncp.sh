@@ -177,7 +177,7 @@ EOF
 [Unit]
 Description=Register Current IP as Nextcloud trusted domain
 Requires=network.target
-After=mysql.service
+After=mysql.service redis.service
 
 [Service]
 ExecStart=/bin/bash /usr/local/bin/nextcloud-domain.sh

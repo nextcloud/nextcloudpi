@@ -1,7 +1,9 @@
 
-[v1.39.1](https://github.com/nextcloud/nextcloudpi/commit/79ee5c5) (2021-09-09) nc-static-IP: take into account httpsonly
+[v1.39.2](https://github.com/nextcloud/nextcloudpi/commit/9598430) (2021-09-18) nextcloud-domain: make sure redis is running before it starts
 
-[v1.39.0 ](https://github.com/nextcloud/nextcloudpi/commit/3ef774c) (2021-09-05) upgrade to NC21.0.4
+[v1.39.1 ](https://github.com/nextcloud/nextcloudpi/commit/6290c1f) (2021-09-09) nc-static-IP: take into account httpsonly
+
+[v1.39.0 ](https://github.com/nextcloud/nextcloudpi/commit/c10d4bd) (2021-09-05) upgrade to NC21.0.4
 
 [v1.38.6](https://github.com/nextcloud/nextcloudpi/commit/3bf746b) (2021-08-25) raspi: allow oldstable origins
 
