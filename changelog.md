@@ -1,5 +1,7 @@
 
-[v1.39.2](https://github.com/nextcloud/nextcloudpi/commit/9598430) (2021-09-18) nextcloud-domain: make sure redis is running before it starts
+[v1.39.3](https://github.com/nextcloud/nextcloudpi/commit/295144c) (2021-09-18) letsencrypt: improve active status check
+
+[v1.39.2 ](https://github.com/nextcloud/nextcloudpi/commit/fb5a2f3) (2021-09-18) nextcloud-domain: make sure redis is running before it starts
 
 [v1.39.1 ](https://github.com/nextcloud/nextcloudpi/commit/6290c1f) (2021-09-09) nc-static-IP: take into account httpsonly
 

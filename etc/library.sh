@@ -246,7 +246,20 @@ function is_active_app()
   # function
   unset is_active
   source "$script"
-  [[ $( type -t is_active ) == function ]] && { is_active; return $?; }
+  [[ $( type -t is_active ) == function ]] && {
+    # read cfg parameters
+    [[ -f "$cfg_file" ]] && {
+      local cfg="$( cat "$cfg_file" )"
+      local len="$(jq '.params | length' <<<"$cfg")"
+      for (( i = 0 ; i < len ; i++ )); do
+        local var="$(jq -r ".params[$i].id"    <<<"$cfg")"
+        local val="$(jq -r ".params[$i].value" <<<"$cfg")"
+        eval "$var=$val"
+      done
+    }
+    is_active
+    return $?;
+  }
 
   # config
   [[ -f "$cfg_file" ]] || return 1

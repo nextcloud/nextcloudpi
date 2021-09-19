@@ -15,7 +15,7 @@ letsencrypt=/usr/bin/letsencrypt
 
 is_active()
 {
-  [[ $( find /etc/letsencrypt/live/ -maxdepth 0 -empty | wc -l ) == 0 ]]
+  [[ "${ACTIVE}" == "yes" ]] && [[ $( find /etc/letsencrypt/live/ -maxdepth 0 -empty | wc -l ) == 0 ]]
 }
 
 tmpl_letsencrypt_domain() {
