@@ -8,6 +8,8 @@ source /usr/local/etc/library.sh # sets NCLATESTVER PHPVER RELEASE
 
 # all images
 
+install_app nc-restore
+
 # docker images only
 [[ -f /.docker-image ]] && {
   :
