@@ -63,7 +63,7 @@ fi
 
 echo "Current   Nextcloud version $CURRENT"
 echo "Available Nextcloud version $VER"
-[[ "$NEED_UPDATE" == "true" ]] || { echo "Nothing to update"; exit; }
+[[ "$NEED_UPDATE" == "true" ]] || { echo "Nothing to update"; exit 1; } # we want `exit 1` so the autoupdate doesn't notify success in this case
 
 # make sure that cron.php is not running and there are no pending jobs
 # https://github.com/nextcloud/server/issues/10949
