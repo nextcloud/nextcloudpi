@@ -1,52 +1,15 @@
 
-<<<<<<< HEAD
-[v1.39.7](https://github.com/nextcloud/nextcloudpi/commit/5ba3e68) (2021-09-22) dont update config if Redis is not yet ready
-=======
-<<<<<<< HEAD
-[v1.39.7](https://github.com/nextcloud/nextcloudpi/commit/ef88f48) (2021-09-22) dont update config if Redis is not yet ready
->>>>>>> 37f01dc (letsencrypt: fix active status check)
+[v1.39.11](https://github.com/nextcloud/nextcloudpi/commit/43a6381) (2021-09-21) letsencrypt: take into account duplicate domains ending in -0001
+
+[v1.39.10](https://github.com/nextcloud/nextcloudpi/commit/2b51476) (2021-09-21) fix inverted template logic for docker
+
+[v1.39.9 ](https://github.com/nextcloud/nextcloudpi/commit/a4851dc) (2021-09-21) letsencrypt: fix renewal with httpsonly enabled
+
+[v1.39.8 ](https://github.com/nextcloud/nextcloudpi/commit/1046a24) (2021-09-21) letsencrypt: fix active status check
+
+[v1.39.7](https://github.com/nextcloud/nextcloudpi/commit/98976c9) (2021-09-22) dont update config if Redis is not yet ready
 
 [v1.39.6 ](https://github.com/nextcloud/nextcloudpi/commit/534b9b5) (2021-09-19) ncp-update-nc: pre-check that NC is currently working fine
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-[v1.39.7](https://github.com/nextcloud/nextcloudpi/commit/ef88f48) (2021-09-22) dont update config if Redis is not yet ready
-
-[v1.39.6 ](https://github.com/nextcloud/nextcloudpi/commit/534b9b5) (2021-09-19) ncp-update-nc: pre-check that NC is currently working fine
-=======
-=======
->>>>>>> 3c905ea (letsencrypt: fix active status check)
-=======
->>>>>>> bac07b7 (letsencrypt: fix renewal with httpsonly enabled)
-=======
->>>>>>> 2060cc8 (fix inverted template logic for docker)
-[v1.39.7](https://github.com/nextcloud/nextcloudpi/commit/a6fd394) (2021-09-22) dont update config if Redis is not yet ready
-=======
-[v1.39.7](https://github.com/nextcloud/nextcloudpi/commit/c651cf8) (2021-09-21) letsencrypt: fix active status check
->>>>>>> a07ddd2 (letsencrypt: fix active status check)
-=======
-=======
->>>>>>> 9ece76e (fix inverted template logic for docker)
-[v1.39.7](https://github.com/nextcloud/nextcloudpi/commit/c651cf8) (2021-09-21) letsencrypt: fix active status check
-=======
-[v1.39.9](https://github.com/nextcloud/nextcloudpi/commit/836d66d) (2021-09-21) letsencrypt: fix renewal with httpsonly enabled
-=======
-[v1.39.10](https://github.com/nextcloud/nextcloudpi/commit/27e7d06) (2021-09-21) fix inverted template logic for docker
-
-[v1.39.9 ](https://github.com/nextcloud/nextcloudpi/commit/afeb957) (2021-09-21) letsencrypt: fix renewal with httpsonly enabled
->>>>>>> 215574b (fix inverted template logic for docker)
-
-[v1.39.8](https://github.com/nextcloud/nextcloudpi/commit/6fca91c) (2021-09-21) letsencrypt: take into account duplicate domains ending in -0001
-
-[v1.39.7 ](https://github.com/nextcloud/nextcloudpi/commit/a07ddd2) (2021-09-21) letsencrypt: fix active status check
->>>>>>> afeb957 (letsencrypt: fix renewal with httpsonly enabled)
->>>>>>> dd348b0 (letsencrypt: fix renewal with httpsonly enabled)
-
-[v1.39.6](https://github.com/nextcloud/nextcloudpi/commit/534b9b5) (2021-09-19) ncp-update-nc: pre-check that NC is currently working fine
->>>>>>> f289443 (dont update config if Redis is not yet ready)
->>>>>>> 6b852d2 (letsencrypt: fix active status check)
 
 [v1.39.5 ](https://github.com/nextcloud/nextcloudpi/commit/cb184d2) (2021-09-19) ncp-update-nc: dont keep notifying when there is nothing to upgrade
 

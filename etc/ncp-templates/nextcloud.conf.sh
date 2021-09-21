@@ -34,8 +34,13 @@ EOF
 if [[ "$1" != "--defaults" ]] && [[ -n "$LETSENCRYPT_DOMAIN" ]]; then
   echo "    ServerName ${LETSENCRYPT_DOMAIN}"
   LETSENCRYPT_CERT_BASE_PATH="/etc/letsencrypt/live/${LETSENCRYPT_DOMAIN,,}"
+  [[ -d "${LETSENCRYPT_CERT_BASE_PATH}" ]] || \
+    LETSENCRYPT_CERT_BASE_PATH="$(find /etc/letsencrypt/live -name "${LETSENCRYPT_DOMAIN,,}*" | head -1)"
   LETSENCRYPT_CERT_PATH="${LETSENCRYPT_CERT_BASE_PATH}/fullchain.pem"
   LETSENCRYPT_KEY_PATH="${LETSENCRYPT_CERT_BASE_PATH}/privkey.pem"
+
+  # fall back to self-signed snakeoil certs
+  [[ -d "${LETSENCRYPT_CERT_BASE_PATH}" ]] || unset LETSENCRYPT_CERT_BASE_PATH
 else
   # Make sure the default snakeoil cert exists
   [ -f /etc/ssl/certs/ssl-cert-snakeoil.pem ] || make-ssl-cert generate-default-snakeoil --force-overwrite
