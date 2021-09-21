@@ -172,7 +172,7 @@ EOF
 
 ## SET APACHE VHOST
   echo "Setting up Apache..."
-  install_template nextcloud.conf.sh /etc/apache2/sites-available/nextcloud.conf || {
+  install_template nextcloud.conf.sh /etc/apache2/sites-available/nextcloud.conf --allow-fallback || {
       echo "ERROR: Parsing template failed. Nextcloud will not work."
       exit 1
   }
