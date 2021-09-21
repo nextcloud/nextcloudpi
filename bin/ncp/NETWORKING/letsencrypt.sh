@@ -62,11 +62,12 @@ configure()
     exit 0
   }
   local DOMAIN_LOWERCASE="${DOMAIN,,}"
+  local OTHER_DOMAINS_ARRAY
 
   [[ "$DOMAIN" == "" ]] && { echo "empty domain"; return 1; }
 
   local IFS_BK="$IFS"
-  IFS=",$IFS" local OTHER_DOMAINS_ARRAY=(${OTHER_DOMAIN}'')
+  IFS=",$IFS" OTHER_DOMAINS_ARRAY=(${OTHER_DOMAIN}'')
   IFS="$IFS_BK"
 
   # Do it
