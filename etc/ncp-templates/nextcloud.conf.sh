@@ -18,7 +18,7 @@ fi
 
 [[ -z "$LETSENCRYPT_DOMAIN" ]] || echo "INFO: Letsencrypt domain is ${LETSENCRYPT_DOMAIN}" >&2
 
-if [[ ! -f /.docker-image ]] && [[ "$1" != "--defaults" ]]; then
+if ! [[ -f /.docker-image ]] && [[ "$1" != "--defaults" ]]; then
   METRICS_IS_ENABLED="$(
   source "${BINDIR}/SYSTEM/metrics.sh"
   tmpl_metrics_enabled && echo yes || echo no

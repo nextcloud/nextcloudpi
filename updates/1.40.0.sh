@@ -8,7 +8,29 @@ source /usr/local/etc/library.sh # sets NCLATESTVER PHPVER RELEASE
 
 # all images
 
+# update ncp-restore
 install_app nc-restore
+
+# fix letsencrypt with httpsonly enabled
+  cat > /etc/apache2/sites-available/000-default.conf <<'EOF'
+<VirtualHost _default_:80>
+  DocumentRoot /var/www/nextcloud
+  <IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^.well-known/acme-challenge/ - [L]
+    RewriteCond %{HTTPS} !=on
+    RewriteRule ^/?(.*) https://%{SERVER_NAME}/$1 [R,L]
+  </IfModule>
+  <Directory /var/www/nextcloud/>
+    Options +FollowSymlinks
+    AllowOverride All
+    <IfModule mod_dav.c>
+      Dav off
+    </IfModule>
+    LimitRequestBody 0
+  </Directory>
+</VirtualHost>
+EOF
 
 # docker images only
 [[ -f /.docker-image ]] && {

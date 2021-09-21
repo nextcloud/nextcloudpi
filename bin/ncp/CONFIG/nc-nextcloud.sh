@@ -183,6 +183,7 @@ EOF
   DocumentRoot /var/www/nextcloud
   <IfModule mod_rewrite.c>
     RewriteEngine On
+    RewriteRule ^.well-known/acme-challenge/ - [L]
     RewriteCond %{HTTPS} !=on
     RewriteRule ^/?(.*) https://%{SERVER_NAME}/$1 [R,L]
   </IfModule>
