@@ -10,16 +10,29 @@
 =======
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 [v1.39.7](https://github.com/nextcloud/nextcloudpi/commit/ef88f48) (2021-09-22) dont update config if Redis is not yet ready
 
 [v1.39.6 ](https://github.com/nextcloud/nextcloudpi/commit/534b9b5) (2021-09-19) ncp-update-nc: pre-check that NC is currently working fine
 =======
 =======
 >>>>>>> 3c905ea (letsencrypt: fix active status check)
+=======
+>>>>>>> bac07b7 (letsencrypt: fix renewal with httpsonly enabled)
 [v1.39.7](https://github.com/nextcloud/nextcloudpi/commit/a6fd394) (2021-09-22) dont update config if Redis is not yet ready
 =======
 [v1.39.7](https://github.com/nextcloud/nextcloudpi/commit/c651cf8) (2021-09-21) letsencrypt: fix active status check
 >>>>>>> a07ddd2 (letsencrypt: fix active status check)
+=======
+[v1.39.7](https://github.com/nextcloud/nextcloudpi/commit/c651cf8) (2021-09-21) letsencrypt: fix active status check
+=======
+[v1.39.9](https://github.com/nextcloud/nextcloudpi/commit/836d66d) (2021-09-21) letsencrypt: fix renewal with httpsonly enabled
+
+[v1.39.8](https://github.com/nextcloud/nextcloudpi/commit/6fca91c) (2021-09-21) letsencrypt: take into account duplicate domains ending in -0001
+
+[v1.39.7 ](https://github.com/nextcloud/nextcloudpi/commit/a07ddd2) (2021-09-21) letsencrypt: fix active status check
+>>>>>>> afeb957 (letsencrypt: fix renewal with httpsonly enabled)
+>>>>>>> dd348b0 (letsencrypt: fix renewal with httpsonly enabled)
 
 [v1.39.6](https://github.com/nextcloud/nextcloudpi/commit/534b9b5) (2021-09-19) ncp-update-nc: pre-check that NC is currently working fine
 >>>>>>> f289443 (dont update config if Redis is not yet ready)
