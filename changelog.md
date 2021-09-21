@@ -1,5 +1,7 @@
 
-[v1.39.9](https://github.com/nextcloud/nextcloudpi/commit/836d66d) (2021-09-21) letsencrypt: fix renewal with httpsonly enabled
+[v1.39.10](https://github.com/nextcloud/nextcloudpi/commit/27e7d06) (2021-09-21) fix inverted template logic for docker
+
+[v1.39.9 ](https://github.com/nextcloud/nextcloudpi/commit/afeb957) (2021-09-21) letsencrypt: fix renewal with httpsonly enabled
 
 [v1.39.8](https://github.com/nextcloud/nextcloudpi/commit/6fca91c) (2021-09-21) letsencrypt: take into account duplicate domains ending in -0001
 
