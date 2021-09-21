@@ -33,7 +33,7 @@ EOF
 
 if [[ "$1" != "--defaults" ]] && [[ -n "$LETSENCRYPT_DOMAIN" ]]; then
   echo "    ServerName ${LETSENCRYPT_DOMAIN}"
-  LETSENCRYPT_CERT_BASE_PATH="/etc/letsencrypt/live/${LETSENCRYPT_DOMAIN,,}"
+  LETSENCRYPT_CERT_BASE_PATH="$(dirname $(letsencrypt certificates 2>/dev/null | head -1 | grep 'Certificate Path' | sed 's|.*: ||'))"
   LETSENCRYPT_CERT_PATH="${LETSENCRYPT_CERT_BASE_PATH}/fullchain.pem"
   LETSENCRYPT_KEY_PATH="${LETSENCRYPT_CERT_BASE_PATH}/privkey.pem"
 else

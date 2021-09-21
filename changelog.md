@@ -1,5 +1,7 @@
 
-[v1.39.7](https://github.com/nextcloud/nextcloudpi/commit/c651cf8) (2021-09-21) letsencrypt: fix active status check
+[v1.39.8](https://github.com/nextcloud/nextcloudpi/commit/45f1641) (2021-09-21) letsencrypt: take into account duplicate domains ending in -0001
+
+[v1.39.7](https://github.com/nextcloud/nextcloudpi/commit/a07ddd2) (2021-09-21) letsencrypt: fix active status check
 
 [v1.39.6](https://github.com/nextcloud/nextcloudpi/commit/534b9b5) (2021-09-19) ncp-update-nc: pre-check that NC is currently working fine
 
