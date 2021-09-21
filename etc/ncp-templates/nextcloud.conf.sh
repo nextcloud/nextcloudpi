@@ -3,6 +3,9 @@
 set -e
 source /usr/local/etc/library.sh
 
+[[ "$1" != "--defaults" ]] || echo "INFO: Restoring template to default settings" >&2
+[[ ! -f /.docker-image ]] || echo "INFO: Docker installation detected" >&2
+
 if [[ "$1" != "--defaults" ]]; then
   LETSENCRYPT_DOMAIN="$(
     # force defaults during initial build
@@ -13,7 +16,9 @@ if [[ "$1" != "--defaults" ]]; then
   )"
 fi
 
-if [[ -f /.docker-image ]] && [[ "$1" != "--defaults" ]]; then
+[[ -z "$LETSENCRYPT_DOMAIN" ]] || echo "INFO: Letsencrypt domain is ${LETSENCRYPT_DOMAIN}" >&2
+
+if [[ ! -f /.docker-image ]] && [[ "$1" != "--defaults" ]]; then
   METRICS_IS_ENABLED="$(
   source "${BINDIR}/SYSTEM/metrics.sh"
   tmpl_metrics_enabled && echo yes || echo no
@@ -21,6 +26,8 @@ if [[ -f /.docker-image ]] && [[ "$1" != "--defaults" ]]; then
 else
   METRICS_IS_ENABLED=no
 fi
+
+echo "INFO: Metrics enabled: ${METRICS_IS_ENABLED}" >&2
 
 echo "### DO NOT EDIT! THIS FILE HAS BEEN AUTOMATICALLY GENERATED. CHANGES WILL BE OVERWRITTEN ###"
 echo ""
@@ -33,7 +40,7 @@ EOF
 
 if [[ "$1" != "--defaults" ]] && [[ -n "$LETSENCRYPT_DOMAIN" ]]; then
   echo "    ServerName ${LETSENCRYPT_DOMAIN}"
-  LETSENCRYPT_CERT_BASE_PATH="$(dirname $(letsencrypt certificates 2>/dev/null | head -1 | grep 'Certificate Path' | sed 's|.*: ||'))"
+  LETSENCRYPT_CERT_BASE_PATH="$(dirname "$(letsencrypt certificates 2>/dev/null | head -1 | grep 'Certificate Path' | sed 's|.*: ||')")"
   LETSENCRYPT_CERT_PATH="${LETSENCRYPT_CERT_BASE_PATH}/fullchain.pem"
   LETSENCRYPT_KEY_PATH="${LETSENCRYPT_CERT_BASE_PATH}/privkey.pem"
 else
@@ -98,5 +105,5 @@ cat <<EOF
 </IfModule>
 EOF
 
-echo "Apache self check:" >> /var/log/ncp.log
-apache2ctl -t >> /var/log/ncp.log 2>&1
+echo "Apache self check:" >&2 /var/log/ncp.log
+apache2ctl -t >&2 /var/log/ncp.log 2>&1

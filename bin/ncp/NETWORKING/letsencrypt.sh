@@ -57,7 +57,7 @@ configure()
     rm -f /etc/cron.weekly/letsencrypt-ncp
     rm -f /etc/letsencrypt/renewal-hooks/deploy/ncp
     [[ "$DOCKERBUILD" == 1 ]] && update-rc.d letsencrypt disable
-    bash /usr/local/etc/ncp-templates/nextcloud.conf.sh > ${nc_vhostcfg}
+    install_template nextcloud.conf.sh "${nc_vhostcfg}"
     echo "letsencrypt certificates disabled. Using self-signed certificates instead."
     exit 0
   }
@@ -106,7 +106,7 @@ EOF
     chmod +x /etc/letsencrypt/renewal-hooks/deploy/ncp
 
     # Configure Apache
-    bash /usr/local/etc/ncp-templates/nextcloud.conf.sh > ${nc_vhostcfg}
+    install_template nextcloud.conf.sh "${nc_vhostcfg}"
     sed -i "s|SSLCertificateFile.*|SSLCertificateFile /etc/letsencrypt/live/$DOMAIN_LOWERCASE/fullchain.pem|" $vhostcfg2
     sed -i "s|SSLCertificateKeyFile.*|SSLCertificateKeyFile /etc/letsencrypt/live/$DOMAIN_LOWERCASE/privkey.pem|" $vhostcfg2
 

@@ -180,6 +180,24 @@ function find_app_param_num()
 
 }
 
+install_template() {
+  local template="${1?}"
+  local target="${2?}"
+  local bkp="$(mktemp)"
+  [[ -f "$target" ]] && cp -a "$target" "$bkp"
+  { bash "/usr/local/etc/ncp-templates/$template" > "$target"; } 2>&1 \
+  || {
+    echo "ERROR: An error occured while parsing template '$template'. Attempting safe mode..."
+    { bash "/usr/local/etc/ncp-templates/$template" --defaults > "$target"; } 2>&1
+  } \
+  || {
+    echo "ERROR: Could not regenerate $target from template $template. Rolling back..."
+    mv "$bkp" "$target"
+    return 1
+  }
+  rm "$bkp"
+}
+
 find_app_param()
 {
   local script="${1?}"
