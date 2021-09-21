@@ -44,7 +44,7 @@ if [[ "$1" != "--defaults" ]] && [[ -n "$LETSENCRYPT_DOMAIN" ]]; then
     letsencrypt certificates --cert-name ncp-nextcloud 2>/dev/null | grep 'Certificate Path' | head -1 | sed 's|.*: ||' \
     || letsencrypt certificates 2>/dev/null | grep 'Certificate Path' | head -1 | sed 's|.*: ||'
   )"
-  LETSENCRYPT_CERT_BASE_PATH="$CERT_PATH"
+  LETSENCRYPT_CERT_BASE_PATH="$(dirname "$CERT_PATH")"
   LETSENCRYPT_CERT_PATH="${LETSENCRYPT_CERT_BASE_PATH}/fullchain.pem"
   LETSENCRYPT_KEY_PATH="${LETSENCRYPT_CERT_BASE_PATH}/privkey.pem"
 else
