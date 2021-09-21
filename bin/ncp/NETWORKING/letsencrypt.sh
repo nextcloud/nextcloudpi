@@ -67,7 +67,7 @@ configure()
   [[ "$DOMAIN" == "" ]] && { echo "empty domain"; return 1; }
 
   local IFS_BK="$IFS"
-  IFS=",$IFS" OTHER_DOMAINS_ARRAY=(${OTHER_DOMAIN}'')
+  IFS=",$IFS" OTHER_DOMAINS_ARRAY=(${OTHER_DOMAIN})
   IFS="$IFS_BK"
 
   # Do it
