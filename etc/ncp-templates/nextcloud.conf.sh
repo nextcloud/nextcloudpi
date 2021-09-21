@@ -105,5 +105,5 @@ cat <<EOF
 </IfModule>
 EOF
 
-echo "Apache self check:" >&2 /var/log/ncp.log
-apache2ctl -t >&2 /var/log/ncp.log 2>&1
+echo "Apache self check:" >&2
+apache2ctl -t >&2
