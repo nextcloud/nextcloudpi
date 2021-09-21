@@ -120,7 +120,8 @@ EOF
     for dom in $DOMAIN "${OTHER_DOMAINS_ARRAY[@]}"; do
       [[ "$dom" != "" ]] && {
         [[ $domain_index -le 20 ]] || {
-          echo "WARN: Can't add more than 9 trusted domains to Nextcloud! They will still be included in the certificate"
+          echo "WARN: $dom will not be included in trusted domains for Nextcloud (maximum reached)." \
+            "It will still be included in the SSL certificate"
           continue
         }
         ncc config:system:set trusted_domains "$domain_index" --value="$dom"
