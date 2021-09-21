@@ -65,9 +65,13 @@ configure()
 
   [[ "$DOMAIN" == "" ]] && { echo "empty domain"; return 1; }
 
+  local IFS_BK="$IFS"
+  IFS=",$IFS" local OTHER_DOMAINS_ARRAY=(${OTHER_DOMAIN}'')
+  IFS="$IFS_BK"
+
   # Do it
   local domain_string=""
-  for domain in $DOMAIN $OTHER_DOMAIN; do
+  for domain in $DOMAIN "${OTHER_DOMAINS_ARRAY[@]}"; do
     [[ "$domain" != "" ]] && {
       [[ $domain_string == "" ]] && \
         domain_string+="${domain}" || \
@@ -113,9 +117,13 @@ EOF
 
     # Configure Nextcloud
     local domain_index="${TRUSTED_DOMAINS[letsencrypt_1]}"
-    for dom in $DOMAIN $OTHER_DOMAIN; do
+    for dom in $DOMAIN "${OTHER_DOMAINS_ARRAY[@]}"; do
       [[ "$dom" != "" ]] && {
-        ncc config:system:set trusted_domains $domain_index --value=$dom
+        [[ $domain_index -le 20 ]] || {
+          echo "WARN: Can't add more than 9 trusted domains to Nextcloud! They will still be included in the certificate"
+          continue
+        }
+        ncc config:system:set trusted_domains "$domain_index" --value="$dom"
         ((domain_index++))
       }
     done
