@@ -74,7 +74,8 @@ configure()
         domain_string+=",${domain}"
     }
   done
-  "${letsencrypt}" certonly -n --force-renew --no-self-upgrade --webroot -w "${ncdir}" --hsts --agree-tos -m "${EMAIL}" -d "${domain_string}" && {
+  "${letsencrypt}" certonly -n --force-renew --cert-name ncp-nextcloud --no-self-upgrade --webroot -w "${ncdir}" \
+    --hsts --agree-tos -m "${EMAIL}" -d "${domain_string}" && {
 
     # Set up auto-renewal
     cat > /etc/cron.weekly/letsencrypt-ncp <<EOF
