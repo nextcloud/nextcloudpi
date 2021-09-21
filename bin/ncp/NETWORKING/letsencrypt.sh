@@ -21,7 +21,7 @@ is_active()
 tmpl_letsencrypt_domain() {
   (
   . /usr/local/etc/library.sh
-  if is_active; then
+  if is_active_app letsencrypt; then
     find_app_param letsencrypt DOMAIN
   fi
   )
@@ -50,7 +50,6 @@ EOF
   return 0
 }
 
-# tested with certbot 0.28.0
 configure()
 {
   [[ "${ACTIVE}" != "yes" ]] && {
