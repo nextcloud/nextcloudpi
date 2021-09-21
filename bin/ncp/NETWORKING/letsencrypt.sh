@@ -119,7 +119,7 @@ EOF
     local domain_index="${TRUSTED_DOMAINS[letsencrypt_1]}"
     for dom in $DOMAIN "${OTHER_DOMAINS_ARRAY[@]}"; do
       [[ "$dom" != "" ]] && {
-        [[ $domain_index -le 20 ]] || {
+        [[ $domain_index -lt 20 ]] || {
           echo "WARN: $dom will not be included in trusted domains for Nextcloud (maximum reached)." \
             "It will still be included in the SSL certificate"
           continue
