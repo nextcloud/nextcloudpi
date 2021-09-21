@@ -13,7 +13,7 @@ if [[ "$1" != "--defaults" ]]; then
   )"
 fi
 
-if [[ -f /.docker-image ]] && [[ "$1" != "--defaults" ]]; then
+if ! [[ -f /.docker-image ]] && [[ "$1" != "--defaults" ]]; then
   METRICS_IS_ENABLED="$(
   source "${BINDIR}/SYSTEM/metrics.sh"
   tmpl_metrics_enabled && echo yes || echo no
