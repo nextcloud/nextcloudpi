@@ -23,6 +23,9 @@ while :; do
     sleep 3
     continue
   }
+  # Fix the situation where junk was introduced in the config by mistake
+  # because Redis was not yet ready to be used even if it was up
+  [[ "${nc_domain}" =~ "RedisException" ]] && nc_domain="$(hostname)"
   set-nc-domain "${nc_domain}" >> /var/log/ncp.log
   break
 done

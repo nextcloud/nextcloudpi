@@ -1,5 +1,7 @@
 
-[v1.39.11](https://github.com/nextcloud/nextcloudpi/commit/43a6381) (2021-09-21) letsencrypt: take into account duplicate domains ending in -0001
+[v1.39.12](https://github.com/nextcloud/nextcloudpi/commit/43e19cc) (2021-09-22) fix junk in overwrite.cli.url because of Redis not being yet ready
+
+[v1.39.11](https://github.com/nextcloud/nextcloudpi/commit/4039da9) (2021-09-21) letsencrypt: take into account duplicate domains ending in -0001
 
 [v1.39.10](https://github.com/nextcloud/nextcloudpi/commit/2b51476) (2021-09-21) fix inverted template logic for docker
 
@@ -7,7 +9,7 @@
 
 [v1.39.8 ](https://github.com/nextcloud/nextcloudpi/commit/1046a24) (2021-09-21) letsencrypt: fix active status check
 
-[v1.39.7](https://github.com/nextcloud/nextcloudpi/commit/98976c9) (2021-09-22) dont update config if Redis is not yet ready
+[v1.39.7 ](https://github.com/nextcloud/nextcloudpi/commit/98976c9) (2021-09-22) dont update config if Redis is not yet ready
 
 [v1.39.6 ](https://github.com/nextcloud/nextcloudpi/commit/534b9b5) (2021-09-19) ncp-update-nc: pre-check that NC is currently working fine
 
