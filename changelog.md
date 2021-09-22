@@ -1,13 +1,15 @@
 
-[v1.39.6](https://github.com/nextcloud/nextcloudpi/commit/9018be4) (2021-09-19) ncp-update-nc: pre-check that NC is currently working fine
+[v1.39.7](https://github.com/nextcloud/nextcloudpi/commit/5ba3e68) (2021-09-22) dont update config if Redis is not yet ready
 
-[v1.39.5 ](https://github.com/nextcloud/nextcloudpi/commit/dca742a) (2021-09-19) ncp-update-nc: dont keep notifying when there is nothing to upgrade
+[v1.39.6 ](https://github.com/nextcloud/nextcloudpi/commit/534b9b5) (2021-09-19) ncp-update-nc: pre-check that NC is currently working fine
 
-[v1.39.4 ](https://github.com/nextcloud/nextcloudpi/commit/18a0200) (2021-09-19) improve btrfs/ext checks
+[v1.39.5 ](https://github.com/nextcloud/nextcloudpi/commit/cb184d2) (2021-09-19) ncp-update-nc: dont keep notifying when there is nothing to upgrade
 
-[v1.39.3](https://github.com/nextcloud/nextcloudpi/commit/08302d8) (2021-09-18) letsencrypt: improve active status check
+[v1.39.4 ](https://github.com/nextcloud/nextcloudpi/commit/311cd2b) (2021-09-19) improve btrfs/ext checks
 
-[v1.39.2 ](https://github.com/nextcloud/nextcloudpi/commit/fb5a2f3) (2021-09-18) nextcloud-domain: make sure redis is running before it starts
+[v1.39.3 ](https://github.com/nextcloud/nextcloudpi/commit/f3e3b01) (2021-09-18) letsencrypt: improve active status check
+
+[v1.39.2 ](https://github.com/nextcloud/nextcloudpi/commit/110311f) (2021-09-18) nextcloud-domain: make sure redis is running before it starts
 
 [v1.39.1 ](https://github.com/nextcloud/nextcloudpi/commit/6290c1f) (2021-09-09) nc-static-IP: take into account httpsonly
 

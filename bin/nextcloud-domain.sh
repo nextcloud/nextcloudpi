@@ -17,5 +17,12 @@ done
 # set "${TRUSTED_DOMAINS[ip]}"
 ncc config:system:set trusted_domains 1 --value=${ip}
 
-nc_domain="$(ncc config:system:get overwrite.cli.url)"
-set-nc-domain "${nc_domain}" >> /var/log/ncp.log
+# we might need to retry if redis is not ready
+while :; do
+  nc_domain="$(ncc config:system:get overwrite.cli.url)" || {
+    sleep 3
+    continue
+  }
+  set-nc-domain "${nc_domain}" >> /var/log/ncp.log
+  break
+done
