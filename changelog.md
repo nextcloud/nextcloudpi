@@ -1,5 +1,7 @@
 
-[v1.39.12](https://github.com/nextcloud/nextcloudpi/commit/43e19cc) (2021-09-22) fix junk in overwrite.cli.url because of Redis not being yet ready
+[v1.39.13](https://github.com/nextcloud/nextcloudpi/commit/6dbc76e) (2021-09-23) ncp-web: make letsencrypt detection more robust
+
+[v1.39.12](https://github.com/nextcloud/nextcloudpi/commit/814569b) (2021-09-22) fix junk in overwrite.cli.url because of Redis not being yet ready
 
 [v1.39.11](https://github.com/nextcloud/nextcloudpi/commit/4039da9) (2021-09-21) letsencrypt: take into account duplicate domains ending in -0001
 
