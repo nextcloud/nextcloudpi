@@ -31,6 +31,10 @@ install_app nc-restore
   </Directory>
 </VirtualHost>
 EOF
+  apachectl -k graceful
+
+# fix issue with reverse proxy infinite redirections
+run_app nc-httpsonly
 
 # docker images only
 [[ -f /.docker-image ]] && {

@@ -1,5 +1,7 @@
 
-[v1.39.13](https://github.com/nextcloud/nextcloudpi/commit/6dbc76e) (2021-09-23) ncp-web: make letsencrypt detection more robust
+[v1.39.14](https://github.com/nextcloud/nextcloudpi/commit/077c3bc) (2021-09-25) nc-https:only fix infinite redirects behind proxy
+
+[v1.39.13](https://github.com/nextcloud/nextcloudpi/commit/eef7b09) (2021-09-23) ncp-web: make letsencrypt detection more robust
 
 [v1.39.12](https://github.com/nextcloud/nextcloudpi/commit/814569b) (2021-09-22) fix junk in overwrite.cli.url because of Redis not being yet ready
 
