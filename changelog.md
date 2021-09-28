@@ -1,5 +1,7 @@
 
-[v1.39.14](https://github.com/nextcloud/nextcloudpi/commit/077c3bc) (2021-09-25) nc-https:only fix infinite redirects behind proxy
+[v1.39.15](https://github.com/nextcloud/nextcloudpi/commit/3e408f1) (2021-09-27) add get_ip function
+
+[v1.39.14](https://github.com/nextcloud/nextcloudpi/commit/6ad96ed) (2021-09-25) nc-https:only fix infinite redirects behind proxy
 
 [v1.39.13](https://github.com/nextcloud/nextcloudpi/commit/eef7b09) (2021-09-23) ncp-web: make letsencrypt detection more robust
 

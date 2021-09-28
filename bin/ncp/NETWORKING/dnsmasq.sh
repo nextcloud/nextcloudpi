@@ -48,9 +48,10 @@ configure()
     return
   }
 
-  local IFACE=$( ip r | grep "default via"   | awk '{ print $5 }' | head -1 )
-  local IP=$( ncc config:system:get trusted_domains "${TRUSTED_DOMAINS[docker_overwrite]}" | grep -oP '\d{1,3}(.\d{1,3}){3}' )
-  [[ "$IP" == "" ]] && IP=$( ip a show dev "$IFACE" | grep global | grep -oP '\d{1,3}(.\d{1,3}){3}' | head -1 )
+  local IFACE IP
+  IFACE=$( ip r | grep "default via"   | awk '{ print $5 }' | head -1 )
+  IP=$( ncc config:system:get trusted_domains "${TRUSTED_DOMAINS[docker_overwrite]}" | grep -oP '\d{1,3}(.\d{1,3}){3}' )
+  [[ "$IP" == "" ]] && IP="$(get_ip)"
 
   [[ "$IP" == "" ]] && { echo "could not detect IP"; return 1; }
 

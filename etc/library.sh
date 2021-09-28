@@ -382,6 +382,13 @@ function nc_version()
   ncc status | grep "version:" | awk '{ print $3 }'
 }
 
+function get_ip()
+{
+  local iface
+  iface="$( ip r | grep "default via" | awk '{ print $5 }' | head -1 )"
+  ip a show dev "$iface" | grep global | grep -oP '\d{1,3}(.\d{1,3}){3}' | head -1
+}
+
 function is_an_ip()
 {
   local ip_or_domain="${1}"

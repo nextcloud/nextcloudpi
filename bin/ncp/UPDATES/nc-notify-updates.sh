@@ -12,7 +12,6 @@
 
 # check every hour
 CHECKINTERVAL=1
-NCDIR=/var/www/nextcloud
 
 configure()
 {
@@ -41,12 +40,9 @@ test -e \$NOTIFIED && [[ "\$( cat \$LATEST )" == "\$( cat \$NOTIFIED )" ]] && {
 
 echo "Found update from \$( cat \$VERFILE ) to \$( cat \$LATEST ). Sending notification..."
 
-IFACE=\$( ip r | grep "default via" | awk '{ print \$5 }' | head -1 )
-IP=\$( ip a show dev "\$IFACE" | grep global | grep -oP '\d{1,3}(\.\d{1,3}){3}' | head -1 )
-
 notify_admin \
   "NextCloudPi update" \
-  "Update from \$( cat \$VERFILE ) to \$( cat \$LATEST ) is available. Update from https://\$IP:4443"
+  "Update from \$( cat \$VERFILE ) to \$( cat \$LATEST ) is available. Update from https://\$(get_ip):4443"
 
 cat \$LATEST > \$NOTIFIED
 EOF
