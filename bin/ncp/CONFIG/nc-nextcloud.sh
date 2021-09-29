@@ -19,11 +19,9 @@ install()
   # During build, this step is run before ncp.sh. Avoid executing twice
   [[ -f /usr/lib/systemd/system/nc-provisioning.service ]] && return 0
 
-  source /usr/local/etc/library.sh # sets PHPVER RELEASE
-
   # Optional packets for Nextcloud and Apps
   apt-get update
-  $APTINSTALL lbzip2 iputils-ping jq
+  $APTINSTALL lbzip2 iputils-ping jq wget
   $APTINSTALL -t $RELEASE php-smbclient exfat-fuse exfat-utils                  # for external storage
   $APTINSTALL -t $RELEASE php${PHPVER}-exif                                     # for gallery
   $APTINSTALL -t $RELEASE php${PHPVER}-gmp                                      # for bookmarks
@@ -55,6 +53,16 @@ install()
   sed -i "s|^port.*|port 0|"                                       $REDIS_CONF
   echo "maxmemory $REDIS_MEM" >> $REDIS_CONF
   echo 'vm.overcommit_memory = 1' >> /etc/sysctl.conf
+
+  if is_lxc; then
+    # Otherwise it fails to start in Buster LXC container
+    mkdir -p /etc/systemd/system/redis-server.service.d
+    cat > /etc/systemd/system/redis-server.service.d/lxc_fix.conf <<'EOF'
+[Service]
+ReadOnlyDirectories=
+EOF
+    systemctl daemon-reload
+  fi
 
   chown redis: "$REDIS_CONF"
   usermod -a -G redis www-data

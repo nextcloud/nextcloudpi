@@ -17,10 +17,11 @@ IMG="NextCloudPi_${BNAME}_$( date  "+%m-%d-%y" ).img"
 IMG=tmp/"$IMG"
 TAR=output/"$( basename "$IMG" .img ).tar.bz2"
 
+set -e
+source build/buildlib.sh
+
 test -f "$TAR" && { echo "$TAR already exists. Skipping... "; exit 0; }
 
-set -e
-source buildlib.sh
 source etc/library.sh # sets RELEASE
 
 prepare_dirs                   # tmp cache output
@@ -32,7 +33,7 @@ prepare_dirs                   # tmp cache output
 # add NCP modifications
 mkdir -p armbian/userpatches armbian/userpatches/overlay
 rm -f ncp-web/{wizard.cfg,ncp-web.cfg}
-cp armbian.sh armbian/userpatches/customize-image.sh
+cp build/armbian/armbian.sh armbian/userpatches/customize-image.sh
 rsync -Aax --delete --exclude-from .gitignore --exclude *.img --exclude *.bz2 . armbian/userpatches/overlay/
 
 # GENERATE IMAGE

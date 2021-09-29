@@ -10,6 +10,9 @@
 
 DBG=x
 
+version=$(git describe --tags --always)
+version=${version%-*-*}
+
 # $IMG    is the source image
 # $IP     is the IP of the QEMU images
 # $IMGOUT will contain the name of the generated image

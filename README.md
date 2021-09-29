@@ -88,6 +88,12 @@ sudo ncp-config
 docker run -d -p 4443:4443 -p 443:443 -p 80:80 -v ncdata:/data --name nextcloudpi ownyourbits/nextcloudpi $DOMAIN
 ```
 
+## Run in LXD
+
+```
+lxc import NextCloudPi_LXD_09-29-21.tar.bz
+lxc start ncp
+```
 
 ## How to build
 
@@ -96,7 +102,7 @@ Install git, docker, qemu-user-static, chroot and all the usual building tools.
 ```
 git clone https://github.com/nextcloud/nextcloudpi.git
 cd nextcloudpi
-./build-SD-rpi.sh
+build/build-SD-rpi.sh
 ```
 
 , or for an Armbian based board
@@ -110,9 +116,15 @@ In order to generate the Docker images
 ```
 git clone https://github.com/nextcloud/nextcloudpi.git
 cd nextcloudpi
-./build-docker.sh x86
-./build-docker.sh armhf
-./build-docker.sh arm64
+build/build-docker.sh x86
+build/build-docker.sh armhf
+build/build-docker.sh arm64
+```
+
+, for LXD
+
+```
+build/build-LXD.sh
 ```
 
 NextCloudPi can be installed in any architecture running the latest Debian

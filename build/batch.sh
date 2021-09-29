@@ -8,12 +8,9 @@
 #
 
 set -e
-
-version=$(git describe --tags --always)
-version=${version%-*-*}
+source build/buildlib.sh          # initializes $IMGNAME
 
 ## BUILDING
-source buildlib.sh          # initializes $IMGNAME
 
 [[ "$FTPPASS" == "" ]] && {
   echo -e "\e[1mNo FTPPASS variable found, FTP won't work.\nYou can ^C to cancel now\e[0m"
@@ -29,27 +26,30 @@ sleep 5
 rm -f ncp-web/wizard.cfg
 
 # Raspbian
-./build-SD-rpi.sh
+build/build-SD-rpi.sh
 IMG="$( ls -1t tmp/*.img | head -1 )"
-./build-SD-berryboot.sh "$IMG"
+build/build-SD-berryboot.sh "$IMG"
 
 # Armbian
-./build-SD-armbian.sh odroidxu4 OdroidHC2
-./build-SD-armbian.sh rockpro64 RockPro64
-./build-SD-armbian.sh rock64 Rock64
-./build-SD-armbian.sh bananapi Bananapi
-./build-SD-armbian.sh odroidhc4 OdroidHC4
-./build-SD-armbian.sh odroidc4 OdroidC4
-./build-SD-armbian.sh odroidc2 OdroidC2
-#./build-SD-armbian.sh orangepizeroplus2-h5 OrangePiZeroPlus2
+build/build-SD-armbian.sh odroidxu4 OdroidHC2
+build/build-SD-armbian.sh rockpro64 RockPro64
+build/build-SD-armbian.sh rock64 Rock64
+build/build-SD-armbian.sh bananapi Bananapi
+build/build-SD-armbian.sh odroidhc4 OdroidHC4
+build/build-SD-armbian.sh odroidc4 OdroidC4
+build/build-SD-armbian.sh odroidc2 OdroidC2
+#build/build-SD-armbian.sh orangepizeroplus2-h5 OrangePiZeroPlus2
 
 # VM
-./build-VM.sh
+build/build-VM.sh
+
+# LXD
+build/build-LXD.sh
 
 # Docker
-./build-docker.sh x86
-./build-docker.sh armhf
-./build-docker.sh arm64
+build/build-docker.sh x86
+build/build-docker.sh armhf
+build/build-docker.sh arm64
 
 [[ "$FTPPASS" == "" ]] && exit
 

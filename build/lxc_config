@@ -1,0 +1,31 @@
+# Template used to create this container: /usr/share/lxc/templates/lxc-download
+# Parameters passed to the template: --dist debian --release buster --arch amd64
+# Template script checksum (SHA-1): 1ad14dde73ae69ed485f71e26793af87573947d4
+# For additional config options, please look at lxc.container.conf(5)
+
+# Uncomment the following line to support nesting containers:
+#lxc.include = /usr/share/lxc/config/nesting.conf
+# (Be aware this has security implications)
+
+
+# Distribution configuration
+lxc.include = /usr/share/lxc/config/common.conf
+lxc.arch = linux64
+
+# Container specific configuration
+lxc.rootfs.path = btrfs:/var/lib/lxc/ncp/rootfs
+lxc.uts.name = ncp
+
+# Network configuration
+#lxc.net.0.type = empty
+lxc.net.0.type = veth
+lxc.net.0.link = lxcbr0
+lxc.net.0.flags = up
+lxc.net.0.hwaddr = 00:16:3e:2d:5d:80
+
+# Mounts
+lxc.mount.entry = /media/DATA/src/nextcloudpi build none bind,create=dir 0 0
+
+# Moar privileges (TODO review)
+#lxc.apparmor.profile = unconfined
+#lxc.cgroup2.devices.allow = a

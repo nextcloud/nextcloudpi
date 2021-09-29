@@ -32,24 +32,15 @@ touch /.ncp-image
 # install NCP
 echo -e "\nInstalling NextCloudPi"
 
-mkdir -p /usr/local/etc/ncp-config.d/
-cp etc/ncp-config.d/nc-nextcloud.cfg /usr/local/etc/ncp-config.d/
-cp etc/library.sh /usr/local/etc/
-cp etc/ncp.cfg /usr/local/etc/
-
 hostname -F /etc/hostname # fix 'sudo resolve host' errors
-install_app    lamp.sh
-install_app    bin/ncp/CONFIG/nc-nextcloud.sh
-run_app_unsafe bin/ncp/CONFIG/nc-nextcloud.sh
-rm /usr/local/etc/ncp-config.d/nc-nextcloud.cfg    # armbian overlay is ro
-install_app    ncp.sh
-run_app_unsafe bin/ncp/CONFIG/nc-init.sh
-run_app_unsafe post-inst.sh
 
-cd -
+CODE_DIR="$(pwd)" bash install.sh
+run_app_unsafe post-inst.sh
 
 # disable SSH by default, it can be enabled through ncp-web
 systemctl disable ssh
+
+cd -
 
 
 # License

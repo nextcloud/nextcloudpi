@@ -417,7 +417,15 @@ function clear_password_fields()
 function apt_install()
 {
   apt-get update --allow-releaseinfo-change
-  apt-get install -y --no-install-recommends -o Dpkg::Options::=--force-confdef -o Dpkg::Options::="--force-confold" "$@"
+  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends -o Dpkg::Options::=--force-confdef -o Dpkg::Options::="--force-confold" "$@"
+}
+
+function is_docker() {
+  [[ -f /.dockerenv ]] || [[ "$DOCKERBUILD" == 1 ]]
+}
+
+function is_lxc() {
+  grep -q container=lxc /proc/1/environ &>/dev/null
 }
 
 function notify_admin()

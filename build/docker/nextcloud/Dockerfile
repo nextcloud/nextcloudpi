@@ -50,5 +50,5 @@ apt-get purge -y wget ca-certificates; \
 rm /nc-nextcloud.sh /usr/local/etc/ncp-config.d/nc-nextcloud.cfg; \
 rm /.ncp-image;
 
-COPY docker/nextcloud/020nextcloud /etc/services-enabled.d/
+COPY build/docker/nextcloud/020nextcloud /etc/services-enabled.d/
 COPY bin/ncp-provisioning.sh /usr/local/bin/

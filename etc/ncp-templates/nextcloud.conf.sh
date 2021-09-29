@@ -13,7 +13,7 @@ if [[ "$1" != "--defaults" ]]; then
   )"
 fi
 
-if ! [[ -f /.docker-image ]] && [[ "$1" != "--defaults" ]]; then
+if ! [[ -f /.ncp-image ]] && [[ "$1" != "--defaults" ]]; then
   METRICS_IS_ENABLED="$(
   source "${BINDIR}/SYSTEM/metrics.sh"
   tmpl_metrics_enabled && echo yes || echo no
@@ -103,5 +103,7 @@ cat <<EOF
 </IfModule>
 EOF
 
-echo "Apache self check:" >> /var/log/ncp.log
-apache2ctl -t >> /var/log/ncp.log 2>&1
+if ! [[ -f /.ncp-image ]]; then
+  echo "Apache self check:" >> /var/log/ncp.log
+  apache2ctl -t >> /var/log/ncp.log 2>&1
+fi

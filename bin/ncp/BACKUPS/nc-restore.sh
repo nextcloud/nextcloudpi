@@ -158,7 +158,7 @@ sed -i "s|^;\?sys_temp_dir =.*$|sys_temp_dir = $DATADIR/tmp|"     /etc/php/${PHP
 ncc config:system:set logfile --value="$DATADIR/nextcloud.log"
 
 # update fail2ban logpath
-[[ ! -f /.docker-image ]] && {
+[[ -f /etc/fail2ban/jail.conf ]] && {
   sed -i "s|logpath  =.*|logpath  = $DATADIR/nextcloud.log|" /etc/fail2ban/jail.conf
   pgrep fail2ban &>/dev/null && service fail2ban restart
 }

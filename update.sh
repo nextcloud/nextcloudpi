@@ -8,6 +8,8 @@
 # More at https://ownyourbits.com/
 #
 
+source /usr/local/etc/library.sh
+
 set -e
 
 CONFDIR=/usr/local/etc/ncp-config.d/
@@ -23,8 +25,6 @@ nc-ramlogs
 nc-swapfile
 nc-static-IP
 nc-wifi
-nc-nextcloud
-nc-init
 UFW
 nc-snapshot
 nc-snapshot-auto
@@ -39,10 +39,18 @@ NFS
 metrics
 "
 
+if is_docker &>/dev/null; then
+# in docker, just remove the volume for this
+EXCL_DOCKER+="
+nc-nextcloud
+nc-init
+"
+
 # better use a designated container
 EXCL_DOCKER+="
 samba
 "
+fi
 
 # check running apt
 pgrep apt &>/dev/null && { echo "apt is currently running. Try again later";  exit 1; }
@@ -53,12 +61,12 @@ source /usr/local/etc/library.sh
 
 mkdir -p "$CONFDIR"
 
-# prevent installing some ncp-apps in the docker version
-[[ -f /.docker-image ]] && {
+# prevent installing some ncp-apps in the containerized versions
+if is_docker || is_lxc; then
   for opt in $EXCL_DOCKER; do
     touch $CONFDIR/$opt.cfg
   done
-}
+fi
 
 # copy all files in bin and etc
 cp -r bin/* /usr/local/bin/
@@ -144,16 +152,18 @@ rm -rf /var/www/nextcloud/apps/nextcloudpi
 cp -r /var/www/ncp-app /var/www/nextcloud/apps/nextcloudpi
 chown -R www-data:     /var/www/nextcloud/apps/nextcloudpi
 
-[[ -f /.docker-image ]] && {
-  # remove unwanted ncp-apps for the docker version
+# remove unwanted ncp-apps for containerized versions
+if is_docker || is_lxc; then
   for opt in $EXCL_DOCKER; do
     rm $CONFDIR/$opt.cfg
     find /usr/local/bin/ncp -name "$opt.sh" -exec rm '{}' \;
   done
+fi
 
-  # update services
-  cp docker/{lamp/010lamp,nextcloud/020nextcloud,nextcloudpi/000ncp} /etc/services-enabled.d
-}
+# update services for docker
+if is_docker; then
+  cp build/docker/{lamp/010lamp,nextcloud/020nextcloud,nextcloudpi/000ncp} /etc/services-enabled.d
+fi
 
 # only live updates from here
 [[ -f /.ncp-image ]] && exit 0

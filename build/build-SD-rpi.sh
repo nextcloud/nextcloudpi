@@ -9,7 +9,7 @@
 #
 
 set -e
-source buildlib.sh
+source build/buildlib.sh
 
 URL="https://downloads.raspberrypi.org/raspios_lite_arm64/images/raspios_lite_arm64-2020-08-24/2020-08-20-raspios-buster-arm64-lite.zip"
 SIZE=3G                     # Raspbian image size
@@ -49,6 +49,9 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
 
     # mark the image as an image build
     touch /.ncp-image
+
+    # allow oldstable
+    apt-get update --allow-releaseinfo-change
 
     # As of 10-2018 this upgrades raspi-kernel and messes up wifi and BTRFS
     #apt-get upgrade -y

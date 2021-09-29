@@ -248,7 +248,8 @@ EOF
     echo nextcloudpi > /etc/hostname
 
     ## tag image
-    [[ -f /.docker-image ]] && local DOCKER_TAG="_docker"
+    is_docker && local DOCKER_TAG="_docker"
+    is_lxc && local DOCKER_TAG="_lxc"
     echo "NextCloudPi${DOCKER_TAG}_$( date  "+%m-%d-%y" )" > /usr/local/etc/ncp-baseimage
 
     ## SSH hardening

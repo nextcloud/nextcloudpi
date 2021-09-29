@@ -2,6 +2,8 @@
 
 # this script runs at startup to provide an unique random passwords for each instance
 
+source /usr/local/etc/library.sh
+
 ## redis provisioning
 
 CFG=/var/www/nextcloud/config/config.php
@@ -14,7 +16,7 @@ REDISPASS="$( grep "^requirepass" /etc/redis/redis.conf | cut -f2 -d' ' )"
   echo Provisioning Redis password
   sed -i -E "s|^requirepass .*|requirepass $REDISPASS|" /etc/redis/redis.conf
   chown redis:redis /etc/redis/redis.conf
-  [[ "$DOCKERBUILD" != 1 ]] && systemctl restart redis
+  is_docker || systemctl restart redis
 }
 
 ### If there exists already a configuration adjust the password
