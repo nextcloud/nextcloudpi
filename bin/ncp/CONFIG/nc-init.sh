@@ -181,6 +181,12 @@ EOF
   ncc config:system:set overwrite.cli.url --value="https://nextcloudpi/"
   ncc config:system:set trusted_domains "${TRUSTED_DOMAINS[nc_domain]}" --value="nextcloudpi"
 
+  # bash completion for ncc
+  apt_install bash-completion
+  ncc _completion -g --shell-type bash -p ncc | sed 's|/var/www/nextcloud/occ|ncc|g' > /usr/share/bash-completion/completions/ncp
+  echo ". /etc/bash_completion" >> /etc/bash.bashrc
+  echo ". /usr/share/bash-completion/completions/ncp" >> /etc/bash.bashrc
+
   # TODO temporary workaround for https://github.com/nextcloud/server/pull/13358
   ncc -n db:convert-filecache-bigint
   ncc db:add-missing-indices

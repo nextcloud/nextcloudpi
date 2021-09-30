@@ -36,6 +36,19 @@ EOF
 # fix issue with reverse proxy infinite redirections
 run_app nc-httpsonly
 
+# bash completion for `ncc`
+if ! [[ -f /usr/share/bash-completion/completions/ncp ]]; then
+  apt_install bash-completion
+  ncc _completion -g --shell-type bash -p ncc | sed 's|/var/www/nextcloud/occ|ncc|g' > /usr/share/bash-completion/completions/ncp
+  echo ". /etc/bash_completion" >> /etc/bash.bashrc
+  echo ". /usr/share/bash-completion/completions/ncp" >> /etc/bash.bashrc
+  cat > /usr/local/bin/ncc <<'EOF'
+#!/bin/bash
+sudo -E -u www-data php /var/www/nextcloud/occ "$@"
+EOF
+  chmod +x /usr/local/bin/ncc
+fi
+
 # docker images only
 [[ -f /.docker-image ]] && {
   :

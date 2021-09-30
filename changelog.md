@@ -1,5 +1,7 @@
 
-[v1.39.16](https://github.com/nextcloud/nextcloudpi/commit/e6ebc3d) (2021-09-27) nc-https: proto logic was inverted fix
+[v1.39.17](https://github.com/nextcloud/nextcloudpi/commit/520f062) (2021-09-29) add bash completion to ncc
+
+[v1.39.16](https://github.com/nextcloud/nextcloudpi/commit/2be666b) (2021-09-27) nc-https: proto logic was inverted fix
 
 [v1.39.15](https://github.com/nextcloud/nextcloudpi/commit/b067844) (2021-09-27) add get_ip function
 
