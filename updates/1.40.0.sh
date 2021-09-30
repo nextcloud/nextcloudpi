@@ -35,6 +35,7 @@ EOF
 
 # fix issue with reverse proxy infinite redirections
 run_app nc-httpsonly
+ncc config:system:set overwriteprotocol --value="https"
 
 # bash completion for `ncc`
 if ! [[ -f /usr/share/bash-completion/completions/ncp ]]; then
