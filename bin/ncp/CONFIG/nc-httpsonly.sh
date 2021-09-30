@@ -13,9 +13,9 @@ configure()
 {
   [[ -f /.ncp-image ]] && return 0
   if [[ $ACTIVE == "no" ]]; then
-    local opt=Off proto=https
+    local opt=Off proto=http
     else
-      local opt=On proto=http
+      local opt=On proto=https
   fi
   sed -i "s|RewriteEngine .*|RewriteEngine $opt|" /etc/apache2/sites-available/000-default.conf
   ncc config:system:set overwriteprotocol --value="${proto}"
