@@ -38,7 +38,7 @@ $extension = pathinfo($file_name, PATHINFO_EXTENSION);
 if ($extension !== "tar" and $extension !== "gz")
   exit( '{ "output": "invalid file" }' );
 
-if (!move_uploaded_file($file_tmp, sys_get_temp_dir() . '/' . $file_name))
+if (!move_uploaded_file($file_tmp, '/tmp/' . $file_name))
   exit('{ "output": "upload denied" }');
 
 // return JSON
