@@ -52,8 +52,8 @@ samba
 "
 fi
 
-# check running apt
-pgrep apt &>/dev/null && { echo "apt is currently running. Try again later";  exit 1; }
+# check running apt or apt-get
+pgrep -x "apt|apt-get" &>/dev/null && { echo "apt is currently running. Try again later";  exit 1; }
 
 cp etc/library.sh /usr/local/etc/
 
