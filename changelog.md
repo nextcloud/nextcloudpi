@@ -1,5 +1,7 @@
 
-[v1.39.19](https://github.com/nextcloud/nextcloudpi/commit/92bec43) (2021-09-30) ncp-web: fix upload from local file path
+[v1.39.20](https://github.com/nextcloud/nextcloudpi/commit/7188050) (2021-10-04) ncp-config: fix first time error with no known latest version
+
+[v1.39.19](https://github.com/nextcloud/nextcloudpi/commit/05f0d35) (2021-09-30) ncp-web: fix upload from local file path
 
 [v1.39.18](https://github.com/nextcloud/nextcloudpi/commit/f1c90f5) (2021-09-30) nc-httpsonly: always use overwriteprotocol https in all cases
 

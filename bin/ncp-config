@@ -15,13 +15,13 @@ BINDIR=/usr/local/bin/ncp
 
 source /usr/local/etc/library.sh
 {
-  latest_ver="$(cat /var/run/.ncp-latest-version)"
-  ncpversion="$(cat /usr/local/etc/ncp-version  )"
+  ncpversion="$(cat /usr/local/etc/ncp-version)"
   chlogfile=/usr/local/etc/ncp-changelog
   # ask for update if outdated
   ncp-test-updates 2>/dev/null && {
     [[ -f "$chlogfile" ]] && changelog=$( head -4 "$chlogfile" )
 
+    latest_ver="$(cat /var/run/.ncp-latest-version 2>/dev/null)"
     whiptail --backtitle "$backtitle $ncpversion" \
              --title "NextCloudPi update available" \
              --clear --yesno "Update to $latest_ver?\n\n$changelog" \
