@@ -19,7 +19,7 @@ COPY ncp.sh update.sh post-inst.sh    /tmp/ncp-build/
 COPY ncp-web              /tmp/ncp-build/ncp-web/
 COPY ncp-app              /tmp/ncp-build/ncp-app/
 COPY ncp-previewgenerator /tmp/ncp-build/ncp-previewgenerator/
-COPY build/docker         /tmp/ncp-build/docker/
+COPY build/docker         /tmp/ncp-build/build/docker/
 COPY etc/ncp-config.d/nc-init.cfg /usr/local/etc/ncp-config.d/nc-init-copy.cfg
 
 RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt \

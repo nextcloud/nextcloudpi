@@ -1,5 +1,7 @@
 
-[v1.39.20](https://github.com/nextcloud/nextcloudpi/commit/7188050) (2021-10-04) ncp-config: fix first time error with no known latest version
+[v1.39.21](https://github.com/nextcloud/nextcloudpi/commit/a4fdff6) (2021-10-04) ncp-web: disable activation page once activated
+
+[v1.39.20](https://github.com/nextcloud/nextcloudpi/commit/714c3e5) (2021-10-04) ncp-config: fix first time error with no known latest version
 
 [v1.39.19](https://github.com/nextcloud/nextcloudpi/commit/05f0d35) (2021-09-30) ncp-web: fix upload from local file path
 
