@@ -50,6 +50,10 @@ EOF
   chmod +x /usr/local/bin/ncc
 fi
 
+# we handle this ourselves now
+ncc app:disable updatenotification
+run_app nc-notify-updates
+
 # docker images only
 [[ -f /.docker-image ]] && {
   :

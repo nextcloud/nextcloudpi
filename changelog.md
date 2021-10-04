@@ -1,5 +1,7 @@
 
-[v1.39.21](https://github.com/nextcloud/nextcloudpi/commit/a4fdff6) (2021-10-04) ncp-web: disable activation page once activated
+[v1.40.0](https://github.com/nextcloud/nextcloudpi/commit/fbc4ab8) (2021-10-04) nc-notify-updates: notify of new supported NC versions
+
+[v1.39.21](https://github.com/nextcloud/nextcloudpi/commit/2037064) (2021-10-04) ncp-web: disable activation page once activated
 
 [v1.39.20](https://github.com/nextcloud/nextcloudpi/commit/714c3e5) (2021-10-04) ncp-config: fix first time error with no known latest version
 

@@ -148,6 +148,9 @@ EOF
   ncc app:install tasks
   ncc app:enable  tasks
 
+  # we handle this ourselves
+  ncc app:disable updatenotification
+
   # News dropped support for 32-bit -> https://github.com/nextcloud/news/issues/1423
   if ! [[ "$(uname -m)" =~ "armv7" ]]; then
     ncc app:install news

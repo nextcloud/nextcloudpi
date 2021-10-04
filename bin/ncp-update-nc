@@ -45,26 +45,9 @@ CURRENT="$( $SUDO php /var/www/nextcloud/occ status | grep "version:" | awk '{ p
 grep -qP "\d+\.\d+\.\d+" <<<"$CURRENT" || { echo "Malformed version $CURRENT"; exit 1; }
 grep -qP "\d+\.\d+\.\d+" <<<"$VER"     || { echo "Malformed version $VER"    ; exit 1; }
 
-MAJOR=$( grep -oP "\d+\.\d+\.\d+" <<<"$VER" | cut -d. -f1 )
-MINOR=$( grep -oP "\d+\.\d+\.\d+" <<<"$VER" | cut -d. -f2 )
-PATCH=$( grep -oP "\d+\.\d+\.\d+" <<<"$VER" | cut -d. -f3 )
-
-MAJ=$( grep -oP "\d+\.\d+\.\d+" <<<"$CURRENT" | cut -d. -f1 )
-MIN=$( grep -oP "\d+\.\d+\.\d+" <<<"$CURRENT" | cut -d. -f2 )
-PAT=$( grep -oP "\d+\.\d+\.\d+" <<<"$CURRENT" | cut -d. -f3 )
-
-NEED_UPDATE=false
-if [ "$MAJOR" -gt "$MAJ" ]; then
-  NEED_UPDATE=true
-elif [ "$MAJOR" -eq "$MAJ" ] && [ "$MINOR" -gt "$MIN" ]; then
-  NEED_UPDATE=true
-elif [ "$MAJOR" -eq "$MAJ" ] && [ "$MINOR" -eq "$MIN" ] && [ "$PATCH" -gt "$PAT" ]; then
-  NEED_UPDATE=true
-fi
-
 echo "Current   Nextcloud version $CURRENT"
 echo "Available Nextcloud version $VER"
-[[ "$NEED_UPDATE" == "true" ]] || { echo "Nothing to update"; exit 1; } # we want `exit 1` so the autoupdate doesn't notify success in this case
+is_more_recent_than "${VER}" "${CURRENT}" || { echo "Nothing to update"; exit 1; } # we want `exit 1` so the autoupdate doesn't notify success in this case
 
 # make sure that cron.php is not running and there are no pending jobs
 # https://github.com/nextcloud/server/issues/10949

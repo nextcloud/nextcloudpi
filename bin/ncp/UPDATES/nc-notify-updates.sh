@@ -23,28 +23,30 @@ configure()
   }
 
   # code
-  cat > /usr/local/bin/ncp-notify-update <<EOF
+  cat > /usr/local/bin/ncp-notify-update <<'EOF'
 #!/bin/bash
 source /usr/local/etc/library.sh
 VERFILE=/usr/local/etc/ncp-version
 LATEST=/var/run/.ncp-latest-version
 NOTIFIED=/var/run/.ncp-version-notified
 
-test -e \$LATEST || exit 0;
+/usr/local/bin/ncp-check-nc-version
+
+test -e $LATEST || exit 0;
 /usr/local/bin/ncp-test-updates || { echo "NextCloudPi up to date"; exit 0; }
 
-test -e \$NOTIFIED && [[ "\$( cat \$LATEST )" == "\$( cat \$NOTIFIED )" ]] && {
-  echo "Found update from \$( cat \$VERFILE ) to \$( cat \$LATEST ). Already notified"
+test -e $NOTIFIED && [[ "$( cat $LATEST )" == "$( cat $NOTIFIED )" ]] && {
+  echo "Found update from $( cat $VERFILE ) to $( cat $LATEST ). Already notified"
   exit 0
 }
 
-echo "Found update from \$( cat \$VERFILE ) to \$( cat \$LATEST ). Sending notification..."
+echo "Found update from $( cat $VERFILE ) to $( cat $LATEST ). Sending notification..."
 
 notify_admin \
   "NextCloudPi update" \
-  "Update from \$( cat \$VERFILE ) to \$( cat \$LATEST ) is available. Update from https://\$(get_ip):4443"
+  "Update from $( cat $VERFILE ) to $( cat $LATEST ) is available. Update from https://$(get_ip):4443"
 
-cat \$LATEST > \$NOTIFIED
+cat $LATEST > $NOTIFIED
 EOF
   chmod +x /usr/local/bin/ncp-notify-update
 
