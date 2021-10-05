@@ -33,9 +33,6 @@ run_app_unsafe /nc-nextcloud.sh; \
 mv /var/www/nextcloud /data-ro/nextcloud; \
 ln -s /data-ro/nextcloud /var/www/nextcloud; \
 
-# stop mysqld
-mysqladmin -u root shutdown; \
-
 # package cleanup
 apt-get autoremove -y; \
 apt-get clean; \

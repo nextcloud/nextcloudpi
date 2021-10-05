@@ -26,7 +26,9 @@ configure()
 
   # launch mariadb if not already running
   if ! pgrep -c mysqld &>/dev/null; then
+    echo "Starting mariaDB"
     mysqld &
+    local db_pid=$!
   fi
 
   # wait for mariadb
@@ -198,6 +200,13 @@ EOF
   test -f /usr/local/bin/nextcloud-domain.sh && {
     test -f /.ncp-image || bash /usr/local/bin/nextcloud-domain.sh
   }
+
+  # dettach mysql during the build
+  if [[ "${db_pid}" != "" ]]; then
+    mysqladmin -u root shutdown
+    wait "${db_pid}"
+  fi
+
   echo "NC init done"
 }
 

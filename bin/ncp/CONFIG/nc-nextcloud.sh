@@ -152,6 +152,7 @@ configure()
   if ! pgrep -c mysqld &>/dev/null; then
     echo "Starting mariaDB"
     mysqld &
+    local db_pid=$!
   fi
 
   # wait for mariadb
@@ -259,6 +260,11 @@ EOF
   crontab -u www-data /tmp/crontab_http
   rm /tmp/crontab_http
 
+  # dettach mysql during the build
+  if [[ "${db_pid}" != "" ]]; then
+    mysqladmin -u root shutdown
+    wait "${db_pid}"
+  fi
   echo "Don't forget to run nc-init"
 }
 

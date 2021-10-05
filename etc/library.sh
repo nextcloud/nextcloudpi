@@ -224,7 +224,7 @@ function run_app_unsafe()
   }
 
   # run
-  configure 2>&1 | tee -a $log
+  (configure) 2>&1 | tee -a $log
   local ret="${PIPESTATUS[0]}"
 
   echo "" >> $log
