@@ -57,24 +57,30 @@ configure()
     rm -f /etc/cron.weekly/letsencrypt-ncp
     rm -f /etc/letsencrypt/renewal-hooks/deploy/ncp
     [[ "$DOCKERBUILD" == 1 ]] && update-rc.d letsencrypt disable
-    bash /usr/local/etc/ncp-templates/nextcloud.conf.sh > ${nc_vhostcfg}
+    install_template nextcloud.conf.sh "${nc_vhostcfg}"
     echo "letsencrypt certificates disabled. Using self-signed certificates instead."
     exit 0
   }
   local DOMAIN_LOWERCASE="${DOMAIN,,}"
+  local OTHER_DOMAINS_ARRAY
 
   [[ "$DOMAIN" == "" ]] && { echo "empty domain"; return 1; }
 
+  local IFS_BK="$IFS"
+  IFS=",$IFS" OTHER_DOMAINS_ARRAY=(${OTHER_DOMAIN})
+  IFS="$IFS_BK"
+
   # Do it
   local domain_string=""
-  for domain in $DOMAIN $OTHER_DOMAIN; do
+  for domain in $DOMAIN "${OTHER_DOMAINS_ARRAY[@]}"; do
     [[ "$domain" != "" ]] && {
       [[ $domain_string == "" ]] && \
         domain_string+="${domain}" || \
         domain_string+=",${domain}"
     }
   done
-  "${letsencrypt}" certonly -n --force-renew --no-self-upgrade --webroot -w "${ncdir}" --hsts --agree-tos -m "${EMAIL}" -d "${domain_string}" && {
+  "${letsencrypt}" certonly -n --force-renew --cert-name ncp-nextcloud --no-self-upgrade --webroot -w "${ncdir}" \
+    --hsts --agree-tos -m "${EMAIL}" -d "${domain_string}" && {
 
     # Set up auto-renewal
     cat > /etc/cron.weekly/letsencrypt-ncp <<EOF
@@ -106,15 +112,20 @@ EOF
     chmod +x /etc/letsencrypt/renewal-hooks/deploy/ncp
 
     # Configure Apache
-    bash /usr/local/etc/ncp-templates/nextcloud.conf.sh > ${nc_vhostcfg}
+    install_template nextcloud.conf.sh "${nc_vhostcfg}"
     sed -i "s|SSLCertificateFile.*|SSLCertificateFile /etc/letsencrypt/live/$DOMAIN_LOWERCASE/fullchain.pem|" $vhostcfg2
     sed -i "s|SSLCertificateKeyFile.*|SSLCertificateKeyFile /etc/letsencrypt/live/$DOMAIN_LOWERCASE/privkey.pem|" $vhostcfg2
 
     # Configure Nextcloud
     local domain_index="${TRUSTED_DOMAINS[letsencrypt_1]}"
-    for dom in $DOMAIN $OTHER_DOMAIN; do
+    for dom in $DOMAIN "${OTHER_DOMAINS_ARRAY[@]}"; do
       [[ "$dom" != "" ]] && {
-        ncc config:system:set trusted_domains $domain_index --value=$dom
+        [[ $domain_index -lt 20 ]] || {
+          echo "WARN: $dom will not be included in trusted domains for Nextcloud (maximum reached)." \
+            "It will still be included in the SSL certificate"
+          continue
+        }
+        ncc config:system:set trusted_domains "$domain_index" --value="$dom"
         ((domain_index++))
       }
     done

@@ -35,7 +35,7 @@ configure() {
 
   if [[ "$ACTIVE" != yes ]]
   then
-    bash /usr/local/etc/ncp-templates/nextcloud.conf.sh --defaults > /etc/apache2/sites-available/nextcloud.conf
+    install_template nextcloud.conf.sh /etc/apache2/sites-available/nextcloud.conf
 
     systemctl disable prometheus-node-exporter
     service prometheus-node-exporter stop
@@ -59,9 +59,8 @@ configure() {
     rm -f "${htpasswd_file}"
     echo "$PASSWORD" | htpasswd -ciB "${htpasswd_file}" "$USER"
 
-    bash /usr/local/etc/ncp-templates/nextcloud.conf.sh > /etc/apache2/sites-available/nextcloud.conf || {
-      echo "An unexpected error occurred while configuring apache. Rolling back..." >&2
-      bash /usr/local/etc/ncp-templates/nextcloud.conf.sh --defaults > /etc/apache2/sites-available/nextcloud.conf
+    install_template nextcloud.conf.sh /etc/apache2/sites-available/nextcloud.conf || {
+      echo "ERROR while generating nextcloud.conf! Exiting..."
       return 1
     }
 

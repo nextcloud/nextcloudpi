@@ -3,6 +3,9 @@
 set -e
 source /usr/local/etc/library.sh
 
+[[ "$1" != "--defaults" ]] || echo "INFO: Restoring template to default settings" >&2
+[[ ! -f /.docker-image ]]  || echo "INFO: Docker installation detected" >&2
+
 if [[ "$1" != "--defaults" ]]; then
   LETSENCRYPT_DOMAIN="$(
     # force defaults during initial build
@@ -13,7 +16,10 @@ if [[ "$1" != "--defaults" ]]; then
   )"
 fi
 
-if ! [[ -f /.ncp-image ]] && [[ "$1" != "--defaults" ]]; then
+[[ -z "$LETSENCRYPT_DOMAIN" ]] || echo "INFO: Letsencrypt domain is ${LETSENCRYPT_DOMAIN}" >&2
+
+# skip during build
+if ! [[ -f /.ncp-image ]] && [[ "$1" != "--defaults" ]] && [[ -f "${BINDIR}/SYSTEM/metrics.sh" ]]; then
   METRICS_IS_ENABLED="$(
   source "${BINDIR}/SYSTEM/metrics.sh"
   tmpl_metrics_enabled && echo yes || echo no
@@ -21,6 +27,8 @@ if ! [[ -f /.ncp-image ]] && [[ "$1" != "--defaults" ]]; then
 else
   METRICS_IS_ENABLED=no
 fi
+
+echo "INFO: Metrics enabled: ${METRICS_IS_ENABLED}" >&2
 
 echo "### DO NOT EDIT! THIS FILE HAS BEEN AUTOMATICALLY GENERATED. CHANGES WILL BE OVERWRITTEN ###"
 echo ""

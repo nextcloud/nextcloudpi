@@ -1,7 +1,11 @@
 
-[v1.40.2](https://github.com/nextcloud/nextcloudpi/commit/fc3f978) (2021-10-05) nc-update-nc: BTRFS support
+[v1.40.4](https://github.com/nextcloud/nextcloudpi/commit/9fa18af) (2021-10-06) Make templating safer and more verbose (#1343)
 
-[v1.40.1](https://github.com/nextcloud/nextcloudpi/commit/7c361c5) (2021-10-05) update: improve check for apt (#1356)
+[v1.40.3 ](https://github.com/nextcloud/nextcloudpi/commit/8a6c1c0) (2021-10-06) ncp-check-nc-version: dont notify the same version more than once
+
+[v1.40.2 ](https://github.com/nextcloud/nextcloudpi/commit/ea1e00c) (2021-10-05) nc-update-nc: BTRFS support
+
+[v1.40.1 ](https://github.com/nextcloud/nextcloudpi/commit/7c361c5) (2021-10-05) update: improve check for apt (#1356)
 
 [v1.40.0 ](https://github.com/nextcloud/nextcloudpi/commit/a0728d7) (2021-10-04) nc-notify-updates: notify of new supported NC versions
 

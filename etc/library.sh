@@ -183,6 +183,29 @@ function find_app_param_num()
 
 }
 
+install_template() {
+  local template="${1?}"
+  local target="${2?}"
+  local bkp="$(mktemp)"
+  [[ -f "$target" ]] && cp -a "$target" "$bkp"
+  {
+    if [[ "$3" == "--defaults" ]]; then
+      { bash "/usr/local/etc/ncp-templates/$template" --defaults > "$target"; } 2>&1
+    else
+      { bash "/usr/local/etc/ncp-templates/$template" > "$target"; } 2>&1 || \
+      {
+        [[ "$3" == "--allow-fallback" ]] && \
+        { bash "/usr/local/etc/ncp-templates/$template" --defaults > "$target"; } 2>&1
+      }
+    fi
+  } || {
+    echo "ERROR: Could not generate $target from template $template. Rolling back..."
+    mv "$bkp" "$target"
+    return 1
+  }
+  rm "$bkp"
+}
+
 find_app_param()
 {
   local script="${1?}"
