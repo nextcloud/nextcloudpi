@@ -35,7 +35,7 @@ install()
   rm -f /etc/cron.d/certbot
   mkdir -p /etc/letsencrypt/live
 
-  [[ "$DOCKERBUILD" == 1 ]] && {
+  is_docker && {
     # execute before lamp stack
     cat > /etc/services-available.d/009letsencrypt <<EOF
 #!/bin/bash
@@ -136,7 +136,7 @@ EOF
     rm -rf $ncdir/.well-known
 
     # Update configuration
-    [[ "$DOCKERBUILD" == 1 ]] && update-rc.d letsencrypt enable
+    is_docker && update-rc.d letsencrypt enable
 
     return 0
   }

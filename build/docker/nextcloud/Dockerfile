@@ -33,9 +33,6 @@ run_app_unsafe /nc-nextcloud.sh; \
 mv /var/www/nextcloud /data-ro/nextcloud; \
 ln -s /data-ro/nextcloud /var/www/nextcloud; \
 
-# stop mysqld
-mysqladmin -u root shutdown; \
-
 # package cleanup
 apt-get autoremove -y; \
 apt-get clean; \
@@ -50,5 +47,5 @@ apt-get purge -y wget ca-certificates; \
 rm /nc-nextcloud.sh /usr/local/etc/ncp-config.d/nc-nextcloud.cfg; \
 rm /.ncp-image;
 
-COPY docker/nextcloud/020nextcloud /etc/services-enabled.d/
+COPY build/docker/nextcloud/020nextcloud /etc/services-enabled.d/
 COPY bin/ncp-provisioning.sh /usr/local/bin/

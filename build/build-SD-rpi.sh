@@ -9,7 +9,7 @@
 #
 
 set -e
-source buildlib.sh
+source build/buildlib.sh
 
 URL="https://downloads.raspberrypi.org/raspios_lite_arm64/images/raspios_lite_arm64-2020-08-24/2020-08-20-raspios-buster-arm64-lite.zip"
 SIZE=3G                     # Raspbian image size
@@ -20,7 +20,8 @@ TAR=output/"$( basename "$IMG" .img ).tar.bz2"
 ##############################################################################
 
 test -f "$TAR" && { echo "$TAR already exists. Skipping... "; exit 0; }
-pgrep -f qemu-arm-static &>/dev/null && { echo "qemu-arm-static already running. Abort"; exit 1; }
+pgrep -f qemu-arm-static     &>/dev/null && { echo "qemu-arm-static already running. Abort"; exit 1; }
+pgrep -f qemu-aarch64-static &>/dev/null && { echo "qemu-aarch64-static already running. Abort"; exit 1; }
 
 ## preparations
 
@@ -50,6 +51,9 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
     # mark the image as an image build
     touch /.ncp-image
 
+    # allow oldstable
+    apt-get update --allow-releaseinfo-change
+
     # As of 10-2018 this upgrades raspi-kernel and messes up wifi and BTRFS
     #apt-get upgrade -y
     #apt-get dist-upgrade -y
@@ -65,6 +69,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
     cp etc/ncp-config.d/nc-nextcloud.cfg /usr/local/etc/ncp-config.d/
     cp etc/ncp.cfg /usr/local/etc/
     cp etc/library.sh /usr/local/etc/
+    cp -r etc/ncp-templates /usr/local/etc/
     source etc/library.sh
     install_app    lamp.sh
     install_app    bin/ncp/CONFIG/nc-nextcloud.sh

@@ -26,7 +26,9 @@ configure()
 
   # launch mariadb if not already running
   if ! pgrep -c mysqld &>/dev/null; then
+    echo "Starting mariaDB"
     mysqld &
+    local db_pid=$!
   fi
 
   # wait for mariadb
@@ -148,6 +150,9 @@ EOF
   ncc app:install tasks
   ncc app:enable  tasks
 
+  # we handle this ourselves
+  ncc app:disable updatenotification
+
   # News dropped support for 32-bit -> https://github.com/nextcloud/news/issues/1423
   if ! [[ "$(uname -m)" =~ "armv7" ]]; then
     ncc app:install news
@@ -181,6 +186,12 @@ EOF
   ncc config:system:set overwrite.cli.url --value="https://nextcloudpi/"
   ncc config:system:set trusted_domains "${TRUSTED_DOMAINS[nc_domain]}" --value="nextcloudpi"
 
+  # bash completion for ncc
+  apt_install bash-completion
+  ncc _completion -g --shell-type bash -p ncc | sed 's|/var/www/nextcloud/occ|ncc|g' > /usr/share/bash-completion/completions/ncp
+  echo ". /etc/bash_completion" >> /etc/bash.bashrc
+  echo ". /usr/share/bash-completion/completions/ncp" >> /etc/bash.bashrc
+
   # TODO temporary workaround for https://github.com/nextcloud/server/pull/13358
   ncc -n db:convert-filecache-bigint
   ncc db:add-missing-indices
@@ -189,6 +200,13 @@ EOF
   test -f /usr/local/bin/nextcloud-domain.sh && {
     test -f /.ncp-image || bash /usr/local/bin/nextcloud-domain.sh
   }
+
+  # dettach mysql during the build
+  if [[ "${db_pid}" != "" ]]; then
+    mysqladmin -u root shutdown
+    wait "${db_pid}"
+  fi
+
   echo "NC init done"
 }
 

@@ -19,7 +19,7 @@ import getopt
 import os
 import signal
 from urllib.request import urlopen
-from subprocess import run, PIPE
+from subprocess import run, getstatusoutput, PIPE
 
 processes_must_be_running = [
         'apache2',
@@ -167,6 +167,10 @@ def check_notify_push():
         print(result.stdout)
         return False
 
+def is_lxc():
+    "check that we are running inside a LXC container"
+    (exitcode, output) = getstatusoutput('grep -q container=lxc /proc/1/environ')
+    return exitcode == 0
 
 def signal_handler(sig, frame):
         sys.exit(0)
@@ -206,16 +210,28 @@ if __name__ == "__main__":
     except:
         dockers_running = ''
 
+    # detect if we are running this in a LXC instance
+    try:
+        lxc_running = run(['lxc', 'info', 'ncp'], stdout=PIPE, check = True)
+    except:
+        lxc_running = False
+
     # local method
     if os.path.exists('/usr/local/etc/ncp-baseimage'):
         print(tc.brown + "* local NCP instance detected" + tc.normal)
-        binaries_must_be_installed = binaries_must_be_installed + binaries_no_docker
+        if not is_lxc():
+            binaries_must_be_installed = binaries_must_be_installed + binaries_no_docker
         pre_cmd = []
 
     # docker method
     elif 'ownyourbits/nextcloudpi-' in dockers_running:
         print( tc.brown + "* local NCP docker instance detected" + tc.normal)
         pre_cmd = ['docker', 'exec', '-ti', 'nextcloudpi']
+
+    # LXC method
+    elif lxc_running:
+        print( tc.brown + "* local LXC instance detected" + tc.normal)
+        pre_cmd = ['lxc', 'exec', 'ncp', '--']
 
     # SSH method
     else:

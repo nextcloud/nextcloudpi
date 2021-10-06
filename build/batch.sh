@@ -8,12 +8,9 @@
 #
 
 set -e
-
-version=$(git describe --tags --always)
-version=${version%-*-*}
+source build/buildlib.sh          # initializes $IMGNAME
 
 ## BUILDING
-source buildlib.sh          # initializes $IMGNAME
 
 [[ "$FTPPASS" == "" ]] && {
   echo -e "\e[1mNo FTPPASS variable found, FTP won't work.\nYou can ^C to cancel now\e[0m"
@@ -23,71 +20,98 @@ source buildlib.sh          # initializes $IMGNAME
   echo -e "\e[1mNOTE: CLEAN is enabled\nYou can ^C to cancel now\e[0m"
 }
 
+[[ "$SKIP_TESTS" == "1" ]] && {
+  echo -e "\e[1mNOTE: SKIP_TESTS is enabled\nYou can ^C to cancel now\e[0m"
+}
+
 sleep 5
 
 # make sure we don't accidentally include this
 rm -f ncp-web/wizard.cfg
 
+# LXD
+build/build-LXD.sh
+
+# Docker x86
+build/build-docker.sh x86
+
+# Tests
+[[ "${SKIP_TESTS}" != 1 ]] && {
+  ## LXC testing
+  lxc stop ncp || true
+  lxc start ncp
+  lxc exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
+  ip="$(lxc exec ncp -- bash -c 'source /usr/local/etc/library.sh && get_ip')"
+  tests/activation_tests.py "${ip}"
+  tests/nextcloud_tests.py  "${ip}"
+  tests/system_tests.py
+  lxc stop ncp
+
+  ## Docker testing
+  cd build/docker
+  docker compose down
+  docker volume rm docker_ncdata
+  docker compose up -d
+  sleep 30
+  ../../tests/activation_tests.py
+  ../../tests/nextcloud_tests.py
+  ../../tests/system_tests.py
+  docker compose down
+  cd -
+}
+
+# Docker other
+build/build-docker.sh armhf
+build/build-docker.sh arm64
+
 # Raspbian
-./build-SD-rpi.sh
+build/build-SD-rpi.sh
 IMG="$( ls -1t tmp/*.img | head -1 )"
-./build-SD-berryboot.sh "$IMG"
+build/build-SD-berryboot.sh "$IMG"
 
 # Armbian
-./build-SD-armbian.sh odroidxu4 OdroidHC2
-./build-SD-armbian.sh rockpro64 RockPro64
-./build-SD-armbian.sh rock64 Rock64
-./build-SD-armbian.sh bananapi Bananapi
-./build-SD-armbian.sh odroidhc4 OdroidHC4
-./build-SD-armbian.sh odroidc4 OdroidC4
-./build-SD-armbian.sh odroidc2 OdroidC2
-#./build-SD-armbian.sh orangepizeroplus2-h5 OrangePiZeroPlus2
+build/build-SD-armbian.sh odroidxu4 OdroidHC2
+build/build-SD-armbian.sh rockpro64 RockPro64
+build/build-SD-armbian.sh rock64 Rock64
+build/build-SD-armbian.sh bananapi Bananapi
+build/build-SD-armbian.sh odroidhc4 OdroidHC4
+build/build-SD-armbian.sh odroidc4 OdroidC4
+build/build-SD-armbian.sh odroidc2 OdroidC2
+#build/build-SD-armbian.sh orangepizeroplus2-h5 OrangePiZeroPlus2
 
 # VM
-./build-VM.sh
-
-# Docker
-./build-docker.sh x86
-./build-docker.sh armhf
-./build-docker.sh arm64
+build/build-VM.sh
 
 [[ "$FTPPASS" == "" ]] && exit
 
 export DOCKER_CLI_EXPERIMENTAL=enabled
 
-# TODO test first
-#&& {
-  docker push ownyourbits/nextcloudpi-x86:latest
-  docker push ownyourbits/nextcloudpi-x86:${version}
-  docker push ownyourbits/nextcloud-x86:latest
-  docker push ownyourbits/nextcloud-x86:${version}
-  docker push ownyourbits/lamp-x86:latest
-  docker push ownyourbits/lamp-x86:${version}
-  docker push ownyourbits/debian-ncp-x86:latest
-  docker push ownyourbits/debian-ncp-x86:${version}
-#}
+docker push ownyourbits/nextcloudpi-x86:latest
+docker push ownyourbits/nextcloudpi-x86:${version}
+docker push ownyourbits/nextcloud-x86:latest
+docker push ownyourbits/nextcloud-x86:${version}
+docker push ownyourbits/lamp-x86:latest
+docker push ownyourbits/lamp-x86:${version}
+docker push ownyourbits/debian-ncp-x86:latest
+docker push ownyourbits/debian-ncp-x86:${version}
 
-# TODO test first && {
-  docker push ownyourbits/nextcloudpi-armhf:latest
-  docker push ownyourbits/nextcloudpi-armhf:${version}
-  docker push ownyourbits/nextcloud-armhf:latest
-  docker push ownyourbits/nextcloud-armhf:${version}
-  docker push ownyourbits/lamp-armhf:latest
-  docker push ownyourbits/lamp-armhf:${version}
-  docker push ownyourbits/debian-ncp-armhf:latest
-  docker push ownyourbits/debian-ncp-armhf:${version}
-#}
+docker push ownyourbits/nextcloudpi-armhf:latest
+docker push ownyourbits/nextcloudpi-armhf:${version}
+docker push ownyourbits/nextcloud-armhf:latest
+docker push ownyourbits/nextcloud-armhf:${version}
+docker push ownyourbits/lamp-armhf:latest
+docker push ownyourbits/lamp-armhf:${version}
+docker push ownyourbits/debian-ncp-armhf:latest
+docker push ownyourbits/debian-ncp-armhf:${version}
 
-# TODO test first && {
-  docker push ownyourbits/nextcloudpi-arm64:latest
-  docker push ownyourbits/nextcloudpi-arm64:${version}
-  docker push ownyourbits/nextcloud-arm64:latest
-  docker push ownyourbits/nextcloud-arm64:${version}
-  docker push ownyourbits/lamp-arm64:latest
-  docker push ownyourbits/lamp-arm64:${version}
-  docker push ownyourbits/debian-ncp-arm64:latest
-  docker push ownyourbits/debian-ncp-arm64:${version}
-#}
+docker push ownyourbits/nextcloudpi-arm64:latest
+docker push ownyourbits/nextcloudpi-arm64:${version}
+docker push ownyourbits/nextcloud-arm64:latest
+docker push ownyourbits/nextcloud-arm64:${version}
+docker push ownyourbits/lamp-arm64:latest
+docker push ownyourbits/lamp-arm64:${version}
+docker push ownyourbits/debian-ncp-arm64:latest
+docker push ownyourbits/debian-ncp-arm64:${version}
 
 # Docker multi-arch
 docker manifest create --amend ownyourbits/nextcloudpi:${version} \

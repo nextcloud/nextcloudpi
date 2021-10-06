@@ -31,6 +31,28 @@ install_app nc-restore
   </Directory>
 </VirtualHost>
 EOF
+  apachectl -k graceful
+
+# fix issue with reverse proxy infinite redirections
+run_app nc-httpsonly
+ncc config:system:set overwriteprotocol --value="https"
+
+# bash completion for `ncc`
+if ! [[ -f /usr/share/bash-completion/completions/ncp ]]; then
+  apt_install bash-completion
+  ncc _completion -g --shell-type bash -p ncc | sed 's|/var/www/nextcloud/occ|ncc|g' > /usr/share/bash-completion/completions/ncp
+  echo ". /etc/bash_completion" >> /etc/bash.bashrc
+  echo ". /usr/share/bash-completion/completions/ncp" >> /etc/bash.bashrc
+  cat > /usr/local/bin/ncc <<'EOF'
+#!/bin/bash
+sudo -E -u www-data php /var/www/nextcloud/occ "$@"
+EOF
+  chmod +x /usr/local/bin/ncc
+fi
+
+# we handle this ourselves now
+ncc app:disable updatenotification
+run_app nc-notify-updates
 
 # docker images only
 [[ -f /.docker-image ]] && {

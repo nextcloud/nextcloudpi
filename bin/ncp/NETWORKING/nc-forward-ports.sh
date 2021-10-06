@@ -17,13 +17,13 @@ install()
 
 configure() 
 {
-  local IFACE=$( ip r | grep "default via" | awk '{ print $5 }' | head -1 )
-  local IP=$( ip a show dev "$IFACE" | grep global | grep -oP '\d{1,3}(.\d{1,3}){3}' | head -1 )
+  local ip
+  ip="$(get_ip)"
   upnpc -d "$HTTPSPORT" TCP
   upnpc -d "$HTTPPORT"  TCP
-  upnpc -a "$IP" 443 "$HTTPSPORT" TCP | tee >(cat - >&2) | grep -q "is redirected to internal" || \
+  upnpc -a "$ip" 443 "$HTTPSPORT" TCP | tee >(cat - >&2) | grep -q "is redirected to internal" || \
     { echo -e "\nCould not forward ports automatically.\nDo it manually, or activate UPnP in your router and try again"; return 1; }
-  upnpc -a "$IP" 80  "$HTTPPORT"  TCP | tee >(cat - >&2) | grep -q "is redirected to internal" || \
+  upnpc -a "$ip" 80  "$HTTPPORT"  TCP | tee >(cat - >&2) | grep -q "is redirected to internal" || \
     { echo -e "\nCould not forward ports automatically.\nDo it manually, or activate UPnP in your router and try again"; return 1; }
 }
 

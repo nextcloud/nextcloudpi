@@ -40,13 +40,14 @@ EOF
 
 if [[ "$1" != "--defaults" ]] && [[ -n "$LETSENCRYPT_DOMAIN" ]]; then
   echo "    ServerName ${LETSENCRYPT_DOMAIN}"
-  CERT_PATH="$(
-    letsencrypt certificates --cert-name ncp-nextcloud 2>/dev/null | grep 'Certificate Path' | head -1 | sed 's|.*: ||' \
-    || letsencrypt certificates 2>/dev/null | grep 'Certificate Path' | head -1 | sed 's|.*: ||'
-  )"
-  LETSENCRYPT_CERT_BASE_PATH="$(dirname "$CERT_PATH")"
+  LETSENCRYPT_CERT_BASE_PATH="/etc/letsencrypt/live/${LETSENCRYPT_DOMAIN,,}"
+  [[ -d "${LETSENCRYPT_CERT_BASE_PATH}" ]] || \
+    LETSENCRYPT_CERT_BASE_PATH="$(find /etc/letsencrypt/live -name "${LETSENCRYPT_DOMAIN,,}*" | head -1)"
   LETSENCRYPT_CERT_PATH="${LETSENCRYPT_CERT_BASE_PATH}/fullchain.pem"
   LETSENCRYPT_KEY_PATH="${LETSENCRYPT_CERT_BASE_PATH}/privkey.pem"
+
+  # fall back to self-signed snakeoil certs
+  [[ -d "${LETSENCRYPT_CERT_BASE_PATH}" ]] || unset LETSENCRYPT_CERT_BASE_PATH
 else
   # Make sure the default snakeoil cert exists
   [ -f /etc/ssl/certs/ssl-cert-snakeoil.pem ] || make-ssl-cert generate-default-snakeoil --force-overwrite
@@ -109,5 +110,7 @@ cat <<EOF
 </IfModule>
 EOF
 
-echo "Apache self check:" >&2
-apache2ctl -t >&2
+if ! [[ -f /.ncp-image ]]; then
+  echo "Apache self check:" >> /var/log/ncp.log
+  apache2ctl -t >> /var/log/ncp.log 2>&1
+fi

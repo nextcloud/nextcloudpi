@@ -9,7 +9,7 @@
 #
 
 set -e
-source buildlib.sh
+source build/buildlib.sh
 
 IP=${1:-192.168.0.145}      # For QEMU automated testing (optional)
 SIZE=3G                     # Raspbian image size
@@ -34,6 +34,7 @@ prepare_dirs                   # tmp cache output
 
 echo -e "\e[1m\n[ Build NCP ]\e[0m"
 export DEB_RELEASE=$(jq -r .release < etc/ncp.cfg)
+cd build/
 vagrant destroy -f
 vagrant box update
 vagrant up --provider=libvirt --provision

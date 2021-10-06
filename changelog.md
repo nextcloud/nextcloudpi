@@ -1,4 +1,5 @@
 
+<<<<<<< HEAD
 [v1.39.10](https://github.com/nextcloud/nextcloudpi/commit/27e7d06) (2021-09-21) fix inverted template logic for docker
 
 [v1.39.9 ](https://github.com/nextcloud/nextcloudpi/commit/afeb957) (2021-09-21) letsencrypt: fix renewal with httpsonly enabled
@@ -8,6 +9,45 @@
 [v1.39.7 ](https://github.com/nextcloud/nextcloudpi/commit/a07ddd2) (2021-09-21) letsencrypt: fix active status check
 
 [v1.39.6](https://github.com/nextcloud/nextcloudpi/commit/534b9b5) (2021-09-19) ncp-update-nc: pre-check that NC is currently working fine
+=======
+[v1.40.2](https://github.com/nextcloud/nextcloudpi/commit/fc3f978) (2021-10-05) nc-update-nc: BTRFS support
+
+[v1.40.1](https://github.com/nextcloud/nextcloudpi/commit/7c361c5) (2021-10-05) update: improve check for apt (#1356)
+
+[v1.40.0 ](https://github.com/nextcloud/nextcloudpi/commit/a0728d7) (2021-10-04) nc-notify-updates: notify of new supported NC versions
+
+[v1.39.21](https://github.com/nextcloud/nextcloudpi/commit/2037064) (2021-10-04) ncp-web: disable activation page once activated
+
+[v1.39.20](https://github.com/nextcloud/nextcloudpi/commit/714c3e5) (2021-10-04) ncp-config: fix first time error with no known latest version
+
+[v1.39.19](https://github.com/nextcloud/nextcloudpi/commit/05f0d35) (2021-09-30) ncp-web: fix upload from local file path
+
+[v1.39.18](https://github.com/nextcloud/nextcloudpi/commit/f1c90f5) (2021-09-30) nc-httpsonly: always use overwriteprotocol https in all cases
+
+[v1.39.17](https://github.com/nextcloud/nextcloudpi/commit/c037c11) (2021-09-29) add bash completion to ncc
+
+[v1.39.16](https://github.com/nextcloud/nextcloudpi/commit/2be666b) (2021-09-27) nc-https: proto logic was inverted fix
+
+[v1.39.15](https://github.com/nextcloud/nextcloudpi/commit/b067844) (2021-09-27) add get_ip function
+
+[v1.39.14](https://github.com/nextcloud/nextcloudpi/commit/6ad96ed) (2021-09-25) nc-https:only fix infinite redirects behind proxy
+
+[v1.39.13](https://github.com/nextcloud/nextcloudpi/commit/eef7b09) (2021-09-23) ncp-web: make letsencrypt detection more robust
+
+[v1.39.12](https://github.com/nextcloud/nextcloudpi/commit/814569b) (2021-09-22) fix junk in overwrite.cli.url because of Redis not being yet ready
+
+[v1.39.11](https://github.com/nextcloud/nextcloudpi/commit/4039da9) (2021-09-21) letsencrypt: take into account duplicate domains ending in -0001
+
+[v1.39.10](https://github.com/nextcloud/nextcloudpi/commit/2b51476) (2021-09-21) fix inverted template logic for docker
+
+[v1.39.9 ](https://github.com/nextcloud/nextcloudpi/commit/a4851dc) (2021-09-21) letsencrypt: fix renewal with httpsonly enabled
+
+[v1.39.8 ](https://github.com/nextcloud/nextcloudpi/commit/1046a24) (2021-09-21) letsencrypt: fix active status check
+
+[v1.39.7 ](https://github.com/nextcloud/nextcloudpi/commit/98976c9) (2021-09-22) dont update config if Redis is not yet ready
+
+[v1.39.6 ](https://github.com/nextcloud/nextcloudpi/commit/534b9b5) (2021-09-19) ncp-update-nc: pre-check that NC is currently working fine
+>>>>>>> devel
 
 [v1.39.5 ](https://github.com/nextcloud/nextcloudpi/commit/cb184d2) (2021-09-19) ncp-update-nc: dont keep notifying when there is nothing to upgrade
 

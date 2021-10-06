@@ -34,7 +34,6 @@ ncc status &>/dev/null          || { echo "Nextcloud is currently down"; exit 1;
 [[ -d /var/www/nextcloud-old ]] && { echo "Nextcloud backup directory found. Interrupted or already running installation?"; exit 1; }
 [[ -d /var/www/nextcloud     ]] || { echo "Nextcloud directory not found"                              ; exit 1; }
 [[ -d "$DATADIR"             ]] || { echo "Nextcloud data directory not found"                         ; exit 1; }
-grep -q "btrfs" <(stat -fc%T "$BASEDIR") && { echo "BTRFS not supported"                               ; exit 1; }
 
 # check version
 ####################
@@ -45,26 +44,9 @@ CURRENT="$( $SUDO php /var/www/nextcloud/occ status | grep "version:" | awk '{ p
 grep -qP "\d+\.\d+\.\d+" <<<"$CURRENT" || { echo "Malformed version $CURRENT"; exit 1; }
 grep -qP "\d+\.\d+\.\d+" <<<"$VER"     || { echo "Malformed version $VER"    ; exit 1; }
 
-MAJOR=$( grep -oP "\d+\.\d+\.\d+" <<<"$VER" | cut -d. -f1 )
-MINOR=$( grep -oP "\d+\.\d+\.\d+" <<<"$VER" | cut -d. -f2 )
-PATCH=$( grep -oP "\d+\.\d+\.\d+" <<<"$VER" | cut -d. -f3 )
-
-MAJ=$( grep -oP "\d+\.\d+\.\d+" <<<"$CURRENT" | cut -d. -f1 )
-MIN=$( grep -oP "\d+\.\d+\.\d+" <<<"$CURRENT" | cut -d. -f2 )
-PAT=$( grep -oP "\d+\.\d+\.\d+" <<<"$CURRENT" | cut -d. -f3 )
-
-NEED_UPDATE=false
-if [ "$MAJOR" -gt "$MAJ" ]; then
-  NEED_UPDATE=true
-elif [ "$MAJOR" -eq "$MAJ" ] && [ "$MINOR" -gt "$MIN" ]; then
-  NEED_UPDATE=true
-elif [ "$MAJOR" -eq "$MAJ" ] && [ "$MINOR" -eq "$MIN" ] && [ "$PATCH" -gt "$PAT" ]; then
-  NEED_UPDATE=true
-fi
-
 echo "Current   Nextcloud version $CURRENT"
 echo "Available Nextcloud version $VER"
-[[ "$NEED_UPDATE" == "true" ]] || { echo "Nothing to update"; exit 1; } # we want `exit 1` so the autoupdate doesn't notify success in this case
+is_more_recent_than "${VER}" "${CURRENT}" || { echo "Nothing to update"; exit 1; } # we want `exit 1` so the autoupdate doesn't notify success in this case
 
 # make sure that cron.php is not running and there are no pending jobs
 # https://github.com/nextcloud/server/issues/10949
@@ -233,6 +215,9 @@ EOF
 fi
 rm -rf /var/www/nextcloud/apps/previewgenerator
 ln -snf "${NCPREV}" /var/www/nextcloud/apps/previewgenerator
+
+# refresh completions
+ncc _completion -g --shell-type bash -p ncc | sed 's|/var/www/nextcloud/occ|ncc|g' > /usr/share/bash-completion/completions/ncp
 
 # done
 ####################

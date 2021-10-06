@@ -112,6 +112,9 @@ function set-nc-domain()
 {
   local domain="${1?}"
   domain="$(sed 's|http.\?://||;s|\(/.*\)||' <<<"${domain}")"
+  if ! ping -c1 -w1 -q "${domain}" &>/dev/null; then
+    unset domain
+  fi
   if [[ "${domain}" == "" ]] || is_an_ip "${domain}"; then
     echo "warning: No domain found. Defaulting to '$(hostname)'"
     domain="$(hostname)"
@@ -247,7 +250,7 @@ function run_app_unsafe()
   }
 
   # run
-  configure 2>&1 | tee -a $log
+  (configure) 2>&1 | tee -a $log
   local ret="${PIPESTATUS[0]}"
 
   echo "" >> $log
@@ -405,6 +408,13 @@ function nc_version()
   ncc status | grep "version:" | awk '{ print $3 }'
 }
 
+function get_ip()
+{
+  local iface
+  iface="$( ip r | grep "default via" | awk '{ print $5 }' | head -1 )"
+  ip a show dev "$iface" | grep global | grep -oP '\d{1,3}(.\d{1,3}){3}' | head -1
+}
+
 function is_an_ip()
 {
   local ip_or_domain="${1}"
@@ -433,7 +443,15 @@ function clear_password_fields()
 function apt_install()
 {
   apt-get update --allow-releaseinfo-change
-  apt-get install -y --no-install-recommends -o Dpkg::Options::=--force-confdef -o Dpkg::Options::="--force-confold" "$@"
+  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends -o Dpkg::Options::=--force-confdef -o Dpkg::Options::="--force-confold" "$@"
+}
+
+function is_docker() {
+  [[ -f /.dockerenv ]] || [[ "$DOCKERBUILD" == 1 ]]
+}
+
+function is_lxc() {
+  grep -q container=lxc /proc/1/environ &>/dev/null
 }
 
 function notify_admin()

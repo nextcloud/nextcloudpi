@@ -44,7 +44,7 @@ rm -f /var/log/alternatives.log /var/log/apt/*; \
 rm /data-ro/database/ib_logfile*; \
 rm /usr/local/etc/lamp.sh
 
-COPY docker/lamp/010lamp /etc/services-enabled.d/
+COPY build/docker/lamp/010lamp /etc/services-enabled.d/
 
 ENTRYPOINT ["/run-parts.sh"]
 

@@ -19,4 +19,4 @@ COPY --from=qemu /usr/bin/qemu-${arch_qemu}-static /usr/bin/
 
 RUN mkdir -p /etc/services-available.d  /etc/services-enabled.d
 
-COPY docker/debian-ncp/run-parts.sh /
+COPY build/docker/debian-ncp/run-parts.sh /

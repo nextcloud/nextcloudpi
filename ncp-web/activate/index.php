@@ -1,4 +1,12 @@
-<?php session_start(); ?>
+<?php
+// disallow once activated
+exec("a2query -s ncp-activation", $output, $ret);
+if ($ret != 0) {
+  http_response_code(404);
+  exit();
+}
+session_start();
+?>
 <!DOCTYPE html>
 <html class="ng-csp" data-placeholder-focus="false" lang="en">
 <head>
@@ -10,7 +18,7 @@
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
   <meta http-equiv="cache-control" content="no-cache">
   <meta http-equiv="pragma" content="no-cache">
-  <link rel="icon" type="image/png" href="img/favicon.png"/>
+  <link rel="icon" type="image/png" href="../img/favicon.png"/>
   <link rel="stylesheet" href="CSS.css">
 </head>
 <body id="body-login">

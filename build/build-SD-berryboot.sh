@@ -8,12 +8,12 @@
 # Usage: ./build-SD-berryboot.sh <img>
 #
 
+set -e
+source build/buildlib.sh
+
 SRC="$1"
 IMG="NextCloudPi_RPi_Berryboot_$( date  "+%m-%d-%y" ).img"
 TAR=output/"$( basename "$IMG" .img ).tar.bz2"
-
-set -e
-source buildlib.sh
 
 test -f "$TAR" && { echo "$TAR already exists. Skipping... "; exit 0; }
 

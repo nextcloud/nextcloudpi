@@ -13,13 +13,13 @@ SHELL ["/bin/bash", "-c"]
 ENV DOCKERBUILD 1
 
 RUN mkdir -p /tmp/ncp-build
-COPY bin/                 /tmp/ncp-build/bin/
-COPY etc                  /tmp/ncp-build/etc/
-COPY ncp.sh update.sh post-inst.sh    /tmp/ncp-build/
-COPY ncp-web              /tmp/ncp-build/ncp-web/
-COPY ncp-app              /tmp/ncp-build/ncp-app/
-COPY ncp-previewgenerator /tmp/ncp-build/ncp-previewgenerator/
-COPY docker               /tmp/ncp-build/docker/
+COPY bin/                          /tmp/ncp-build/bin/
+COPY etc                           /tmp/ncp-build/etc/
+COPY ncp-web                       /tmp/ncp-build/ncp-web/
+COPY ncp-app                       /tmp/ncp-build/ncp-app/
+COPY ncp-previewgenerator          /tmp/ncp-build/ncp-previewgenerator/
+COPY build/docker                  /tmp/ncp-build/build/docker/
+COPY ncp.sh update.sh post-inst.sh /tmp/ncp-build/
 COPY etc/ncp-config.d/nc-init.cfg /usr/local/etc/ncp-config.d/nc-init-copy.cfg
 
 RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt \
@@ -66,4 +66,4 @@ rm /var/cache/debconf/*-old; \
 # set version
 echo "${ncp_ver}" > /usr/local/etc/ncp-version
 
-COPY docker/nextcloudpi/000ncp /etc/services-enabled.d/
+COPY build/docker/nextcloudpi/000ncp /etc/services-enabled.d/
