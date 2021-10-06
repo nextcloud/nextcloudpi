@@ -112,6 +112,9 @@ function set-nc-domain()
 {
   local domain="${1?}"
   domain="$(sed 's|http.\?://||;s|\(/.*\)||' <<<"${domain}")"
+  if ! ping -c1 -w1 -q "${domain}" &>/dev/null; then
+    unset domain
+  fi
   if [[ "${domain}" == "" ]] || is_an_ip "${domain}"; then
     echo "warning: No domain found. Defaulting to '$(hostname)'"
     domain="$(hostname)"
