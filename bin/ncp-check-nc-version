@@ -8,9 +8,16 @@ source /usr/local/etc/library.sh # sets NCLATESTVER
 
 CURRENT="$(ncc status | grep "version:" | awk '{ print $3 }')"
 LATEST="$(wget -qO- https://raw.githubusercontent.com/nextcloud/nextcloudpi/master/etc/ncp.cfg | jq -r .nextcloud_version)"
+NOTIFIED=/var/run/.nc-version-notified
+
+test -e "${NOTIFIED}" && [[ "$( cat "${LATEST}" )" == "$( cat "${NOTIFIED}" )" ]] && {
+  echo "Found update from ${CURRENT} to ${LATEST}. Already notified"
+  exit 0
+}
 
 if is_more_recent_than "${LATEST}" "${CURRENT}"; then
   notify_admin \
     "Nextcloud update" \
-    "Update from ${CURRENT} to "${LATEST}" is available. Update from https://$(get_ip):4443"
+    "Update from ${CURRENT} to ${LATEST} is available. Update from https://$(get_ip):4443"
+  cat "${LATEST}" > "${NOTIFIED}"
 fi
