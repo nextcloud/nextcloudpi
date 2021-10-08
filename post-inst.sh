@@ -10,12 +10,15 @@
 
 configure()
 { 
-  # stop mysqld and redis
-  mysqladmin -u root shutdown || true
-  kill $( cat /run/redis/redis-server.pid ) || true
-  [[ -f /run/crond.pid ]] && kill $( cat /run/crond.pid )
-  pkill -f php-fpm || true
-  pkill -f notify_push || true
+(
+  set +e
+
+  # stop services
+  pkill -x redis-server
+  pgrep -x mysqld &>/dev/null && mysqladmin -u root shutdown
+  [[ -f /run/crond.pid ]]     && kill "$(cat /run/crond.pid)"
+  pkill -f php-fpm
+  pkill -f notify_push
 
   # cleanup all NCP extras
   source /usr/local/etc/library.sh
@@ -30,6 +33,7 @@ configure()
 
   # clean build flags
   rm -f /.ncp-image
+)
 }
 
 # License

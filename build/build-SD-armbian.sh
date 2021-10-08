@@ -8,17 +8,20 @@
 # Usage: ./build-SD-armbian.sh <board_code> [<board_name>]
 #
 
+set -e
+source build/buildlib.sh
+
 #CLEAN=0                    # Pass this envvar to avoid cleaning download cache
 BOARD="$1"
 BNAME="${2:-$1}"
 NCPCFG=etc/ncp.cfg
 
+echo -e "\e[1m\n[ Build NCP ${BNAME} ]\e[0m"
+
 IMG="NextCloudPi_${BNAME}_$( date  "+%m-%d-%y" ).img"
 IMG=tmp/"$IMG"
 TAR=output/"$( basename "$IMG" .img ).tar.bz2"
 
-set -e
-source build/buildlib.sh
 
 test -f "$TAR" && { echo "$TAR already exists. Skipping... "; exit 0; }
 

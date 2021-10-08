@@ -11,6 +11,8 @@
 set -e
 source build/buildlib.sh
 
+echo -e "\e[1m\n[ Build NCP VM ]\e[0m"
+
 IP=${1:-192.168.0.145}      # For QEMU automated testing (optional)
 SIZE=3G                     # Raspbian image size
 #CLEAN=0                    # Pass this envvar to skip cleaning download cache
@@ -32,7 +34,6 @@ prepare_dirs                   # tmp cache output
 
 ## BUILD NCP
 
-echo -e "\e[1m\n[ Build NCP ]\e[0m"
 export DEB_RELEASE=$(jq -r .release < etc/ncp.cfg)
 cd build/
 vagrant destroy -f

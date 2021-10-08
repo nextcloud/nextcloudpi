@@ -222,7 +222,7 @@ EOF
   umount_raspbian
 }
 
-function prepare_sshd()
+function prepare_sshd_raspbian()
 {
   local IMG="$1"
   mount_raspbian_boot "$IMG" || return 1

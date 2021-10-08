@@ -11,8 +11,10 @@
 set -e
 source build/buildlib.sh
 
+echo -e "\e[1m\n[ Build NCP Raspberry Pi ]\e[0m"
+
 URL="https://downloads.raspberrypi.org/raspios_lite_arm64/images/raspios_lite_arm64-2020-08-24/2020-08-20-raspios-buster-arm64-lite.zip"
-SIZE=3G                     # Raspbian image size
+SIZE=4G                     # Raspbian image size
 #CLEAN=0                    # Pass this envvar to skip cleaning download cache
 IMG="NextCloudPi_RPi_$( date  "+%m-%d-%y" ).img"
 TAR=output/"$( basename "$IMG" .img ).tar.bz2"
@@ -38,7 +40,6 @@ rm -f ncp-web/{wizard.cfg,ncp-web.cfg}
 
 ## BUILD NCP
 
-echo -e "\e[1m\n[ Build NCP ]\e[0m"
 prepare_chroot_raspbian "$IMG"
 
 mkdir raspbian_root/tmp/ncp-build
@@ -47,9 +48,6 @@ rsync -Aax --exclude-from .gitignore --exclude *.img --exclude *.bz2 . raspbian_
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
   sudo chroot raspbian_root /bin/bash <<'EOFCHROOT'
     set -e
-
-    # mark the image as an image build
-    touch /.ncp-image
 
     # allow oldstable
     apt-get update --allow-releaseinfo-change
@@ -63,20 +61,9 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
     #$APTINSTALL rpi-update
     #echo -e "y\n" | PRUNE_MODULES=1 rpi-update
 
-    # install everything
+    # install NCP
     cd /tmp/ncp-build || exit 1
-    mkdir -p /usr/local/etc/ncp-config.d
-    cp etc/ncp-config.d/nc-nextcloud.cfg /usr/local/etc/ncp-config.d/
-    cp etc/ncp.cfg /usr/local/etc/
-    cp etc/library.sh /usr/local/etc/
-    cp -r etc/ncp-templates /usr/local/etc/
-    source etc/library.sh
-    install_app    lamp.sh
-    install_app    bin/ncp/CONFIG/nc-nextcloud.sh
-    run_app_unsafe bin/ncp/CONFIG/nc-nextcloud.sh
-    install_app    ncp.sh
-    run_app_unsafe bin/ncp/CONFIG/nc-init.sh
-    run_app_unsafe post-inst.sh
+    CODE_DIR="$(pwd)" bash install.sh
 
     # work around dhcpcd Raspbian bug
     # https://lb.raspberrypi.org/forums/viewtopic.php?t=230779
@@ -95,6 +82,8 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
     cfg="$(jq '.params[3].value = "raspberry"' <<<"$cfg")"
     echo "$cfg" > /usr/local/etc/ncp-config.d/SSH.cfg
 
+    $ cleanup
+    source etc/library.sh && run_app_unsafe post-inst.sh
     rm -rf /tmp/ncp-build
 EOFCHROOT
 

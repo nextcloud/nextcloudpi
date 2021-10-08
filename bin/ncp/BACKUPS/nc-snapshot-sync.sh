@@ -15,7 +15,6 @@ install()
   apt-get install -y --no-install-recommends pv openssh-client
   wget https://raw.githubusercontent.com/nachoparker/btrfs-sync/master/btrfs-sync -O /usr/local/bin/btrfs-sync
   chmod +x /usr/local/bin/btrfs-sync
-  if ! [[ -f /root/.ssh/id_rsa ]]; then ssh-keygen -N "" -f /root/.ssh/id_rsa; fi
 }
 
 configure()
@@ -29,6 +28,7 @@ configure()
 
   # checks
   [[ -d "$SNAPDIR" ]] || { echo "$SNAPDIR does not exist"; return 1; }
+  if ! [[ -f /root/.ssh/id_rsa ]]; then ssh-keygen -N "" -f /root/.ssh/id_rsa; fi
 
   [[ "$DESTINATION" =~ : ]] && {
     local NET="$( sed 's|:.*||' <<<"$DESTINATION" )"

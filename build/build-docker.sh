@@ -18,6 +18,8 @@ function build_arch()
   local arch_qemu="${3}"
   local ncp_tag="${4:-$arch}"
 
+  echo -e "\e[1m\n[ Build NCP Docker ${arch} ]\e[0m"
+
   docker_build -f build/docker/debian-ncp/Dockerfile  -t ownyourbits/debian-ncp-${ncp_tag}:latest --pull --build-arg release=${release} --build-arg arch=${arch} --build-arg arch_qemu=${arch_qemu}
   docker_build -f build/docker/lamp/Dockerfile        -t ownyourbits/lamp-${ncp_tag}:latest              --build-arg release=${release} --build-arg arch=${ncp_tag}
   docker_build -f build/docker/nextcloud/Dockerfile   -t ownyourbits/nextcloud-${ncp_tag}:latest         --build-arg release=${release} --build-arg arch=${ncp_tag}

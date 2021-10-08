@@ -11,6 +11,8 @@
 set -e
 source build/buildlib.sh
 
+echo -e "\e[1m\n[ Build NCP Berryboot ]\e[0m"
+
 SRC="$1"
 IMG="NextCloudPi_RPi_Berryboot_$( date  "+%m-%d-%y" ).img"
 TAR=output/"$( basename "$IMG" .img ).tar.bz2"

@@ -26,9 +26,6 @@ source etc/library.sh # sets RELEASE
 # need sudo access that does not expire during build
 chage -d -1 root
 
-# indicate that this will be an Armbian image build
-touch /.ncp-image
-
 # install NCP
 echo -e "\nInstalling NextCloudPi"
 

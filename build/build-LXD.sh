@@ -11,6 +11,8 @@
 set -e
 source build/buildlib.sh
 
+echo -e "\e[1m\n[ Build NCP LXD ]\e[0m"
+
 #CLEAN=0                    # Pass this envvar to skip cleaning download cache
 IMG="NextCloudPi_LXD_$( date  "+%m-%d-%y" ).img"
 IMG=tmp/"$IMG"
@@ -29,14 +31,13 @@ prepare_dirs                   # tmp cache output
 
 ## BUILD NCP
 
-echo -e "\e[1m\n[ Build NCP ]\e[0m"
-
 lxc delete -f ncp 2>/dev/null || true
 systemd-run --user --scope -p "Delegate=yes" lxc launch images:debian/buster ncp
 lxc config device add ncp buildcode disk source="$(pwd)" path=/build
 lxc exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
 lxc exec ncp -- bash -c 'CODE_DIR=/build bash /build/install.sh'
 lxc exec ncp -- bash -c 'source /build/etc/library.sh; run_app_unsafe /build/post-inst.sh'
+lxc stop ncp
 lxc config device remove ncp buildcode
 lxc publish ncp -f --alias ncp/"${version}"
 
