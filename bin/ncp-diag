@@ -104,7 +104,8 @@ echo "NAT loopback|$( [[ "$RESOLV" == "$IP" ]] && echo yes || echo no )"
 
 # Other
 echo "uptime|$( uptime | cut -f1 -d',' | awk '{ $1=""; $2=""; print }' | tr -d "  " )"
-
+# Get kernel version
+echo "Kernel|$(sudo uname -r)"
 # License
 #
 # This script is free software; you can redistribute it and/or modify it
