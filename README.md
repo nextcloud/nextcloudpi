@@ -70,8 +70,7 @@ Find the full documentation at [docs.nextcloudpi.com](http://docs.nextcloudpi.co
 
 Extras can be activated and configured using the web interface at HTTPS port 4443
 
-
-![NCP-config](https://ownyourbits.com/wp-content/uploads/2017/07/web-letsencrypt.jpg)
+![ncp-web](https://user-images.githubusercontent.com/21343324/136853829-f4e99ec0-6307-431f-b4c7-21b2330cae7f.png)
 
 , or from the command line from
 
