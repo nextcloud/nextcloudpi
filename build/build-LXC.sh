@@ -52,7 +52,7 @@ pack_image "$IMG" "$TAR"
 
 # upload
 create_torrent "$TAR"
-upload_ftp "$( basename "$TAR" .tar.bz2 )"
+#upload_ftp "$( basename "$TAR" .tar.bz2 )"
 
 
 # License

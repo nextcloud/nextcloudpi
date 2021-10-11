@@ -29,7 +29,6 @@ test -f "$TAR" && { echo "$TAR already exists. Skipping... "; exit 0; }
 ## preparations
 
 test -f "$TAR" && { echo "$TAR already exists. Skipping... "; exit 0; }
-set -e
 prepare_dirs                   # tmp cache output
 
 ## BUILD NCP
@@ -39,6 +38,7 @@ cd build/
 vagrant destroy -f
 vagrant box update
 vagrant up --provider=libvirt --provision
+cd -
 sleep 10
 sudo qemu-img rebase -b "" "$VM"
 
@@ -54,7 +54,7 @@ pack_image "$IMG" "$TAR"
 
 # upload
 create_torrent "$TAR"
-upload_ftp "$( basename "$TAR" .tar.bz2 )"
+#upload_ftp "$( basename "$TAR" .tar.bz2 )"
 
 
 # License
