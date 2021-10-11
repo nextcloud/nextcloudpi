@@ -16,7 +16,7 @@ source /usr/local/etc/library.sh
 # Distro, NCP version and tag
 echo "NextCloudPi version|$( cat /usr/local/etc/ncp-version )"
 [[ -f /usr/local/etc/ncp-baseimage ]] && echo "NextCloudPi image|$( cat /usr/local/etc/ncp-baseimage )"
-echo "distribution|$( cat /etc/issue )"
+echo "OS|$(cat /etc/issue  | sed 's| \\n \\l||'). $(uname -r) ($(uname -m))"
 
 # Data
 DATADIR="$( grep datadirectory /var/www/nextcloud/config/config.php |
@@ -104,6 +104,7 @@ echo "NAT loopback|$( [[ "$RESOLV" == "$IP" ]] && echo yes || echo no )"
 
 # Other
 echo "uptime|$( uptime | cut -f1 -d',' | awk '{ $1=""; $2=""; print }' | tr -d "  " )"
+# Get kernel version
 
 # License
 #

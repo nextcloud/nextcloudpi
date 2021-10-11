@@ -1,7 +1,13 @@
 
+<<<<<<< HEAD
 [v1.40.5](https://github.com/nextcloud/nextcloudpi/commit/6c3cb37) (2021-10-11) letsencrypt: keep original cert name
 
 [v1.40.4 ](https://github.com/nextcloud/nextcloudpi/commit/de104a5) (2021-10-06) Make templating safer and more verbose (#1343)
+=======
+[v1.40.5](https://github.com/nextcloud/nextcloudpi/commit/f7c393f) (2021-10-11) add architecture and kernel info to ncp-info (#1360)
+
+[v1.40.4](https://github.com/nextcloud/nextcloudpi/commit/de104a5) (2021-10-06) Make templating safer and more verbose (#1343)
+>>>>>>> b532589 (add architecture and kernel info to ncp-info (#1360))
 
 [v1.40.3 ](https://github.com/nextcloud/nextcloudpi/commit/8a6c1c0) (2021-10-06) ncp-check-nc-version: dont notify the same version more than once
 
