@@ -62,7 +62,7 @@ EOF
 }
 
 # board specific parameters
-EXTRA_CONF="config-$BOARD".conf
+EXTRA_CONF=build/armbian/"config-$BOARD".conf
 [[ -f "$EXTRA_CONF" ]] && cat "$EXTRA_CONF" >> "$CONF"
 
 # build
