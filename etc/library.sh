@@ -143,7 +143,7 @@ function start_notify_push
       local arch
       arch="$(uname -m)"
       [[ "${arch}" =~ "armv7" ]] && arch="armv7"
-      sudo -u www-data /var/www/nextcloud/apps/notify_push/bin/"${arch}"/notify_push --allow-self-signed /var/www/nextcloud/config/config.php &>/dev/null &
+      NEXTCLOUD_URL=https://localhost sudo -E -u www-data /var/www/nextcloud/apps/notify_push/bin/"${arch}"/notify_push --allow-self-signed /var/www/nextcloud/config/config.php &>/dev/null &
     else
       systemctl enable --now notify_push
     fi
