@@ -131,8 +131,7 @@ EOF
     done
     set-nc-domain "$DOMAIN"
 
-    # delayed in bg so it does not kill the connection, and we get AJAX response
-    bash -c "sleep 2 && service apache2 reload" &>/dev/null &
+    apachectl -k graceful
     rm -rf $ncdir/.well-known
 
     # Update configuration

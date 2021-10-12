@@ -42,8 +42,10 @@ EOF
 if [[ "$1" != "--defaults" ]] && [[ -n "$LETSENCRYPT_DOMAIN" ]]; then
   echo "    ServerName ${LETSENCRYPT_DOMAIN}"
   LETSENCRYPT_CERT_BASE_PATH="/etc/letsencrypt/live/${LETSENCRYPT_DOMAIN,,}"
-  [[ -d "${LETSENCRYPT_CERT_BASE_PATH}" ]] || \
-    LETSENCRYPT_CERT_BASE_PATH="$(find /etc/letsencrypt/live -name "${LETSENCRYPT_DOMAIN,,}*" | head -1)"
+  [[ -d "${LETSENCRYPT_CERT_BASE_PATH}" ]] || {
+    #find the most recent cert
+    LETSENCRYPT_CERT_BASE_PATH="$(find /etc/letsencrypt/live -type d -name "${LETSENCRYPT_DOMAIN,,}*" -printf "%T@ %p\n" | sort -n | cut -f2 -d' ' | tail -1)"
+  }
   LETSENCRYPT_CERT_PATH="${LETSENCRYPT_CERT_BASE_PATH}/fullchain.pem"
   LETSENCRYPT_KEY_PATH="${LETSENCRYPT_CERT_BASE_PATH}/privkey.pem"
 
