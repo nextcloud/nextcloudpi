@@ -23,7 +23,7 @@
   ./update.sh || exit $?
 
   cd "$TMPDIR"
-  git describe --always --tags --abbrev=0 2>/dev/null | grep -oP "v\d+\.\d+\.\d+" || git fetch --unshallow --tags
+  git describe --always --tags --abbrev=0 2>/dev/null | grep -qoP "v\d+\.\d+\.\d+" || git fetch --unshallow --tags
   VER=$( git describe --always --tags --abbrev=0 | grep -oP "v\d+\.\d+\.\d+" )
 
   # check format

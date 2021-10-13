@@ -13,13 +13,12 @@ configure()
 {
   [[ -d "$DIR" ]] || { echo "directory $DIR does not exist"; return 1; }
 
-  local destfile="$DIR"/ncp-config_$( date +"%Y%m%d" ).tar 
+  local destfile
+  destfile="$DIR"/ncp-config_$(date +"%Y%m%d").tar
 
   tar -cf "$destfile" -C /usr/local/etc/ncp-config.d .
   chmod 600 "$destfile"
 
-  cd $OLDPWD
-  rm -rf /tmp/ncp-export
   echo -e "configuration exported to $destfile"
 }
 

@@ -8,9 +8,6 @@
 # More at ownyourbits.com
 #
 
-NCDIR=/var/www/nextcloud/
-NCPWB=/var/www/ncp-web/
-
 install()
 {
   apt-get update
@@ -42,6 +39,9 @@ EOF
 
 configure() 
 { 
+  local NCDIR=/var/www/nextcloud/
+  local NCPWB=/var/www/ncp-web/
+
   cat > /etc/modsecurity/modsecurity_crs_99_whitelist.conf <<EOF
 <Directory $NCDIR>
   # VIDEOS
@@ -92,8 +92,7 @@ EOF
   [[ $ACTIVE == "yes" ]] && echo "Enabling module security2" || echo "Disabling module security2"
   [[ $ACTIVE == "yes" ]] && a2enmod security2 &>/dev/null || a2dismod security2 &>/dev/null
 
-  # delayed in bg so it does not kill the connection, and we get AJAX response
-  bash -c "sleep 2 && service apache2 reload" &>/dev/null &
+  apachectl -k graceful
 }
 
 # License

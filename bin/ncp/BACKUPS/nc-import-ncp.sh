@@ -9,32 +9,33 @@
 
 
 
-CFGDIR="/usr/local/etc/ncp-config.d"
 
 configure()
 {
   [[ -f "$FILE" ]] || { echo "export file $FILE does not exist"; return 1; }
 
-  source /usr/local/etc/library.sh || return 1
   cd "$CFGDIR"   || return 1
 
   # extract export
   tar -xf "$FILE" -C "$CFGDIR"
 
-  # UGLY workaround to prevent apache from restarting upon activating some extras
-  # which leads to the operation appearing to fail in ncp-web
-  #echo "invalid_op" >> /etc/apache2/sites-available/000-default.conf
+  # activate ncp-apps
+  find "${CFGDIR}/" -name '*.cfg' | while read -r cfg; do
+    app="$(basename "${cfg}" .cfg)"
+    if [[ "${app}" == "letsencrypt" ]] || [[ "${app}" == "dnsmasq" ]]; then
+      continue
+    fi
+    is_active_app "${app}" && run_app "${app}"
+  done
 
-  # activate
-  # TODO
-
-  # Fix invalid configuration
-  #sed -i "/^invalid_op/d" /etc/apache2/sites-available/000-default.conf
+  # order is important for these
+  is_active_app "dnsmasq"     && run_app "dnsmasq"
+  is_active_app "letsencrypt" && run_app "letsencrypt"
 
   echo -e "\nconfiguration restored"
 
   # delayed in bg so it does not kill the connection, and we get AJAX response
-  bash -c "sleep 2 && service apache2 reload" &>/dev/null &
+  apachectl -k graceful
 }
 
 install() { :; }
