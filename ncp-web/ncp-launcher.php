@@ -177,6 +177,16 @@ else if ( $_POST['action'] == "cfg-ui" )
 }
 
 //
+// dl-token
+//
+else if ( $_POST['action'] == "next-dl" )
+{
+  echo '{  "token": "' . getCSRFToken() . '",';               // Get new token
+  echo '"token_dl": "' . getCSRFToken() . '",';               // Get new download token
+  echo '     "ret": "' . $ret           . '" }';
+}
+
+//
 // path field
 //
 else if ( $_POST['action'] == "path-exists" )

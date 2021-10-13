@@ -24,6 +24,8 @@ window.onpopstate = function(event) {
     switch_to_section('nc-config');
   else if (selectedID == 'dashboard')
     switch_to_section('dashboard');
+  else if (selectedID == 'logs')
+    switch_to_section('logs');
   else
     click_app($('#' + selectedID));
 };
@@ -38,6 +40,7 @@ function switch_to_section(section)
   // TODO unify repeating code
   $( '#config-wrapper > div'    ).hide();
   $( '#dashboard-wrapper'       ).hide();
+  $( '#logs-wrapper'            ).hide();
   $( '#nc-config-wrapper'       ).hide();
   $( '#backups-wrapper'         ).hide();
   $( '#' + section + '-wrapper' ).show();
@@ -228,6 +231,21 @@ function dialog_action(button)
     clicked_dialog_action(clicked_dialog_button);
 }
 
+function refresh_dl_token()
+{
+  $.request('post', 'ncp-launcher.php', { action:'next-dl',
+    csrf_token: $( '#csrf-token' ).get( '.value' ) }).then(
+      function success( result )
+      {
+        var ret = $.parseJSON( result );
+        if ( ret.token )
+          $('#csrf-token').set( { value: ret.token } );
+        if ( ret.token_dl )
+          $('#csrf-token-dl').set( { value: ret.token_dl } );
+      }
+    ).error( errorMsg )
+}
+
 // backups
 function set_backup_handlers()
 {
@@ -235,7 +253,9 @@ function set_backup_handlers()
     {
       var tr = this.up().up();
       var path = tr.get('.id');
-      window.location.replace('download.php?bkp=' + encodeURIComponent(path) + '&token=' + encodeURIComponent(tr.next().get('.value')));
+      var token_dl = $('#csrf-token-dl').get('.value');
+      window.location.replace('download.php?bkp=' + encodeURIComponent(path) + '&token=' + encodeURIComponent(token_dl));
+      refresh_dl_token();
     });
   $( '.delete-bkp' ).on('click', function(e)
     {
@@ -364,6 +384,12 @@ $(function()
   // parse selected app from URL
   if (location.search)
     selectedID = location.search.split('=')[1];
+
+  // scroll down logs box by default
+  var logs_box_l = $('#logs-details-box');
+  var logs_box = logs_box_l[0];
+  logs_box.scrollTop = logs_box.scrollHeight;
+  //$('#logs-details-box').scrollTop = $('#logs-details-box').scrollHeight;
 
   // Event source to receive process output in real time
   if (!!window.EventSource)
@@ -686,6 +712,24 @@ $(function()
     switch_to_section( 'backups' );
     history.pushState(null, selectedID, "?app=backups");
   } );
+
+  // logs button
+  $( '#logs-btn' ).on('click', function(e)
+  {
+    if ( lock ) return;
+    close_menu();
+    switch_to_section( 'logs' );
+    history.pushState(null, selectedID, "?app=logs");
+  } );
+
+  // log download button
+  $( '#log-download-btn' ).on('click', function(e)
+    {
+      var token_dl = $('#csrf-token-dl').get('.value');
+      var token = $('#csrf-token').get('.value');
+      window.location.replace('download_logs.php?token=' + encodeURIComponent(token_dl));
+      refresh_dl_token();
+    } );
 
   // language selection
   var langold = $( '#language-selection' ).get( '.value' );

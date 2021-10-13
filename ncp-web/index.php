@@ -190,6 +190,11 @@ HTML;
               <div class="icon-config"></div>
           </div>
       </div>
+      <div id="logs-btn" title="<?php echo $l->__("Logs"); ?>">
+          <div class="expand">
+              <div class="icon-logs"></div>
+          </div>
+      </div>
       <a href="wizard" title="<?php echo $l->__("NextCloudPi Wizard"); ?>">
         <div class="wizard-btn">
           <div class="expand">
@@ -266,8 +271,16 @@ HTML;
   }
   echo '</table>';
 ?>
+          </div>
         </div>
-        </div>
+        <div id="logs-wrapper" class="content-box <?php if(!array_key_exists('app',$_GET) || (array_key_exists('app',$_GET) && $_GET['app'] != 'logs')) echo 'hidden';?>">
+          <h2 class="text-title"><?php echo $l->__("NextCloudPi logs"); ?></h2>
+          <div id="logs-content" class="table-wrapper">
+            <div id="logs-details-box" class="outputbox"><?php echo str_replace(array("\r\n", "\n", "\r"), '<br/>', file_get_contents('/var/log/ncp.log')) ?></div>
+            <div id="log-download-btn-wrapper"><input id="log-download-btn" type="button" value="Download"/></div>
+          </div>
+  </div>
+
     </div>
 
   <div id="poweroff-dialog" class='dialog primary hidden'>
@@ -283,6 +296,7 @@ HTML;
     include('csrf.php');
     echo '<input type="hidden" id="csrf-token"     name="csrf-token"     value="' . getCSRFToken() . '"/>';
     echo '<input type="hidden" id="csrf-token-ui"  name="csrf-token-ui"  value="' . getCSRFToken() . '"/>';
+    echo '<input type="hidden" id="csrf-token-dl"  name="csrf-token-dl"  value="' . getCSRFToken() . '"/>';
     echo '<input type="hidden" id="csrf-token-cfg" name="csrf-token-cfg" value="' . getCSRFToken() . '"/>';
   ?>
     <script src="js/minified.js"></script>

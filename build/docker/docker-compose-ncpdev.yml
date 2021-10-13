@@ -8,9 +8,9 @@ services:
      - "443:443"
      - "4443:4443"
     volumes:
-     - ./ncp-web:/var/www/ncp-web
-     - ./etc:/usr/local/etc
-     - ./changelog.md:/changelog.md
+     - ../../ncp-web:/var/www/ncp-web
+     - ../../etc:/usr/local/etc
+     - ../../changelog.md:/changelog.md
      - ncdata:/data
     container_name: nextcloudpi
 

@@ -1153,6 +1153,9 @@ select {
 .icon-backups {
   background-image: url('../img/defaults-white.svg');
 }
+.icon-logs {
+  background-image: url('../img/logs.svg');
+}
 .icon-config {
   background-image: url('../img/settings-white.svg');
 }
@@ -1236,6 +1239,10 @@ a#versionlink:hover {
   z-index:9000;
   text-align:center;
   cursor:pointer;
+}
+
+#log-download-btn-wrapper  {
+  text-align: center
 }
 
 .dialog {
@@ -1373,6 +1380,14 @@ a#versionlink:hover {
   border: solid 1px lightgray;
   color: #565656;
   overflow: auto;
+}
+
+#logs-details-box {
+  background-color: #fbfbfb;
+  border: solid 1px lightgray;
+  color: #565656;
+  overflow: auto;
+  height: 80vh;
 }
 
 #language-selection {
