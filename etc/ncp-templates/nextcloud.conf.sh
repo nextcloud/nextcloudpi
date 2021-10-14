@@ -41,22 +41,32 @@ EOF
 
 if [[ "$1" != "--defaults" ]] && [[ -n "$LETSENCRYPT_DOMAIN" ]]; then
   echo "    ServerName ${LETSENCRYPT_DOMAIN}"
+
+  # try the obvious path first
   LETSENCRYPT_CERT_BASE_PATH="/etc/letsencrypt/live/${LETSENCRYPT_DOMAIN,,}"
+
+  # find the most recent cert otherwise
   [[ -d "${LETSENCRYPT_CERT_BASE_PATH}" ]] || {
-    #find the most recent cert
     LETSENCRYPT_CERT_BASE_PATH="$(find /etc/letsencrypt/live -type d -name "${LETSENCRYPT_DOMAIN,,}*" -printf "%T@ %p\n" | sort -n | cut -f2 -d' ' | tail -1)"
   }
-  LETSENCRYPT_CERT_PATH="${LETSENCRYPT_CERT_BASE_PATH}/fullchain.pem"
-  LETSENCRYPT_KEY_PATH="${LETSENCRYPT_CERT_BASE_PATH}/privkey.pem"
 
-  # fall back to self-signed snakeoil certs
-  [[ -d "${LETSENCRYPT_CERT_BASE_PATH}" ]] || unset LETSENCRYPT_CERT_BASE_PATH
+  # otherwise, in some installs this is the path we use (for legacy reasons)
+  [[ -d "${LETSENCRYPT_CERT_BASE_PATH}" ]] || {
+    if [[ -d "/etc/letsencrypt/live/ncp-nextcloud" ]]; then
+      LETSENCRYPT_CERT_BASE_PATH="/etc/letsencrypt/live/ncp-nextcloud" 
+    fi
+  }
 else
   # Make sure the default snakeoil cert exists
   [ -f /etc/ssl/certs/ssl-cert-snakeoil.pem ] || make-ssl-cert generate-default-snakeoil --force-overwrite
   unset LETSENCRYPT_DOMAIN
 fi
 
+# NOTE: we fall back to self-signed snakeoil certs if we couldn't get a LE one
+[[ -d "${LETSENCRYPT_CERT_BASE_PATH}" ]] && {
+  LETSENCRYPT_CERT_PATH="${LETSENCRYPT_CERT_BASE_PATH}/fullchain.pem"
+  LETSENCRYPT_KEY_PATH="${LETSENCRYPT_CERT_BASE_PATH}/privkey.pem"
+}
 cat <<EOF
     CustomLog /var/log/apache2/nc-access.log combined
     ErrorLog  /var/log/apache2/nc-error.log

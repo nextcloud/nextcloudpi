@@ -1,9 +1,11 @@
 
-[v1.41.0](https://github.com/nextcloud/nextcloudpi/commit/33d8167) (2021-10-13) ncp-web: add NCP logs section
+[v1.41.1](https://github.com/nextcloud/nextcloudpi/commit/2c4cb42) (2021-10-14) letsencrypt: take into account the possibility of the ncp-nextcloud folder being used
 
-[v1.40.10](https://github.com/nextcloud/nextcloudpi/commit/8bb5795) (2021-10-12) nc-import-ncp: run activated apps upon import
+[v1.41.0 ](https://github.com/nextcloud/nextcloudpi/commit/b41fad0) (2021-10-13) ncp-web: add NCP logs section
 
-[v1.40.9 ](https://github.com/nextcloud/nextcloudpi/commit/a4998cd) (2021-10-12) letsencrypt: favor most recent cert if there are many
+[v1.40.10](https://github.com/nextcloud/nextcloudpi/commit/85cb1f0) (2021-10-12) nc-import-ncp: run activated apps upon import
+
+[v1.40.9 ](https://github.com/nextcloud/nextcloudpi/commit/35a3a54) (2021-10-12) letsencrypt: favor most recent cert if there are many
 
 [v1.40.8 ](https://github.com/nextcloud/nextcloudpi/commit/9bddfad) (2021-10-12) fix HPB with dynamic IP
 
