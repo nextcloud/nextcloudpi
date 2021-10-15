@@ -62,24 +62,21 @@ configure()
     exit 0
   }
   local DOMAIN_LOWERCASE="${DOMAIN,,}"
-  local OTHER_DOMAINS_ARRAY
 
   [[ "$DOMAIN" == "" ]] && { echo "empty domain"; return 1; }
 
   local IFS_BK="$IFS"
-  IFS=",$IFS" OTHER_DOMAINS_ARRAY=(${OTHER_DOMAIN})
-  IFS="$IFS_BK"
 
   # Do it
   local domain_string=""
-  for domain in $DOMAIN "${OTHER_DOMAINS_ARRAY[@]}"; do
+  for domain in "${DOMAIN}" "${OTHER_DOMAIN}"; do
     [[ "$domain" != "" ]] && {
       [[ $domain_string == "" ]] && \
         domain_string+="${domain}" || \
         domain_string+=",${domain}"
     }
   done
-  "${letsencrypt}" certonly -n --force-renew --no-self-upgrade --webroot -w "${ncdir}" \
+  "${letsencrypt}" certonly -n --cert-name "${DOMAIN}" --force-renew --no-self-upgrade --webroot -w "${ncdir}" \
     --hsts --agree-tos -m "${EMAIL}" -d "${domain_string}" && {
 
     # Set up auto-renewal
