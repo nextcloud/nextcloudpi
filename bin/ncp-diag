@@ -70,6 +70,9 @@ function is_port_open()
   local port=$1
   local public_ip
   public_ip="$(curl -m4 -4 https://icanhazip.com 2>/dev/null)" || { echo "closed"; return 1; }
+  if [[ "${public_ip}" == "" ]]; then
+    public_ip="$(curl -m4 -6 https://icanhazip.com 2>/dev/null)" || { echo "closed"; return 1; }
+  fi
   local tmp_file=$(mktemp)
   local token=$(wget -T2 -t1 -qO- --keep-session-cookies --save-cookies $tmp_file https://portchecker.co | grep -oP "_csrf\" value=\"\K.*\"")
 
