@@ -64,7 +64,7 @@ configure()
 
   ## COPY
   cd /var/www/nextcloud
-  ncc maintenance:mode --on
+  save_maintenance_mode
 
   echo "moving data directory from $SRCDIR to $DATADIR..."
 
@@ -100,7 +100,7 @@ configure()
   # datadir
   ncc config:system:set datadirectory --value="$DATADIR"
   ncc config:system:set logfile --value="$DATADIR/nextcloud.log"
-  ncc maintenance:mode --off
+  restore_maintenance_mode
 }
 
 # License

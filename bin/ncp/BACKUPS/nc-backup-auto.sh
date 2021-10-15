@@ -29,9 +29,9 @@ run_script()
 }
 
 run_script before
-/usr/local/bin/ncc maintenance:mode --on
+save_maintenance_mode
 /usr/local/bin/ncp-backup "$DESTDIR" "$INCLUDEDATA" "$COMPRESS" "$BACKUPLIMIT" || failed="\$failed\${failed:+, } main"
-/usr/local/bin/ncc maintenance:mode --off
+restore_maintenance_mode
 run_script after
 if [[ -n "\$failed" ]]
 then

@@ -17,7 +17,7 @@ install()
 
 configure()
 {
-  ncc maintenance:mode --on
+  save_maintenance_mode
 
   local DATADIR MOUNTPOINT
   DATADIR=$( ncc config:system:get datadirectory ) || {
@@ -34,7 +34,7 @@ configure()
 
   btrfs-snp $MOUNTPOINT manual $LIMIT 0 ../ncp-snapshots
 
-  ncc maintenance:mode --off
+  restore_maintenance_mode
 }
 
 # License

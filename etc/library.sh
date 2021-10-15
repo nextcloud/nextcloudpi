@@ -463,6 +463,22 @@ function notify_admin()
   ncc notification:generate "${admin}" "${header}" -l "${msg}" || true
 }
 
+function save_maintenance_mode()
+{
+  unset NCP_MAINTENANCE_MODE
+  grep -q enabled <(ncc maintenance:mode) && export NCP_MAINTENANCE_MODE="on" || true
+  ncc maintenance:mode --on
+}
+
+function restore_maintenance_mode()
+{
+  if [[ "${NCP_MAINTENANCE_MODE}" != "" ]]; then
+    ncc maintenance:mode --on
+  else
+    ncc maintenance:mode --off
+  fi
+}
+
 # License
 #
 # This script is free software; you can redistribute it and/or modify it

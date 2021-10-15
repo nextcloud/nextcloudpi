@@ -39,7 +39,7 @@ configure()
     echo -e "INFO: moving database to the SD card\nIf you want to use an external mount, make sure it is properly set up"
 
   cd /var/www/nextcloud
-  sudo -u www-data php occ maintenance:mode --on
+  save_maintenance_mode
 
   echo "moving database to $DBDIR..."
   service mysql stop
@@ -47,7 +47,7 @@ configure()
     sed -i "s|^datadir.*|datadir = $DBDIR|" /etc/mysql/mariadb.conf.d/90-ncp.cnf
   service mysql start 
 
-  sudo -u www-data php occ maintenance:mode --off
+  restore_maintenance_mode
 }
 
 install(){ :; }

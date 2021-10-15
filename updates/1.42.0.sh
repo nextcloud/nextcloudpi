@@ -12,6 +12,9 @@ source /usr/local/etc/library.sh # sets NCLATESTVER PHPVER RELEASE
 ncc app:disable updatenotification
 run_app nc-notify-updates
 
+# update nc-backup
+install_app nc-backup
+
 # docker images only
 [[ -f /.docker-image ]] && {
   :

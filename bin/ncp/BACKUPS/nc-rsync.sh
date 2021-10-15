@@ -18,7 +18,7 @@ install()
 
 configure()
 {
-  sudo -u www-data php "$BASEDIR"/nextcloud/occ maintenance:mode --on
+  save_maintenance_mode
 
   local DATADIR
   DATADIR=$( sudo -u www-data php /var/www/nextcloud/occ config:system:get datadirectory ) || {
@@ -28,7 +28,7 @@ configure()
 
   rsync -ax -e "ssh -p $PORTNUMBER" --delete "$DATADIR" "$DESTINATION"
 
-  sudo -u www-data php "$BASEDIR"/nextcloud/occ maintenance:mode --off
+  restore_maintenance_mode
 }
 
 # License

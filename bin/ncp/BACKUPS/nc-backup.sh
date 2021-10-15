@@ -15,6 +15,7 @@ install()
   cat > /usr/local/bin/ncp-backup <<'EOF'
 #!/bin/bash
 set -eE
+source /usr/local/etc/library.sh
 
 destdir="${1:-/media/USBdrive/ncp-backups}"
 includedata="${2:-no}"
@@ -33,8 +34,8 @@ datadir=$( $occ config:system:get datadirectory ) || {
   exit 1;
 }
 
-cleanup(){ local ret=$?;                    rm -f "${dbbackup}"              ; $occ maintenance:mode --off; exit $ret; }
-fail()   { local ret=$?; echo "Abort..."  ; rm -f "${dbbackup}" "${destfile}"; $occ maintenance:mode --off; exit $ret; }
+cleanup(){ local ret=$?;                    rm -f "${dbbackup}"              ; restore_maintenance_mode; exit $ret; }
+fail()   { local ret=$?; echo "Abort..."  ; rm -f "${dbbackup}" "${destfile}"; restore_maintenance_mode; exit $ret; }
 trap cleanup EXIT
 trap fail INT TERM HUP ERR
 
@@ -68,7 +69,7 @@ free=$( df -B1 "$destdir" | tail -1 | awk '{ print $4 }' )
 }
 
 # database
-$occ maintenance:mode --on
+save_maintenance_mode
 cd "$basedir" || exit 1
 echo "backup database..."
 mysqldump -u root --single-transaction nextcloud > "$dbbackup"
