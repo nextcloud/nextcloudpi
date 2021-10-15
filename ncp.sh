@@ -205,7 +205,7 @@ EOF
 
   # LIMIT LOG SIZE
   grep -q maxsize /etc/logrotate.d/apache2 || sed -i /weekly/amaxsize2M /etc/logrotate.d/apache2
-  cat >> /etc/logrotate.d/ncp <<'EOF'
+  cat > /etc/logrotate.d/ncp <<'EOF'
 /var/log/ncp.log
 {
         rotate 4

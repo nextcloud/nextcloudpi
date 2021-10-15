@@ -13,8 +13,8 @@ while :; do
   sleep 3
 done
 
-# set "${TRUSTED_DOMAINS[ip]}"
-ncc config:system:set trusted_domains 1 --value=${ip}
+ncc config:system:set trusted_domains "${TRUSTED_DOMAINS[ip]}"       --value="${ip}"
+ncc config:system:set trusted_domains "${TRUSTED_DOMAINS[hostname]}" --value="$(hostname -f)"
 
 # we might need to retry if redis is not ready
 while :; do

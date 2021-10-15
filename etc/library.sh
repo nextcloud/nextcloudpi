@@ -16,7 +16,8 @@ export NCDIR=/var/www/nextcloud
 export TRUSTED_DOMAINS=(
   [ip]=1 [dnsmasq]=2 [nc_domain]=3 [nextcloudpi-local]=5 [docker_overwrite]=6
   [nextcloudpi]=7 [nextcloudpi-lan]=8 [public_ip]=11 [letsencrypt_1]=12
-  [letsencrypt_2]=13 [trusted_domain_1]=20 [trusted_domain_1]=21 [trusted_domain_1]=22)
+  [letsencrypt_2]=13 [hostname]=14 [trusted_domain_1]=20 [trusted_domain_2]=21 [trusted_domain_3]=22
+)
 
 command -v jq &>/dev/null || {
   apt-get update
