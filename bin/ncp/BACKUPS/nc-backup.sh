@@ -17,6 +17,13 @@ install()
 set -eE
 source /usr/local/etc/library.sh
 
+if [ "$1" = "--help" ]; then
+ echo "$0 <destdir> <includedata> <compress> <backuplimit>"
+ echo " <includedata> and <compress> are 'yes' or 'no'"
+ echo " <backuplimit> integer >= 1 or 0 for no limit"
+ exit 0
+fi
+
 destdir="${1:-/media/USBdrive/ncp-backups}"
 includedata="${2:-no}"
 compress="${3:-no}"

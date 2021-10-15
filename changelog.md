@@ -1,5 +1,7 @@
 
-[v1.41.10](https://github.com/nextcloud/nextcloudpi/commit/042491f) (2021-10-18) nc-static-IP: use ifdown/ifup
+[v1.41.11](https://github.com/nextcloud/nextcloudpi/commit/c95976c) (2021-10-15) ncp-backup: added help message (#1231)
+
+[v1.41.10](https://github.com/nextcloud/nextcloudpi/commit/ec94e6f) (2021-10-18) nc-static-IP: use ifdown/ifup
 
 [v1.41.9 ](https://github.com/nextcloud/nextcloudpi/commit/f9c9e37) (2021-10-18) fail2ban: fix UFW jail
 
@@ -17,7 +19,7 @@
 
 [v1.41.2 ](https://github.com/nextcloud/nextcloudpi/commit/cf4cfd8) (2021-10-15) also save hostname in trusted domains
 
-[v1.41.1](https://github.com/nextcloud/nextcloudpi/commit/c75db63) (2021-10-14) letsencrypt: take into account the possibility of the ncp-nextcloud folder being used
+[v1.41.1 ](https://github.com/nextcloud/nextcloudpi/commit/c75db63) (2021-10-14) letsencrypt: take into account the possibility of the ncp-nextcloud folder being used
 
 [v1.41.0 ](https://github.com/nextcloud/nextcloudpi/commit/b41fad0) (2021-10-13) ncp-web: add NCP logs section
 
