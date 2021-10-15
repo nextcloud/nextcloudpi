@@ -32,14 +32,21 @@ cd "$BASEDIR"
 DATADIR="$( grep datadirectory nextcloud/config/config.php | awk '{ print $3 }' | grep -oP "[^']*[^']" | head -1 )"
 ncc status &>/dev/null          || { echo "Nextcloud is currently down"; exit 1; }
 [[ -d /var/www/nextcloud-old ]] && { echo "Nextcloud backup directory found. Interrupted or already running installation?"; exit 1; }
-[[ -d /var/www/nextcloud     ]] || { echo "Nextcloud directory not found"                              ; exit 1; }
-[[ -d "$DATADIR"             ]] || { echo "Nextcloud data directory not found"                         ; exit 1; }
+[[ -d /var/www/nextcloud     ]] || { echo "Nextcloud directory not found"      ; exit 1; }
+[[ -d "$DATADIR"             ]] || { echo "Nextcloud data directory not found" ; exit 1; }
 
 # check version
 ####################
 
 [[ ${EUID} -eq 0 ]] && SUDO="sudo -u www-data"
 CURRENT="$( $SUDO php /var/www/nextcloud/occ status | grep "version:" | awk '{ print $3 }' )"
+
+MAJOR_CUR=$( cut -d. -f1 <<<"${CURRENT}" )
+MAJOR_NEW=$( cut -d. -f1 <<<"${VER}" )
+if [[ $((MAJOR_NEW - MAJOR_CUR)) -gt 1 ]]; then
+  echo "Upgrade cannot skip major versions. Please upgrade one major version at a time" >&2
+  exit 1
+fi
 
 grep -qP "\d+\.\d+\.\d+" <<<"$CURRENT" || { echo "Malformed version $CURRENT"; exit 1; }
 grep -qP "\d+\.\d+\.\d+" <<<"$VER"     || { echo "Malformed version $VER"    ; exit 1; }
