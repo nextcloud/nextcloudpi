@@ -25,7 +25,8 @@ trap "rm -rf \"${TMPDIR}\"" 0 1 2 3 15
 export PATH="/usr/local/sbin:/usr/sbin:/sbin:${PATH}"
 
 # check installed software
-type mysqld  &>/dev/null && echo ">>> WARNING: existing mysqld configuration will be changed <<<"
+type mysqld &>/dev/null && echo ">>> WARNING: existing mysqld configuration will be changed <<<"
+type mysqld &>/dev/null && mysql -e 'use nextcloud' &>/dev/null && { echo "The 'nextcloud' database already exists. Aborting"; exit 1; }
 
 # get dependencies
 apt-get update
