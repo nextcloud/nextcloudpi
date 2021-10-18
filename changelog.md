@@ -1,5 +1,23 @@
 
-[v1.41.1](https://github.com/nextcloud/nextcloudpi/commit/2c4cb42) (2021-10-14) letsencrypt: take into account the possibility of the ncp-nextcloud folder being used
+[v1.41.10](https://github.com/nextcloud/nextcloudpi/commit/042491f) (2021-10-18) nc-static-IP: use ifdown/ifup
+
+[v1.41.9 ](https://github.com/nextcloud/nextcloudpi/commit/f9c9e37) (2021-10-18) fail2ban: fix UFW jail
+
+[v1.41.8 ](https://github.com/nextcloud/nextcloudpi/commit/326de1d) (2021-10-15) fix dual IPv6 stack port checking
+
+[v1.41.7 ](https://github.com/nextcloud/nextcloudpi/commit/78a88eb) (2021-10-18) ncp-web: remove dir indicator on nc-backup
+
+[v1.41.6 ](https://github.com/nextcloud/nextcloudpi/commit/06ffb1e) (2021-10-18) nc-static-IP: make sure dhclient is no longer running
+
+[v1.41.5 ](https://github.com/nextcloud/nextcloudpi/commit/74ed53f) (2021-10-15) letsencrypt: hardcode cert name to avoid -0001 paths
+
+[v1.41.4 ](https://github.com/nextcloud/nextcloudpi/commit/0a866ca) (2021-10-15) save and restore maintenance mode status in ncp-apps
+
+[v1.41.3 ](https://github.com/nextcloud/nextcloudpi/commit/80575ae) (2021-10-15) ncp-update-nc: check skip major versions
+
+[v1.41.2 ](https://github.com/nextcloud/nextcloudpi/commit/cf4cfd8) (2021-10-15) also save hostname in trusted domains
+
+[v1.41.1](https://github.com/nextcloud/nextcloudpi/commit/c75db63) (2021-10-14) letsencrypt: take into account the possibility of the ncp-nextcloud folder being used
 
 [v1.41.0 ](https://github.com/nextcloud/nextcloudpi/commit/b41fad0) (2021-10-13) ncp-web: add NCP logs section
 

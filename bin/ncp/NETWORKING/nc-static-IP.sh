@@ -61,7 +61,8 @@ iface $IFACE inet dhcp
 auto lo
 iface lo inet loopback
 EOF
-      systemctl restart NetworkManager
+      ifdown "${IFACE}"
+      ifup "${IFACE}"
       echo "DHCP enabled"
       return
     }
@@ -83,8 +84,9 @@ iface $IFACE inet static
     gateway $GW
     dns-nameservers $DNS 8.8.8.8
 EOF
-    systemctl restart networking
     pkill dhclient
+    ifdown "${IFACE}"
+    ifup "${IFACE}"
   }
  
   ncc config:system:set trusted_domains "${TRUSTED_DOMAINS[ip]}" --value="$IP"
