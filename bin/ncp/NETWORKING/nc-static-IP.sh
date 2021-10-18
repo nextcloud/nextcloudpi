@@ -84,6 +84,7 @@ iface $IFACE inet static
     dns-nameservers $DNS 8.8.8.8
 EOF
     systemctl restart networking
+    pkill dhclient
   }
  
   ncc config:system:set trusted_domains "${TRUSTED_DOMAINS[ip]}" --value="$IP"
