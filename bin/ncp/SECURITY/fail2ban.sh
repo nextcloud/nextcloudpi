@@ -28,40 +28,6 @@ install()
   update-rc.d fail2ban disable
   rm -f /etc/fail2ban/jail.d/defaults-debian.conf
 
-  [[ "$DOCKERBUILD" == 1 ]] && {
-    cat > /etc/services-available.d/100fail2ban <<EOF
-#!/bin/bash
-
-source /usr/local/etc/library.sh
-
-[[ "\$1" == "stop" ]] && {
-  echo "stopping fail2ban..."
-  service fail2ban stop
-  exit 0
-}
-
-persistent_cfg /etc/fail2ban
-
-echo "Starting fail2ban..."
-service fail2ban start
-
-exit 0
-EOF
-
-  cat > /etc/fail2ban/filter.d/ufwban.conf <<'EOF'
-[INCLUDES]
-before = common.conf
-[Definition]
-failregex = UFW BLOCK.* SRC=<HOST>
-ignoreregex =
-EOF
-  cat > /etc/systemd/system/fail2ban.service.d/touch-ufw-log.conf <<EOF
-[Service]
-ExecStartPre=/bin/touch /var/log/ufw.log
-EOF
-    chmod +x /etc/services-available.d/100fail2ban
-  }
-
   # tweak fail2ban email
   local F=/etc/fail2ban/action.d/sendmail-common.conf
   sed -i 's|Fail2Ban|NextCloudPi|' /etc/fail2ban/action.d/sendmail-whois-lines.conf
@@ -80,7 +46,7 @@ configure()
   }
 
   local NCLOG="/var/www/nextcloud/data/nextcloud.log"
-  local NCLOG1="$( sudo -u www-data php /var/www/nextcloud/occ config:system:get logfile )"
+  local NCLOG1="$(ncc config:system:get logfile)"
 
   [[ "$NCLOG1" != "" ]] && NCLOG="$NCLOG1"
 
@@ -89,10 +55,10 @@ configure()
 
   sudo -u www-data touch "$NCLOG" || { echo -e "ERROR: user www-data does not have write permissions on $NCLOG"; return 1; }
 
-  cd /var/www/nextcloud
-  sudo -u www-data php occ config:system:set loglevel --value=2
-  sudo -u www-data php occ config:system:set log_type --value=file
+  ncc config:system:set loglevel --value=2
+  ncc config:system:set log_type --value=file
 
+  # Filters
   cat > /etc/fail2ban/filter.d/nextcloud.conf <<'EOF'
 [INCLUDES]
 before = common.conf
@@ -104,8 +70,23 @@ datepattern = ,?\s*"time"\s*:\s*"%%Y-%%m-%%d[T ]%%H:%%M:%%S(%%z)?"
 ignoreregex =
 EOF
 
+  cat > /etc/fail2ban/filter.d/ufwban.conf <<'EOF'
+[INCLUDES]
+before = common.conf
+
+[Definition]
+failregex = UFW BLOCK.* SRC=<HOST>
+ignoreregex =
+EOF
+  mkdir -p /etc/systemd/system/fail2ban.service.d
+  cat > /etc/systemd/system/fail2ban.service.d/touch-ufw-log.conf <<'EOF'
+[Service]
+ExecStartPre=/bin/touch /var/log/ufw.log
+EOF
+
   [[ "$MAILALERTS" == "yes" ]] && local ACTION=action_mwl || local ACTION=action_
 
+  # Jails
   cat > /etc/fail2ban/jail.conf <<EOF
 # The DEFAULT allows a global definition of the options. They can be overridden
 # in each jail afterwards.
@@ -138,9 +119,7 @@ action = %($ACTION)s
 #
 # SSH
 #
-
 [ssh]
-
 enabled  = true
 port     = ssh
 filter   = sshd
@@ -150,15 +129,16 @@ maxretry = $MAXRETRY
 #
 # HTTP servers
 #
-
 [nextcloud]
-
 enabled  = true
 port     = http,https
 filter   = nextcloud
 logpath  = $NCLOG
 maxretry = $MAXRETRY
 
+#
+# UFW
+#
 [ufwban]
 enabled = true
 port = ssh, http, https
@@ -166,9 +146,12 @@ filter = ufwban
 logpath = /var/log/ufw.log
 action = ufw
 EOF
+
   cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
+  touch /var/log/ufw.log
   update-rc.d fail2ban defaults
   update-rc.d fail2ban enable
+  systemctl daemon-reload
   service fail2ban restart
   echo "fail2ban enabled"
 }
