@@ -1,5 +1,7 @@
 
-[v1.41.11](https://github.com/nextcloud/nextcloudpi/commit/c95976c) (2021-10-15) ncp-backup: added help message (#1231)
+[v1.41.12](https://github.com/nextcloud/nextcloudpi/commit/a41d3d1) (2021-10-20) letsencrypt: disable also ncp web certs if OFF
+
+[v1.41.11](https://github.com/nextcloud/nextcloudpi/commit/dcfd1cf) (2021-10-15) ncp-backup: added help message (#1231)
 
 [v1.41.10](https://github.com/nextcloud/nextcloudpi/commit/ec94e6f) (2021-10-18) nc-static-IP: use ifdown/ifup
 

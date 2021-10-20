@@ -58,6 +58,9 @@ configure()
     rm -f /etc/letsencrypt/renewal-hooks/deploy/ncp
     [[ "$DOCKERBUILD" == 1 ]] && update-rc.d letsencrypt disable
     install_template nextcloud.conf.sh "${nc_vhostcfg}"
+    sed -i "s|SSLCertificateFile.*|SSLCertificateFile /etc/ssl/certs/ssl-cert-snakeoil.pem|" "${vhostcfg2}"
+    sed -i "s|SSLCertificateKeyFile.*|SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key|" "${vhostcfg2}"
+    apachectl -k graceful
     echo "letsencrypt certificates disabled. Using self-signed certificates instead."
     exit 0
   }
@@ -110,8 +113,8 @@ EOF
 
     # Configure Apache
     install_template nextcloud.conf.sh "${nc_vhostcfg}"
-    sed -i "s|SSLCertificateFile.*|SSLCertificateFile /etc/letsencrypt/live/$DOMAIN_LOWERCASE/fullchain.pem|" $vhostcfg2
-    sed -i "s|SSLCertificateKeyFile.*|SSLCertificateKeyFile /etc/letsencrypt/live/$DOMAIN_LOWERCASE/privkey.pem|" $vhostcfg2
+    sed -i "s|SSLCertificateFile.*|SSLCertificateFile /etc/letsencrypt/live/$DOMAIN_LOWERCASE/fullchain.pem|" "${vhostcfg2}"
+    sed -i "s|SSLCertificateKeyFile.*|SSLCertificateKeyFile /etc/letsencrypt/live/$DOMAIN_LOWERCASE/privkey.pem|" "${vhostcfg2}"
 
     # Configure Nextcloud
     local domain_index="${TRUSTED_DOMAINS[letsencrypt_1]}"

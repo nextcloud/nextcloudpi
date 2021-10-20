@@ -11,6 +11,14 @@ source /usr/local/etc/library.sh # sets NCLATESTVER PHPVER RELEASE
 # update ncp-restore
 install_app nc-restore
 
+# fix ncp.conf bug if LE is disabled
+if ! is_active_app letsencrypt; then
+  if [[ -f /etc/apache2/sites-enabled/ncp.conf ]]; then
+    sed -i "s|SSLCertificateFile.*|SSLCertificateFile /etc/ssl/certs/ssl-cert-snakeoil.pem|"         /etc/apache2/sites-enabled/ncp.conf
+    sed -i "s|SSLCertificateKeyFile.*|SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key|" /etc/apache2/sites-enabled/ncp.conf
+  fi
+fi
+
 # fix letsencrypt with httpsonly enabled
   cat > /etc/apache2/sites-available/000-default.conf <<'EOF'
 <VirtualHost _default_:80>

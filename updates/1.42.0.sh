@@ -15,6 +15,14 @@ run_app nc-notify-updates
 # update nc-backup
 install_app nc-backup
 
+# fix ncp.conf bug if LE is disabled
+if ! is_active_app letsencrypt; then
+  if [[ -f /etc/apache2/sites-enabled/ncp.conf ]]; then
+    sed -i "s|SSLCertificateFile.*|SSLCertificateFile /etc/ssl/certs/ssl-cert-snakeoil.pem|"         /etc/apache2/sites-enabled/ncp.conf
+    sed -i "s|SSLCertificateKeyFile.*|SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key|" /etc/apache2/sites-enabled/ncp.conf
+  fi
+fi
+
 # docker images only
 [[ -f /.docker-image ]] && {
   :

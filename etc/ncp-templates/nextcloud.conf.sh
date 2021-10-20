@@ -46,12 +46,12 @@ if [[ "$1" != "--defaults" ]] && [[ -n "$LETSENCRYPT_DOMAIN" ]]; then
   LETSENCRYPT_CERT_BASE_PATH="/etc/letsencrypt/live/${LETSENCRYPT_DOMAIN,,}"
 
   # find the most recent cert otherwise
-  [[ -d "${LETSENCRYPT_CERT_BASE_PATH}" ]] || {
+  [[ -f "${LETSENCRYPT_CERT_BASE_PATH}/fullchain.pem" ]] || {
     LETSENCRYPT_CERT_BASE_PATH="$(find /etc/letsencrypt/live -type d -name "${LETSENCRYPT_DOMAIN,,}*" -printf "%T@ %p\n" | sort -n | cut -f2 -d' ' | tail -1)"
   }
 
-  # otherwise, in some installs this is the path we use (for legacy reasons)
-  [[ -d "${LETSENCRYPT_CERT_BASE_PATH}" ]] || {
+  # otherwise, in some installs this is the path we use
+  [[ -f "${LETSENCRYPT_CERT_BASE_PATH}/fullchain.pem" ]] || {
     if [[ -d "/etc/letsencrypt/live/ncp-nextcloud" ]]; then
       LETSENCRYPT_CERT_BASE_PATH="/etc/letsencrypt/live/ncp-nextcloud" 
     fi
@@ -63,7 +63,7 @@ else
 fi
 
 # NOTE: we fall back to self-signed snakeoil certs if we couldn't get a LE one
-[[ -d "${LETSENCRYPT_CERT_BASE_PATH}" ]] && {
+[[ -f "${LETSENCRYPT_CERT_BASE_PATH}/fullchain.pem" ]] && [[ -f "${LETSENCRYPT_CERT_BASE_PATH}/privkey.pem" ]] && {
   LETSENCRYPT_CERT_PATH="${LETSENCRYPT_CERT_BASE_PATH}/fullchain.pem"
   LETSENCRYPT_KEY_PATH="${LETSENCRYPT_CERT_BASE_PATH}/privkey.pem"
 }
@@ -72,7 +72,7 @@ cat <<EOF
     ErrorLog  /var/log/apache2/nc-error.log
     SSLEngine on
     SSLProxyEngine on
-    SSLCertificateFile      ${LETSENCRYPT_CERT_PATH:-/etc/ssl/certs/ssl-cert-snakeoil.pem}
+    SSLCertificateFile   ${LETSENCRYPT_CERT_PATH:-/etc/ssl/certs/ssl-cert-snakeoil.pem}
     SSLCertificateKeyFile ${LETSENCRYPT_KEY_PATH:-/etc/ssl/private/ssl-cert-snakeoil.key}
 
     # For notify_push app in NC21
