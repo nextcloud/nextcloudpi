@@ -1,5 +1,7 @@
 
-[v1.41.12](https://github.com/nextcloud/nextcloudpi/commit/a41d3d1) (2021-10-20) letsencrypt: disable also ncp web certs if OFF
+[v1.42.0](https://github.com/nextcloud/nextcloudpi/commit/f80d335) (2021-10-21) ncp-web: add Russion translations
+
+[v1.41.12](https://github.com/nextcloud/nextcloudpi/commit/36c1f46) (2021-10-20) letsencrypt: disable also ncp web certs if OFF
 
 [v1.41.11](https://github.com/nextcloud/nextcloudpi/commit/dcfd1cf) (2021-10-15) ncp-backup: added help message (#1231)
 
