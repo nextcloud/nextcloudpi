@@ -183,7 +183,7 @@ else if ( $_POST['action'] == "next-dl" )
 {
   echo '{  "token": "' . getCSRFToken() . '",';               // Get new token
   echo '"token_dl": "' . getCSRFToken() . '",';               // Get new download token
-  echo '     "ret": "' . $ret           . '" }';
+  echo ' "ret": "0" }';
 }
 
 //

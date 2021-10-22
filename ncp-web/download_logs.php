@@ -18,7 +18,7 @@ if ( empty($token) || !validateCSRFToken($token) )
 
 $file = '/var/log/ncp.log';
 
-if (!file_exists($file)
+if (!file_exists($file))
     die('File not found');
 
 if (!is_readable($file))

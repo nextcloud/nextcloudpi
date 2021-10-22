@@ -1,5 +1,7 @@
 
-[v1.42.0](https://github.com/nextcloud/nextcloudpi/commit/f80d335) (2021-10-21) ncp-web: add Russion translations
+[v1.42.1](https://github.com/nextcloud/nextcloudpi/commit/945716f) (2021-10-22) ncp-web: fix log download bug
+
+[v1.42.0 ](https://github.com/nextcloud/nextcloudpi/commit/3f57513) (2021-10-21) ncp-web: add Russion translations
 
 [v1.41.12](https://github.com/nextcloud/nextcloudpi/commit/36c1f46) (2021-10-20) letsencrypt: disable also ncp web certs if OFF
 
