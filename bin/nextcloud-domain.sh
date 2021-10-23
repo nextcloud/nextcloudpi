@@ -2,6 +2,12 @@
 
 source /usr/local/etc/library.sh
 
+# wait until user decrypts the instance first
+while :; do
+  needs_decrypt || break
+  sleep 1
+done
+
 # wicd service finishes before completing DHCP
 while :; do
   local_ip="$(get_ip)"

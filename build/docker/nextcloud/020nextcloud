@@ -58,6 +58,14 @@ bash /usr/local/bin/ncp-provisioning.sh
 echo "Starting notify_push daemon"
 start_notify_push
 
+if needs_decrypt; then
+  echo "Waiting for user to decrypt instance"
+  while :; do
+    sleep 1
+    needs_decrypt || break
+  done
+fi
+
 echo "Configuring Domain"
 # Trusted Domain (local/public IP)
 bash /usr/local/bin/nextcloud-domain.sh

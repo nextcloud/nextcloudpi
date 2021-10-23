@@ -32,7 +32,7 @@ command -v jq &>/dev/null || {
   PHPVER=$(     jq -r .php_version       < "$NCPCFG")
   RELEASE=$(    jq -r .release           < "$NCPCFG")
 }
-command -v ncc &>/dev/null && NCVER="$(ncc status | grep "version:" | awk '{ print $3 }')"
+command -v ncc &>/dev/null && NCVER="$(ncc status 2>/dev/null | grep "version:" | awk '{ print $3 }')"
 
 function configure_app()
 {
@@ -479,6 +479,29 @@ function restore_maintenance_mode()
   else
     "${ncc}" maintenance:mode --off
   fi
+}
+
+function needs_decrypt()
+{
+  local active
+  active="$(find_app_param nc-encrypt ACTIVE)"
+  (! is_active_app nc-encrypt) && [[ "${active}" == "yes" ]]
+}
+
+function set_ncpcfg()
+{
+  local name="${1}"
+  local value="${2}"
+  local cfg
+  cfg="$(jq '.' "${NCPCFG}")"
+  cfg="$(jq ".${name} = \"${value}\"" <<<"${cfg}")"
+  echo "$cfg" > "${NCPCFG}"
+}
+
+function get_ncpcfg()
+{
+  local name="${1}"
+  jq -r ".${name}" < "${NCPCFG}"
 }
 
 # License

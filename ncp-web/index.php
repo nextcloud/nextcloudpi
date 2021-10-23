@@ -8,14 +8,44 @@
  More at https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/
 
 **/
+ob_start();
+
+// check for encrypted data to present unlock dialog
+exec("bash -c 'source /usr/local/etc/library.sh; needs_decrypt'", $output, $ret);
+if ($ret == 0) {
+  header("Location: decrypt");
+  exit();
+}
 
 // redirect to activation first time
-ob_start();
 exec("a2query -s ncp-activation", $output, $ret);
 if ($ret == 0) {
   header("Location: activate");
   exit();
 }
+
+ini_set('session.cookie_httponly', 1);
+if (isset($_SERVER['HTTPS']))
+  ini_set('session.cookie_secure', 1);
+session_start();
+
+include('elements.php');
+$modules_path = '/usr/local/etc/ncp-config.d/';
+$l10nDir = "l10n";
+
+// security headers
+header("Content-Security-Policy: default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self'; object-src 'self';");
+header("X-XSS-Protection: 1; mode=block");
+header("X-Content-Type-Options: nosniff");
+header("X-Robots-Tag: none");
+header("X-Permitted-Cross-Domain-Policies: none");
+header("X-Frame-Options: DENY");
+header("Cache-Control: no-cache");
+header('Pragma: no-cache');
+header('Expires: -1');
+
+// HTTP2 push headers
+header("Link: </js/minified.js>; rel=preload; as=script;,</js/ncp.js>; rel=preload; as=script;,</css/ncp.css>; rel=preload; as=style;,</img/ncp-logo.svg>; rel=preload; as=image;, </img/loading-small.gif>; rel=preload; as=image;, rel=preconnect href=ncp-launcher.php;");
 
 ?>
 
@@ -28,31 +58,6 @@ if ($ret == 0) {
     <meta name="referrer" content="never">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
     <meta name="mobile-web-app-capable" content="yes">
-<?php
-    ini_set('session.cookie_httponly', 1);
-    if (isset($_SERVER['HTTPS']))
-      ini_set('session.cookie_secure', 1);
-    session_start();
-
-    include('elements.php');
-    $modules_path = '/usr/local/etc/ncp-config.d/';
-    $l10nDir = "l10n";
-
-    // security headers
-    header("Content-Security-Policy: default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self'; object-src 'self';");
-    header("X-XSS-Protection: 1; mode=block");
-    header("X-Content-Type-Options: nosniff");
-    header("X-Robots-Tag: none");
-    header("X-Permitted-Cross-Domain-Policies: none");
-    header("X-Frame-Options: DENY");
-    header("Cache-Control: no-cache");
-    header('Pragma: no-cache');
-    header('Expires: -1');
-
-    // HTTP2 push headers
-    header("Link: </js/minified.js>; rel=preload; as=script;,</js/ncp.js>; rel=preload; as=script;,</css/ncp.css>; rel=preload; as=style;,</img/ncp-logo.svg>; rel=preload; as=image;, </img/loading-small.gif>; rel=preload; as=image;, rel=preconnect href=ncp-launcher.php;");
-
-  ?>
     <link rel="icon" type="image/png" href="img/favicon.png"/>
     <link rel="stylesheet" href="css/ncp.css">
 </head>

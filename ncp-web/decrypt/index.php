@@ -1,5 +1,5 @@
 <?php
-  // disallow once activated
+  // disallow once unlocked
   exec("a2query -s ncp-activation", $output, $ret);
   if ($ret != 0) {
     http_response_code(404);
@@ -26,7 +26,7 @@
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta charset="utf-8">
-  <title> NextCloudPi Activation </title>
+  <title> Unlock NextCloudPi </title>
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="referrer" content="never">
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
@@ -48,27 +48,30 @@
         <div id="header">
           <img id="ncp-logo" src="../img/ncp-logo.svg">
 <?php
-    $nc_pwd  = rtrim( base64_encode( random_bytes(32) ) , '=' ); // remove last '='. Remove rtrim in the future
-    $ncp_pwd = rtrim( base64_encode( random_bytes(32) ) , '=' ); // remove last '='. Remove rtrim in the future
     echo <<<HTML
-          <h1>NextCloudPi Activation</h1>
-          <p>Your NextCloudPi user     is </p><input readonly              type="text" size=32 value="ncp">
-          <p>Your NextCloudPi password is </p><input readonly id="ncp-pwd" type="text" size=32 value="{$ncp_pwd}">&nbsp;&nbsp;<img id="cp-ncp" src="../img/clippy.svg"><span id="cp-ncp-ok"></span>
-          <p>Save this password in order to access to the NextCloudPi web interface at https://nextcloudpi.local:4443</p>
-          <p>This password can be changed using 'nc-passwd'</p>
-<hr>
-          <p>Your NextCloud     user     is </p><input readonly              type="text" size=32 value="ncp">
-          <p>Your Nextcloud     password is </p><input readonly id="nc-pwd"  type="text" size=32 value="{$nc_pwd}">&nbsp;&nbsp;<img id="cp-nc" src="../img/clippy.svg"><span id="cp-nc-ok"></span>
-          <p>Save this password in order to access NextCloud https://nextcloudpi.local</p>
-          <p>This password can be changed from the Nextcloud user configuration</p>
-<br>
-          <p>
-             <button type="button" id="print-pwd"   > Print    </button>
-             <button type="button" id="activate-ncp"> Activate </button>
-          </p>
-<br>
-          <img id="loading-gif" src="../img/loading-small.gif">
-          <div id="error-box"></div>
+          <h1>NextCloudPi</h1>
+          <p>Encrypted instance</p>
+
+          <div id="decrypt-config-box" class="content-box table-wrapper">
+          <form>
+            <table><tbody>
+              <tr>
+                <td>
+                  <input type="password" id="encryption-pass" name="Password" class="directory" default="" placeholder="password" size="40">
+                  &nbsp;
+                  <img class="pwd-btn" title="show password" src="../img/toggle-white.svg">
+                </td>
+              </tr>     
+            </tbody></table>
+
+            <div class="config-button-wrapper">
+              <button id="decrypt-btn" type="submit" class="config-button">Decrypt</button>
+              <img id="loading-gif" src="../img/loading-small.gif">
+              <div class="circle-retstatus icon-red-circle"></div>
+              <div id="error-box"></div>
+           </div>
+        </form>
+        </div>
 HTML;
 ?>
         </div>

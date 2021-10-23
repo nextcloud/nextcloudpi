@@ -10,6 +10,12 @@ services:
     volumes:
      - ncdata:/data
      - /etc/localtime:/etc/localtime:ro
+    # for nc-encrypt
+    devices:
+      - /dev/fuse:/dev/fuse
+    # for nc-encrypt # NOTE: take a look at this https://github.com/docker/for-linux/issues/321#issuecomment-677744121
+    cap_add:
+      - SYS_ADMIN
     container_name: nextcloudpi
 
 volumes:

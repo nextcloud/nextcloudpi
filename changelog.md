@@ -1,7 +1,13 @@
 
-[v1.42.3](https://github.com/nextcloud/nextcloudpi/commit/2d804cb) (2021-10-25) nextcloud-domain: fix variable collision
+[v1.43.0](https://github.com/nextcloud/nextcloudpi/commit/9bad41c) (2021-10-22) add nc-encrypt
 
-[v1.42.2](https://github.com/nextcloud/nextcloudpi/commit/9ff21bb) (2021-10-23) nc-backup-auto: ncc path
+[v1.42.5](https://github.com/nextcloud/nextcloudpi/commit/f0abbbc) (2021-10-27) letsencrypt: sync ncp and nc cert paths
+
+[v1.42.4 ](https://github.com/nextcloud/nextcloudpi/commit/f7e28c2) (2021-10-27) small trusted domains refactor
+
+[v1.42.3 ](https://github.com/nextcloud/nextcloudpi/commit/b1e7323) (2021-10-25) nextcloud-domain: fix variable collision
+
+[v1.42.2 ](https://github.com/nextcloud/nextcloudpi/commit/9ff21bb) (2021-10-23) nc-backup-auto: ncc path
 
 [v1.42.1 ](https://github.com/nextcloud/nextcloudpi/commit/e11ce59) (2021-10-22) ncp-web: fix log download bug
 

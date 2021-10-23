@@ -100,6 +100,7 @@ configure()
   # datadir
   ncc config:system:set datadirectory --value="$DATADIR"
   ncc config:system:set logfile --value="$DATADIR/nextcloud.log"
+  set_ncpcfg datadir "${datadir}"
   restore_maintenance_mode
 }
 
