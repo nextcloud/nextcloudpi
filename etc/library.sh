@@ -12,6 +12,7 @@ export NCPCFG=${NCPCFG:-/usr/local/etc/ncp.cfg}
 export CFGDIR=/usr/local/etc/ncp-config.d
 export BINDIR=/usr/local/bin/ncp
 export NCDIR=/var/www/nextcloud
+export ncc=/usr/local/bin/ncc
 
 export TRUSTED_DOMAINS=(
   [ip]=1 [dnsmasq]=2 [nc_domain]=3 [nextcloudpi-local]=5 [docker_overwrite]=6
@@ -466,16 +467,16 @@ function notify_admin()
 function save_maintenance_mode()
 {
   unset NCP_MAINTENANCE_MODE
-  grep -q enabled <(ncc maintenance:mode) && export NCP_MAINTENANCE_MODE="on" || true
-  ncc maintenance:mode --on
+  grep -q enabled <("${ncc}" maintenance:mode) && export NCP_MAINTENANCE_MODE="on" || true
+  "${ncc}" maintenance:mode --on
 }
 
 function restore_maintenance_mode()
 {
   if [[ "${NCP_MAINTENANCE_MODE}" != "" ]]; then
-    ncc maintenance:mode --on
+    "${ncc}" maintenance:mode --on
   else
-    ncc maintenance:mode --off
+    "${ncc}" maintenance:mode --off
   fi
 }
 

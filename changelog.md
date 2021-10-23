@@ -1,5 +1,7 @@
 
-[v1.42.1](https://github.com/nextcloud/nextcloudpi/commit/945716f) (2021-10-22) ncp-web: fix log download bug
+[v1.42.2](https://github.com/nextcloud/nextcloudpi/commit/749d252) (2021-10-23) nc-backup-auto: ncc path
+
+[v1.42.1](https://github.com/nextcloud/nextcloudpi/commit/e11ce59) (2021-10-22) ncp-web: fix log download bug
 
 [v1.42.0 ](https://github.com/nextcloud/nextcloudpi/commit/3f57513) (2021-10-21) ncp-web: add Russion translations
 
