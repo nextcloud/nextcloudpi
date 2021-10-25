@@ -4,16 +4,16 @@ source /usr/local/etc/library.sh
 
 # wicd service finishes before completing DHCP
 while :; do
-  ip="$(get_ip)"
+  local_ip="$(get_ip)"
   public_ip="$(curl -m4 icanhazip.com 2>/dev/null)"
 
   [[ "$public_ip" != "" ]] && ncc config:system:set trusted_domains 11 --value="$public_ip"
-  [[ "$ip" != "" ]] && break
+  [[ "$local_ip" != "" ]] && break
 
   sleep 3
 done
 
-ncc config:system:set trusted_domains "${TRUSTED_DOMAINS[ip]}"       --value="${ip}"
+ncc config:system:set trusted_domains "${TRUSTED_DOMAINS[ip]}"       --value="${local_ip}"
 ncc config:system:set trusted_domains "${TRUSTED_DOMAINS[hostname]}" --value="$(hostname -f)"
 
 # we might need to retry if redis is not ready
