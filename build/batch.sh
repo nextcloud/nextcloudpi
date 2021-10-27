@@ -35,10 +35,14 @@ build/build-LXD.sh
 # Docker x86
 build/build-docker.sh x86
 
+# VM
+build/build-VM.sh
+
 # Tests
 [[ "${SKIP_TESTS}" != 1 ]] && {
   test_lxc
   test_docker
+  test_vm
 }
 
 # Docker other
@@ -59,9 +63,6 @@ build/build-SD-armbian.sh odroidhc4 OdroidHC4
 build/build-SD-armbian.sh odroidc4 OdroidC4
 build/build-SD-armbian.sh odroidc2 OdroidC2
 #build/build-SD-armbian.sh orangepizeroplus2-h5 OrangePiZeroPlus2
-
-# VM
-build/build-VM.sh
 
 # Uploads
 [[ "$FTPPASS" == "" ]] && exit

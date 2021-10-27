@@ -1,7 +1,7 @@
 version: '3'
 services:
   nextcloudpi:
-    image: ownyourbits/nextcloudpi-x86
+    image: ownyourbits/nextcloudpi
     command: "${IP}"
     ports:
      - "80:80"

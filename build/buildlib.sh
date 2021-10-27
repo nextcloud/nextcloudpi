@@ -461,6 +461,21 @@ function test_lxc()
   lxc stop ncp
 }
 
+function test_vm()
+{
+  local ip
+  virsh --connect qemu:///system shutdown ncp-vm &>/dev/null || true
+  virsh --connect qemu:///system start ncp-vm
+  while [[ "${ip}" == "" ]]; do
+    ip="$(virsh --connect qemu:///system domifaddr ncp-vm | grep ipv4 | awk '{ print $4 }' | sed 's|/24||' )"
+    sleep 0.5
+  done
+  tests/activation_tests.py "${ip}"
+  tests/nextcloud_tests.py  "${ip}"
+  #tests/system_tests.py
+  virsh --connect qemu:///system shutdown ncp-vm
+}
+
 # License
 #
 # This script is free software; you can redistribute it and/or modify it

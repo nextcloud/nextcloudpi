@@ -18,7 +18,7 @@ SIZE=3G                     # Raspbian image size
 #CLEAN=0                    # Pass this envvar to skip cleaning download cache
 IMG="NextCloudPi_VM_$( date  "+%m-%d-%y" ).img"
 IMG=tmp/"$IMG"
-VM="/var/lib/libvirt/images/nextcloudpi_default.img"
+VM="/var/lib/libvirt/images/ncp-vm.img"
 
 TAR=output/"$( basename "$IMG" .img ).tar.bz2"
 

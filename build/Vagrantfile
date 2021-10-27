@@ -17,6 +17,10 @@ Vagrant.configure("2") do |config|
   config.vm.box = "debian/#{release}64"
   config.vm.box_check_update = true
   config.vm.hostname = "ncp-vm"
+  config.vm.define "ncp-vm"
+  config.vm.provider :libvirt do |libvirt|
+    libvirt.default_prefix = ""
+  end
 
   config.vm.synced_folder '.', '/vagrant', disabled: true
 
@@ -39,6 +43,7 @@ Vagrant.configure("2") do |config|
     run_app_unsafe post-inst.sh
     cd /
     rm -r /tmp/nextcloudpi
+    echo "root:ownyourbits" | chpasswd
     systemctl disable sshd
     poweroff
   SHELL
