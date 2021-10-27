@@ -24,8 +24,6 @@ HTML;
     $ret .= "<td><label for=\"$ncp_app-$param[id]\">$param[name]</label></td>";
 
     $value = $param['value'];
-    if ( $value == '_')
-      $value = '';
 
     // default to text input
     if (!array_key_exists('type', $param) || $param['type'] == 'directory' || $param['type'] == 'file')
@@ -91,11 +89,15 @@ HTML;
     // password
     else if ($param['type'] == 'password')
     {
+      $suggest = '';
+      if (array_key_exists('suggest', $param))
+        $suggest = $param['suggest'];
       $ret .= "<td>";
       $ret .= "<input type=\"password\"
                 name=\"$param[name]\"
                 id=\"$ncp_app-$param[id]\"
                 value=\"$value\"
+                placeholder=\"$suggest\"
               size=\"40\">";
       $ret .= "&nbsp;<img class=\"pwd-btn\" title=\"show password\" src=\"../img/toggle.svg\">";
       $ret .= "</td>";
