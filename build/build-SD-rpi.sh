@@ -72,6 +72,11 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
     apt-get install -y --no-install-recommends haveged
     systemctl enable haveged.service
 
+    # install cryptsetup for LUKS support
+    # depmod seems to be broken on Raspbian?
+    # reboot is required to load the required dm_mod kernel module
+    apt-get install -y cryptsetup
+
     # harden SSH further for Raspbian
     sed -i 's|^#PermitRootLogin .*|PermitRootLogin no|' /etc/ssh/sshd_config
 
