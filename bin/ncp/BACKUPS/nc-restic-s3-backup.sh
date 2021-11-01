@@ -39,20 +39,25 @@ configure()
     return 4
   }
 
+  [[ "$BACKUPLIMIT" == "" ]] && {
+    echo "error: please specify number of days to keep"
+    return 5
+  }
+
   save_maintenance_mode || {
     echo "error: failed to activate Nextcloud maintenance mode"
-    return 5
+    return 6
   }
 
   local DATADIR
   DATADIR=$( sudo -u www-data php /var/www/nextcloud/occ config:system:get datadirectory ) || {
     echo -e "Error reading data directory. Is NextCloud running and configured?"
-    return 6
+    return 7
   }
 
   cd "$DATADIR" || {
     echo "error: failed to change to data directory $DATADIR"
-    return 7
+    return 8
   }
 
   echo "backing up from $DATADIR"
@@ -60,15 +65,27 @@ configure()
   AWS_ACCESS_KEY_ID="$S3_KEY_ID" AWS_SECRET_ACCESS_KEY="$S3_SECRET_KEY" RESTIC_PASSWORD="$RESTIC_PASSWORD" restic -r "s3:$S3_BUCKET_URL/ncp-backup" --verbose backup . || {
     echo "error: restic backup failed"
     echo "notice: use nc-maintenance to disable maintenance mode anyway if desired"
-    return 8
+    return 9
   }
 
   echo "successfully created backup"
 
+  [[ "$BACKUPLIMIT" -gt 0 ]] && {
+    echo "pruning old backups (except for the last $BACKUPLIMIT days)"
+
+    AWS_ACCESS_KEY_ID="$S3_KEY_ID" AWS_SECRET_ACCESS_KEY="$S3_SECRET_KEY" RESTIC_PASSWORD="$RESTIC_PASSWORD" restic -r "s3:$S3_BUCKET_URL/ncp-backup" --verbose forget --keep-daily "$BACKUPLIMIT" --prune || {
+      echo "error: restic prune failed"
+      echo "notice: use nc-maintenance to disable maintenance mode anyway if desired"
+      return 10
+    }
+
+    echo "successfully pruned old backups"
+  }
+
   restore_maintenance_mode || {
     echo "error: failed to disabled Nextcloud maintenance mode"
     echo "notice: backup has completed anyways"
-    return 8
+    return 11
   }
 }
 
