@@ -71,13 +71,26 @@ configure()
   echo "successfully created backup"
 
   [[ "$BACKUPLIMIT" -gt 0 ]] && {
+    [[ "$FORCE_UNLOCK" == "yes" ]] && {
+      echo "forcefully unlocking repository ..."
+
+      AWS_ACCESS_KEY_ID="$S3_KEY_ID" AWS_SECRET_ACCESS_KEY="$S3_SECRET_KEY" RESTIC_PASSWORD="$RESTIC_PASSWORD" restic -r "s3:$S3_BUCKET_URL/ncp-backup" --verbose unlock || {
+        echo "error: restic unlock failed"
+        echo "notice: backup has completed anyways"
+        echo "notice: use nc-maintenance to disable maintenance mode anyway if desired"
+        return 10
+      }
+
+      echo "successfully unlocked repository"
+    }
+
     echo "pruning old backups (except for the last $BACKUPLIMIT days)"
 
     AWS_ACCESS_KEY_ID="$S3_KEY_ID" AWS_SECRET_ACCESS_KEY="$S3_SECRET_KEY" RESTIC_PASSWORD="$RESTIC_PASSWORD" restic -r "s3:$S3_BUCKET_URL/ncp-backup" --verbose forget --keep-daily "$BACKUPLIMIT" --prune || {
       echo "error: restic prune failed"
       echo "notice: backup has completed anyways"
       echo "notice: use nc-maintenance to disable maintenance mode anyway if desired"
-      return 10
+      return 11
     }
 
     echo "successfully pruned old backups"
@@ -86,7 +99,7 @@ configure()
   restore_maintenance_mode || {
     echo "error: failed to disabled Nextcloud maintenance mode"
     echo "notice: backup has completed anyways"
-    return 11
+    return 12
   }
 }
 
