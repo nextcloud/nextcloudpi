@@ -101,6 +101,16 @@ configure()
     echo "notice: backup has completed anyways"
     return 12
   }
+
+  echo "gathering stats (How much space do the backups take up in the S3 bucket?) ..."
+
+  AWS_ACCESS_KEY_ID="$S3_KEY_ID" AWS_SECRET_ACCESS_KEY="$S3_SECRET_KEY" RESTIC_PASSWORD="$RESTIC_PASSWORD" restic -r "s3:$S3_BUCKET_URL/ncp-backup" --verbose stats --mode raw-data || {
+    echo "error: restic stats failed"
+    echo "notice: backup has completed anyways"
+    return 13
+  }
+
+  echo "backup complete"
 }
 
 # License
