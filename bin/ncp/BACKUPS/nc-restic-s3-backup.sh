@@ -75,6 +75,7 @@ configure()
 
     AWS_ACCESS_KEY_ID="$S3_KEY_ID" AWS_SECRET_ACCESS_KEY="$S3_SECRET_KEY" RESTIC_PASSWORD="$RESTIC_PASSWORD" restic -r "s3:$S3_BUCKET_URL/ncp-backup" --verbose forget --keep-daily "$BACKUPLIMIT" --prune || {
       echo "error: restic prune failed"
+      echo "notice: backup has completed anyways"
       echo "notice: use nc-maintenance to disable maintenance mode anyway if desired"
       return 10
     }
