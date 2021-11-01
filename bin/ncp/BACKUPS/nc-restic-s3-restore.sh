@@ -52,17 +52,66 @@ configure()
 
   echo "restoring to $DATADIR"
 
-  AWS_ACCESS_KEY_ID="$S3_KEY_ID" AWS_SECRET_ACCESS_KEY="$S3_SECRET_KEY" RESTIC_PASSWORD="$RESTIC_PASSWORD" restic -r "s3:$S3_BUCKET_URL/ncp-backup" --verbose restore latest --target "$DATADIR" || {
+  AWS_ACCESS_KEY_ID="$S3_KEY_ID" AWS_SECRET_ACCESS_KEY="$S3_SECRET_KEY" RESTIC_PASSWORD="$RESTIC_PASSWORD" restic -r "s3:$S3_BUCKET_URL/ncp-backup" --verbose restore latest --exclude='ncdatabase-restic-dump.sql' --target "$DATADIR" || {
     echo "error: restic restore failed"
     return 7
   }
 
   echo "successfully restored backup"
 
+  if [[ "$RESTORE_DATABASE" != "yes" ]]; then
+    echo "info: database will not be restored"
+  else
+    set -o pipefail # Note: When pipefail is set, "grep -q" must be replaced with "grep >/dev/null"
+
+    AWS_ACCESS_KEY_ID="$S3_KEY_ID" AWS_SECRET_ACCESS_KEY="$S3_SECRET_KEY" RESTIC_PASSWORD="$RESTIC_PASSWORD" restic -r "s3:$S3_BUCKET_URL/ncp-backup" --verbose ls latest | grep '^/ncdatabase-restic-dump\.sql$' >/dev/null || {
+      echo "error: backup does not contain a database dump (ncdatabase-restic-dump.sql)"
+      echo "notice: if you want to restore the backup without the database, uncheck the \"Include database\" option"
+      echo "notice: use nc-maintenance to disable maintenance mode anyway if desired"
+      return 8
+    }
+
+    echo "preparing database for restore ..."
+
+    local DBADMIN=ncadmin
+    local DBPASSWD="$( grep password /root/.my.cnf | sed 's|password=||' )"
+
+    mysql -u root <<EOFMYSQL
+DROP DATABASE IF EXISTS nextcloud;
+CREATE DATABASE nextcloud;
+GRANT USAGE ON *.* TO '$DBADMIN'@'localhost' IDENTIFIED BY '$DBPASSWD';
+DROP USER '$DBADMIN'@'localhost';
+CREATE USER '$DBADMIN'@'localhost' IDENTIFIED BY '$DBPASSWD';
+GRANT ALL PRIVILEGES ON nextcloud.* TO $DBADMIN@localhost;
+EXIT
+EOFMYSQL
+    [[ $? -eq 0 ]] || {
+      echo "error: database restore failed, only Nextcloud data directory has been restored"
+      echo "notice: try to restore the database manually from ncdatabase-restic-dump.sql ($(stat --format='%s bytes' $DATADIR/ncdatabase-restic-dump.sql))"
+      echo "notice: ncdatabase-restic-dump.sql will be overwritten during next backup or restore, but you can also manually remove it from Nextcloud data directory $DATADIR"
+      echo "notice: use nc-maintenance to disable maintenance mode anyway if desired"
+      return 9
+    }
+
+    echo "database prepared for restore"
+
+    echo "restoring database ..."
+
+    AWS_ACCESS_KEY_ID="$S3_KEY_ID" AWS_SECRET_ACCESS_KEY="$S3_SECRET_KEY" RESTIC_PASSWORD="$RESTIC_PASSWORD" restic -r "s3:$S3_BUCKET_URL/ncp-backup" --verbose dump latest ncdatabase-restic-dump.sql | mysql -u root nextcloud || {
+      echo "error: database restore failed, only Nextcloud data directory has been restored"
+      echo "notice: try to restore the database manually from ncdatabase-restic-dump.sql ($(stat --format='%s bytes' $DATADIR/ncdatabase-restic-dump.sql))"
+      echo "notice: ncdatabase-restic-dump.sql ($(stat --format='%s bytes' $DATADIR/ncdatabase-restic-dump.sql)) will be overwritten during next backup or restore, but you can also manually remove it from Nextcloud data directory $DATADIR"
+      echo "notice: use nc-maintenance to disable maintenance mode anyway if desired"
+      return 10
+    }
+
+    echo "successfully restored database"
+  fi
+
   restore_maintenance_mode || {
     echo "error: failed to disabled Nextcloud maintenance mode"
     echo "notice: backup has been restored anyways"
-    return 8
+    return 11
   }
 
   local end=$(date +%s)

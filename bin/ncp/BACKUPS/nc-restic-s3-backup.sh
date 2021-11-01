@@ -64,16 +64,50 @@ configure()
 
   echo "backing up from $DATADIR"
 
+  if [[ "$INCLUDE_DATABASE" != "yes" ]]; then
+    echo "info: database is not included in backup"
+  else
+    echo "preparing database dump for backup ..."
+
+    [[ -e ncdatabase-restic-dump.sql ]] && {
+      echo "warning: stale database dump ncdatabase-restic-dump.sql ($(stat --format='%s bytes, last modified: %y' ncdatabase-restic-dump.sql)) still exists, overwriting!"
+    }
+
+    mysqldump -u root --single-transaction nextcloud > ncdatabase-restic-dump.sql || {
+      echo "error: mysqldump failed"
+      echo "notice: use nc-maintenance to disable maintenance mode anyway if desired"
+      return 9
+    }
+
+    echo "successfully created database dump for backup ($(stat --format='%s bytes' ncdatabase-restic-dump.sql))"
+  fi
+
+  echo "starting backup ..."
+
   AWS_ACCESS_KEY_ID="$S3_KEY_ID" AWS_SECRET_ACCESS_KEY="$S3_SECRET_KEY" RESTIC_PASSWORD="$RESTIC_PASSWORD" restic -r "s3:$S3_BUCKET_URL/ncp-backup" --verbose --exclude-file=/dev/stdin backup . <<EXCLUDES_LIST
 .opcache
 EXCLUDES_LIST
   [[ $? -eq 0 ]] || {
     echo "error: restic backup failed"
     echo "notice: use nc-maintenance to disable maintenance mode anyway if desired"
-    return 9
+    return 10
   }
 
   echo "successfully created backup"
+
+  [[ "$INCLUDE_DATABASE" == "yes" ]] && {
+    echo "deleting temporary database dump ..."
+
+    rm -v ncdatabase-restic-dump.sql || {
+      echo "error: remove failed"
+      echo "notice: ncdatabase-restic-dump.sql ($(stat --format='%s bytes' ncdatabase-restic-dump.sql)) will be overwritten during next backup or restore, but you can also manually remove it from Nextcloud data directory $DATADIR"
+      echo "notice: backup has completed anyways"
+      echo "notice: use nc-maintenance to disable maintenance mode anyway if desired"
+      return 11
+    }
+
+    echo "successfully deleted temporary database dump"
+  }
 
   [[ "$BACKUPLIMIT" -gt 0 ]] && {
     [[ "$FORCE_UNLOCK" == "yes" ]] && {
@@ -83,7 +117,7 @@ EXCLUDES_LIST
         echo "error: restic unlock failed"
         echo "notice: backup has completed anyways"
         echo "notice: use nc-maintenance to disable maintenance mode anyway if desired"
-        return 10
+        return 12
       }
 
       echo "successfully unlocked repository"
@@ -95,7 +129,7 @@ EXCLUDES_LIST
       echo "error: restic prune failed"
       echo "notice: backup has completed anyways"
       echo "notice: use nc-maintenance to disable maintenance mode anyway if desired"
-      return 11
+      return 13
     }
 
     echo "successfully pruned old backups"
@@ -104,7 +138,7 @@ EXCLUDES_LIST
   restore_maintenance_mode || {
     echo "error: failed to disabled Nextcloud maintenance mode"
     echo "notice: backup has completed anyways"
-    return 12
+    return 14
   }
 
   echo "gathering stats (How much space do the backups take up in the S3 bucket?) ..."
@@ -112,7 +146,7 @@ EXCLUDES_LIST
   AWS_ACCESS_KEY_ID="$S3_KEY_ID" AWS_SECRET_ACCESS_KEY="$S3_SECRET_KEY" RESTIC_PASSWORD="$RESTIC_PASSWORD" restic -r "s3:$S3_BUCKET_URL/ncp-backup" --verbose stats --mode raw-data || {
     echo "error: restic stats failed"
     echo "notice: backup has completed anyways"
-    return 13
+    return 15
   }
 
   local end=$(date +%s)
