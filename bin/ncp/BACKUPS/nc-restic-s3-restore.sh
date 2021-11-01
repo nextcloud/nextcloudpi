@@ -17,6 +17,8 @@ install()
 
 configure()
 {
+  local start=$(date +%s)
+
   [[ "$S3_BUCKET_URL" == "" ]] && {
     echo "error: please specify S3 bucket URL"
     return 1
@@ -62,6 +64,10 @@ configure()
     echo "notice: backup has been restored anyways"
     return 8
   }
+
+  local end=$(date +%s)
+
+  echo "restore complete after $((($end-$start)/60)) minute(s)"
 }
 
 # License
