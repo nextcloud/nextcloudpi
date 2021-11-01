@@ -19,6 +19,8 @@ install()
 
 configure()
 {
+  local start=$(date +%s)
+
   [[ "$S3_BUCKET_URL" == "" ]] && {
     echo "error: please specify S3 bucket URL"
     return 1
@@ -113,7 +115,9 @@ EXCLUDES_LIST
     return 13
   }
 
-  echo "backup complete"
+  local end=$(date +%s)
+
+  echo "backup complete after $((($end-$start)/60)) minute(s)"
 }
 
 # License
