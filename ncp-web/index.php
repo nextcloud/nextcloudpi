@@ -13,14 +13,14 @@ ob_start();
 // check for encrypted data to present unlock dialog
 exec("bash -c 'source /usr/local/etc/library.sh; needs_decrypt'", $output, $ret);
 if ($ret == 0) {
-  header("Location: decrypt");
+  header("Location: /decrypt");
   exit();
 }
 
 // redirect to activation first time
 exec("a2query -s ncp-activation", $output, $ret);
 if ($ret == 0) {
-  header("Location: activate");
+  header("Location: /activate");
   exit();
 }
 

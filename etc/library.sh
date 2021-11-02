@@ -474,7 +474,7 @@ function save_maintenance_mode()
 
 function restore_maintenance_mode()
 {
-  if [[ "${NCP_MAINTENANCE_MODE}" != "" ]]; then
+  if [[ "${NCP_MAINTENANCE_MODE:-}" != "" ]]; then
     "${ncc}" maintenance:mode --on
   else
     "${ncc}" maintenance:mode --off

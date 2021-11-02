@@ -1,9 +1,13 @@
 
-[v1.43.0](https://github.com/nextcloud/nextcloudpi/commit/9bad41c) (2021-10-22) add nc-encrypt
+[v1.43.2](https://github.com/nextcloud/nextcloudpi/commit/b555146) (2021-11-02) nc-datadir: support for nc-encrypted folders
 
-[v1.42.5](https://github.com/nextcloud/nextcloudpi/commit/f0abbbc) (2021-10-27) letsencrypt: sync ncp and nc cert paths
+[v1.43.1 ](https://github.com/nextcloud/nextcloudpi/commit/50a003a) (2021-10-27) ncp-web: tweak password suggestions
 
-[v1.42.4 ](https://github.com/nextcloud/nextcloudpi/commit/f7e28c2) (2021-10-27) small trusted domains refactor
+[v1.43.0](https://github.com/nextcloud/nextcloudpi/commit/7b73d1d) (2021-10-22) add nc-encrypt
+
+[v1.42.5](https://github.com/nextcloud/nextcloudpi/commit/532a6a8) (2021-10-27) letsencrypt: sync ncp and nc cert paths
+
+[v1.42.4 ](https://github.com/nextcloud/nextcloudpi/commit/41368fe) (2021-10-27) ncp-vm: add automatic testing and change default root password
 
 [v1.42.3 ](https://github.com/nextcloud/nextcloudpi/commit/b1e7323) (2021-10-25) nextcloud-domain: fix variable collision
 
