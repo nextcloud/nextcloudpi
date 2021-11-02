@@ -9,6 +9,12 @@
 # More at: https://ownyourbits.com
 #
 
+install()
+{
+  apt-get install -y cryptsetup
+  modprobe dm_mod
+}
+
 configure()
 {
   [[ "$DEV" == "" ]] && {
@@ -43,8 +49,6 @@ configure()
 
   echo "successfully unmounted $DEV"
 }
-
-install() { :; }
 
 # License
 #

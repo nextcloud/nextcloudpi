@@ -9,6 +9,12 @@
 # More at: https://ownyourbits.com
 #
 
+install()
+{
+  apt-get install -y cryptsetup
+  modprobe dm_mod
+}
+
 configure()
 {
   [[ -e /dev/mapper/nc ]] && {
@@ -40,8 +46,6 @@ configure()
 
   echo "successfully opened $DEV"
 }
-
-install() { :; }
 
 # License
 #

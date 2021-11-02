@@ -9,6 +9,12 @@
 # More at: https://ownyourbits.com
 #
 
+install()
+{
+  apt-get install -y cryptsetup
+  modprobe dm_mod
+}
+
 configure()
 {
   [[ "$DEV" == "" ]] && {
@@ -66,8 +72,6 @@ configure()
 
   echo "notice: consider enabling nc-automount to mount the device if you haven't already done so"
 }
-
-install() { :; }
 
 # License
 #
