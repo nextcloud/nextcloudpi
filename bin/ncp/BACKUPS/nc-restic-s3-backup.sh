@@ -9,8 +9,6 @@
 # More at: https://ownyourbits.com
 #
 
-BASEDIR=/var/www
-
 install()
 {
   apt-get update
