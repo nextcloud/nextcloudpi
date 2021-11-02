@@ -8,8 +8,6 @@
 # More at https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/
 #
 
-BASEDIR=/var/www
-
 install()
 {
   apt-get update
