@@ -105,10 +105,10 @@ EOF
   # 4 Byte UTF8 support
   ncc config:system:set mysql.utf8mb4 --type boolean --value="true"
 
+  ncc config:system:set trusted_domains "${TRUSTED_DOMAINS[nextcloudpi]}"       --value="nextcloudpi"
   ncc config:system:set trusted_domains "${TRUSTED_DOMAINS[nextcloudpi-local]}" --value="nextcloudpi.local"
-  # trusted_domains 6 used by docker
-  ncc config:system:set trusted_domains "${TRUSTED_DOMAINS[nextcloudpi]}" --value="nextcloudpi"
-  ncc config:system:set trusted_domains "${TRUSTED_DOMAINS[nextcloudpi-lan]}" --value="nextcloudpi.lan"
+  ncc config:system:set trusted_domains "${TRUSTED_DOMAINS[nextcloudpi-lan]}"   --value="nextcloudpi.lan"
+  ncc config:system:set trusted_domains "${TRUSTED_DOMAINS[nc_domain]}"         --value="nextcloudpi.lan"
 
   # email
   ncc config:system:set mail_smtpmode     --value="sendmail"
@@ -184,7 +184,6 @@ EOF
   # other
   ncc config:system:set overwriteprotocol --value=https
   ncc config:system:set overwrite.cli.url --value="https://nextcloudpi/"
-  ncc config:system:set trusted_domains "${TRUSTED_DOMAINS[nc_domain]}" --value="nextcloudpi"
 
   # bash completion for ncc
   apt_install bash-completion

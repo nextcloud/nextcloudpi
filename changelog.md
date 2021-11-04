@@ -1,11 +1,17 @@
 
-[v1.43.2](https://github.com/nextcloud/nextcloudpi/commit/b555146) (2021-11-02) nc-datadir: support for nc-encrypted folders
+[v1.43.5](https://github.com/nextcloud/nextcloudpi/commit/93fd384) (2021-11-04) ncp-web: tweak invalid character set
 
-[v1.43.1 ](https://github.com/nextcloud/nextcloudpi/commit/50a003a) (2021-10-27) ncp-web: tweak password suggestions
+[v1.43.4](https://github.com/nextcloud/nextcloudpi/commit/d4bca07) (2021-11-04) nc-restore: Adding ZFS to filesystem whitelist / updating error message
 
-[v1.43.0](https://github.com/nextcloud/nextcloudpi/commit/7b73d1d) (2021-10-22) add nc-encrypt
+[v1.43.3](https://github.com/nextcloud/nextcloudpi/commit/19ede8a) (2021-11-02) nc-datadir: support for nc-encrypted folders
 
-[v1.42.5](https://github.com/nextcloud/nextcloudpi/commit/532a6a8) (2021-10-27) letsencrypt: sync ncp and nc cert paths
+[v1.43.2 ](https://github.com/nextcloud/nextcloudpi/commit/ee01a70) (2021-10-27) ncp-web: tweak password suggestions
+
+[v1.43.1 ](https://github.com/nextcloud/nextcloudpi/commit/a828576) (2021-10-30) Clarify documentation of nc-previews-auto command (#1370)
+
+[v1.43.0 ](https://github.com/nextcloud/nextcloudpi/commit/7b73d1d) (2021-10-22) add nc-encrypt
+
+[v1.42.5 ](https://github.com/nextcloud/nextcloudpi/commit/532a6a8) (2021-10-27) letsencrypt: sync ncp and nc cert paths
 
 [v1.42.4 ](https://github.com/nextcloud/nextcloudpi/commit/41368fe) (2021-10-27) ncp-vm: add automatic testing and change default root password
 
