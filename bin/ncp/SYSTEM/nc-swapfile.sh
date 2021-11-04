@@ -18,7 +18,7 @@ is_active()
 configure()
 {
   local ORIG="$( swapon | tail -1 | awk '{ print $1 }' )"
-  local DSTDIR="$( dirname "$SWAPFILE" )"
+  local DSTDIR="$(dirname "$SWAPFILE")"
   [[ "$ORIG" == "$SWAPFILE" ]] && { echo "nothing to do";                    return 0; }
   [[ -d "$SWAPFILE"         ]] && { echo "$SWAPFILE is a directory. Abort"; return 1; }
   [[ -d "$DSTDIR"            ]] || { echo "$DSTDIR Doesn't exist. Abort";     return 1; }
@@ -47,7 +47,9 @@ configure()
 
 install()
 {
-  apt_install dphys-swapfile
+  if [[ "$(stat -fc%T /var)" != "btrfs" ]]; then
+    apt_install dphys-swapfile
+  fi
 }
 
 
