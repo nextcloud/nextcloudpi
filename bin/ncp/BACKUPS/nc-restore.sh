@@ -93,7 +93,11 @@ mysql -u root nextcloud <  "$TMPDIR"/nextcloud-sqlbkp_*.bak || { echo "Error res
 
 ## RESTORE DATADIR
 
-DATADIR=$( grep datadirectory "$NCDIR"/config/config.php | awk '{ print $3 }' | grep -oP "[^']*[^']" | head -1 ) 
+if is_docker; then
+  DATADIR=/data/nextcloud/data
+else
+  DATADIR="$(grep datadirectory "$NCDIR"/config/config.php | awk '{ print $3 }' | grep -oP "[^']*[^']" | head -1)"
+fi
 [[ "$DATADIR" == "" ]] && { echo "Error reading data directory"; exit 1; }
 
 cd "$NCDIR"
@@ -133,7 +137,6 @@ else
     mkdir -p "${DATADIR}"
     touch "${DATADIR}"/.ocdata
     chown -R www-data: "${DATADIR}"
-    sed -i "s|'datadirectory' =>.*|'datadirectory' => '${DATADIR}',|" "$NCDIR"/config/config.php
   }
 
   ncc maintenance:mode --off
@@ -142,6 +145,8 @@ else
   # cache needs to be cleaned as of NC 12
   NEED_RESTART=1
 fi
+
+sed -i "s|'datadirectory' =>.*|'datadirectory' => '${DATADIR}',|" "${NCDIR}"/config/config.php
 
 # Just in case we moved the opcache dir
 sed -i "s|^opcache.file_cache=.*|opcache.file_cache=$DATADIR/.opcache|" /etc/php/${PHPVER}/mods-available/opcache.ini

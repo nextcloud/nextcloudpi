@@ -23,6 +23,9 @@ if ! is_active_app letsencrypt; then
   fi
 fi
 
+# update nc-restore
+install_app nc-restore
+
 # docker images only
 [[ -f /.docker-image ]] && {
   :

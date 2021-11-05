@@ -1,9 +1,13 @@
 
-[v1.43.5](https://github.com/nextcloud/nextcloudpi/commit/93fd384) (2021-11-04) ncp-web: tweak invalid character set
+[v1.43.7](https://github.com/nextcloud/nextcloudpi/commit/4a07b5d) (2021-11-05) nc-restore: improve restoring data from SD to docker
 
-[v1.43.4](https://github.com/nextcloud/nextcloudpi/commit/d4bca07) (2021-11-04) nc-restore: Adding ZFS to filesystem whitelist / updating error message
+[v1.43.6 ](https://github.com/nextcloud/nextcloudpi/commit/c56a4db) (2021-11-05) ncp-web: hide power menu on docker
 
-[v1.43.3](https://github.com/nextcloud/nextcloudpi/commit/19ede8a) (2021-11-02) nc-datadir: support for nc-encrypted folders
+[v1.43.5](https://github.com/nextcloud/nextcloudpi/commit/13f69cd) (2021-11-04) ncp-web: tweak invalid character set
+
+[v1.43.4 ](https://github.com/nextcloud/nextcloudpi/commit/d4bca07) (2021-11-04) nc-restore: Adding ZFS to filesystem whitelist / updating error message
+
+[v1.43.3 ](https://github.com/nextcloud/nextcloudpi/commit/19ede8a) (2021-11-02) nc-datadir: support for nc-encrypted folders
 
 [v1.43.2 ](https://github.com/nextcloud/nextcloudpi/commit/ee01a70) (2021-10-27) ncp-web: tweak password suggestions
 
