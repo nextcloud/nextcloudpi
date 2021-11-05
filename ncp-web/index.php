@@ -214,11 +214,17 @@ HTML;
             </div>
         </div>
       </a>
+      <?php
+      // Skip section in docker container
+      if ( !file_exists( '/.docker-image' ) )
+        echo <<<HTML
       <div id="poweroff" title="<?php echo $l->__("Power Off"); ?>">
           <div class="expand">
               <div class="icon-power-white"></div>
           </div>
       </div>
+HTML
+?>
   </div>
 </header>
 
