@@ -31,6 +31,8 @@ command -v jq &>/dev/null || {
   NCLATESTVER=$(jq -r .nextcloud_version < "$NCPCFG")
   PHPVER=$(     jq -r .php_version       < "$NCPCFG")
   RELEASE=$(    jq -r .release           < "$NCPCFG")
+  # the default repo in bullseye is bullseye-security
+  RELEASE="${RELEASE}-security"
 }
 command -v ncc &>/dev/null && NCVER="$(ncc status 2>/dev/null | grep "version:" | awk '{ print $3 }')"
 
