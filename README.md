@@ -18,7 +18,7 @@ Find the full documentation at [docs.nextcloudpi.com](http://docs.nextcloudpi.co
  * Debian/Raspbian 10 Buster
  * Nextcloud 22.2.2
  * Apache 2.4.25, with HTTP2 enabled
- * PHP 7.3
+ * PHP 7.4
  * MariaDB 10
  * Redis memory cache
  * ncp-config for easy setup ( RAM logs, USB drive and more )

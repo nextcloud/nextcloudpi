@@ -1,8 +1,9 @@
 # syntax=docker/dockerfile:experimental
 
 ARG arch=armhf
+ARG arch_qemu=arm
 
-FROM ownyourbits/lamp-${arch}
+FROM --platform=linux/${arch_qemu} ownyourbits/lamp-${arch}
 
 LABEL maintainer="Ignacio Núñez Hernanz <nacho@ownyourbits.com>"
 

@@ -21,8 +21,6 @@ cd /tmp/overlay
 NCPCFG=etc/ncp.cfg
 source etc/library.sh # sets RELEASE
 
-[[ "$ARMBIAN_RELEASE" != "$RELEASE" ]] && { echo "Only $RELEASE is supported by NextCloudPi" >&2; exit 1; }
-
 # need sudo access that does not expire during build
 chage -d -1 root
 

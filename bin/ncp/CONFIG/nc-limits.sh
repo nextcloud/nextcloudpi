@@ -10,8 +10,6 @@
 
 configure()
 {
-  source /usr/local/etc/library.sh # sets PHPVER
-
   # Set auto memory limit to 75% of the total memory
   local TOTAL_MEM="$( free -b | sed -n 2p | awk '{ print $2 }' )"
   AUTOMEM=$(( TOTAL_MEM * 75 / 100 ))
@@ -48,7 +46,7 @@ configure()
   echo "Using $AUTOMEM memory for the database"
   [[ "$CURRENT_DB_MEM" != "$AUTOMEM" ]] && {
     sed -i "s|^innodb_buffer_pool_size =.*|innodb_buffer_pool_size = $AUTOMEM|" "$CONF"
-    service mysql restart
+    service mariadb restart
   }
 
   # RESTART PHP

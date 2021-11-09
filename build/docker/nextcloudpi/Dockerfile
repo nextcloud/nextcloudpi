@@ -1,8 +1,9 @@
 # syntax=docker/dockerfile:experimental
 
 ARG arch=armhf
+ARG arch_qemu=arm
 
-FROM ownyourbits/nextcloud-${arch}
+FROM --platform=linux/${arch_qemu} ownyourbits/nextcloud-${arch}
 
 ARG ncp_ver=v0.0.0
 

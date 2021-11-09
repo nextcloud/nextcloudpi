@@ -20,10 +20,10 @@ function build_arch()
 
   echo -e "\e[1m\n[ Build NCP Docker ${arch} ]\e[0m"
 
-  docker_build -f build/docker/debian-ncp/Dockerfile  -t ownyourbits/debian-ncp-${ncp_tag}:latest --pull --build-arg release=${release} --build-arg arch=${arch} --build-arg arch_qemu=${arch_qemu}
-  docker_build -f build/docker/lamp/Dockerfile        -t ownyourbits/lamp-${ncp_tag}:latest              --build-arg release=${release} --build-arg arch=${ncp_tag}
-  docker_build -f build/docker/nextcloud/Dockerfile   -t ownyourbits/nextcloud-${ncp_tag}:latest         --build-arg release=${release} --build-arg arch=${ncp_tag}
-  docker_build -f build/docker/nextcloudpi/Dockerfile -t ownyourbits/nextcloudpi-${ncp_tag}:latest       --build-arg release=${release} --build-arg arch=${ncp_tag} --build-arg ncp_ver=${version}
+  docker_build -f build/docker/debian-ncp/Dockerfile  -t ownyourbits/debian-ncp-${ncp_tag}:latest --pull --build-arg release=${release} --build-arg arch=${arch}    --build-arg arch_qemu=${arch_qemu}
+  docker_build -f build/docker/lamp/Dockerfile        -t ownyourbits/lamp-${ncp_tag}:latest              --build-arg release=${release} --build-arg arch=${ncp_tag} --build-arg arch_qemu=${arch_qemu}
+  docker_build -f build/docker/nextcloud/Dockerfile   -t ownyourbits/nextcloud-${ncp_tag}:latest         --build-arg release=${release} --build-arg arch=${ncp_tag} --build-arg arch_qemu=${arch_qemu}
+  docker_build -f build/docker/nextcloudpi/Dockerfile -t ownyourbits/nextcloudpi-${ncp_tag}:latest       --build-arg release=${release} --build-arg arch=${ncp_tag} --build-arg arch_qemu=${arch_qemu} --build-arg ncp_ver=${version}
 
   docker tag ownyourbits/debian-ncp-${ncp_tag}:latest ownyourbits/debian-ncp-${ncp_tag}:"${version}"
   docker tag ownyourbits/lamp-${ncp_tag}:latest ownyourbits/lamp-${ncp_tag}:"${version}"

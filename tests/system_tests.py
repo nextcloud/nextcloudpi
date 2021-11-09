@@ -24,7 +24,7 @@ from subprocess import run, getstatusoutput, PIPE
 processes_must_be_running = [
         'apache2',
         'cron',
-        'mysqld',
+        'mariadb',
         'php-fpm',
         'postfix',
         'redis-server',

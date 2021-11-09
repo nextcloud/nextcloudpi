@@ -17,12 +17,11 @@ is_active()
 
 install()
 {
-  apt_install btrfs-tools
+  apt_install btrfs-progs
 }
 
 configure()
 {
-  source /usr/local/etc/library.sh # sets PHPVER
   set -eu -o pipefail
 
   ## CHECKS

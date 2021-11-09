@@ -22,10 +22,13 @@ install()
   # Optional packets for Nextcloud and Apps
   apt-get update
   $APTINSTALL lbzip2 iputils-ping jq wget
-  $APTINSTALL -t $RELEASE php-smbclient exfat-fuse exfat-utils                  # for external storage
+  # NOTE: php-smbclient in sury but not in Debian sources, we'll use the binary version
+  # https://docs.nextcloud.com/server/latest/admin_manual/configuration_files/external_storage/smb.html
+  $APTINSTALL -t $RELEASE smbclient exfat-fuse exfat-utils                      # for external storage
+  $APTINSTALL -t $RELEASE exfat-fuse exfat-utils                                # for external storage
   $APTINSTALL -t $RELEASE php${PHPVER}-exif                                     # for gallery
+  $APTINSTALL -t $RELEASE php${PHPVER}-bcmath                                   # for LDAP
   $APTINSTALL -t $RELEASE php${PHPVER}-gmp                                      # for bookmarks
-  $APTINSTALL -t $RELEASE php-bcmath                                            # for LDAP
   #$APTINSTALL -t imagemagick php${PHPVER}-imagick ghostscript   # for gallery
 
 
@@ -149,14 +152,11 @@ configure()
 
   ## RE-CREATE DATABASE TABLE
   # launch mariadb if not already running (for docker build)
-  if ! pgrep -c mysqld &>/dev/null; then
+  if ! [[ -f /run/mysqld/mysqld.pid ]]; then
     echo "Starting mariaDB"
     mysqld &
     local db_pid=$!
   fi
-
-  # wait for mariadb
-  pgrep -x mysqld &>/dev/null || echo "mariaDB process not found"
 
   while :; do
     [[ -S /var/run/mysqld/mysqld.sock ]] && break
@@ -260,6 +260,7 @@ EOF
 
   # dettach mysql during the build
   if [[ "${db_pid}" != "" ]]; then
+    echo "Shutting down mariaDB (${db_pid})"
     mysqladmin -u root shutdown
     wait "${db_pid}"
   fi

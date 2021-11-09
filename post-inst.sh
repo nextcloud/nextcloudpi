@@ -15,13 +15,14 @@ configure()
 
   # stop services
   pkill -x redis-server
-  pgrep -x mysqld &>/dev/null && mysqladmin -u root shutdown
+  [[ -f /run/mysqld/mysqld.pid ]] && mysqladmin -u root shutdown
   [[ -f /run/crond.pid ]]     && kill "$(cat /run/crond.pid)"
   pkill -f php-fpm
   pkill -f notify_push
+  killall postdrop
+  killall sendmail
 
   # cleanup all NCP extras
-  source /usr/local/etc/library.sh
   find /usr/local/bin/ncp -name '*.sh' | \
     while read script; do cleanup_script $script; done
 
