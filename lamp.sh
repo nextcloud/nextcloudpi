@@ -19,8 +19,6 @@
 # More at https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/
 #
 
-source /usr/local/etc/library.sh # sets PHPVER RELEASE
-
 APTINSTALL="apt-get install -y --no-install-recommends"
 export DEBIAN_FRONTEND=noninteractive
 
@@ -142,7 +140,7 @@ EOF
 
 
   # launch mariadb if not already running
-  if ! pgrep -c mysqld &>/dev/null; then
+  if ! pgrep -c mariadb &>/dev/null; then
     echo "Starting mariaDB"
     mysqld &
   fi

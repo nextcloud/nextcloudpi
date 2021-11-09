@@ -22,7 +22,6 @@ install()
 
 configure()
 {
-  source /usr/local/etc/library.sh # sets PHPVER
   set -eu -o pipefail
 
   ## CHECKS

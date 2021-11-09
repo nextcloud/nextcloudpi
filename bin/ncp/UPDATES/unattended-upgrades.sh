@@ -18,8 +18,6 @@ install()
 
 configure()
 {
-  source /usr/local/etc/library.sh # sets RELEASE
-
   [[ $ACTIVE     == "yes" ]] && local AUTOUPGRADE=1   || local AUTOUPGRADE=0
   [[ $AUTOREBOOT == "yes" ]] && local AUTOREBOOT=true || local AUTOREBOOT=false
 

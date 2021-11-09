@@ -32,7 +32,7 @@ prepare_dirs                   # tmp cache output
 ## BUILD NCP
 
 lxc delete -f ncp 2>/dev/null || true
-systemd-run --user --scope -p "Delegate=yes" lxc launch images:debian/buster ncp
+systemd-run --user --scope -p "Delegate=yes" lxc launch images:debian/bullseye ncp
 lxc config device add ncp buildcode disk source="$(pwd)" path=/build
 lxc exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
 lxc exec ncp -- bash -c 'CODE_DIR=/build bash /build/install.sh'

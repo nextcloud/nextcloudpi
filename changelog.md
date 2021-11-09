@@ -1,5 +1,9 @@
 
+<<<<<<< HEAD
 [v1.46.7](https://github.com/nextcloud/nextcloudpi/commit/0da8dcd) (2021-12-13) letsencrypt: fix invalid arithmetic operator error
+=======
+[v1.45.0](https://github.com/nextcloud/nextcloudpi/commit/b0379f1) (2021-11-09) update to Debian 11 Bullseye
+>>>>>>> 41f692c (update to Debian 11 Bullseye)
 
 [v1.44.6 ](https://github.com/nextcloud/nextcloudpi/commit/26a7778) (2021-12-06) notify_push: fix service not restarting on binary update (#1398)
 
