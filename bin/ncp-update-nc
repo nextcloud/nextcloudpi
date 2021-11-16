@@ -130,7 +130,7 @@ cp -raT nextcloud-old/themes/ nextcloud/themes/
 ####################
 for app in nextcloudpi previewgenerator; do
   if [[ -d nextcloud-old/apps/"${app}" ]]; then
-    cp -r nextcloud-old/apps/"${app}" /var/www/nextcloud/apps/
+    cp -r -L nextcloud-old/apps/"${app}" /var/www/nextcloud/apps/
   fi
 done
 

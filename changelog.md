@@ -1,9 +1,11 @@
 
-[v1.43.7](https://github.com/nextcloud/nextcloudpi/commit/4a07b5d) (2021-11-05) nc-restore: improve restoring data from SD to docker
+[v1.44.0](https://github.com/nextcloud/nextcloudpi/commit/cfc3d51) (2021-11-16) upgrade to NC22.2.1
+
+[v1.43.7](https://github.com/nextcloud/nextcloudpi/commit/6aba9b9) (2021-11-05) nc-restore: improve restoring data from SD to docker
 
 [v1.43.6 ](https://github.com/nextcloud/nextcloudpi/commit/c56a4db) (2021-11-05) ncp-web: hide power menu on docker
 
-[v1.43.5](https://github.com/nextcloud/nextcloudpi/commit/13f69cd) (2021-11-04) ncp-web: tweak invalid character set
+[v1.43.5 ](https://github.com/nextcloud/nextcloudpi/commit/13f69cd) (2021-11-04) ncp-web: tweak invalid character set
 
 [v1.43.4 ](https://github.com/nextcloud/nextcloudpi/commit/d4bca07) (2021-11-04) nc-restore: Adding ZFS to filesystem whitelist / updating error message
 
