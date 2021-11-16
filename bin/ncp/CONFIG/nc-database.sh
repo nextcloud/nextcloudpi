@@ -38,7 +38,6 @@ configure()
   [[ $( stat -fc%d / ) == $( stat -fc%d "$BASEDIR" ) ]] && \
     echo -e "INFO: moving database to the SD card\nIf you want to use an external mount, make sure it is properly set up"
 
-  cd /var/www/nextcloud
   save_maintenance_mode
 
   echo "moving database to $DBDIR..."
