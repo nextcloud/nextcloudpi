@@ -1,7 +1,9 @@
 
-[v1.44.1](https://github.com/nextcloud/nextcloudpi/commit/3f6db7d) (2021-11-16) ncp-previewgenerator: update to NC22
+[v1.44.2](https://github.com/nextcloud/nextcloudpi/commit/3d274e1) (2021-11-16) ncp-app: bump to NC22
 
-[v1.44.0](https://github.com/nextcloud/nextcloudpi/commit/5ebef5e) (2021-11-16) upgrade to NC22.2.1
+[v1.44.1](https://github.com/nextcloud/nextcloudpi/commit/4032628) (2021-11-16) ncp-previewgenerator: update to NC22
+
+[v1.44.0 ](https://github.com/nextcloud/nextcloudpi/commit/3113a0e) (2021-11-16) upgrade to NC22.2.1
 
 [v1.43.7](https://github.com/nextcloud/nextcloudpi/commit/6aba9b9) (2021-11-05) nc-restore: improve restoring data from SD to docker
 
