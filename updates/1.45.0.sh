@@ -11,6 +11,14 @@ source /usr/local/etc/library.sh # sets NCLATESTVER PHPVER RELEASE
 # this update brings a version bump for ncp-previewgenerator
 ncc upgrade
 
+# update ncc
+cat > /usr/local/bin/ncc <<'EOF'
+#!/bin/bash
+[[ ${EUID} -eq 0 ]] && SUDO="sudo -E -u www-data"
+${SUDO} php /var/www/nextcloud/occ "$@"
+EOF
+chmod +x /usr/local/bin/ncc
+
 # docker images only
 [[ -f /.docker-image ]] && {
   :
