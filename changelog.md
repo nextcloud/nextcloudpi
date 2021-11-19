@@ -1,11 +1,13 @@
 
-[v1.44.3](https://github.com/nextcloud/nextcloudpi/commit/70eae61) (2021-11-18) tweak ncc command
+[v1.44.4](https://github.com/nextcloud/nextcloudpi/commit/418cb47) (2021-11-19) ncp-web: fix spurious characters in power menu
 
-[v1.44.2](https://github.com/nextcloud/nextcloudpi/commit/0c589ff) (2021-11-16) ncp-app: bump to NC22
+[v1.44.3](https://github.com/nextcloud/nextcloudpi/commit/4717eb3) (2021-11-18) tweak ncc command
+
+[v1.44.2 ](https://github.com/nextcloud/nextcloudpi/commit/0c589ff) (2021-11-16) ncp-app: bump to NC22
 
 [v1.44.1 ](https://github.com/nextcloud/nextcloudpi/commit/2aa95c6) (2021-11-16) ncp-previewgenerator: update to NC22
 
-[v1.43.7](https://github.com/nextcloud/nextcloudpi/commit/6aba9b9) (2021-11-05) nc-restore: improve restoring data from SD to docker
+[v1.43.7 ](https://github.com/nextcloud/nextcloudpi/commit/6aba9b9) (2021-11-05) nc-restore: improve restoring data from SD to docker
 
 [v1.43.6 ](https://github.com/nextcloud/nextcloudpi/commit/c56a4db) (2021-11-05) ncp-web: hide power menu on docker
 
