@@ -127,7 +127,7 @@ function set-nc-domain()
   proto="$(ncc config:system:get overwriteprotocol)" || true
   [[ "${proto}" == "" ]] && proto="https"
   local url="${proto}://${domain%*/}"
-  [[ "$2" == "--no-trusted-domain" ]] || ncc config:system:set trusted_domains "${TRUSTED_DOMAINS[nc-domain]}" --value="${domain%*/}"
+  [[ "$2" == "--no-trusted-domain" ]] || ncc config:system:set trusted_domains "${TRUSTED_DOMAINS['nc-domain']}" --value="${domain%*/}"
   ncc config:system:set overwrite.cli.url --value="${url}/"
   if is_ncp_activated && is_app_enabled notify_push; then
     ncc config:system:set trusted_proxies 11 --value="127.0.0.1"
