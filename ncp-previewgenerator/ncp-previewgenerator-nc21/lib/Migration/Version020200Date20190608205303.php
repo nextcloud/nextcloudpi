@@ -44,7 +44,7 @@ class Version020200Date20190608205303 extends SimpleMigrationStep {
 
 		if (!$table->hasColumn('locked')) {
 			$table->addColumn('locked', Types::BOOLEAN, [
-				'notnull' => true,
+				'notnull' => false,
 				'default' => 0,
 			]);
 		}

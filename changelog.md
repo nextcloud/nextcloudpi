@@ -1,5 +1,7 @@
 
-[v1.44.4](https://github.com/nextcloud/nextcloudpi/commit/418cb47) (2021-11-19) ncp-web: fix spurious characters in power menu
+[v1.44.5](https://github.com/nextcloud/nextcloudpi/commit/0e15dc9) (2021-11-29) ncp-previewgenerator: fix app enable in NC22
+
+[v1.44.4](https://github.com/nextcloud/nextcloudpi/commit/0a4f8c1) (2021-11-19) ncp-web: fix spurious characters in power menu
 
 [v1.44.3](https://github.com/nextcloud/nextcloudpi/commit/4717eb3) (2021-11-18) tweak ncc command
 
