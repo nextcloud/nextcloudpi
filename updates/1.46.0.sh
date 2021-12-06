@@ -39,6 +39,5 @@ EOF
 
   systemctl daemon-reload
   systemctl enable refresh_notify_push.{path,service}
-  systemctl enable notify_push.service
   systemctl restart refresh_notify_push.path
 }
