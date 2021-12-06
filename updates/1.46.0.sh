@@ -1,7 +1,7 @@
 
 # docker images only
 [[ -f /.docker-image ]] && {
-  cat <<EOF > /etc/cron.daily
+  cat <<EOF > /etc/cron.daily/refresh_notify_push
 #!/usr/bin/env bash
 . /usr/local/etc/library.sh
 ncc notify_push:self-test || {
@@ -10,6 +10,7 @@ ncc notify_push:self-test || {
   start_notify_push
 }"
 EOF
+  chmod +x /etc/cron.daily/refresh_notify_push
 }
 
 # for non docker images
