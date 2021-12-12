@@ -60,6 +60,16 @@ tar $compress_arg -xf "$BACKUPFILE" -C "$TMPDIR" || exit 1
   exit 1
 }
 
+if [[ -f /.docker-image ]]; then
+  DATADIR=/data/nextcloud/data
+else
+  DATADIR="$(grep datadirectory "$NCDIR"/config/config.php | awk '{ print $3 }' | grep -oP "[^']*[^']" | head -1)"
+fi
+[[ "$DATADIR" == "" ]] && { echo "Error reading data directory"; exit 1; }
+
+datadir_in_ncdir=$(find "${NCDIR}" -type d -name "${DATADIR}")
+[[ -n datadir_in_ncdir ]] && { echo "Datadir ${DATADIR} is contained within ncdir ${NCDIR}. Please manually move or remove datadir from within ncdir prior to backup restoration."; exit 1; }
+
 ## RESTORE FILES
 
 echo "restore files..."
@@ -92,13 +102,6 @@ EOFMYSQL
 mysql -u root nextcloud <  "$TMPDIR"/nextcloud-sqlbkp_*.bak || { echo "Error restoring nextcloud database"; exit 1; }
 
 ## RESTORE DATADIR
-
-if is_docker; then
-  DATADIR=/data/nextcloud/data
-else
-  DATADIR="$(grep datadirectory "$NCDIR"/config/config.php | awk '{ print $3 }' | grep -oP "[^']*[^']" | head -1)"
-fi
-[[ "$DATADIR" == "" ]] && { echo "Error reading data directory"; exit 1; }
 
 cd "$NCDIR"
 
