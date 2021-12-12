@@ -67,7 +67,7 @@ else
 fi
 [[ "$DATADIR" == "" ]] && { echo "Error reading data directory"; exit 1; }
 
-datadir_in_ncdir=$(find "${NCDIR}" -type d -name "${DATADIR}")
+datadir_in_ncdir=$(find "${NCDIR}" -type d -wholename "${DATADIR}")
 [[ -n datadir_in_ncdir ]] && { echo "Datadir ${DATADIR} is contained within ncdir ${NCDIR}. Please manually move or remove datadir from within ncdir prior to backup restoration."; exit 1; }
 
 ## RESTORE FILES
