@@ -82,14 +82,14 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
     cfg="$(jq '.params[3].value = "raspberry"' <<<"$cfg")"
     echo "$cfg" > /usr/local/etc/ncp-config.d/SSH.cfg
 
-    $ cleanup
+    # cleanup
     source etc/library.sh && run_app_unsafe post-inst.sh
     rm -rf /tmp/ncp-build
 EOFCHROOT
 
 trap '' EXIT
 clean_chroot_raspbian
-
+echo "Image Complete"
 ## pack
 pack_image "$IMG" "$TAR"
 
