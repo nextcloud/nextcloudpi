@@ -12,6 +12,7 @@ DBADMIN=ncadmin
 REDIS_MEM=3gb
 
 APTINSTALL="apt-get install -y --no-install-recommends"
+PHPVER=$(jq -r .php_version       < "$NCPCFG")
 export DEBIAN_FRONTEND=noninteractive
 
 install()
@@ -24,11 +25,11 @@ install()
   $APTINSTALL lbzip2 iputils-ping jq wget
   # NOTE: php-smbclient in sury but not in Debian sources, we'll use the binary version
   # https://docs.nextcloud.com/server/latest/admin_manual/configuration_files/external_storage/smb.html
-  $APTINSTALL -t $RELEASE smbclient exfat-fuse exfat-utils                      # for external storage
-  $APTINSTALL -t $RELEASE exfat-fuse exfat-utils                                # for external storage
-  $APTINSTALL -t $RELEASE php${PHPVER}-exif                                     # for gallery
-  $APTINSTALL -t $RELEASE php${PHPVER}-bcmath                                   # for LDAP
-  $APTINSTALL -t $RELEASE php${PHPVER}-gmp                                      # for bookmarks
+  $APTINSTALL smbclient exfat-fuse exfat-utils                      # for external storage
+  $APTINSTALL exfat-fuse exfat-utils                                # for external storage
+  $APTINSTALL php${PHPVER}-exif                                     # for gallery
+  $APTINSTALL php${PHPVER}-bcmath                                   # for LDAP
+  $APTINSTALL php${PHPVER}-gmp                                      # for bookmarks
   #$APTINSTALL -t imagemagick php${PHPVER}-imagick ghostscript   # for gallery
 
 
@@ -44,7 +45,7 @@ install()
   }
 
   $APTINSTALL redis-server
-  $APTINSTALL -t $RELEASE php${PHPVER}-redis
+  $APTINSTALL php${PHPVER}-redis
 
   local REDIS_CONF=/etc/redis/redis.conf
   local REDISPASS="default"
@@ -152,14 +153,14 @@ configure()
 
   ## RE-CREATE DATABASE TABLE
   # launch mariadb if not already running (for docker build)
-  if ! pgrep -c mariadb &>/dev/null; then
+  if ! pgrep -c mariadbd &>/dev/null; then
     echo "Starting mariaDB"
-    ysqld &
+    mariadbd &
     local db_pid=$!
   fi
 
   # wait for mariadb
-  pgrep -x mariadb &>/dev/null || echo "mariaDB process not found"
+  pgrep -x mariadbd &>/dev/null || echo "mariaDB process not found"
 
   while :; do
     [[ -S /var/run/mysqld/mysqld.sock ]] && break
