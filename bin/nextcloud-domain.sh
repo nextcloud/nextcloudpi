@@ -13,14 +13,14 @@ while :; do
   local_ip="$(get_ip)"
   pub_ip="$(curl -m4 icanhazip.com 2>/dev/null)"
 
-  [[ "$pub_ip"   != "" ]] && ncc config:system:set trusted_domains "${TRUSTED_DOMAINS[public_ip]}" --value="$pub_ip"
+  [[ "$pub_ip"   != "" ]] && ncc config:system:set trusted_domains 11 --value="$pub_ip"
   [[ "$local_ip" != "" ]] && break
 
   sleep 3
 done
 
-ncc config:system:set trusted_domains "${TRUSTED_DOMAINS[ip]}"       --value="${local_ip}"
-ncc config:system:set trusted_domains "${TRUSTED_DOMAINS[hostname]}" --value="$(hostname -f)"
+ncc config:system:set trusted_domains 1  --value="${local_ip}"
+ncc config:system:set trusted_domains 14 --value="$(hostname -f)"
 
 # we might need to retry if redis is not ready
 while :; do

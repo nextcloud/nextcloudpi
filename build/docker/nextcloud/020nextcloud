@@ -72,7 +72,7 @@ bash /usr/local/bin/nextcloud-domain.sh
 
 # Trusted Domain (as an argument)
 [[ "$2" != "" ]] && \
-  ncc config:system:set trusted_domains "${TRUSTED_DOMAINS[docker_overwrite]}" --value="$2"
+  ncc config:system:set trusted_domains 6 --value="$2"
 
 echo "Nextcloud version $(nc_version). NextCloudPi version $(cat /usr/local/etc/ncp-version)"
 

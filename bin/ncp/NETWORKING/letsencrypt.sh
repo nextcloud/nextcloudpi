@@ -121,7 +121,7 @@ EOF
     sed -i "s|SSLCertificateKeyFile.*|SSLCertificateKeyFile ${key_path}|" "${ncp_vhostcfg}"
 
     # Configure Nextcloud
-    local domain_index="${TRUSTED_DOMAINS[letsencrypt_1]}"
+    local domain_index=11
     for dom in $DOMAIN "${OTHER_DOMAINS_ARRAY[@]}"; do
       [[ "$dom" != "" ]] && {
         [[ $domain_index -lt 20 ]] || {

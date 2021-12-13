@@ -14,13 +14,13 @@ export BINDIR=/usr/local/bin/ncp
 export NCDIR=/var/www/nextcloud
 export ncc=/usr/local/bin/ncc
 
-unset TRUSTED_DOMAINS
-declare -A TRUSTED_DOMAINS
-export TRUSTED_DOMAINS=(
-  [ip]=1 [dnsmasq]=2 [nc_domain]=3 [nextcloudpi-local]=5 [docker_overwrite]=6
-  [nextcloudpi]=7 [nextcloudpi-lan]=8 [public_ip]=11 [letsencrypt_1]=12
-  [letsencrypt_2]=13 [hostname]=14 [trusted_domain_1]=20 [trusted_domain_2]=21 [trusted_domain_3]=22
-)
+#unset TRUSTED_DOMAINS
+#declare -A TRUSTED_DOMAINS
+#export TRUSTED_DOMAINS=(
+  #[ip]=1 [dnsmasq]=2 [nc_domain]=3 [nextcloudpi-local]=5 [docker_overwrite]=6
+  #[nextcloudpi]=7 [nextcloudpi-lan]=8 [public_ip]=11 [letsencrypt_1]=12
+  #[letsencrypt_2]=13 [hostname]=14 [trusted_domain_1]=20 [trusted_domain_2]=21 [trusted_domain_3]=22
+#)
 
 command -v jq &>/dev/null || {
   apt-get update
@@ -127,7 +127,7 @@ function set-nc-domain()
   proto="$(ncc config:system:get overwriteprotocol)" || true
   [[ "${proto}" == "" ]] && proto="https"
   local url="${proto}://${domain%*/}"
-  [[ "$2" == "--no-trusted-domain" ]] || ncc config:system:set trusted_domains "${TRUSTED_DOMAINS[nc-domain]}" --value="${domain%*/}"
+  [[ "$2" == "--no-trusted-domain" ]] || ncc config:system:set trusted_domains 3 --value="${domain%*/}"
   ncc config:system:set overwrite.cli.url --value="${url}/"
   if is_ncp_activated && is_app_enabled notify_push; then
     ncc config:system:set trusted_proxies 11 --value="127.0.0.1"

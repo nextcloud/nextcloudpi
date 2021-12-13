@@ -1,9 +1,13 @@
 
-[v1.44.5](https://github.com/nextcloud/nextcloudpi/commit/0e15dc9) (2021-11-29) ncp-previewgenerator: fix app enable in NC22
+[v1.46.7](https://github.com/nextcloud/nextcloudpi/commit/0da8dcd) (2021-12-13) letsencrypt: fix invalid arithmetic operator error
 
-[v1.44.4](https://github.com/nextcloud/nextcloudpi/commit/0a4f8c1) (2021-11-19) ncp-web: fix spurious characters in power menu
+[v1.44.6 ](https://github.com/nextcloud/nextcloudpi/commit/26a7778) (2021-12-06) notify_push: fix service not restarting on binary update (#1398)
 
-[v1.44.3](https://github.com/nextcloud/nextcloudpi/commit/4717eb3) (2021-11-18) tweak ncc command
+[v1.44.5](https://github.com/nextcloud/nextcloudpi/commit/5a404c0) (2021-11-29) ncp-previewgenerator: fix app enable in NC22
+
+[v1.44.4 ](https://github.com/nextcloud/nextcloudpi/commit/0a4f8c1) (2021-11-19) ncp-web: fix spurious characters in power menu
+
+[v1.44.3 ](https://github.com/nextcloud/nextcloudpi/commit/4717eb3) (2021-11-18) tweak ncc command
 
 [v1.44.2 ](https://github.com/nextcloud/nextcloudpi/commit/0c589ff) (2021-11-16) ncp-app: bump to NC22
 

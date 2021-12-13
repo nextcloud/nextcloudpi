@@ -89,7 +89,7 @@ EOF
     ifup "${IFACE}"
   }
  
-  ncc config:system:set trusted_domains "${TRUSTED_DOMAINS[ip]}" --value="$IP"
+  ncc config:system:set trusted_domains 1 --value="$IP"
   set-nc-domain "${IP}"
   echo "Static IP set to $IP"
 }

@@ -105,10 +105,10 @@ EOF
   # 4 Byte UTF8 support
   ncc config:system:set mysql.utf8mb4 --type boolean --value="true"
 
-  ncc config:system:set trusted_domains "${TRUSTED_DOMAINS[nextcloudpi]}"       --value="nextcloudpi"
-  ncc config:system:set trusted_domains "${TRUSTED_DOMAINS[nextcloudpi-local]}" --value="nextcloudpi.local"
-  ncc config:system:set trusted_domains "${TRUSTED_DOMAINS[nextcloudpi-lan]}"   --value="nextcloudpi.lan"
-  ncc config:system:set trusted_domains "${TRUSTED_DOMAINS[nc_domain]}"         --value="nextcloudpi.lan"
+  ncc config:system:set trusted_domains 7 --value="nextcloudpi"
+  ncc config:system:set trusted_domains 5 --value="nextcloudpi.local"
+  ncc config:system:set trusted_domains 8 --value="nextcloudpi.lan"
+  ncc config:system:set trusted_domains 3 --value="nextcloudpi.lan"
 
   # email
   ncc config:system:set mail_smtpmode     --value="sendmail"
