@@ -163,7 +163,7 @@ configure()
   pgrep -x mariadbd &>/dev/null || echo "mariaDB process not found"
 
   while :; do
-    [[ -S /var/run/mysqld/mysqld.sock ]] && break
+    [[ -S /run/mysqld/mysqld.sock ]] && break
     sleep 0.5
   done
 
