@@ -67,7 +67,7 @@ rm /usr/local/etc/ncp-config.d/nc-nextcloud.cfg    # armbian overlay is ro
 #systemctl restart mysqld # TODO this shouldn't be necessary, but somehow it's needed in Debian 9.6. Fixme
 install_app    ncp.sh
 run_app_unsafe bin/ncp/CONFIG/nc-init.sh
-rm /.ncp-image
+#rm /.ncp-image
 
 # skip on Armbian / Vagrant / LXD ...
 [[ "${CODE_DIR}" != "" ]] || bash /usr/local/bin/ncp-provisioning.sh

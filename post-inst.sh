@@ -19,12 +19,15 @@ configure()
   [[ -f /run/crond.pid ]]     && kill "$(cat /run/crond.pid)"
   pkill -f php-fpm
   pkill -f notify_push
+  killall postdrop
+  killall sendmail
 
   # cleanup all NCP extras
   find /usr/local/bin/ncp -name '*.sh' | \
     while read script; do cleanup_script $script; done
 
   # clean packages and installation logs
+  apt-get upgrade -y # grab the latest kernel and friends
   apt-get autoremove -y
   apt-get clean
   rm /var/lib/apt/lists/* -r
