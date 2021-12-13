@@ -17,7 +17,7 @@ is_active()
 
 install()
 {
-  apt_install btrfs-tools
+  apt_install btrfs-progs
 }
 
 configure()

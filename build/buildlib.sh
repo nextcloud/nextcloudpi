@@ -273,8 +273,8 @@ function download_raspbian()
 {
   local URL=$1
   local IMGFILE=$2
-  local IMG_CACHE=cache/raspios_lite.img
-  local ZIP_CACHE=cache/raspios_lite.zip
+  local IMG_CACHE=cache/rpi_debian.img
+  local XZ_CACHE=cache/rpi_debian.img.xz
 
   echo -e "\n\e[1m[ Download RaspiOS ]\e[0m"
   mkdir -p cache
@@ -283,14 +283,13 @@ function download_raspbian()
     cp -v --reflink=auto $IMG_CACHE "$IMGFILE" && \
     return 0
 
-  test -f "$ZIP_CACHE" && {
-    echo -e "INFO: $ZIP_CACHE already exists. Skipping download ..."
+  test -f "$XZ_CACHE" && {
+    echo -e "INFO: $XZ_CACHE already exists. Skipping download ..."
   } || {
-    wget "$URL" -O "$ZIP_CACHE" || return 1
+    wget "$URL" -O "$XZ_CACHE" || return 1
   }
 
-  unzip -o "$ZIP_CACHE" && \
-    mv *-raspios-*.img $IMG_CACHE && \
+  unxz -c "$XZ_CACHE" > "$IMG_CACHE" && \
     cp -v --reflink=auto $IMG_CACHE "$IMGFILE" 
 }
 
