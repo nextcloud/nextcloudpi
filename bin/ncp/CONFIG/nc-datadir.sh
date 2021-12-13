@@ -24,6 +24,7 @@ configure()
 {
   set -eu -o pipefail
 
+  PHPVER=$(jq -r .php_version       < "$NCPCFG")
   ## CHECKS
   local SRCDIR BASEDIR ENCDIR
   SRCDIR=$( cd /var/www/nextcloud; ncc config:system:get datadirectory ) || {

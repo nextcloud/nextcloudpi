@@ -23,9 +23,9 @@ configure()
   echo "Setting up database..."
 
   # launch mariadb if not already running
-  if ! pgrep -c mariadb &>/dev/null; then
+  if ! pgrep -c mariadbd &>/dev/null; then
     echo "Starting mariaDB"
-    mysqld &
+    mariadbd &
     local db_pid=$!
   fi
 
@@ -91,6 +91,7 @@ EOF
 );
 EOF
 
+  PHPVER=$(jq -r .php_version       < "$NCPCFG")
   # tmp upload dir
   local UPLOADTMPDIR=/var/www/nextcloud/data/tmp
   mkdir -p "$UPLOADTMPDIR"

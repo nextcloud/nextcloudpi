@@ -10,6 +10,8 @@
 
 configure()
 {
+  PHPVER=$(jq -r .php_version       < "$NCPCFG")
+
   # Set auto memory limit to 75% of the total memory
   local TOTAL_MEM="$( free -b | sed -n 2p | awk '{ print $2 }' )"
   AUTOMEM=$(( TOTAL_MEM * 75 / 100 ))
