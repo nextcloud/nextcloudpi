@@ -154,7 +154,7 @@ configure()
   # launch mariadb if not already running (for docker build)
   if ! pgrep -c mariadb &>/dev/null; then
     echo "Starting mariaDB"
-    ysqld &
+    mysqld &
     local db_pid=$!
   fi
 
