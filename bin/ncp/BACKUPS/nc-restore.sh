@@ -68,7 +68,12 @@ fi
 [[ "$DATADIR" == "" ]] && { echo "Error reading data directory"; exit 1; }
 
 datadir_in_ncdir=$(find "${NCDIR}" -type d -wholename "${DATADIR}")
-[[ -n datadir_in_ncdir ]] && { echo "Datadir ${DATADIR} is contained within ncdir ${NCDIR}. Please manually move or remove datadir from within ncdir prior to backup restoration."; exit 1; }
+[[ -n datadir_in_ncdir ]] && { 
+  echo "Datadir ${DATADIR} is contained within ncdir ${NCDIR}. Moving folder prior to base nextcloud restoration";
+  # As we will be removing NCDIR, we will move the datadir outside of this folder
+  DATADIR_BACKUP="${NCDIR}/../data-$( date "+%m-%d-%y" )"
+  mv ${DATADIR} ${DATADIR_BACKUP} || exit 1;
+}
 
 ## RESTORE FILES
 
@@ -110,7 +115,7 @@ cd "$NCDIR"
 NUMFILES=2
 if [[ $( ls "$TMPDIR" | wc -l ) -eq $NUMFILES ]]; then
 
-  [[ -e "$DATADIR" ]] && { 
+  [[ -z "${DATADIR_BACKUP}" ]] && [[ -e "$DATADIR" ]] && { 
     echo "backing up existing $DATADIR to $DATADIR-$( date "+%m-%d-%y" )..."
     mv "$DATADIR" "$DATADIR-$( date "+%m-%d-%y" )" || exit 1
   }
@@ -133,13 +138,19 @@ if [[ $( ls "$TMPDIR" | wc -l ) -eq $NUMFILES ]]; then
 
 else
   echo "No datadir found in backup"
-
+  
   [[ -e "$DATADIR" ]] || {
     echo "${DATADIR} not found. Resetting to ${NCDIR}/data"
     DATADIR="$NCDIR"/data
     mkdir -p "${DATADIR}"
     touch "${DATADIR}"/.ocdata
     chown -R www-data: "${DATADIR}"
+  }
+  
+  [[ -e "${DATADIR_BACKUP}" ]] && {
+    echo "Restoring ${DATADIR_BACKUP} to ${NCDIR}/data"
+    mv ${DATADIR_BACKUP}/* ${DATADIR}
+    rmdir ${DATADIR_BACKUP}
   }
 
   ncc maintenance:mode --off
