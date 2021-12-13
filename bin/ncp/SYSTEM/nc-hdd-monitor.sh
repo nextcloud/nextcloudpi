@@ -24,8 +24,7 @@ configure()
   }
 
   [[ "$ACTIVE" != yes ]] && {
-    systemctl disable smartd
-    service smartd stop
+    systemctl disable --now smartd
     echo "HDD monitor disabled"
     return 0
   }
@@ -70,8 +69,7 @@ EOF
 
   done
 
-  systemctl enable smartd
-  service smartd start
+  systemctl enable --now smartd
   echo "HDD monitor enabled"
 }
 
