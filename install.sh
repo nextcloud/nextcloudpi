@@ -25,8 +25,8 @@ trap "rm -rf \"${TMPDIR}\"" 0 1 2 3 15
 export PATH="/usr/local/sbin:/usr/sbin:/sbin:${PATH}"
 
 # check installed software
-type mysqld &>/dev/null && echo ">>> WARNING: existing mysqld configuration will be changed <<<"
-type mysqld &>/dev/null && mysql -e 'use nextcloud' &>/dev/null && { echo "The 'nextcloud' database already exists. Aborting"; exit 1; }
+type mariadbd &>/dev/null && echo ">>> WARNING: existing mysqld configuration will be changed <<<"
+type mariadbd &>/dev/null && mariadbd -e 'use nextcloud' &>/dev/null && { echo "The 'nextcloud' database already exists. Aborting"; exit 1; }
 
 # get dependencies
 apt-get update
@@ -64,7 +64,7 @@ install_app    lamp.sh
 install_app    bin/ncp/CONFIG/nc-nextcloud.sh
 run_app_unsafe bin/ncp/CONFIG/nc-nextcloud.sh
 rm /usr/local/etc/ncp-config.d/nc-nextcloud.cfg    # armbian overlay is ro
-systemctl restart mysqld # TODO this shouldn't be necessary, but somehow it's needed in Debian 9.6. Fixme
+#systemctl restart mysqld # TODO this shouldn't be necessary, but somehow it's needed in Debian 9.6. Fixme
 install_app    ncp.sh
 run_app_unsafe bin/ncp/CONFIG/nc-init.sh
 rm /.ncp-image
