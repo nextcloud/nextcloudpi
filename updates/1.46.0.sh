@@ -1,3 +1,6 @@
+#!/bin/bash
+
+set -e
 
 # docker images only
 [[ -f /.docker-image ]] && {
@@ -8,7 +11,7 @@ ncc notify_push:self-test || {
   killall notify_push
   sleep 1
   start_notify_push
-}"
+}
 EOF
   chmod +x /etc/cron.daily/refresh_notify_push
 }
@@ -41,3 +44,6 @@ EOF
   systemctl enable refresh_notify_push.{path,service}
   systemctl restart refresh_notify_push.path
 }
+
+
+exit 0
