@@ -50,7 +50,7 @@ jobs:
         run: |
              for arch in ${{ env.platforms }}
              do
-              ./build-docker.sh $arch
+              ./build/build-docker.sh $arch
              done
 
       - name: Push containers to github container registry as tag
