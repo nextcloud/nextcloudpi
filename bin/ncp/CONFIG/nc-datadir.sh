@@ -24,6 +24,7 @@ configure()
 {
   source /usr/local/etc/library.sh # sets PHPVER
   set -eu -o pipefail
+  shopt -s dotglob # includes dot files
 
   ## CHECKS
   local SRCDIR BASEDIR ENCDIR
