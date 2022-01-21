@@ -26,11 +26,11 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-#      - name: Login to DockerHub
-#        uses: docker/login-action@v1
-#        with:
-#          username: ${{ secrets.DOCKERHUB_USERNAME }}
-#          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Checkout code
         uses: actions/checkout@v2
@@ -54,7 +54,6 @@ jobs:
              done
 
       - name: Push containers to github container registry as tag
-        #if: contains(github.ref, 'refs/tags/')
         run: |
              version=$(git describe --tags --always)
              version=${version%-*-*}
@@ -65,10 +64,28 @@ jobs:
               done
 
       - name: Push containers to github container registry as latest
-        #if: contains(github.ref, 'refs/heads/')
         run: |
              for arch in ${{ env.platforms }}
              do
                 docker tag ownyourbits/nextcloudpi-$arch:latest ghcr.io/${{ github.repository_owner }}/nextcloudpi-$arch:latest
                 docker push ghcr.io/${{ github.repository_owner }}/nextcloudpi-$arch:latest
              done
+
+
+      - name: Create manifest and push as tag
+        run: |
+             version=$(git describe --tags --always)
+             version=${version%-*-*}
+             docker manifest create m235fdjwsd/nextcloudpi:${version} \
+             ownyourbits/nextcloudpi-armhf:latest \
+             ownyourbits/nextcloudpi-x86:latest \
+             ownyourbits/nextcloudpi-arm64:latest
+             docker manifest push m235fdjwsd/nextcloudpi:${version}
+
+      - name: Create manifest and push as latest
+        run: |
+             docker manifest create m235fdjwsd/nextcloudpi:latest \
+             ownyourbits/nextcloudpi-armhf:latest \
+             ownyourbits/nextcloudpi-x86:latest \
+             ownyourbits/nextcloudpi-arm64:latest
+             docker manifest push m235fdjwsd/nextcloudpi:latest
