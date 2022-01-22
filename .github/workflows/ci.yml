@@ -72,20 +72,20 @@ jobs:
              done
 
 
-      - name: Create manifest and push as tag
+      - name: Create manifest and push as tag to docker hub
         run: |
              version=$(git describe --tags --always)
              version=${version%-*-*}
-             docker manifest create m235fdjwsd/nextcloudpi:${version} \
+             docker manifest create ${{ secrets.DOCKERHUB_USERNAME }}/nextcloudpi:${version} \
              ownyourbits/nextcloudpi-armhf:latest \
              ownyourbits/nextcloudpi-x86:latest \
              ownyourbits/nextcloudpi-arm64:latest
-             docker manifest push m235fdjwsd/nextcloudpi:${version}
+             docker manifest push ${{ secrets.DOCKERHUB_USERNAME }}/nextcloudpi:${version}
 
-      - name: Create manifest and push as latest
+      - name: Create manifest and push as latest to docker hub
         run: |
-             docker manifest create m235fdjwsd/nextcloudpi:latest \
+             docker manifest create ${{ secrets.DOCKERHUB_USERNAME }}/nextcloudpi:latest \
              ownyourbits/nextcloudpi-armhf:latest \
              ownyourbits/nextcloudpi-x86:latest \
              ownyourbits/nextcloudpi-arm64:latest
-             docker manifest push m235fdjwsd/nextcloudpi:latest
+             docker manifest push ${{ secrets.DOCKERHUB_USERNAME }}/nextcloudpi:latest
