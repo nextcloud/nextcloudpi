@@ -1,13 +1,15 @@
 
-<<<<<<< HEAD
-[v1.46.7](https://github.com/nextcloud/nextcloudpi/commit/0da8dcd) (2021-12-13) letsencrypt: fix invalid arithmetic operator error
-=======
-[v1.45.0](https://github.com/nextcloud/nextcloudpi/commit/b0379f1) (2021-11-09) update to Debian 11 Bullseye
->>>>>>> 41f692c (update to Debian 11 Bullseye)
+[v1.46.0](https://github.com/nextcloud/nextcloudpi/commit/cbf26e4) (2022-03-01) upgrade to NC23.0.2
+
+[v1.45.0 ](https://github.com/nextcloud/nextcloudpi/commit/5c8e5ea) (2021-11-09) update to Debian 11 Bullseye
+
+[v1.44.8](https://github.com/nextcloud/nextcloudpi/commit/dd8fc3d) (2022-01-10) fix update from pre-1.46 to post-1.46 not working in docker (#1406)
+
+[v1.44.7 ](https://github.com/nextcloud/nextcloudpi/commit/bcd850c) (2021-12-13) letsencrypt: fix invalid arithmetic operator error
 
 [v1.44.6 ](https://github.com/nextcloud/nextcloudpi/commit/26a7778) (2021-12-06) notify_push: fix service not restarting on binary update (#1398)
 
-[v1.44.5](https://github.com/nextcloud/nextcloudpi/commit/5a404c0) (2021-11-29) ncp-previewgenerator: fix app enable in NC22
+[v1.44.5 ](https://github.com/nextcloud/nextcloudpi/commit/5a404c0) (2021-11-29) ncp-previewgenerator: fix app enable in NC22
 
 [v1.44.4 ](https://github.com/nextcloud/nextcloudpi/commit/0a4f8c1) (2021-11-19) ncp-web: fix spurious characters in power menu
 
