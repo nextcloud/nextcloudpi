@@ -50,6 +50,9 @@ sed -i 's/stretch/buster/g' /etc/apt/sources.list
 sed -i 's/stretch/buster/g' /etc/apt/sources.list.d/*
 rm -f /etc/apt/sources.list.d/php.list
 
+# fix DHCP systemd service command https://forums.raspberrypi.com/viewtopic.php?t=320383
+sed -i 's/ExecStart=/usr/lib/dhcpcd5/dhcpcd -q -w/ExecStart=/usr/sbin/dhcpcd -q -w/g' /etc/systemd/system/dhcpcd.service.d/wait.conf
+
 # install latest distro
 apt-get update
 apt-get dist-upgrade -y
