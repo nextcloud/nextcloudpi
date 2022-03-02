@@ -48,7 +48,8 @@ rsync -Aax --exclude-from .gitignore --exclude *.img --exclude *.bz2 . raspbian_
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
   sudo chroot raspbian_root /bin/bash <<'EOFCHROOT'
     set -e
-
+    # Changes the necessary line for DHCP to work after a reboot https://forums.raspberrypi.com/viewtopic.php?t=320383
+    sed -i 's/ExecStart=/usr/lib/dhcpcd5/dhcpcd -q -w/ExecStart=/usr/dhcpcd -q -w/g' /etc/systemd/system/dhcpcd.service.d/wait.conf
     # allow oldstable
     apt-get update --allow-releaseinfo-change
 
