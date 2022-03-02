@@ -1,5 +1,7 @@
 
-[v1.46.3](https://github.com/nextcloud/nextcloudpi/commit/0de1479) (2022-03-02) nc-trusted-domains: dont return 1 if last domain is empty
+[v1.46.4](https://github.com/nextcloud/nextcloudpi/commit/ee27cf1) (2022-03-02) nc-scan: check for maintenance mode enabled
+
+[v1.46.3 ](https://github.com/nextcloud/nextcloudpi/commit/638cfce) (2022-03-02) nc-trusted-domains: dont return 1 if last domain is empty
 
 [v1.46.2 ](https://github.com/nextcloud/nextcloudpi/commit/2ba1478) (2022-03-02) samba: fix usernames with spaces
 

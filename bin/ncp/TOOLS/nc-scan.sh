@@ -20,6 +20,8 @@ EOF
 
 configure()
 {
+  grep -q enabled <(ncc maintenance:mode) && { echo "Cannot run ncp-scan while in maintenance mode"; exit 1; }
+
   local ret=0
 
   [[ "$RECURSIVE"   == no  ]] && local recursive=--shallow
