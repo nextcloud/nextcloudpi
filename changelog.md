@@ -1,5 +1,7 @@
 
-[v1.46.0](https://github.com/nextcloud/nextcloudpi/commit/cbf26e4) (2022-03-01) upgrade to NC23.0.2
+[v1.46.1](https://github.com/nextcloud/nextcloudpi/commit/6f3bfb1) (2022-03-02) nc-datadir: include dotfiles
+
+[v1.46.0 ](https://github.com/nextcloud/nextcloudpi/commit/2b59e26) (2022-03-01) upgrade to NC23.0.2
 
 [v1.45.0 ](https://github.com/nextcloud/nextcloudpi/commit/5c8e5ea) (2021-11-09) update to Debian 11 Bullseye
 

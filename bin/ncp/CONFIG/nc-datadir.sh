@@ -23,6 +23,7 @@ install()
 configure()
 {
   set -eu -o pipefail
+  shopt -s dotglob # includes dot files
 
   ## CHECKS
   local SRCDIR BASEDIR ENCDIR
