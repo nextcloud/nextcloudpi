@@ -1,5 +1,7 @@
 
-[v1.46.4](https://github.com/nextcloud/nextcloudpi/commit/ee27cf1) (2022-03-02) nc-scan: check for maintenance mode enabled
+[v1.46.5](https://github.com/nextcloud/nextcloudpi/commit/5dfa0ea) (2022-03-02) ncp-dist-upgrade: add DHCP fix for raspios
+
+[v1.46.4 ](https://github.com/nextcloud/nextcloudpi/commit/8e9ccd5) (2022-03-02) nc-scan: check for maintenance mode enabled
 
 [v1.46.3 ](https://github.com/nextcloud/nextcloudpi/commit/638cfce) (2022-03-02) nc-trusted-domains: dont return 1 if last domain is empty
 
