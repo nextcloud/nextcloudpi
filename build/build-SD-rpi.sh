@@ -50,7 +50,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
     set -e
     
     # Changes the necessary line for DHCP to work after a reboot https://forums.raspberrypi.com/viewtopic.php?t=320383
-    # Forgot if it was without /sbin or not .. I'll add it for now as it is the same as the forum
+    # Forgot if it was without /sbin or not.. I'll add it for now as it is the same as the forum
     sed -i 's/ExecStart=/usr/lib/dhcpcd5/dhcpcd -q -w/ExecStart=/usr/sbin/dhcpcd -q -w/g' /etc/systemd/system/dhcpcd.service.d/wait.conf
 
     # allow oldstable
