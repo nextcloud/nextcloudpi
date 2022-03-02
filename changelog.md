@@ -1,5 +1,7 @@
 
-[v1.46.1](https://github.com/nextcloud/nextcloudpi/commit/6f3bfb1) (2022-03-02) nc-datadir: include dotfiles
+[v1.46.2](https://github.com/nextcloud/nextcloudpi/commit/6f53314) (2022-03-02) samba: fix usernames with spaces
+
+[v1.46.1](https://github.com/nextcloud/nextcloudpi/commit/b4ef137) (2022-03-02) nc-datadir: include dotfiles
 
 [v1.46.0 ](https://github.com/nextcloud/nextcloudpi/commit/2b59e26) (2022-03-01) upgrade to NC23.0.2
 
