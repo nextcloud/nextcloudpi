@@ -1,5 +1,7 @@
 
-[v1.46.5](https://github.com/nextcloud/nextcloudpi/commit/7d4ba40) (2022-03-02) ncp-dist-upgrade: add DHCP fix for raspios
+[v1.46.6](https://github.com/nextcloud/nextcloudpi/commit/71c6f5d) (2022-03-03) ncp-dist-upgrade: fix VM grub-pc issue
+
+[v1.46.5](https://github.com/nextcloud/nextcloudpi/commit/adab07c) (2022-03-02) ncp-dist-upgrade: add DHCP fix for raspios
 
 [v1.46.4 ](https://github.com/nextcloud/nextcloudpi/commit/06ba8a0) (2022-03-02) nc-scan: check for maintenance mode enabled
 

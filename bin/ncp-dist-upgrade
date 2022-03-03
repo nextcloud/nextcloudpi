@@ -31,6 +31,11 @@ trap "echo 'Something went wrong. Fix it and try again'" EXIT
 
 save_maintenance_mode
 
+# Fix grub-pc issue in VM
+if apt show grub-pc-bin &>/dev/null; then
+  $APTINSTALL grub
+fi
+
 apt-get update
 apt-get upgrade -y
 
