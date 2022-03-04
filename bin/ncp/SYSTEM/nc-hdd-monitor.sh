@@ -12,7 +12,7 @@
 
 is_active()
 {
-  systemctl -q is-enabled smartd &>/dev/null
+  systemctl -q is-enabled smartmontools &>/dev/null
 }
 
 configure()
@@ -24,7 +24,7 @@ configure()
   }
 
   [[ "$ACTIVE" != yes ]] && {
-    systemctl disable --now smartd
+    systemctl disable --now smartmontools
     echo "HDD monitor disabled"
     return 0
   }
@@ -69,7 +69,7 @@ EOF
 
   done
 
-  systemctl enable --now smartd
+  systemctl enable --now smartmontools
   echo "HDD monitor enabled"
 }
 

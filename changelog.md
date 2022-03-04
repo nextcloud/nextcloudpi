@@ -1,7 +1,9 @@
 
-[v1.46.6](https://github.com/nextcloud/nextcloudpi/commit/71c6f5d) (2022-03-03) ncp-dist-upgrade: fix VM grub-pc issue
+[v1.46.7](https://github.com/nextcloud/nextcloudpi/commit/bd49019) (2022-03-04) nc-hdd-monitor: fix Bullseye service name
 
-[v1.46.5](https://github.com/nextcloud/nextcloudpi/commit/adab07c) (2022-03-02) ncp-dist-upgrade: add DHCP fix for raspios
+[v1.46.6](https://github.com/nextcloud/nextcloudpi/commit/c9610e4) (2022-03-03) ncp-dist-upgrade: fix VM grub-pc issue
+
+[v1.46.5 ](https://github.com/nextcloud/nextcloudpi/commit/062c803) (2022-03-02) ncp-dist-upgrade: add DHCP fix for raspios
 
 [v1.46.4 ](https://github.com/nextcloud/nextcloudpi/commit/06ba8a0) (2022-03-02) nc-scan: check for maintenance mode enabled
 
@@ -15,7 +17,7 @@
 
 [v1.45.0 ](https://github.com/nextcloud/nextcloudpi/commit/9bf5ff0) (2021-11-09) update to Debian 11 Bullseye
 
-[v1.44.8](https://github.com/nextcloud/nextcloudpi/commit/dd8fc3d) (2022-01-10) fix update from pre-1.46 to post-1.46 not working in docker (#1406)
+[v1.44.8 ](https://github.com/nextcloud/nextcloudpi/commit/dd8fc3d) (2022-01-10) fix update from pre-1.46 to post-1.46 not working in docker (#1406)
 
 [v1.44.7 ](https://github.com/nextcloud/nextcloudpi/commit/bcd850c) (2021-12-13) letsencrypt: fix invalid arithmetic operator error
 
