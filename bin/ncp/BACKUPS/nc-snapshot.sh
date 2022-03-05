@@ -32,7 +32,7 @@ configure()
     return 1
   }
 
-  btrfs-snp $MOUNTPOINT manual $LIMIT 0 ../ncp-snapshots
+  btrfs-snp "${MOUNTPOINT}" manual "${LIMIT}" 0 ../ncp-snapshots
 
   restore_maintenance_mode
 }

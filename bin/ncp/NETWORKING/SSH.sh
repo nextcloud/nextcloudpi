@@ -39,38 +39,40 @@ configure()
   echo -e "$PASS\n$CONFIRM" | passwd "$USER" || return 1
 
   # Check for insecure default pi password ( taken from old jessie method )
-  local SHADOW="$( grep -E '^pi:' /etc/shadow )"
-  test -n "${SHADOW}" && {
-    local SALT=$(echo "${SHADOW}" | sed -n 's/pi:\$6\$//;s/\$.*//p')
+  # TODO Due to Debian bug #1003151 with mkpasswd this feature is not working properly at the moment - https://www.mail-archive.com/debian-bugs-dist@lists.debian.org/msg1837456.html
+  #local SHADOW SALT HASH
+  #SHADOW="$( grep -E '^pi:' /etc/shadow )"
+  #test -n "${SHADOW}" && {
+    #SALT=$(awk -F[:$] '{print $5}' <<<"${SHADOW}")
 
-    [[ "${SALT}" != "" ]] && {
-      local HASH=$(mkpasswd -msha-512 raspberry "$SALT")
-      grep -q "${HASH}" <<< "${SHADOW}" && {
-        systemctl stop    ssh
-        systemctl disable ssh
-        echo "The user pi is using the default password. Refusing to activate SSH"
-        echo "SSH disabled"
-        return 1
-      }
-    }
-  }
+    #[[ "${SALT}" != "" ]] && {
+      #HASH=$(mkpasswd -myescrypt raspberry "${SALT}")
+      #grep -q "${HASH}" <<< "${SHADOW}" && {
+        #systemctl stop    ssh
+        #systemctl disable ssh
+        #echo "The user pi is using the default password. Refusing to activate SSH"
+        #echo "SSH disabled"
+        #return 1
+      #}
+    #}
+  #}
 
   # Check for insecure default root password ( taken from old jessie method )
-  local SHADOW="$( grep -E '^root:' /etc/shadow )"
-  test -n "${SHADOW}" && {
-    local SALT=$(echo "${SHADOW}" | sed -n 's/root:\$6\$//;s/\$.*//p')
+  #SHADOW="$( grep -E '^root:' /etc/shadow )"
+  #test -n "${SHADOW}" && {
+    #SALT=$(awk -F[:$] '{print $5}' <<<"${SHADOW}")
 
-    [[ "${SALT}" != "" ]] && {
-      local HASH=$(mkpasswd -msha-512 1234 "$SALT")
-      grep -q "${HASH}" <<< "${SHADOW}" && {
-        systemctl stop    ssh
-        systemctl disable ssh
-        echo "The user root is using the default password. Refusing to activate SSH"
-        echo "SSH disabled"
-        return 1
-      }
-    }
-  }
+    #[[ "${SALT}" != "" ]] && {
+      #HASH=$(mkpasswd -myescrypt 1234 "${SALT}")
+      #grep -q "${HASH}" <<< "${SHADOW}" && {
+        #systemctl stop    ssh
+        #systemctl disable ssh
+        #echo "The user root is using the default password. Refusing to activate SSH"
+        #echo "SSH disabled"
+        #return 1
+      #}
+    #}
+  #}
 
   # Enable
   chage -d 0 "$USER"

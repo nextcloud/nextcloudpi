@@ -16,10 +16,10 @@
 
 set -e
 
-TAG="$@"
+TAG="$*"
  
 source build/buildlib.sh
-git tag "$TAG"
+git tag -f "$TAG"
 generate_changelog
 git add changelog.md
 git commit -C HEAD --amend

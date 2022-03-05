@@ -1,5 +1,7 @@
 
-[v1.46.7](https://github.com/nextcloud/nextcloudpi/commit/bd49019) (2022-03-04) nc-hdd-monitor: fix Bullseye service name
+[v1.46.8](https://github.com/nextcloud/nextcloudpi/commit/dc7046b) (2022-03-04) SSH: cannot check for default password because of Debian bug #1003151
+
+[v1.46.7](https://github.com/nextcloud/nextcloudpi/commit/f473f73) (2022-03-04) nc-hdd-monitor: fix Bullseye service name
 
 [v1.46.6](https://github.com/nextcloud/nextcloudpi/commit/c9610e4) (2022-03-03) ncp-dist-upgrade: fix VM grub-pc issue
 
