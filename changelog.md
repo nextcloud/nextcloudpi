@@ -1,9 +1,11 @@
 
-[v1.46.8](https://github.com/nextcloud/nextcloudpi/commit/dc7046b) (2022-03-04) SSH: cannot check for default password because of Debian bug #1003151
+[v1.46.9](https://github.com/nextcloud/nextcloudpi/commit/db56128) (2022-03-07) docker: adjust PHP version in apache config
 
-[v1.46.7](https://github.com/nextcloud/nextcloudpi/commit/f473f73) (2022-03-04) nc-hdd-monitor: fix Bullseye service name
+[v1.46.8 ](https://github.com/nextcloud/nextcloudpi/commit/21b7fe7) (2022-03-04) SSH: cannot check for default password because of Debian bug #1003151
 
-[v1.46.6](https://github.com/nextcloud/nextcloudpi/commit/c9610e4) (2022-03-03) ncp-dist-upgrade: fix VM grub-pc issue
+[v1.46.7 ](https://github.com/nextcloud/nextcloudpi/commit/f473f73) (2022-03-04) nc-hdd-monitor: fix Bullseye service name
+
+[v1.46.6 ](https://github.com/nextcloud/nextcloudpi/commit/c9610e4) (2022-03-03) ncp-dist-upgrade: fix VM grub-pc issue
 
 [v1.46.5 ](https://github.com/nextcloud/nextcloudpi/commit/062c803) (2022-03-02) ncp-dist-upgrade: add DHCP fix for raspios
 

@@ -1,0 +1,11 @@
+# Here we have the opportunity to make changes in the persistent volume configuration before
+# anything is started, after pulling a new image
+
+# adjust PHP version (in case of php upgrade)
+if php --version | grep -q v7.4 && [[ -f /data/etc/apache2/conf-available/php7.3-fpm.conf ]]; then
+  a2disconf php7.3-fpm
+  mv /data/etc/apache2/conf-available/php7.{3,4}-fpm.conf
+  sed -i 's|php7.3|php7.4|g' /data/etc/apache2/conf-available/php7.4-fpm.conf
+  a2enconf php7.4-fpm
+fi
+

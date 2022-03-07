@@ -18,8 +18,14 @@ set -e
 # MOVE CONFIGS TO PERSISTENT VOLUME
 persistent_cfg /etc/apache2
 
+# Run hardcoded hooks. This allows scripts in the image to change persistent values before
+# initialization. Use case is to download a new image.
+if [[ -f /usr/local/bin/ncp-docker-hook ]]; then
+  source /usr/local/bin/ncp-docker-hook
+fi
+
 echo "Starting PHP-fpm"
-php-fpm${PHPVER}
+php-fpm"${PHPVER}"
 
 echo "Starting Apache"
 /usr/sbin/apache2ctl start
