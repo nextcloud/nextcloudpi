@@ -2,6 +2,8 @@
 
 # update latest NextCloudPi code from github
 
+[[ -z "$DBG" ]] || set -$DBG
+
 {
   [ "$(id -u)" -ne 0 ] && { printf "Must be run as root. Try 'sudo $0'\n"; exit 1; }
 

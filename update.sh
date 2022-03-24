@@ -10,7 +10,7 @@
 
 source /usr/local/etc/library.sh
 
-set -e
+set -e$DBG
 
 CONFDIR=/usr/local/etc/ncp-config.d/
 UPDATESDIR=updates
