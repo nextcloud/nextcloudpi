@@ -13,7 +13,10 @@ install()
 {
   apt-get update
   apt-get install --no-install-recommends -y dnsmasq
+  service systemd-resolved stop || true
+  service dnsmasq start
   update-rc.d dnsmasq disable
+  service dnsmasq stop
 
   [[ "$DOCKERBUILD" == 1 ]] && {
     cat > /etc/services-available.d/100dnsmasq <<EOF
