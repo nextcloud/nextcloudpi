@@ -12,9 +12,10 @@
 install()
 {
   apt-get update
-  apt-get install --no-install-recommends -y dnsmasq
-  service systemd-resolved stop || true
-  service dnsmasq start
+  apt-get install --no-install-recommends -y dnsmasq || {
+    service systemd-resolved stop
+    service dnsmasq start
+  }
   update-rc.d dnsmasq disable
   service dnsmasq stop
 
