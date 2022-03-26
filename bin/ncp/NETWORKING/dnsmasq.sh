@@ -13,7 +13,15 @@ install()
 {
   apt-get update
   apt-get install --no-install-recommends -y dnsmasq
+  rc=0
+  service dnsmasq status > /dev/null 2>&1 || rc=$?
+  [[ $rc -eq 3 ]] && {
+    echo "Applying workaround for dnsmasq bug (compare issue #1446)"
+    service systemd-resolved stop
+    service dnsmasq start
+  }
   update-rc.d dnsmasq disable
+  service dnsmasq stop
 
   [[ "$DOCKERBUILD" == 1 ]] && {
     cat > /etc/services-available.d/100dnsmasq <<EOF

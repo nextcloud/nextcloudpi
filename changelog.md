@@ -1,5 +1,7 @@
 
-[v1.46.9](https://github.com/nextcloud/nextcloudpi/commit/db56128) (2022-03-07) docker: adjust PHP version in apache config
+[v1.46.10](https://github.com/nextcloud/nextcloudpi/commit/c076cb3) (2022-03-26) dnsmasq.sh: Workaround dnsmasq startup failure bug
+
+[v1.46.9](https://github.com/nextcloud/nextcloudpi/commit/cd98b50) (2022-03-07) docker: adjust PHP version in apache config
 
 [v1.46.8 ](https://github.com/nextcloud/nextcloudpi/commit/21b7fe7) (2022-03-04) SSH: cannot check for default password because of Debian bug #1003151
 
