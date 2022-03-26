@@ -12,7 +12,10 @@
 install()
 {
   apt-get update
-  apt-get install --no-install-recommends -y dnsmasq || {
+  apt-get install --no-install-recommends -y dnsmasq
+  service dnsmasq status > /dev/null 2>&1
+  [[ $? -eq 3 ]] && {
+    echo "Applying workaround for dnsmasq bug (compare issue #1446)"
     service systemd-resolved stop
     service dnsmasq start
   }
