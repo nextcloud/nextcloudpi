@@ -28,7 +28,45 @@ EOF
   systemctl disable prometheus-node-exporter
   service prometheus-node-exporter stop
 
+  [[ "$(uname -m)" =~ ("arm"|"aarch").* ]] && arch="armv7" || arch="i686"
+  [[ "$arch" == "i686" ]] && apt_install lib32gcc-s1 libc6-i386
+
+  wget -O "/usr/local/bin/ncp-metrics-exporter" \
+    "https://github.com/theCalcaholic/ncp-metrics-exporter/releases/download/v1.0.0/${arch}-ncp-metrics-exporter"
+  chmod +x /usr/local/bin/ncp-metrics-exporter
+  cat <<EOF > /etc/systemd/system/ncp-metrics-exporter.service
+[Unit]
+Description=NCP Metrics Exporter
+
+[Service]
+Environment=NCP_CONFIG_DIR=/usr/local/etc
+ExecStart=/usr/local/bin/ncp-metrics-exporter
+SyslogIdentifier=ncp-metrics
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+  systemctl daemon-reload
+
   )
+}
+
+reload_metrics_config() {
+  install_template ncp-metrics.cfg.sh "/usr/local/etc/ncp-metrics.cfg" || {
+    echo "ERROR while generating ncp-metrics.conf!"
+    return 1
+  }
+  service ncp-metrics-exporter status > /dev/null && {
+    service ncp-metrics-exporter restart
+    service ncp-metrics-exporter status > /dev/null 2>&1 || {
+      rc=$?
+      echo -e "WARNING: An error ncp-metrics exporter failed to start (exit-code $rc)!"
+      return 1
+    }
+  }
 }
 
 configure() {
@@ -39,6 +77,9 @@ configure() {
 
     systemctl disable prometheus-node-exporter
     service prometheus-node-exporter stop
+
+    systemctl disable ncp-metrics-exporter
+    service ncp-metrics-exporter stop
   else
     [[ -n "$USER" ]] || {
       echo "ERROR: User can not be empty!" >&2
@@ -63,15 +104,26 @@ configure() {
       echo "ERROR while generating nextcloud.conf! Exiting..."
       return 1
     }
+    echo "Generate config..."
+    reload_metrics_config
+    echo "done."
 
+    echo "Starting prometheus node exporter..."
     systemctl enable prometheus-node-exporter
     service prometheus-node-exporter start
+    service prometheus-node-exporter status
+    echo "done."
 
-    echo "Metric endpoint enabled. You can test it at https://nextcloudpi.local/metrics/system (or under your NC domain under the same path)"
+    echo "Starting ncp metrics exporter..."
+    systemctl enable ncp-metrics-exporter
+    service ncp-metrics-exporter start
+    service ncp-metrics-exporter status
+    echo "done."
+
+    echo "Metrics endpoint enabled. You can test it at https://nextcloudpi.local/metrics/system (or under your NC domain under the same path)"
   fi
   echo "Apache Test:"
   apache2ctl -t
   bash -c "sleep 2 && service apache2 reload" &>/dev/null &
-
 
 }

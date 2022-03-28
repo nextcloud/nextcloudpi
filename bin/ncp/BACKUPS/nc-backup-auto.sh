@@ -7,6 +7,17 @@
 # More at https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/
 #
 
+tmpl_get_destination() {
+  (
+  . /usr/local/etc/library.sh
+  find_app_param nc-backup-auto DESTDIR
+  )
+}
+
+is_active() {
+  [[ $ACTIVE == "yes" ]]
+}
+
 configure()
 {
   [[ $ACTIVE != "yes" ]] && {
@@ -43,6 +54,11 @@ EOF
   echo "0  3  */${BACKUPDAYS}  *  *  root  /usr/local/bin/ncp-backup-auto >> /var/log/ncp.log 2>&1" > /etc/cron.d/ncp-backup-auto
   chmod 644 /etc/cron.d/ncp-backup-auto
   service cron restart
+
+  (
+    . "${BINDIR}/SYSTEM/metrics.sh"
+    reload_metrics_config
+  )
 
   echo "automatic backups enabled"
 }

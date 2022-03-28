@@ -113,6 +113,11 @@ configure()
   sed -i "s|logpath  =.*nextcloud.log|logpath  = ${DATADIR}/nextcloud.log|" /etc/fail2ban/jail.local
 
   restore_maintenance_mode
+
+  (
+    . "${BINDIR}/SYSTEM/metrics.sh"
+    reload_metrics_config
+  )
 }
 
 # License
