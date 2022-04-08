@@ -19,40 +19,6 @@ cat <<EOF
   "backups": [
 EOF
 
-declare -a BKP_DIRS
-
-
-DATADIR=$( ncc config:system:get datadirectory ) || {
-  echo -e "ERROR: Could not get data directory. Is NextCloud running?";
-  return 1;
-}
-NC_SNAPSHOTS_DIR="$(dirname "$DATADIR")/ncp-snapshots"
-
-NC_SNAPSHOTS_SYNC_DIR="$(
-  source "${BINDIR}/BACKUPS/nc-snapshot-sync.sh"
-  if tmpl_is_destination_local
-  then
-    tmpl_get_destination
-  fi
-)"
-
-SNAP_PATTERN=".*_(?P<year>\\\\d+)-(?P<month>\\\\d+)-(?P<day>\\\\d+)_(?P<hour>\\\\d{2})(?P<minute>\\\\d{2})(?P<second>\\\\d{2})"
-cat <<EOF
-    {
-      "path": "${NC_SNAPSHOTS_DIR}",
-      "pattern": "${SNAP_PATTERN}"
-    }
-EOF
-
-[[ -z "$NC_SNAPSHOTS_SYNC_DIR" ]] || {
-  cat <<EOF
-    ,{
-      "path": "${NC_SNAPSHOTS_SYNC_DIR}",
-      "pattern": "${SNAP_PATTERN}"
-    }
-EOF
-}
-
 NC_BACKUP_DIR="$(
   source "${BINDIR}/BACKUPS/nc-backup.sh"
   tmpl_get_destination
@@ -67,16 +33,51 @@ then
   NC_BACKUP_AUTO_DIR=""
 fi
 
-for BKP_DIR in "$NC_BACKUP_DIR" "$NC_BACKUP_AUTO_DIR"
-do
-  [[ -n "$BKP_DIR" ]] || continue
+NC_BACKUP_PATTERN="nextcloud-bkp_(?P<year>\\\\d{4})(?P<month>\\\\d{2})(?P<day>\\\\d{2})_.*\\\\.tar(\\\\.gz)?"
+
+cat <<EOF
+  {
+    "path": "$NC_BACKUP_DIR",
+    "pattern": "$NC_BACKUP_PATTERN"
+  }
+EOF
+[[ -z "$NC_BACKUP_AUTO_DIR" ]] || {
   cat <<EOF
     ,{
-      "path": "$BKP_DIR",
-      "pattern": "nextcloud-bkp_(?P<year>\\\\d{4})(?P<month>\\\\d{2})(?P<day>\\\\d{2})_.*\\\\.tar(\\\\.gz)?"
+      "path": "$NC_BACKUP_AUTO_DIR",
+      "pattern": "$NC_BACKUP_PATTERN"
     }
 EOF
-done
+}
+
+[[ "$DOCKERBUILD" == 1 ]] || {
+
+  DATADIR=$( ncc config:system:get datadirectory ) || {
+    echo -e "ERROR: Could not get data directory. Is NextCloud running?";
+    return 1;
+  }
+  NC_SNAPSHOTS_DIR="$(dirname "$DATADIR")/ncp-snapshots"
+
+  NC_SNAPSHOTS_SYNC_DIR="$(
+    source "${BINDIR}/BACKUPS/nc-snapshot-sync.sh"
+    if tmpl_is_destination_local
+    then
+      tmpl_get_destination
+    fi
+  )"
+
+  for snap_dir in "$NC_SNAPSHOTS_DIR" "$NC_SNAPSHOTS_SYNC_DIR"
+  do
+    [[ -n "$snap_dir" ]] || continue
+    cat <<EOF
+    ,{
+      "path": "${snap_dir}",
+      "pattern": ".*_(?P<year>\\\\d+)-(?P<month>\\\\d+)-(?P<day>\\\\d+)_(?P<hour>\\\\d{2})(?P<minute>\\\\d{2})(?P<second>\\\\d{2})"
+    }
+EOF
+  done
+
+}
 
 cat <<EOF
   ]

@@ -37,7 +37,6 @@ nc-zram
 SSH
 fail2ban
 NFS
-metrics
 "
 
 if is_docker &>/dev/null; then
