@@ -10,7 +10,7 @@
 
 source /usr/local/etc/library.sh
 
-set -e
+set -e$DBG
 
 CONFDIR=/usr/local/etc/ncp-config.d/
 UPDATESDIR=updates
@@ -37,7 +37,6 @@ nc-zram
 SSH
 fail2ban
 NFS
-metrics
 "
 
 if is_docker &>/dev/null; then

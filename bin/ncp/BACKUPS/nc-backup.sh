@@ -7,6 +7,13 @@
 # More at https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/
 #
 
+tmpl_get_destination() {
+  (
+  . /usr/local/etc/library.sh
+  find_app_param nc-backup DESTDIR
+  )
+}
+
 install()
 {
   apt-get update
@@ -123,6 +130,10 @@ EOF
 
 configure()
 {
+  (
+    . "${BINDIR}/SYSTEM/metrics.sh"
+    reload_metrics_config
+  )
   ncp-backup "$DESTDIR" "$INCLUDEDATA" "$COMPRESS" "$BACKUPLIMIT"
 }
 

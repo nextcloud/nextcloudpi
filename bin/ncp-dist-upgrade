@@ -89,6 +89,9 @@ sleep 2 # avoid systemd thinking that PHP is in a crash/restart loop
 $APTINSTALL -t ${release_new} php${php_ver_new}-gmp
 #$APTINSTALL -t ${release_new} imagemagick php${php_ver_new}-imagick ghostscript
 
+# Reinstall prometheus-node-exporter, specifically WITH install-recommends to include collectors on bullseye and later
+{ dpkg -l | grep '^ii.*prometheus-node-exporter' >/dev/null && apt-get install -y prometheus-node-exporter-collectors; } || true
+
 apt-get autoremove -y
 apt-get clean
 
