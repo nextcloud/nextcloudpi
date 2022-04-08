@@ -1,5 +1,10 @@
 #!/bin/bash
 
+apt_install_with_recommends() {
+  apt-get update --allow-releaseinfo-change
+  DEBIAN_FRONTEND=noninteractive apt-get install -y -o Dpkg::Options::=--force-confdef -o Dpkg::Options::="--force-confold" "$@"
+}
+
 is_supported() {
   [[ "$DOCKERBUILD" == 1 ]] && [[ "$(lsb_release -r)" =~ .*10 ]] && return 1
   return 0
@@ -84,13 +89,12 @@ ARGS="--collector.filesystem.ignored-mount-points=\"^/(dev|proc|run|sys|mnt|var/
 EOF
 
   arch="$(uname -m)"
-  [[ "$arch" =~ ("arm"|"aarch").* ]] && bin_arch="armv7" || bin_arch="i686"
-  [[ "$(lsb_release -r)" =~ .*10 ]] && gcclib="lib32gcc1" || gcclib="lib32gcc-s1"
-  [[ "$arch" == "x86_64" ]] && apt_install "$gcclib" libc6-i386
+  [[ "${arch}" =~ ^"arm" ]] && arch="armv7"
 
-  wget -O "/usr/local/bin/ncp-metrics-exporter" \
-    "https://github.com/theCalcaholic/ncp-metrics-exporter/releases/download/v1.0.0/${bin_arch}-ncp-metrics-exporter"
-  chmod +x /usr/local/bin/ncp-metrics-exporter
+  mkdir -p /usr/local/lib/ncp-metrics
+  wget -O "/usr/local/lib/ncp-metrics/ncp-metrics-exporter" \
+    "https://github.com/theCalcaholic/ncp-metrics-exporter/releases/download/v1.1.0/ncp-metrics-exporter-${arch}"
+  chmod +x /usr/local/lib/ncp-metrics/ncp-metrics-exporter
 
   # Apply fix to init-d-script (https://salsa.debian.org/debian/sysvinit/-/commit/aa40516c)
   # Otherwise the init.d scripts of prometheus-node-exporter won't work
@@ -104,12 +108,12 @@ EOF
     trap "mv /etc/shadow /data/etc/shadow; ln -s /data/etc/shadow /etc/shadow" EXIT
     rm /etc/shadow
     cp /data/etc/shadow /etc/shadow
-    apt_install prometheus-node-exporter prometheus-node-exporter-collectors
+    apt_install_with_recommends prometheus-node-exporter
     mv /etc/shadow /data/etc/shadow
     ln -s /data/etc/shadow /etc/shadow
     trap - EXIT
   else
-    apt_install prometheus-node-exporter prometheus-node-exporter-collectors
+    apt_install_with_recommends prometheus-node-exporter
   fi
 
   if [[ "$DOCKERBUILD" == 1 ]]
@@ -134,7 +138,7 @@ NCP_CONFIG_DIR=/usr/local/etc
 set +a
 
 NAME=ncp-exporter
-DAEMON=/usr/local/bin/ncp-metrics-exporter
+DAEMON=/usr/local/lib/ncp-metrics/ncp-metrics-exporter
 PIDFILE=/var/run/ncp-metrics-exporter.pid
 LOGFILE=/var/log/ncp-metrics.log
 START_ARGS="--background --make-pidfile"
@@ -173,7 +177,7 @@ Description=NCP Metrics Exporter
 
 [Service]
 Environment=NCP_CONFIG_DIR=/usr/local/etc
-ExecStart=/usr/local/bin/ncp-metrics-exporter
+ExecStart=/usr/local/lib/ncp-metrics/ncp-metrics-exporter
 SyslogIdentifier=ncp-metrics
 Restart=on-failure
 RestartSec=30
@@ -218,19 +222,22 @@ configure() {
       return 1
     }
 
-    [[ -n "$PASSWORD" ]] || {
-      echo -e "ERROR: Password can not be empty!" >&2
-      return 1
-    }
+    if [[ "$METRICS_SKIP_PASSWORD_CONFIG" != "true" ]]
+    then
+      [[ -n "$PASSWORD" ]] || {
+        echo -e "ERROR: Password can not be empty!" >&2
+        return 1
+      }
 
-    [[ ${#PASSWORD} -ge 10 ]] || {
-      echo -e "ERROR: Password must be at least 10 characters long!" >&2
-      return 1
-    }
+      [[ ${#PASSWORD} -ge 10 ]] || {
+        echo -e "ERROR: Password must be at least 10 characters long!" >&2
+        return 1
+      }
 
-    local htpasswd_file="/usr/local/etc/metrics.htpasswd"
-    rm -f "${htpasswd_file}"
-    echo "$PASSWORD" | htpasswd -ciB "${htpasswd_file}" "$USER"
+      local htpasswd_file="/usr/local/etc/metrics.htpasswd"
+      rm -f "${htpasswd_file}"
+      echo "$PASSWORD" | htpasswd -ciB "${htpasswd_file}" "$USER"
+    fi
 
     echo "Generate config..."
     reload_metrics_config
@@ -252,7 +259,7 @@ configure() {
       return 1
     }
 
-    echo "Metrics endpoint enabled. You can test it at https://nextcloudpi.local/metrics/system (or under your NC domain under the same path)"
+    echo "Metrics endpoint enabled. You can test it at https://nextcloudpi.local/metrics/system and https://nextcloudpi.local/metrics/ncp (or under your NC domain under the same paths)"
   fi
 
   bash -c "sleep 2 && service apache2 reload" &>/dev/null &

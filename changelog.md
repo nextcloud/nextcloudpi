@@ -1,7 +1,9 @@
 
-[v1.46.10](https://github.com/nextcloud/nextcloudpi/commit/c076cb3) (2022-03-26) dnsmasq.sh: Workaround dnsmasq startup failure bug
+[v1.47.0](https://github.com/nextcloud/nextcloudpi/commit/1ce2135) (2022-04-08) metrics.sh: Reinstall metrics when upgrading
 
-[v1.46.9](https://github.com/nextcloud/nextcloudpi/commit/cd98b50) (2022-03-07) docker: adjust PHP version in apache config
+[v1.46.10](https://github.com/nextcloud/nextcloudpi/commit/99a3c45) (2022-03-26) dnsmasq.sh: Workaround dnsmasq startup failure bug
+
+[v1.46.9 ](https://github.com/nextcloud/nextcloudpi/commit/cd98b50) (2022-03-07) docker: adjust PHP version in apache config
 
 [v1.46.8 ](https://github.com/nextcloud/nextcloudpi/commit/21b7fe7) (2022-03-04) SSH: cannot check for default password because of Debian bug #1003151
 
@@ -193,7 +195,7 @@
 
 [v1.37.0 ](https://github.com/nextcloud/nextcloudpi/commit/effdd6c) (2021-07-03) upgrade to NC20.0.11
 
-[v1.36.3 ](https://github.com/nextcloud/nextcloudpi/commit/7b809d1) (2021-05-13) ncp-web: fix port checking for IPv6 dual stack
+[v1.36.3, master](https://github.com/nextcloud/nextcloudpi/commit/7b809d1) (2021-05-13) ncp-web: fix port checking for IPv6 dual stack
 
 [v1.36.2 ](https://github.com/nextcloud/nextcloudpi/commit/1a8ac71) (2021-05-11) ncp-web: fix port checking
 

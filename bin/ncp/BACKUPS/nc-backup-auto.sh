@@ -14,10 +14,6 @@ tmpl_get_destination() {
   )
 }
 
-is_active() {
-  [[ $ACTIVE == "yes" ]]
-}
-
 configure()
 {
   [[ $ACTIVE != "yes" ]] && {
