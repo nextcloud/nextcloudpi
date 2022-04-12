@@ -69,8 +69,8 @@ apt-get dist-upgrade -y
 
 # install latest PHP version
 release_new=$(jq -r '.release'     < "${new_cfg}")
-# the default repo in bullseye is bullseye-security
-release_new="${release_new}-security"
+# the default repo in bullseye is bullseye-security - except for Raspbian
+[[ -f /usr/bin/raspi-config ]] || release_new="${release_new}-security"
 php_ver_new=$(jq -r '.php_version' < "${new_cfg}")
 
 $APTINSTALL -t ${release_new} php${php_ver_new} php${php_ver_new}-curl php${php_ver_new}-gd php${php_ver_new}-fpm php${php_ver_new}-cli php${php_ver_new}-opcache \
