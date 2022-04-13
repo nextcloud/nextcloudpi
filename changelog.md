@@ -1,5 +1,7 @@
 
-[v1.47.0](https://github.com/nextcloud/nextcloudpi/commit/1ce2135) (2022-04-08) metrics.sh: Reinstall metrics when upgrading
+[v1.47.1](https://github.com/nextcloud/nextcloudpi/commit/9563367) (2022-04-13) library.sh: Prevent systemd pager from blocking script execution
+
+[v1.47.0](https://github.com/nextcloud/nextcloudpi/commit/1ce2135) (2022-04-08) metrics.sh: Add docker support and custom metrics exporter
 
 [v1.46.10](https://github.com/nextcloud/nextcloudpi/commit/99a3c45) (2022-03-26) dnsmasq.sh: Workaround dnsmasq startup failure bug
 

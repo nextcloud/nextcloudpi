@@ -47,7 +47,6 @@ binaries_no_docker = [
         'udiskie',
         'ufw',
         'samba',
-        'wicd-curses',
         ]
 
 files_must_exist = [
