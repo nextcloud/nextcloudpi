@@ -13,6 +13,8 @@ export BINDIR=/usr/local/bin/ncp
 export NCDIR=/var/www/nextcloud
 export ncc=/usr/local/bin/ncc
 export NCPCFG=${NCPCFG:-etc/ncp.cfg}
+# Prevent systemd pager from blocking script execution
+export SYSTEMD_PAGER=
 
 [[ -f "$NCPCFG" ]] || export NCPCFG=/usr/local/etc/ncp.cfg
 [[ -f "$NCPCFG" ]] || { echo "$NCPCFG not found" >2; exit 1; }

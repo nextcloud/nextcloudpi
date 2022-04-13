@@ -2,6 +2,8 @@
 
 set -e
 
+source /usr/local/etc/library.sh
+
 # Stop metrics services if running
 for svc in prometheus-node-exporter ncp-metrics-exporter
 do
@@ -10,7 +12,6 @@ do
 done
 
 # Reinstall metrics services
-source /usr/local/etc/library.sh
 install_app metrics
 is_active_app metrics && (
   export METRICS_SKIP_PASSWORD_CONFIG=true
