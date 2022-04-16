@@ -151,7 +151,7 @@ if __name__ == "__main__":
 
     # parse options
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'h', ['help', '--no-gui'])
+        opts, args = getopt.getopt(sys.argv[1:], 'h', ['help', 'no-gui'])
     except getopt.GetoptError:
         usage()
         sys.exit(2)
