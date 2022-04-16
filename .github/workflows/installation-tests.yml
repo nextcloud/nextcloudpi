@@ -24,6 +24,7 @@ jobs:
       - name: Install and run tests
         run: |
           pwd
+          cd /ncp-test-automation/bin
           ls -lA
           ncp-install-test.sh "${GIT_REF}"
 
