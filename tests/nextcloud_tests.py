@@ -25,6 +25,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.firefox.options import Options
 from selenium.common.exceptions import NoSuchElementException, WebDriverException, TimeoutException
 from typing import List, Tuple
 import traceback
@@ -175,11 +176,12 @@ if __name__ == "__main__":
 
     # parse options
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'hn', ['help'])
+        opts, args = getopt.getopt(sys.argv[1:], 'hn', ['help', 'new', 'no-gui'])
     except getopt.GetoptError:
         usage()
         sys.exit(2)
 
+    options = Options()
     for opt, arg in opts:
         if opt in ('-h', '--help'):
             usage()
@@ -187,6 +189,8 @@ if __name__ == "__main__":
         elif opt in ('-n', '--new'):
             if os.path.exists(test_cfg):
                 os.unlink(test_cfg)
+        elif opt == '--no-gui':
+            options.headless = True
         else:
             usage()
             sys.exit(2)
@@ -222,7 +226,7 @@ if __name__ == "__main__":
     print("Nextcloud tests " + tc.yellow + IP + tc.normal)
     print("---------------------------")
 
-    driver = webdriver.Firefox(service_log_path='/dev/null')
+    driver = webdriver.Firefox(service_log_path='/dev/null', options=options)
     try:
         test_nextcloud(IP, nc_port, driver)
     finally:
