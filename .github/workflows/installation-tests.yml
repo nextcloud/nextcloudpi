@@ -23,6 +23,8 @@ jobs:
     steps:
       - name: Install and run tests
         run: |
-          ./ncp-install-test.sh "${GIT_REF}"
+          pwd
+          ls -lA
+          ncp-install-test.sh "${GIT_REF}"
 
 
