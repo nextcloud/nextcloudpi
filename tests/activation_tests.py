@@ -135,7 +135,7 @@ def test_activation(IP, nc_port, admin_port, options):
 
     # ncp-web
     test.new("ncp-web")
-    driver = webdriver.Firefox(service_log_path='/dev/null')
+    driver = webdriver.Firefox(service_log_path='/dev/null', options=options)
     try:
         driver.get(f"https://ncp:{urllib.parse.quote_plus(ncp_pass)}@{IP}:{admin_port}")
     except UnexpectedAlertPresentException:
