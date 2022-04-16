@@ -26,6 +26,7 @@ jobs:
           pwd
           cd /ncp-test-automation/bin
           ls -lA
-          ncp-install-test.sh "${GIT_REF}"
+          bash entrypoint.sh
+          bash ncp-install-test.sh "${GIT_REF}"
 
 
