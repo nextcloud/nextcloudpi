@@ -1,0 +1,27 @@
+name: 'NCP Installation Tests'
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: git ref, branch or tag to test against
+        required: false
+        type: string
+
+jobs:
+  integration-tests:
+    runs-on: ubuntu-latest
+    container:
+      image: thecalcaholic/ncp-test-automation:latest
+      env:
+        SSH_PUBLIC_KEY: "${{ secrets.TEST_AUTOMATION_SSH_PUBLIC_KEY }}"
+        SSH_PRIVATE_KEY: "${{ secrets.TEST_AUTOMATION_SSH_PRIVATE_KEY }}"
+        HCLOUD_API_TOKEN: "${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}"
+    env:
+      GIT_REF: "${{ github.event.inputs.tag || github.ref_name || github.head_ref }}"
+    steps:
+      - name: Install and run tests
+        run: |
+          ./ncp-install-test.sh "${GIT_REF}"
+
+
