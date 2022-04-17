@@ -31,6 +31,8 @@ jobs:
           env
           bash /ncp-test-automation/bin/entrypoint.sh
           export SSH_PRIVATE_KEY_PATH="/root/.ssh/automation_ssh_key"
+          eval $(ssh-agent)
+          ssh-add "$SSH_PRIVATE_KEY_PATH"
           bash /ncp-test-automation/bin/ncp-install-test.sh "${GIT_REF}"
 
 
