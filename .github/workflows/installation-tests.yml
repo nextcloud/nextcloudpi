@@ -17,7 +17,7 @@ jobs:
       env:
         SSH_PUBLIC_KEY: "${{ secrets.TEST_AUTOMATION_SSH_PUBLIC_KEY }}"
         SSH_PRIVATE_KEY: "${{ secrets.TEST_AUTOMATION_SSH_PRIVATE_KEY }}"
-        HCLOUD_API_TOKEN: "${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}"
+        HCLOUD_TOKEN: "${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}"
     env:
       GIT_REF: "${{ github.event.inputs.tag || github.ref_name || github.head_ref }}"
     steps:
