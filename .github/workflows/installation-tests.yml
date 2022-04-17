@@ -15,8 +15,6 @@ jobs:
     container:
       image: thecalcaholic/ncp-test-automation:latest
       env:
-        SSH_PUBLIC_KEY: "${{ secrets.TEST_AUTOMATION_SSH_PUBLIC_KEY }}"
-        SSH_PRIVATE_KEY: "${{ secrets.TEST_AUTOMATION_SSH_PRIVATE_KEY }}"
         HCLOUD_TOKEN: "${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}"
         UID: "${{ github.run_id }}-install"
     env:
@@ -27,6 +25,7 @@ jobs:
       snapshot_id: ${{ steps.setup-instance.outputs.snapshot_id }}
       test_server_id: ${{ steps.setup-instance.outputs.test_server_id }}
       ssh_pubkey_frpint: ${{ steps.prepare-environment.outputs.ssh_pubkey_fprint }}
+      ssh_privkey: ${{ steps.prepare-environment.outputs.ssh_privkey }}
     defaults:
       run:
         shell: bash
@@ -36,6 +35,11 @@ jobs:
         id: prepare-environment
         run: |
           set -x
+          
+          ssh-keygen -t ed25519 -f "$HOME/.ssh/automation_ssh_key"
+          export SSH_PRIVATE_KEY="$(cat "$HOME/.ssh/automation_ssh_key")"
+          export SSH_PUBLIC_KEY="$(cat "$HOME/.ssh/automation_ssh_key.pub")"
+          
           bash entrypoint.sh
           
           source ./library.sh
@@ -49,7 +53,7 @@ jobs:
           tf-apply "$TF_PROJECT_SETUP" "$TF_VAR_FILE"
           ssh_pubkey_fprint="$(tf-output "$TF_PROJECT_SETUP" admin_ssh_pubkey_fingerprint)"
           
-          echo "::set-output name=ssh_pubkey_fprint::${ssh_pubkey_fprint}"
+          echo "::set-output name=ssh_privkey::${SSH_PRIVATE_KEY}"
       - name: Create postinstall snapshot if not present
         run: |
           set -x
@@ -77,7 +81,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GIT_REF: "${{ github.event.inputs.tag || github.ref_name || github.head_ref }}"
-      SSH_PRIVATE_KEY: "${{ secrets.TEST_AUTOMATION_SSH_PRIVATE_KEY }}"
+      SSH_PRIVATE_KEY: "${{ needs.setup-test-instance.outputs.ssh_privkey }}"
       SERVER_ADDRESS: "${{ needs.setup-test-instance.outputs.server_address }}"
       SNAPSHOT_ID: "${{ needs.setup-test-instance.outputs.snapshot_id }}"
     defaults:
