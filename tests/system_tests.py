@@ -181,15 +181,18 @@ if __name__ == "__main__":
 
     # parse options
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'h', ['help'])
+        opts, args = getopt.getopt(sys.argv[1:], 'h', ['help', 'no-ping'])
     except getopt.GetoptError:
         usage()
         sys.exit(2)
 
+    skip_ping = False
     for opt, arg in opts:
         if opt in ('-h', '--help'):
             usage()
             sys.exit(2)
+        elif opt == '--no-ping':
+            skip_ping = True
         else:
             usage()
             sys.exit(2)
@@ -241,12 +244,13 @@ if __name__ == "__main__":
         pre_cmd = ['ssh', '-o UserKnownHostsFile=/dev/null' , '-o PasswordAuthentication=no',
                 '-o StrictHostKeyChecking=no', '-o ConnectTimeout=1', ssh_cmd[4:]]
 
-        at_char = ssh_cmd.index('@')
-        ip = ssh_cmd[at_char+1:]
-        ping_cmd = run(['ping', '-c1', '-w10', ip], stdout=STDOUT, stderr=STDERR)
-        if ping_cmd.returncode != 0:
-            print(tc.red + "No connectivity to " + tc.yellow + ip + tc.normal)
-            #sys.exit(1)
+        if not skip_ping:
+            at_char = ssh_cmd.index('@')
+            ip = ssh_cmd[at_char+1:]
+            ping_cmd = run(['ping', '-c1', '-w10', ip], stdout=STDOUT, stderr=STDERR)
+            if ping_cmd.returncode != 0:
+                print(tc.red + "No connectivity to " + tc.yellow + ip + tc.normal)
+                #sys.exit(1)
 
         ssh_test = run(pre_cmd + [':'], stdout=PIPE, stderr=PIPE)
         if ssh_test.returncode != 0:

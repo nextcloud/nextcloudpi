@@ -26,8 +26,6 @@ jobs:
           set -x
           cd /ncp-test-automation/bin
           export HOME="/root"
-          echo "Test ping cmd"
-          ping -c 1 -w 5 1.1.1.1
           bash /ncp-test-automation/bin/entrypoint.sh
           export SSH_PRIVATE_KEY_PATH="/root/.ssh/automation_ssh_key"
           eval $(ssh-agent)
