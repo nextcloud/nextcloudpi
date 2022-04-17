@@ -10,7 +10,7 @@ on:
   push:
 
 jobs:
-  integration-tests:
+  setup-test-instance:
     runs-on: ubuntu-latest
     container:
       image: thecalcaholic/ncp-test-automation:latest
@@ -18,18 +18,116 @@ jobs:
         SSH_PUBLIC_KEY: "${{ secrets.TEST_AUTOMATION_SSH_PUBLIC_KEY }}"
         SSH_PRIVATE_KEY: "${{ secrets.TEST_AUTOMATION_SSH_PRIVATE_KEY }}"
         HCLOUD_TOKEN: "${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}"
+        UID: "${{ github.run_id }}-install"
     env:
       GIT_REF: "${{ github.event.inputs.tag || github.ref_name || github.head_ref }}"
+      HOME: '/root'
+    outputs:
+      server_address: ${{ steps.step3.outputs.ipv4_address }}
+      snapshot_id: ${{ steps.step3.outputs.snapshot_id }}
+      test_server_id: ${{ steps.step3.outputs.test_server_id }}
+      ssh_pubkey_frpint: ${{ steps.step1.outputs.ssh_pubkey_fprint }}
     steps:
-      - name: Install and run tests
+      - name: Prepare environment
         run: |
           set -x
           cd /ncp-test-automation/bin
-          export HOME="/root"
           bash /ncp-test-automation/bin/entrypoint.sh
-          export SSH_PRIVATE_KEY_PATH="/root/.ssh/automation_ssh_key"
+          
+          source ./library.sh
+          
+          echo "Initialize Terraform"
+          for path in "$TF_PROJECT_SETUP" "$TF_SNAPSHOT" "$TF_SNAPSHOT_PROVIDER" "$TF_TEST_ENV"
+          do tf-init "$path"; done
+          
+          echo "Setting up project"
+          hcloud_clear_root_key
+          tf-apply "$TF_PROJECT_SETUP" "$TF_VAR_FILE"
+          ssh_pubkey_fprint="$(tf-output "$TF_PROJECT_SETUP" admin_ssh_pubkey_fingerprint)"
+          
+          echo "::set-output name=ssh_pubkey_fprint::${ssh_pubkey_fprint}"
+      - name: Create postinstall snapshot if not present
+        run: |
+          set -x
+          cd /ncp-test-automation/bin
           eval $(ssh-agent)
-          ssh-add "$SSH_PRIVATE_KEY_PATH"
-          bash /ncp-test-automation/bin/ncp-install-test.sh "${GIT_REF}"
-
-
+          ssh-add "/root/.ssh/automation_ssh_key"
+          
+          source ./library.sh
+          ensure-postinstall-snapshot "${{ steps.step1.outputs.ssh_pubkey_fprint }}" "${GIT_REF}"
+      - name: Setup test instance
+        run: |
+          tf-apply "$TF_TEST_ENV" "$TF_VAR_FILE" \
+          -var="snapshot_type=ncp-postinstall" \
+          -var="branch=${branch}" \
+          -var="admin_ssh_pubkey_fingerprint=${{ steps.step1.outputs.sh_pubkey_fprint }}"
+          
+          echo "::set-output name=ipv4_address::$(tf-output "$TF_TEST_ENV" test_server_ipv4)"
+          echo "::set-output name=snapshot_id::$(tf-output "$TF_TEST_ENV" snapshot_id)"
+          echo "::set-output name=test_server_id::$(tf-output "$TF_TEST_ENV" test_server_id)"
+          
+  run-integration-tests:
+    needs:
+      - setup-test-instance
+    runs-on: ubuntu-latest
+    env:
+      GIT_REF: "${{ github.event.inputs.tag || github.ref_name || github.head_ref }}"
+      SSH_PRIVATE_KEY: "${{ secrets.TEST_AUTOMATION_SSH_PRIVATE_KEY }}"
+      SERVER_ADDRESS: "${{ needs.setup-test-instance.outputs.server_address }}"
+      SNAPSHOT_ID: "${{ needs.setup-test-instance.outputs.snapshot_id }}"
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: 'theCalcaholic/ncp-test-automation'
+      - name: Setup ssh
+        run: |
+          echo "$SSH_PRIVATE_KEY" > ./automation_ssh_key
+          chmod 0600 ./automation_ssh_key
+          eval "$(ssh-agent)"
+          ssh-add ./automation_ssh_key
+      - name: Test postinstall VM
+        run: |
+          cd bin
+          source ./library.sh
+          
+          trap 'terminate-ssh-port-forwarding "${SERVER_ADDRESS}"' EXIT 1 2
+          
+          setup-ssh-port-forwarding "$SERVER_ADDRESS"
+          
+          test-ncp-instance -a -f "$SNAPSHOT_ID" -b "${GIT_REF}" "root@${SERVER_ADDRESS}" "localhost" "8443" "9443" || {
+    
+            echo "Integration tests failed"
+            echo "Here are the last lines of ncp-install.log:"
+            echo "==========================================="
+            ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" tail /var/log/ncp-install.log;
+            echo "==========================================="
+            echo "and ncp.log:"
+            echo "==========================================="
+            ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" tail /var/log/ncp.log;
+            echo "==========================================="
+            exit 1
+          }
+  vm-cleanup:
+    if: ${{ always() }}
+    needs:
+      - setup-test-instance
+      - run-integration-tests
+    runs-on: ubuntu-latest
+    container:
+      image: thecalcaholic/ncp-test-automation:latest
+      env:
+        SSH_PUBLIC_KEY: "${{ secrets.TEST_AUTOMATION_SSH_PUBLIC_KEY }}"
+        SSH_PRIVATE_KEY: "${{ secrets.TEST_AUTOMATION_SSH_PRIVATE_KEY }}"
+        HCLOUD_TOKEN: "${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}"
+        UID: "${{ github.run_id }}-install"
+    env:
+      GIT_REF: "${{ github.event.inputs.tag || github.ref_name || github.head_ref }}"
+      HOME: '/root'
+      UID: "${{ github.run_id }}-install"
+    steps:
+      - name: Teardown VMs
+        run: |
+          for server in $(hcloud server list -o noheader -o columns=id -l "cicd=-${UID}")
+          do
+            hcloud server delete "$server"
+          done
