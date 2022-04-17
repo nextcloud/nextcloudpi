@@ -28,7 +28,7 @@ jobs:
           id
           echo $HOME
           su github -c 'bash /ncp-test-automation/bin/entrypoint.sh'
-          #export SSH_PRIVATE_KEY_PATH="$(echo ~/.ssh/automation_ssh_key)"
+          export SSH_PRIVATE_KEY_PATH="/home/github/.ssh/automation_ssh_key"
           su github -c "bash /ncp-test-automation/bin/ncp-install-test.sh '${GIT_REF}'"
 
 
