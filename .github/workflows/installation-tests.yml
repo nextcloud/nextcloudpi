@@ -23,9 +23,8 @@ jobs:
     steps:
       - name: Install and run tests
         run: |
-          pwd
           cd /ncp-test-automation/bin
-          ls -lA
+          su ncp
           bash entrypoint.sh
           bash ncp-install-test.sh "${GIT_REF}"
 
