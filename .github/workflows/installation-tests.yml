@@ -27,11 +27,14 @@ jobs:
       snapshot_id: ${{ steps.step3.outputs.snapshot_id }}
       test_server_id: ${{ steps.step3.outputs.test_server_id }}
       ssh_pubkey_frpint: ${{ steps.step1.outputs.ssh_pubkey_fprint }}
+    defaults:
+      run:
+        shell: bash
+        working-directory: /ncp-test-automation/bin
     steps:
       - name: Prepare environment
         run: |
           set -x
-          cd /ncp-test-automation/bin
           bash entrypoint.sh
           
           source ./library.sh
@@ -75,6 +78,9 @@ jobs:
       SSH_PRIVATE_KEY: "${{ secrets.TEST_AUTOMATION_SSH_PRIVATE_KEY }}"
       SERVER_ADDRESS: "${{ needs.setup-test-instance.outputs.server_address }}"
       SNAPSHOT_ID: "${{ needs.setup-test-instance.outputs.snapshot_id }}"
+    defaults:
+      run:
+        shell: bash
     steps:
       - uses: actions/checkout@v3
         with:
@@ -124,6 +130,10 @@ jobs:
       GIT_REF: "${{ github.event.inputs.tag || github.ref_name || github.head_ref }}"
       HOME: '/root'
       UID: "${{ github.run_id }}-install"
+    defaults:
+      run:
+        shell: bash
+        working-directory: /ncp-test-automation/bin
     steps:
       - name: Teardown VMs
         run: |
