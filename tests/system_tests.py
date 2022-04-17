@@ -19,7 +19,7 @@ import getopt
 import os
 import signal
 from urllib.request import urlopen
-from subprocess import run, getstatusoutput, PIPE, STDOUT
+from subprocess import run, getstatusoutput, PIPE
 
 processes_must_be_running = [
         'apache2',
@@ -247,7 +247,7 @@ if __name__ == "__main__":
         if not skip_ping:
             at_char = ssh_cmd.index('@')
             ip = ssh_cmd[at_char+1:]
-            ping_cmd = run(['ping', '-c1', '-w10', ip], stdout=STDOUT, stderr=STDOUT)
+            ping_cmd = run(['ping', '-c1', '-w10', ip], stdout=PIPE, stderr=PIPE)
             if ping_cmd.returncode != 0:
                 print(tc.red + "No connectivity to " + tc.yellow + ip + tc.normal)
                 #sys.exit(1)
