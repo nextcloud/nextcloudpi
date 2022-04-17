@@ -34,7 +34,7 @@ jobs:
           cd /ncp-test-automation/bin
           bash entrypoint.sh
           
-          source library.sh
+          source ./library.sh
           
           echo "Initialize Terraform"
           for path in "$TF_PROJECT_SETUP" "$TF_SNAPSHOT" "$TF_SNAPSHOT_PROVIDER" "$TF_TEST_ENV"
