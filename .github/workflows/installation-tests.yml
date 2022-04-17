@@ -23,16 +23,17 @@ jobs:
       GIT_REF: "${{ github.event.inputs.tag || github.ref_name || github.head_ref }}"
       HOME: '/root'
     outputs:
-      server_address: ${{ steps.step3.outputs.ipv4_address }}
-      snapshot_id: ${{ steps.step3.outputs.snapshot_id }}
-      test_server_id: ${{ steps.step3.outputs.test_server_id }}
-      ssh_pubkey_frpint: ${{ steps.step1.outputs.ssh_pubkey_fprint }}
+      server_address: ${{ steps.setup-instance.outputs.ipv4_address }}
+      snapshot_id: ${{ steps.setup-instance.outputs.snapshot_id }}
+      test_server_id: ${{ steps.setup-instance.outputs.test_server_id }}
+      ssh_pubkey_frpint: ${{ steps.prepare-environment.outputs.ssh_pubkey_fprint }}
     defaults:
       run:
         shell: bash
         working-directory: /ncp-test-automation/bin
     steps:
       - name: Prepare environment
+        id: prepare-environment
         run: |
           set -x
           bash entrypoint.sh
@@ -57,8 +58,9 @@ jobs:
           ssh-add "/root/.ssh/automation_ssh_key"
           
           source ./library.sh
-          ensure-postinstall-snapshot "${{ steps.step1.outputs.ssh_pubkey_fprint }}" "${GIT_REF}"
+          ensure-postinstall-snapshot "${{ steps.prepare-environment.outputs.ssh_pubkey_fprint }}" "${GIT_REF}"
       - name: Setup test instance
+        id: setup-instance
         run: |
           tf-apply "$TF_TEST_ENV" "$TF_VAR_FILE" \
           -var="snapshot_type=ncp-postinstall" \
