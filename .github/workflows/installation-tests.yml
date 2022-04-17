@@ -25,11 +25,10 @@ jobs:
         run: |
           set -x
           cd /ncp-test-automation/bin
-          su ncp
           id
           echo $HOME
-          bash entrypoint.sh
-          export SSH_PRIVATE_KEY_PATH="$(echo ~/.ssh/automation_ssh_key)"
-          bash ncp-install-test.sh "${GIT_REF}"
+          su - github -c 'bash entrypoint.sh'
+          #export SSH_PRIVATE_KEY_PATH="$(echo ~/.ssh/automation_ssh_key)"
+          su - github -c "bash ncp-install-test.sh '${GIT_REF}'"
 
 
