@@ -24,7 +24,6 @@ jobs:
       server_address: ${{ steps.setup-instance.outputs.ipv4_address }}
       snapshot_id: ${{ steps.setup-instance.outputs.snapshot_id }}
       test_server_id: ${{ steps.setup-instance.outputs.test_server_id }}
-      ssh_pubkey_frpint: ${{ steps.prepare-environment.outputs.ssh_pubkey_fprint }}
       ssh_privkey: ${{ steps.prepare-environment.outputs.ssh_privkey }}
     defaults:
       run:
@@ -53,6 +52,7 @@ jobs:
           tf-apply "$TF_PROJECT_SETUP" "$TF_VAR_FILE"
           ssh_pubkey_fprint="$(tf-output "$TF_PROJECT_SETUP" admin_ssh_pubkey_fingerprint)"
           
+          echo "::set-output name=ssh_pubkey_fprint::${ssh_pubkey_fprint}"
           echo "::set-output name=ssh_privkey::${SSH_PRIVATE_KEY}"
       - name: Create postinstall snapshot if not present
         run: |
@@ -69,7 +69,7 @@ jobs:
           tf-apply "$TF_TEST_ENV" "$TF_VAR_FILE" \
           -var="snapshot_type=ncp-postinstall" \
           -var="branch=${branch}" \
-          -var="admin_ssh_pubkey_fingerprint=${{ steps.step1.outputs.sh_pubkey_fprint }}"
+          -var="admin_ssh_pubkey_fingerprint=${{ steps.prepare-environment.outputs.ssh_pubkey_fprint }}"
           
           echo "::set-output name=ipv4_address::$(tf-output "$TF_TEST_ENV" test_server_ipv4)"
           echo "::set-output name=snapshot_id::$(tf-output "$TF_TEST_ENV" snapshot_id)"
