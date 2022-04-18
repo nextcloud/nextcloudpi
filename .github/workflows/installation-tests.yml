@@ -21,6 +21,7 @@ jobs:
       snapshot_id: ${{ steps.create-test-instance.outputs.snapshot_id }}
       test_server_id: ${{ steps.create-test-instance.outputs.test_server_id }}
     steps:
+      - uses: actions/checkout@v3
       - run: |
           set -x
           ssh-keygen -t ed25519 -f "$HOME/.ssh/automation_ssh_key"
