@@ -275,8 +275,9 @@ jobs:
           EOF
       - name: Create Snapshot
         if: ${{ contains('success|failure', matrix.test_result) }}
+        shell: bash
         run: |
-          cd ./bin
+          cd /ncp-test-automation/bin
           . ./library.sh
           
           tf-apply "$TF_SNAPSHOT" "$TF_VAR_FILE" -var="branch=${{ matrix.version }}" -var="snapshot_provider_id=${{ matrix.test_server_id }}" -var="snapshot_type=ncp-postactivation" -state="${TF_SNAPSHOT}/${VERSION//\//.}.postactivation.tfstate"
