@@ -32,7 +32,7 @@ jobs:
           path: .ssh
           if-no-files-found: error
       - id: create-test-instance
-        uses: .github/actions/create-test-instance
+        uses: ./.github/actions/create-test-instance
         with:
           version: "${{ github.event.inputs.tag || github.ref_name || github.head_ref }}"
           uid: "${{ github.run_id }}-install"
