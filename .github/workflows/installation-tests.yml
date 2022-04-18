@@ -159,9 +159,12 @@ jobs:
           do
             hcloud server delete "$server"
           done
+      - name: Delete ssh key
+        run: |
           source ./library.sh
           hcloud-clear-root-key
-          
+      - name: Delete old snapshots
+        run: |
           for snapshot in $(hcloud image list -t snapshot -o noheader -o columns=id | head -n -20)
           do
             hcloud image delete "$snapshot"
