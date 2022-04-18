@@ -251,6 +251,7 @@ jobs:
             test_result: ${{ needs.setup-update-test-instance.result }}
             test_server_id: ${{ needs.setup-update-test-instance.test_server_id }}
             version: ${{ needs.setup-update-test-instance.version }}
+      fail-fast: false
 
     env:
       UID: ${{ github.run-id }}-${{ matrix.test_type }}
@@ -301,6 +302,7 @@ jobs:
     strategy:
       matrix:
         uid: ["${{ github.run_id }}-install", "${{ github.run_id }}-update"]
+      fail-fast: false
     env:
       GIT_REF: "${{ github.event.inputs.tag || github.ref_name || github.head_ref }}"
       HOME: '/root'
