@@ -25,7 +25,6 @@ runs:
   env:
     HCLOUD_TOKEN: ${{ inputs.hcloud_token }}
     UID: ${{ inputs.uid }}
-    HOME: /root
   args:
     - /ncp-test-automation/bin/actions/create-test-instance.sh
     - ${{ inputs.version }}
