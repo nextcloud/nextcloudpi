@@ -24,15 +24,15 @@ jobs:
       - uses: actions/checkout@v3
       - run: |
           set -x
-          ssh-keygen -t ed25519 -f "$HOME/.ssh/automation_ssh_key"
+          ssh-keygen -t ed25519 -f ".ssh/automation_ssh_key"
       - name: upload ssh private key as artifact
         uses: actions/upload-artifact@v3
         with:
-          name: ssh-privkey
-          path: /home/runner/.ssh
+          name: ${{ github.run-id }}-install-ssh-privkey
+          path: .ssh
           if-no-files-found: error
       - id: create-test-instance
-        uses: ./.github/actions/create-test-instance
+        uses: .github/actions/create-test-instance
         with:
           version: "${{ github.event.inputs.tag || github.ref_name || github.head_ref }}"
           uid: "${{ github.run_id }}-install"
@@ -134,7 +134,7 @@ jobs:
       - name: download ssh private key as artifact
         uses: actions/download-artifact@v3
         with:
-          name: ssh-privkey
+          name: ${{ github.run-id }}-install-ssh-privkey
           path: .ssh
       - name: Test postinstall VM
         run: |
