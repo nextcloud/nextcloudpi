@@ -9,7 +9,8 @@ on:
         type: string
   push:
     branches:
-      - feature/cicd-integration-tests
+      - master
+      - devel
     tags:
       - v*
   pull_request:
