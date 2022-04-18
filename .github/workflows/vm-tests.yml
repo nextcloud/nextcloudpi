@@ -1,0 +1,36 @@
+name: 'NCP VM Tests'
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: git ref, branch or tag to test against
+        required: false
+        type: string
+  push:
+    branches:
+      - master
+      - devel
+    tags:
+      - v*
+jobs:
+  find-previous-version:
+    runs-on: ubuntu-latest
+    outputs:
+      previous_version: ${{ steps.find_version.outputs.previous_version }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 10
+      - shell: bash
+        id: find_version
+        run: |
+          set -x
+          git fetch -f origin ${{ github.ref }}:${{ github.ref }}
+          version="$(git describe --tags)"
+          [[ "$version" =~ *-*-* ]] || {
+            git checkout HEAD~1
+            version="$(git describe --tags)"
+          }
+          version="${version%-*-*)"
+          echo "::set-output name=previous_version::${version}"

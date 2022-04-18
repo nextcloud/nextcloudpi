@@ -46,6 +46,8 @@ jobs:
       snapshot_id: ${{ steps.create-test-instance.outputs.snapshot_id }}
       test_server_id: ${{ steps.create-test-instance.outputs.test_server_id }}
       previous_version: ${{ steps.find-version.outputs.previous_version }}
+    env:
+      GIT_REF: "${{ github.event.inputs.tag || github.ref_name || github.head_ref }}"
     steps:
       - uses: actions/checkout@v3
         with:
@@ -54,6 +56,8 @@ jobs:
         id: find-version
         run: |
           set -x
+          echo "${GIT_REF}"
+          env
           git fetch origin -f --tags
           version="$(git describe --tags --always)"
           [[ "$version" =~ *-*-* ]] || {
