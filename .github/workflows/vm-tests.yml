@@ -38,6 +38,7 @@ jobs:
           version: "${{ github.event.inputs.tag || github.ref_name || github.head_ref }}"
           uid: "${{ github.run_id }}-install"
           hcloud_token: ${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}
+          server_type: "cx21"
 
   setup-update-test-instance:
     runs-on: ubuntu-latest
