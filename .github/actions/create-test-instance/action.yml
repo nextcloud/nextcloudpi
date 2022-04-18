@@ -29,6 +29,7 @@ runs:
   env:
     HCLOUD_TOKEN: ${{ inputs.hcloud_token }}
     UID: ${{ inputs.uid }}
+    SERVER_TYPE: ${{ inputs.server_type }}
   args:
     - /ncp-test-automation/bin/actions/create-test-instance.sh
     - ${{ inputs.version }}
