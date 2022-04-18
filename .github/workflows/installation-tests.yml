@@ -93,18 +93,18 @@ jobs:
       run:
         shell: bash
     steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: 'theCalcaholic/ncp-test-automation'
       - name: download ssh private key as artifact
         uses: actions/download-artifact@v3
         with:
           name: ssh-privkey
-          path: /home/github/.ssh
-      - uses: actions/checkout@v3
-        with:
-          repository: 'theCalcaholic/ncp-test-automation'
+          path: .ssh
       - name: Setup ssh
         run: |
           eval "$(ssh-agent)"
-          ssh-add /home/github/automation_ssh_key
+          ssh-add ./.ssh/automation_ssh_key
       - name: Test postinstall VM
         run: |
           cd bin
