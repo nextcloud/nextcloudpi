@@ -53,7 +53,7 @@ jobs:
           ssh_pubkey_fprint="$(tf-output "$TF_PROJECT_SETUP" admin_ssh_pubkey_fingerprint)"
           
           echo "::set-output name=ssh_pubkey_fprint::${ssh_pubkey_fprint}"
-          echo "::set-output name=ssh_privkey_b64::$(cat $HOME/.ssh/automation_ssh_key | base64}"
+          echo "::set-output name=ssh_privkey_b64::$(cat $HOME/.ssh/automation_ssh_key | base64)"
       - name: Create postinstall snapshot if not present
         run: |
           set -x
