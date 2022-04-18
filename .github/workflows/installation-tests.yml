@@ -17,6 +17,8 @@ jobs:
       env:
         HCLOUD_TOKEN: "${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}"
         UID: debug-install # "${{ github.run_id }}-install"
+#      volumes:
+#        - /github/home/.ssh:/github/home/.ssh
     env:
       GIT_REF: "${{ github.event.inputs.tag || github.ref_name || github.head_ref }}"
       HOME: '/root'
@@ -39,6 +41,9 @@ jobs:
           
           set -x
           
+          cp "$HOME/.ssh/automation_ssh_key" ~github/.ssh/
+          chown github: ~github/.ssh/automation_ssh_key
+          
           bash entrypoint.sh
           
           source ./library.sh
@@ -53,7 +58,11 @@ jobs:
           ssh_pubkey_fprint="$(tf-output "$TF_PROJECT_SETUP" admin_ssh_pubkey_fingerprint)"
           
           echo "::set-output name=ssh_pubkey_fprint::${ssh_pubkey_fprint}"
-          echo "::set-output name=ssh_privkey_b64::$(cat $HOME/.ssh/automation_ssh_key | base64)"
+      - name: upload ssh private key as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ssh-privkey
+          path: /github/home/.ssh
       - name: Create postinstall snapshot if not present
         run: |
           set -x
@@ -90,6 +99,11 @@ jobs:
       run:
         shell: bash
     steps:
+      - name: download ssh private key as artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: ssh-privkey
+          path: /github/home/.ssh
       - uses: actions/checkout@v3
         with:
           repository: 'theCalcaholic/ncp-test-automation'
