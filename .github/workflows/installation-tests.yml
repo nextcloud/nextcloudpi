@@ -33,11 +33,11 @@ jobs:
       - name: Prepare environment
         id: prepare-environment
         run: |
-          set -x
-          
           ssh-keygen -t ed25519 -f "$HOME/.ssh/automation_ssh_key"
           export SSH_PRIVATE_KEY="$(cat "$HOME/.ssh/automation_ssh_key")"
           export SSH_PUBLIC_KEY="$(cat "$HOME/.ssh/automation_ssh_key.pub")"
+          
+          set -x
           
           bash entrypoint.sh
           
@@ -96,6 +96,9 @@ jobs:
       - name: Setup ssh
         run: |
           echo -n "$SSH_PRIVATE_KEY_B64" | base64 -d > ./automation_ssh_key
+          
+          set -x
+          
           chmod 0600 ./automation_ssh_key
           eval "$(ssh-agent)"
           ssh-add ./automation_ssh_key
