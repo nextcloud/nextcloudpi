@@ -308,7 +308,6 @@ jobs:
         uid: ["${{ github.run_id }}-install", "${{ github.run_id }}-update"]
       fail-fast: false
     env:
-      GIT_REF: "${{ github.event.inputs.tag || github.ref_name || github.head_ref }}"
       HOME: '/root'
       UID: ${{ matrix.uid }}
     defaults:
@@ -328,6 +327,18 @@ jobs:
         run: |
           source ./library.sh
           hcloud-clear-root-key
+  cleanup-snapshots:
+    if: ${{ always() }}
+    needs:
+      - cleanup
+    runs-on: ubuntu-latest
+    container:
+      image: thecalcaholic/ncp-test-automation:latest
+      env:
+        HCLOUD_TOKEN: "${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}"
+    env:
+      HOME: '/root'
+    steps:
       - name: Delete old snapshots
         run: |
           for snapshot in $(hcloud image list -t snapshot -o noheader -o columns=id | head -n -20)
