@@ -54,7 +54,7 @@ jobs:
         id: find-version
         run: |
           set -x
-          git fetch -f origin ${{ github.ref }}:${{ github.ref }}
+          git fetch origin -f --tags
           version="$(git describe --tags)"
           [[ "$version" =~ *-*-* ]] || {
             git checkout HEAD~1
