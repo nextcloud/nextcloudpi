@@ -143,7 +143,7 @@ jobs:
     steps:
       - name: Teardown VMs
         run: |
-          for server in $(hcloud server list -o noheader -o columns=id -l "cicd=-${UID}")
+          for server in $(hcloud server list -o noheader -o columns=id -l "ci=${UID}")
           do
             hcloud server delete "$server"
           done
