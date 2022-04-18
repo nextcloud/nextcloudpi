@@ -257,12 +257,12 @@ jobs:
     steps:
       - name: download ssh private key as artifact
         uses: actions/download-artifact@v3
-        if: ${{ contains(["success", "failure"], matrix.test_result) }}
+        if: ${{ contains("success|failure", matrix.test_result) }}
         with:
           name: ${{ github.run-id }}-${{ matrix.test_type }}-ssh-privkey
           path: .ssh
       - name: Shutdown server
-        if: ${{ contains(["success", "failure"], matrix.test_result) }}
+        if: ${{ contains("success|failure", matrix.test_result) }}
         run: |
           chmod 0600 ./.ssh/automation_ssh_key
           eval "$(ssh-agent)"
@@ -273,7 +273,7 @@ jobs:
           systemctl poweroff
           EOF
       - name: Create Snapshot
-        if: ${{ contains(["success", "failure"], matrix.test_result) }}
+        if: ${{ contains("success|failure", matrix.test_result) }}
         run: |
           cd ./bin
           . ./library.sh
