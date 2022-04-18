@@ -244,12 +244,12 @@ jobs:
           - test_type: install
             server_address: ${{ needs.setup-installation-test-instance.outputs.server_address }}
             test_result: ${{ needs.setup-installation-test-instance.result }}
-            test_server_id: ${{ needs.setup-installation-test-instance.test_server_id }}
+            test_server_id: ${{ needs.setup-installation-test-instance.outputs.test_server_id }}
             version: ${{ needs.setup-installation-test-instance.version }}
           - test_type: update
             server_address: ${{ needs.setup-update-test-instance.outputs.server_address }}
             test_result: ${{ needs.setup-update-test-instance.result }}
-            test_server_  id: ${{ needs.setup-update-test-instance.test_server_id }}
+            test_server_id: ${{ needs.setup-update-test-instance.outputs.test_server_id }}
             version: ${{ needs.setup-update-test-instance.version }}
       fail-fast: false
 
