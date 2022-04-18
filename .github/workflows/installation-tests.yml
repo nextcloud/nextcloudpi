@@ -24,6 +24,7 @@ jobs:
       - uses: actions/checkout@v3
       - run: |
           set -x
+          mkdir -p ./.ssh
           ssh-keygen -t ed25519 -f ".ssh/automation_ssh_key"
       - name: upload ssh private key as artifact
         uses: actions/upload-artifact@v3
