@@ -56,16 +56,13 @@ jobs:
         id: find-version
         run: |
           set -x
-          echo "${GIT_REF}"
-          env
-          git checkout "$GIT_REF"
           git fetch -fu --tags origin ${{ github.ref }}:${{ github.ref }}
           version="$(git describe --tags)"
-          [[ "$version" =~ *-*-* ]] || {
+          [[ "$version" =~ .*-.*-.* ]] || {
             git checkout HEAD~1
             version="$(git describe --tags)"
           }
-          version="${version%-*-*)"
+          version="${version%-*-*}"
           echo "::set-output name=previous_version::${version}"
       - run: |
           set -x
