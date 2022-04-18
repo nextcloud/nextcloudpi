@@ -95,6 +95,7 @@ jobs:
       GIT_REF: "${{ github.event.inputs.tag || github.ref_name || github.head_ref }}"
       SERVER_ADDRESS: "${{ needs.setup-test-instance.outputs.server_address }}"
       SNAPSHOT_ID: "${{ needs.setup-test-instance.outputs.snapshot_id }}"
+      HOME: /root
     defaults:
       run:
         shell: bash
@@ -160,3 +161,8 @@ jobs:
           done
           source ./library.sh
           hcloud-clear-root-key
+          
+          for snapshot in $(hcloud image list -t snapshot -o noheader -o columns=id | head -n -20)
+          do
+            hcloud image delete "$snapshot"
+          done
