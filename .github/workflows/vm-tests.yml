@@ -175,7 +175,7 @@ jobs:
           source ./library.sh
   
           echo "Updating from $PREVIOUS_VERSION to $GIT_REF"
-          ssh-keygen -f "$HOME/.ssh/known_hosts" -R "${SERVER_ADDRESS}" 2> /dev/null
+          ssh-keygen -f "$HOME/.ssh/known_hosts" -R "${SERVER_ADDRESS}" 2> /dev/null || true
           ssh -o "StrictHostKeyChecking=no" "root@$${SERVER_ADDRESS}" "ncp-update '$GIT_REF'"
           
           trap 'terminate-ssh-port-forwarding "${SERVER_ADDRESS}"' EXIT 1 2
