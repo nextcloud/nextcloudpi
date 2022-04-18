@@ -167,16 +167,20 @@ jobs:
       - name: perform update
         run: |
           set -ex
+          
           chmod 0600 ./.ssh/automation_ssh_key
           eval "$(ssh-agent)"
           ssh-add ./.ssh/automation_ssh_key
+          
+          . ./bin/library.sh
 
           echo "Updating from $PREVIOUS_VERSION to $GIT_REF"
           ssh-keygen -f "$HOME/.ssh/known_hosts" -R "${SERVER_ADDRESS}" 2> /dev/null || true
-          ssh -o "StrictHostKeyChecking=no" "root@${SERVER_ADDRESS}" "ncp-update '$GIT_REF'"
+          ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" "ncp-update '$GIT_REF'"
       - name: Run integration tests
         run: |
-          ssh-add -l
+          set -ex
+          
           eval "$(ssh-agent)"
           ssh-add ./.ssh/automation_ssh_key
           
