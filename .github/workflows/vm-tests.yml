@@ -23,7 +23,7 @@ jobs:
       test_server_id: ${{ steps.create-test-instance.outputs.test_server_id }}
       version: ${{ env.VERSION }}
     env:
-      VERSION: "${{ github.event.inputs.version || github.ref_name || github.head_ref }}"
+      VERSION: "${{ github.event.inputs.version || github.head_ref || github.ref_name }}"
     steps:
       - uses: actions/checkout@v3
       - run: |
@@ -53,7 +53,7 @@ jobs:
       previous_version: ${{ steps.find-version.outputs.previous_version }}
       version: ${{ env.VERSION }}
     env:
-      VERSION: "${{ github.event.inputs.tag || github.ref_name || github.head_ref }}"
+      VERSION: "${{ github.event.inputs.version || github.head_ref || github.ref_name }}"
     steps:
       - uses: actions/checkout@v3
         with:
