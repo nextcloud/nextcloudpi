@@ -23,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: |
-          set -x
+          set -e
           mkdir -p ./.ssh
           ssh-keygen -t ed25519 -f ".ssh/automation_ssh_key"
       - name: upload ssh private key as artifact
@@ -55,7 +55,7 @@ jobs:
       - shell: bash
         id: find-version
         run: |
-          set -x
+          set -e
           git fetch -fu --tags origin ${{ github.ref }}:${{ github.ref }}
           version="$(git describe --tags)"
           [[ "$version" =~ .*-.*-.* ]] || {
@@ -63,6 +63,7 @@ jobs:
             version="$(git describe --tags)"
           }
           version="${version%-*-*}"
+          echo "Previous version is '$version'"
           echo "::set-output name=previous_version::${version}"
       - run: |
           set -x
@@ -110,7 +111,8 @@ jobs:
           path: .ssh
       - name: Test postinstall VM
         run: |
-          set -ex
+          set -e
+          echo "Setup ssh"
           chmod 0600 ./.ssh/automation_ssh_key
           eval "$(ssh-agent)"
           ssh-add ./.ssh/automation_ssh_key
@@ -122,6 +124,7 @@ jobs:
           
           setup-ssh-port-forwarding "$SERVER_ADDRESS"
           
+          echo "Run integration tests"
           test-ncp-instance -a -f "$SNAPSHOT_ID" -b "${GIT_REF}" "root@${SERVER_ADDRESS}" "localhost" "8443" "9443" || {
     
             echo "Integration tests failed"
@@ -166,8 +169,9 @@ jobs:
           path: .ssh
       - name: perform update
         run: |
-          set -ex
+          set -e
           
+          echo "Setup ssh"
           chmod 0600 ./.ssh/automation_ssh_key
           eval "$(ssh-agent)"
           ssh-add ./.ssh/automation_ssh_key
@@ -179,16 +183,18 @@ jobs:
           ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" "ncp-update '$GIT_REF'"
       - name: Run integration tests
         run: |
-          set -ex
+          set -e
           
+          echo "Setup ssh"
           eval "$(ssh-agent)"
           ssh-add ./.ssh/automation_ssh_key
           
           cd bin
           source ./library.sh
-            
+          
           trap 'terminate-ssh-port-forwarding "${SERVER_ADDRESS}"' EXIT 1 2
           
+          echo "Run integration tests"
           setup-ssh-port-forwarding "$SERVER_ADDRESS"
           
           test-ncp-instance -a -f "$SNAPSHOT_ID" -b "${GIT_REF}" "root@${SERVER_ADDRESS}" "localhost" "8443" "9443" || {
@@ -230,8 +236,6 @@ jobs:
     steps:
       - name: Teardown VMs
         run: |
-          set -x
-          hcloud server list -o noheader -o columns=id -l "ci=${UID?}"
           for server in $(hcloud server list -o noheader -o columns=id -l "ci=${UID}")
           do
             echo "Deleting server '$server'..."
