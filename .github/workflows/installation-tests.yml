@@ -17,8 +17,6 @@ jobs:
       env:
         HCLOUD_TOKEN: "${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}"
         UID: debug-install # "${{ github.run_id }}-install"
-#      volumes:
-#        - /github/home/.ssh:/github/home/.ssh
     env:
       GIT_REF: "${{ github.event.inputs.tag || github.ref_name || github.head_ref }}"
       HOME: '/root'
@@ -87,6 +85,12 @@ jobs:
     needs:
       - setup-test-instance
     runs-on: ubuntu-latest
+
+    container:
+      image: thecalcaholic/ncp-test-automation:latest
+      env:
+        HCLOUD_TOKEN: "${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}"
+        UID: debug-install # "${{ github.run_id }}-install"
     env:
       GIT_REF: "${{ github.event.inputs.tag || github.ref_name || github.head_ref }}"
       SERVER_ADDRESS: "${{ needs.setup-test-instance.outputs.server_address }}"
