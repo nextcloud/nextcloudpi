@@ -105,6 +105,7 @@ jobs:
           path: .ssh
       - name: Setup ssh
         run: |
+          chmod 0600 ./.ssh/automation_ssh_key
           eval "$(ssh-agent)"
           ssh-add ./.ssh/automation_ssh_key
       - name: Test postinstall VM
@@ -143,7 +144,6 @@ jobs:
     env:
       GIT_REF: "${{ github.event.inputs.tag || github.ref_name || github.head_ref }}"
       HOME: '/root'
-      UID: "${{ github.run_id }}-install"
     defaults:
       run:
         shell: bash
