@@ -70,7 +70,7 @@ jobs:
           
           tf-apply "$TF_TEST_ENV" "$TF_VAR_FILE" \
           -var="snapshot_type=ncp-postinstall" \
-          -var="branch=${branch}" \
+          -var="branch=${GIT_REF}" \
           -var="admin_ssh_pubkey_fingerprint=${{ steps.prepare-environment.outputs.ssh_pubkey_fprint }}"
           
           echo "::set-output name=ipv4_address::$(tf-output "$TF_TEST_ENV" test_server_ipv4)"
