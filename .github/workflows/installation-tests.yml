@@ -35,6 +35,8 @@ jobs:
         id: prepare-environment
         run: |
           ssh-keygen -t ed25519 -f "$HOME/.ssh/automation_ssh_key"
+          export SSH_PRIVATE_KEY="$(cat $HOME/.ssh/automation_ssh_key)"
+          export SSH_PUBLIC_KEY="$(cat $HOME/.ssh/automation_ssh_key.pub)"
           
           set -x
           
