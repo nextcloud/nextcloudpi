@@ -14,7 +14,7 @@ on:
       - v*
 
 jobs:
-  setup-test-instance:
+  setup-installation-test-instance:
     runs-on: ubuntu-latest
     outputs:
       server_address: ${{ steps.create-test-instance.outputs.server_address }}
@@ -39,80 +39,49 @@ jobs:
           uid: "${{ github.run_id }}-install"
           hcloud_token: ${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}
 
-#  setup-test-instance-old:
-#    runs-on: ubuntu-latest
-#    container:
-#      image: thecalcaholic/ncp-test-automation:latest
-#      env:
-#        HCLOUD_TOKEN: "${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}"
-#        UID: "${{ github.run_id }}-install"
-#    env:
-#      GIT_REF: "${{ github.event.inputs.tag || github.ref_name || github.head_ref }}"
-#      HOME: '/root'
-#    outputs:
-#      server_address: ${{ steps.setup-instance.outputs.ipv4_address }}
-#      snapshot_id: ${{ steps.setup-instance.outputs.snapshot_id }}
-#      test_server_id: ${{ steps.setup-instance.outputs.test_server_id }}
-#    defaults:
-#      run:
-#        shell: bash
-#        working-directory: /ncp-test-automation/bin
-#    steps:
-#      - name: Prepare environment
-#        id: prepare-environment
-#        run: |
-#          ssh-keygen -t ed25519 -f "$HOME/.ssh/automation_ssh_key"
-#          export SSH_PRIVATE_KEY="$(cat $HOME/.ssh/automation_ssh_key)"
-#          export SSH_PUBLIC_KEY="$(cat $HOME/.ssh/automation_ssh_key.pub)"
-#
-#          set -x
-#
-#          bash entrypoint.sh
-#
-#          source ./library.sh
-#
-#          echo "Initialize Terraform"
-#          for path in "$TF_PROJECT_SETUP" "$TF_SNAPSHOT" "$TF_SNAPSHOT_PROVIDER" "$TF_TEST_ENV"
-#          do tf-init "$path"; done
-#
-#          echo "Set up Hetzner project"
-#          hcloud-clear-root-key
-#          tf-apply "$TF_PROJECT_SETUP" "$TF_VAR_FILE"
-#          ssh_pubkey_fprint="$(tf-output "$TF_PROJECT_SETUP" admin_ssh_pubkey_fingerprint)"
-#
-#          echo "::set-output name=ssh_pubkey_fprint::${ssh_pubkey_fprint}"
-#      - name: upload ssh private key as artifact
-#        uses: actions/upload-artifact@v3
-#        with:
-#          name: ssh-privkey
-#          path: /root/.ssh
-#          if-no-files-found: error
-#      - name: Create postinstall snapshot if not present
-#        run: |
-#          set -x
-#          # eval $(ssh-agent)
-#          # ssh-add "/root/.ssh/automation_ssh_key"
-#
-#          source ./library.sh
-#          ensure-postinstall-snapshot "${{ steps.prepare-environment.outputs.ssh_pubkey_fprint }}" "${GIT_REF}"
-#      - name: Setup test instance
-#        id: setup-instance
-#        run: |
-#          set -x
-#          source ./library.sh
-#
-#          tf-apply "$TF_TEST_ENV" "$TF_VAR_FILE" \
-#          -var="snapshot_type=ncp-postinstall" \
-#          -var="branch=${GIT_REF}" \
-#          -var="admin_ssh_pubkey_fingerprint=${{ steps.prepare-environment.outputs.ssh_pubkey_fprint }}"
-#
-#          echo "::set-output name=ipv4_address::$(tf-output "$TF_TEST_ENV" test_server_ipv4)"
-#          echo "::set-output name=snapshot_id::$(tf-output "$TF_TEST_ENV" snapshot_id)"
-#          echo "::set-output name=test_server_id::$(tf-output "$TF_TEST_ENV" test_server_id)"
+  setup-update-test-instance:
+    runs-on: ubuntu-latest
+    outputs:
+      server_address: ${{ steps.create-test-instance.outputs.server_address }}
+      snapshot_id: ${{ steps.create-test-instance.outputs.snapshot_id }}
+      test_server_id: ${{ steps.create-test-instance.outputs.test_server_id }}
+      previous_version: ${{ stpeps.find-version.outputs.previous_version }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 10
+      - shell: bash
+        id: find-version
+        run: |
+          set -x
+          git fetch -f origin ${{ github.ref }}:${{ github.ref }}
+          version="$(git describe --tags)"
+          [[ "$version" =~ *-*-* ]] || {
+            git checkout HEAD~1
+            version="$(git describe --tags)"
+          }
+          version="${version%-*-*)"
+          echo "::set-output name=previous_version::${version}"
+      - run: |
+          set -x
+          mkdir -p ./.ssh
+          ssh-keygen -t ed25519 -f ".ssh/automation_ssh_key"
+      - name: upload ssh private key as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ github.run-id }}-update-ssh-privkey
+          path: .ssh
+          if-no-files-found: error
+      - id: create-test-instance
+        uses: ./.github/actions/create-test-instance
+        with:
+          version: "${{ steps.find-version.outputs.previous_version }}"
+          uid: "${{ github.run_id }}-update"
+          hcloud_token: ${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}
 
-  run-integration-tests:
+  run-installation-test:
     needs:
-      - setup-test-instance
+      - setup-installation-test-instance
     runs-on: ubuntu-latest
 
     container:
@@ -122,8 +91,8 @@ jobs:
         UID: "${{ github.run_id }}-install"
     env:
       GIT_REF: "${{ github.event.inputs.tag || github.ref_name || github.head_ref }}"
-      SERVER_ADDRESS: "${{ needs.setup-test-instance.outputs.server_address }}"
-      SNAPSHOT_ID: "${{ needs.setup-test-instance.outputs.snapshot_id }}"
+      SERVER_ADDRESS: "${{ needs.setup-installation-test-instance.outputs.server_address }}"
+      SNAPSHOT_ID: "${{ needs.setup-installation-test-instance.outputs.snapshot_id }}"
       HOME: /root
     defaults:
       run:
@@ -139,6 +108,7 @@ jobs:
           path: .ssh
       - name: Test postinstall VM
         run: |
+          set -ex
           chmod 0600 ./.ssh/automation_ssh_key
           eval "$(ssh-agent)"
           ssh-add ./.ssh/automation_ssh_key
@@ -163,17 +133,81 @@ jobs:
             echo "==========================================="
             exit 1
           }
+
+  run-update-test:
+    needs:
+      - setup-update-test-instance
+    runs-on: ubuntu-latest
+
+    container:
+      image: thecalcaholic/ncp-test-automation:latest
+      env:
+        HCLOUD_TOKEN: "${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}"
+        UID: "${{ github.run_id }}-update"
+    env:
+      PREVIOUS_VERSION: ${{ needs.setup-update-test-instance.outputs.previous_version }}
+      GIT_REF: "${{ github.event.inputs.tag || github.ref_name || github.head_ref }}"
+      SERVER_ADDRESS: "${{ needs.setup-update-test-instance.outputs.server_address }}"
+      SNAPSHOT_ID: "${{ needs.setup-update-test-instance.outputs.snapshot_id }}"
+      HOME: /root
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: 'theCalcaholic/ncp-test-automation'
+      - name: download ssh private key as artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ github.run-id }}-install-ssh-privkey
+          path: .ssh
+      - name: Test postinstall VM
+        run: |
+          set -ex
+          chmod 0600 ./.ssh/automation_ssh_key
+          eval "$(ssh-agent)"
+          ssh-add ./.ssh/automation_ssh_key
+          
+          cd bin
+          source ./library.sh
+  
+          echo "Updating from $PREVIOUS_VERSION to $GIT_REF
+          ssh-keygen -f "$HOME/.ssh/known_hosts" -R "${ipv4_address}" 2> /dev/null
+          ssh -o "StrictHostKeyChecking=no" "root@${ipv4_address}" "ncp-update '$GIT_REF'"
+          
+          trap 'terminate-ssh-port-forwarding "${SERVER_ADDRESS}"' EXIT 1 2
+          
+          setup-ssh-port-forwarding "$SERVER_ADDRESS"
+          
+          test-ncp-instance -a -f "$SNAPSHOT_ID" -b "${GIT_REF}" "root@${SERVER_ADDRESS}" "localhost" "8443" "9443" || {
+          
+            echo "Integration tests failed"
+            echo "Here are the last lines of ncp-install.log:"
+            echo "==========================================="
+            ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" tail /var/log/ncp-install.log;
+            echo "==========================================="
+            echo "and ncp.log:"
+            echo "==========================================="
+            ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" tail /var/log/ncp.log;
+            echo "==========================================="
+            exit 1
+          }
+
   vm-cleanup:
     if: ${{ always() }}
     needs:
-      - setup-test-instance
-      - run-integration-tests
+      - setup-installation-test-instance
+      - setup-update-test-instance
+      - run-installation-test
     runs-on: ubuntu-latest
     container:
       image: thecalcaholic/ncp-test-automation:latest
       env:
         HCLOUD_TOKEN: "${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}"
-        UID:  "${{ github.run_id }}-install"
+    strategy:
+      matrix:
+        UID: ["${{ github.run_id }}-install", "${{ github.run_id }}-update"]
     env:
       GIT_REF: "${{ github.event.inputs.tag || github.ref_name || github.head_ref }}"
       HOME: '/root'
