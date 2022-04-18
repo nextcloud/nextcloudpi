@@ -8,79 +8,107 @@ on:
         required: false
         type: string
   push:
+    branches:
+      - master
+      - devel
+    tags:
+      - v*
 
 jobs:
   setup-test-instance:
     runs-on: ubuntu-latest
-    container:
-      image: thecalcaholic/ncp-test-automation:latest
-      env:
-        HCLOUD_TOKEN: "${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}"
-        UID: "${{ github.run_id }}-install"
-    env:
-      GIT_REF: "${{ github.event.inputs.tag || github.ref_name || github.head_ref }}"
-      HOME: '/root'
     outputs:
-      server_address: ${{ steps.setup-instance.outputs.ipv4_address }}
-      snapshot_id: ${{ steps.setup-instance.outputs.snapshot_id }}
-      test_server_id: ${{ steps.setup-instance.outputs.test_server_id }}
-    defaults:
-      run:
-        shell: bash
-        working-directory: /ncp-test-automation/bin
+      server_address: ${{ steps.create-test-instance.outputs.server_address }}
+      snapshot_id: ${{ steps.create-test-instance.outputs.snapshot_id }}
+      test_server_id: ${{ steps.create-test-instance.outputs.test_server_id }}
     steps:
-      - name: Prepare environment
-        id: prepare-environment
-        run: |
-          ssh-keygen -t ed25519 -f "$HOME/.ssh/automation_ssh_key"
-          export SSH_PRIVATE_KEY="$(cat $HOME/.ssh/automation_ssh_key)"
-          export SSH_PUBLIC_KEY="$(cat $HOME/.ssh/automation_ssh_key.pub)"
-          
+      - run: |
           set -x
-          
-          bash entrypoint.sh
-          
-          source ./library.sh
-          
-          echo "Initialize Terraform"
-          for path in "$TF_PROJECT_SETUP" "$TF_SNAPSHOT" "$TF_SNAPSHOT_PROVIDER" "$TF_TEST_ENV"
-          do tf-init "$path"; done
-          
-          echo "Set up Hetzner project"
-          hcloud-clear-root-key
-          tf-apply "$TF_PROJECT_SETUP" "$TF_VAR_FILE"
-          ssh_pubkey_fprint="$(tf-output "$TF_PROJECT_SETUP" admin_ssh_pubkey_fingerprint)"
-          
-          echo "::set-output name=ssh_pubkey_fprint::${ssh_pubkey_fprint}"
+          ssh-keygen -t ed25519 -f "$HOME/.ssh/automation_ssh_key
       - name: upload ssh private key as artifact
         uses: actions/upload-artifact@v3
         with:
           name: ssh-privkey
-          path: /root/.ssh
+          path: /home/github/.ssh
           if-no-files-found: error
-      - name: Create postinstall snapshot if not present
-        run: |
-          set -x
-          # eval $(ssh-agent)
-          # ssh-add "/root/.ssh/automation_ssh_key"
-          
-          source ./library.sh
-          ensure-postinstall-snapshot "${{ steps.prepare-environment.outputs.ssh_pubkey_fprint }}" "${GIT_REF}"
-      - name: Setup test instance
-        id: setup-instance
-        run: |
-          set -x
-          source ./library.sh
-          
-          tf-apply "$TF_TEST_ENV" "$TF_VAR_FILE" \
-          -var="snapshot_type=ncp-postinstall" \
-          -var="branch=${GIT_REF}" \
-          -var="admin_ssh_pubkey_fingerprint=${{ steps.prepare-environment.outputs.ssh_pubkey_fprint }}"
-          
-          echo "::set-output name=ipv4_address::$(tf-output "$TF_TEST_ENV" test_server_ipv4)"
-          echo "::set-output name=snapshot_id::$(tf-output "$TF_TEST_ENV" snapshot_id)"
-          echo "::set-output name=test_server_id::$(tf-output "$TF_TEST_ENV" test_server_id)"
-          
+      - id: create-test-instance
+        uses: ./.github/actions/create-test-instance
+        with:
+          version: "${{ github.event.inputs.tag || github.ref_name || github.head_ref }}"
+          uid: "${{ github.run_id }}-install"
+          hcloud_token: ${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}
+
+#  setup-test-instance-old:
+#    runs-on: ubuntu-latest
+#    container:
+#      image: thecalcaholic/ncp-test-automation:latest
+#      env:
+#        HCLOUD_TOKEN: "${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}"
+#        UID: "${{ github.run_id }}-install"
+#    env:
+#      GIT_REF: "${{ github.event.inputs.tag || github.ref_name || github.head_ref }}"
+#      HOME: '/root'
+#    outputs:
+#      server_address: ${{ steps.setup-instance.outputs.ipv4_address }}
+#      snapshot_id: ${{ steps.setup-instance.outputs.snapshot_id }}
+#      test_server_id: ${{ steps.setup-instance.outputs.test_server_id }}
+#    defaults:
+#      run:
+#        shell: bash
+#        working-directory: /ncp-test-automation/bin
+#    steps:
+#      - name: Prepare environment
+#        id: prepare-environment
+#        run: |
+#          ssh-keygen -t ed25519 -f "$HOME/.ssh/automation_ssh_key"
+#          export SSH_PRIVATE_KEY="$(cat $HOME/.ssh/automation_ssh_key)"
+#          export SSH_PUBLIC_KEY="$(cat $HOME/.ssh/automation_ssh_key.pub)"
+#
+#          set -x
+#
+#          bash entrypoint.sh
+#
+#          source ./library.sh
+#
+#          echo "Initialize Terraform"
+#          for path in "$TF_PROJECT_SETUP" "$TF_SNAPSHOT" "$TF_SNAPSHOT_PROVIDER" "$TF_TEST_ENV"
+#          do tf-init "$path"; done
+#
+#          echo "Set up Hetzner project"
+#          hcloud-clear-root-key
+#          tf-apply "$TF_PROJECT_SETUP" "$TF_VAR_FILE"
+#          ssh_pubkey_fprint="$(tf-output "$TF_PROJECT_SETUP" admin_ssh_pubkey_fingerprint)"
+#
+#          echo "::set-output name=ssh_pubkey_fprint::${ssh_pubkey_fprint}"
+#      - name: upload ssh private key as artifact
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: ssh-privkey
+#          path: /root/.ssh
+#          if-no-files-found: error
+#      - name: Create postinstall snapshot if not present
+#        run: |
+#          set -x
+#          # eval $(ssh-agent)
+#          # ssh-add "/root/.ssh/automation_ssh_key"
+#
+#          source ./library.sh
+#          ensure-postinstall-snapshot "${{ steps.prepare-environment.outputs.ssh_pubkey_fprint }}" "${GIT_REF}"
+#      - name: Setup test instance
+#        id: setup-instance
+#        run: |
+#          set -x
+#          source ./library.sh
+#
+#          tf-apply "$TF_TEST_ENV" "$TF_VAR_FILE" \
+#          -var="snapshot_type=ncp-postinstall" \
+#          -var="branch=${GIT_REF}" \
+#          -var="admin_ssh_pubkey_fingerprint=${{ steps.prepare-environment.outputs.ssh_pubkey_fprint }}"
+#
+#          echo "::set-output name=ipv4_address::$(tf-output "$TF_TEST_ENV" test_server_ipv4)"
+#          echo "::set-output name=snapshot_id::$(tf-output "$TF_TEST_ENV" snapshot_id)"
+#          echo "::set-output name=test_server_id::$(tf-output "$TF_TEST_ENV" test_server_id)"
+
   run-integration-tests:
     needs:
       - setup-test-instance
