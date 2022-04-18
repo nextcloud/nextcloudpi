@@ -9,8 +9,7 @@ on:
         type: string
   push:
     branches:
-      - master
-      - devel
+      - feature/cicd-integration-tests
     tags:
       - v*
 
