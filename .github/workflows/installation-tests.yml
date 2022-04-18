@@ -26,7 +26,6 @@ jobs:
       server_address: ${{ steps.setup-instance.outputs.ipv4_address }}
       snapshot_id: ${{ steps.setup-instance.outputs.snapshot_id }}
       test_server_id: ${{ steps.setup-instance.outputs.test_server_id }}
-      ssh_privkey_b64: ${{ steps.prepare-environment.outputs.ssh_privkey_b64 }}
     defaults:
       run:
         shell: bash
@@ -36,8 +35,6 @@ jobs:
         id: prepare-environment
         run: |
           ssh-keygen -t ed25519 -f "$HOME/.ssh/automation_ssh_key"
-          export SSH_PRIVATE_KEY="$(cat "$HOME/.ssh/automation_ssh_key")"
-          export SSH_PUBLIC_KEY="$(cat "$HOME/.ssh/automation_ssh_key.pub")"
           
           set -x
           
@@ -90,7 +87,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GIT_REF: "${{ github.event.inputs.tag || github.ref_name || github.head_ref }}"
-      SSH_PRIVATE_KEY_B64: "${{ needs.setup-test-instance.outputs.ssh_privkey_b64 }}"
       SERVER_ADDRESS: "${{ needs.setup-test-instance.outputs.server_address }}"
       SNAPSHOT_ID: "${{ needs.setup-test-instance.outputs.snapshot_id }}"
     defaults:
@@ -107,13 +103,8 @@ jobs:
           repository: 'theCalcaholic/ncp-test-automation'
       - name: Setup ssh
         run: |
-          echo -n "$SSH_PRIVATE_KEY_B64" | base64 -d > ./automation_ssh_key
-          
-          set -x
-          
-          chmod 0600 ./automation_ssh_key
           eval "$(ssh-agent)"
-          ssh-add ./automation_ssh_key
+          ssh-add /home/github/automation_ssh_key
       - name: Test postinstall VM
         run: |
           cd bin
