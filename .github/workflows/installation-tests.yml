@@ -47,7 +47,7 @@ jobs:
           for path in "$TF_PROJECT_SETUP" "$TF_SNAPSHOT" "$TF_SNAPSHOT_PROVIDER" "$TF_TEST_ENV"
           do tf-init "$path"; done
           
-          echo "Setting up project"
+          echo "Set up Hetzner project"
           hcloud-clear-root-key
           tf-apply "$TF_PROJECT_SETUP" "$TF_VAR_FILE"
           ssh_pubkey_fprint="$(tf-output "$TF_PROJECT_SETUP" admin_ssh_pubkey_fingerprint)"
@@ -57,15 +57,17 @@ jobs:
       - name: Create postinstall snapshot if not present
         run: |
           set -x
-          cd /ncp-test-automation/bin
-          eval $(ssh-agent)
-          ssh-add "/root/.ssh/automation_ssh_key"
+          # eval $(ssh-agent)
+          # ssh-add "/root/.ssh/automation_ssh_key"
           
           source ./library.sh
           ensure-postinstall-snapshot "${{ steps.prepare-environment.outputs.ssh_pubkey_fprint }}" "${GIT_REF}"
       - name: Setup test instance
         id: setup-instance
         run: |
+          set -x
+          source ./library.sh
+          
           tf-apply "$TF_TEST_ENV" "$TF_VAR_FILE" \
           -var="snapshot_type=ncp-postinstall" \
           -var="branch=${branch}" \
@@ -128,8 +130,6 @@ jobs:
     container:
       image: thecalcaholic/ncp-test-automation:latest
       env:
-        SSH_PUBLIC_KEY: "${{ secrets.TEST_AUTOMATION_SSH_PUBLIC_KEY }}"
-        SSH_PRIVATE_KEY: "${{ secrets.TEST_AUTOMATION_SSH_PRIVATE_KEY }}"
         HCLOUD_TOKEN: "${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}"
         UID: "${{ github.run_id }}-install"
     env:
@@ -147,3 +147,5 @@ jobs:
           do
             hcloud server delete "$server"
           done
+          source ./library.sh
+          hcloud-clear-root-key
