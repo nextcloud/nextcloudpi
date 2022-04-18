@@ -45,7 +45,7 @@ jobs:
       server_address: ${{ steps.create-test-instance.outputs.server_address }}
       snapshot_id: ${{ steps.create-test-instance.outputs.snapshot_id }}
       test_server_id: ${{ steps.create-test-instance.outputs.test_server_id }}
-      previous_version: ${{ stpeps.find-version.outputs.previous_version }}
+      previous_version: ${{ steps.find-version.outputs.previous_version }}
     steps:
       - uses: actions/checkout@v3
         with:
