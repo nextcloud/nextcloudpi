@@ -103,13 +103,12 @@ jobs:
         with:
           name: ssh-privkey
           path: .ssh
-      - name: Setup ssh
+      - name: Test postinstall VM
         run: |
           chmod 0600 ./.ssh/automation_ssh_key
           eval "$(ssh-agent)"
           ssh-add ./.ssh/automation_ssh_key
-      - name: Test postinstall VM
-        run: |
+          
           cd bin
           source ./library.sh
           
