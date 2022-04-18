@@ -279,6 +279,7 @@ jobs:
         if: ${{ contains('success|failure', matrix.test_result) }}
         shell: bash
         run: |
+          set -x
           cd /ncp-test-automation/bin
           
           . ./library.sh
