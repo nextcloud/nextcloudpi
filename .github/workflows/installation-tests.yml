@@ -57,7 +57,7 @@ jobs:
           echo "${GIT_REF}"
           env
           git checkout "$GIT_REF"
-          git fetch -fu origin ${{ github.ref }}:${{ github.ref }}
+          git fetch -fu --tags origin ${{ github.ref }}:${{ github.ref }}
           version="$(git describe --tags)"
           [[ "$version" =~ *-*-* ]] || {
             git checkout HEAD~1
