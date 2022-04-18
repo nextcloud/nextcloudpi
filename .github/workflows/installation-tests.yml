@@ -23,7 +23,7 @@ jobs:
     steps:
       - run: |
           set -x
-          ssh-keygen -t ed25519 -f "$HOME/.ssh/automation_ssh_key
+          ssh-keygen -t ed25519 -f "$HOME/.ssh/automation_ssh_key"
       - name: upload ssh private key as artifact
         uses: actions/upload-artifact@v3
         with:
