@@ -5,8 +5,6 @@ English | [Traditional Chinese 繁體中文](i18n/README-zh_TW.md) | [Simplified
 
 ![NC Logo](https://ownyourbits.com/wp-content/uploads/2017/11/ncp-square.png)
 
-[![VM Integration Tests](https://github.com/nextcloud/nextcloudpi/actions/workflows/vm-tests.yml/badge.svg)](https://github.com/nextcloud/nextcloudpi/actions/workflows/vm-tests.yml)
-
 This is the build code for [NextCloudPi](https://nextcloudpi.com).
 
 NextCloudPi is a ready to use image for Raspberry Pi, Odroid HC1, rock64 and other boards.
@@ -14,6 +12,8 @@ NextCloudPi is a ready to use image for Raspberry Pi, Odroid HC1, rock64 and oth
 This code also generates the NextCloudPi [docker image](https://hub.docker.com/r/ownyourbits/nextcloudpi), LXD and VM, and includes an installer for any Debian based system.
 
 Find the full documentation at [docs.nextcloudpi.com](http://docs.nextcloudpi.com)
+
+[![VM Integration Tests](https://github.com/nextcloud/nextcloudpi/actions/workflows/vm-tests.yml/badge.svg)](https://github.com/nextcloud/nextcloudpi/actions/workflows/vm-tests.yml)
 
 ## Features
 

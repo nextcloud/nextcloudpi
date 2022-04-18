@@ -29,7 +29,7 @@ jobs:
           set -e
           mkdir -p ./.ssh
           ssh-keygen -t ed25519 -f ".ssh/automation_ssh_key"
-      - name: upload ssh private key as artifact
+      - name: upload ssh private key to artifact store
         uses: actions/upload-artifact@v3
         with:
           name: ${{ github.run_id }}-install-ssh-privkey
@@ -82,7 +82,7 @@ jobs:
           set -x
           mkdir -p ./.ssh
           ssh-keygen -t ed25519 -f ".ssh/automation_ssh_key"
-      - name: upload ssh private key as artifact
+      - name: upload ssh private key to artifact store
         uses: actions/upload-artifact@v3
         with:
           name: ${{ github.run_id }}-update-ssh-privkey
@@ -118,7 +118,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           repository: 'theCalcaholic/ncp-test-automation'
-      - name: download ssh private key as artifact
+      - name: download ssh private key from artifact store
         uses: actions/download-artifact@v3
         with:
           name: ${{ github.run_id }}-install-ssh-privkey
@@ -176,7 +176,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           repository: 'theCalcaholic/ncp-test-automation'
-      - name: download ssh private key as artifact
+      - name: download ssh private key from artifact store
         uses: actions/download-artifact@v3
         with:
           name: ${{ github.run_id }}-update-ssh-privkey
@@ -257,7 +257,7 @@ jobs:
       UID: ${{ github.run_id }}-${{ matrix.test_type }}
       VERSION: ${{ matrix.version }}
     steps:
-      - name: download ssh private key as artifact
+      - name: download ssh private key from artifact store
         uses: actions/download-artifact@v3
         if: ${{ contains('success|failure', matrix.test_result) }}
         with:
