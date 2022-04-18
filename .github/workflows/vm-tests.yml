@@ -218,10 +218,11 @@ jobs:
         HCLOUD_TOKEN: "${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}"
     strategy:
       matrix:
-        UID: ["${{ github.run_id }}-install", "${{ github.run_id }}-update"]
+        uid: ["${{ github.run_id }}-install", "${{ github.run_id }}-update"]
     env:
       GIT_REF: "${{ github.event.inputs.tag || github.ref_name || github.head_ref }}"
       HOME: '/root'
+      UID: ${{ matrix.uid }}
     defaults:
       run:
         shell: bash
@@ -229,7 +230,8 @@ jobs:
     steps:
       - name: Teardown VMs
         run: |
-          hcloud server list -o noheader -o columns=id -l "ci=${UID}"
+          set -x
+          hcloud server list -o noheader -o columns=id -l "ci=${UID?}"
           for server in $(hcloud server list -o noheader -o columns=id -l "ci=${UID}")
           do
             echo "Deleting server '$server'..."
