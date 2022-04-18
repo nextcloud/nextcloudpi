@@ -24,7 +24,7 @@ jobs:
       server_address: ${{ steps.setup-instance.outputs.ipv4_address }}
       snapshot_id: ${{ steps.setup-instance.outputs.snapshot_id }}
       test_server_id: ${{ steps.setup-instance.outputs.test_server_id }}
-      ssh_privkey: ${{ steps.prepare-environment.outputs.ssh_privkey }}
+      ssh_privkey_b64: ${{ steps.prepare-environment.outputs.ssh_privkey_b64 }}
     defaults:
       run:
         shell: bash
@@ -53,7 +53,7 @@ jobs:
           ssh_pubkey_fprint="$(tf-output "$TF_PROJECT_SETUP" admin_ssh_pubkey_fingerprint)"
           
           echo "::set-output name=ssh_pubkey_fprint::${ssh_pubkey_fprint}"
-          echo "::set-output name=ssh_privkey::${SSH_PRIVATE_KEY}"
+          echo "::set-output name=ssh_privkey_b64::$(cat $HOME/.ssh/automation_ssh_key | base64}"
       - name: Create postinstall snapshot if not present
         run: |
           set -x
@@ -83,7 +83,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GIT_REF: "${{ github.event.inputs.tag || github.ref_name || github.head_ref }}"
-      SSH_PRIVATE_KEY: "${{ needs.setup-test-instance.outputs.ssh_privkey }}"
+      SSH_PRIVATE_KEY_B64: "${{ needs.setup-test-instance.outputs.ssh_privkey_b64 }}"
       SERVER_ADDRESS: "${{ needs.setup-test-instance.outputs.server_address }}"
       SNAPSHOT_ID: "${{ needs.setup-test-instance.outputs.snapshot_id }}"
     defaults:
@@ -95,7 +95,7 @@ jobs:
           repository: 'theCalcaholic/ncp-test-automation'
       - name: Setup ssh
         run: |
-          echo "$SSH_PRIVATE_KEY" > ./automation_ssh_key
+          echo -n "$SSH_PRIVATE_KEY_B64" | base64 -d > ./automation_ssh_key
           chmod 0600 ./automation_ssh_key
           eval "$(ssh-agent)"
           ssh-add ./automation_ssh_key
