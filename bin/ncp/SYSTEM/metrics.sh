@@ -101,7 +101,7 @@ EOF
   # shellcheck disable=SC2016
   sed -i 's|status_of_proc "$DAEMON" "$NAME" ${PIDFILE:="-p ${PIDFILE}"}|status_of_proc ${PIDFILE:+-p "$PIDFILE"} "$DAEMON" "$NAME"|' /lib/init/init-d-script
 
-  if [[ "$DOCKERBUILD" == 1 ]]
+  if is_docker
   then
     # during installation of prometheus-node-exporter `useradd` is used to create a user.
     # However, `useradd` doesn't the symlink in /etc/shadow, so we need to temporarily move it back
@@ -116,7 +116,7 @@ EOF
     apt_install_with_recommends prometheus-node-exporter
   fi
 
-  if [[ "$DOCKERBUILD" == 1 ]]
+  if is_docker
   then
     cat > /etc/init.d/ncp-metrics-exporter <<'EOF'
 #!/bin/sh
