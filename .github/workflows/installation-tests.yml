@@ -58,8 +58,9 @@ jobs:
           set -x
           echo "${GIT_REF}"
           env
+          git checkout "$GIT_REF"
           git fetch origin -f --tags
-          version="$(git describe --tags --always)"
+          version="$(git describe --tags)"
           [[ "$version" =~ *-*-* ]] || {
             git checkout HEAD~1
             version="$(git describe --tags)"
