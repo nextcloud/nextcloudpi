@@ -41,7 +41,7 @@ jobs:
           version: ${{ env.VERSION }}
           uid: "${{ github.run_id }}-install"
           hcloud_token: ${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}
-          server_type: "cx21"
+          server_type: "cpx31"
 
   setup-update-test-instance:
     runs-on: ubuntu-latest
@@ -94,6 +94,7 @@ jobs:
           version: "${{ steps.find-version.outputs.previous_version }}"
           uid: "${{ github.run_id }}-update"
           hcloud_token: ${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}
+          server_type: "cpx31"
 
   run-installation-test:
     needs:
@@ -285,10 +286,6 @@ jobs:
   cleanup:
     if: ${{ always() }}
     needs:
-      - setup-installation-test-instance
-      - setup-update-test-instance
-      - run-installation-test
-      - run-update-test
       - create-postactivation-snapshots
     runs-on: ubuntu-latest
     container:
