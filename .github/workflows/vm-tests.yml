@@ -32,7 +32,7 @@ jobs:
       - name: upload ssh private key as artifact
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ github.run-id }}-install-ssh-privkey
+          name: ${{ github.run_id }}-install-ssh-privkey
           path: .ssh
           if-no-files-found: error
       - id: create-test-instance
@@ -85,7 +85,7 @@ jobs:
       - name: upload ssh private key as artifact
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ github.run-id }}-update-ssh-privkey
+          name: ${{ github.run_id }}-update-ssh-privkey
           path: .ssh
           if-no-files-found: error
       - id: create-test-instance
@@ -121,7 +121,7 @@ jobs:
       - name: download ssh private key as artifact
         uses: actions/download-artifact@v3
         with:
-          name: ${{ github.run-id }}-install-ssh-privkey
+          name: ${{ github.run_id }}-install-ssh-privkey
           path: .ssh
       - name: Test postinstall VM
         run: |
@@ -179,7 +179,7 @@ jobs:
       - name: download ssh private key as artifact
         uses: actions/download-artifact@v3
         with:
-          name: ${{ github.run-id }}-update-ssh-privkey
+          name: ${{ github.run_id }}-update-ssh-privkey
           path: .ssh
       - name: perform update
         run: |
@@ -254,14 +254,14 @@ jobs:
       fail-fast: false
 
     env:
-      UID: ${{ github.run-id }}-${{ matrix.test_type }}
+      UID: ${{ github.run_id }}-${{ matrix.test_type }}
       VERSION: ${{ matrix.version }}
     steps:
       - name: download ssh private key as artifact
         uses: actions/download-artifact@v3
         if: ${{ contains('success|failure', matrix.test_result) }}
         with:
-          name: ${{ github.run-id }}-${{ matrix.test_type }}-ssh-privkey
+          name: ${{ github.run_id }}-${{ matrix.test_type }}-ssh-privkey
           path: /github/workspace/.ssh
       - name: Shutdown server
         if: ${{ contains('success|failure', matrix.test_result) }}
