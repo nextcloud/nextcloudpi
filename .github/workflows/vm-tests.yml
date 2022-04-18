@@ -176,6 +176,10 @@ jobs:
           ssh -o "StrictHostKeyChecking=no" "root@${SERVER_ADDRESS}" "ncp-update '$GIT_REF'"
       - name: Run integration tests
         run: |
+          ssh-add -l
+          eval "$(ssh-agent)"
+          ssh-add ./.ssh/automation_ssh_key
+          
           cd bin
           source ./library.sh
             
@@ -221,9 +225,12 @@ jobs:
     steps:
       - name: Teardown VMs
         run: |
+          hcloud server list -o noheader -o columns=id -l "ci=${UID}"
           for server in $(hcloud server list -o noheader -o columns=id -l "ci=${UID}")
           do
+            echo "Deleting server '$server'..."
             hcloud server delete "$server"
+            echo "done."
           done
       - name: Delete ssh key
         run: |
@@ -233,5 +240,7 @@ jobs:
         run: |
           for snapshot in $(hcloud image list -t snapshot -o noheader -o columns=id | head -n -20)
           do
+            echo "Deleting snapshot '$snapshot'..."
             hcloud image delete "$snapshot"
+            echo "done."
           done
