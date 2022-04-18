@@ -41,7 +41,7 @@ jobs:
           version: ${{ env.VERSION }}
           uid: "${{ github.run_id }}-install"
           hcloud_token: ${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}
-          server_type: "cpx31"
+          server_type: "cx11"
 
   setup-update-test-instance:
     runs-on: ubuntu-latest
@@ -94,7 +94,7 @@ jobs:
           version: "${{ steps.find-version.outputs.previous_version }}"
           uid: "${{ github.run_id }}-update"
           hcloud_token: ${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}
-          server_type: "cpx31"
+          server_type: "cx11"
 
   run-installation-test:
     needs:
@@ -261,13 +261,15 @@ jobs:
         if: ${{ contains('success|failure', matrix.test_result) }}
         with:
           name: ${{ github.run-id }}-${{ matrix.test_type }}-ssh-privkey
-          path: .ssh
+          path: /github/workspace/.ssh
       - name: Shutdown server
         if: ${{ contains('success|failure', matrix.test_result) }}
         run: |
-          chmod 0600 ./.ssh/automation_ssh_key
+          chmod 0600 /github/workspace/.ssh/automation_ssh_key
+          export SSH_PUBLIC_KEY="$(cat /github/workspace/.ssh/automation_ssh_key.pub)"
+          bash /ncp-test-automation/bin/entrypoint.sh
           eval "$(ssh-agent)"
-          ssh-add ./.ssh/automation_ssh_key
+          ssh-add /github/workspace/.ssh/automation_ssh_key
   
           ssh -o "StrictHostKeyChecking=no" -o "UserKnownHostsFile=/dev/null" "root@${{ matrix.server_address }}" <<EOF
           systemctl stop mariadb
@@ -278,6 +280,7 @@ jobs:
         shell: bash
         run: |
           cd /ncp-test-automation/bin
+          
           . ./library.sh
           
           tf-apply "$TF_SNAPSHOT" "$TF_VAR_FILE" -var="branch=${{ matrix.version }}" -var="snapshot_provider_id=${{ matrix.test_server_id }}" -var="snapshot_type=ncp-postactivation" -state="${TF_SNAPSHOT}/${VERSION//\//.}.postactivation.tfstate"
