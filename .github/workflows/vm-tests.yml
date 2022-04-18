@@ -3,7 +3,7 @@ name: 'VM Integration Tests'
 on:
   workflow_dispatch:
     inputs:
-      tag:
+      version:
         description: git ref, branch or tag to test against
         required: false
         type: string
@@ -12,6 +12,7 @@ on:
       - feature/cicd-integration-tests
     tags:
       - v*
+  pull_request:
 
 jobs:
   setup-installation-test-instance:
@@ -22,7 +23,7 @@ jobs:
       test_server_id: ${{ steps.create-test-instance.outputs.test_server_id }}
       version: ${{ env.VERSION }}
     env:
-      VERSION: "${{ github.event.inputs.tag || github.ref_name || github.head_ref }}"
+      VERSION: "${{ github.event.inputs.version || github.ref_name || github.head_ref }}"
     steps:
       - uses: actions/checkout@v3
       - run: |
