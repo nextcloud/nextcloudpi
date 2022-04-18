@@ -249,7 +249,7 @@ jobs:
           - test_type: update
             server_address: ${{ needs.setup-update-test-instance.outputs.server_address }}
             test_result: ${{ needs.setup-update-test-instance.result }}
-            test_server_id: ${{ needs.setup-update-test-instance.test_server_id }}
+            test_server_  id: ${{ needs.setup-update-test-instance.test_server_id }}
             version: ${{ needs.setup-update-test-instance.version }}
       fail-fast: false
 
@@ -281,6 +281,9 @@ jobs:
         shell: bash
         run: |
           set -x
+          echo "${{ needs.setup-installation-test-instance.outputs.test_server_id }}"
+          echo "${{ needs.setup-update-test-instance.outputs.test_server_id }}"
+          echo "${{ matrix.test_server_id }}"
           cd /ncp-test-automation/bin
           
           . ./library.sh
