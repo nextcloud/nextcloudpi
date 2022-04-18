@@ -55,7 +55,7 @@ jobs:
         run: |
           set -x
           git fetch origin -f --tags
-          version="$(git describe --tags)"
+          version="$(git describe --tags --always)"
           [[ "$version" =~ *-*-* ]] || {
             git checkout HEAD~1
             version="$(git describe --tags)"
