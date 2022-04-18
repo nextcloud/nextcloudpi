@@ -15,7 +15,7 @@ install()
   apt-get install --no-install-recommends -y dnsmasq
   rc=0
   service dnsmasq status > /dev/null 2>&1 || rc=$?
-  [[ $rc -eq 3 ]] && {
+  ! is_docker && [[ $rc -eq 3 ]] && {
     echo "Applying workaround for dnsmasq bug (compare issue #1446)"
     service systemd-resolved stop
     service dnsmasq start
