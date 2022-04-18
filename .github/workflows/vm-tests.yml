@@ -282,13 +282,14 @@ jobs:
           snapshot_id="$(tf-output "$TF_SNAPSHOT" -state="${TF_SNAPSHOT}/${VERSION//\//.}.postactivation.tfstate" snapshot_id)"
           hcloud image add-label -o "$snapshot_id" "test-result=${{ matrix.test_result }}"
 
-  vm-cleanup:
+  cleanup:
     if: ${{ always() }}
     needs:
       - setup-installation-test-instance
       - setup-update-test-instance
       - run-installation-test
       - run-update-test
+      - create-postactivation-snapshots
     runs-on: ubuntu-latest
     container:
       image: thecalcaholic/ncp-test-automation:latest
