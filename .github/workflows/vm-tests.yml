@@ -20,6 +20,9 @@ jobs:
       server_address: ${{ steps.create-test-instance.outputs.server_address }}
       snapshot_id: ${{ steps.create-test-instance.outputs.snapshot_id }}
       test_server_id: ${{ steps.create-test-instance.outputs.test_server_id }}
+      version: ${{ env.VERSION }}
+    env:
+      VERSION: "${{ github.event.inputs.tag || github.ref_name || github.head_ref }}"
     steps:
       - uses: actions/checkout@v3
       - run: |
@@ -35,7 +38,7 @@ jobs:
       - id: create-test-instance
         uses: ./.github/actions/create-test-instance
         with:
-          version: "${{ github.event.inputs.tag || github.ref_name || github.head_ref }}"
+          version: ${{ env.VERSION }}
           uid: "${{ github.run_id }}-install"
           hcloud_token: ${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}
           server_type: "cx21"
@@ -47,8 +50,9 @@ jobs:
       snapshot_id: ${{ steps.create-test-instance.outputs.snapshot_id }}
       test_server_id: ${{ steps.create-test-instance.outputs.test_server_id }}
       previous_version: ${{ steps.find-version.outputs.previous_version }}
+      version: ${{ env.VERSION }}
     env:
-      GIT_REF: "${{ github.event.inputs.tag || github.ref_name || github.head_ref }}"
+      VERSION: "${{ github.event.inputs.tag || github.ref_name || github.head_ref }}"
     steps:
       - uses: actions/checkout@v3
         with:
@@ -102,7 +106,7 @@ jobs:
         HCLOUD_TOKEN: "${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}"
         UID: "${{ github.run_id }}-install"
     env:
-      GIT_REF: "${{ github.event.inputs.tag || github.ref_name || github.head_ref }}"
+      VERSION: ${{ needs.setup-installation-test-instance.outputs.version }}
       SERVER_ADDRESS: "${{ needs.setup-installation-test-instance.outputs.server_address }}"
       SNAPSHOT_ID: "${{ needs.setup-installation-test-instance.outputs.snapshot_id }}"
       HOME: /root
@@ -134,7 +138,7 @@ jobs:
           setup-ssh-port-forwarding "$SERVER_ADDRESS"
           
           echo "Run integration tests"
-          test-ncp-instance -a -f "$SNAPSHOT_ID" -b "${GIT_REF}" "root@${SERVER_ADDRESS}" "localhost" "8443" "9443" || {
+          test-ncp-instance -a -f "$SNAPSHOT_ID" -b "${VERSION}" "root@${SERVER_ADDRESS}" "localhost" "8443" "9443" || {
     
             echo "Integration tests failed"
             echo "Here are the last lines of ncp-install.log:"
@@ -160,7 +164,7 @@ jobs:
         UID: "${{ github.run_id }}-update"
     env:
       PREVIOUS_VERSION: ${{ needs.setup-update-test-instance.outputs.previous_version }}
-      GIT_REF: "${{ github.event.inputs.tag || github.ref_name || github.head_ref }}"
+      VERSION: ${{ needs.setup-update-test-instance.outputs.version }}
       SERVER_ADDRESS: "${{ needs.setup-update-test-instance.outputs.server_address }}"
       SNAPSHOT_ID: "${{ needs.setup-update-test-instance.outputs.snapshot_id }}"
       HOME: /root
@@ -187,9 +191,9 @@ jobs:
           
           . ./bin/library.sh
 
-          echo "Updating from $PREVIOUS_VERSION to $GIT_REF"
+          echo "Updating from $PREVIOUS_VERSION to $VERSION"
           ssh-keygen -f "$HOME/.ssh/known_hosts" -R "${SERVER_ADDRESS}" 2> /dev/null || true
-          ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" "ncp-update '$GIT_REF'"
+          ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" "ncp-update '$VERSION'"
       - name: Run integration tests
         run: |
           set -e
@@ -206,7 +210,7 @@ jobs:
           echo "Run integration tests"
           setup-ssh-port-forwarding "$SERVER_ADDRESS"
           
-          test-ncp-instance -a -f "$SNAPSHOT_ID" -b "${GIT_REF}" "root@${SERVER_ADDRESS}" "localhost" "8443" "9443" || {
+          test-ncp-instance -a -f "$SNAPSHOT_ID" -b "${VERSION}" "root@${SERVER_ADDRESS}" "localhost" "8443" "9443" || {
           
             echo "Integration tests failed"
             echo "Here are the last lines of ncp-install.log:"
@@ -220,12 +224,71 @@ jobs:
             exit 1
           }
 
+  create-postactivation-snapshots:
+    if: ${{ always() }}
+    needs:
+      - setup-installation-test-instance
+      - setup-update-test-instance
+      - run-installation-test
+      - run-update-test
+    runs-on: ubuntu-latest
+    container:
+      image: thecalcaholic/ncp-test-automation:latest
+      env:
+        HCLOUD_TOKEN: "${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}"
+    strategy:
+      matrix:
+        test_type: [install, update]
+        include:
+          - test_type: install
+            server_address: ${{ needs.setup-installation-test-instance.outputs.server_address }}
+            test_result: ${{ needs.setup-installation-test-instance.result }}
+            test_server_id: ${{ needs.setup-installation-test-instance.test_server_id }}
+            version: ${{ needs.setup-installation-test-instance.version }}
+          - test_type: update
+            server_address: ${{ needs.setup-update-test-instance.outputs.server_address }}
+            test_result: ${{ needs.setup-update-test-instance.result }}
+            test_server_id: ${{ needs.setup-update-test-instance.test_server_id }}
+            version: ${{ needs.setup-update-test-instance.version }}
+
+    env:
+      UID: ${{ github.run-id }}-${{ matrix.test_type }}
+      VERSION: ${{ matrix.version }}
+    steps:
+      - name: download ssh private key as artifact
+        uses: actions/download-artifact@v3
+        if: ${{ contains(["success", "failure"], matrix.test_result) }}
+        with:
+          name: ${{ github.run-id }}-${{ matrix.test_type }}-ssh-privkey
+          path: .ssh
+      - name: Shutdown server
+        if: ${{ contains(["success", "failure"], matrix.test_result) }}
+        run: |
+          chmod 0600 ./.ssh/automation_ssh_key
+          eval "$(ssh-agent)"
+          ssh-add ./.ssh/automation_ssh_key
+  
+          ssh -o "StrictHostKeyChecking=no" -o "UserKnownHostsFile=/dev/null" "root@${{ matrix.server_address }}" <<EOF
+          systemctl stop mariadb
+          systemctl poweroff
+          EOF
+      - name: Create Snapshot
+        if: ${{ contains(["success", "failure"], matrix.test_result) }}
+        run: |
+          cd ./bin
+          . ./library.sh
+          
+          tf-apply "$TF_SNAPSHOT" "$TF_VAR_FILE" -var="branch=${{ matrix.version }}" -var="snapshot_provider_id=${{ matrix.test_server_id }}" -var="snapshot_type=ncp-postactivation" -state="${TF_SNAPSHOT}/${VERSION//\//.}.postactivation.tfstate"
+          snapshot_id="$(tf-output "$TF_SNAPSHOT" -state="${TF_SNAPSHOT}/${VERSION//\//.}.postactivation.tfstate" snapshot_id)"
+          hcloud image add-label -o "$snapshot_id" "test-result=${{ matrix.test_result }}"
+
   vm-cleanup:
     if: ${{ always() }}
     needs:
       - setup-installation-test-instance
       - setup-update-test-instance
       - run-installation-test
+      - run-update-test
     runs-on: ubuntu-latest
     container:
       image: thecalcaholic/ncp-test-automation:latest
