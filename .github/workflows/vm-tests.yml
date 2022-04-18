@@ -283,6 +283,7 @@ jobs:
           
           . ./library.sh
           
+          tf-init "$TF_SNAPSHOT"
           tf-apply "$TF_SNAPSHOT" "$TF_VAR_FILE" -var="branch=${{ matrix.version }}" -var="snapshot_provider_id=${{ matrix.test_server_id }}" -var="snapshot_type=ncp-postactivation" -state="${TF_SNAPSHOT}/${VERSION//\//.}.postactivation.tfstate"
           snapshot_id="$(tf-output "$TF_SNAPSHOT" -state="${TF_SNAPSHOT}/${VERSION//\//.}.postactivation.tfstate" snapshot_id)"
           hcloud image add-label -o "$snapshot_id" "test-result=${{ matrix.test_result }}"
