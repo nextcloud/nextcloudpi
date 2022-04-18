@@ -41,9 +41,6 @@ jobs:
           
           set -x
           
-          cp "$HOME/.ssh/automation_ssh_key" ~github/.ssh/
-          chown github: ~github/.ssh/automation_ssh_key
-          
           bash entrypoint.sh
           
           source ./library.sh
@@ -103,7 +100,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ssh-privkey
-          path: /github/home/.ssh
+          path: /root/.ssh
       - uses: actions/checkout@v3
         with:
           repository: 'theCalcaholic/ncp-test-automation'
