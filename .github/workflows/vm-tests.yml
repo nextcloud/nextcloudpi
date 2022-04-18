@@ -57,13 +57,21 @@ jobs:
         id: find-version
         run: |
           set -e
-          git fetch -fu --tags origin ${{ github.ref }}:${{ github.ref }}
-          version="$(git describe --tags)"
-          [[ "$version" =~ .*-.*-.* ]] || {
-            git checkout HEAD~1
+          if [[ -n "${{ github.base_ref }}" ]]
+          then
+            version="${{ github.base_ref }}"
+          elif [[ "${{ github.ref }}" == "refs/heads/devel" ]]
+          then
+            version="master"
+          else
+            git fetch -fu --tags origin ${{ github.ref }}:${{ github.ref }}
             version="$(git describe --tags)"
-          }
-          version="${version%-*-*}"
+            [[ "$version" =~ .*-.*-.* ]] || {
+              git checkout HEAD~1
+              version="$(git describe --tags)"
+            }
+            version="${version%-*-*}"
+          fi
           echo "Previous version is '$version'"
           echo "::set-output name=previous_version::${version}"
       - run: |
