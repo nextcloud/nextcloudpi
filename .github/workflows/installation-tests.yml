@@ -28,7 +28,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ssh-privkey
-          path: /home/github/.ssh
+          path: $HOME/.ssh
           if-no-files-found: error
       - id: create-test-instance
         uses: ./.github/actions/create-test-instance
