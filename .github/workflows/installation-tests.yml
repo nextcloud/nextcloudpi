@@ -59,7 +59,8 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ssh-privkey
-          path: /github/home/.ssh
+          path: /root/.ssh
+          if-no-files-found: error
       - name: Create postinstall snapshot if not present
         run: |
           set -x
@@ -100,7 +101,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ssh-privkey
-          path: /root/.ssh
+          path: /home/github/.ssh
       - uses: actions/checkout@v3
         with:
           repository: 'theCalcaholic/ncp-test-automation'
