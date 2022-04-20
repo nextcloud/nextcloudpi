@@ -19,13 +19,6 @@ jobs:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
 
-      - name: Log in to the Container registry
-        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
@@ -52,25 +45,6 @@ jobs:
              do
               ./build/build-docker.sh $arch
              done
-
-      - name: Push containers to github container registry as tag
-        run: |
-             version=$(git describe --tags --always)
-             version=${version%-*-*}
-             for arch in ${{ env.platforms }}
-             do
-                docker tag ownyourbits/nextcloudpi-$arch:latest ghcr.io/${{ github.repository_owner }}/nextcloudpi-$arch:${version}
-                docker push ghcr.io/${{ github.repository_owner }}/nextcloudpi-$arch:${version}
-              done
-
-      - name: Push containers to github container registry as latest
-        run: |
-             for arch in ${{ env.platforms }}
-             do
-                docker tag ownyourbits/nextcloudpi-$arch:latest ghcr.io/${{ github.repository_owner }}/nextcloudpi-$arch:latest
-                docker push ghcr.io/${{ github.repository_owner }}/nextcloudpi-$arch:latest
-             done
-
 
       - name: Create manifest and push as tag to docker hub
         run: |
