@@ -13,6 +13,8 @@ This code also generates the NextCloudPi [docker image](https://hub.docker.com/r
 
 Find the full documentation at [docs.nextcloudpi.com](http://docs.nextcloudpi.com)
 
+[![VM Integration Tests](https://github.com/nextcloud/nextcloudpi/workflows/VM%20Integration%20Tests/badge.svg)](https://github.com/nextcloud/nextcloudpi/actions/workflows/vm-tests.yml)
+
 ## Features
 
  * Debian/Raspbian 11 Bullseye

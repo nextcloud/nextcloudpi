@@ -1,0 +1,147 @@
+# https://www.docker.com/blog/docker-v2-github-action-is-now-ga/
+# https://www.docker.com/blog/multi-arch-build-and-images-the-simple-way/
+# https://docs.github.com/en/actions/guides/publishing-docker-images
+
+name: 'Docker Integration Tests and Release'
+
+on:
+  push:
+    branches:
+      - "*"
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch:
+          - x86
+          - armhf
+          - arm64
+      fail-fast: false
+    steps:
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Login to docker
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD_INTERNAL }}" | docker login -u "${{ secrets.DOCKER_LOGIN_INTERNAL }}" --password-stdin
+
+      - name: Build images
+        id: build-container
+        run: |
+          ./build/build-docker.sh "${{ matrix.arch }}"
+          docker tag "ownyourbits/nextcloudpi-${{ matrix.arch }}:latest" "thecalcaholic/ncp-internal-${{ matrix.arch }}:${{ github.run_id }}"
+          docker push "thecalcaholic/ncp-internal-${{ matrix.arch }}:${{ github.run_id }}"
+
+  test:
+    needs:
+      - build
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        arch:
+          - armhf
+          - x86
+          - arm64
+      fail-fast: false
+    steps:
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Login to docker
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD_INTERNAL }}" | docker login -u "${{ secrets.DOCKER_LOGIN_INTERNAL }}" --password-stdin
+      - name: Start ncp container
+        run: |
+          docker run -d --rm -p 8443:443 -p 4443:4443 --name nextcloudpi thecalcaholic/ncp-internal-${{ matrix.arch }}:${{ github.run_id }}
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Firefox
+        uses: browser-actions/setup-firefox@latest
+      - name: Setup GeckoDriver
+        uses: browser-actions/setup-geckodriver@latest
+      - name: Setup Selenium
+        run: pip install selenium
+
+      - name: Integration Tests
+        working-directory: ./tests
+        run: |
+          python activation_tests.py --no-gui localhost 8443 4443 || {
+            tail -n 20 geckodriver.log >&2 || true
+            echo "======================="
+            echo "Activation test failed!"
+            echo "Container logs:"
+            echo "==========================================="
+            docker logs nextcloudpi
+            echo "Last lines of ncp.log:"
+            echo "==========================================="
+            docker exec nextcloudpi tail /var/log/ncp.log;
+            exit 1
+          }
+          echo "Activation test successful"
+          python system_tests.py --no-ping --non-interactive || {
+            echo "System test failed!"
+            exit 1
+          }
+          echo "System test successful"
+          python nextcloud_tests.py --no-gui localhost 8443 4443 || {
+            tail -n 20 geckodriver.log >&2 || true
+            echo "======================="
+            echo "Nextcloud test failed!"
+            echo "Container logs:"
+            echo "==========================================="
+            docker logs nextcloudpi
+            echo "Last lines of ncp.log:"
+            echo "==========================================="
+            docker exec nextcloudpi tail /var/log/ncp.log;
+            exit 1
+          }
+          echo "Nextcloud test successful"
+
+  release:
+    needs:
+      - test
+    if: ${{ github.event_name == 'push' && github.github.ref_type == 'tag' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Create manifest and push as tag to docker hub
+        run: |
+          . ./build/buildlib.sh
+          
+          for arch in x86 armhf arm64
+          do
+            docker pull "thecalcaholic/ncp-internal-${arch}:${{ github.run_id }}"
+            docker tag "thecalcaholic/ncp-internal-${arch}:${{ github.run_id }}" "ownyourbits/nextcloudpi-${arch}:${version?}"
+          done
+
+          docker manifest create ownyourbits/nextcloudpi:${version?} \
+            ownyourbits/nextcloudpi-armhf:${version?} \
+            ownyourbits/nextcloudpi-x86:${version?} \
+            ownyourbits/nextcloudpi-arm64:${version?}
+          docker manifest push ownyourbits/nextcloudpi:${version?}
+
+      - name: Create manifest and push as latest to docker hub
+        run: |
+             docker manifest create ownyourbits/nextcloudpi:latest \
+             ownyourbits/nextcloudpi-armhf:latest \
+             ownyourbits/nextcloudpi-x86:latest \
+             ownyourbits/nextcloudpi-arm64:latest
+             docker manifest push ownyourbits/nextcloudpi:latest

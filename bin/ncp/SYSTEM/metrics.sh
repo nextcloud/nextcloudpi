@@ -62,10 +62,14 @@ metrics_services() {
     exit 1
   fi
 
-  if [[ "$DOCKERBUILD" == 1 ]]
+  if is_docker
   then
-    update-rc.d ncp-metrics "$cmd"
-    return $?
+    rc1=0
+    rc2=0
+    update-rc.d ncp-metrics-exporter "$cmd" || rc1=$?
+    update-rc.d prometheus-node-exporter "$cmd" || rc2=$?
+    [[ $rc1 > $rc2 ]] && return $rc1
+    return $rc2
   else
     systemctl "$cmd" prometheus-node-exporter ncp-metrics-exporter
     return $?
@@ -92,7 +96,7 @@ EOF
   [[ "${arch}" =~ ^"arm" ]] && arch="armv7"
 
   mkdir -p /usr/local/lib/ncp-metrics
-  wget -O "/usr/local/lib/ncp-metrics/ncp-metrics-exporter" \
+  wget -qO "/usr/local/lib/ncp-metrics/ncp-metrics-exporter" \
     "https://github.com/theCalcaholic/ncp-metrics-exporter/releases/download/v1.1.0/ncp-metrics-exporter-${arch}"
   chmod +x /usr/local/lib/ncp-metrics/ncp-metrics-exporter
 
@@ -101,22 +105,28 @@ EOF
   # shellcheck disable=SC2016
   sed -i 's|status_of_proc "$DAEMON" "$NAME" ${PIDFILE:="-p ${PIDFILE}"}|status_of_proc ${PIDFILE:+-p "$PIDFILE"} "$DAEMON" "$NAME"|' /lib/init/init-d-script
 
-  if [[ "$DOCKERBUILD" == 1 ]]
+  if is_docker
   then
     # during installation of prometheus-node-exporter `useradd` is used to create a user.
     # However, `useradd` doesn't the symlink in /etc/shadow, so we need to temporarily move it back
-    trap "mv /etc/shadow /data/etc/shadow; ln -s /data/etc/shadow /etc/shadow" EXIT
-    rm /etc/shadow
-    cp /data/etc/shadow /etc/shadow
+    restore_shadow=true
+    [[ -L /etc/shadow ]] || restore_shadow=false
+    [[ "$restore_shadow" == "false" ]] || {
+      trap "mv /etc/shadow /data/etc/shadow; ln -s /data/etc/shadow /etc/shadow" EXIT
+      rm /etc/shadow
+      cp /data/etc/shadow /etc/shadow
+    }
     apt_install_with_recommends prometheus-node-exporter
-    mv /etc/shadow /data/etc/shadow
-    ln -s /data/etc/shadow /etc/shadow
+    [[ "$restore_shadow" == "false" ]] || {
+      mv /etc/shadow /data/etc/shadow
+      ln -s /data/etc/shadow /etc/shadow
+    }
     trap - EXIT
   else
     apt_install_with_recommends prometheus-node-exporter
   fi
 
-  if [[ "$DOCKERBUILD" == 1 ]]
+  if is_docker
   then
     cat > /etc/init.d/ncp-metrics-exporter <<'EOF'
 #!/bin/sh
@@ -144,6 +154,7 @@ LOGFILE=/var/log/ncp-metrics.log
 START_ARGS="--background --make-pidfile"
 EOF
     chmod +x /etc/init.d/ncp-metrics-exporter
+    update-rc.d ncp-metrics-exporter defaults
 
     cat > /etc/services-available.d/101ncp-metrics <<EOF
 #!/bin/bash

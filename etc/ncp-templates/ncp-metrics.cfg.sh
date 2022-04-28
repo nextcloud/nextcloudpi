@@ -50,7 +50,7 @@ EOF
 EOF
 }
 
-[[ "$DOCKERBUILD" == 1 ]] || {
+is_docker || {
 
   DATADIR=$( ncc config:system:get datadirectory ) || {
     echo -e "ERROR: Could not get data directory. Is NextCloud running?";
