@@ -32,6 +32,7 @@ from selenium.common.exceptions import TimeoutException
 suite_name = "activation tests"
 test_cfg = 'test_cfg.txt'
 test_log = 'test_log.txt'
+wait_timeout = 120
 
 
 class tc:
@@ -121,7 +122,7 @@ def test_activation(IP, nc_port, admin_port, options):
 
     test.new("activation ends")
     try:
-        wait = WebDriverWait(driver, 60)
+        wait = WebDriverWait(driver, wait_timeout)
         wait.until(EC.text_to_be_present_in_element((By.ID,'error-box'), "ACTIVATION SUCCESSFUL"))
         test.check(True)
     except TimeoutException: 

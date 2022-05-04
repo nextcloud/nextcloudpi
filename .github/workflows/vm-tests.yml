@@ -331,7 +331,7 @@ jobs:
   cleanup-snapshots:
     if: ${{ always() }}
     needs:
-      - cleanup
+      - create-postactivation-snapshots
     runs-on: ubuntu-latest
     container:
       image: thecalcaholic/ncp-test-automation:latest

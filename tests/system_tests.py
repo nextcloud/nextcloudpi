@@ -181,18 +181,21 @@ if __name__ == "__main__":
 
     # parse options
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'h', ['help', 'no-ping'])
+        opts, args = getopt.getopt(sys.argv[1:], 'h', ['help', 'no-ping', 'non-interactive'])
     except getopt.GetoptError:
         usage()
         sys.exit(2)
 
     skip_ping = False
+    interactive = True
     for opt, arg in opts:
         if opt in ('-h', '--help'):
             usage()
             sys.exit(2)
         elif opt == '--no-ping':
             skip_ping = True
+        elif opt == '--non-interactive':
+            interactive = False
         else:
             usage()
             sys.exit(2)
@@ -208,7 +211,7 @@ if __name__ == "__main__":
 
     # detect if we are running this in a NCP instance
     try:
-        dockers_running = run(['docker', 'ps', '--format', '{{.Image}}'], stdout=PIPE).stdout.decode('utf-8')
+        dockers_running = run(['docker', 'ps', '--format', '{{.Names}}'], stdout=PIPE).stdout.decode('utf-8')
     except:
         dockers_running = ''
 
@@ -226,9 +229,12 @@ if __name__ == "__main__":
         pre_cmd = []
 
     # docker method
-    elif 'ownyourbits/nextcloudpi-' in dockers_running:
+    elif 'nextcloudpi' in dockers_running:
         print( tc.brown + "* local NCP docker instance detected" + tc.normal)
-        pre_cmd = ['docker', 'exec', '-ti', 'nextcloudpi']
+        pre_cmd = ['docker', 'exec']
+        if interactive:
+            pre_cmd.append('-ti')
+        pre_cmd.append('nextcloudpi')
 
     # LXC method
     elif lxc_running:
