@@ -7,7 +7,7 @@ name: 'Docker Integration Tests and Release'
 on:
   push:
     branches:
-      - "*"
+      - "**"
     tags:
       - 'v*'
 
