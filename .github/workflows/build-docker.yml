@@ -40,7 +40,11 @@ jobs:
         run: |
           ./build/build-docker.sh "${{ matrix.arch }}"
           docker tag "ownyourbits/nextcloudpi-${{ matrix.arch }}:latest" "thecalcaholic/ncp-internal-${{ matrix.arch }}:${{ github.run_id }}"
+          testing_image="ownyourbits/nextcloudpi-${{ matrix.arch }}:latest"
+          [[ "${{ matrix.arch }}" == "arm64" ]] && testing_image="ownyourbits/ncp-qemu-fix-${{ matrix.arch }}:latest"
+          docker tag "${testing_image}" "thecalcaholic/ncp-internal-${{ matrix.arch }}:${{ github.run_id }}-testing"
           docker push "thecalcaholic/ncp-internal-${{ matrix.arch }}:${{ github.run_id }}"
+          docker push "thecalcaholic/ncp-internal-${{ matrix.arch }}:${{ github.run_id }}-testing"
 
   test:
     needs:
@@ -63,7 +67,7 @@ jobs:
           echo "${{ secrets.DOCKER_PASSWORD_INTERNAL }}" | docker login -u "${{ secrets.DOCKER_LOGIN_INTERNAL }}" --password-stdin
       - name: Start ncp container
         run: |
-          docker run -d --rm -p 8443:443 -p 4443:4443 --name nextcloudpi thecalcaholic/ncp-internal-${{ matrix.arch }}:${{ github.run_id }}
+          docker run -d --rm -p 8443:443 -p 4443:4443 --name nextcloudpi thecalcaholic/ncp-internal-${{ matrix.arch }}:${{ github.run_id }}-testing
 
       - name: Checkout code
         uses: actions/checkout@v3
