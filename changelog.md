@@ -1,5 +1,5 @@
 
-[v1.47.2](https://github.com/nextcloud/nextcloudpi/commit/b66ce17) (2022-05-05) build-docker.yml: Fix release condition
+[v1.47.2](https://github.com/nextcloud/nextcloudpi/commit/b66ce17) (2022-05-05) docker-build.yml: Add CI/CD integration tests for docker images
 
 [v1.47.1 ](https://github.com/nextcloud/nextcloudpi/commit/9663ef7) (2022-04-13) system_tests.py: Remove deprecated wicd_curses check
 | 
