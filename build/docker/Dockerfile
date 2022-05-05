@@ -186,3 +186,7 @@ rm /var/cache/debconf/*-old; \
 echo "${ncp_ver}" > /usr/local/etc/ncp-version
 
 COPY build/docker/nextcloudpi/000ncp /etc/services-enabled.d/
+
+FROM --platform=linux/${arch_qemu} nextcloudpi as ncp-qemu-fix
+
+RUN echo 'Mutex posixsem' >> /etc/apache2/mods-available/ssl.conf
