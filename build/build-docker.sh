@@ -51,7 +51,7 @@ clean_workspace() {
 
   # Pull latest image for caching
   docker pull ownyourbits/nextcloudpi
-  for target in qemu nextcloudpi debian-ncp lamp nextcloud
+  for target in qemu nextcloudpi debian-ncp lamp nextcloud ncp-qemu-fix
   do
     build_arch "$target" "${release}" "${arch_args[@]}"
   done
