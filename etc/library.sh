@@ -417,9 +417,15 @@ function nc_version()
 
 function get_ip()
 {
-  local iface
-  iface="$( ip r | grep "default via" | awk '{ print $5 }' | head -1 )"
-  ip a show dev "$iface" | grep global | grep -oP '\d{1,3}(.\d{1,3}){3}' | head -1
+ if [ ! -e /usr/sbin/unchroot ]; then 
+    ## Standard Install
+    local iface
+    iface="$( ip r | grep "default via" | awk '{ print $5 }' | head -1 )"
+    ip a show dev "$iface" | grep global | grep -oP '\d{1,3}(.\d{1,3}){3}' | head -1
+ else
+    ## Android Container
+    (ip -o route get to 9.9.9.9 | sed -n 's/.*src \([0-9.]\+\).*/\1/p')
+ fi    
 }
 
 function is_an_ip()

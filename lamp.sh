@@ -34,6 +34,11 @@ install()
 
     mkdir -p /run/php
 
+    ##  Android containers need to explicitly set Mutex file 
+    if [ ! -e /usr/sbin/unchroot ]; then
+      echo "Mutex file:${APACHE_LOCK_DIR} default" >> /etc/apache2/apache2.conf
+    fi
+
     # mariaDB password
     local DBPASSWD="default"
     echo -e "[client]\npassword=$DBPASSWD" > /root/.my.cnf
