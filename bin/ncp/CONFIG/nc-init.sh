@@ -152,7 +152,7 @@ EOF
   ncc app:disable updatenotification
 
   # News dropped support for 32-bit -> https://github.com/nextcloud/news/issues/1423
-  if ! [[ "$(uname -m)" =~ "armv7" ]]; then
+  if ! [[ "$(dpkg --print-architecture)" = "armhf" ]]; then
     ncc app:install news
     ncc app:enable  news
   fi

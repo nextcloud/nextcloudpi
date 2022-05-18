@@ -35,8 +35,8 @@ install_app nc-restore
 [[ ! -f /.docker-image ]] && {
 
   # fix HPB with dynamic public IP
-  arch="$(uname -m)"
-  [[ "${arch}" =~ "armv7" ]] && arch="armv7"
+  arch="$(dpkg --print-architecture)"
+  [[ "${arch}" = "armhf" ]] && arch="armv7"
   cat > /etc/systemd/system/notify_push.service <<EOF
 [Unit]
 Description = Push daemon for Nextcloud clients
