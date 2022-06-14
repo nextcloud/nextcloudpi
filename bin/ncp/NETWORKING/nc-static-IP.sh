@@ -8,8 +8,6 @@
 # More at: https://ownyourbits.com
 #
 
-source /usr/local/etc/library.sh
-
 configure() 
 {
   local GW="$( ip r | grep "default via"   | awk '{ print $3 }' | head -1 )"

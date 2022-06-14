@@ -55,6 +55,7 @@ IMG="$(ls -1t tmp/*.img | head -1)"
 build/build-SD-berryboot.sh "$IMG"
 
 # Armbian
+export LIB_TAG=master # if we want to pin down a specific armbian version
 build/build-SD-armbian.sh odroidxu4 OdroidHC2
 build/build-SD-armbian.sh rockpro64 RockPro64
 build/build-SD-armbian.sh rock64 Rock64

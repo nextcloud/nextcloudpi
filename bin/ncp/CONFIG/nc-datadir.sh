@@ -17,13 +17,13 @@ is_active()
 
 install()
 {
-  apt_install btrfs-tools
+  apt_install btrfs-progs
 }
 
 configure()
 {
-  source /usr/local/etc/library.sh # sets PHPVER
   set -eu -o pipefail
+  shopt -s dotglob # includes dot files
 
   ## CHECKS
   local SRCDIR BASEDIR ENCDIR
@@ -113,6 +113,11 @@ configure()
   sed -i "s|logpath  =.*nextcloud.log|logpath  = ${DATADIR}/nextcloud.log|" /etc/fail2ban/jail.local
 
   restore_maintenance_mode
+
+  (
+    . "${BINDIR}/SYSTEM/metrics.sh"
+    reload_metrics_config
+  )
 }
 
 # License

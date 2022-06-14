@@ -9,7 +9,6 @@
 #
 
 # just change NCLATESTVER and re-activate in update.sh to upgrade users
-source /usr/local/etc/library.sh # sets NCLATESTVER
 
 configure()
 {

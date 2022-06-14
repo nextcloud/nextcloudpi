@@ -4,7 +4,7 @@ set -e
 source /usr/local/etc/library.sh
 
 [[ "$1" != "--defaults" ]] || echo "INFO: Restoring template to default settings" >&2
-[[ ! -f /.docker-image ]]  || echo "INFO: Docker installation detected" >&2
+is_docker && echo "INFO: Docker installation detected" >&2
 
 if [[ "$1" != "--defaults" ]]; then
   LETSENCRYPT_DOMAIN="$(
@@ -86,14 +86,13 @@ if [[ "$1" != "--defaults" ]] && [[ "$METRICS_IS_ENABLED" == yes ]]
 then
 
   cat <<EOF
-
     <Location /metrics/system>
       ProxyPass http://localhost:9100/metrics
 
       Order deny,allow
       Allow from all
       AuthType Basic
-      AuthName "Metrics"
+      AuthName "System Metrics"
       AuthUserFile /usr/local/etc/metrics.htpasswd
       <RequireAll>
         <RequireAny>
@@ -101,7 +100,22 @@ then
           Require valid-user
         </RequireAny>
       </RequireAll>
+    </Location>
 
+    <Location /metrics/ncp>
+      ProxyPass http://localhost:9000/metrics
+
+      Order deny,allow
+      Allow from all
+      AuthType Basic
+      AuthName "NCP Metrics"
+      AuthUserFile /usr/local/etc/metrics.htpasswd
+      <RequireAll>
+        <RequireAny>
+          Require host localhost
+          Require valid-user
+        </RequireAny>
+      </RequireAll>
     </Location>
 EOF
 fi
@@ -125,6 +139,6 @@ cat <<EOF
 EOF
 
 if ! [[ -f /.ncp-image ]]; then
-  echo "Apache self check:" >> /var/log/ncp.log
-  apache2ctl -t >> /var/log/ncp.log 2>&1
+  echo "Apache self check:" | tee /var/log/ncp.log >&2
+  apache2ctl -t 2>&1 | tee /var/log/ncp.log >&2
 fi

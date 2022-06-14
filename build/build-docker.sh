@@ -11,34 +11,53 @@ release=$(jq -r .release < etc/ncp.cfg)
 
 function docker_build() { DOCKER_BUILDKIT=1 docker build --progress=plain . "$@"; }
 
-function build_arch()
-{
-  local release="${1}"
-  local arch="${2}"
-  local arch_qemu="${3}"
-  local ncp_tag="${4:-$arch}"
+build_arch() {
+  local target="${1?}"
+  local release="${2?}"
+  local arch="${3?}"
+  local arch_qemu="${4?}"
+  local suffix="${5:-$arch}"
 
   echo -e "\e[1m\n[ Build NCP Docker ${arch} ]\e[0m"
+  DOCKER_BUILDKIT=1 docker build --pull --progress=plain . -f build/docker/Dockerfile \
+    --target "$target" -t "ownyourbits/$target-${suffix}:latest" \
+    --cache-from "ownyourbits/nextcloudpi-${suffix}" --build-arg "release=$release" --build-arg "arch=${arch}" \
+    --build-arg "arch_qemu=$arch_qemu" --build-arg "ncp_ver=${version?}"
 
-  docker_build -f build/docker/debian-ncp/Dockerfile  -t ownyourbits/debian-ncp-${ncp_tag}:latest --pull --build-arg release=${release} --build-arg arch=${arch} --build-arg arch_qemu=${arch_qemu}
-  docker_build -f build/docker/lamp/Dockerfile        -t ownyourbits/lamp-${ncp_tag}:latest              --build-arg release=${release} --build-arg arch=${ncp_tag}
-  docker_build -f build/docker/nextcloud/Dockerfile   -t ownyourbits/nextcloud-${ncp_tag}:latest         --build-arg release=${release} --build-arg arch=${ncp_tag}
-  docker_build -f build/docker/nextcloudpi/Dockerfile -t ownyourbits/nextcloudpi-${ncp_tag}:latest       --build-arg release=${release} --build-arg arch=${ncp_tag} --build-arg ncp_ver=${version}
-
-  docker tag ownyourbits/debian-ncp-${ncp_tag}:latest ownyourbits/debian-ncp-${ncp_tag}:"${version}"
-  docker tag ownyourbits/lamp-${ncp_tag}:latest ownyourbits/lamp-${ncp_tag}:"${version}"
-  docker tag ownyourbits/nextcloud-${ncp_tag}:latest ownyourbits/nextcloud-${ncp_tag}:"${version}"
-  docker tag ownyourbits/nextcloudpi-${ncp_tag}:latest ownyourbits/nextcloudpi-${ncp_tag}:"${version}"
+  docker tag "ownyourbits/${target}-${suffix}:latest" "ownyourbits/${target}-${suffix}:${version}"
 }
 
-# make sure we don't accidentally include this
-rm -f ncp-web/wizard.cfg
+get_arch_args() {
 
-[[ "$@" =~ "x86"   ]] && build_arch "${release}" amd64   x86_64  x86
-[[ "$@" =~ "armhf" ]] && build_arch "${release}" arm32v7 arm     armhf
-[[ "$@" =~ "arm64" ]] && build_arch "${release}" arm64v8 aarch64 arm64
+  [[ "${1?}" =~ "x86"   ]] && { echo "amd64 x86_64 x86"; return 0; }
+  [[ "$1" =~ "armhf" ]] && { echo "arm32v7 arm armhf"; return 0; }
+  [[ "$1" =~ "arm64" ]] && { echo "arm64v8 aarch64 arm64"; return 0; }
 
-exit 0
+  echo -e "Unsupported architecture: '${arch}'!"
+  return 1
+}
+
+clean_workspace() {
+  # make sure we don't accidentally include this
+  rm -f ncp-web/wizard.cfg
+}
+
+# Only execute script if not sourced
+[[ "${BASH_SOURCE[0]}" == "$0" ]] && {
+  arch="${1?Missing argument: target architecture}"
+
+  shopt -s lastpipe
+  get_arch_args "$arch" | read -r -a arch_args
+
+  # Pull latest image for caching
+  docker pull ownyourbits/nextcloudpi
+  for target in qemu nextcloudpi debian-ncp lamp nextcloud ncp-qemu-fix
+  do
+    build_arch "$target" "${release}" "${arch_args[@]}"
+  done
+
+  exit 0
+}
 
 # License
 #

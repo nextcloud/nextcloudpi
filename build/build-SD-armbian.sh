@@ -46,10 +46,10 @@ CONF=armbian/userpatches/config-ncp.conf
 # default parameters
 cat > "$CONF" <<EOF
 BOARD="$BOARD"
-BRANCH=legacy
-RELEASE=$RELEASE
+BRANCH=current
+RELEASE=${RELEASE%%-security}
 KERNEL_ONLY=no
-KERNEL_CONFIGURE=no
+KERNEL_CONFIGURE=prebuilt
 BUILD_DESKTOP=no
 BUILD_MINIMAL=yes
 USE_CCACHE=yes

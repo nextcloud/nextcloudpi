@@ -24,6 +24,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.firefox.options import Options
 from selenium.common.exceptions import UnexpectedAlertPresentException
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
@@ -31,6 +32,7 @@ from selenium.common.exceptions import TimeoutException
 suite_name = "activation tests"
 test_cfg = 'test_cfg.txt'
 test_log = 'test_log.txt'
+wait_timeout = 120
 
 
 class tc:
@@ -88,12 +90,12 @@ def signal_handler(sig, frame):
         sys.exit(0)
 
 
-def test_activation(IP, nc_port, admin_port):
+def test_activation(IP, nc_port, admin_port, options):
     """ Activation process checks"""
 
     # activation page
     test = Test()
-    driver = webdriver.Firefox(service_log_path='/dev/null')
+    driver = webdriver.Firefox(options=options)
     driver.implicitly_wait(5)
     test.new("activation opens")
     driver.get(f"https://{IP}:{nc_port}")
@@ -120,7 +122,7 @@ def test_activation(IP, nc_port, admin_port):
 
     test.new("activation ends")
     try:
-        wait = WebDriverWait(driver, 60)
+        wait = WebDriverWait(driver, wait_timeout)
         wait.until(EC.text_to_be_present_in_element((By.ID,'error-box'), "ACTIVATION SUCCESSFUL"))
         test.check(True)
     except TimeoutException: 
@@ -134,7 +136,7 @@ def test_activation(IP, nc_port, admin_port):
 
     # ncp-web
     test.new("ncp-web")
-    driver = webdriver.Firefox(service_log_path='/dev/null')
+    driver = webdriver.Firefox(options=options)
     try:
         driver.get(f"https://ncp:{urllib.parse.quote_plus(ncp_pass)}@{IP}:{admin_port}")
     except UnexpectedAlertPresentException:
@@ -150,15 +152,18 @@ if __name__ == "__main__":
 
     # parse options
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'h', ['help'])
+        opts, args = getopt.getopt(sys.argv[1:], 'h', ['help', 'no-gui'])
     except getopt.GetoptError:
         usage()
         sys.exit(2)
 
+    options = Options()
     for opt, arg in opts:
         if opt in ('-h', '--help'):
             usage()
             sys.exit(2)
+        elif opt == '--no-gui':
+            options.headless = True
         else:
             usage()
             sys.exit(2)
@@ -170,7 +175,8 @@ if __name__ == "__main__":
     admin_port = args[2] if len(args) > 2 else "4443"
     print("Activation tests " + tc.yellow + IP + tc.normal)
     print("---------------------------")
-    test_activation(IP, nc_port, admin_port)
+
+    test_activation(IP, nc_port, admin_port, options)
 
 # License
 #

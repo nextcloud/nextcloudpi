@@ -24,7 +24,7 @@ from subprocess import run, getstatusoutput, PIPE
 processes_must_be_running = [
         'apache2',
         'cron',
-        'mysqld',
+        'mariadb',
         'php-fpm',
         'postfix',
         'redis-server',
@@ -47,7 +47,6 @@ binaries_no_docker = [
         'udiskie',
         'ufw',
         'samba',
-        'wicd-curses',
         ]
 
 files_must_exist = [
@@ -182,15 +181,21 @@ if __name__ == "__main__":
 
     # parse options
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'h', ['help'])
+        opts, args = getopt.getopt(sys.argv[1:], 'h', ['help', 'no-ping', 'non-interactive'])
     except getopt.GetoptError:
         usage()
         sys.exit(2)
 
+    skip_ping = False
+    interactive = True
     for opt, arg in opts:
         if opt in ('-h', '--help'):
             usage()
             sys.exit(2)
+        elif opt == '--no-ping':
+            skip_ping = True
+        elif opt == '--non-interactive':
+            interactive = False
         else:
             usage()
             sys.exit(2)
@@ -206,7 +211,7 @@ if __name__ == "__main__":
 
     # detect if we are running this in a NCP instance
     try:
-        dockers_running = run(['docker', 'ps', '--format', '{{.Image}}'], stdout=PIPE).stdout.decode('utf-8')
+        dockers_running = run(['docker', 'ps', '--format', '{{.Names}}'], stdout=PIPE).stdout.decode('utf-8')
     except:
         dockers_running = ''
 
@@ -224,9 +229,12 @@ if __name__ == "__main__":
         pre_cmd = []
 
     # docker method
-    elif 'ownyourbits/nextcloudpi-' in dockers_running:
+    elif 'nextcloudpi' in dockers_running:
         print( tc.brown + "* local NCP docker instance detected" + tc.normal)
-        pre_cmd = ['docker', 'exec', '-ti', 'nextcloudpi']
+        pre_cmd = ['docker', 'exec']
+        if interactive:
+            pre_cmd.append('-ti')
+        pre_cmd.append('nextcloudpi')
 
     # LXC method
     elif lxc_running:
@@ -242,12 +250,13 @@ if __name__ == "__main__":
         pre_cmd = ['ssh', '-o UserKnownHostsFile=/dev/null' , '-o PasswordAuthentication=no',
                 '-o StrictHostKeyChecking=no', '-o ConnectTimeout=1', ssh_cmd[4:]]
 
-        at_char = ssh_cmd.index('@')
-        ip = ssh_cmd[at_char+1:]
-        ping_cmd = run(['ping', '-c1', '-w1', ip], stdout=PIPE, stderr=PIPE)
-        if ping_cmd.returncode != 0:
-            print(tc.red + "No connectivity to " + tc.yellow + ip + tc.normal)
-            sys.exit(1)
+        if not skip_ping:
+            at_char = ssh_cmd.index('@')
+            ip = ssh_cmd[at_char+1:]
+            ping_cmd = run(['ping', '-c1', '-w10', ip], stdout=PIPE, stderr=PIPE)
+            if ping_cmd.returncode != 0:
+                print(tc.red + "No connectivity to " + tc.yellow + ip + tc.normal)
+                #sys.exit(1)
 
         ssh_test = run(pre_cmd + [':'], stdout=PIPE, stderr=PIPE)
         if ssh_test.returncode != 0:

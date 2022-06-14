@@ -10,7 +10,7 @@
 
 source /usr/local/etc/library.sh
 
-set -e
+set -e$DBG
 
 CONFDIR=/usr/local/etc/ncp-config.d/
 UPDATESDIR=updates
@@ -32,11 +32,11 @@ nc-snapshot-sync
 nc-restore-snapshot
 nc-audit
 nc-hdd-monitor
+nc-hdd-test
 nc-zram
 SSH
 fail2ban
 NFS
-metrics
 "
 
 if is_docker &>/dev/null; then
@@ -202,8 +202,8 @@ chmod +x /etc/update-motd.d/30ncp-dist-upgrade
 # Remove redundant opcache configuration.
 # Related to https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=815968
 # Bug #416 reappeared after we moved to php7.3 and debian buster packages.
-[[ "$( ls -l /etc/php/7.3/fpm/conf.d/*-opcache.ini |  wc -l )" -gt 1 ]] && rm "$( ls /etc/php/7.3/fpm/conf.d/*-opcache.ini | tail -1 )"
-[[ "$( ls -l /etc/php/7.3/cli/conf.d/*-opcache.ini |  wc -l )" -gt 1 ]] && rm "$( ls /etc/php/7.3/cli/conf.d/*-opcache.ini | tail -1 )"
+[[ "$( ls -l /etc/php/"${PHPVER}"/fpm/conf.d/*-opcache.ini |  wc -l )" -gt 1 ]] && rm "$( ls /etc/php/"${PHPVER}"/fpm/conf.d/*-opcache.ini | tail -1 )"
+[[ "$( ls -l /etc/php/"${PHPVER}"/cli/conf.d/*-opcache.ini |  wc -l )" -gt 1 ]] && rm "$( ls /etc/php/"${PHPVER}"/cli/conf.d/*-opcache.ini | tail -1 )"
 
 exit 0
 

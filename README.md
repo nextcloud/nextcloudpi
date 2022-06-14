@@ -13,12 +13,19 @@ This code also generates the NextCloudPi [docker image](https://hub.docker.com/r
 
 Find the full documentation at [docs.nextcloudpi.com](http://docs.nextcloudpi.com)
 
+---
+[![VM Integration Tests](https://github.com/nextcloud/nextcloudpi/workflows/VM%20Integration%20Tests/badge.svg)](https://github.com/nextcloud/nextcloudpi/actions/workflows/vm-tests.yml)
+
+[![Docker Integration Tests](https://github.com/nextcloud/nextcloudpi/actions/workflows/build-docker.yml/badge.svg)](https://github.com/nextcloud/nextcloudpi/actions/workflows/build-docker.yml)
+
+---
+
 ## Features
 
- * Debian/Raspbian 10 Buster
- * Nextcloud 22.2.2
+ * Debian/Raspbian 11 Bullseye
+ * Nextcloud 23.0.2
  * Apache 2.4.25, with HTTP2 enabled
- * PHP 7.3
+ * PHP 7.4
  * MariaDB 10
  * Redis memory cache
  * ncp-config for easy setup ( RAM logs, USB drive and more )

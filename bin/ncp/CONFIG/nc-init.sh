@@ -12,8 +12,6 @@ DBADMIN=ncadmin
 
 configure()
 {
-  source /usr/local/etc/library.sh # sets PHPVER NCVER
-
   echo "Setting up a clean Nextcloud instance... wait until message 'NC init done'"
 
   # checks
@@ -25,7 +23,7 @@ configure()
   echo "Setting up database..."
 
   # launch mariadb if not already running
-  if ! pgrep -c mysqld &>/dev/null; then
+  if ! [[ -f /run/mysqld/mysqld.pid ]]; then
     echo "Starting mariaDB"
     mysqld &
     local db_pid=$!
@@ -160,7 +158,9 @@ EOF
   fi
 
   # ncp-previewgenerator
-  if is_more_recent_than "21.0.0" "$NCVER"; then
+  local ncver
+  ncver="$(ncc status 2>/dev/null | grep "version:" | awk '{ print $3 }')"
+  if is_more_recent_than "21.0.0" "${ncver}"; then
     local ncprev=/var/www/ncp-previewgenerator/ncp-previewgenerator-nc20
   else
     ncc app:install notify_push
@@ -202,6 +202,7 @@ EOF
 
   # dettach mysql during the build
   if [[ "${db_pid}" != "" ]]; then
+    echo "Shutting down mariaDB (${db_pid})"
     mysqladmin -u root shutdown
     wait "${db_pid}"
   fi

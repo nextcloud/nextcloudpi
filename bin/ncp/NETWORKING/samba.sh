@@ -64,10 +64,10 @@ EOF
   # create a share per Nextcloud user
   local USERS=()
   while read -r path; do 
-    USERS+=( "$( basename $( dirname "$path" ) )" )
+    USERS+=( "$( basename "$(dirname "$path")" )" )
   done < <( ls -d "$DATADIR"/*/files )
 
-  for user in ${USERS[@]}; do
+  for user in "${USERS[@]}"; do
     # Exclude users not matching group filter (if enabled)
     if [[ -n "$FILTER_BY_GROUP" ]] \
     && [[ -z "$(ncc user:info "$user" --output=json | jq ".groups[] | select( . == \"${FILTER_BY_GROUP}\" )")" ]]
@@ -98,10 +98,10 @@ EOF
 
     ## create user with no login if it doesn't exist
     id "$user" &>/dev/null || adduser --disabled-password --force-badname --gecos "" "$user" || return 1
-    echo -e "$PWD\n$PWD" | smbpasswd -s -a $user
+    echo -e "$PWD\n$PWD" | smbpasswd -s -a "${user}"
 
-    usermod -aG www-data $user
-    sudo chmod g+w $DIR
+    usermod -aG www-data "${user}"
+    sudo chmod g+w "${DIR}"
   done
 
   update-rc.d smbd defaults

@@ -13,7 +13,7 @@ source build/buildlib.sh
 
 echo -e "\e[1m\n[ Build NCP Raspberry Pi ]\e[0m"
 
-URL="https://downloads.raspberrypi.org/raspios_lite_arm64/images/raspios_lite_arm64-2021-11-08/2021-10-30-raspios-bullseye-arm64-lite.zip"
+URL="https://downloads.raspberrypi.org/raspios_lite_arm64/images/raspios_lite_arm64-2022-01-28/2022-01-28-raspios-bullseye-arm64-lite.zip"
 SIZE=4G                     # Raspbian image size
 #CLEAN=0                    # Pass this envvar to skip cleaning download cache
 IMG="NextCloudPi_RPi_$( date  "+%m-%d-%y" ).img"
@@ -62,6 +62,9 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
     #$APTINSTALL rpi-update
     #echo -e "y\n" | PRUNE_MODULES=1 rpi-update
 
+    # this image comes without resolv.conf ??
+    echo 'nameserver 1.1.1.1' >> /etc/resolv.conf
+
     # install NCP
     cd /tmp/ncp-build || exit 1
     CODE_DIR="$(pwd)" bash install.sh
@@ -83,8 +86,9 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
     cfg="$(jq '.params[3].value = "raspberry"' <<<"$cfg")"
     echo "$cfg" > /usr/local/etc/ncp-config.d/SSH.cfg
 
-    $ cleanup
+    # cleanup
     source etc/library.sh && run_app_unsafe post-inst.sh
+    rm /etc/resolv.conf
     rm -rf /tmp/ncp-build
 EOFCHROOT
 

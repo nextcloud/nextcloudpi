@@ -8,11 +8,16 @@
 # More at ownyourbits.com
 #
 
-export NCPCFG=${NCPCFG:-/usr/local/etc/ncp.cfg}
 export CFGDIR=/usr/local/etc/ncp-config.d
 export BINDIR=/usr/local/bin/ncp
 export NCDIR=/var/www/nextcloud
 export ncc=/usr/local/bin/ncc
+export NCPCFG=${NCPCFG:-etc/ncp.cfg}
+# Prevent systemd pager from blocking script execution
+export SYSTEMD_PAGER=
+
+[[ -f "$NCPCFG" ]] || export NCPCFG=/usr/local/etc/ncp.cfg
+[[ -f "$NCPCFG" ]] || { echo "$NCPCFG not found" >2; exit 1; }
 
 #unset TRUSTED_DOMAINS
 #declare -A TRUSTED_DOMAINS
@@ -27,11 +32,11 @@ command -v jq &>/dev/null || {
   apt-get install -y --no-install-recommends jq
 }
 
-[[ -f "$NCPCFG" ]] && {
-  NCLATESTVER=$(jq -r .nextcloud_version < "$NCPCFG")
-  PHPVER=$(     jq -r .php_version       < "$NCPCFG")
-  RELEASE=$(    jq -r .release           < "$NCPCFG")
-}
+NCLATESTVER=$(jq -r .nextcloud_version < "$NCPCFG")
+PHPVER=$(     jq -r .php_version       < "$NCPCFG")
+RELEASE=$(    jq -r .release           < "$NCPCFG")
+# the default repo in bullseye is bullseye-security
+RELEASE="${RELEASE}-security"
 command -v ncc &>/dev/null && NCVER="$(ncc status 2>/dev/null | grep "version:" | awk '{ print $3 }')"
 
 function configure_app()

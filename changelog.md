@@ -1,9 +1,41 @@
 
-[v1.46.7](https://github.com/nextcloud/nextcloudpi/commit/0da8dcd) (2021-12-13) letsencrypt: fix invalid arithmetic operator error
+[v1.47.2](https://github.com/nextcloud/nextcloudpi/commit/b66ce17) (2022-05-05) docker-build.yml: Add CI/CD integration tests for docker images
+
+[v1.47.1 ](https://github.com/nextcloud/nextcloudpi/commit/9663ef7) (2022-04-13) system_tests.py: Remove deprecated wicd_curses check
+| 
+[v1.47.0, feature/custom-prometheus-exporter](https://github.com/nextcloud/nextcloudpi/commit/d42a0c8) (2022-04-08) metrics.sh: Reinstall metrics when upgrading
+
+[v1.46.10](https://github.com/nextcloud/nextcloudpi/commit/99a3c45) (2022-03-26) dnsmasq.sh: Workaround dnsmasq startup failure bug
+
+[v1.46.9 ](https://github.com/nextcloud/nextcloudpi/commit/cd98b50) (2022-03-07) docker: adjust PHP version in apache config
+
+[v1.46.8 ](https://github.com/nextcloud/nextcloudpi/commit/21b7fe7) (2022-03-04) SSH: cannot check for default password because of Debian bug #1003151
+
+[v1.46.7 ](https://github.com/nextcloud/nextcloudpi/commit/f473f73) (2022-03-04) nc-hdd-monitor: fix Bullseye service name
+
+[v1.46.6 ](https://github.com/nextcloud/nextcloudpi/commit/c9610e4) (2022-03-03) ncp-dist-upgrade: fix VM grub-pc issue
+
+[v1.46.5 ](https://github.com/nextcloud/nextcloudpi/commit/062c803) (2022-03-02) ncp-dist-upgrade: add DHCP fix for raspios
+
+[v1.46.4 ](https://github.com/nextcloud/nextcloudpi/commit/06ba8a0) (2022-03-02) nc-scan: check for maintenance mode enabled
+
+[v1.46.3 ](https://github.com/nextcloud/nextcloudpi/commit/6245770) (2022-03-02) nc-trusted-domains: dont return 1 if last domain is empty
+
+[v1.46.2 ](https://github.com/nextcloud/nextcloudpi/commit/a834ba0) (2022-03-02) samba: fix usernames with spaces
+
+[v1.46.1 ](https://github.com/nextcloud/nextcloudpi/commit/f8af35b) (2022-03-02) nc-datadir: include dotfiles
+
+[v1.46.0 ](https://github.com/nextcloud/nextcloudpi/commit/878f08f) (2022-03-01) upgrade to NC23.0.2
+
+[v1.45.0 ](https://github.com/nextcloud/nextcloudpi/commit/9bf5ff0) (2021-11-09) update to Debian 11 Bullseye
+
+[v1.44.8 ](https://github.com/nextcloud/nextcloudpi/commit/dd8fc3d) (2022-01-10) fix update from pre-1.46 to post-1.46 not working in docker (#1406)
+
+[v1.44.7 ](https://github.com/nextcloud/nextcloudpi/commit/bcd850c) (2021-12-13) letsencrypt: fix invalid arithmetic operator error
 
 [v1.44.6 ](https://github.com/nextcloud/nextcloudpi/commit/26a7778) (2021-12-06) notify_push: fix service not restarting on binary update (#1398)
 
-[v1.44.5](https://github.com/nextcloud/nextcloudpi/commit/5a404c0) (2021-11-29) ncp-previewgenerator: fix app enable in NC22
+[v1.44.5 ](https://github.com/nextcloud/nextcloudpi/commit/5a404c0) (2021-11-29) ncp-previewgenerator: fix app enable in NC22
 
 [v1.44.4 ](https://github.com/nextcloud/nextcloudpi/commit/0a4f8c1) (2021-11-19) ncp-web: fix spurious characters in power menu
 
