@@ -30,6 +30,14 @@ function extrasMenu() {
 	};
 }
 
-function nextImg() {
-
+function openTab(e, OS) {
+	const tabs = document.getElementsByClassName('tabcontent');
+	for (i = 0; i < tabs.length; i++) {
+		tabs[i].className = tabs[i].className.replace("is-active", "is-hidden");
+	}
+	const tablinks = document.getElementsByClassName("tablinks");
+	for (i = 0; i < tablinks.length; i++) {
+		tablinks[i].className = tablinks[i].className.replace("is-active", "is-hidden");
+	}
+	document.getElementById(OS).classList.replace("is-hidden","is-active");
 }
