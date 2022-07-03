@@ -15,9 +15,6 @@
 	<meta name="subtitle" content=""> <!-- -->
 	<meta name="author" content=""> <!-- -->
 	<meta name="revised" content=""> <!-- Wednesday, March 9th, 2022, 15:38, GMT+2 -->
-	<meta name="designer" content=""> <!-- -->
-	<meta name="owner" content=""> <!-- -->
-	<meta name="reply-to" content=""> <!-- email@reply-here.example -->
 	<meta name="robots" content="noindex,nofollow"> <!-- TODO Change to 'index,follow' when website is ready + max-image-preview:large-->
 	<meta name="AdsBot-Google" content="noindex,nofollow">
 	<meta name="googlebot" content="noindex,nofollow">
@@ -333,7 +330,6 @@
 		</div>
 	</nav>
 
-<!--	
 	<nav class="level">
 		<div class="container">
 			<div class="level-item">
@@ -343,7 +339,6 @@
 			</div>
 		</div>
 	</nav>
--->
 
 </section>
 
@@ -472,8 +467,28 @@
 					</p>
 				</div>
 			</section>
-			
+
 			<section class="section">
+				<div class="tab tabs is-centered is-small">
+				<ul>
+					<li class="tablinks"><a onclick="openTab(event, 'debian');">Debian</a></li>
+					<li class="tablinks"><a onclick="openTab(event, 'vm');">Virtual Machine</a></li>
+					<li class="tablinks"><a onclick="openTab(event, 'docker');">Docker</a></li>
+					<li class="tablinks"><a onclick="openTab(event, 'lxd');">LXD Container</a></li>
+					<li class="tablinks"><a onclick="openTab(event, 'raspberry-pi');">Raspberry Pi</a></li>
+					<li class="tablinks"><a onclick="openTab(event, 'odroid-hc2');">Odroid HC2/HC1/XU4</a></li>
+					<li class="tablinks"><a onclick="openTab(event, 'odroid-hc4');">Odroid HC4</a></li>
+					<li class="tablinks"><a onclick="openTab(event, 'odroid-c2');">Odroid C2</a></li>
+					<li class="tablinks"><a onclick="openTab(event, 'odroid-c4');">Odroid C4</a></li>
+					<li class="tablinks"><a onclick="openTab(event, 'rock64');">Rock64</a></li>
+					<li class="tablinks"><a onclick="openTab(event, 'rockpro64');">RockPro64</a></li>
+					<li class="tablinks"><a onclick="openTab(event, 'banana-pi');">Banana Pi</a></li>
+					<li class="tablinks"><a onclick="openTab(event, 'armbian');">Armbian</a></li>
+				</ul>
+				</div>
+			</section>
+			
+			<section class="section is-hidden tabcontent" id="debian">
 				<div class="box">
 				<div class="container content level-item">
 					<figure class="image">
@@ -503,7 +518,7 @@
 				</div>
 			</section>
 			
-			<section class="section">
+			<section class="section is-hidden tabcontent" id="vm">
 				<div class="container">
 					<div class="box">
 						<div class="container content level-item">
@@ -526,7 +541,7 @@
 				</div>
 			</section>
 
-			<section class="section">
+			<section class="section is-hidden tabcontent" id="docker">
 				<div class="container">
 					<div class="box">
 						<div class="container content level-item">
@@ -552,7 +567,7 @@
 				</div>	
 			</section>
 
-			<section class="section">
+			<section class="section is-hidden tabcontent" id="lxd">
 				<div class="container">
 					<div class="box">
 						<div class="container content level-item">
@@ -580,7 +595,7 @@
 				</div>	
 			</section>
 
-			<section class="section">
+			<section class="section is-hidden tabcontent" id="raspberry-pi">
 				<div class="container">
 					<div class="box">
 						<div class="container content level-item">
@@ -605,7 +620,7 @@
 				</div>	
 			</section>
 
-			<section class="section">
+			<section class="section is-hidden tabcontent" id="odroid-hc2">
 				<div class="container">
 					<div class="box">
 						<div class="container content level-item">
@@ -628,7 +643,7 @@
 				</div>	
 			</section>
 
-			<section class="section">
+			<section class="section is-hidden tabcontent" id="odroid-hc4">
 				<div class="container">
 					<div class="box">
 						<div class="container content level-item">
@@ -651,7 +666,7 @@
 				</div>	
 			</section>
 
-			<section class="section">
+			<section class="section is-hidden tabcontent" id="odroid-c2">
 				<div class="container">
 					<div class="box">
 						<div class="container content level-item">
@@ -674,7 +689,7 @@
 				</div>	
 			</section>
 
-			<section class="section">
+			<section class="section is-hidden tabcontent" id="odroid-c4">
 				<div class="container">
 					<div class="box">
 						<div class="container content level-item">
@@ -697,7 +712,7 @@
 				</div>	
 			</section>
 
-			<section class="section">
+			<section class="section is-hidden tabcontent" id="rock64">
 				<div class="container">
 					<div class="box">
 						<div class="container content level-item">
@@ -720,7 +735,7 @@
 				</div>	
 			</section>
 
-			<section class="section">
+			<section class="section is-hidden tabcontent" id="rockpro64">
 				<div class="container">
 					<div class="box">
 						<div class="container content level-item">
@@ -743,7 +758,7 @@
 				</div>	
 			</section>
 
-			<section class="section">
+			<section class="section is-hidden tabcontent" id="banana-pi">
 				<div class="container">
 					<div class="box">
 						<div class="container content level-item">
@@ -766,7 +781,7 @@
 				</div>	
 			</section>
 
-			<section class="section">
+			<section class="section is-hidden tabcontent" id="armbian">
 				<div class="container">
 					<div class="box">
 						<div class="container content level-item">
@@ -864,7 +879,7 @@
 		</figure>
 	</div>
 	
-	<div class="container content level-item">
+	<div class="container content level-item level-left">
 		<p>
 			There are <a href="https://github.com/nextcloud/nextcloudpi/releases">preinstalled SD card images</a> for the Raspberry Pi and other Single Board Computers.
 		</p>
