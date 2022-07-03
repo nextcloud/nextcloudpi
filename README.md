@@ -79,7 +79,7 @@ Extras can be activated and configured using the web interface at HTTPS port 444
 
 ![ncp-web](https://user-images.githubusercontent.com/21343324/136853829-f4e99ec0-6307-431f-b4c7-21b2330cae7f.png)
 
-, or from the command line from
+or via the command line using
 
 ```
 sudo ncp-config
