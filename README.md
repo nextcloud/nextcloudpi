@@ -2,16 +2,15 @@ English | [Traditional Chinese 繁體中文](i18n/README-zh_TW.md) | [Simplified
 
 # NextCloudPi [![chatroom icon](https://patrolavia.github.io/telegram-badge/chat.png)](https://t.me/NextCloudPi) [![forums icon](https://img.shields.io/badge/help-forums-blue.svg)](https://help.nextcloud.com/c/support/appliances-docker-snappy-vm) [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=N8PJHSEQF4G7Y&lc=US&item_name=Own%20Your%20Bits&item_number=NextCloudPi&no_note=1&no_shipping=1&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted) [![blog](https://img.shields.io/badge/follow-blog-orange.svg)](https://ownyourbits.com)
 
+![NCP Logo](https://user-images.githubusercontent.com/12261439/177057265-8b8911c2-840c-4900-97d8-f26f3b5acf7c.png)
 
-![NC Logo](https://ownyourbits.com/wp-content/uploads/2017/11/ncp-square.png)
-
-This is the build code for [NextCloudPi](https://nextcloudpi.com).
+This is the build code for NextCloudPi.
 
 NextCloudPi is a ready to use image for Raspberry Pi, Odroid HC1, rock64 and other boards.
 
 This code also generates the NextCloudPi [docker image](https://hub.docker.com/r/ownyourbits/nextcloudpi), LXD and VM, and includes an installer for any Debian based system.
 
-Find the full documentation at [docs.nextcloudpi.com](http://docs.nextcloudpi.com)
+Find the documentation at [docs.nextcloudpi.com](https://help.nextcloud.com/t/index-nextcloudpi-documentation/126448#welcome-to-the-nextcloudpi-wiki-1)
 
 ---
 [![VM Integration Tests](https://github.com/nextcloud/nextcloudpi/workflows/VM%20Integration%20Tests/badge.svg)](https://github.com/nextcloud/nextcloudpi/actions/workflows/vm-tests.yml)
@@ -86,7 +85,7 @@ Extras can be activated and configured using the web interface at HTTPS port 444
 sudo ncp-config
 ```
 
-![NCP-config](https://ownyourbits.com/wp-content/uploads/2017/03/ncp-conf-700x456.jpg)
+![NCP Config](https://user-images.githubusercontent.com/12261439/177057299-5d3cd423-3e32-4dc5-9a73-447e41b7674e.jpg)
 
 
 ## Run in docker
@@ -144,9 +143,9 @@ _Note: this assumes a clean Debian install, and there is no rollback method_
 
 ## Downloads
 
-https://nextcloudpi.com
+[Releases](https://github.com/nextcloud/nextcloudpi/releases)
 
-https://hub.docker.com/r/ownyourbits/nextcloudpi
+[Docker Hub](https://hub.docker.com/r/ownyourbits/nextcloudpi)
 
 ## Contact
 
