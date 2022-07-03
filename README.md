@@ -10,7 +10,7 @@ NextCloudPi is a ready to use image for Raspberry Pi, Odroid HC1, rock64 and oth
 
 This code also generates the NextCloudPi [docker image](https://hub.docker.com/r/ownyourbits/nextcloudpi), LXD and VM, and includes an installer for any Debian based system.
 
-Find the documentation at [docs.nextcloudpi.com](https://help.nextcloud.com/t/index-nextcloudpi-documentation/126448#welcome-to-the-nextcloudpi-wiki-1)
+Find the documentation in the forum [here](https://help.nextcloud.com/t/index-nextcloudpi-documentation/126448#welcome-to-the-nextcloudpi-wiki-1)
 
 ---
 [![VM Integration Tests](https://github.com/nextcloud/nextcloudpi/workflows/VM%20Integration%20Tests/badge.svg)](https://github.com/nextcloud/nextcloudpi/actions/workflows/vm-tests.yml)
