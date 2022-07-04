@@ -42,10 +42,6 @@ function openTab(e, OS) {
 	document.getElementById(OS).classList.replace("is-hidden","is-active");
 }
 
-function toggleBurger() {
-	const burgerMenu = document.getElementById('burger-menu');
-	burgerMenu.classList.toggle('is-active');
-}
 document.addEventListener('DOMContentLoaded', () => {
 
   // Get all "navbar-burger" elements
@@ -62,8 +58,6 @@ document.addEventListener('DOMContentLoaded', () => {
       // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
       el.classList.toggle('is-active');
       $target.classList.toggle('is-active');
-
     });
   });
-
 });
