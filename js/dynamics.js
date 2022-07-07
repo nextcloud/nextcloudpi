@@ -1,63 +1,80 @@
 function featuresMenu() {
-	const featuresDropdown = document.getElementById('features-dropdown');
-	featuresDropdown.classList.toggle('is-active');
-	const featuresIcon = document.getElementById('features-icon');
-	if(featuresIcon.dataset.image == "arrow-down") {
-		featuresIcon.src = "images/arrow-up-icon.png";
-		featuresIcon.dataset.image = "arrow-up";
-		return
-	};
-	if(featuresIcon.dataset.image == "arrow-up") {
-		featuresIcon.src = "images/arrow-down-icon.png";
-		featuresIcon.dataset.image = "arrow-down";
-		return
-	};
+    const featuresDropdown = document.getElementById('features-dropdown');
+    featuresDropdown.classList.toggle('is-active');
+    const featuresIcon = document.getElementById('features-icon');
+    if (featuresIcon.dataset.image == "arrow-down") {
+        featuresIcon.src = "images/arrow-up-icon.png";
+        featuresIcon.dataset.image = "arrow-up";
+        return
+    }
+    ;
+    if (featuresIcon.dataset.image == "arrow-up") {
+        featuresIcon.src = "images/arrow-down-icon.png";
+        featuresIcon.dataset.image = "arrow-down";
+        return
+    }
+    ;
 };
 
 function extrasMenu() {
-	const extrasDropdown = document.getElementById('extras-dropdown');
-	extrasDropdown.classList.toggle('is-active');
-	const extrasIcon = document.getElementById('extras-icon');
-	if(extrasIcon.dataset.image == "arrow-down") {
-		extrasIcon.src = "images/arrow-up-icon.png";
-		extrasIcon.dataset.image = "arrow-up";
-		return
-	};
-	if(extrasIcon.dataset.image == "arrow-up") {
-		extrasIcon.src = "images/arrow-down-icon.png";
-		extrasIcon.dataset.image = "arrow-down";
-		return
-	};
+    const extrasDropdown = document.getElementById('extras-dropdown');
+    extrasDropdown.classList.toggle('is-active');
+    const extrasIcon = document.getElementById('extras-icon');
+    if (extrasIcon.dataset.image == "arrow-down") {
+        extrasIcon.src = "images/arrow-up-icon.png";
+        extrasIcon.dataset.image = "arrow-up";
+        return
+    }
+    ;
+    if (extrasIcon.dataset.image == "arrow-up") {
+        extrasIcon.src = "images/arrow-down-icon.png";
+        extrasIcon.dataset.image = "arrow-down";
+        return
+    }
+    ;
 }
 
 function openTab(e, OS) {
-	const tabs = document.getElementsByClassName('tabcontent');
-	for (i = 0; i < tabs.length; i++) {
-		tabs[i].className = tabs[i].className.replace("is-active", "is-hidden");
-	}
-	const tablinks = document.getElementsByClassName("tablinks");
-	for (i = 0; i < tablinks.length; i++) {
-		tablinks[i].className = tablinks[i].className.replace("is-active", "is-hidden");
-	}
-	document.getElementById(OS).classList.replace("is-hidden","is-active");
+    const tabs = document.getElementsByClassName('tabcontent');
+    for (i = 0; i < tabs.length; i++) {
+        tabs[i].className = tabs[i].className.replace("is-active", "is-hidden");
+    }
+    const tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace("is-active", "is-hidden");
+    }
+    document.getElementById(OS).classList.replace("is-hidden", "is-active");
+}
+
+function findParentNavbar(el) {
+    let parent = el.parentElement;
+    if (parent === null)
+        return null
+    else if (parent.classList.contains("navbar"))
+        return parent
+    else
+        return findParentNavbar(parent)
 }
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  // Get all "navbar-burger" elements
-  const $navbarBurgers = Array.prototype.slice.call(document.getElementsByClassName('navbar-burger'), 0);
+    // Get all "navbar-burger" elements
+    const $navbarBurgers = Array.from(document.getElementsByClassName('navbar-burger'));
 
-  // Add a click event on each of them
-  $navbarBurgers.forEach( el => {
-    el.addEventListener('click', () => {
+    // Add a click event on each of them
+    $navbarBurgers.forEach(el => {
+        let navbar = findParentNavbar(el);
+        el.addEventListener('click', () => {
 
-      // Get the target from the "data-target" attribute
-      const target = el.dataset.target;
-      const $target = document.getElementById(target);
+            // Get the target from the "data-target" attribute
+            const target = el.dataset.target;
+            const $target = document.getElementById(target);
 
-      // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
-      el.classList.toggle('is-active');
-      $target.classList.toggle('is-active');
+            // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
+            if (navbar !== null)
+                navbar.classList.toggle('is-active');
+            el.classList.toggle('is-active');
+            $target.classList.toggle('is-active');
+        });
     });
-  });
 });

@@ -1,0 +1,24 @@
+
+nav.navbar, div.navbar-container, .navbar-burger, #navMenu {
+    background: #0000;
+}
+.navbar.is-active .container, .navbar-menu.is-active {
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+}
+
+@media screen and (max-width: 1023px) {
+
+
+    div#menu-buttons {
+        flex-direction: column;
+        align-items: flex-end;
+        width: 100%;
+        -webkit-backdrop-filter: blur(10px);
+    }
+
+    div#menu-buttons .button {
+        width: 90%;
+        margin-right: .5rem;
+    }
+}
