@@ -4,22 +4,18 @@
 	<meta charset='UTF-8'>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="keywords" content=""> <!-- Comma separated,words,and,tags,used to,search for the website -->
-	<meta name="description" content=""> <!-- 150 words or less -->
-	<meta name="subject" content=""> <!-- website's subject -->
+	<meta name="keywords" content="nextcloudpi"> <!-- Comma separated,words,and,tags,used to,search for the website -->
+	<meta name="description" content="NextcloudPi is an open-source Nextcloud self-hosting software for Raspberry Pi devices"> <!-- 150 words or less -->
 	<meta name="copyright" content=""> <!-- License -->
-	<meta name="category" content=""> 
-	<meta name="topic" content="">
 	<meta name="summary" content="">
 	<title>Nextcloudpi</title>
-	<meta name="subtitle" content=""> <!-- -->
-	<meta name="author" content=""> <!-- -->
+	<meta name="subtitle" content="Keep your data close"> 
 	<meta name="revised" content=""> <!-- Wednesday, March 9th, 2022, 15:38, GMT+2 -->
 	<meta name="robots" content="noindex,nofollow"> <!-- TODO Change to 'index,follow' when website is ready + max-image-preview:large-->
 	<meta name="AdsBot-Google" content="noindex,nofollow">
 	<meta name="googlebot" content="noindex,nofollow">
 	<meta name="googlebot-news" content="noindex,nofollow"> 
-	<meta name="identifier-URL" content=""> <!-- website URL http:// -->
+	<meta name="identifier-URL" content="https://nextcloudpi.com/"> <!-- website URL http:// -->
 	<link rel="stylesheet"
 		  href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css"
 		  integrity="sha512-HqxHUkJM0SYcbvxUw5P60SzdOTy/QVwA1JJrvaXJv4q7lmbDZCmZaqz01UPOaQveoxfYRv1tHozWGPMcuTBuvQ=="
@@ -29,22 +25,33 @@
 </head>
 
 <body>
+<div class="container" id="all-content">
+
 <header>
-<nav class="navbar" style="background: url('./images/bg-blue.png');">
-  <div class="container">
-    <div id="navMenu" class="navbar-menu">
-      <div class="navbar-end">
-        <div class="navbar-item">
-          <div class="buttons">
-            <a class="button is-dark" href="https://github.com/nextcloud/nextcloudpi.git">Github</a>
-            <a class="button is-link" href="https://github.com/nextcloud/nextcloudpi/releases">Download</a>
-            <a class="button is-primary" href="https://help.nextcloud.com/t/index-nextcloudpi-documentation/126448#welcome-to-the-nextcloudpi-wiki-1">Docs</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</nav>
+	<nav class="navbar" role="navigation" aria-label="main navigation" style="background: url('./images/bg-blue.png');">
+		<div class="container">
+			<a role="button" class="navbar-burger" id="burger-menu" data-target="navMenu" aria-label="menu" aria-expanded="false">
+				<span aria-hidden="true"></span>
+				<span aria-hidden="true"></span>
+				<span aria-hidden="true"></span>
+			</a>
+			
+		<div class="navbar-menu" id="navMenu" style="background: url('./images/bg-blue.png');">
+		<!-- navbar-start, navbar-end... -->
+			<div class="navbar-end">
+				<div class="navbar-item">
+				<div class="level-item">
+				<div class="buttons">
+					<a class="button is-dark" href="https://github.com/nextcloud/nextcloudpi.git">Github</a>
+					<a class="button is-link" href="https://github.com/nextcloud/nextcloudpi/releases">Download</a>
+					<a class="button is-primary" href="https://help.nextcloud.com/t/index-nextcloudpi-documentation/126448#welcome-to-the-nextcloudpi-wiki-1">Documentation</a>
+				</div>
+				</div>
+				</div>
+			</div>
+		</div>
+		</div>
+	</nav>
 
 <section class="hero is-fullheight-with-navbar" style="background: url('./images/bg-blue.png');">
   <div class="hero-body">
@@ -53,26 +60,30 @@
 		  <div class="columns">
 			  <div class="column"></div>
 			  <div class="column">
-		<figure class="image">
-			<img class="has-ratio" width="400" height="282" src="images/Nextcloud-Pi-white.png">
-		</figure>
-		</div>
-		<div class="column"></div>
-		</div>
+				  <figure class="image">
+					  <img class="has-ratio" width="400" height="282" src="images/Nextcloud-Pi-white.png">
+					</figure>
+				</div>
+				<div class="column"></div>
+			</div>
 	  </div>
-	  <section class="section">
-		  <nav class="level">
-    <div class="container">
-      <p class="level-item title" style="color: white;">
-        NextCloudPi
-      </p>
-      <p class="level-item subtitle" style="color: white;">
-        Keep your data close
-      </p>
-    </div>
+
+<section class="section">
+	<nav class="level">
+		<div class="container">
+			<div class="block">
+				<p class="level-item title" style="color: white;">
+					NextcloudPi
+				</p>
+				<p class="level-item subtitle" style="color: white;">
+					Keep your data close
+				</p>
+			</div>
+		</div>
     </nav>
-    </section>
-    <section class="section">
+</section>
+
+<section class="section">
     <nav class="level">
 		<div class="level-item">
 		<div class="container">
@@ -112,8 +123,10 @@
 						</div>
 						<div class="block">
 						<p class="subtitle">
-							NextCloudPi runs in a variety of system.<br>
-							<a href="#supported_systems" style="color: black;">More..</a>
+							NextcloudPi runs in a variety of system.
+						</p>
+						<p class="subtitle">
+							<a href="#supported_systems" style="color: black;">Read more..</a>
 						</p>
 						</div>
 						<div class="block">
@@ -228,7 +241,7 @@
 					<div class="box">
 						<div class="block">
 							<p class="title">
-								SAMBA / NFS
+								SAMBA/NFS
 							</p>
 						</div>
 						<div class="block">
@@ -254,6 +267,7 @@
 		<div class="level-item has-text-centered">
 			<div>
 				<div class="container level-item">
+				<div class="block">
 					<p class="heading">
 						<figure class="image is-64x64">
 							<a href="https://help.nextcloud.com/t/index-nextcloudpi-documentation/126448#welcome-to-the-nextcloudpi-wiki-1">
@@ -261,13 +275,17 @@
 							</a>
 						</figure>
 					</p>
-				</div><br>
+				</div>
+				</div>
+						<div class="block">
 				<p class="subtitle">Documentation</p>
+			</div>
 			</div>
 		</div>
 		<div class="level-item has-text-centered">
 			<div>
 				<div class="container level-item">
+					<div class="block">
 					<p class="heading">
 						<figure class="image is-64x64">
 							<a href="https://help.nextcloud.com/c/support/appliances-docker-snappy-vm">
@@ -275,13 +293,17 @@
 							</a>
 						</figure>
 					</p>
-				</div><br>
+				</div>
+				</div>
+				<div class="block">
 				<p class="subtitle">Community</p>
+			</div>
 			</div>
 		</div>
 		<div class="level-item has-text-centered">
 			<div>
 				<div class="container level-item">
+				<div class="block">
 					<p class="heading">
 						<figure class="image is-64x64">
 							<a href="https://github.com/nextcloud/nextcloudpi.git">
@@ -289,8 +311,11 @@
 							</a>
 						</figure>
 					</p>
-				</div><br>
-				<p class="subtitle">Code</p>
+				</div>
+				</div>
+				<div class="block">
+					<p class="subtitle">Code</p>
+				</div>
 			</div>
 		</div>
 	</nav>
@@ -314,7 +339,7 @@
 							This is an official open source community project
 							that aims at making it easier for everyone to have
 							control over their own data.<br><br>
-							NextCloudPi is free, thriving only by your help, feedback and support.
+							NextcloudPi is free, thriving only by your help, feedback and support.
 						</p>
 					</div>
 				</div>
@@ -347,8 +372,7 @@
 
 	<nav class="level">
 		<div class="container level-item">
-			<div class="columns level-item">
-				<div class="column level-item level-left">
+				<div class="block level-item level-left">
 				<div id="features-dropdown" class="dropdown">
 				<div id="features-dropdown-trigger" class="dropdown-trigger">
 					<button id="features-button"
@@ -369,7 +393,7 @@
 					<div class="dropdown-item">
 						<div class="content">
 						<ul>
-							<li>Debian 10 Buster</li>
+							<li>Debian 11 Bullseye</li>
 							<li>Latest Nextcloud</li>
 							<li>Apache 2.4.25, with HTTP2 enabled</li>
 							<li>PHP 7.3</li>
@@ -391,11 +415,8 @@
 					</div>
 				</div>
 				</div>
-				</div>
-
-				<div class="column is-half"></div>
 	
-				<div class="column level-item level-right">
+				<div class="block level-item level-right">
 					<div id="extras-dropdown" class="dropdown">
 					<div class="dropdown-trigger">
 						<button class="button" aria-haspopup="true" aria-controls="dropdown-menu2" onclick="extrasMenu();">
@@ -413,7 +434,7 @@
 							<div class="content">
 								<ul>
 									<li>Setup Wizard</li>
-									<li>NextCloudPi Web Panel</li>
+									<li>NextcloudPi Web Panel</li>
 									<li>NCP-Config terminal tool</li>
 									<li>WiFi Ready</li>
 									<li>RAM Logs</li>
@@ -453,7 +474,6 @@
 					</div>
 				</div>
 			</div>
-		</div>
 	</nav>
 
 </section>
@@ -498,7 +518,7 @@
 				</div>
 				<div class="container content level-item">
 					<p class="title">
-						Debian (all architectures)
+						Debian 11 Bullseye (all architectures)
 					</p>
 				</div>
 				<div class="container content level-item">
@@ -583,11 +603,11 @@
 						</div>
 						<div class="container content level-item">
 							<p class="subtitle has-text-centered">
-								Run NextCloudPi in any system that supports LXC containers, such as Proxmox.
+								Run NextcloudPi in any system that supports LXC containers, such as Proxmox.
 							</p>
 						</div>
 						<div class="container level-item">
-							<pre>lxc import NextCloudPi_LXD_09-29-21.tar.bz</pre>
+							<pre>lxc import NextcloudPi_LXD_09-29-21.tar.bz</pre>
 						</div>
 						<div class="container level-item">
 							<pre>lxc start ncp</pre>
@@ -613,7 +633,7 @@
 							<p class="subtitle has-text-centered">
 								The most popular board around!<br>
 								You can convert it into your home cloud now.<br><br>
-								There are Berryboot images available in order to run NextCloudPi directly from an external hard drive.
+								There are Berryboot images available in order to run NextcloudPi directly from an external hard drive.
 							</p>
 						</div>
 						<div class="block"></div>
@@ -751,7 +771,7 @@
 						</div>
 						<div class="container content level-item">
 							<p class="subtitle has-text-centered">
-								Featuring six cores and 4GiB of fast memory, Gigabit Ethernet,USB3 and more, the RockPro64 is the latest from Pine64 and makes an attractive new hardware option for NextCloudPi
+								Featuring six cores and 4GiB of fast memory, Gigabit Ethernet,USB3 and more, the RockPro64 is the latest from Pine64 and makes an attractive new hardware option for NextcloudPi
 							</p>
 						</div>
 						<div class="block"></div>
@@ -818,22 +838,29 @@
 		</p>
 	</div>
 	
-	<div class="container content level-item level-left">
+<section class="section" id="debian-installation">
+	<div class="container content">
+	<div class="block level-item level-left">
 		<p id="debian-installation" class="title" style="font-size: 22.4px;">
 			Debian
 		</p>
 	</div>
 
-	<div class="container content level-item">
+	<div class="block content level-item">
 		<figure class="image">
 			<img src="images/openlogo-nd-100.png">
 		</figure>
 	</div>
 
-	<div class="container content level-item">
+	<div class="block content level-item">
 		<p>
-			You can install NextCloudPi in any Debian Buster system, by using the curl installer.
+			You can install NextcloudPi in any Debian Bullseye system, by using the curl installer.
 		</p>		
+	</div>
+	<div class="block content level-item">
+		<p style="font-style: italic;">
+			Note: This assumes a clean Debian installation, there is currently no rollback method.
+		</p>
 	</div>
 	
 	<div class="container content level-item">
@@ -845,7 +872,10 @@
 			Instead of piping to bash, you can <a href="https://github.com/nextcloud/nextcloudpi.git">inspect the code</a> and launch it manually.
 		</p>
 	</div>
-	
+	</div>
+</section>
+
+<section class="section" id="docker-installation">
 	<div class="container content level-item level-left">
 		<p id="docker-installation" class="title" style="font-size: 22.4px;">
 			Docker
@@ -860,14 +890,16 @@
 
 	<div class="container content level-item">
 		<p>
-			You can use NextCloudPi in any system that supports docker
+			You can use NextcloudPi in any system that supports docker
 		</p>		
 	</div>
 	
 	<div class="container content level-item">
 		<pre>docker run -d -p 4443:4443 -p 443:443 -p 80:80 -v ncdata:/data --name nextcloudpi ownyourbits/nextcloudpi $DOMAIN</pre>
 	</div>
-	
+</section>
+
+<section class="section" id="sbc-installation">
 	<div class="container content level-item level-left">
 		<p id="sbc-installation" class="title" style="font-size: 22.4px;">
 			SBC
@@ -885,7 +917,7 @@
 			There are <a href="https://github.com/nextcloud/nextcloudpi/releases">preinstalled SD card images</a> for the Raspberry Pi and other Single Board Computers.
 		</p>
 	</div>
-	
+</section>
 </section>
 
 <footer class="footer" style="background: url('./images/bg-blue.png'); color: white;">
@@ -898,5 +930,6 @@
 </footer>
 
 <script type="text/javascript" src="js/dynamics.js"></script>
+</div>
 </body>
 </html>
