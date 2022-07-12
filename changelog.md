@@ -1,3 +1,4 @@
+[v1.48.0](https://github.com/nextcloud/nextcloudpi/tree/v1.48.0) (2022-06-12) Update Nextcloud to version 23.0.6
 
 [v1.47.2](https://github.com/nextcloud/nextcloudpi/commit/b66ce17) (2022-05-05) docker-build.yml: Add CI/CD integration tests for docker images
 
