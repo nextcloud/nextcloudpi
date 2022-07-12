@@ -101,8 +101,8 @@ def test_activation(IP, nc_port, admin_port, options):
     driver.get(f"https://{IP}:{nc_port}")
     test.check("NextCloudPi Activation" in driver.title)
     try:
-        ncp_pass = driver.find_element_by_id("ncp-pwd").get_attribute("value")
-        nc_pass = driver.find_element_by_id("nc-pwd").get_attribute("value")
+        ncp_pass = driver.find_element(By.ID, "ncp-pwd").get_attribute("value")
+        nc_pass = driver.find_element(By.ID, "nc-pwd").get_attribute("value")
 
         config = configparser.ConfigParser()
         if not config.has_section('credentials'):
@@ -114,7 +114,7 @@ def test_activation(IP, nc_port, admin_port, options):
         with open(test_cfg, 'w') as configfile:
             config.write(configfile)
 
-        driver.find_element_by_id("activate-ncp").click()
+        driver.find_element(By.ID, "activate-ncp").click()
         test.report("activation click", True)
     except:
         ncp_pass = ""
@@ -123,7 +123,7 @@ def test_activation(IP, nc_port, admin_port, options):
     test.new("activation ends")
     try:
         wait = WebDriverWait(driver, wait_timeout)
-        wait.until(EC.text_to_be_present_in_element((By.ID,'error-box'), "ACTIVATION SUCCESSFUL"))
+        wait.until(EC.text_to_be_present_in_element((By.ID, 'error-box'), "ACTIVATION SUCCESSFUL"))
         test.check(True)
     except TimeoutException: 
         test.check(False)

@@ -137,7 +137,9 @@ jobs:
           do
             docker pull "thecalcaholic/ncp-internal-${arch}:${{ github.run_id }}"
             docker tag "thecalcaholic/ncp-internal-${arch}:${{ github.run_id }}" "ownyourbits/nextcloudpi-${arch}:${version?}"
+            docker tag "ownyourbits/nextcloudpi-${arch}:${version?}" "ownyourbits/nextcloudpi-${arch}:latest"
             docker push "ownyourbits/nextcloudpi-${arch}:${version?}"
+            docker push "ownyourbits/nextcloudpi-${arch}:latest"
           done
 
           docker manifest create ownyourbits/nextcloudpi:${version?} \

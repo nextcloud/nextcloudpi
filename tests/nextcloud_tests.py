@@ -24,6 +24,8 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.service import Service
+from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.firefox.options import Options
 from selenium.common.exceptions import NoSuchElementException, WebDriverException, TimeoutException
@@ -104,10 +106,9 @@ class ConfigTestFailure(Exception):
     pass
 
 
-def test_nextcloud(IP, nc_port, driver):
+def test_nextcloud(IP: str, nc_port: str, driver: WebDriver):
     """ Login and assert admin page checks"""
     test = Test()
-    print(driver.desired_capabilities['timeouts'])
     test.new("nextcloud page")
     try:
         driver.get(f"https://{IP}:{nc_port}/index.php/settings/admin/overview")
@@ -119,12 +120,12 @@ def test_nextcloud(IP, nc_port, driver):
     trusted_domain_str = "You are accessing the server from an untrusted domain"
     test.report("trusted domain", trusted_domain_str not in driver.page_source)
     try:
-        driver.find_element_by_id("user").send_keys(nc_user)
-        driver.find_element_by_id("password").send_keys(nc_pass)
-        driver.find_element_by_id("submit-form").click()
+        driver.find_element(By.ID, "user").send_keys(nc_user)
+        driver.find_element(By.ID, "password").send_keys(nc_pass)
+        driver.find_element(By.ID, "submit-form").click()
     except NoSuchElementException:
         try:
-            driver.find_element_by_id("submit").click()
+            driver.find_element(By.ID, "submit").click()
         except NoSuchElementException:
             pass
 
@@ -137,22 +138,22 @@ def test_nextcloud(IP, nc_port, driver):
                                                            (By.CSS_SELECTOR, "#security-warning-state-warning"),
                                                            (By.CSS_SELECTOR, "#security-warning-state-error")]))
 
-        element_ok = driver.find_element_by_id("security-warning-state-ok")
-        element_warn = driver.find_element_by_id("security-warning-state-warning")
+        element_ok = driver.find_element(By.ID, "security-warning-state-ok")
+        element_warn = driver.find_element(By.ID, "security-warning-state-warning")
 
         if element_warn.is_displayed():
 
-            if driver.find_element_by_css_selector("#postsetupchecks > .errors").is_displayed() \
-                    or driver.find_element_by_css_selector("#postsetupchecks > .warnings").is_displayed():
+            if driver.find_element(By.CSS_SELECTOR, "#postsetupchecks > .errors").is_displayed() \
+                    or driver.find_element(By.CSS_SELECTOR, "#postsetupchecks > .warnings").is_displayed():
                 raise ConfigTestFailure("There have been errors or warnings")
 
-            infos = driver.find_elements_by_css_selector("#postsetupchecks > .info > li")
+            infos = driver.find_elements(By.CSS_SELECTOR, "#postsetupchecks > .info > li")
             for info in infos:
                 if re.match(r'.*Your installation has no default phone region set.*', info.text):
                     continue
                 else:
 
-                    php_modules = info.find_elements_by_css_selector("li")
+                    php_modules = info.find_elements(By.CSS_SELECTOR, "li")
                     if len(php_modules) != 1:
                         raise ConfigTestFailure(f"Could not find the list of php modules within the info message "
                                                 f"'{infos[0].text}'")
