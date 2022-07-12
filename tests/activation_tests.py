@@ -32,7 +32,6 @@ from selenium.common.exceptions import TimeoutException
 suite_name = "activation tests"
 test_cfg = 'test_cfg.txt'
 test_log = 'test_log.txt'
-wait_timeout = 120
 
 
 class tc:
@@ -90,7 +89,7 @@ def signal_handler(sig, frame):
         sys.exit(0)
 
 
-def test_activation(IP, nc_port, admin_port, options):
+def test_activation(IP, nc_port, admin_port, options, wait_timeout=120):
     """ Activation process checks"""
 
     # activation page
@@ -157,6 +156,7 @@ if __name__ == "__main__":
         usage()
         sys.exit(2)
 
+    arg_timeout = 120
     options = Options()
     for opt, arg in opts:
         if opt in ('-h', '--help'):
@@ -164,6 +164,8 @@ if __name__ == "__main__":
             sys.exit(2)
         elif opt == '--no-gui':
             options.headless = True
+        elif opt in ('-t', '--timeout'):
+            arg_timeout = int(arg)
         else:
             usage()
             sys.exit(2)
@@ -176,7 +178,7 @@ if __name__ == "__main__":
     print("Activation tests " + tc.yellow + IP + tc.normal)
     print("---------------------------")
 
-    test_activation(IP, nc_port, admin_port, options)
+    test_activation(IP, nc_port, admin_port, options, arg_timeout)
 
 # License
 #

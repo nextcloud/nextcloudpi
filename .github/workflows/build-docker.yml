@@ -82,7 +82,9 @@ jobs:
       - name: Integration Tests
         working-directory: ./tests
         run: |
-          python activation_tests.py --no-gui localhost 8443 4443 || {
+          cmd=(python activation_tests.py --no-gui localhost 8443 4443)
+          [[ "${{ matrix.arch }}" == "x86" ]] || cmd+=(--timeout 300)
+          "${cmd[@]}" || {
             tail -n 20 geckodriver.log >&2 || true
             echo "======================="
             echo "Activation test failed!"
