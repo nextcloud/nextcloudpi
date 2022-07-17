@@ -87,11 +87,14 @@ jobs:
     defaults:
       run:
         shell: bash
+    outputs:
+      artifact_name: ${{ steps.build-lxd.outputs.artifact_name }}
     steps:
       - uses: 3bit/setup-hcloud@v1
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Build RPI SD Image
+        id: build-rpi
         run: |
           set -e
           echo "Setup ssh"
@@ -130,7 +133,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ${{ github.run_id }}-rpi-image
-          path: output
+          path: output/${{ steps.build-rpi.outputs.artifact_name }}
           if-no-files-found: error
   
   cleanup-rpi:
@@ -147,6 +150,31 @@ jobs:
         run: |
           hcloud ssh-key delete "rpi-build-${{ env.UID}}" || echo "Error deleting ssh key!"
           hcloud server delete "ncp-builder-${{ env.UID }}"
+  
+  build-armbian:
+    runs-on: ubuntu-latest
+    env:
+      VERSION: "${{ github.event.inputs.version || github.head_ref || github.ref_name }}"
+    defaults:
+      run:
+        shell: bash
+    strategy: 
+      matrix:
+        board:
+          - odroidxu4 OdroidHC2
+          - rockpro64 RockPro64
+          - rock64 Rock64
+          - bananapi Bananapi
+          - odroidhc4 OdroidHC4
+          - odroidc4 OdroidC4
+          - odroidc2 OdroidC2
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: "Build Armbian"
+        run: |
+          export LIB_TAG=master
+          ./build/build-SD-armbian.sh "${{ matrix.board }}"
 
   release:
     needs:
