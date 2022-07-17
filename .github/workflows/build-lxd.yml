@@ -57,7 +57,6 @@ jobs:
   build-rpi:
     runs-on: ubuntu-latest
     env:
-      HOME: /root
       HCLOUD_TOKEN: "${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}"
       UID: "${{ github.run_id }}-rpi"
       VERSION: "${{ github.event.inputs.version || github.head_ref || github.ref_name }}"
