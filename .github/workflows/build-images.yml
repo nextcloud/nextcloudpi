@@ -20,9 +20,9 @@ jobs:
         run: |
           ./build/build-LXD.sh
           . ./build/buildlib.sh
-          ARTIFACT_NAME="NextCloudPi_LXD_$( date  "+%m-%d-%y" ).tar.gz"
+          ARTIFACT_NAME="NextCloudPi_LXD_$( date  "+%m-%d-%y" )"
           lxc image export -q ncp/"${version}" "output/${ARTIFACT_NAME}"
-          echo "::set-output name=artifact_name::${ARTIFACT_NAME}"
+          echo "::set-output name=artifact_name::${ARTIFACT_NAME}.tar.gz"
       - name: upload LXD image to artifact store
         uses: actions/upload-artifact@v3
         with:
@@ -49,22 +49,15 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ${{ github.run_id }}-lxd-image
-          path: tests
-      - run: |
-          ls -l tests
-      - name: "Extract downloaded artifact"
-        working-directory: ./output
-        run: |
-          [[ -f "${{ needs.build-lxd.outputs.artifact_name }}.tar.gz" ]] && tar xf "${{ needs.build-lxd.outputs.artifact_name }}.tar.gz"
       - name: Test LXD Image
         working-directory: ./tests
         run: |
           set -x
           pwd
-          ls -l /home/runner/work/nextcloudpi/nextcloudpi/output
+          ls -l /home/runner/work/nextcloudpi/nextcloudpi/
           . ../build/buildlib.sh
           lxc delete -q -f ncp || true
-          lxc image import -q "/home/runner/work/nextcloudpi/nextcloudpi/output/${{ needs.build-lxd.outputs.artifact_name }}"
+          lxc image import -q "../${{ needs.build-lxd.outputs.artifact_name }}"
           systemd-run --user --scope -p "Delegate=yes" lxc launch -q "ncp/${version}" ncp
           lxc exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
           sleep 30
