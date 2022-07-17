@@ -78,9 +78,10 @@ jobs:
           ssh-add "$HOME/.ssh/automation_ssh_key"
           hcloud ssh-key create --name "rpi-build-{{ $github.run_id }}" --public-key-from-file "$HOME/.ssh/automation_ssh_key.pub"
           hcloud server create --image debian-11 --name ncp-builder --type cx11 --ssh-key "rpi-build-{{ $github.run_id }}"
+          SSH_OPTIONS=(-o "StrictHostKeyChecking=no" -o "UserKnownHostsFile=/dev/null" -i "$HOME/.ssh/automation_ssh_key")
           for i in {1..5}
           do
-            hcloud server ssh "ncp-builder-rpi-{{ $github.run_id }}" bash -c "echo Server is online" 2> /dev/null && break;
+            ssh "root@$(hcloud server ip "ncp-builder-rpi-{{ $github.run_id }}")" "${SSH_OPTIONS[@]}" bash -c "echo Server is online" && break;
             [[ $i -eq 5 ]] && {
               echo 'Failed to connect to hcloud server (timeout reached)!'
               exit 1
@@ -88,7 +89,7 @@ jobs:
             sleep 5
           done
           hcloud server ssh bash -c <<EOF
-          apt update && apt install -y git zip unzip parted binfmt-support qemu-user-static
+          apt update && apt install -y git zip unzip parted binfmt-support qemu-user-static pbzip2
           git clone https://github.com/nextcloud/nextcloudpi.git
           cd nextcloudpi
           git checkout "${{ env.VERSION }}"
