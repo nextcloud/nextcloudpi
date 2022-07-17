@@ -11,4 +11,4 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
       - run: |
-        ./build/build-LXD.sh
+          ./build/build-LXD.sh
