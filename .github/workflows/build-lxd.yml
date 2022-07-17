@@ -25,7 +25,7 @@ jobs:
       - name: Test LXD Image
         working-directory: ./tests
         run: |
-          . ./build/buildlib.sh
+          . ../build/buildlib.sh
           lxc delete -f ncp
           lxc launch "ncp/${version}" ncp
           ip="$(lxc list -c n4 -f csv | grep '^ncp-test' | cut -d ',' -f2)"
