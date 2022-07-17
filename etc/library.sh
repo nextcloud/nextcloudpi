@@ -19,6 +19,21 @@ export SYSTEMD_PAGER=
 [[ -f "$NCPCFG" ]] || export NCPCFG=/usr/local/etc/ncp.cfg
 [[ -f "$NCPCFG" ]] || { echo "$NCPCFG not found" >2; exit 1; }
 
+if [[ "$(ps -p 1 --no-headers -o "%c")" == "systemd" ]] && ! [[ -d "/run/systemd/system" ]]
+then
+  INIT_SYSTEM="chroot"
+elif [[ -d "/run/systemd/system" ]]
+then
+  INIT_SYSTEM="systemd"
+elif [[ "$(ps -p 1 --no-headers -o "%c")" == "run-parts.sh" ]]
+then
+  INIT_SYSTEM="docker"
+else
+  INIT_SYSTEM="unknown"
+fi
+
+export INIT_SYSTEM
+
 #unset TRUSTED_DOMAINS
 #declare -A TRUSTED_DOMAINS
 #export TRUSTED_DOMAINS=(
