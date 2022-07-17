@@ -168,6 +168,7 @@ jobs:
           - odroidhc4 OdroidHC4
           - odroidc4 OdroidC4
           - odroidc2 OdroidC2
+      fail-fast: false
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
