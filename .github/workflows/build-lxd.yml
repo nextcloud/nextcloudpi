@@ -77,7 +77,7 @@ jobs:
           eval "$(ssh-agent)"
           ssh-add "$HOME/.ssh/automation_ssh_key"
           hcloud ssh-key create --name "rpi-build-{{ env.UID}}" --public-key-from-file "$HOME/.ssh/automation_ssh_key.pub"
-          hcloud server create --image debian-11 --name "ncp-builder-{{ env.UID }}"" --type cx11 --ssh-key "rpi-build-{{ env.UID }}"
+          hcloud server create --image debian-11 --name "ncp-builder-{{ env.UID }}" --type cx11 --ssh-key "rpi-build-{{ env.UID }}"
           SSH_OPTIONS=(-o "StrictHostKeyChecking=no" -o "UserKnownHostsFile=/dev/null" -i "$HOME/.ssh/automation_ssh_key")
           for i in {1..5}
           do
