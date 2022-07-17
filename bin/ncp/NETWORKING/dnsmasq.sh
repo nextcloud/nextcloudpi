@@ -24,7 +24,7 @@ install()
   }
 
   service dnsmasq stop
-  [[ "$INIT_SYTEM" == "systemd" ]] && service systemd-resolved start || true
+  [[ "$INIT_SYSTEM" == "systemd" ]] && service systemd-resolved start || true
   update-rc.d dnsmasq disable || rm /etc/systemd/system/multi-user.target.wants/dnsmasq.service
 
   [[ "$DOCKERBUILD" == 1 ]] && {

@@ -90,7 +90,7 @@ jobs:
             sleep 5
           done
           "${ssh_cmd[@]}" bash <<EOF
-          apt update && apt install -y git zip unzip parted binfmt-support qemu-user-static pbzip2
+          apt-get update && apt-get install -y git zip unzip parted binfmt-support qemu-user-static pbzip2
           git clone https://github.com/nextcloud/nextcloudpi.git
           cd nextcloudpi
           git checkout "${{ env.VERSION }}"
