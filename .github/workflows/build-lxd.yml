@@ -28,6 +28,8 @@ jobs:
           . ../build/buildlib.sh
           lxc delete -f ncp
           lxc launch "ncp/${version}" ncp
+          systemd-run --user --scope -p "Delegate=yes" lxc launch "ncp/${version}" ncp
+          lxc exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
           lxc list -c n4 -f csv | grep '^ncp' | cut -d ',' -f2
           ip="$(lxc list -c n4 -f csv | grep '^ncp' | cut -d ',' -f2)"
           echo "ip: $ip"
