@@ -23,22 +23,23 @@ jobs:
       - name: Setup Selenium
         run: pip install selenium
       - name: Test LXD Image
+        working-directory: ./tests
         run: |
           . ./build/buildlib.sh
           lxc delete -f ncp
           lxc launch "ncp/${version}" ncp
           ip="$(lxc list -c n4 -f csv | grep '^ncp-test' | cut -d ',' -f2)"
           ip="${ip/% *}"
-          python tests/activation_tests.py --no-gui "$ip" 443 4443 || {
-            tail -n 20 geckodriver.log > &2 || true
+          python activation_tests.py --no-gui "$ip" 443 4443 || {
+            tail -n 20 geckodriver.log >&2 || true
             echo "Activation test failed!"
             exit 1
           }
-          python tests/system_tests.py --non-interactive || {
+          python system_tests.py --non-interactive || {
             echo "System test failed!"
             exit 1
           }
-          python tests/nextcloud_tests.py --no-gui localhost 443 4443 || {
+          python nextcloud_tests.py --no-gui localhost 443 4443 || {
             echo "Nextcloud test failed!"
             exit 1
           }
