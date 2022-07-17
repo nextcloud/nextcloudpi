@@ -7,6 +7,8 @@ on:
 jobs:
   build-lxd:
     runs-on: ubuntu-latest
+    outputs:
+      artifact_name: ${{ steps.build-lxd.outputs.artifact_name }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -14,19 +16,46 @@ jobs:
         with:
           lxd_version: latest/stable
       - name: Build LXD Image
+        id: build-lxd
         run: |
           ./build/build-LXD.sh
+          . ./build/buildlib.sh
+          ARTIFACT_NAME="NextCloudPi_LXD_$( date  "+%m-%d-%y" ).tar.bz2"
+          lxc image export ncp/"${version}" "output/${ARTIFACT_NAME}"
+          echo "::set-output name=artifact_name::${ARTIFACT_NAME}"
+      - name: upload LXD image to artifact store
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ github.run_id }}-lxd-image
+          path: output
+          if-no-files-found: error
+  text-lxd:
+    needs: 
+      - build-lxd
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - uses: whywaita/setup-lxd@v1
+        with:
+          lxd_version: latest/stable
       - name: Setup Firefox
         uses: browser-actions/setup-firefox@latest
       - name: Setup GeckoDriver
         uses: browser-actions/setup-geckodriver@latest
       - name: Setup Selenium
         run: pip install selenium
+      - name: download LXD image from artifact store
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ github.run_id }}-lxd-image
+          path: output
       - name: Test LXD Image
         working-directory: ./tests
         run: |
           . ../build/buildlib.sh
-          lxc delete -f ncp
+          lxc delete -f ncp || true
+          lxc image import "output/${{ needs.build-lxd.outputs.artifact_name }}"
           systemd-run --user --scope -p "Delegate=yes" lxc launch "ncp/${version}" ncp
           lxc exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
           sleep 30
@@ -46,13 +75,6 @@ jobs:
             exit 1
           }
           lxc stop ncp
-      - name: Publish LXD Image
-        if: ${{ github.event_name == 'push' && github.ref_type == 'tag' }}
-        run: |
-          # TODO
-
-
-
 
   build-rpi:
     runs-on: ubuntu-latest
@@ -103,5 +125,32 @@ jobs:
         run: |
           # TODO
 
+
+
+  release:
+    needs:
+      - build-lxd
+      - test-lxd
+      - build-rpi
+    #if: ${{ github.event_name == 'push' && github.ref_type == 'tag' }}
+    runs-on: ubuntu-latest
+    env:
+      UID: "${{ github.run_id }}-rpi"
+      VERSION: "${{ github.event.inputs.version || github.head_ref || github.ref_name }}"
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: download LXD image from artifact store
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ github.run_id }}-lxd-image
+          path: output-lxd
+      - name: Create Release
+        run: |
+          for asset in output-*/*;
+          do
+            md5sum "$asset"
+          done
 
 

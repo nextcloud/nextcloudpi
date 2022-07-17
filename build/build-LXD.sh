@@ -42,7 +42,7 @@ lxc config device remove ncp buildcode
 lxc publish ncp -f --alias ncp/"${version}"
 
 ## pack
-lxc image export ncp/"${version}" "$TAR"
+[[ " $* " =~ " --pack " ]] && lxc image export ncp/"${version}" "$TAR"
 
 ## test
 #set_static_IP "$IMG" "$IP"
