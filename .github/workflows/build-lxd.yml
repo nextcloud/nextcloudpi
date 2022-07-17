@@ -1,0 +1,14 @@
+name: 'Build and test LXD image'
+on:
+  push:
+    branches:
+      - "feature/cicd/lxd-builds"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - run: |
+        ./build/build-LXD.sh
