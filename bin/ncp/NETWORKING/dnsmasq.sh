@@ -17,7 +17,7 @@ install()
   service dnsmasq stop
   ! is_docker && {
     service systemd-resolved start || true
-    update-rc.d systemd-resolved enable
+    systemctl enable systemd-resolved || echo "WARN: systemd-resolved could not be enabled. This might cause networking issues!"
   }
   update-rc.d dnsmasq disable || rm /etc/systemd/system/multi-user.target.wants/dnsmasq.service
 
