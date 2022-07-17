@@ -50,6 +50,10 @@ jobs:
         with:
           name: ${{ github.run_id }}-lxd-image
           path: output
+      - name: "Extract downloaded artifact"
+        working-directory: ./output
+        run: |
+          tar xf "${{ needs.build-lxd.outputs.artifact_name }}"
       - name: Test LXD Image
         working-directory: ./tests
         run: |
