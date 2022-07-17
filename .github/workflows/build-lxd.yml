@@ -10,5 +10,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+      - uses: whywaita/setup-lxd@v1
+        with:
+          lxd_version: latest/stable
       - run: |
           ./build/build-LXD.sh
