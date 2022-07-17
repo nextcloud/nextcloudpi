@@ -72,6 +72,7 @@ jobs:
           set -e
           echo "Setup ssh"
           mkdir -p ~/.ssh
+          ls -l ~/.ssh
           ssh-keygen -t ed25519 -f "~/.ssh/automation_ssh_key" -N ""
           chmod 0600 ~/.ssh/automation_ssh_key
           eval "$(ssh-agent)"
