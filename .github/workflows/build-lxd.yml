@@ -71,13 +71,12 @@ jobs:
         run: |
           set -e
           echo "Setup ssh"
-          mkdir -p ~/.ssh
-          ls -l ~/.ssh
-          ssh-keygen -t ed25519 -f "~/.ssh/automation_ssh_key" -N ""
-          chmod 0600 ~/.ssh/automation_ssh_key
+          mkdir -p "$HOME/.ssh"
+          ssh-keygen -t ed25519 -f "$HOME/.ssh/automation_ssh_key" -N ""
+          chmod 0600 "$HOME/.ssh/automation_ssh_key"
           eval "$(ssh-agent)"
-          ssh-add ~/.ssh/automation_ssh_key
-          hcloud ssh-key create --name "rpi-build-{{ $github.run_id }}"" --public-key-from-file "~/.ssh/automation_ssh_key.pub"
+          ssh-add "$HOME/.ssh/automation_ssh_key"
+          hcloud ssh-key create --name "rpi-build-{{ $github.run_id }}"" --public-key-from-file "$HOME/.ssh/automation_ssh_key.pub"
           hcloud server create --image debian-11 --name ncp-builder --type cx11 --ssh-key "rpi-build-{{ $github.run_id }}"
           for i in {1..5}
           do
