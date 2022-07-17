@@ -53,6 +53,7 @@ jobs:
       - name: Test LXD Image
         working-directory: ./tests
         run: |
+          ls -l output/*
           . ../build/buildlib.sh
           lxc delete -q -f ncp || true
           lxc image import -q "output/${{ needs.build-lxd.outputs.artifact_name }}"
@@ -124,12 +125,27 @@ jobs:
           EOF
           scp -r "${SSH_OPTIONS[@]}" "root@$(hcloud server ip "ncp-builder-${{ env.UID }}"):nextcloudpi/output" ./
           echo "::set-output name=artifact_name::${TAR}"
-      - name: upload LXD image to artifact store
+      - name: upload RPI image to artifact store
         uses: actions/upload-artifact@v3
         with:
           name: ${{ github.run_id }}-rpi-image
           path: output
           if-no-files-found: error
+  
+  cleanup:
+    if: ${{ always() }}
+    needs:
+      - build-rpi
+    runs-on: ubuntu-latest
+    env:
+      HCLOUD_TOKEN: "${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}"
+      UID: "${{ github.run_id }}-rpi"
+    steps:
+      - uses: 3bit/setup-hcloud@v1
+      - name: "Cleanup rpi server"
+        run: |
+          hcloud server delete "ncp-builder-${{ env.UID }}"
+          hcloud ssh-key delete "rpi-build-${{ env.UID}}"
 
   release:
     needs:

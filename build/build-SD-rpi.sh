@@ -96,7 +96,7 @@ trap '' EXIT
 clean_chroot_raspbian
 
 ## pack
-pack_image "$IMG" "$TAR"
+[[ "$*" =~ .*" --pack ".* ]] && pack_image "$IMG" "$TAR"
 
 ## test
 
@@ -104,7 +104,7 @@ pack_image "$IMG" "$TAR"
 #test_image    "$IMG" "$IP" # TODO fix tests
 
 # upload
-create_torrent "$TAR"
+#create_torrent "$TAR"
 #upload_ftp "$( basename "$TAR" .tar.bz2 )"
 
 
