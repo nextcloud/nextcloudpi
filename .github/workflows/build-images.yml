@@ -55,7 +55,7 @@ jobs:
         run: |
           set -x
           pwd
-          ls - /home/runner/work/nextcloudpi/nextcloudpi/output
+          ls -l /home/runner/work/nextcloudpi/nextcloudpi/output
           . ../build/buildlib.sh
           lxc delete -q -f ncp || true
           lxc image import -q "/home/runner/work/nextcloudpi/nextcloudpi/output/${{ needs.build-lxd.outputs.artifact_name }}"
