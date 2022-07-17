@@ -14,11 +14,16 @@ install()
   set -x
   apt-get update
   apt-get install --no-install-recommends -y dnsmasq
-  service dnsmasq stop
-  ! is_docker && {
-    service systemd-resolved start || true
-    systemctl enable systemd-resolved || echo "WARN: systemd-resolved could not be enabled. This might cause networking issues!"
+  rc=0
+  service dnsmasq status > /dev/null 2>&1 || rc=$?
+  ! is_docker && [[ $rc -eq 3 ]] && {
+    echo "Applying workaround for dnsmasq bug (compare issue #1446)"
+    service systemd-resolved stop || true
+    service dnsmasq start
+    service dnsmasq status
   }
+
+  service dnsmasq stop
   update-rc.d dnsmasq disable || rm /etc/systemd/system/multi-user.target.wants/dnsmasq.service
 
   [[ "$DOCKERBUILD" == 1 ]] && {
