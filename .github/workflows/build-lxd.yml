@@ -46,7 +46,7 @@ jobs:
             echo "System test failed!"
             exit 1
           }
-          python nextcloud_tests.py --no-gui localhost 443 4443 || {
+          python nextcloud_tests.py --no-gui "$ip" 443 4443 || {
             echo "Nextcloud test failed!"
             exit 1
           }
