@@ -48,7 +48,7 @@ jobs:
           lxc stop ncp
       - name: Publish LXD Image
         if: ${{ github.event_name == 'push' && github.ref_type == 'tag' }}
-        runs: |
+        run: |
           # TODO
 
 
@@ -99,7 +99,7 @@ jobs:
 
       - name: Publish RPI Image
         if: ${{ github.event_name == 'push' && github.ref_type == 'tag' }}
-        runs: |
+        run: |
           # TODO
 
 
