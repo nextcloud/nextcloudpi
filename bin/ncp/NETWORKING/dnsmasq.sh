@@ -21,10 +21,10 @@ install()
     service systemd-resolved stop
     service dnsmasq start
     service dnsmasq stop
-    service systemd-resolved start
   }
   update-rc.d dnsmasq disable || rm /etc/systemd/system/multi-user.target.wants/dnsmasq.service
   service dnsmasq stop
+  service systemd-resolved start || true
 
   [[ "$DOCKERBUILD" == 1 ]] && {
     cat > /etc/services-available.d/100dnsmasq <<EOF
