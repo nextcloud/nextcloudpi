@@ -81,7 +81,7 @@ jobs:
           SSH_OPTIONS=(-o "StrictHostKeyChecking=no" -o "UserKnownHostsFile=/dev/null" -i "$HOME/.ssh/automation_ssh_key")
           for i in {1..5}
           do
-            ssh "root@$(hcloud server ip "ncp-builder-rpi-${{ env.UID }}")" "${SSH_OPTIONS[@]}" bash -c "echo Server is online" && break;
+            ssh "root@$(hcloud server ip "ncp-builder-${{ env.UID }}")" "${SSH_OPTIONS[@]}" bash -c "echo Server is online" && break;
             [[ $i -eq 5 ]] && {
               echo 'Failed to connect to hcloud server (timeout reached)!'
               exit 1
