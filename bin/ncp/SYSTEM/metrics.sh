@@ -48,6 +48,11 @@ metrics_services() {
 
   if [[ "$cmd" =~ (start|stop|restart|reload|status) ]]
   then
+    if ! is_docker && ! [[ -d /run/systemd/system ]] 
+    then
+      echo "Probably running in chroot. Ignoring 'metrics_services $cmd'..."
+      return 0
+    fi
     rc1=0
     rc2=0
     service prometheus-node-exporter "$cmd" || rc1=$?

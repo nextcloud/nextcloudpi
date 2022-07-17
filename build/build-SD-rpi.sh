@@ -47,7 +47,7 @@ rsync -Aax --exclude-from .gitignore --exclude *.img --exclude *.bz2 . raspbian_
 
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
   sudo chroot raspbian_root /bin/bash <<'EOFCHROOT'
-    set -e
+    set -ex
 
     # allow oldstable
     apt-get update --allow-releaseinfo-change
@@ -66,7 +66,8 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
 
     # install NCP
     cd /tmp/ncp-build || exit 1
-    CODE_DIR="$(pwd)" bash install.sh
+    systemctl daemon-reload
+    CODE_DIR="$(pwd)" DBG=x bash install.sh
 
     # work around dhcpcd Raspbian bug
     # https://lb.raspberrypi.org/forums/viewtopic.php?t=230779
