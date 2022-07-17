@@ -53,7 +53,7 @@ jobs:
       - name: "Extract downloaded artifact"
         working-directory: ./output
         run: |
-          tar xf "${{ needs.build-lxd.outputs.artifact_name }}"
+          tar xf "${{ needs.build-lxd.outputs.artifact_name }}.tar.gz"
       - name: Test LXD Image
         working-directory: ./tests
         run: |
