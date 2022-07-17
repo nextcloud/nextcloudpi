@@ -28,7 +28,9 @@ jobs:
           . ../build/buildlib.sh
           lxc delete -f ncp
           lxc launch "ncp/${version}" ncp
+          lxc list -c n4 -f csv | grep '^ncp' | cut -d ',' -f2
           ip="$(lxc list -c n4 -f csv | grep '^ncp' | cut -d ',' -f2)"
+          echo "ip: $ip"
           ip="${ip/% *}"
           python activation_tests.py --no-gui "$ip" 443 4443 || {
             tail -n 20 geckodriver.log >&2 || true
