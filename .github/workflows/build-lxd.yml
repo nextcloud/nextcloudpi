@@ -82,7 +82,7 @@ jobs:
           do
             hcloud server ssh "ncp-builder-rpi-{{ $github.run_id }}" bash -c "echo Server is online" 2> /dev/null && break;
             [[ $i -eq 5 ]] && {
-              echo "Failed to connect to hcloud server (timeout reached)!"
+              echo "Failed to connect to hcloud server \(timeout reached\)!"
               exit 1
             }
             sleep 5
