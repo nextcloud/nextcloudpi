@@ -8,7 +8,7 @@
 # Usage: ./build-SD-armbian.sh <board_code> [<board_name>]
 #
 
-set -e
+set -ex
 source build/buildlib.sh
 
 #CLEAN=0                    # Pass this envvar to avoid cleaning download cache
