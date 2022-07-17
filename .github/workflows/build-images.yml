@@ -111,21 +111,25 @@ jobs:
             }
             sleep 5
           done
+          IMG="NextCloudPi_RPi_$( date  "+%m-%d-%y" ).img"
+          TAR="$( basename "$IMG" .img ).tar.bz2"
           "${ssh_cmd[@]}" bash <<EOF
           apt-get update && apt-get install -y git zip unzip parted binfmt-support qemu-user-static pbzip2
           git clone https://github.com/nextcloud/nextcloudpi.git
           cd nextcloudpi
           git checkout "${{ env.VERSION }}"
           ./build/build-SD-rpi.sh
+          . ./build/buildlib.sh
+          pack_image "$IMG" "output/$TAR"
           EOF
-
-
-      - name: Publish RPI Image
-        if: ${{ github.event_name == 'push' && github.ref_type == 'tag' }}
-        run: |
-          # TODO
-
-
+          scp -r "${SSH_OPTIONS[@]}" "root@$(hcloud server ip "ncp-builder-${{ env.UID }}"):nextcloudpi/output" ./
+          echo "::set-output name=artifact_name::${TAR}"
+      - name: upload LXD image to artifact store
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ github.run_id }}-rpi-image
+          path: output
+          if-no-files-found: error
 
   release:
     needs:
@@ -146,6 +150,11 @@ jobs:
         with:
           name: ${{ github.run_id }}-lxd-image
           path: output-lxd
+      - name: download LXD image from artifact store
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ github.run_id }}-rpi-image
+          path: output-rpi
       - name: Create Release
         run: |
           for asset in output-*/*;
