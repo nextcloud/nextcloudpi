@@ -15,7 +15,10 @@ install()
   apt-get update
   apt-get install --no-install-recommends -y dnsmasq
   service dnsmasq stop
-  ! is_docker && service systemd-resolved start || true
+  ! is_docker && {
+    service systemd-resolved start || true
+    update-rc.d systemd-resolved enable
+  }
   update-rc.d dnsmasq disable || rm /etc/systemd/system/multi-user.target.wants/dnsmasq.service
 
   [[ "$DOCKERBUILD" == 1 ]] && {
