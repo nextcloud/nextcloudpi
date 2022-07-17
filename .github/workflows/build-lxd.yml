@@ -67,12 +67,12 @@ jobs:
       - uses: 3bit/setup-hcloud@v1
       - name: Checkout code
         uses: actions/checkout@v3
-      - name: Build LXD Image
+      - name: Build RPI SD Image
         run: |
           set -e
           echo "Setup ssh"
           mkdir -p ~/.ssh
-          ssh-keygen -t ed25519 -f ".ssh/automation_ssh_key"
+          ssh-keygen -t ed25519 -f ".ssh/automation_ssh_key" -N ""
           chmod 0600 ./.ssh/automation_ssh_key
           eval "$(ssh-agent)"
           ssh-add ./.ssh/automation_ssh_key
