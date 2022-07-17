@@ -65,7 +65,7 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/setup-hcloud@v1
+      - uses: 3bit/setup-hcloud@v1
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Build LXD Image
