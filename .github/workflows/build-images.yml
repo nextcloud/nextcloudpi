@@ -123,7 +123,7 @@ jobs:
           git checkout "${{ env.VERSION }}"
           ./build/build-SD-rpi.sh
           . ./build/buildlib.sh
-          pack_image "$IMG" "output/$TAR"
+          pack_image "tmp/$IMG" "output/$TAR"
           EOF
           scp -r "${SSH_OPTIONS[@]}" "root@$(hcloud server ip "ncp-builder-${{ env.UID }}"):nextcloudpi/output" ./
           echo "::set-output name=artifact_name::${TAR}"
