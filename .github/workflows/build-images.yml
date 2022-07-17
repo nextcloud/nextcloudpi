@@ -55,10 +55,10 @@ jobs:
           set -x
           pwd
           ls -l /home/runner/work/nextcloudpi/nextcloudpi/
-          . ../build/buildlib.sh
           lxc delete -q -f ncp || true
-          lxc image import -q "../${{ needs.build-lxd.outputs.artifact_name }}"
-          systemd-run --user --scope -p "Delegate=yes" lxc launch -q "ncp/${version}" ncp
+          lxc image import -q "../${{ needs.build-lxd.outputs.artifact_name }}" --alias "ncp/test"
+          lxc image list
+          systemd-run --user --scope -p "Delegate=yes" lxc launch -q "ncp/test" ncp
           lxc exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
           sleep 30
           ip="$(lxc list -c n4 -f csv | grep '^ncp' | cut -d ',' -f2)"
