@@ -1,11 +1,11 @@
-name: 'Build and test LXD image'
+name: 'Build and test SD/VM images'
 on:
   push:
     branches:
       - "feature/cicd/lxd-builds"
 
 jobs:
-  build:
+  build-lxd:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -47,6 +47,57 @@ jobs:
           }
           lxc stop ncp
       - name: Publish LXD Image
+        if: ${{ github.event_name == 'push' && github.ref_type == 'tag' }}
+        runs: |
+          # TODO
+
+
+
+
+  build-rpi:
+    runs-on: ubuntu-latest
+    env:
+      HOME: /root
+      HCLOUD_TOKEN: "${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}"
+      UID: "${{ github.run_id }}-rpi"
+      VERSION: "${{ github.event.inputs.version || github.head_ref || github.ref_name }}"
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/setup-hcloud@v1
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Build LXD Image
+        run: |
+          set -e
+          echo "Setup ssh"
+          mkdir -p ~/.ssh
+          ssh-keygen -t ed25519 -f ".ssh/automation_ssh_key"
+          chmod 0600 ./.ssh/automation_ssh_key
+          eval "$(ssh-agent)"
+          ssh-add ./.ssh/automation_ssh_key
+          hcloud ssh-key create --name "rpi-build-{{ $github.run_id }}"" --public-key-from-file "./.ssh/automation_ssh_key.pub"
+          hcloud server create --image debian-11 --name ncp-builder --type cx11 --ssh-key "rpi-build-{{ $github.run_id }}"
+          for i in {1..5}
+          do
+            hcloud server ssh "ncp-builder-rpi-{{ $github.run_id }}" bash -c "echo Server is online" 2> /dev/null && break;
+            [[ $i -eq 5 ]] && {
+              echo "Failed to connect to hcloud server (timeout reached)!"
+              exit 1
+            }
+            sleep 5
+          done
+          hcloud server ssh bash -c <<EOF
+          apt update && apt install -y git zip unzip parted binfmt-support qemu-user-static
+          git clone https://github.com/nextcloud/nextcloudpi.git
+          cd nextcloudpi
+          git checkout "${{ env.VERSION }}"
+          ./build/build-SD-rpi.sh
+          EOF
+
+
+      - name: Publish RPI Image
         if: ${{ github.event_name == 'push' && github.ref_type == 'tag' }}
         runs: |
           # TODO
