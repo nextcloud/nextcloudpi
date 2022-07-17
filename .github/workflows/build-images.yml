@@ -20,14 +20,14 @@ jobs:
         run: |
           ./build/build-LXD.sh
           . ./build/buildlib.sh
-          ARTIFACT_NAME="NextCloudPi_LXD_$( date  "+%m-%d-%y" ).tar.bz2"
+          ARTIFACT_NAME="NextCloudPi_LXD_$( date  "+%m-%d-%y" ).tar.gz"
           lxc image export -q ncp/"${version}" "output/${ARTIFACT_NAME}"
           echo "::set-output name=artifact_name::${ARTIFACT_NAME}"
       - name: upload LXD image to artifact store
         uses: actions/upload-artifact@v3
         with:
           name: ${{ github.run_id }}-lxd-image
-          path: output
+          path: output/${{ steps.build-lxd.outputs.artifact_name }}
           if-no-files-found: error
   test-lxd:
     needs: 
@@ -49,11 +49,13 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ${{ github.run_id }}-lxd-image
-          path: output
+          path: tests
+      - run: |
+          ls -l tests
       - name: "Extract downloaded artifact"
         working-directory: ./output
         run: |
-          tar xf "${{ needs.build-lxd.outputs.artifact_name }}.tar.gz"
+          [[ -f "${{ needs.build-lxd.outputs.artifact_name }}.tar.gz" ]] && tar xf "${{ needs.build-lxd.outputs.artifact_name }}.tar.gz"
       - name: Test LXD Image
         working-directory: ./tests
         run: |
@@ -150,8 +152,8 @@ jobs:
       - uses: 3bit/setup-hcloud@v1
       - name: "Cleanup rpi server"
         run: |
+          hcloud ssh-key delete "rpi-build-${{ env.UID}}" || echo "Error deleting ssh key!"
           hcloud server delete "ncp-builder-${{ env.UID }}"
-          hcloud ssh-key delete "rpi-build-${{ env.UID}}"
 
   release:
     needs:
