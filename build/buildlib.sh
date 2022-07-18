@@ -173,7 +173,12 @@ function prepare_chroot_raspbian()
   sudo mount -o bind /dev     raspbian_root/dev/
   sudo mount -o bind /dev/pts raspbian_root/dev/pts
 
-  sudo cp /usr/bin/qemu-aarch64-static raspbian_root/usr/bin
+  if [[ -f "qemu-aarch64-static" ]]
+  then
+    cp qemu-aarch64-static raspbian_root/usr/bin/
+  else
+    sudo cp /usr/bin/qemu-aarch64-static raspbian_root/usr/bin
+  fi
 
   # Prevent services from auto-starting
   sudo bash -c "echo -e '#!/bin/sh\nexit 101' > raspbian_root/usr/sbin/policy-rc.d"

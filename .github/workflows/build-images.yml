@@ -125,6 +125,7 @@ jobs:
           git clone https://github.com/nextcloud/nextcloudpi.git
           cd nextcloudpi
           git checkout "${{ env.VERSION }}"
+          wget -q https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-aarch64-static -O ./qemu-aarch64-static
           ./build/build-SD-rpi.sh
           . ./build/buildlib.sh
           pack_image "tmp/$IMG" "output/$TAR"
