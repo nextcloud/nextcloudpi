@@ -175,7 +175,7 @@ function prepare_chroot_raspbian()
 
   if [[ -f "qemu-aarch64-static" ]]
   then
-    cp qemu-aarch64-static raspbian_root/usr/bin/
+    sudo cp qemu-aarch64-static raspbian_root/usr/bin/
   else
     sudo cp /usr/bin/qemu-aarch64-static raspbian_root/usr/bin
   fi
