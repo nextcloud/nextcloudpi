@@ -74,8 +74,8 @@ armbian/compile.sh docker ncp
 rm "$CONF"
 
 # pack image
-mv armbian/output/images/Armbian*.img "$IMG"
-[[ " $* " =~ " --pack " ]] && pack_image "$IMG" "$TAR"
+
+[[ " $* " =~ " --pack " ]] && { mv armbian/output/images/Armbian*.img "$IMG" && pack_image "$IMG" "$TAR"; }
 
 exit 0
 

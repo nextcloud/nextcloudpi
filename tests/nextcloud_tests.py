@@ -112,10 +112,10 @@ def test_nextcloud(IP: str, nc_port: str, driver: WebDriver):
     test.new("nextcloud page")
     try:
         driver.get(f"https://{IP}:{nc_port}/index.php/settings/admin/overview")
-    except:
+    except Exception as e:
         test.check(False)
         print(tc.red + "error:" + tc.normal + " unable to reach " + tc.yellow + IP + tc.normal)
-        sys.exit(1)
+        raise e
     test.check("NextCloudPi" in driver.title)
     trusted_domain_str = "You are accessing the server from an untrusted domain"
     test.report("trusted domain", trusted_domain_str not in driver.page_source)
@@ -168,8 +168,7 @@ def test_nextcloud(IP: str, nc_port: str, driver: WebDriver):
 
     except Exception as e:
         test.check(False)
-        print(e)
-        print(traceback.format_exc())
+        raise e
 
 
 if __name__ == "__main__":
@@ -230,6 +229,9 @@ if __name__ == "__main__":
     driver = webdriver.Firefox(service_log_path='/dev/null', options=options)
     try:
         test_nextcloud(IP, nc_port, driver)
+    except Exception as e:
+        print(e)
+        print(traceback.format_exc())
     finally:
         driver.close()
 
