@@ -8,17 +8,20 @@ jobs:
   build-lxd:
     runs-on: ubuntu-latest
     outputs:
-      artifact_name: ${{ steps.build-lxd.outputs.artifact_name }}
+      artifact_name: ${{ steps.pack-lxd.outputs.artifact_name }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
       - uses: whywaita/setup-lxd@v1
         with:
           lxd_version: latest/stable
-      - name: Build LXD Image
+      - name: Build LXD image
         id: build-lxd
         run: |
           ./build/build-LXD.sh
+      - name: Pack LXD image
+        id: pack-lxd
+        run: |
           . ./build/buildlib.sh
           ARTIFACT_NAME="NextCloudPi_LXD_$( date  "+%m-%d-%y" )"
           lxc image export -q ncp/"${version}" "output/${ARTIFACT_NAME}"
@@ -27,8 +30,9 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ${{ github.run_id }}-lxd-image
-          path: output/${{ steps.build-lxd.outputs.artifact_name }}
+          path: output/${{ steps.pack-lxd.outputs.artifact_name }}
           if-no-files-found: error
+
   test-lxd:
     needs:
       - build-lxd
@@ -49,18 +53,17 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ${{ github.run_id }}-lxd-image
-      - name: Test LXD Image
-        working-directory: ./tests
+      - name: Launch ncp container
         run: |
           set -x
-          pwd
-          ls -l /home/runner/work/nextcloudpi/nextcloudpi/
           lxc delete -q -f ncp || true
           lxc image import -q "../${{ needs.build-lxd.outputs.artifact_name }}" --alias "ncp/test"
-          lxc image list
           systemd-run --user --scope -p "Delegate=yes" lxc launch -q "ncp/test" ncp
           lxc exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
           sleep 30
+      - name: Test LXD Image
+        working-directory: ./tests
+        run: |
           ip="$(lxc list -c n4 -f csv | grep '^ncp' | cut -d ',' -f2)"
           ip="${ip/% *}"
           python activation_tests.py --no-gui "$ip" 443 4443 || {
@@ -88,7 +91,7 @@ jobs:
       run:
         shell: bash
     outputs:
-      artifact_name: ${{ steps.build-lxd.outputs.artifact_name }}
+      artifact_name: ${{ steps.pack-rpi.outputs.artifact_name }}
     steps:
       - uses: 3bit/setup-hcloud@v1
       - name: Set up QEMU
@@ -96,12 +99,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Build RPI SD Image
-        id: build-rpi
         run: |
           set -e
           wget -q https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-aarch64-static -O ./qemu-aarch64-static
           ./build/build-SD-rpi.sh
       - name: Pack RPI Image
+        id: pack-rpi
         run: |
           IMG="NextCloudPi_RPi_$( date  "+%m-%d-%y" ).img"
           TAR="$( basename "$IMG" .img ).tar.gz"
@@ -112,7 +115,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ${{ github.run_id }}-rpi-image
-          path: output/${{ steps.build-rpi.outputs.artifact_name }}
+          path: output/${{ steps.pack-rpi.outputs.artifact_name }}
           if-no-files-found: error
   
   build-armbian:
@@ -147,13 +150,21 @@ jobs:
       - name: "Pack image"
         id: pack-armbian
         run: |
-          artifacts=("armbian/output/images/Armbian"*.img)
+          board_params=(${{ matrix.board}})
           IMG="NextCloudPi_${board_params[1]}_$( date  "+%m-%d-%y" ).img"
-          mv "${artifacts[0]}" "tmp/$IMG"
           TAR="$( basename "$IMG" .img ).tar.gz"
+          
+          artifacts=("armbian/output/images/Armbian"*.img)
+          mv "${artifacts[0]}" "tmp/$IMG"
           . ./build/buildlib.sh
           pack_image "tmp/$IMG" "output/$TAR"
           echo "::set-output name=artifact_name::${TAR}"
+      - name: upload Armbian image to artifact store
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ github.run_id }}-armbian-image
+          path: output/${{ steps.build-pack-armbian.outputs.artifact_name }}
+          if-no-files-found: error
 
   release:
     needs:
