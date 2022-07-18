@@ -30,7 +30,7 @@ jobs:
           path: output/${{ steps.build-lxd.outputs.artifact_name }}
           if-no-files-found: error
   test-lxd:
-    needs: 
+    needs:
       - build-lxd
     runs-on: ubuntu-latest
     steps:
@@ -97,28 +97,28 @@ jobs:
         id: build-rpi
         run: |
           set -e
-          echo "Setup ssh"
-          mkdir -p "$HOME/.ssh"
-          ssh-keygen -t ed25519 -f "$HOME/.ssh/automation_ssh_key" -N ""
-          chmod 0600 "$HOME/.ssh/automation_ssh_key"
-          eval "$(ssh-agent)"
-          ssh-add "$HOME/.ssh/automation_ssh_key"
-          hcloud ssh-key create --name "rpi-build-${{ env.UID}}" --public-key-from-file "$HOME/.ssh/automation_ssh_key.pub"
-          hcloud server create --image debian-11 --name "ncp-builder-${{ env.UID }}" --type cx11 --ssh-key "rpi-build-${{ env.UID }}"
-          SSH_OPTIONS=(-o "StrictHostKeyChecking=no" -o "UserKnownHostsFile=/dev/null" -i "$HOME/.ssh/automation_ssh_key")
-          ssh_cmd=(ssh "root@$(hcloud server ip "ncp-builder-${{ env.UID }}")" "${SSH_OPTIONS[@]}")
-          for i in {1..5}
-          do
-            "${ssh_cmd[@]}" bash -c "echo Server is online" && break;
-            [[ $i -eq 5 ]] && {
-              echo 'Failed to connect to hcloud server (timeout reached)!'
-              exit 1
-            }
-            sleep 5
-          done
+          #echo "Setup ssh"
+          #mkdir -p "$HOME/.ssh"
+          #ssh-keygen -t ed25519 -f "$HOME/.ssh/automation_ssh_key" -N ""
+          #chmod 0600 "$HOME/.ssh/automation_ssh_key"
+          #eval "$(ssh-agent)"
+          #ssh-add "$HOME/.ssh/automation_ssh_key"
+          #hcloud ssh-key create --name "rpi-build-${{ env.UID}}" --public-key-from-file "$HOME/.ssh/automation_ssh_key.pub"
+          #hcloud server create --image debian-11 --name "ncp-builder-${{ env.UID }}" --type cx11 --ssh-key "rpi-build-${{ env.UID }}"
+          #SSH_OPTIONS=(-o "StrictHostKeyChecking=no" -o "UserKnownHostsFile=/dev/null" -i "$HOME/.ssh/automation_ssh_key")
+          #ssh_cmd=(ssh "root@$(hcloud server ip "ncp-builder-${{ env.UID }}")" "${SSH_OPTIONS[@]}")
+          #for i in {1..5}
+          #do
+          #  "${ssh_cmd[@]}" bash -c "echo Server is online" && break;
+          #  [[ $i -eq 5 ]] && {
+          #    echo 'Failed to connect to hcloud server (timeout reached)!'
+          #    exit 1
+          #  }
+          #  sleep 5
+          #done
           IMG="NextCloudPi_RPi_$( date  "+%m-%d-%y" ).img"
           TAR="$( basename "$IMG" .img ).tar.bz2"
-          "${ssh_cmd[@]}" bash <<EOF
+          #"${ssh_cmd[@]}" bash <<EOF
           apt-get update && apt-get install -y git zip unzip parted binfmt-support qemu-user-static pbzip2
           git clone https://github.com/nextcloud/nextcloudpi.git
           cd nextcloudpi
@@ -126,8 +126,8 @@ jobs:
           ./build/build-SD-rpi.sh
           . ./build/buildlib.sh
           pack_image "tmp/$IMG" "output/$TAR"
-          EOF
-          scp -r "${SSH_OPTIONS[@]}" "root@$(hcloud server ip "ncp-builder-${{ env.UID }}"):nextcloudpi/output" ./
+          #EOF
+          #scp -r "${SSH_OPTIONS[@]}" "root@$(hcloud server ip "ncp-builder-${{ env.UID }}"):nextcloudpi/output" ./
           echo "::set-output name=artifact_name::${TAR}"
       - name: upload RPI image to artifact store
         uses: actions/upload-artifact@v3
@@ -158,7 +158,7 @@ jobs:
     defaults:
       run:
         shell: bash
-    strategy: 
+    strategy:
       matrix:
         board:
           - odroidxu4 OdroidHC2
