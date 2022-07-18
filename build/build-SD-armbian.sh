@@ -75,7 +75,9 @@ rm "$CONF"
 
 # pack image
 mv armbian/output/images/Armbian*.img "$IMG"
-pack_image "$IMG" "$TAR"
+[[ " $* " =~ " --pack " ]] && pack_image "$IMG" "$TAR"
+
+exit 0
 
 # test
 # TODO
