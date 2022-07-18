@@ -147,7 +147,7 @@ jobs:
       - name: "Pack image"
         id: pack-armbian
         run: |
-          artifacts=("armbian/output/Armbian"*.img)
+          artifacts=("armbian/output/images/Armbian"*.img)
           IMG="NextCloudPi_${board_params[1]}_$( date  "+%m-%d-%y" ).img"
           mv "${artifacts[0]}" "tmp/$IMG"
           TAR="$( basename "$IMG" .img ).tar.gz"

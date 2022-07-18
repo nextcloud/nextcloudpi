@@ -46,6 +46,10 @@ class tc:
     normal='\033[0m'
 
 
+class TestFailed(Exception):
+    pass
+
+
 class Test:
     title  = "test"
 
@@ -53,18 +57,24 @@ class Test:
         self.title = title
         print("[check] " + "{:16}".format(title), end=' ', flush = True)
 
-    def check(self, expression):
+    def check(self, expression, msg=None):
         if expression:
             print(tc.green + "ok" + tc.normal)
             self.log("ok")
         else:
             print(tc.red + "error" + tc.normal)
             self.log("error")
-            sys.exit(1)
+            exc_args = [f"'{self.title}' failed"]
+            if isinstance(expression, Exception):
+                exc_args.append(expression)
+            if msg is not None:
+                exc_args.append(msg)
 
-    def report(self, title, expression):
+            raise TestFailed(*exc_args)
+
+    def report(self, title, expression, msg=None):
         self.new(title)
-        self.check(expression)
+        self.check(expression, msg=msg)
 
     def log(self, result):
         config = configparser.ConfigParser()
@@ -113,12 +123,10 @@ def test_nextcloud(IP: str, nc_port: str, driver: WebDriver):
     try:
         driver.get(f"https://{IP}:{nc_port}/index.php/settings/admin/overview")
     except Exception as e:
-        test.check(False)
-        print(tc.red + "error:" + tc.normal + " unable to reach " + tc.yellow + IP + tc.normal)
-        raise e
-    test.check("NextCloudPi" in driver.title)
+        test.check(e, msg=f"{tc.red}error:{tc.normal} unable to reach {tc.yellow + IP + tc.normal}")
+    test.check("NextCloudPi" in driver.title, msg="NextCloudPi not found in page title!")
     trusted_domain_str = "You are accessing the server from an untrusted domain"
-    test.report("trusted domain", trusted_domain_str not in driver.page_source)
+    test.report("trusted domain", trusted_domain_str not in driver.page_source, f"Domain '{IP}' is not trusted")
     try:
         driver.find_element(By.ID, "user").send_keys(nc_user)
         driver.find_element(By.ID, "password").send_keys(nc_pass)
@@ -129,7 +137,7 @@ def test_nextcloud(IP: str, nc_port: str, driver: WebDriver):
         except NoSuchElementException:
             pass
 
-    test.report("password", "Wrong password" not in driver.page_source)
+    test.report("password", "Wrong password" not in driver.page_source, msg="Failed to login with provided password")
 
     test.new("settings config")
     wait = WebDriverWait(driver, 30)
@@ -167,8 +175,7 @@ def test_nextcloud(IP: str, nc_port: str, driver: WebDriver):
         test.check(True)
 
     except Exception as e:
-        test.check(False)
-        raise e
+        test.check(e)
 
 
 if __name__ == "__main__":
