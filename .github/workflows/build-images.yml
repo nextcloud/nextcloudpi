@@ -139,20 +139,20 @@ jobs:
           path: output/${{ steps.build-rpi.outputs.artifact_name }}
           if-no-files-found: error
   
-  cleanup-rpi:
-    if: ${{ always() }}
-    needs:
-      - build-rpi
-    runs-on: ubuntu-latest
-    env:
-      HCLOUD_TOKEN: "${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}"
-      UID: "${{ github.run_id }}-rpi"
-    steps:
-      - uses: 3bit/setup-hcloud@v1
-      - name: "Cleanup rpi server"
-        run: |
-          hcloud ssh-key delete "rpi-build-${{ env.UID}}" || echo "Error deleting ssh key!"
-          hcloud server delete "ncp-builder-${{ env.UID }}"
+#  cleanup-rpi:
+#    if: ${{ always() }}
+#    needs:
+#      - build-rpi
+#    runs-on: ubuntu-latest
+#    env:
+#      HCLOUD_TOKEN: "${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}"
+#      UID: "${{ github.run_id }}-rpi"
+#    steps:
+#      - uses: 3bit/setup-hcloud@v1
+#      - name: "Cleanup rpi server"
+#        run: |
+#          hcloud ssh-key delete "rpi-build-${{ env.UID}}" || echo "Error deleting ssh key!"
+#          hcloud server delete "ncp-builder-${{ env.UID }}"
   
   build-armbian:
     runs-on: ubuntu-latest
