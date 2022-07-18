@@ -67,6 +67,8 @@ EXTRA_CONF=build/armbian/"config-$BOARD".conf
 
 # build
 rm -rf armbian/output/images
+mkdir armbian/userpatches
+sed -e '/docker.*run/s/-it//' armbian/config/templates/config-docker.conf > armbian/userpatches/config-docker.conf
 armbian/compile.sh docker ncp
 rm "$CONF"
 
