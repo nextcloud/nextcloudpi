@@ -189,13 +189,25 @@ jobs:
         run: |
           msg=()
           assets=()
-          for asset in artifacts/**;
+          for asset in artifacts/*/*.tar.gz;
           do
-            msg+=(md5sum "$asset")
+            msg="$msg
+          ```
+          $(md5sum "$asset")
+          ```"
             assets+=(-a "$asset")
           done
           
           echo "Assets: ${assets[*]}"
           echo "Message: ${msg[*]}"
+          
+          echo hub release create "${assets[@]}" -F - "${{ env.VERSION }}" <<EOF
+          $(git tag -n10 "${{ env.VERSION }}" || echo "No tag message found")
+          
+          [Changelog](https://github.com/nextcloud/nextcloudpi/blob/${{ env.VERSION }}/changelog.md)
+          
+          **Checksums:**
+          ${msg[*]}
+          EOF
 
 
