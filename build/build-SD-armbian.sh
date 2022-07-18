@@ -69,6 +69,7 @@ EXTRA_CONF=build/armbian/"config-$BOARD".conf
 rm -rf armbian/output/images
 mkdir -p armbian/userpatches
 sed -e '/docker.*run/s/-it//' armbian/config/templates/config-docker.conf > armbian/userpatches/config-docker.conf
+docker pull ghcr.io/armbian/build:$(cat armbian/VERSION | cut -d"." -f1-2)"-$(dpkg --print-architecture)"
 armbian/compile.sh docker ncp
 rm "$CONF"
 
@@ -80,5 +81,5 @@ pack_image "$IMG" "$TAR"
 # TODO
 
 # upload
-create_torrent "$TAR"
+#create_torrent "$TAR"
 #upload_ftp "$( basename "$TAR" .tar.bz2 )"
