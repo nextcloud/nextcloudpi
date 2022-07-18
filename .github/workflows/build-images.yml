@@ -178,7 +178,8 @@ jobs:
       - name: "Build Armbian"
         run: |
           export LIB_TAG=master
-          ./build/build-SD-armbian.sh "${{ matrix.board }}"
+          board_params=(${{ matrix.board}})
+          ./build/build-SD-armbian.sh "${board_params[@]}"
 
   release:
     needs:
