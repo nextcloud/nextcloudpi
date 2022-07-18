@@ -98,6 +98,8 @@ clean_chroot_raspbian
 ## pack
 [[ "$*" =~ .*" --pack ".* ]] && pack_image "$IMG" "$TAR"
 
+exit 0
+
 ## test
 
 #set_static_IP "$IMG" "$IP"
