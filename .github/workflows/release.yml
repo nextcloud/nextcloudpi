@@ -14,21 +14,25 @@ jobs:
     uses: ./.github/workflows/build-lxd.yml
     with:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+    secrets: inherit
 
   build-sd-images:
     uses: ./.github/workflows/build-sd-images.yml
     with:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+    secrets: inherit
 
   build-and-test-docker:
     uses: ./.github/workflows/build-docker.yml
     with:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+    secrets: inherit
 
   test-curl-installer:
     uses: ./.github/workflows/vm-tests.yml
     with:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+    secrets: inherit
 
   docker-release:
     needs:
