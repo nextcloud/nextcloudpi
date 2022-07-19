@@ -103,7 +103,7 @@ jobs:
           for asset in ../artifacts/*/*.tar.gz;
           do
             mv "$asset" ./
-            asset_name="$(basename "$asset")
+            asset_name="$(basename "$asset")"
             msg="$msg
           \`\`\`
           $(md5sum "$asset_name")
@@ -116,7 +116,7 @@ jobs:
       - name: Publish
         if: ${{ github.event_name == 'push' && github.ref_type == 'tag' }}
         run: |
-          echo hub release create "${assets[@]}" -F - "${{ env.VERSION }}" <<EOF
+          hub release create "${assets[@]}" -F - "${{ env.VERSION }}" <<EOF
           $(git tag -n10 "${{ env.VERSION }}" || echo "No tag message found")
 
           [Changelog](https://github.com/nextcloud/nextcloudpi/blob/${{ env.VERSION }}/changelog.md)
