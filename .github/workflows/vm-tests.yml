@@ -17,8 +17,6 @@ on:
     branches:
       - master
       - devel
-    tags:
-      - v*
 
 jobs:
   setup-installation-test-instance:
