@@ -38,7 +38,7 @@ jobs:
     needs:
       - build-and-test-docker
       - test-curl-installer
-    if: ${{ github.event_name == 'push' && github.ref_type == 'tag' && false }}
+    if: ${{ github.event_name == 'push' && github.ref_type == 'tag' }}
     runs-on: ubuntu-latest
     steps:
       - name: Login to DockerHub
