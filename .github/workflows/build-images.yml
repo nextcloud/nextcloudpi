@@ -192,9 +192,9 @@ jobs:
           for asset in artifacts/*/*.tar.gz;
           do
             msg="$msg
-          ```
+          \`\`\`
           $(md5sum "$asset")
-          ```"
+          \`\`\`"
             assets+=(-a "$asset")
           done
           
