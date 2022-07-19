@@ -61,14 +61,19 @@ jobs:
           systemd-run --user --scope -p "Delegate=yes" lxc launch -q "ncp/test" ncp
           lxc exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
           sleep 30
+          ip="$(lxc list -c n4 -f csv | grep '^ncp' | cut -d ',' -f2)"
+          ip="${ip/% *}"
+          echo "${ip} nextcloudpi.local" | sudo tee /etc/hosts
       - name: Test LXD Image
         working-directory: ./tests
         run: |
-          ip="$(lxc list -c n4 -f csv | grep '^ncp' | cut -d ',' -f2)"
-          ip="${ip/% *}"
           python activation_tests.py --no-gui "$ip" 443 4443 || {
-            tail -n 20 geckodriver.log >&2 || true
             echo "Activation test failed!"
+            echo "Geckodriver logs:"
+            tail -n 20 geckodriver.log >&2 || true
+            echo "================"
+            echo "ncp.log: "
+            lxc exec ncp -- "tail -n20 /var/log/ncp.log"
             exit 1
           }
           python system_tests.py --non-interactive || {
@@ -77,6 +82,11 @@ jobs:
           }
           python nextcloud_tests.py --no-gui "$ip" 443 4443 || {
             echo "Nextcloud test failed!"
+            echo "Geckodriver logs:"
+            tail -n 20 geckodriver.log >&2 || true
+            echo "================"
+            echo "ncp.log: "
+            lxc exec ncp -- "tail -n20 /var/log/ncp.log"
             exit 1
           }
           lxc stop ncp
