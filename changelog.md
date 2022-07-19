@@ -1,4 +1,4 @@
-[v1.48.1](https://github.com/nextcloud/nextcloudpi/tree/v1.48.2) (2022-07-20) Fix notify_push using invalid domain; Fix Nextcloud v23.0.6 not being installed by default 
+[v1.48.2](https://github.com/nextcloud/nextcloudpi/tree/v1.48.2) (2022-07-20) Fix notify_push using invalid domain; Fix Nextcloud v23.0.6 not being installed by default 
 
 [v1.48.1](https://github.com/nextcloud/nextcloudpi/tree/v1.48.1) (2022-06-12) Fix docker release missing latest tags
 
