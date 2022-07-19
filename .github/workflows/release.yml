@@ -1,0 +1,126 @@
+name: 'Release'
+on:
+  workflow_dispatch:
+    inputs:
+      git_ref:
+        description: git ref, branch or tag to test against
+        required: false
+        type: string
+  push:
+    tags: ["v*"]
+
+jobs:
+  build-and-test-lxd:
+    uses: ./.github/workflows/build-lxd.yml
+    with:
+      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+    secrets: inherit
+
+  build-sd-images:
+    uses: ./.github/workflows/build-sd-images.yml
+    with:
+      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+    secrets: inherit
+
+  build-and-test-docker:
+    uses: ./.github/workflows/build-docker.yml
+    with:
+      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+    secrets: inherit
+
+  test-curl-installer:
+    uses: ./.github/workflows/vm-tests.yml
+    with:
+      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+    secrets: inherit
+
+  docker-release:
+    needs:
+      - build-and-test-docker
+      - test-curl-installer
+    if: ${{ github.event_name == 'push' && github.ref_type == 'tag' && false }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Create manifest and push as tag to docker hub
+        run: |
+          . ./build/buildlib.sh
+          
+          for arch in x86 armhf arm64
+          do
+            docker pull "thecalcaholic/ncp-internal-${arch}:${{ github.run_id }}"
+            docker tag "thecalcaholic/ncp-internal-${arch}:${{ github.run_id }}" "ownyourbits/nextcloudpi-${arch}:${version?}"
+            docker tag "ownyourbits/nextcloudpi-${arch}:${version?}" "ownyourbits/nextcloudpi-${arch}:latest"
+            docker push "ownyourbits/nextcloudpi-${arch}:${version?}"
+            docker push "ownyourbits/nextcloudpi-${arch}:latest"
+          done
+
+          docker manifest create ownyourbits/nextcloudpi:${version?} \
+            ownyourbits/nextcloudpi-armhf:${version?} \
+            ownyourbits/nextcloudpi-x86:${version?} \
+            ownyourbits/nextcloudpi-arm64:${version?}
+          docker manifest push ownyourbits/nextcloudpi:${version?}
+
+      - name: Create manifest and push as latest to docker hub
+        run: |
+          docker manifest create ownyourbits/nextcloudpi:latest \
+          ownyourbits/nextcloudpi-armhf:latest \
+          ownyourbits/nextcloudpi-x86:latest \
+          ownyourbits/nextcloudpi-arm64:latest
+          docker manifest push ownyourbits/nextcloudpi:latest
+
+  github-release:
+    needs:
+      - build-and-test-lxd
+      - build-sd-images
+      - test-curl-installer
+    runs-on: ubuntu-latest
+    env:
+      UID: "${{ github.run_id }}-rpi"
+      VERSION: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: download images from artifact store
+        uses: actions/download-artifact@v3
+        with:
+          path: artifacts
+      - name: Create Release
+        run: |
+          mkdir -p release
+          cd release
+          msg=()
+          assets=()
+          for asset in ../artifacts/*/*.tar.gz;
+          do
+            mv "$asset" ./
+            asset_name="$(basename "$asset")"
+            msg="$msg
+          \`\`\`
+          $(md5sum "$asset_name")
+          \`\`\`"
+            assets+=(-a "$asset_name")
+          done
+
+          echo "Assets: ${assets[*]}"
+          echo "Message: ${msg[*]}"
+      - name: Publish
+        if: ${{ github.event_name == 'push' && github.ref_type == 'tag' }}
+        run: |
+          hub release create "${assets[@]}" -F - "${{ env.VERSION }}" <<EOF
+          $(git tag -n10 "${{ env.VERSION }}" || echo "No tag message found")
+
+          [Changelog](https://github.com/nextcloud/nextcloudpi/blob/${{ env.VERSION }}/changelog.md)
+
+          **Checksums:**
+          ${msg[*]}
+          EOF

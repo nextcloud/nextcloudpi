@@ -8,7 +8,7 @@
 # Usage: ./build-SD-armbian.sh <board_code> [<board_name>]
 #
 
-set -e
+set -ex
 source build/buildlib.sh
 
 #CLEAN=0                    # Pass this envvar to avoid cleaning download cache
@@ -67,16 +67,21 @@ EXTRA_CONF=build/armbian/"config-$BOARD".conf
 
 # build
 rm -rf armbian/output/images
+mkdir -p armbian/userpatches
+sed -e '/docker.*run/s/-it//' armbian/config/templates/config-docker.conf > armbian/userpatches/config-docker.conf
+docker pull "ghcr.io/armbian/build:$(cut -d"." -f1-2 < armbian/VERSION)-$(dpkg --print-architecture)"
 armbian/compile.sh docker ncp
 rm "$CONF"
 
 # pack image
-mv armbian/output/images/Armbian*.img "$IMG"
-pack_image "$IMG" "$TAR"
+
+[[ " $* " =~ " --pack " ]] && { mv armbian/output/images/Armbian*.img "$IMG" && pack_image "$IMG" "$TAR"; }
+
+exit 0
 
 # test
 # TODO
 
 # upload
-create_torrent "$TAR"
+#create_torrent "$TAR"
 #upload_ftp "$( basename "$TAR" .tar.bz2 )"

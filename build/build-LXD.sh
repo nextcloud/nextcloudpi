@@ -8,7 +8,7 @@
 # Usage:
 #
 
-set -e
+set -ex
 source build/buildlib.sh
 
 echo -e "\e[1m\n[ Build NCP LXD ]\e[0m"
@@ -32,24 +32,26 @@ prepare_dirs                   # tmp cache output
 ## BUILD NCP
 
 lxc delete -f ncp 2>/dev/null || true
-systemd-run --user --scope -p "Delegate=yes" lxc launch images:debian/bullseye ncp
+systemd-run --user --scope -p "Delegate=yes" lxc launch -q images:debian/bullseye ncp
 lxc config device add ncp buildcode disk source="$(pwd)" path=/build
 lxc exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
-lxc exec ncp -- bash -c 'CODE_DIR=/build bash /build/install.sh'
+lxc exec ncp -- bash -c 'CODE_DIR=/build DBG=x bash /build/install.sh'
 lxc exec ncp -- bash -c 'source /build/etc/library.sh; run_app_unsafe /build/post-inst.sh'
 lxc stop ncp
 lxc config device remove ncp buildcode
-lxc publish ncp -f --alias ncp/"${version}"
+lxc publish -q ncp -f --alias ncp/"${version}"
 
 ## pack
-lxc export ncp "$TAR"
+[[ " $* " =~ .*" --pack ".* ]] && lxc image export -q ncp/"${version}" "$TAR"
+
+exit 0
 
 ## test
 #set_static_IP "$IMG" "$IP"
 #test_image    "$IMG" "$IP"
 
 # upload
-create_torrent "$TAR"
+#create_torrent "$TAR"
 #upload_ftp "$( basename "$TAR" .tar.bz2 )"
 
 

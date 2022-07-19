@@ -1,0 +1,105 @@
+name: "Build and test LXD image"
+on:
+  workflow_call:
+    inputs:
+      git_ref:
+        required: true
+        type: string
+    outputs:
+      artifact_name:
+        value: "${{ jobs.build-lxd.outputs.artifact_name }}"
+  push:
+    branches:
+      - "**"
+  pull_request:
+
+jobs:
+  build-lxd:
+    runs-on: ubuntu-latest
+    outputs:
+      artifact_name: ${{ steps.pack-lxd.outputs.artifact_name }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+      - uses: whywaita/setup-lxd@v1
+        with:
+          lxd_version: latest/stable
+      - name: Build LXD image
+        id: build-lxd
+        run: |
+          ./build/build-LXD.sh
+      - name: Pack LXD image
+        id: pack-lxd
+        run: |
+          . ./build/buildlib.sh
+          ARTIFACT_NAME="NextCloudPi_LXD_$( date  "+%m-%d-%y" )"
+          lxc image export -q ncp/"${version}" "output/${ARTIFACT_NAME}"
+          echo "::set-output name=artifact_name::${ARTIFACT_NAME}.tar.gz"
+      - name: upload LXD image to artifact store
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ github.run_id }}-lxd-image
+          path: output/${{ steps.pack-lxd.outputs.artifact_name }}
+          if-no-files-found: error
+
+  test-lxd:
+    needs:
+      - build-lxd
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+      - uses: whywaita/setup-lxd@v1
+        with:
+          lxd_version: latest/stable
+      - name: Setup Firefox
+        uses: browser-actions/setup-firefox@latest
+      - name: Setup GeckoDriver
+        uses: browser-actions/setup-geckodriver@latest
+      - name: Setup Selenium
+        run: pip install selenium
+      - name: download LXD image from artifact store
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ github.run_id }}-lxd-image
+      - name: Launch ncp container
+        run: |
+          set -x
+          lxc delete -q -f ncp || true
+          lxc image import -q "./${{ needs.build-lxd.outputs.artifact_name }}" --alias "ncp/test"
+          systemd-run --user --scope -p "Delegate=yes" lxc launch -q "ncp/test" ncp
+          lxc exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
+          sleep 30
+          ip="$(lxc list -c n4 -f csv | grep '^ncp' | cut -d ',' -f2)"
+          ip="${ip/% *}"
+          echo "${ip} nextcloudpi.local" | sudo tee /etc/hosts
+      - name: Test LXD Image
+        working-directory: ./tests
+        run: |
+          python activation_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
+            echo "Activation test failed!"
+            echo "Geckodriver logs:"
+            tail -n 20 geckodriver.log >&2 || true
+            echo "================"
+            echo "ncp.log: "
+            lxc exec ncp -- "tail -n20 /var/log/ncp.log"
+            exit 1
+          }
+          python system_tests.py --non-interactive || {
+            echo "System test failed!"
+            exit 1
+          }
+          python nextcloud_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
+            echo "Nextcloud test failed!"
+            echo "Geckodriver logs:"
+            tail -n 20 geckodriver.log >&2 || true
+            echo "================"
+            echo "ncp.log: "
+            lxc exec ncp -- "tail -n20 /var/log/ncp.log"
+            exit 1
+          }
+          lxc stop ncp
