@@ -67,7 +67,7 @@ jobs:
       - name: Test LXD Image
         working-directory: ./tests
         run: |
-          python activation_tests.py --no-gui "$ip" 443 4443 || {
+          python activation_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
             echo "Activation test failed!"
             echo "Geckodriver logs:"
             tail -n 20 geckodriver.log >&2 || true
@@ -80,7 +80,7 @@ jobs:
             echo "System test failed!"
             exit 1
           }
-          python nextcloud_tests.py --no-gui "$ip" 443 4443 || {
+          python nextcloud_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
             echo "Nextcloud test failed!"
             echo "Geckodriver logs:"
             tail -n 20 geckodriver.log >&2 || true
