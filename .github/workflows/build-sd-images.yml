@@ -1,0 +1,97 @@
+name: "Build SD images"
+on:
+  workflow_call:
+    inputs:
+      git_ref:
+        required: true
+        type: string
+
+jobs:
+  build-rpi:
+    runs-on: ubuntu-latest
+    env:
+      HCLOUD_TOKEN: "${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}"
+      UID: "${{ github.run_id }}-rpi"
+      VERSION: "${{ inputs.git_ref }}"
+    defaults:
+      run:
+        shell: bash
+    outputs:
+      artifact_name: ${{ steps.pack-rpi.outputs.artifact_name }}
+    steps:
+      - uses: 3bit/setup-hcloud@v1
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: "${{ env.VERSION }}"
+      - name: Build RPI SD Image
+        run: |
+          set -e
+          wget -q https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-aarch64-static -O ./qemu-aarch64-static
+          ./build/build-SD-rpi.sh
+      - name: Pack RPI Image
+        id: pack-rpi
+        run: |
+          IMG="NextCloudPi_RPi_$( date  "+%m-%d-%y" ).img"
+          TAR="$( basename "$IMG" .img ).tar.gz"
+          . ./build/buildlib.sh
+          pack_image "tmp/$IMG" "output/$TAR"
+          echo "::set-output name=artifact_name::${TAR}"
+      - name: upload RPI image to artifact store
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ github.run_id }}-rpi-image
+          path: output/${{ steps.pack-rpi.outputs.artifact_name }}
+          if-no-files-found: error
+
+  build-armbian:
+    runs-on: ubuntu-latest
+    env:
+      VERSION: "${{ inputs.git_ref }}"
+    defaults:
+      run:
+        shell: bash
+    outputs:
+      artifact_name: ${{ steps.pack-armbian.outputs.artifact_name }}
+    strategy:
+      matrix:
+        board:
+          - odroidxu4 OdroidHC2
+          - rockpro64 RockPro64
+          - rock64 Rock64
+          - bananapi Bananapi
+          - odroidhc4 OdroidHC4
+          - odroidc4 OdroidC4
+          - odroidc2 OdroidC2
+      fail-fast: false
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: "${{ env.VERSION }}"
+      - name: "Build Armbian"
+        run: |
+          set -x
+          export LIB_TAG=master
+          board_params=(${{ matrix.board}})
+          ./build/build-SD-armbian.sh "${board_params[@]}"
+      - name: "Pack image"
+        id: pack-armbian
+        run: |
+          board_params=(${{ matrix.board}})
+          IMG="NextCloudPi_${board_params[1]}_$( date  "+%m-%d-%y" ).img"
+          TAR="$( basename "$IMG" .img ).tar.gz"
+          
+          artifacts=("armbian/output/images/Armbian"*.img)
+          mv "${artifacts[0]}" "tmp/$IMG"
+          . ./build/buildlib.sh
+          pack_image "tmp/$IMG" "output/$TAR"
+          echo "::set-output name=artifact_name::${TAR}"
+      - name: upload Armbian image to artifact store
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ github.run_id }}-armbian-image
+          path: output/${{ steps.build-pack-armbian.outputs.artifact_name }}
+          if-no-files-found: error

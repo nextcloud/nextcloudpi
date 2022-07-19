@@ -5,11 +5,15 @@
 name: 'Docker Integration Tests and Release'
 
 on:
+  workflow_call:
+    inputs:
+      git_ref:
+        required: true
+        type: string
   push:
     branches:
       - "**"
-    tags:
-      - 'v*'
+  pull_request:
 
 jobs:
   build:
@@ -21,6 +25,8 @@ jobs:
           - armhf
           - arm64
       fail-fast: false
+    env:
+      VERSION: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
     steps:
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v1
@@ -30,6 +36,8 @@ jobs:
 
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          ref: "${{ env.VERSION }}"
 
       - name: Login to docker
         run: |
@@ -50,6 +58,8 @@ jobs:
     needs:
       - build
     runs-on: ubuntu-latest
+    env:
+      VERSION: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
 
     strategy:
       matrix:
@@ -71,6 +81,8 @@ jobs:
 
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          ref: "${{ env.VERSION }}"
 
       - name: Setup Firefox
         uses: browser-actions/setup-firefox@latest
@@ -116,44 +128,3 @@ jobs:
           }
           echo "Nextcloud test successful"
 
-  release:
-    needs:
-      - test
-    if: ${{ github.event_name == 'push' && github.ref_type == 'tag' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Create manifest and push as tag to docker hub
-        run: |
-          . ./build/buildlib.sh
-          
-          for arch in x86 armhf arm64
-          do
-            docker pull "thecalcaholic/ncp-internal-${arch}:${{ github.run_id }}"
-            docker tag "thecalcaholic/ncp-internal-${arch}:${{ github.run_id }}" "ownyourbits/nextcloudpi-${arch}:${version?}"
-            docker tag "ownyourbits/nextcloudpi-${arch}:${version?}" "ownyourbits/nextcloudpi-${arch}:latest"
-            docker push "ownyourbits/nextcloudpi-${arch}:${version?}"
-            docker push "ownyourbits/nextcloudpi-${arch}:latest"
-          done
-
-          docker manifest create ownyourbits/nextcloudpi:${version?} \
-            ownyourbits/nextcloudpi-armhf:${version?} \
-            ownyourbits/nextcloudpi-x86:${version?} \
-            ownyourbits/nextcloudpi-arm64:${version?}
-          docker manifest push ownyourbits/nextcloudpi:${version?}
-
-      - name: Create manifest and push as latest to docker hub
-        run: |
-             docker manifest create ownyourbits/nextcloudpi:latest \
-             ownyourbits/nextcloudpi-armhf:latest \
-             ownyourbits/nextcloudpi-x86:latest \
-             ownyourbits/nextcloudpi-arm64:latest
-             docker manifest push ownyourbits/nextcloudpi:latest

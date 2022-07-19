@@ -3,7 +3,13 @@ name: 'VM Integration Tests'
 on:
   workflow_dispatch:
     inputs:
-      version:
+      git_ref:
+        description: git ref, branch or tag to test against
+        required: false
+        type: string
+  workflow_call:
+    inputs:
+      git_ref:
         description: git ref, branch or tag to test against
         required: false
         type: string
@@ -13,7 +19,6 @@ on:
       - devel
     tags:
       - v*
-  pull_request:
 
 jobs:
   setup-installation-test-instance:
@@ -24,7 +29,7 @@ jobs:
       test_server_id: ${{ steps.create-test-instance.outputs.test_server_id }}
       version: ${{ env.VERSION }}
     env:
-      VERSION: "${{ github.event.inputs.version || github.head_ref || github.ref_name }}"
+      VERSION: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
     steps:
       - uses: actions/checkout@v3
       - run: |
@@ -54,7 +59,7 @@ jobs:
       previous_version: ${{ steps.find-version.outputs.previous_version }}
       version: ${{ env.VERSION }}
     env:
-      VERSION: "${{ github.event.inputs.version || github.head_ref || github.ref_name }}"
+      VERSION: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
     steps:
       - uses: actions/checkout@v3
         with:
