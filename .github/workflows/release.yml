@@ -1,5 +1,11 @@
 name: 'Release'
 on:
+  workflow_dispatch:
+    inputs:
+      git_ref:
+        description: git ref, branch or tag to test against
+        required: false
+        type: string
   push:
     tags: ["v*"]
 
@@ -7,17 +13,22 @@ jobs:
   build-and-test-lxd:
     uses: ./.github/workflows/build-lxd.yml
     with:
-      git_ref: "${{ github.event.inputs.version || github.head_ref || github.ref_name }}"
+      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
 
   build-sd-images:
     uses: ./.github/workflows/build-sd-images.yml
     with:
-      git_ref: "${{ github.event.inputs.version || github.head_ref || github.ref_name }}"
+      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
 
   build-and-test-docker:
-    uses: ./.build-docker.yml
+    uses: ./.github/workflows/.build-docker.yml
     with:
-      git_ref: "${{ github.event.inputs.version || github.head_ref || github.ref_name }}"
+      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+
+  test-curl-installer:
+    uses: ./.github/workflows/vm-tests.yml
+    with:
+      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
 
   docker-release:
     needs:
@@ -68,7 +79,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       UID: "${{ github.run_id }}-rpi"
-      VERSION: "${{ github.event.inputs.version || github.head_ref || github.ref_name }}"
+      VERSION: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
     defaults:
       run:
         shell: bash
