@@ -9,12 +9,12 @@
 	<meta name="copyright" content=""> <!-- License -->
 	<meta name="summary" content="">
 	<title>Nextcloudpi</title>
-	<meta name="subtitle" content="Keep your data close"> 
+	<meta name="subtitle" content="Keep your data close">
 	<meta name="revised" content=""> <!-- Wednesday, March 9th, 2022, 15:38, GMT+2 -->
 	<meta name="robots" content="noindex,nofollow"> <!-- TODO Change to 'index,follow' when website is ready + max-image-preview:large-->
 	<meta name="AdsBot-Google" content="noindex,nofollow">
 	<meta name="googlebot" content="noindex,nofollow">
-	<meta name="googlebot-news" content="noindex,nofollow"> 
+	<meta name="googlebot-news" content="noindex,nofollow">
 	<meta name="identifier-URL" content="https://nextcloudpi.com/"> <!-- website URL http:// -->
 	<link rel="stylesheet"
 		  href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css"
@@ -35,7 +35,7 @@
 				<span aria-hidden="true"></span>
 				<span aria-hidden="true"></span>
 			</a>
-			
+
 		<div class="navbar-menu" id="navMenu">
 		<!-- navbar-start, navbar-end... -->
 			<div class="navbar-end">
@@ -271,8 +271,8 @@
 				<div class="block">
 					<p class="heading">
 						<figure class="image is-64x64">
-							<a href="https://help.nextcloud.com/t/index-nextcloudpi-documentation/126448#welcome-to-the-nextcloudpi-wiki-1">
-								<img src="images/book-icon.png">
+							<a href="https://docs.nextcloudpi.com">
+								<img src="images/book-icon.png" alt="Documentation">
 							</a>
 						</figure>
 					</p>
@@ -416,7 +416,7 @@
 					</div>
 				</div>
 				</div>
-	
+
 				<div class="block level-item level-right">
 					<div id="extras-dropdown" class="dropdown">
 					<div class="dropdown-trigger">
@@ -509,7 +509,7 @@
 				</ul>
 				</div>
 			</section>
-			
+
 			<section class="section is-hidden tabcontent" id="debian">
 				<div class="box">
 				<div class="container content level-item">
@@ -539,7 +539,7 @@
 				</div>
 				</div>
 			</section>
-			
+
 			<section class="section is-hidden tabcontent" id="vm">
 				<div class="container">
 					<div class="box">
@@ -586,7 +586,7 @@
 						</div>
 						<div class="block"></div>
 					</div>
-				</div>	
+				</div>
 			</section>
 
 			<section class="section is-hidden tabcontent" id="lxd">
@@ -614,7 +614,7 @@
 							<pre>lxc start ncp</pre>
 						</div>
 					</div>
-				</div>	
+				</div>
 			</section>
 
 			<section class="section is-hidden tabcontent" id="raspberry-pi">
@@ -639,7 +639,7 @@
 						</div>
 						<div class="block"></div>
 					</div>
-				</div>	
+				</div>
 			</section>
 
 			<section class="section is-hidden tabcontent" id="odroid-hc2">
@@ -662,7 +662,7 @@
 						</div>
 						<div class="block"></div>
 					</div>
-				</div>	
+				</div>
 			</section>
 
 			<section class="section is-hidden tabcontent" id="odroid-hc4">
@@ -685,7 +685,7 @@
 						</div>
 						<div class="block"></div>
 					</div>
-				</div>	
+				</div>
 			</section>
 
 			<section class="section is-hidden tabcontent" id="odroid-c2">
@@ -708,7 +708,7 @@
 						</div>
 						<div class="block"></div>
 					</div>
-				</div>	
+				</div>
 			</section>
 
 			<section class="section is-hidden tabcontent" id="odroid-c4">
@@ -731,7 +731,7 @@
 						</div>
 						<div class="block"></div>
 					</div>
-				</div>	
+				</div>
 			</section>
 
 			<section class="section is-hidden tabcontent" id="rock64">
@@ -754,7 +754,7 @@
 						</div>
 						<div class="block"></div>
 					</div>
-				</div>	
+				</div>
 			</section>
 
 			<section class="section is-hidden tabcontent" id="rockpro64">
@@ -777,7 +777,7 @@
 						</div>
 						<div class="block"></div>
 					</div>
-				</div>	
+				</div>
 			</section>
 
 			<section class="section is-hidden tabcontent" id="banana-pi">
@@ -800,7 +800,7 @@
 						</div>
 						<div class="block"></div>
 					</div>
-				</div>	
+				</div>
 			</section>
 
 			<section class="section is-hidden tabcontent" id="armbian">
@@ -824,21 +824,21 @@
 						</div>
 						<div class="block"></div>
 					</div>
-				</div>	
+				</div>
 			</section>
-			
+
 		</div>
 	</nav>
 </section>
 
 <section class="section" id="installation">
-	
+
 	<div class="container content level-item">
 		<p id="installation" class="title">
 			Installation
 		</p>
 	</div>
-	
+
 <section class="section" id="debian-installation">
 	<div class="container content">
 	<div class="block level-item level-left">
@@ -856,18 +856,18 @@
 	<div class="block content level-item">
 		<p>
 			You can install NextcloudPi in any Debian Bullseye system, by using the curl installer.
-		</p>		
+		</p>
 	</div>
 	<div class="block content level-item">
 		<p style="font-style: italic;">
 			Note: This assumes a clean Debian installation, there is currently no rollback method.
 		</p>
 	</div>
-	
+
 	<div class="container content level-item">
 		<pre># curl -sSL https://raw.githubusercontent.com/nextcloud/nextcloudpi/master/install.sh | bash</pre>
 	</div>
-	
+
 	<div class="container content level-item">
 		<p>
 			Instead of piping to bash, you can <a href="https://github.com/nextcloud/nextcloudpi/blob/master/install.sh">inspect the code</a> and launch it manually.
@@ -882,7 +882,7 @@
 			Docker
 		</p>
 	</div>
-	
+
 	<div class="container content level-item">
 		<figure class="image">
 			<img src="images/ncp-docker2-300x300.png">
@@ -892,9 +892,9 @@
 	<div class="container content level-item">
 		<p>
 			You can use NextcloudPi in any system that supports docker
-		</p>		
+		</p>
 	</div>
-	
+
 	<div class="container content level-item">
 		<pre>docker run -d -p 4443:4443 -p 443:443 -p 80:80 -v ncdata:/data --name nextcloudpi ownyourbits/nextcloudpi $DOMAIN</pre>
 	</div>
@@ -906,13 +906,13 @@
 			SBC
 		</p>
 	</div>
-	
+
 	<div class="container content level-item">
 		<figure class="image">
 			<img style="width: 300px; height: 286px;" src="images/ncp-case-good.png">
 		</figure>
 	</div>
-	
+
 	<div class="container content level-item">
 		<p>
 			There are <a href="https://github.com/nextcloud/nextcloudpi/releases">preinstalled SD card images</a> for the Raspberry Pi and other Single Board Computers.
