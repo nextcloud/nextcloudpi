@@ -90,6 +90,10 @@ jobs:
       run:
         shell: bash
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
       - name: download images from artifact store
         uses: actions/download-artifact@v3
         with:
@@ -98,13 +102,13 @@ jobs:
         run: |
           mkdir -p release
           cd release
-          msg=()
+          checksums=()
           assets=()
           for asset in ../artifacts/*/*.tar.gz;
           do
             mv "$asset" ./
             asset_name="$(basename "$asset")"
-            msg="$msg
+            checksums="$checksums
           \`\`\`
           $(md5sum "$asset_name")
           \`\`\`"
@@ -112,7 +116,7 @@ jobs:
           done
 
           echo "Assets: ${assets[*]}"
-          echo "Message: ${msg[*]}"
+          echo "Message: ${checksums[*]}"
       - name: Publish
         if: ${{ github.event_name == 'push' && github.ref_type == 'tag' }}
         run: |
@@ -122,5 +126,5 @@ jobs:
           [Changelog](https://github.com/nextcloud/nextcloudpi/blob/${{ env.VERSION }}/changelog.md)
 
           **Checksums:**
-          ${msg[*]}
+          ${checksums[*]}
           EOF
