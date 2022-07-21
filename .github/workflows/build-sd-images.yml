@@ -27,14 +27,17 @@ jobs:
         with:
           ref: "${{ env.VERSION }}"
       - name: Build RPI SD Image
+        id: build-rpi
         run: |
           set -e
+          IMG="NextCloudPi_RPi_$( date  "+%m-%d-%y" ).img"
           wget -q https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-aarch64-static -O ./qemu-aarch64-static
           ./build/build-SD-rpi.sh
+          echo "::set-output name=image::${IMG}"
       - name: Pack RPI Image
         id: pack-rpi
         run: |
-          IMG="NextCloudPi_RPi_$( date  "+%m-%d-%y" ).img"
+          IMG="${{ steps.build-rpi.outputs.image }}"
           TAR="$( basename "$IMG" .img ).tar.gz"
           . ./build/buildlib.sh
           pack_image "tmp/$IMG" "output/$TAR"
@@ -72,16 +75,18 @@ jobs:
         with:
           ref: "${{ env.VERSION }}"
       - name: "Build Armbian"
+        id: build-armbian
         run: |
           set -x
           export LIB_TAG=master
           board_params=(${{ matrix.board}})
+          IMG="NextCloudPi_${board_params[1]}_$( date  "+%m-%d-%y" ).img"
           ./build/build-SD-armbian.sh "${board_params[@]}"
+          echo "::set-output name=image::${IMG}"
       - name: "Pack image"
         id: pack-armbian
         run: |
-          board_params=(${{ matrix.board}})
-          IMG="NextCloudPi_${board_params[1]}_$( date  "+%m-%d-%y" ).img"
+          IMG="${{ steps.build-armbian.outputs.image }}"
           TAR="$( basename "$IMG" .img ).tar.gz"
           
           artifacts=("armbian/output/images/Armbian"*.img)
