@@ -33,13 +33,17 @@ jobs:
           IMG="NextCloudPi_RPi_$( date  "+%m-%d-%y" ).img"
           wget -q https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-aarch64-static -O ./qemu-aarch64-static
           ./build/build-SD-rpi.sh
+
+          for i in {1..10}
+          do
+            sudo losetup | grep "${IMG}" || break;
+            [[ "$i" -lt 10 ]] || { echo "Timeout while waiting for image to unount"; exit 1; }
+          done
+          
           echo "::set-output name=image::${IMG}"
       - name: Pack RPI Image
         id: pack-rpi
         run: |
-          sudo losetup
-          ps aux | grep qemu-aarch64-static
-          sleep 30
           IMG="${{ steps.build-rpi.outputs.image }}"
           TAR="$( basename "$IMG" .img ).tar.gz"
           . ./build/buildlib.sh
