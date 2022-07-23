@@ -38,6 +38,8 @@ jobs:
         id: pack-rpi
         run: |
           sudo losetup
+          ps aux | grep qemu-aarch64-static
+          sleep 30
           IMG="${{ steps.build-rpi.outputs.image }}"
           TAR="$( basename "$IMG" .img ).tar.gz"
           . ./build/buildlib.sh
