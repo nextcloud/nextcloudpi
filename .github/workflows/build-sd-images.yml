@@ -38,8 +38,10 @@ jobs:
           do
             sudo losetup | grep "${IMG}" || break;
             [[ "$i" -lt 10 ]] || { echo "Timeout while waiting for image to unount"; exit 1; }
+            sleep 6
+            echo "Retrying ($i out of 10)"
           done
-          
+
           echo "::set-output name=image::${IMG}"
       - name: Pack RPI Image
         id: pack-rpi
