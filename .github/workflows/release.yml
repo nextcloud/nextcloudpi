@@ -8,6 +8,7 @@ on:
         type: string
   push:
     tags: ["v*"]
+    branches: ["*/cicd/*"]
 
 jobs:
   build-and-test-lxd:

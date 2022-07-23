@@ -37,6 +37,7 @@ jobs:
       - name: Pack RPI Image
         id: pack-rpi
         run: |
+          sudo losetup
           IMG="${{ steps.build-rpi.outputs.image }}"
           TAR="$( basename "$IMG" .img ).tar.gz"
           . ./build/buildlib.sh
