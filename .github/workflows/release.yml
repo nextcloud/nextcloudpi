@@ -125,12 +125,18 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          hub release create ${{ steps.prepare-release.outputs.assets }} -F - "${{ env.VERSION }}" <<EOF
-          $(git tag -n10 "${{ env.VERSION }}" || echo "No tag message found")
+          subject="$(git tag -n10 --format="%(contents:subject)" "${{ env.VERSION }}")"
+          body="$(git tag -n10 --format="%(contents:body)" "${{ env.VERSION }}")"
+          separator="
 
           ---
+          
+          "
 
-          [Docker images](https://hub.docker.com/r/ownyourbits/nextcloudpi)
+          hub release create ${{ steps.prepare-release.outputs.assets }} -F - "${{ env.VERSION }}" <<EOF
+          ${subject:-No message found}
+
+          ${body:+${body}${separator}}[Docker images](https://hub.docker.com/r/ownyourbits/nextcloudpi)
 
           [Changelog](https://github.com/nextcloud/nextcloudpi/blob/${{ env.VERSION }}/changelog.md)
 
