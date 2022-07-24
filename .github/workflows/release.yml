@@ -120,9 +120,13 @@ jobs:
           echo "Message: ${checksums[*]}"
       - name: Publish
         if: ${{ github.event_name == 'push' && github.ref_type == 'tag' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           hub release create "${assets[@]}" -F - "${{ env.VERSION }}" <<EOF
           $(git tag -n10 "${{ env.VERSION }}" || echo "No tag message found")
+
+          [Docker images](https://hub.docker.com/r/ownyourbits/nextcloudpi)
 
           [Changelog](https://github.com/nextcloud/nextcloudpi/blob/${{ env.VERSION }}/changelog.md)
 
