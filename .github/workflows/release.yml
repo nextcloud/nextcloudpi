@@ -90,6 +90,8 @@ jobs:
     defaults:
       run:
         shell: bash
+    permissions:
+      contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -119,7 +121,7 @@ jobs:
 
           echo "Assets: ${assets[*]}"
           echo "Message: ${checksums[*]}"
-          echo "::set-output name=assets::$(printf " %q" "${IMG[@]}")"
+          echo "::set-output name=assets::$(printf " %q" "${assets[@]}")"
       - name: Publish
         if: ${{ github.event_name == 'push' && github.ref_type == 'tag' }}
         env:
