@@ -7,7 +7,7 @@ English | [Traditional Chinese 繁體中文](i18n/README-zh_TW.md) | [Simplified
 
 This is the build code for [NextCloudPi](https://nextcloudpi.com).
 
-NextCloudPi is a ready to use image for Raspberry Pi, Odroid HC1, rock64 and other boards.
+NextCloudPi is a ready to use image for Virtual Machines, Raspberry Pi, Odroid HC1, rock64 and other boards [(⇒Downloads)](https://github.com/nextcloud/nextcloudpi/releases).
 
 This code also generates the NextCloudPi [docker image](https://hub.docker.com/r/ownyourbits/nextcloudpi), LXD and VM, and includes an installer for any Debian based system.
 
