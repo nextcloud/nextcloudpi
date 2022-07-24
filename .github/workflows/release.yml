@@ -126,6 +126,7 @@ jobs:
         if: ${{ github.event_name == 'push' && github.ref_type == 'tag' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        working-directory: ./release
         run: |
           subject="$(git tag -n10 --format="%(contents:subject)" "${{ env.VERSION }}")"
           body="$(git tag -n10 --format="%(contents:body)" "${{ env.VERSION }}")"
