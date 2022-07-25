@@ -21,15 +21,15 @@ install()
 configure()
 {
 (
-  set -eu -o pipefail
+  set -e -o pipefail
   local datadir parentdir encdir tmpdir
   datadir="$(get_ncpcfg datadir)"
-  [[ "${datadir}" == "null" ]] && datadir=/var/www/nextcloud/data
+  [[ "${datadir?}" == "null" ]] && datadir=/var/www/nextcloud/data
   parentdir="$(dirname "${datadir}")"
-  encdir="${parentdir}/ncdata_enc"
+  encdir="${parentdir?}/ncdata_enc"
   tmpdir="$(mktemp -u -p "${parentdir}" -t nc-data-crypt.XXXXXX))"
 
-  [[ "${ACTIVE}" != "yes" ]] && {
+  [[ "${ACTIVE?}" != "yes" ]] && {
     if ! is_active; then
       echo "Data not currently encrypted"
       return 0
@@ -37,14 +37,14 @@ configure()
     save_maintenance_mode
     trap restore_maintenance_mode EXIT
     echo "Decrypting data..."
-    mkdir "${tmpdir}"
+    mkdir "${tmpdir?}"
     chown www-data: "${tmpdir}"
     pkill tail # prevents from umounting in docker
-    mv "${datadir}"/* "${datadir}"/.[!.]* "${tmpdir}"
+    mv "${datadir?}"/* "${datadir}"/.[!.]* "${tmpdir}"
     fusermount -u "${datadir}"
     rmdir "${datadir}"
     mv "${tmpdir}" "${datadir}"
-    rm "${encdir}"/gocryptfs.*
+    rm "${encdir?}"/gocryptfs.*
     rmdir "${encdir}"
     echo "Data no longer encrypted"
     return
@@ -56,8 +56,8 @@ configure()
   fi
 
   # Just mount already encrypted data
-  if [[ -f "${encdir}"/gocryptfs.conf ]]; then
-    echo "${PASSWORD}" | gocryptfs -allow_other -q "${encdir}" "${datadir}" 2>&1 | sed /^Switch/d
+  if [[ -f "${encdir?}"/gocryptfs.conf ]]; then
+    echo "${PASSWORD?}" | gocryptfs -allow_other -q "${encdir}" "${datadir}" 2>&1 | sed /^Switch/d
 
     # switch to the regular virtual hosts after we decrypt, so we can access NC and ncp-web
     a2ensite ncp nextcloud
@@ -67,12 +67,12 @@ configure()
     echo "Encrypted data now accessible"
     return
   fi
-  mkdir -p "${encdir}"
-  echo "${PASSWORD}" | gocryptfs -init -q "${encdir}"
+  mkdir -p "${encdir?}"
+  echo "${PASSWORD?}" | gocryptfs -init -q "${encdir}"
   save_maintenance_mode
   trap restore_maintenance_mode EXIT
 
-  mv "${datadir}" "${tmpdir}"
+  mv "${datadir?}" "${tmpdir?}"
 
   mkdir "${datadir}"
   echo "${PASSWORD}" | gocryptfs -allow_other -q "${encdir}" "${datadir}" 2>&1 | sed /^Switch/d

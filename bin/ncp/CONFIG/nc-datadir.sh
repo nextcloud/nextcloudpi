@@ -22,7 +22,7 @@ install()
 
 configure()
 {
-  set -eu -o pipefail
+  set -e -o pipefail
   shopt -s dotglob # includes dot files
 
   ## CHECKS

@@ -18,7 +18,6 @@ import sys
 import getopt
 import os
 import signal
-from urllib.request import urlopen
 from subprocess import run, getstatusoutput, PIPE
 
 processes_must_be_running = [
@@ -221,6 +220,12 @@ if __name__ == "__main__":
     except:
         lxc_running = False
 
+    try:
+        systemd_container_running = run(['machinectl', 'show', 'ncp'], stdout=PIPE, check = True)
+    except:
+        systemd_container_running = False
+
+
     # local method
     if os.path.exists('/usr/local/etc/ncp-baseimage'):
         print(tc.brown + "* local NCP instance detected" + tc.normal)
@@ -240,6 +245,9 @@ if __name__ == "__main__":
     elif lxc_running:
         print( tc.brown + "* local LXC instance detected" + tc.normal)
         pre_cmd = ['lxc', 'exec', 'ncp', '--']
+
+    elif systemd_container_running:
+        pre_cmd = ['machinectl', 'shell', 'root@ncp', '/usr/bin/bash', '-c']
 
     # SSH method
     else:
