@@ -31,14 +31,14 @@ configure()
     echo -e "Error reading data directory. Is NextCloud running and configured?";
     return 1;
   }
-  [ -d "$SRCDIR" ] || { echo -e "data directory $SRCDIR not found"; return 1; }
+  [ -d "${SRCDIR?}" ] || { echo -e "data directory $SRCDIR not found"; return 1; }
 
-  [[ "$SRCDIR" == "${DATADIR}"      ]] && { echo -e "INFO: data already there"; return 0; }
+  [[ "$SRCDIR" == "${DATADIR?}"      ]] && { echo -e "INFO: data already there"; return 0; }
   [[ "$SRCDIR" == "${DATADIR}"/data ]] && { echo -e "INFO: data already there"; return 0; }
 
   BASEDIR="${DATADIR}"
   # If the user chooses the root of the mountpoint, force a folder
-  mountpoint -q "${BASEDIR}" && {
+  mountpoint -q "${BASEDIR?}" && {
     BASEDIR="${BASEDIR}"/ncdata
   }
 
@@ -62,7 +62,7 @@ configure()
   [ -d "${BASEDIR}" ] && {
     rmdir "${BASEDIR}" &>/dev/null || {
       local BKP="${BASEDIR}-$(date "+%m-%d-%y.%s")"
-      echo "INFO: ${BASEDIR} is not empty. Creating backup ${BKP}"
+      echo "INFO: ${BASEDIR} is not empty. Creating backup ${BKP?}"
       mv "${BASEDIR}" "${BKP}"
     }
     mkdir -p "${BASEDIR}"
@@ -84,7 +84,7 @@ configure()
   # use encryption, if selected
   if is_active_app nc-encrypt; then
     # if we have encryption AND BTRFS, then store ncdata_enc in the subvolume
-    mv "$(dirname "${SRCDIR}")"/ncdata_enc "${ENCDIR}"
+    mv "$(dirname "${SRCDIR}")"/ncdata_enc "${ENCDIR?}"
     mkdir "${DATADIR}"                        && mount --bind "${SRCDIR}" "${DATADIR}"
     mkdir "$(dirname "${SRCDIR}")"/ncdata_enc && mount --bind "${ENCDIR}" "$(dirname "${SRCDIR}")"/ncdata_enc
   else
@@ -93,7 +93,7 @@ configure()
   chown www-data: "${DATADIR}"
 
   # datadir
-  sed -i "s|'datadirectory' =>.*|'datadirectory' => '${DATADIR}',|" "$NCDIR"/config/config.php
+  sed -i "s|'datadirectory' =>.*|'datadirectory' => '${DATADIR}',|" "${NCDIR?}"/config/config.php
   ncc config:system:set logfile --value="${DATADIR}/nextcloud.log"
   set_ncpcfg datadir "${DATADIR}"
 
@@ -101,7 +101,7 @@ configure()
   mkdir -p "${DATADIR}/tmp"
   chown www-data:www-data "${DATADIR}/tmp"
   ncc config:system:set tempdirectory --value "$DATADIR/tmp"
-  sed -i "s|^;\?upload_tmp_dir =.*$|uploadtmp_dir = ${DATADIR}/tmp|"  /etc/php/"${PHPVER}"/cli/php.ini
+  sed -i "s|^;\?upload_tmp_dir =.*$|uploadtmp_dir = ${DATADIR}/tmp|"  /etc/php/"${PHPVER?}"/cli/php.ini
   sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = ${DATADIR}/tmp|" /etc/php/"${PHPVER}"/fpm/php.ini
   sed -i "s|^;\?sys_temp_dir =.*$|sys_temp_dir = ${DATADIR}/tmp|"     /etc/php/"${PHPVER}"/fpm/php.ini
 
@@ -115,7 +115,7 @@ configure()
   restore_maintenance_mode
 
   (
-    . "${BINDIR}/SYSTEM/metrics.sh"
+    . "${BINDIR?}/SYSTEM/metrics.sh"
     reload_metrics_config
   )
 }

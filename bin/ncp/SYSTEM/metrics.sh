@@ -6,7 +6,7 @@ apt_install_with_recommends() {
 }
 
 is_supported() {
-  [[ "$DOCKERBUILD" == 1 ]] && [[ "$(lsb_release -r)" =~ .*10 ]] && return 1
+  [[ "${DOCKERBUILD:-0}" == 1 ]] && [[ "$(lsb_release -r)" =~ .*10 ]] && return 1
   return 0
 }
 
@@ -87,6 +87,7 @@ install() {
   (
 
   set -e
+  set +u
 
   is_supported || {
     echo -e "Metrics app is not supported in debian 10 docker containers. Installation will be skipped."
@@ -213,6 +214,7 @@ EOF
 }
 
 configure() {
+  set +u
 
   if [[ "$ACTIVE" != yes ]]
   then

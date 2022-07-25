@@ -1,6 +1,7 @@
 #! /bin/bash
 
 set -e
+set +u
 source /usr/local/etc/library.sh
 
 [[ "$1" != "--defaults" ]] || echo "INFO: Restoring template to default settings" >&2
