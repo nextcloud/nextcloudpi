@@ -108,20 +108,22 @@ jobs:
           cd release
           checksums=()
           assets=()
+          echo "Checksums:"
           for asset in ../artifacts/*/*.tar.gz;
           do
             mv "$asset" ./
             asset_name="$(basename "$asset")"
+            checksum="$(md5sum "$asset_name")"
+            echo "  $checksum"
             checksums="$checksums
           \`\`\`
-          $(md5sum "$asset_name")
+          $checksum
           \`\`\`"
             assets+=(-a "$asset_name")
           done
 
-          echo "Assets: ${assets[*]}"
-          echo "Message: ${checksums[*]}"
           echo "::set-output name=assets::$(printf " %q" "${assets[@]}")"
+          echo "::set-output name=checksums::${checksums[*]}"
       - name: Publish
         if: ${{ github.event_name == 'push' && github.ref_type == 'tag' }}
         env:
@@ -144,5 +146,6 @@ jobs:
           [Changelog](https://github.com/nextcloud/nextcloudpi/blob/${{ env.VERSION }}/changelog.md)
 
           **Checksums:**
-          ${checksums[*]}
+          
+          ${checksums}
           EOF
