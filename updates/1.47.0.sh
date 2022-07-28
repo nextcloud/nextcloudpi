@@ -8,7 +8,7 @@ source /usr/local/etc/library.sh
 for svc in prometheus-node-exporter ncp-metrics-exporter
 do
   service "$svc" status || [[ $? -ne 4 ]] || continue
-  service "$svc" stop
+  service "$svc" stop || [[ $? -ne 4 ]]
 done
 
 # Reinstall metrics services

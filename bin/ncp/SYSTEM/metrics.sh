@@ -48,7 +48,7 @@ metrics_services() {
 
   if [[ "$cmd" =~ (start|stop|restart|reload|status) ]]
   then
-    if ! is_docker && ! [[ -d /run/systemd/system ]] 
+    if ! is_docker && ! [[ -d /run/systemd/system ]]
     then
       echo "Probably running in chroot. Ignoring 'metrics_services $cmd'..."
       return 0
@@ -186,7 +186,7 @@ service ncp-metrics-exporter start
 EOF
   chmod +x /etc/services-available.d/101ncp-metrics
 
-  else
+  else #=> if not is_docker
 
     cat <<EOF > /etc/systemd/system/ncp-metrics-exporter.service
 [Unit]
