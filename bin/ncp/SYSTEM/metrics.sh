@@ -27,6 +27,7 @@ tmpl_metrics_enabled() {
 }
 
 reload_metrics_config() {
+  set +u
   is_supported || return 0
 
   install_template ncp-metrics.cfg.sh "/usr/local/etc/ncp-metrics.cfg" || {
@@ -48,7 +49,7 @@ metrics_services() {
 
   if [[ "$cmd" =~ (start|stop|restart|reload|status) ]]
   then
-    if ! is_docker && ! [[ -d /run/systemd/system ]] 
+    if ! is_docker && ! [[ -d /run/systemd/system ]]
     then
       echo "Probably running in chroot. Ignoring 'metrics_services $cmd'..."
       return 0
