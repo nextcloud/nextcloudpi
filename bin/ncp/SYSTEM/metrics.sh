@@ -48,7 +48,7 @@ metrics_services() {
 
   if [[ "$cmd" =~ (start|stop|restart|reload|status) ]]
   then
-    if ! is_docker && ! [[ -d /run/systemd/system ]]
+    if ! is_docker && [[ "$INIT_SYSTEM" != "systemd" ]]
     then
       echo "Probably running in chroot. Ignoring 'metrics_services $cmd'..."
       return 0
