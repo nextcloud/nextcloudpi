@@ -51,7 +51,7 @@ NCLATESTVER=$(jq -r .nextcloud_version < "$NCPCFG")
 PHPVER=$(     jq -r .php_version       < "$NCPCFG")
 RELEASE=$(    jq -r .release           < "$NCPCFG")
 # the default repo in bullseye is bullseye-security
-RELEASE="${RELEASE}-security"
+grep -Eh '^deb ' /etc/apt/sources.list | grep "${RELEASE}-security" && RELEASE="${RELEASE}-security"
 command -v ncc &>/dev/null && NCVER="$(ncc status 2>/dev/null | grep "version:" | awk '{ print $3 }')"
 
 function configure_app()
