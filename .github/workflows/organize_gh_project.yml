@@ -1,0 +1,142 @@
+name: "Organize Issues and PRs on GH project"
+
+on:
+  issues:
+    types:
+      - opened
+      - reopened
+      - closed
+      - assigned
+      - labeled
+      - unlabeled
+      - milestoned
+  issue_comment:
+    types:
+      - created
+
+permissions:
+  repository-projects: write
+  contents: write
+  issues: write
+
+jobs:
+
+  add_issue_to_project:
+    if: ${{ github.event_name == 'issues' && (github.event.action == 'opened' || github.event.action == 'reopened') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get project data
+        env:
+          GITHUB_TOKEN: ${{ secrets.NCP_PROJECT_PAT }}
+          ORGANIZATION: nextcloud
+          PROJECT_NUMBER: 67
+        run: |
+          gh api graphql -f query='
+            query($org: String!, $number: Int!) {
+              organization(login: $org){
+                projectV2(number: $number) {
+                  id
+                  fields(first:20) {
+                    nodes {
+                      ... on ProjectV2Field {
+                        id
+                        name
+                      }
+                      ... on ProjectV2SingleSelectField {
+                        id
+                        name
+                        options {
+                          id
+                          name
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }' -f org=$ORGANIZATION -F number=$PROJECT_NUMBER > project_data.json
+          
+          echo 'PROJECT_ID='$(jq '.data.organization.projectV2.id' project_data.json) >> $GITHUB_ENV
+          echo "BUGS_STATUS_FIELD_ID=$(jq '.data.organization.projectV2.fields.nodes[] | select(.name== "Status") | .id' project_data.json)" >> $GITHUB_ENV
+          echo "BUGS_STATUS_OPTION_NEW_ID=$(jq '.data.organization.projectV2.fields.nodes[] | select(.name== "Status") | .options[] | select(.name=="New") |.id' project_data.json)" >> $GITHUB_ENV
+          echo "BUGS_STATUS_OPTION_BUG_ID=$(jq '.data.organization.projectV2.fields.nodes[] | select(.name== "Status") | .options[] | select(.name=="Bugs") |.id' project_data.json)" >> $GITHUB_ENV
+          echo "DEVEL_STATUS_FIELD_ID=$(jq '.data.organization.projectV2.fields.nodes[] | select(.name== "Development Status") | .id' project_data.json)" >> $GITHUB_ENV
+          echo "DEVEL_STATUS_OPTION_BACKLOG_ID=$(jq '.data.organization.projectV2.fields.nodes[] | select(.name== "Development Status") | .options[] | select(.name=="Backlog") |.id' project_data.json)" >> $GITHUB_ENV
+
+      - name: Add Issue to project
+        env:
+          GH_TOKEN: ${{ secrets.NCP_PROJECT_PAT }}
+          ISSUE_ID: ${{ github.event.issue.node_id }}
+        run: |
+          item_id="$( gh api graphql -f query='
+            mutation($project:ID!, $issue:ID!) {
+              addProjectV2ItemById(input: {projectId: $project, contentId: $issue}) {
+                item {
+                  id
+                }
+              }
+            }' -f project=$PROJECT_ID -f issue=$ISSUE_ID --jq '.data.addProjectV2ItemById.item.id')"
+
+          echo 'ITEM_ID='$item_id >> $GITHUB_ENV
+#      - name: Set fields
+#        env:
+#          GH_TOKEN: ${{ secrets.NCP_PROJECT_PAT }}
+#          IS_ENHANCMENET: ${{ contains( github.event.issue.labels.*.name, 'enhancement') || contains( github.event.issue.labels.*.name, 'feature-request') || contains( github.event.issue.labels.*.name, 'roadmap') }}
+#          IS_BUG: ${{ contains( github.event.issue.labels.*.name, 'bug') }}
+#        run: |
+#
+#          if [[ "$IS_ENHANCEMENT" == true ]]
+#          then
+#            STATUS_FIELD_ID="$DEVEL_STATUS_FIELD_ID"
+#            STATUS_OPTION_ID="$DEVEL_STATUS_OPTION_BACKLOG_ID"
+#          elif [[ "$IS_BUG" == true ]]
+#          then
+#            STATUS_FIELD_ID="$BUGS_STATUS_FIELD_ID"
+#            STATUS_OPTION_ID="$BUGS_STATUS_OPTION_BUG_ID"
+#          else
+#            STATUS_FIELD_ID="$BUGS_STATUS_FIELD_ID"
+#            STATUS_OPTION_ID="$BUGS_STATUS_OPTION_NEW_ID"
+#          fi
+#
+#          echo "project=$PROJECT_ID
+#          item=$ITEM_ID
+#          status_field=$STATUS_FIELD_ID
+#          status_value=$STATUS_OPTION_ID"
+#
+#          gh api graphql -f query='
+#            mutation(
+#              $project: ID!
+#              $item: ID!
+#              $status_field: ID!
+#              $status_value: String!
+#            ) {
+#              set_status: updateProjectV2ItemFieldValue(input: {
+#                projectId: $project
+#                itemId: $item
+#                fieldId: $status_field
+#                value: {
+#                  singleSelectOptionId: $status_value
+#                }
+#              }) {
+#                projectV2Item {
+#                  id
+#                }
+#              }
+#            }' \
+#          -f project=$PROJECT_ID \
+#          -f "item=$ITEM_ID" \
+#          -f "status_field=$STATUS_FIELD_ID" \
+#          -f "status_value=$STATUS_OPTION_ID" \
+#          --silent
+
+  set_update_label:
+    if: ${{ github.event_name == 'issue_comment' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add update label to issue
+        if: ${{ ! contains( github.event.issue.labels.*.name, 'update' ) }}
+        env:
+          ISSUE_ID: ${{ github.event.issue.number }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue edit --repo "${{ github.repository }}" --add-label has-updates "$ISSUE_ID" 

@@ -10,6 +10,9 @@ on:
     tags: ["v*"]
     branches: ["*/cicd/*"]
 
+permissions:
+  contents: write
+
 jobs:
   build-and-test-lxd:
     uses: ./.github/workflows/build-lxd.yml
@@ -115,15 +118,12 @@ jobs:
             asset_name="$(basename "$asset")"
             checksum="$(md5sum "$asset_name")"
             echo "  $checksum"
-            checksums="$checksums
-          \`\`\`
-          $checksum
-          \`\`\`"
+            checksums+=("$checksum")
             assets+=(-a "$asset_name")
           done
 
           echo "::set-output name=assets::$(printf " %q" "${assets[@]}")"
-          echo "::set-output name=checksums::${checksums[*]}"
+          echo "::set-output name=checksums::$(printf " %q" "${checksums[@]}")"
       - name: Publish
         if: ${{ github.event_name == 'push' && github.ref_type == 'tag' }}
         env:
@@ -137,6 +137,15 @@ jobs:
           ---
           
           "
+          
+          checksums_str=""
+          for checksum in checksums
+          do
+            checksums_str="$checksums_str
+          ```
+          $checksum
+          ```"
+          done
 
           hub release create ${{ steps.prepare-release.outputs.assets }} -F - "${{ env.VERSION }}" <<EOF
           ${subject:-No message found}
@@ -146,6 +155,5 @@ jobs:
           [Changelog](https://github.com/nextcloud/nextcloudpi/blob/${{ env.VERSION }}/changelog.md)
 
           **Checksums:**
-          
-          ${checksums}
+          ${checksums_str}
           EOF
