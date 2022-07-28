@@ -130,7 +130,7 @@ jobs:
 #          --silent
 
   set_update_label:
-    if: ${{ github.event_name == 'issue_comment' }}
+    if: ${{ github.event_name == 'issue_comment' && ! contains( github.event.issue.assignees.*.login, github.event.comment.user.login ) }}
     runs-on: ubuntu-latest
     steps:
       - name: Add update label to issue
