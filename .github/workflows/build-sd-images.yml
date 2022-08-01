@@ -230,6 +230,7 @@ jobs:
           sudo rm -rf raspbian_root
           sudo mkdir -p raspbian_root
           . ./build/buildlib.sh
+          [[ -d "raspbian_root" ]] && rm -r raspbian_root
           mount_raspbian "tmp/${{ steps.build-armbian.outputs.image }}"
           sudo cp qemu-aarch64-static raspbian_root/usr/bin/
           echo 'Mutex posixsem' | sudo tee -a raspbian_root/etc/apache2/mods-available/ssl.conf
