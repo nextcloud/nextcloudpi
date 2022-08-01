@@ -72,6 +72,7 @@ jobs:
         with:
           ref: "${{ env.VERSION }}"
       - uses: actions/download-artifact@v3
+        if: false
         with:
           name: ${{ github.run_id }}-rpi-image
           path: output/${{ needs.build-rpi.outputs.artifact_name }}
