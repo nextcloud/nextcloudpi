@@ -247,7 +247,7 @@ if __name__ == "__main__":
         pre_cmd = ['lxc', 'exec', 'ncp', '--']
 
     elif systemd_container_running:
-        pre_cmd = ['machinectl', 'shell', 'root@ncp', '/usr/bin/bash', '-c']
+        pre_cmd = ['systemd-run', '--wait', '--machine=ncp', '/bin/bash', '-c']
 
     # SSH method
     else:
