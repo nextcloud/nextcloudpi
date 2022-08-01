@@ -86,8 +86,8 @@ jobs:
         run: |
           mkdir -p output
           wget -O ncp.tar.gz https://github.com/nextcloud/nextcloudpi/releases/download/v1.48.3/NextCloudPi_RPi_07-25-22.tar.gz
-          tar xf "output/ncp.tar.gz"
-          mv output/ncp.img ncp.img
+          tar xf "ncp.tar.gz"
+          mv NextCloudPi_*.img ncp.img
       - name: Prepare test
         run: |
           set -ex
@@ -178,6 +178,7 @@ jobs:
           exit "$result"
 
   build-armbian:
+    needs: test-rpi
     runs-on: ubuntu-latest
     env:
       VERSION: "${{ inputs.git_ref }}"
