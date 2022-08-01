@@ -14,6 +14,7 @@ More at https://ownyourbits.com
 
 import sys
 import time
+import traceback
 import urllib
 import os
 import getopt
@@ -131,11 +132,13 @@ def test_activation(IP, nc_port, admin_port, options, wait_timeout=120):
     try:
         driver.close()
     except Exception as e:
+        traceback.print_exception(e)
         print(f"Could not close driver: {e}")
 
     # ncp-web
     test.new("ncp-web")
     driver = webdriver.Firefox(options=options)
+    driver.implicitly_wait(5)
     try:
         driver.get(f"https://ncp:{urllib.parse.quote_plus(ncp_pass)}@{IP}:{admin_port}")
     except UnexpectedAlertPresentException:

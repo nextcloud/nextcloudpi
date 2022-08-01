@@ -54,12 +54,12 @@ jobs:
       - name: Prepare test
         run: |
           set -e
-          sudo apt install systemd-container
+          sudo apt-get install -y systemd-container
           sudo pip install selenium
           sudo rm -rf raspbian_root
           sudo mkdir -p raspbian_root
           . ./build/buildlib.sh
-          mount_raspbian ncp.img
+          mount_raspbian "${{ steps.build-rpi.outputs.image }}"
           sudo cp qemu-aarch64-static raspbian_root/usr/bin/
           echo 'Mutex posixsem' | sudo tee -a raspbian_root/etc/apache2/mods-available/ssl.conf
       - name: Test image
