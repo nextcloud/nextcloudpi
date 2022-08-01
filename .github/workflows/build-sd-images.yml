@@ -112,7 +112,7 @@ jobs:
           for attempt in {1..30}
           do
             echo ":: Wait for container to startup (attempt $attempt/30) ::"
-            ip="$(cat container.log | grep 'My IP address is' | cut -d ' ' -f5)"
+            ip="$(cat container.log | grep 'My IP address is' | cut -d ' ' -f5 || true)"
             curl -k "https://$ip/activate" > /dev/null || { sleep 6; continue; }
             success=true
             break
@@ -249,7 +249,7 @@ jobs:
           for attempt in {1..30}
           do
             echo ":: Wait for container to startup (attempt $attempt/30) ::"
-            ip="$(cat container.log | grep 'My IP address is' | cut -d ' ' -f5)"
+            ip="$(cat container.log | grep 'My IP address is' | cut -d ' ' -f5 || true)"
             curl -k "https://$ip/activate" > /dev/null || { sleep 6; continue; }
             success=true
             break
