@@ -89,7 +89,7 @@ sudo ncp-config
 ![NCP-config](https://ownyourbits.com/wp-content/uploads/2017/03/ncp-conf-700x456.jpg)
 
 
-## Run in docker
+## Run in Docker
 
 ```
 docker run -d -p 4443:4443 -p 443:443 -p 80:80 -v ncdata:/data --name nextcloudpi ownyourbits/nextcloudpi $DOMAIN
@@ -100,6 +100,22 @@ docker run -d -p 4443:4443 -p 443:443 -p 80:80 -v ncdata:/data --name nextcloudp
 ```
 lxc import NextCloudPi_LXD_09-29-21.tar.bz
 lxc start ncp
+```
+
+## Run with Docker Compose
+
+```
+  version: '3'
+  nextcloudpi:
+    restart: always
+    container_name: nextcloudpi
+    image: ownyourbits/nextcloudpi
+    ports:
+      - "443:443"   # nextcloud https
+      - "80:80"     # nextcloud http, can be disabled for security reasons
+      - "4443:4443" # nextcloudpi web ui
+    volumes:
+    - ncdata:/data
 ```
 
 ## How to build
