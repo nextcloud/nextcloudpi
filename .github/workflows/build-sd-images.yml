@@ -58,7 +58,7 @@ jobs:
           if-no-files-found: error
 
   test-rpi:
-    needs: build-rpi
+    #needs: build-rpi
     runs-on: ubuntu-latest
     env:
       UID: "${{ github.run_id }}-rpi"
@@ -77,10 +77,16 @@ jobs:
           path: output/${{ needs.build-rpi.outputs.artifact_name }}
           if-no-files-found: error
       - name: Extract image
+        if: false
         run: |
           set -ex
           tar xf "output/${{ needs.build-rpi.outputs.artifact_name }}"
           mv "$( basename "${{ needs.build-rpi.outputs.artifact_name }}" .tar.gz ).img" ncp.img
+      - name: Download image
+          mkdir -p output
+          wget -O ncp.tar.gz https://github.com/nextcloud/nextcloudpi/releases/download/v1.48.3/NextCloudPi_RPi_07-25-22.tar.gz
+          tar xf "output/ncp.tar.gz"
+          mv output/ncp.img ncp.img
       - name: Prepare test
         run: |
           set -ex
