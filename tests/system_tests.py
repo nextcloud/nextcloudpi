@@ -247,7 +247,7 @@ if __name__ == "__main__":
         pre_cmd = ['lxc', 'exec', 'ncp', '--']
 
     elif systemd_container_running:
-        pre_cmd = ['systemd-run', '--wait', '--machine=ncp', '/bin/bash', '-c']
+        pre_cmd = ['systemd-run', '--wait', '--machine=ncp']
 
     # SSH method
     else:
@@ -273,6 +273,7 @@ if __name__ == "__main__":
                 print(tc.red + "SSH connection failed" + tc.normal)
                 sys.exit(1)
 
+    print(pre_cmd)
     # checks
     print("\nNextCloudPi system checks")
     print("-------------------------")
