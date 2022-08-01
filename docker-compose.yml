@@ -1,0 +1,10 @@
+  nextcloudpi:
+    restart: always
+    container_name: nextcloudpi
+    image: ownyourbits/nextcloudpi
+    ports:
+      - "443:443"   # nextcloud https
+      - "80:80"     # nextcloud http, can be disabled for security reasons
+      - "4443:4443" # nextcloudpi web ui
+    volumes:
+    - ncdata:/data
