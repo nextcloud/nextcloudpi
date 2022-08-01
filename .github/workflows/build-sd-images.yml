@@ -192,6 +192,94 @@ jobs:
           . ./build/buildlib.sh
           pack_image "tmp/$IMG" "output/$TAR"
           echo "::set-output name=artifact_name::${TAR}"
+      - name: Prepare test
+        run: |
+          set -e
+          sudo apt-get install -y systemd-container
+          sudo pip install selenium
+          sudo rm -rf raspbian_root
+          sudo mkdir -p raspbian_root
+          . ./build/buildlib.sh
+          mount_raspbian "${{ steps.build-armbian.outputs.image }}"
+          sudo cp qemu-aarch64-static raspbian_root/usr/bin/
+          echo 'Mutex posixsem' | sudo tee -a raspbian_root/etc/apache2/mods-available/ssl.conf
+      - name: Test image
+        run: |
+          set -e
+          
+          sudo systemd-nspawn --boot -D ./raspbian_root/ -M ncp --hostname=nextcloudpi &> container.log &
+          sleep 30
+          success=false
+          for attempt in {1..30}
+          do
+            echo ":: Wait for container to startup (attempt $attempt/30) ::"
+            ip="$(cat container.log | grep 'My IP address is' | cut -d ' ' -f5)"
+            curl -k "https://$ip/activate" > /dev/null || { sleep 6; continue; }
+            success=true
+            break
+          done
+          
+          [[ "$success" == "true" ]] || {
+            echo "Could not reach container. Aborting..."
+            echo "Container logs:"
+            cat container.log
+            exit 1
+          }
+          
+          success=false
+          for attempt in {1..3}
+          do
+            echo ":: Activation Tests (attempt $attempt/3) ::"
+            python tests/activation_tests.py --no-gui "$ip" 443 4443 || {
+              echo "Activation test failed!"
+              echo "Geckodriver logs:"
+              tail -n 20 geckodriver.log >&2 || true
+              echo "================"
+              echo "ncp.log: "
+              sudo systemd-run --wait --machine=ncp ncp /bin/bash -c "tail -n20 /var/log/ncp.log"
+              sleep 6
+              continue
+            }
+            success=true
+            break
+          done
+          [[ "$success" == "true" ]] || exit 1
+          
+          success=false
+          for attempt in {1..3}
+          do
+            echo ":: System Tests (attempt $attempt/3) ::"
+            sudo python tests/system_tests.py --non-interactive || {
+              echo "System test failed!"
+              sleep 6
+              continue
+            }
+            success=true
+            break
+          done
+          [[ "$success" == "true" ]] || exit 1
+          
+          success=false
+          for attempt in {1..3}
+          do
+            echo ":: Nextcloud Tests (attempt $attempt/3) ::"
+            python tests/nextcloud_tests.py --no-gui "$ip" 443 4443 || {
+              echo "Nextcloud test failed!"
+              echo "Geckodriver logs:"
+              tail -n 20 geckodriver.log >&2 || true
+              echo "================"
+              echo "ncp.log: "
+              sudo systemd-run --wait --machine=ncp ncp /bin/bash -c "tail -n20 /var/log/ncp.log"
+              sleep 6
+              continue
+            }
+            success=true
+            break
+          done
+          
+          result=$?
+          sudo machinectl terminate ncp || true
+          exit "$result"
       - name: upload Armbian image to artifact store
         uses: actions/upload-artifact@v3
         with:
