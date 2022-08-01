@@ -71,7 +71,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: "${{ env.VERSION }}"
-      - uses: actions/upload-artifact@v3
+      - uses: actions/download-artifact@v3
         with:
           name: ${{ github.run_id }}-rpi-image
           path: output/${{ needs.build-rpi.outputs.artifact_name }}
@@ -207,7 +207,7 @@ jobs:
       - name: "Pack image"
         id: pack-armbian
         run: |
-          IMG="tmp/${{ steps.build-armbian.outputs.image }}"
+          IMG="${{ steps.build-armbian.outputs.image }}"
           TAR="$( basename "$IMG" .img ).tar.gz"
           
           artifacts=("armbian/output/images/Armbian"*.img)
@@ -223,7 +223,7 @@ jobs:
           sudo rm -rf raspbian_root
           sudo mkdir -p raspbian_root
           . ./build/buildlib.sh
-          mount_raspbian "${{ steps.build-armbian.outputs.image }}"
+          mount_raspbian "tmp/${{ steps.build-armbian.outputs.image }}"
           sudo cp qemu-aarch64-static raspbian_root/usr/bin/
           echo 'Mutex posixsem' | sudo tee -a raspbian_root/etc/apache2/mods-available/ssl.conf
       - name: Test image
