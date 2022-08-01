@@ -65,7 +65,7 @@ jobs:
     needs:
       - build-and-test-docker
       - test-curl-installer
-    if: ${{ github.event_name == 'push' && github.ref_type == 'tag' }}
+    if: ${{ github.event_name == 'push' && github.ref_type == 'tag' && github.ref_protected }}
     runs-on: ubuntu-latest
     steps:
       - name: Login to DockerHub
@@ -148,7 +148,7 @@ jobs:
           echo "::set-output name=assets::$(printf " %q" "${assets[@]}")"
           echo "::set-output name=checksums::$(printf " %q" "${checksums[@]}")"
       - name: Publish
-        if: ${{ github.event_name == 'push' && github.ref_type == 'tag' }}
+        if: ${{ github.event_name == 'push' && github.ref_type == 'tag' && github.ref_protected }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         working-directory: ./release
