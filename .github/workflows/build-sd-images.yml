@@ -86,6 +86,7 @@ jobs:
           mv "$( basename "${{ needs.build-rpi.outputs.artifact_name }}" .tar.gz ).img" ncp.img
       - name: Download image
         run: |
+          set -ex
           mkdir -p output
           wget -O ncp.tar.gz ßnv https://github.com/nextcloud/nextcloudpi/releases/download/v1.48.3/NextCloudPi_RPi_07-25-22.tar.gz
           tar xf "ncp.tar.gz"
