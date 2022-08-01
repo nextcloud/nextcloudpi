@@ -78,12 +78,12 @@ jobs:
           if-no-files-found: error
       - name: Extract image
         run: |
-          set -e
+          set -ex
           tar xf "output/${{ needs.build-rpi.outputs.artifact_name }}"
           mv "$( basename "${{ needs.build-rpi.outputs.artifact_name }}" .tar.gz ).img" ncp.img
       - name: Prepare test
         run: |
-          set -e
+          set -ex
           sudo apt-get install -y systemd-container
           sudo pip install selenium
           sudo rm -rf raspbian_root
@@ -94,7 +94,7 @@ jobs:
           echo 'Mutex posixsem' | sudo tee -a raspbian_root/etc/apache2/mods-available/ssl.conf
       - name: Test image
         run: |
-          set -e
+          set -ex
           
           sudo systemd-nspawn --boot -D ./raspbian_root/ -M ncp --hostname=nextcloudpi &> container.log &
           sleep 30
@@ -217,7 +217,7 @@ jobs:
           echo "::set-output name=artifact_name::${TAR}"
       - name: Prepare test
         run: |
-          set -e
+          set -ex
           sudo apt-get install -y systemd-container
           sudo pip install selenium
           sudo rm -rf raspbian_root
@@ -228,7 +228,7 @@ jobs:
           echo 'Mutex posixsem' | sudo tee -a raspbian_root/etc/apache2/mods-available/ssl.conf
       - name: Test image
         run: |
-          set -e
+          set -ex
           
           sudo systemd-nspawn --boot -D ./raspbian_root/ -M ncp --hostname=nextcloudpi &> container.log &
           sleep 30
