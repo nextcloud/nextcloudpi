@@ -75,7 +75,6 @@ jobs:
         with:
           name: ${{ github.run_id }}-rpi-image
           path: output/${{ needs.build-rpi.outputs.artifact_name }}
-          if-no-files-found: error
       - name: Extract image
         if: false
         run: |
