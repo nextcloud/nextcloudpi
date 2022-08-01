@@ -207,7 +207,7 @@ jobs:
       - name: "Pack image"
         id: pack-armbian
         run: |
-          IMG="${{ steps.build-armbian.outputs.image }}"
+          IMG="tmp/${{ steps.build-armbian.outputs.image }}"
           TAR="$( basename "$IMG" .img ).tar.gz"
           
           artifacts=("armbian/output/images/Armbian"*.img)
