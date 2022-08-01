@@ -11,8 +11,8 @@ on:
         required: true
         type: string
   push:
-    branches:
-      - "**"
+    branches-ignore:
+      - '*/cicd/**'
   pull_request:
 
 jobs:
