@@ -6,33 +6,56 @@ on:
         description: git ref, branch or tag to test against
         required: false
         type: string
+      sd-images:
+        type: boolean
+        description: 'Build/test SD images?'
+        required: false
+        default: true
+      lxd:
+        type: boolean
+        description: 'Build/test LXD image?'
+        required: false
+        default: true
+      docker:
+        type: boolean
+        description: 'Build/test docker images?'
+        required: false
+        default: true
+      installer:
+        type: boolean
+        description: 'Run curl-installer/upgrade tests?'
+        required: false
+        default: true
   push:
     tags: ["v*"]
-    branches: ["*/cicd/*"]
 
 permissions:
   contents: write
 
 jobs:
   build-and-test-lxd:
+    if: "${{ github.event_name != 'workflow_dispatch' || inputs.lxd }}"
     uses: ./.github/workflows/build-lxd.yml
     with:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
     secrets: inherit
 
   build-sd-images:
+    if: "${{ github.event_name != 'workflow_dispatch' || inputs.sd-images }}"
     uses: ./.github/workflows/build-sd-images.yml
     with:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
     secrets: inherit
 
   build-and-test-docker:
+    if: "${{ github.event_name != 'workflow_dispatch' || inputs.docker }}"
     uses: ./.github/workflows/build-docker.yml
     with:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
     secrets: inherit
 
   test-curl-installer:
+    if: "${{ github.event_name != 'workflow_dispatch' || inputs.installer }}"
     uses: ./.github/workflows/vm-tests.yml
     with:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
