@@ -258,8 +258,8 @@ jobs:
       - name: Extract image
         run: |
           set -ex
-          tar xf "output/*.tar.gz"
-          mv "*.img" ncp.img
+          tar xf output/*.tar.gz
+          mv *.img ncp.img
       - name: Prepare test
         run: |
           set -ex
