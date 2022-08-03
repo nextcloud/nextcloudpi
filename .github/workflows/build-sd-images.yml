@@ -76,7 +76,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: ${{ github.run_id }}-rpi-image
-          path: output/${{ needs.build-rpi.outputs.artifact_name }}
+          path: output
       - name: Extract image
         run: |
           set -ex
@@ -247,11 +247,11 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: ${{ github.run_id }}-${{ matrix.board_id }}-image
-          path: output/armbian.tar.gz
+          path: output
       - name: Extract image
         run: |
           set -ex
-          tar xf "output/armbian.tar.gz"
+          tar xf "output/*.tar.gz"
           mv "*.img" ncp.img
       - name: Prepare test
         run: |
