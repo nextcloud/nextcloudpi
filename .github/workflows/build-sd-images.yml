@@ -103,7 +103,7 @@ jobs:
           for attempt in {1..30}
           do
             echo ":: Wait for container to startup (attempt $attempt/30) ::"
-            ip="$(sudo systemd-run --machine=ncp -P --wait bash -c '. /usr/local/etc/library.sh; get_ip')"
+            ip="$(sudo systemd-run --machine=ncp -P --wait bash -c '. /usr/local/etc/library.sh > /dev/null; get_ip')"
             [[ -n "$ip" ]] && curl -k "https://$ip/activate" > /dev/null || { sleep 6; continue; }
             success=true
             break
@@ -240,7 +240,14 @@ jobs:
         shell: bash
     strategy:
       matrix:
-        board_id: ${{ needs.build-armbian.matrix.board.*.id }}
+        board_id:
+          - odroidxu4
+          - rockpro64
+          - rock64
+          - bananapi
+          - odroidhc4
+          - odroidc4
+          - odroidc2
     steps:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -274,7 +281,7 @@ jobs:
           for attempt in {1..30}
           do
             echo ":: Wait for container to startup (attempt $attempt/30) ::"
-            ip="$(sudo systemd-run --machine=ncp -P --wait bash -c '. /usr/local/etc/library.sh; get_ip')"
+            ip="$(sudo systemd-run --machine=ncp -P --wait bash -c '. /usr/local/etc/library.sh > /dev/null; get_ip')"
             [[ -n "$ip" ]] && curl -k "https://$ip/activate" > /dev/null || { sleep 6; continue; }
             success=true
             break
