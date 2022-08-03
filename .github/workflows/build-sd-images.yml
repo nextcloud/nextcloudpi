@@ -172,7 +172,6 @@ jobs:
           exit "$result"
 
   build-armbian:
-    needs: test-rpi
     runs-on: ubuntu-latest
     env:
       VERSION: "${{ inputs.git_ref }}"
