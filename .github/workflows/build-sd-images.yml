@@ -272,7 +272,7 @@ jobs:
           sudo pip install selenium
           sudo rm -rf raspbian_root
           . ./build/buildlib.sh
-          mount_raspbian "tmp/${{ steps.build-armbian.outputs.image }}"
+          mount_raspbian "tmp/ncp.img"
           sudo cp qemu-aarch64-static raspbian_root/usr/bin/
           echo 'Mutex posixsem' | sudo tee -a raspbian_root/etc/apache2/mods-available/ssl.conf
       - name: Test image
