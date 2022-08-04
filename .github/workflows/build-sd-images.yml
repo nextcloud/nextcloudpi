@@ -248,6 +248,7 @@ jobs:
           - odroidhc4
           - odroidc4
           - odroidc2
+      fail-fast: false 
     steps:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -272,7 +273,7 @@ jobs:
           sudo pip install selenium
           sudo rm -rf raspbian_root
           . ./build/buildlib.sh
-          mount_raspbian "tmp/ncp.img"
+          mount_raspbian "ncp.img"
           sudo cp qemu-aarch64-static raspbian_root/usr/bin/
           echo 'Mutex posixsem' | sudo tee -a raspbian_root/etc/apache2/mods-available/ssl.conf
       - name: Test image
