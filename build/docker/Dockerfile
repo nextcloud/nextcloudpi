@@ -3,7 +3,9 @@ ARG arch_qemu=arm
 ARG release=bullseye
 FROM debian:${release}-slim AS qemu
 
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends qemu-user-static
+RUN apt-get update && \
+	DEBIAN_FRONTEND=noninteractive \
+	apt-get install -y --no-install-recommends qemu-user-static
 
 FROM ${arch}/debian:${release}-slim as debian-ncp
 

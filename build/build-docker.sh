@@ -56,7 +56,13 @@ clean_workspace() {
     build_arch "$target" "${release}" "${arch_args[@]}"
   done
 
+  set +e
   exit 0
+}
+[[ "${BASH_SOURCE[0]}" != "$0" ]] && {
+	echo "Script has been sourced, aborting."
+	set +e
+	exit 1
 }
 
 # License

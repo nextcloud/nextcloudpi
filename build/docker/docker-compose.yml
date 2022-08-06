@@ -1,8 +1,14 @@
-version: '3'
+version: "3.3"
+
+volumes:
+  ncdata:
+    external: false
+
 services:
   nextcloudpi:
-    image: ownyourbits/nextcloudpi-x86
-    command: "${IP}"
+    image: 'ownyourbits/nextcloudpi:latest'
+    restart: unless-stopped
+    container_name: nextcloudpi
     ports:
      - "80:80"
      - "443:443"
@@ -10,13 +16,11 @@ services:
     volumes:
      - ncdata:/data
      - /etc/localtime:/etc/localtime:ro
+     - /var/run/docker.sock:/var/run/docker.sock:ro
     # for nc-encrypt
     devices:
       - /dev/fuse:/dev/fuse
     # for nc-encrypt # NOTE: take a look at this https://github.com/docker/for-linux/issues/321#issuecomment-677744121
     cap_add:
       - SYS_ADMIN
-    container_name: nextcloudpi
-
-volumes:
-  ncdata:
+    # command: "${IP}"
