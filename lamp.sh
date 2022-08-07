@@ -24,8 +24,10 @@ export DEBIAN_FRONTEND=noninteractive
 
 install()
 {
+    set -x
     apt-get update
     $APTINSTALL apt-utils cron curl
+    ls -l /var/lock || true
     $APTINSTALL apache2
     apache2ctl -V
 
