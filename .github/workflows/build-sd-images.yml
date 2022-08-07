@@ -305,7 +305,7 @@ jobs:
           for attempt in {1..3}
           do
             echo ":: Activation Tests (attempt $attempt/3) ::"
-            python tests/activation_tests.py --no-gui "$ip" 443 4443 || {
+            python tests/activation_tests.py -t 300 --no-gui "$ip" 443 4443 || {
               echo "Activation test failed!"
               echo "Geckodriver logs:"
               tail -n 20 geckodriver.log >&2 || true
