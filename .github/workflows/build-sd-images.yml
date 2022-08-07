@@ -222,8 +222,9 @@ jobs:
           artifacts=("armbian/output/images/Armbian"*.img)
           mv "${artifacts[0]}" "tmp/$IMG"
           . ./build/buildlib.sh
-          pack_image "tmp/$IMG" "output/$TAR"
-          echo "::set-output name=${{ matrix.board.id }}_artifact_name::${TAR}"
+          #pack_image "tmp/$IMG" "output/$TAR"
+          mv "tmp/$IMG" "output/$IMG"
+          echo "::set-output name=${{ matrix.board.id }}_artifact_name::${IMG}"
       - name: upload Armbian image to artifact store
         uses: actions/upload-artifact@v3
         with:
@@ -264,7 +265,7 @@ jobs:
       - name: Extract image
         run: |
           set -ex
-          tar xf output/*.tar.gz
+          #tar xf output/*.tar.gz
           mv *.img ncp.img
       - name: Prepare test
         run: |
