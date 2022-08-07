@@ -138,17 +138,14 @@ def test_activation(IP, nc_port, admin_port, options, wait_timeout=120):
     # ncp-web
     test.new("ncp-web")
     driver = webdriver.Firefox(options=options)
-    driver.implicitly_wait(5)
+    driver.implicitly_wait(30)
     try:
-        for i in range(3):
-            try:
-                driver.get(f"https://ncp:{urllib.parse.quote_plus(ncp_pass)}@{IP}:{admin_port}")
-            except Exception as e:
-                if i == 3:
-                    raise e
-                print(f"WARN: Exception while attempting to get ncp-web: '{e}'")
+        driver.get(f"https://ncp:{urllib.parse.quote_plus(ncp_pass)}@{IP}:{admin_port}")
     except UnexpectedAlertPresentException:
         pass
+    except Exception as e:
+        print(f"WARN: Exception while attempting to get ncp-web: '{e}'")
+        raise e
     test.check("NextCloudPi Panel" in driver.title)
     test.report("first run wizard", is_element_present(driver, By.ID, "first-run-wizard"))
 
