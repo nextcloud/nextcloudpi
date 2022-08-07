@@ -29,6 +29,8 @@ install()
     $APTINSTALL apt-utils cron curl
     ls -l /var/lock || true
     $APTINSTALL apache2
+    # Fix missing lock directory
+    mkdir -p /run/lock
     apache2ctl -V
 
     $APTINSTALL -t $RELEASE php${PHPVER} php${PHPVER}-curl php${PHPVER}-gd php${PHPVER}-fpm php${PHPVER}-cli php${PHPVER}-opcache \
