@@ -135,10 +135,16 @@ jobs:
           checksums=()
           assets=()
           echo "Checksums:"
-          for asset in ../artifacts/*/*.tar.gz;
+          for asset in ../artifacts/*/*{.tar.gz,.img};
           do
             mv "$asset" ./
-            asset_name="$(basename "$asset")"
+            if [[ "$asset" =~ .*.img$ ]]
+            then
+              zip "$( basename "$asset" .img ).zip" "$asset"
+              asset_name="$( basename "$asset" .img ).zip"
+            else
+              asset_name="$(basename "$asset")"
+            fi
             checksum="$(md5sum "$asset_name")"
             echo "  $checksum"
             checksums+=("$checksum")
