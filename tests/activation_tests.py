@@ -171,7 +171,6 @@ if __name__ == "__main__":
         elif opt == '--no-gui':
             options.headless = True
         elif opt in ('-t', '--timeout'):
-            print(f">{arg}")
             arg_timeout = int(arg)
         else:
             usage()
