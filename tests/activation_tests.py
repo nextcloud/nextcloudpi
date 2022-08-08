@@ -46,7 +46,7 @@ class tc:
 
 def usage():
     "Print usage"
-    print("usage: activation_tests.py [ip [nc-port [admin-port]]]")
+    print("usage: activation_tests.py [-t|--timeout <timeout>] [-h|--no-gui] [ip [nc-port [admin-port]]]")
 
 
 class Test:
@@ -157,7 +157,7 @@ if __name__ == "__main__":
 
     # parse options
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'ht', ['help', 'tmeout', 'no-gui'])
+        opts, args = getopt.getopt(sys.argv[1:], 'ht:', ['help', 'timeout=', 'no-gui'])
     except getopt.GetoptError:
         usage()
         sys.exit(2)
@@ -171,11 +171,14 @@ if __name__ == "__main__":
         elif opt == '--no-gui':
             options.headless = True
         elif opt in ('-t', '--timeout'):
+            print(f">{arg}")
             arg_timeout = int(arg)
         else:
             usage()
             sys.exit(2)
 
+    print(f"timeout is {arg_timeout}")
+    sys.exit(0)
     # test
 
     IP = args[0] if len(args) > 0 else 'localhost'
