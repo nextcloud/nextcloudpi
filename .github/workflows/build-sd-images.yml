@@ -79,14 +79,10 @@ jobs:
         with:
           name: ${{ github.run_id }}-rpi-image
           path: output
-      - name: Extract image
-        run: |
-          set -ex
-          #tar xf "output/${{ needs.build-rpi.outputs.artifact_name }}"
-          mv "${{ needs.build-rpi.outputs.artifact_name }}" ncp.img
       - name: Prepare test
         run: |
           set -ex
+          mv "output/${{ needs.build-rpi.outputs.artifact_name }}" ncp.img
           sudo apt-get install -y systemd-container
           sudo pip install selenium
           sudo rm -rf raspbian_root
@@ -264,14 +260,10 @@ jobs:
         with:
           name: ${{ github.run_id }}-${{ matrix.board_id }}-image
           path: output
-      - name: Extract image
-        run: |
-          set -ex
-          #tar xf output/*.tar.gz
-          mv *.img ncp.img
       - name: Prepare test
         run: |
           set -ex
+          mv output/*.img ncp.img
           sudo apt-get install -y systemd-container
           sudo pip install selenium
           sudo rm -rf raspbian_root
