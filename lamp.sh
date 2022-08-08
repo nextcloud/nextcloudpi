@@ -31,7 +31,7 @@ install()
     $APTINSTALL apache2
     # Fix missing lock directory
     mkdir -p /run/lock
-    apache2ctl -V
+    apache2ctl -V || true
 
     $APTINSTALL -t $RELEASE php${PHPVER} php${PHPVER}-curl php${PHPVER}-gd php${PHPVER}-fpm php${PHPVER}-cli php${PHPVER}-opcache \
                             php${PHPVER}-mbstring php${PHPVER}-xml php${PHPVER}-zip php${PHPVER}-fileinfo php${PHPVER}-ldap \
