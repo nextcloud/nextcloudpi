@@ -177,8 +177,6 @@ if __name__ == "__main__":
             usage()
             sys.exit(2)
 
-    print(f"timeout is {arg_timeout}")
-    sys.exit(0)
     # test
 
     IP = args[0] if len(args) > 0 else 'localhost'
