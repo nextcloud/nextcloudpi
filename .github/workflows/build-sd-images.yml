@@ -31,11 +31,12 @@ jobs:
           IMG="NextCloudPi_RPi_$( date  "+%m-%d-%y" ).img"
           wget -q https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-aarch64-static -O ./qemu-aarch64-static
           ./build/build-SD-rpi.sh
+          [[ "${{ github.ref_protected }}" == true ]] || export DBG=x
 
           for i in {1..10}
           do
             sudo losetup | grep "${IMG}" || break;
-            [[ "$i" -lt 10 ]] || { echo "Timeout while waiting for image to unount"; exit 1; }
+            [[ "$i" -lt 10 ]] || { echo "Timeout while waiting for image to unmount"; exit 1; }
             sleep 6
             echo "Retrying ($i out of 10)"
           done
@@ -82,7 +83,7 @@ jobs:
         run: |
           set -ex
           #tar xf "output/${{ needs.build-rpi.outputs.artifact_name }}"
-          mv "$( basename "${{ needs.build-rpi.outputs.artifact_name }}" .tar.gz ).img" ncp.img
+          mv "${{ needs.build-rpi.outputs.artifact_name }}" ncp.img
       - name: Prepare test
         run: |
           set -ex
@@ -211,6 +212,7 @@ jobs:
           export LIB_TAG=master
           board_params=(${{ matrix.board}})
           IMG="NextCloudPi_${{ matrix.board.name }}_$( date  "+%m-%d-%y" ).img"
+          [[ "${{ github.ref_protected }}" == true ]] || export DBG=x
           ./build/build-SD-armbian.sh "${{ matrix.board.id }}" "${{ matrix.board.name }}"
           echo "::set-output name=image::${IMG}"
       - name: "Pack image"
