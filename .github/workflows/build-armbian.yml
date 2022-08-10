@@ -1,4 +1,4 @@
-name: "Build SD images"
+name: "Build Armbian Images"
 on:
   workflow_call:
     inputs:

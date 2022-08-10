@@ -40,13 +40,6 @@ jobs:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
     secrets: inherit
 
-  build-rpi:
-    if: "${{ github.event_name != 'workflow_dispatch' || inputs.sd-images }}"
-    uses: ./.github/workflows/build-sd-images.yml
-    with:
-      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
-    secrets: inherit
-
   build-and-test-docker:
     if: "${{ github.event_name != 'workflow_dispatch' || inputs.docker }}"
     uses: ./.github/workflows/build-docker.yml
@@ -57,6 +50,13 @@ jobs:
   test-curl-installer:
     if: "${{ github.event_name != 'workflow_dispatch' || inputs.installer }}"
     uses: ./.github/workflows/vm-tests.yml
+    with:
+      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+    secrets: inherit
+
+  rpi:
+    if: "${{ github.event_name != 'workflow_dispatch' || inputs.sd-images }}"
+    uses: ./.github/workflows/build-sd-images.yml
     with:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
     secrets: inherit

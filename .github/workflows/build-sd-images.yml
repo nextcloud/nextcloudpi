@@ -1,4 +1,4 @@
-name: "Build SD images"
+name: "Build and Test Raspberry Pi Image"
 on:
   workflow_call:
     inputs:
@@ -7,7 +7,7 @@ on:
         type: string
 
 jobs:
-  build-rpi:
+  build:
     runs-on: ubuntu-latest
     env:
       UID: "${{ github.run_id }}-rpi"
@@ -59,7 +59,7 @@ jobs:
           path: output/${{ steps.pack-rpi.outputs.artifact_name }}
           if-no-files-found: error
 
-  test-rpi:
+  test:
     needs: build-rpi
     runs-on: ubuntu-latest
     env:
