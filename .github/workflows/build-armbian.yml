@@ -17,7 +17,7 @@ on:
         type: boolean
 
 jobs:
-  build-armbian:
+  build:
     runs-on: ubuntu-latest
     env:
       VERSION: "${{ inputs.git_ref }}"
@@ -55,8 +55,8 @@ jobs:
           path: output/${{ steps.build-armbian.outputs.artifact_file }}
           if-no-files-found: error
 
-  test-armbian:
-    needs: build-armbian
+  test:
+    needs: build
     runs-on: ubuntu-latest
     env:
       VERSION: "${{ inputs.git_ref }}"
@@ -72,16 +72,16 @@ jobs:
           ref: "${{ env.VERSION }}"
       - uses: actions/download-artifact@v3
         with:
-          name: ${{ github.run_id }}-${{ inputs.board_id }}-image
+          name: ${{ needs.build.outputs.artifact_name }}
           path: output
       - name: Prepare test
         run: |
           set -ex
           ls -l output
-          [[ -f "output/${{ needs.build-armbian.artifact_file }}.broken" ]] && {
-            mv "output/${{ needs.build-armbian.artifact_file }}.broken" "output/${{ needs.build-armbian.artifact_file }}"
+          [[ -f "output/${{ needs.build.outputs.artifact_file }}.broken" ]] && {
+            mv "output/${{ needs.build.outputs.artifact_file }}.broken" "output/${{ needs.build.outputs.artifact_file }}"
           }
-          cp output/${{ needs.build-armbian.outputs.artifact_file }} ncp.img
+          cp output/${{ needs.build.outputs.artifact_file }} ncp.img
           sudo apt-get install -y systemd-container
           sudo pip install selenium
           sudo rm -rf raspbian_root
@@ -171,12 +171,12 @@ jobs:
           exit "$result"
       - name: Rename artifact
         if: ${{ steps.test.conclusion == 'failure' }}
-        run: mv output/${{ needs.build-armbian.outputs.artifact_file }} "output/${{ needs.build-armbian.outputs.artifact_file }}.broken"
+        run: mv output/${{ needs.build.outputs.artifact_file }} "output/${{ needs.build.outputs.artifact_file }}.broken"
       - name: Replace artifact
         if: ${{ steps.test.conclusion == 'failure' }}
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ needs.build-armbian.outputs.artifact_name }}
-          path: output/${{ needs.build-armbian.outputs.artifact_file }}.broken
+          name: ${{ needs.build.outputs.artifact_name }}
+          path: output/${{ needs.build.outputs.artifact_file }}.broken
           if-no-files-found: error
 
