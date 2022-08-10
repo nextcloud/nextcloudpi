@@ -72,15 +72,16 @@ jobs:
           ref: "${{ env.VERSION }}"
       - uses: actions/download-artifact@v3
         with:
-          name: ${{ needs.build-armbian.outputs.artifact_name }}
+          name: ${{ github.run_id }}-${{ inputs.board_id }}-image
           path: output
       - name: Prepare test
         run: |
           set -ex
+          ls -l output
           [[ -f "output/${{ needs.build-armbian.artifact_file }}.broken" ]] && {
             mv "output/${{ needs.build-armbian.artifact_file }}.broken" "output/${{ needs.build-armbian.artifact_file }}"
           }
-          cp output/${{ needs.build-armbian.artifact_file }} ncp.img
+          cp output/${{ needs.build-armbian.outputs.artifact_file }} ncp.img
           sudo apt-get install -y systemd-container
           sudo pip install selenium
           sudo rm -rf raspbian_root
