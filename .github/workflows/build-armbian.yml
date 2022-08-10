@@ -169,10 +169,10 @@ jobs:
           sudo machinectl terminate ncp || true
           exit "$result"
       - name: Rename artifact
-        if: ${{ steps.test.conclusion == "failure" }}
+        if: ${{ steps.test.conclusion == 'failure' }}
         run: mv output/${{ needs.build-armbian.outputs.artifact_file }} "output/${{ needs.build-armbian.outputs.artifact_file }}.broken"
       - name: Replace artifact
-        if: ${{ steps.test.conclusion == "failure" }}
+        if: ${{ steps.test.conclusion == 'failure' }}
         uses: actions/upload-artifact@v3
         with:
           name: ${{ needs.build-armbian.outputs.artifact_name }}
