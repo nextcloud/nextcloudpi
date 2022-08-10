@@ -55,7 +55,7 @@ jobs:
           if-no-files-found: error
 
   test-armbian:
-    continue-on-error: ${{ !require_test }}
+    continue-on-error: ${{ !inputs.require_test }}
     needs: build-armbian
     runs-on: ubuntu-latest
     env:
