@@ -40,7 +40,7 @@ jobs:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
     secrets: inherit
 
-  build-sd-images:
+  build-rpi:
     if: "${{ github.event_name != 'workflow_dispatch' || inputs.sd-images }}"
     uses: ./.github/workflows/build-sd-images.yml
     with:
@@ -59,6 +59,63 @@ jobs:
     uses: ./.github/workflows/vm-tests.yml
     with:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+    secrets: inherit
+
+  odroidxu4:
+    uses: ./.github/workflows/build-armbian.yml
+    with:
+      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+      board_id: odroidxu4
+      board_name: OdroidHC2
+      require_test: false
+    secrets: inherit
+  rockpro64:
+    uses: ./.github/workflows/build-armbian.yml
+    with:
+      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+      board_id: rockpro64
+      board_name: RockPro64
+      require_test: false
+    secrets: inherit
+  rock64:
+    uses: ./.github/workflows/build-armbian.yml
+    with:
+      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+      board_id: rock64
+      board_name: Rock64
+      require_test: false
+    secrets: inherit
+  bananapi:
+    uses: ./.github/workflows/build-armbian.yml
+    with:
+      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+      board_id: bananapi
+      board_name: Bananapi
+      require_test: false
+    secrets: inherit
+  odroidhc4:
+    uses: ./.github/workflows/build-armbian.yml
+    with:
+      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+      board_id: odroidhc4
+      board_name: OdroidHC4
+      require_test: false
+    secrets: inherit
+  odroidc4:
+    uses: ./.github/workflows/build-armbian.yml
+    with:
+      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+      board_id: odroidc4
+      board_name: OdroidC4
+      require_test: false
+    secrets: inherit
+  odroidc2:
+    uses: ./.github/workflows/build-armbian.yml
+    with:
+      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+      board_id: odroidc2
+      board_name: OdroidC2
+      require_test: false
     secrets: inherit
 
   docker-release:
@@ -109,6 +166,13 @@ jobs:
       - build-and-test-lxd
       - build-sd-images
       - test-curl-installer
+      - odroidxu4
+      - rockpro64
+      - rock64
+      - bananapi
+      - odroidhc4
+      - odroidc4
+      - odroidc2
     runs-on: ubuntu-latest
     env:
       UID: "${{ github.run_id }}-rpi"
