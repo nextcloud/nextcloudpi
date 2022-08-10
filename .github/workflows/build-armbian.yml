@@ -25,7 +25,7 @@ jobs:
       run:
         shell: bash
     outputs:
-      artifact_file: ${{ steps.build-armbian.outputs.artifact_name }}
+      artifact_file: ${{ steps.build-armbian.outputs.artifact_file }}
       artifact_name: ${{ github.run_id }}-${{ inputs.board_id }}-image
     steps:
       - name: Checkout code
