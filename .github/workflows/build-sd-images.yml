@@ -60,7 +60,7 @@ jobs:
           if-no-files-found: error
 
   test:
-    needs: build-rpi
+    needs: build
     runs-on: ubuntu-latest
     env:
       UID: "${{ github.run_id }}-rpi"
