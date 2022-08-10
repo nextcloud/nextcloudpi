@@ -25,7 +25,8 @@ jobs:
       run:
         shell: bash
     outputs:
-      artifact_name: ${{ steps.pack-armbian.outputs.artifact_name }}
+      artifact_file: ${{ steps.build-armbian.outputs.artifact_name }}
+      artifact_name: ${{ github.run_id }}-${{ inputs.board_id }}-image
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -46,16 +47,15 @@ jobs:
           
           artifacts=("armbian/output/images/Armbian"*.img)
           mv "${artifacts[0]}" "output/$IMG"
-          echo "::set-output name=artifact_name::${IMG}"
+          echo "::set-output name=artifact_file::${IMG}"
       - name: upload Armbian image to artifact store
         uses: actions/upload-artifact@v3
         with:
           name: ${{ github.run_id }}-${{ inputs.board_id }}-image
-          path: output/${{ steps.build-armbian.outputs.artifact_name }}
+          path: output/${{ steps.build-armbian.outputs.artifact_file }}
           if-no-files-found: error
 
   test-armbian:
-    continue-on-error: ${{ !inputs.require_test }}
     needs: build-armbian
     runs-on: ubuntu-latest
     env:
@@ -77,7 +77,10 @@ jobs:
       - name: Prepare test
         run: |
           set -ex
-          mv output/*.img ncp.img
+          [[ -f "output/${{ needs.build-armbian.artifact_file }}.broken" ]] && {
+            mv "output/${{ needs.build-armbian.artifact_file }}.broken" "output/${{ needs.build-armbian.artifact_file }}"
+          }
+          cp output/${{ needs.build-armbian.artifact_file }} ncp.img
           sudo apt-get install -y systemd-container
           sudo pip install selenium
           sudo rm -rf raspbian_root
@@ -87,6 +90,8 @@ jobs:
           sudo wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-arm-static -O raspbian_root/usr/bin/qemu-arm-static
           echo 'Mutex posixsem' | sudo tee -a raspbian_root/etc/apache2/mods-available/ssl.conf
       - name: Test image
+        continue-on-error: ${{ !inputs.require_test }}
+        id: test
         run: |
           set -ex
           
@@ -163,3 +168,14 @@ jobs:
           result=$?
           sudo machinectl terminate ncp || true
           exit "$result"
+      - name: Rename artifact
+        if: ${{ steps.test.conclusion == "failure" }}
+        run: mv output/${{ needs.build-armbian.outputs.artifact_file }} "output/${{ needs.build-armbian.outputs.artifact_file }}.broken"
+      - name: Replace artifact
+        if: ${{ steps.test.conclusion == "failure" }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ needs.build-armbian.outputs.artifact_name }}
+          path: output/${{ needs.build-armbian.outputs.artifact_file }}.broken
+          if-no-files-found: error
+
