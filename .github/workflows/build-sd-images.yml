@@ -82,7 +82,7 @@ jobs:
       - name: Prepare test
         run: |
           set -ex
-          mv "output/${{ needs.build-rpi.outputs.artifact_name }}" ncp.img
+          mv "output/${{ needs.build.outputs.artifact_name }}" ncp.img
           sudo apt-get install -y systemd-container
           sudo pip install selenium
           sudo rm -rf raspbian_root
@@ -167,7 +167,7 @@ jobs:
           done
           
           result=$?
-          echo "::set-output name=${{ needs.build-rpi.outputs.artifact_name }}::${result}"
+          echo "::set-output name=${{ needs.build.outputs.artifact_name }}::${result}"
           sudo machinectl terminate ncp || true
           exit "$result"
 
