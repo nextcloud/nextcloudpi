@@ -39,12 +39,9 @@ jobs:
           export LIB_TAG=master
           IMG="NextCloudPi_${{ inputs.board_name }}_$( date  "+%m-%d-%y" ).img"
           [[ "${{ github.ref_protected }}" == true ]] || export DBG=x
-          ./build/build-SD-armbian.sh "${{ inputs.board_id }}" "${{ inputs.board_name }}"
-          echo "::set-output name=image::${IMG}"
-          
-          IMG="${{ steps.build-armbian.outputs.image }}"
-          TAR="$( basename "$IMG" .img ).tar.gz"
-          
+ 
+         ./build/build-SD-armbian.sh "${{ inputs.board_id }}" "${{ inputs.board_name }}"
+              
           artifacts=("armbian/output/images/Armbian"*.img)
           mv "${artifacts[0]}" "output/$IMG"
           echo "::set-output name=artifact_file::${IMG}"
