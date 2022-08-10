@@ -60,6 +60,7 @@ jobs:
     defaults:
       run:
         shell: bash
+    continue-on-error: ${{ !inputs.require_test }}
     steps:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -176,4 +177,7 @@ jobs:
           name: ${{ needs.build.outputs.artifact_name }}
           path: output/${{ needs.build.outputs.artifact_file }}.broken
           if-no-files-found: error
+      - name: Fail
+        if: ${{ steps.test.conclusion == 'failure' }}
+        run: exit 1
 
