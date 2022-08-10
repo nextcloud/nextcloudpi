@@ -5,65 +5,60 @@ on:
       git_ref:
         required: true
         type: string
+      board_id:
+        required: true
+        type: string
+      board_name:
+        required: true
+        type: string
+      require_test:
+        required: false
+        default: true
+        type: boolean
 
 jobs:
-  build-rpi:
+  build-armbian:
     runs-on: ubuntu-latest
     env:
-      UID: "${{ github.run_id }}-rpi"
       VERSION: "${{ inputs.git_ref }}"
     defaults:
       run:
         shell: bash
     outputs:
-      artifact_name: ${{ steps.pack-rpi.outputs.artifact_name }}
+      artifact_name: ${{ steps.pack-armbian.outputs.artifact_name }}
     steps:
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
       - name: Checkout code
         uses: actions/checkout@v3
         with:
           ref: "${{ env.VERSION }}"
-      - name: Build RPI SD Image
-        id: build-rpi
+      - name: "Build Armbian"
+        id: build-armbian
         run: |
-          set -e
-          IMG="NextCloudPi_RPi_$( date  "+%m-%d-%y" ).img"
-          wget -q https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-aarch64-static -O ./qemu-aarch64-static
-          ./build/build-SD-rpi.sh
+          set -x
+          export LIB_TAG=master
+          IMG="NextCloudPi_${{ inputs.board_name }}_$( date  "+%m-%d-%y" ).img"
           [[ "${{ github.ref_protected }}" == true ]] || export DBG=x
-
-          for i in {1..10}
-          do
-            sudo losetup | grep "${IMG}" || break;
-            [[ "$i" -lt 10 ]] || { echo "Timeout while waiting for image to unmount"; exit 1; }
-            sleep 6
-            echo "Retrying ($i out of 10)"
-          done
-
+          ./build/build-SD-armbian.sh "${{ inputs.board_id }}" "${{ inputs.board_name }}"
           echo "::set-output name=image::${IMG}"
-      - name: Pack RPI Image
-        id: pack-rpi
-        run: |
-          IMG="${{ steps.build-rpi.outputs.image }}"
+          
+          IMG="${{ steps.build-armbian.outputs.image }}"
           TAR="$( basename "$IMG" .img ).tar.gz"
-          . ./build/buildlib.sh
-          #pack_image "tmp/$IMG" "output/$TAR"
-          mv "tmp/$IMG" "output/$IMG"
+          
+          artifacts=("armbian/output/images/Armbian"*.img)
+          mv "${artifacts[0]}" "output/$IMG"
           echo "::set-output name=artifact_name::${IMG}"
-
-      - name: upload RPI image to artifact store
+      - name: upload Armbian image to artifact store
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ github.run_id }}-rpi-image
-          path: output/${{ steps.pack-rpi.outputs.artifact_name }}
+          name: ${{ github.run_id }}-${{ inputs.board_id }}-image
+          path: output/${{ steps.build-armbian.outputs.artifact_name }}
           if-no-files-found: error
 
-  test-rpi:
-    needs: build-rpi
+  test-armbian:
+    continue-on-error: ${{ !require_test }}
+    needs: build-armbian
     runs-on: ubuntu-latest
     env:
-      UID: "${{ github.run_id }}-rpi"
       VERSION: "${{ inputs.git_ref }}"
     defaults:
       run:
@@ -77,21 +72,21 @@ jobs:
           ref: "${{ env.VERSION }}"
       - uses: actions/download-artifact@v3
         with:
-          name: ${{ github.run_id }}-rpi-image
+          name: ${{ needs.build-armbian.outputs.artifact_name }}
           path: output
       - name: Prepare test
         run: |
           set -ex
-          mv "output/${{ needs.build-rpi.outputs.artifact_name }}" ncp.img
+          mv output/*.img ncp.img
           sudo apt-get install -y systemd-container
           sudo pip install selenium
           sudo rm -rf raspbian_root
           . ./build/buildlib.sh
           mount_raspbian "ncp.img"
           sudo wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-aarch64-static -O raspbian_root/usr/bin/qemu-aarch64-static
+          sudo wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-arm-static -O raspbian_root/usr/bin/qemu-arm-static
           echo 'Mutex posixsem' | sudo tee -a raspbian_root/etc/apache2/mods-available/ssl.conf
       - name: Test image
-        id: test
         run: |
           set -ex
           
@@ -118,9 +113,8 @@ jobs:
           for attempt in {1..3}
           do
             echo ":: Activation Tests (attempt $attempt/3) ::"
-            python tests/activation_tests.py --no-gui "$ip" 443 4443 || {
+            python tests/activation_tests.py -t 300 --no-gui "$ip" 443 4443 || {
               echo "Activation test failed!"
-              curl -kv https://"$ip":4443
               echo "Geckodriver logs:"
               tail -n 20 geckodriver.log >&2 || true
               echo "================"
@@ -167,63 +161,5 @@ jobs:
           done
           
           result=$?
-          echo "::set-output name=${{ needs.build-rpi.outputs.artifact_name }}::${result}"
           sudo machinectl terminate ncp || true
           exit "$result"
-
-  odroidxu4:
-    uses: ./.github/workflows/build-armbian.yml
-    with:
-      git_ref: ${{ inputs.git_ref }}
-      board_id: odroidxu4
-      board_name: OdroidHC2
-      require_test: false
-    secrets: inherit
-  rockpro64:
-    uses: ./.github/workflows/build-armbian.yml
-    with:
-      git_ref: ${{ inputs.git_ref }}
-      board_id: rockpro64
-      board_name: RockPro64
-      require_test: false
-    secrets: inherit
-  rock64:
-    uses: ./.github/workflows/build-armbian.yml
-    with:
-      git_ref: ${{ inputs.git_ref }}
-      board_id: rock64
-      board_name: Rock64
-      require_test: false
-    secrets: inherit
-  bananapi:
-    uses: ./.github/workflows/build-armbian.yml
-    with:
-      git_ref: ${{ inputs.git_ref }}
-      board_id: bananapi
-      board_name: Bananapi
-      require_test: false
-    secrets: inherit
-  odroidhc4:
-    uses: ./.github/workflows/build-armbian.yml
-    with:
-      git_ref: ${{ inputs.git_ref }}
-      board_id: odroidhc4
-      board_name: OdroidHC4
-      require_test: false
-    secrets: inherit
-  odroidc4:
-    uses: ./.github/workflows/build-armbian.yml
-    with:
-      git_ref: ${{ inputs.git_ref }}
-      board_id: odroidc4
-      board_name: OdroidC4
-      require_test: false
-    secrets: inherit
-  odroidc2:
-    uses: ./.github/workflows/build-armbian.yml
-    with:
-      git_ref: ${{ inputs.git_ref }}
-      board_id: odroidc2
-      board_name: OdroidC2
-      require_test: false
-    secrets: inherit
