@@ -40,7 +40,7 @@ jobs:
           IMG="NextCloudPi_${{ inputs.board_name }}_$( date  "+%m-%d-%y" ).img"
           [[ "${{ github.ref_protected }}" == true ]] || export DBG=x
  
-         ./build/build-SD-armbian.sh "${{ inputs.board_id }}" "${{ inputs.board_name }}"
+          ./build/build-SD-armbian.sh "${{ inputs.board_id }}" "${{ inputs.board_name }}"
               
           artifacts=("armbian/output/images/Armbian"*.img)
           mv "${artifacts[0]}" "output/$IMG"
