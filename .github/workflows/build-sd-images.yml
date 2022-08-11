@@ -30,7 +30,7 @@ jobs:
       run:
         shell: bash
     outputs:
-      artifact_file: ${{ steps.build-armbian.outputs.artifact_file || steps.build-rpi.outputs.artifact_file }}
+      artifact_file: ${{ env.ARTIFACT_FILE }}
       artifact_name: ${{ github.run_id }}-${{ inputs.board_id }}-image
     steps:
       - name: Set up QEMU
@@ -53,6 +53,7 @@ jobs:
           artifacts=("armbian/output/images/Armbian"*.img)
           mv "${artifacts[0]}" "output/$IMG"
           echo "::set-output name=artifact_file::${IMG}"
+          echo "ARTIFACT_FILE=${IMG}" >> $GITHUB_ENV
       - name: Build RPI SD Image
         if: ${{ inputs.board_id == 'raspberrypi' }}
         id: build-rpi
@@ -72,11 +73,12 @@ jobs:
           done
 
           echo "::set-output name=artifact_file::${IMG}"
+          echo "ARTIFACT_FILE=${IMG}" >> $GITHUB_ENV
       - name: upload Armbian image to artifact store
         uses: actions/upload-artifact@v3
         with:
           name: ${{ github.run_id }}-${{ inputs.board_id }}-image
-          path: output/${{ steps.build-armbian.outputs.artifact_file || steps.build-rpi.outputs.artifact_file }}
+          path: output/${{ env.ARTIFACT_FILE }}
           if-no-files-found: error
 
   test:
