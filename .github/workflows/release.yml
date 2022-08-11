@@ -138,7 +138,7 @@ jobs:
       - raspberrypi
       - github-release
     if: "${{ github.event_name != 'workflow_dispatch' || inputs.sd-images }}"
-    uses: ./.github/workflows/build-sd-images.yml
+    uses: ./.github/workflows/publish-image.yml
     with:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
       artifact_id: "${{ needs.raspberrypi.outputs.artifact_name }}"
@@ -150,7 +150,7 @@ jobs:
       - odroidxu4
       - github-release
     if: "${{ github.event_name != 'workflow_dispatch' || inputs.sd-images }}"
-    uses: ./.github/workflows/build-sd-images.yml
+    uses: ./.github/workflows/publish-image.yml
     with:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
       artifact_id: "${{ needs.odroidxu4.outputs.artifact_name }}"
@@ -161,7 +161,7 @@ jobs:
       - rockpro64
       - github-release
     if: "${{ github.event_name != 'workflow_dispatch' || inputs.sd-images }}"
-    uses: ./.github/workflows/build-sd-images.yml
+    uses: ./.github/workflows/publish-image.yml
     with:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
       artifact_id: "${{ needs.rockpro64.outputs.artifact_name }}"
@@ -172,7 +172,7 @@ jobs:
       - rock64
       - github-release
     if: "${{ github.event_name != 'workflow_dispatch' || inputs.sd-images }}"
-    uses: ./.github/workflows/build-sd-images.yml
+    uses: ./.github/workflows/publish-image.yml
     with:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
       artifact_id: "${{ needs.rock64.outputs.artifact_name }}"
@@ -183,7 +183,7 @@ jobs:
       - bananapi
       - github-release
     if: "${{ github.event_name != 'workflow_dispatch' || inputs.sd-images }}"
-    uses: ./.github/workflows/build-sd-images.yml
+    uses: ./.github/workflows/publish-image.yml
     with:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
       artifact_id: "${{ needs.bananapi.outputs.artifact_name }}"
@@ -194,7 +194,7 @@ jobs:
       - odroidhc4
       - github-release
     if: "${{ github.event_name != 'workflow_dispatch' || inputs.sd-images }}"
-    uses: ./.github/workflows/build-sd-images.yml
+    uses: ./.github/workflows/publish-image.yml
     with:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
       artifact_id: "${{ needs.odroidhc4.outputs.artifact_name }}"
@@ -205,7 +205,7 @@ jobs:
       - odroidc4
       - github-release
     if: "${{ github.event_name != 'workflow_dispatch' || inputs.sd-images }}"
-    uses: ./.github/workflows/build-sd-images.yml
+    uses: ./.github/workflows/publish-image.yml
     with:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
       artifact_id: "${{ needs.odroidc4.outputs.artifact_name }}"
@@ -216,7 +216,7 @@ jobs:
       - odroidc2
       - github-release
     if: "${{ github.event_name != 'workflow_dispatch' || inputs.sd-images }}"
-    uses: ./.github/workflows/build-sd-images.yml
+    uses: ./.github/workflows/publish-image.yml
     with:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
       artifact_id: "${{ needs.odroidc2.outputs.artifact_name }}"
