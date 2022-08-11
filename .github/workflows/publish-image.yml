@@ -40,7 +40,7 @@ jobs:
         run: |
           set -ex
           mkdir -p publish
-          mv output/${{ inputs.artifact_file }} publish/
+          mv artifacts/${{ inputs.artifact_file }} publish/
           cd publish
           
           asset="${IMG}"
