@@ -168,16 +168,16 @@ jobs:
           sudo machinectl terminate ncp || true
           exit "$result"
       - name: Rename artifact
-        if: ${{ steps.test.conclusion == 'failure' }}
+        if: ${{ steps.test.outcome == 'failure' }}
         run: mv output/${{ needs.build.outputs.artifact_file }} "output/${{ needs.build.outputs.artifact_file }}.broken"
       - name: Replace artifact
-        if: ${{ steps.test.conclusion == 'failure' }}
+        if: ${{ steps.test.outcome == 'failure' }}
         uses: actions/upload-artifact@v3
         with:
           name: ${{ needs.build.outputs.artifact_name }}
           path: output/${{ needs.build.outputs.artifact_file }}.broken
           if-no-files-found: error
       - name: Fail
-        if: ${{ steps.test.conclusion == 'failure' }}
+        if: ${{ steps.test.outcome == 'failure' }}
         run: exit 1
 
