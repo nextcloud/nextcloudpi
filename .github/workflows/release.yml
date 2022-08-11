@@ -131,6 +131,7 @@ jobs:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
       artifact_id: "${{ needs.lxd.outputs.artifact_name }}"
       artifact_file: "${{ needs.lxd.outputs.artifact_file }}"
+      dry_run: ${{ github.event_name != 'push' || github.ref_type != 'tag' || !github.ref_protected }}
     secrets: inherit
 
   raspberrypi-release:
@@ -143,6 +144,7 @@ jobs:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
       artifact_id: "${{ needs.raspberrypi.outputs.artifact_name }}"
       artifact_file: "${{ needs.raspberrypi.outputs.artifact_file }}"
+      dry_run: ${{ github.event_name != 'push' || github.ref_type != 'tag' || !github.ref_protected }}
     secrets: inherit
 
   odroidxu4-release:
@@ -155,6 +157,7 @@ jobs:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
       artifact_id: "${{ needs.odroidxu4.outputs.artifact_name }}"
       artifact_file: "${{ needs.odroidxu4.outputs.artifact_file }}"
+      dry_run: ${{ github.event_name != 'push' || github.ref_type != 'tag' || !github.ref_protected }}
     secrets: inherit
   rockpro64-release:
     needs:
@@ -166,6 +169,7 @@ jobs:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
       artifact_id: "${{ needs.rockpro64.outputs.artifact_name }}"
       artifact_file: "${{ needs.rockpro64.outputs.artifact_file }}"
+      dry_run: ${{ github.event_name != 'push' || github.ref_type != 'tag' || !github.ref_protected }}
     secrets: inherit
   rock64-release:
     needs:
@@ -177,6 +181,7 @@ jobs:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
       artifact_id: "${{ needs.rock64.outputs.artifact_name }}"
       artifact_file: "${{ needs.rock64.outputs.artifact_file }}"
+      dry_run: ${{ github.event_name != 'push' || github.ref_type != 'tag' || !github.ref_protected }}
     secrets: inherit
   bananapi-release:
     needs:
@@ -188,6 +193,7 @@ jobs:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
       artifact_id: "${{ needs.bananapi.outputs.artifact_name }}"
       artifact_file: "${{ needs.bananapi.outputs.artifact_file }}"
+      dry_run: ${{ github.event_name != 'push' || github.ref_type != 'tag' || !github.ref_protected }}
     secrets: inherit
   odroidhc4-release:
     needs:
@@ -199,6 +205,7 @@ jobs:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
       artifact_id: "${{ needs.odroidhc4.outputs.artifact_name }}"
       artifact_file: "${{ needs.odroidhc4.outputs.artifact_file }}"
+      dry_run: ${{ github.event_name != 'push' || github.ref_type != 'tag' || !github.ref_protected }}
     secrets: inherit
   odroidc4-release:
     needs:
@@ -210,6 +217,7 @@ jobs:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
       artifact_id: "${{ needs.odroidc4.outputs.artifact_name }}"
       artifact_file: "${{ needs.odroidc4.outputs.artifact_file }}"
+      dry_run: ${{ github.event_name != 'push' || github.ref_type != 'tag' || !github.ref_protected }}
     secrets: inherit
   odroidc2-release:
     needs:
@@ -221,6 +229,7 @@ jobs:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
       artifact_id: "${{ needs.odroidc2.outputs.artifact_name }}"
       artifact_file: "${{ needs.odroidc2.outputs.artifact_file }}"
+      dry_run: ${{ github.event_name != 'push' || github.ref_type != 'tag' || !github.ref_protected }}
     secrets: inherit
 
   docker-release:

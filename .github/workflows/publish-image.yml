@@ -11,6 +11,10 @@ on:
       artifact_file:
         required: true
         type: string
+      dry_run:
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   publish:
@@ -64,5 +68,4 @@ jobs:
           body="${body%$'\n```'*}
           $checksum
           ```"
-          
-          hub release edit -a "${IMG?}" -m "${title?}" -m "$body" "${VERSION?}"
+          [[ "${{ inputs.dry_run }}" == "true" ]] || hub release edit -a "${IMG?}" -m "${title?}" -m "$body" "${VERSION?}"
