@@ -1,0 +1,68 @@
+name: "Publish Images"
+on:
+  workflow_call:
+    inputs:
+      git_ref:
+        required: true
+        type: string
+      artifact_id:
+        required: true
+        type: string
+      artifact_file:
+        required: true
+        type: string
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    env:
+      VERSION: "${{ inputs.git_ref }}"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: "${{ env.VERSION }}"
+      - name: "Download artifact"
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ inputs.artifact_id }}
+          path: artifacts
+      - name: "Publish artifact"
+        env:
+          IMG: "${{ inputs.artifact_file }}"
+        run: |
+          set -ex
+          mkdir -p publish
+          mv output/${{ inputs.artifact_file }} publish/
+          cd publish
+          
+          asset="${IMG}"
+          [[ "$IMG" =~ .*".img" ]] && { 
+            zip "${IMG%.img}.zip" "${IMG?}"
+            asset="${IMG%.img}.zip"
+          }
+          
+          checksum="$(md5sum "$asset")"
+          echo "Artifact Checksum: 
+            $checksum"
+          
+          title="$(hub release show -f "%t" "${VERSION}")
+          body="$(hub release show -f "%b" "${VERSION}")"
+          if ! [[ "$body" =~ .*'**Checksums:**'.* ]]
+          then
+          
+            body="${body}
+          
+          **Checksums:**
+          ```
+          ```"
+          fi
+          
+          body="${body%$'\n```'*}
+          $checksum
+          ```"
+          
+          hub release edit -a "${IMG?}" -m "${title?}" -m "$body" "${VERSION?}"

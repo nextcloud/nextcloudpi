@@ -1,22 +1,37 @@
-name: "Build and Test Raspberry Pi Image"
+name: "Build Armbian Images"
 on:
   workflow_call:
     inputs:
       git_ref:
         required: true
         type: string
+      board_id:
+        required: true
+        type: string
+      board_name:
+        required: true
+        type: string
+      require_test:
+        required: false
+        default: true
+        type: boolean
+    outputs:
+      artifact_name:
+        value: "${{ jobs.build.outputs.artifact_name }}"
+      artifact_file:
+        value: "${{ jobs.build.outputs.artifact_file }}"
 
 jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      UID: "${{ github.run_id }}-rpi"
       VERSION: "${{ inputs.git_ref }}"
     defaults:
       run:
         shell: bash
     outputs:
-      artifact_name: ${{ steps.pack-rpi.outputs.artifact_name }}
+      artifact_file: ${{ steps.build-armbian.outputs.artifact_file || steps.build-rpi.outputs.artifact_file }}
+      artifact_name: ${{ github.run_id }}-${{ inputs.board_id }}-image
     steps:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -24,7 +39,22 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: "${{ env.VERSION }}"
+      - name: "Build Armbian"
+        if: ${{ inputs.board_id != 'raspberrypi' }}
+        id: build-armbian
+        run: |
+          set -x
+          export LIB_TAG=master
+          IMG="NextCloudPi_${{ inputs.board_name }}_$( date  "+%m-%d-%y" ).img"
+          [[ "${{ github.ref_protected }}" == true ]] || export DBG=x
+          
+          ./build/build-SD-armbian.sh "${{ inputs.board_id }}" "${{ inputs.board_name }}"
+          
+          artifacts=("armbian/output/images/Armbian"*.img)
+          mv "${artifacts[0]}" "output/$IMG"
+          echo "::set-output name=artifact_file::${IMG}"
       - name: Build RPI SD Image
+        if: ${{ inputs.board_id == 'raspberrypi' }}
         id: build-rpi
         run: |
           set -e
@@ -41,30 +71,21 @@ jobs:
             echo "Retrying ($i out of 10)"
           done
 
-          echo "::set-output name=image::${IMG}"
-      - name: Pack RPI Image
-        id: pack-rpi
-        run: |
-          IMG="${{ steps.build-rpi.outputs.image }}"
-          TAR="$( basename "$IMG" .img ).tar.gz"
-          . ./build/buildlib.sh
-          #pack_image "tmp/$IMG" "output/$TAR"
-          mv "tmp/$IMG" "output/$IMG"
-          echo "::set-output name=artifact_name::${IMG}"
-
-      - name: upload RPI image to artifact store
+          echo "::set-output name=artifact_file::${IMG}"
+      - name: upload Armbian image to artifact store
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ github.run_id }}-rpi-image
-          path: output/${{ steps.pack-rpi.outputs.artifact_name }}
+          name: ${{ github.run_id }}-${{ inputs.board_id }}-image
+          path: output/${{ steps.build-armbian.outputs.artifact_file || steps.build-rpi.outputs.artifact_file }}
           if-no-files-found: error
 
   test:
     needs: build
     runs-on: ubuntu-latest
     env:
-      UID: "${{ github.run_id }}-rpi"
       VERSION: "${{ inputs.git_ref }}"
+      ARTIFACT_ID: ${{ needs.build.outputs.artifact_name }}
+      ARTIFACT_FILE: ${{ needs.build.outputs.artifact_file }}
     defaults:
       run:
         shell: bash
@@ -77,26 +98,30 @@ jobs:
           ref: "${{ env.VERSION }}"
       - uses: actions/download-artifact@v3
         with:
-          name: ${{ github.run_id }}-rpi-image
+          name: ${{ env.ARTIFACT_ID }}
           path: output
       - name: Prepare test
         run: |
           set -ex
-          mv "output/${{ needs.build.outputs.artifact_name }}" ncp.img
+          mv output/${ARTIFACT_FILE?} ncp.img
           sudo apt-get install -y systemd-container
           sudo pip install selenium
           sudo rm -rf raspbian_root
           . ./build/buildlib.sh
           mount_raspbian "ncp.img"
           sudo wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-aarch64-static -O raspbian_root/usr/bin/qemu-aarch64-static
+          sudo wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-arm-static -O raspbian_root/usr/bin/qemu-arm-static
           echo 'Mutex posixsem' | sudo tee -a raspbian_root/etc/apache2/mods-available/ssl.conf
       - name: Test image
         id: test
         run: |
           set -ex
           
+          trap 'sudo machinectl terminate ncp' EXIT
+          
           sudo systemd-nspawn --boot -D ./raspbian_root/ -M ncp --hostname=nextcloudpi &> container.log &
           sleep 30
+          
           success=false
           for attempt in {1..30}
           do
@@ -118,9 +143,8 @@ jobs:
           for attempt in {1..3}
           do
             echo ":: Activation Tests (attempt $attempt/3) ::"
-            python tests/activation_tests.py --no-gui "$ip" 443 4443 || {
+            python tests/activation_tests.py -t 300 --no-gui "$ip" 443 4443 || {
               echo "Activation test failed!"
-              curl -kv https://"$ip":4443
               echo "Geckodriver logs:"
               tail -n 20 geckodriver.log >&2 || true
               echo "================"
@@ -132,7 +156,12 @@ jobs:
             success=true
             break
           done
-          [[ "$success" == "true" ]] || exit 1
+          [[ "$success" == "true" ]] || {
+            echo "Activation test failed in all attempts!"
+            echo "Container logs:"
+            cat container.log
+            exit 1
+          }
           
           success=false
           for attempt in {1..3}
@@ -146,7 +175,12 @@ jobs:
             success=true
             break
           done
-          [[ "$success" == "true" ]] || exit 1
+          [[ "$success" == "true" ]] || {
+            echo "System test failed in all attempts!"
+            echo "Container logs:"
+            cat container.log
+            exit 1
+          }
           
           success=false
           for attempt in {1..3}
@@ -166,8 +200,9 @@ jobs:
             break
           done
           
-          result=$?
-          echo "::set-output name=${{ needs.build.outputs.artifact_name }}::${result}"
-          sudo machinectl terminate ncp || true
-          exit "$result"
-
+          [[ "$success" == "true" ]] || {
+            echo "Nextcloud test failed in all attempts!"
+            echo "Container logs:"
+            cat container.log
+            exit 1
+          }
