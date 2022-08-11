@@ -45,7 +45,7 @@ jobs:
         run: |
           set -x
           export LIB_TAG=master
-          IMG="NextCloudPi_${{ inputs.board_name }}_$( date  "+%m-%d-%y" ).img"
+          IMG="NextCloudPi_${{ inputs.board_name }}_${VERSION//\//_}.img"
           [[ "${{ github.ref_protected }}" == true ]] || export DBG=x
           
           ./build/build-SD-armbian.sh "${{ inputs.board_id }}" "${{ inputs.board_name }}"
@@ -58,7 +58,7 @@ jobs:
         id: build-rpi
         run: |
           set -e
-          IMG="NextCloudPi_RPi_$( date  "+%m-%d-%y" ).img"
+          IMG="NextCloudPi_${{ inputs.board_name }}_${VERSION//\//_}.img"
           wget -q https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-aarch64-static -O ./qemu-aarch64-static
           ./build/build-SD-rpi.sh
           [[ "${{ github.ref_protected }}" == true ]] || export DBG=x

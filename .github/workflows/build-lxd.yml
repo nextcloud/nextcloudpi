@@ -39,7 +39,7 @@ jobs:
         id: pack-lxd
         run: |
           . ./build/buildlib.sh
-          ARTIFACT_NAME="NextCloudPi_LXD_${VERSION?}"
+          ARTIFACT_NAME="NextCloudPi_LXD_${VERSION//\//_}"
           lxc image export -q ncp/"${version}" "output/${ARTIFACT_NAME}"
           echo "::set-output name=artifact_file::${ARTIFACT_NAME}.tar.gz"
       - name: upload LXD image to artifact store
