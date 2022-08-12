@@ -10,6 +10,9 @@ on:
       git_ref:
         required: true
         type: string
+  push:
+    branches:
+      - master
 
 jobs:
   build:
