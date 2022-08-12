@@ -61,8 +61,10 @@ jobs:
           set -e
           IMG="NextCloudPi_${{ inputs.board_name }}_${VERSION//\//_}.img"
           wget -q https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-aarch64-static -O ./qemu-aarch64-static
-          ./build/build-SD-rpi.sh
           [[ "${{ github.ref_protected }}" == true ]] || export DBG=x
+          ./build/build-SD-rpi.sh
+          mkdir output
+          mv "$IMG" ./output/
 
           for i in {1..10}
           do
