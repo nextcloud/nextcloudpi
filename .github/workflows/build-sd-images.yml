@@ -1,111 +1,213 @@
-name: "Build SD images"
+name: "Build Armbian Images"
 on:
   workflow_call:
     inputs:
       git_ref:
         required: true
         type: string
+      board_id:
+        required: true
+        type: string
+      board_name:
+        required: true
+        type: string
+      require_test:
+        required: false
+        default: true
+        type: boolean
+    outputs:
+      artifact_name:
+        value: "${{ jobs.build.outputs.artifact_name }}"
+      artifact_file:
+        value: "${{ jobs.build.outputs.artifact_file }}"
 
 jobs:
-  build-rpi:
+  build:
     runs-on: ubuntu-latest
     env:
-      HCLOUD_TOKEN: "${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}"
-      UID: "${{ github.run_id }}-rpi"
       VERSION: "${{ inputs.git_ref }}"
     defaults:
       run:
         shell: bash
     outputs:
-      artifact_name: ${{ steps.pack-rpi.outputs.artifact_name }}
+      artifact_file: ${{ env.ARTIFACT_FILE }}
+      artifact_name: ${{ github.run_id }}-${{ inputs.board_id }}-image
     steps:
-      - uses: 3bit/setup-hcloud@v1
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Checkout code
         uses: actions/checkout@v3
         with:
           ref: "${{ env.VERSION }}"
-      - name: Build RPI SD Image
-        id: build-rpi
-        run: |
-          set -e
-          IMG="NextCloudPi_RPi_$( date  "+%m-%d-%y" ).img"
-          wget -q https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-aarch64-static -O ./qemu-aarch64-static
-          ./build/build-SD-rpi.sh
-
-          for i in {1..10}
-          do
-            sudo losetup | grep "${IMG}" || break;
-            [[ "$i" -lt 10 ]] || { echo "Timeout while waiting for image to unount"; exit 1; }
-            sleep 6
-            echo "Retrying ($i out of 10)"
-          done
-
-          echo "::set-output name=image::${IMG}"
-      - name: Pack RPI Image
-        id: pack-rpi
-        run: |
-          IMG="${{ steps.build-rpi.outputs.image }}"
-          TAR="$( basename "$IMG" .img ).tar.gz"
-          . ./build/buildlib.sh
-          pack_image "tmp/$IMG" "output/$TAR"
-          echo "::set-output name=artifact_name::${TAR}"
-      - name: upload RPI image to artifact store
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ github.run_id }}-rpi-image
-          path: output/${{ steps.pack-rpi.outputs.artifact_name }}
-          if-no-files-found: error
-
-  build-armbian:
-    runs-on: ubuntu-latest
-    env:
-      VERSION: "${{ inputs.git_ref }}"
-    defaults:
-      run:
-        shell: bash
-    outputs:
-      artifact_name: ${{ steps.pack-armbian.outputs.artifact_name }}
-    strategy:
-      matrix:
-        board:
-          - odroidxu4 OdroidHC2
-          - rockpro64 RockPro64
-          - rock64 Rock64
-          - bananapi Bananapi
-          - odroidhc4 OdroidHC4
-          - odroidc4 OdroidC4
-          - odroidc2 OdroidC2
-      fail-fast: false
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          ref: "${{ env.VERSION }}"
       - name: "Build Armbian"
+        if: ${{ inputs.board_id != 'raspberrypi' }}
         id: build-armbian
         run: |
           set -x
           export LIB_TAG=master
-          board_params=(${{ matrix.board}})
-          IMG="NextCloudPi_${board_params[1]}_$( date  "+%m-%d-%y" ).img"
-          ./build/build-SD-armbian.sh "${board_params[@]}"
-          echo "::set-output name=image::${IMG}"
-      - name: "Pack image"
-        id: pack-armbian
-        run: |
-          IMG="${{ steps.build-armbian.outputs.image }}"
-          TAR="$( basename "$IMG" .img ).tar.gz"
+          IMG="NextCloudPi_${{ inputs.board_name }}_${VERSION//\//_}.img"
+          [[ "${{ github.ref_protected }}" == true ]] || export DBG=x
+          
+          ./build/build-SD-armbian.sh "${{ inputs.board_id }}" "${{ inputs.board_name }}"
           
           artifacts=("armbian/output/images/Armbian"*.img)
-          mv "${artifacts[0]}" "tmp/$IMG"
-          . ./build/buildlib.sh
-          pack_image "tmp/$IMG" "output/$TAR"
-          echo "::set-output name=artifact_name::${TAR}"
+          mkdir -p output
+          mv "${artifacts[0]}" "output/$IMG"
+          echo "::set-output name=artifact_file::${IMG}"
+          echo "ARTIFACT_FILE=${IMG}" >> $GITHUB_ENV
+      - name: Build RPI SD Image
+        if: ${{ inputs.board_id == 'raspberrypi' }}
+        id: build-rpi
+        run: |
+          set -e
+          IMG="NextCloudPi_${{ inputs.board_name }}_${VERSION//\//_}.img"
+          wget -q https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-aarch64-static -O ./qemu-aarch64-static
+          [[ "${{ github.ref_protected }}" == true ]] || export DBG=x
+          ./build/build-SD-rpi.sh
+          mkdir -p output
+          mv "$IMG" ./output/
+
+          for i in {1..10}
+          do
+            sudo losetup | grep "${IMG}" || break;
+            [[ "$i" -lt 10 ]] || { echo "Timeout while waiting for image to unmount"; exit 1; }
+            sleep 6
+            echo "Retrying ($i out of 10)"
+          done
+
+          echo "::set-output name=artifact_file::${IMG}"
+          echo "ARTIFACT_FILE=${IMG}" >> $GITHUB_ENV
       - name: upload Armbian image to artifact store
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ github.run_id }}-armbian-image
-          path: output/${{ steps.build-pack-armbian.outputs.artifact_name }}
+          name: ${{ github.run_id }}-${{ inputs.board_id }}-image
+          path: output/${{ env.ARTIFACT_FILE }}
           if-no-files-found: error
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      VERSION: "${{ inputs.git_ref }}"
+      ARTIFACT_ID: ${{ needs.build.outputs.artifact_name }}
+      ARTIFACT_FILE: ${{ needs.build.outputs.artifact_file }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: "${{ env.VERSION }}"
+      - uses: actions/download-artifact@v3
+        with:
+          name: ${{ env.ARTIFACT_ID }}
+          path: output
+      - name: Prepare test
+        run: |
+          set -ex
+          mv output/${ARTIFACT_FILE?} ncp.img
+          sudo apt-get install -y systemd-container
+          sudo pip install selenium
+          sudo rm -rf raspbian_root
+          . ./build/buildlib.sh
+          mount_raspbian "ncp.img"
+          sudo wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-aarch64-static -O raspbian_root/usr/bin/qemu-aarch64-static
+          sudo wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-arm-static -O raspbian_root/usr/bin/qemu-arm-static
+          echo 'Mutex posixsem' | sudo tee -a raspbian_root/etc/apache2/mods-available/ssl.conf
+      - name: Test image
+        id: test
+        run: |
+          set -ex
+          
+          trap 'sudo machinectl terminate ncp' EXIT
+          
+          sudo systemd-nspawn --boot -D ./raspbian_root/ -M ncp --hostname=nextcloudpi &> container.log &
+          sleep 30
+          
+          success=false
+          for attempt in {1..30}
+          do
+            echo ":: Wait for container to startup (attempt $attempt/30) ::"
+            ip="$(sudo systemd-run --machine=ncp -P --wait bash -c '. /usr/local/etc/library.sh > /dev/null; get_ip')"
+            [[ -n "$ip" ]] && curl -k "https://$ip/activate" > /dev/null || { sleep 6; continue; }
+            success=true
+            break
+          done
+          
+          [[ "$success" == "true" ]] || {
+            echo "Could not reach container. Aborting..."
+            echo "Container logs:"
+            cat container.log
+            exit 1
+          }
+          
+          success=false
+          for attempt in {1..3}
+          do
+            echo ":: Activation Tests (attempt $attempt/3) ::"
+            python tests/activation_tests.py -t 300 --no-gui "$ip" 443 4443 || {
+              echo "Activation test failed!"
+              echo "Geckodriver logs:"
+              tail -n 20 geckodriver.log >&2 || true
+              echo "================"
+              echo "ncp.log: "
+              sudo systemd-run --wait -P --machine=ncp ncp /bin/bash -c "tail -n20 /var/log/ncp.log" || true
+              sleep 6
+              continue
+            }
+            success=true
+            break
+          done
+          [[ "$success" == "true" ]] || {
+            echo "Activation test failed in all attempts!"
+            echo "Container logs:"
+            cat container.log
+            exit 1
+          }
+          
+          success=false
+          for attempt in {1..3}
+          do
+            echo ":: System Tests (attempt $attempt/3) ::"
+            sudo python tests/system_tests.py --non-interactive || {
+              echo "System test failed!"
+              sleep 6
+              continue
+            }
+            success=true
+            break
+          done
+          [[ "$success" == "true" ]] || {
+            echo "System test failed in all attempts!"
+            echo "Container logs:"
+            cat container.log
+            exit 1
+          }
+          
+          success=false
+          for attempt in {1..3}
+          do
+            echo ":: Nextcloud Tests (attempt $attempt/3) ::"
+            python tests/nextcloud_tests.py --no-gui "$ip" 443 4443 || {
+              echo "Nextcloud test failed!"
+              echo "Geckodriver logs:"
+              tail -n 20 geckodriver.log >&2 || true
+              echo "================"
+              echo "ncp.log: "
+              sudo systemd-run --wait -P --machine=ncp ncp /bin/bash -c "tail -n20 /var/log/ncp.log" || true
+              sleep 6
+              continue
+            }
+            success=true
+            break
+          done
+          
+          [[ "$success" == "true" ]] || {
+            echo "Nextcloud test failed in all attempts!"
+            echo "Container logs:"
+            cat container.log
+            exit 1
+          }

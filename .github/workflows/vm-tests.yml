@@ -14,8 +14,8 @@ on:
         required: false
         type: string
   push:
-    branches:
-      - '**'
+    branches-ignore:
+      - '*/cicd/**'
 
 jobs:
   setup-installation-test-instance:

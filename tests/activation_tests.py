@@ -14,6 +14,7 @@ More at https://ownyourbits.com
 
 import sys
 import time
+import traceback
 import urllib
 import os
 import getopt
@@ -45,7 +46,7 @@ class tc:
 
 def usage():
     "Print usage"
-    print("usage: activation_tests.py [ip [nc-port [admin-port]]]")
+    print("usage: activation_tests.py [-t|--timeout <timeout>] [-h|--no-gui] [ip [nc-port [admin-port]]]")
 
 
 class Test:
@@ -124,22 +125,27 @@ def test_activation(IP, nc_port, admin_port, options, wait_timeout=120):
         wait = WebDriverWait(driver, wait_timeout)
         wait.until(EC.text_to_be_present_in_element((By.ID, 'error-box'), "ACTIVATION SUCCESSFUL"))
         test.check(True)
-    except TimeoutException: 
+    except TimeoutException:
         test.check(False)
     except:
         test.check(True)
     try:
         driver.close()
     except Exception as e:
+        traceback.print_exception(e)
         print(f"Could not close driver: {e}")
 
     # ncp-web
     test.new("ncp-web")
     driver = webdriver.Firefox(options=options)
+    driver.implicitly_wait(30)
     try:
         driver.get(f"https://ncp:{urllib.parse.quote_plus(ncp_pass)}@{IP}:{admin_port}")
     except UnexpectedAlertPresentException:
         pass
+    except Exception as e:
+        print(f"WARN: Exception while attempting to get ncp-web: '{e}'")
+        raise e
     test.check("NextCloudPi Panel" in driver.title)
     test.report("first run wizard", is_element_present(driver, By.ID, "first-run-wizard"))
 
@@ -151,7 +157,7 @@ if __name__ == "__main__":
 
     # parse options
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'h', ['help', 'no-gui'])
+        opts, args = getopt.getopt(sys.argv[1:], 'ht:', ['help', 'timeout=', 'no-gui'])
     except getopt.GetoptError:
         usage()
         sys.exit(2)

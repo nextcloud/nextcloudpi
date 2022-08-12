@@ -6,43 +6,237 @@ on:
         description: git ref, branch or tag to test against
         required: false
         type: string
+      sd-images:
+        type: boolean
+        description: 'Build/test SD images?'
+        required: false
+        default: true
+      lxd:
+        type: boolean
+        description: 'Build/test LXD image?'
+        required: false
+        default: true
+      docker:
+        type: boolean
+        description: 'Build/test docker images?'
+        required: false
+        default: true
+      installer:
+        type: boolean
+        description: 'Run curl-installer/upgrade tests?'
+        required: false
+        default: true
   push:
     tags: ["v*"]
-    branches: ["*/cicd/*"]
 
 permissions:
   contents: write
 
 jobs:
-  build-and-test-lxd:
+  lxd:
+    if: ${{ inputs.lxd }}
     uses: ./.github/workflows/build-lxd.yml
     with:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
     secrets: inherit
 
-  build-sd-images:
-    uses: ./.github/workflows/build-sd-images.yml
-    with:
-      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
-    secrets: inherit
-
-  build-and-test-docker:
+  docker:
+    if: ${{ inputs.docker }}
     uses: ./.github/workflows/build-docker.yml
     with:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
     secrets: inherit
 
   test-curl-installer:
+    if: ${{ inputs.installer }}
     uses: ./.github/workflows/vm-tests.yml
     with:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
     secrets: inherit
 
+  raspberrypi:
+    if: ${{ inputs.sd-images }}
+    uses: ./.github/workflows/build-sd-images.yml
+    with:
+      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+      board_id: raspberrypi
+      board_name: RaspberryPi
+    secrets: inherit
+
+  odroidxu4:
+    if: ${{ inputs.sd-images }}
+    uses: ./.github/workflows/build-sd-images.yml
+    with:
+      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+      board_id: odroidxu4
+      board_name: OdroidHC2
+    secrets: inherit
+  rockpro64:
+    if: ${{ inputs.sd-images }}
+    uses: ./.github/workflows/build-sd-images.yml
+    with:
+      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+      board_id: rockpro64
+      board_name: RockPro64
+    secrets: inherit
+  rock64:
+    if: ${{ inputs.sd-images }}
+    uses: ./.github/workflows/build-sd-images.yml
+    with:
+      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+      board_id: rock64
+      board_name: Rock64
+    secrets: inherit
+  bananapi:
+    if: ${{ inputs.sd-images }}
+    uses: ./.github/workflows/build-sd-images.yml
+    with:
+      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+      board_id: bananapi
+      board_name: BananaPi
+    secrets: inherit
+  odroidhc4:
+    if: ${{ inputs.sd-images }}
+    uses: ./.github/workflows/build-sd-images.yml
+    with:
+      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+      board_id: odroidhc4
+      board_name: OdroidHC4
+    secrets: inherit
+  odroidc4:
+    if: ${{ inputs.sd-images }}
+    uses: ./.github/workflows/build-sd-images.yml
+    with:
+      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+      board_id: odroidc4
+      board_name: OdroidC4
+    secrets: inherit
+  odroidc2:
+    if: ${{ inputs.sd-images }}
+    uses: ./.github/workflows/build-sd-images.yml
+    with:
+      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+      board_id: odroidc2
+      board_name: OdroidC2
+    secrets: inherit
+
+
+  lxd-release:
+    needs:
+      - github-release
+      - lxd
+    if: ${{ inputs.lxd }}
+    uses: ./.github/workflows/publish-image.yml
+    with:
+      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+      artifact_id: "${{ needs.lxd.outputs.artifact_name }}"
+      artifact_file: "${{ needs.lxd.outputs.artifact_file }}"
+      dry_run: ${{ github.event_name != 'push' || github.ref_type != 'tag' || !github.ref_protected }}
+    secrets: inherit
+
+  raspberrypi-release:
+    needs:
+      - raspberrypi
+      - github-release
+    if: ${{ inputs.sd-images }}
+    uses: ./.github/workflows/publish-image.yml
+    with:
+      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+      artifact_id: "${{ needs.raspberrypi.outputs.artifact_name }}"
+      artifact_file: "${{ needs.raspberrypi.outputs.artifact_file }}"
+      dry_run: ${{ github.event_name != 'push' || github.ref_type != 'tag' || !github.ref_protected }}
+    secrets: inherit
+
+  odroidxu4-release:
+    needs:
+      - odroidxu4
+      - github-release
+    if: ${{ inputs.sd-images }}
+    uses: ./.github/workflows/publish-image.yml
+    with:
+      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+      artifact_id: "${{ needs.odroidxu4.outputs.artifact_name }}"
+      artifact_file: "${{ needs.odroidxu4.outputs.artifact_file }}"
+      dry_run: ${{ github.event_name != 'push' || github.ref_type != 'tag' || !github.ref_protected }}
+    secrets: inherit
+  rockpro64-release:
+    needs:
+      - rockpro64
+      - github-release
+    if: ${{ inputs.sd-images }}
+    uses: ./.github/workflows/publish-image.yml
+    with:
+      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+      artifact_id: "${{ needs.rockpro64.outputs.artifact_name }}"
+      artifact_file: "${{ needs.rockpro64.outputs.artifact_file }}"
+      dry_run: ${{ github.event_name != 'push' || github.ref_type != 'tag' || !github.ref_protected }}
+    secrets: inherit
+  rock64-release:
+    needs:
+      - rock64
+      - github-release
+    if: ${{ inputs.sd-images }}
+    uses: ./.github/workflows/publish-image.yml
+    with:
+      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+      artifact_id: "${{ needs.rock64.outputs.artifact_name }}"
+      artifact_file: "${{ needs.rock64.outputs.artifact_file }}"
+      dry_run: ${{ github.event_name != 'push' || github.ref_type != 'tag' || !github.ref_protected }}
+    secrets: inherit
+  bananapi-release:
+    needs:
+      - bananapi
+      - github-release
+    if: ${{ inputs.sd-images }}
+    uses: ./.github/workflows/publish-image.yml
+    with:
+      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+      artifact_id: "${{ needs.bananapi.outputs.artifact_name }}"
+      artifact_file: "${{ needs.bananapi.outputs.artifact_file }}"
+      dry_run: ${{ github.event_name != 'push' || github.ref_type != 'tag' || !github.ref_protected }}
+    secrets: inherit
+  odroidhc4-release:
+    needs:
+      - odroidhc4
+      - github-release
+    if: ${{ inputs.sd-images }}
+    uses: ./.github/workflows/publish-image.yml
+    with:
+      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+      artifact_id: "${{ needs.odroidhc4.outputs.artifact_name }}"
+      artifact_file: "${{ needs.odroidhc4.outputs.artifact_file }}"
+      dry_run: ${{ github.event_name != 'push' || github.ref_type != 'tag' || !github.ref_protected }}
+    secrets: inherit
+  odroidc4-release:
+    needs:
+      - odroidc4
+      - github-release
+    if: ${{ inputs.sd-images }}
+    uses: ./.github/workflows/publish-image.yml
+    with:
+      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+      artifact_id: "${{ needs.odroidc4.outputs.artifact_name }}"
+      artifact_file: "${{ needs.odroidc4.outputs.artifact_file }}"
+      dry_run: ${{ github.event_name != 'push' || github.ref_type != 'tag' || !github.ref_protected }}
+    secrets: inherit
+  odroidc2-release:
+    needs:
+      - odroidc2
+      - github-release
+    if: ${{ inputs.sd-images }}
+    uses: ./.github/workflows/publish-image.yml
+    with:
+      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+      artifact_id: "${{ needs.odroidc2.outputs.artifact_name }}"
+      artifact_file: "${{ needs.odroidc2.outputs.artifact_file }}"
+      dry_run: ${{ github.event_name != 'push' || github.ref_type != 'tag' || !github.ref_protected }}
+    secrets: inherit
+
   docker-release:
     needs:
-      - build-and-test-docker
+      - docker
       - test-curl-installer
-    if: ${{ github.event_name == 'push' && github.ref_type == 'tag' }}
+    if: ${{ github.event_name == 'push' && github.ref_type == 'tag' && github.ref_protected }}
     runs-on: ubuntu-latest
     steps:
       - name: Login to DockerHub
@@ -83,8 +277,6 @@ jobs:
 
   github-release:
     needs:
-      - build-and-test-lxd
-      - build-sd-images
       - test-curl-installer
     runs-on: ubuntu-latest
     env:
@@ -100,32 +292,8 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
-      - name: download images from artifact store
-        uses: actions/download-artifact@v3
-        with:
-          path: artifacts
-      - name: Prepare Release
-        id: prepare-release
-        run: |
-          mkdir -p release
-          cd release
-          checksums=()
-          assets=()
-          echo "Checksums:"
-          for asset in ../artifacts/*/*.tar.gz;
-          do
-            mv "$asset" ./
-            asset_name="$(basename "$asset")"
-            checksum="$(md5sum "$asset_name")"
-            echo "  $checksum"
-            checksums+=("$checksum")
-            assets+=(-a "$asset_name")
-          done
-
-          echo "::set-output name=assets::$(printf " %q" "${assets[@]}")"
-          echo "::set-output name=checksums::$(printf " %q" "${checksums[@]}")"
-      - name: Publish
-        if: ${{ github.event_name == 'push' && github.ref_type == 'tag' }}
+      - name: Create Draft
+        if: ${{ github.event_name == 'push' && github.ref_type == 'tag' && github.ref_protected }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         working-directory: ./release
@@ -147,13 +315,10 @@ jobs:
           ```"
           done
 
-          hub release create ${{ steps.prepare-release.outputs.assets }} -F - "${{ env.VERSION }}" <<EOF
+          hub release create --draft -F - "${{ env.VERSION }}" <<EOF
           ${subject:-No message found}
 
           ${body:+${body}${separator}}[Docker images](https://hub.docker.com/r/ownyourbits/nextcloudpi)
 
           [Changelog](https://github.com/nextcloud/nextcloudpi/blob/${{ env.VERSION }}/changelog.md)
-
-          **Checksums:**
-          ${checksums_str}
           EOF

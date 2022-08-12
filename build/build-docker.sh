@@ -28,6 +28,7 @@ build_arch() {
 }
 
 get_arch_args() {
+  # 1) arch 2) arch_qemu 3) suffix
 
   [[ "${1?}" =~ "x86"   ]] && { echo "amd64 x86_64 x86"; return 0; }
   [[ "$1" =~ "armhf" ]] && { echo "arm32v7 arm armhf"; return 0; }
@@ -51,7 +52,7 @@ clean_workspace() {
 
   # Pull latest image for caching
   docker pull ownyourbits/nextcloudpi
-  for target in qemu nextcloudpi debian-ncp lamp nextcloud ncp-qemu-fix
+  for target in nextcloudpi debian-ncp lamp nextcloud ncp-qemu-fix
   do
     build_arch "$target" "${release}" "${arch_args[@]}"
   done

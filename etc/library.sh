@@ -51,7 +51,7 @@ NCLATESTVER=$(jq -r .nextcloud_version < "$NCPCFG")
 PHPVER=$(     jq -r .php_version       < "$NCPCFG")
 RELEASE=$(    jq -r .release           < "$NCPCFG")
 # the default repo in bullseye is bullseye-security
-grep -Eh '^deb ' /etc/apt/sources.list | grep "${RELEASE}-security" && RELEASE="${RELEASE}-security"
+grep -Eh '^deb ' /etc/apt/sources.list | grep "${RELEASE}-security" > /dev/null && RELEASE="${RELEASE}-security"
 command -v ncc &>/dev/null && NCVER="$(ncc status 2>/dev/null | grep "version:" | awk '{ print $3 }')"
 
 function configure_app()
@@ -212,11 +212,11 @@ install_template() {
   local bkp="$(mktemp)"
   [[ -f "$target" ]] && cp -a "$target" "$bkp"
   {
-    if [[ "$3" == "--defaults" ]]; then
+    if [[ "${3:-}" == "--defaults" ]]; then
       { bash "/usr/local/etc/ncp-templates/$template" --defaults > "$target"; } 2>&1
     else
       { bash "/usr/local/etc/ncp-templates/$template" > "$target"; } 2>&1 || \
-        if [[ "$3" == "--allow-fallback" ]]; then
+        if [[ "${3:}" == "--allow-fallback" ]]; then
           { bash "/usr/local/etc/ncp-templates/$template" --defaults > "$target"; } 2>&1
         fi
     fi

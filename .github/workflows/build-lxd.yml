@@ -7,46 +7,51 @@ on:
         type: string
     outputs:
       artifact_name:
-        value: "${{ jobs.build-lxd.outputs.artifact_name }}"
+        value: "${{ jobs.build.outputs.artifact_name }}"
+      artifact_file:
+        value: "${{ jobs.build.outputs.artifact_file }}"
   push:
     branches:
       - "**"
   pull_request:
 
 jobs:
-  build-lxd:
+  build:
     runs-on: ubuntu-latest
     outputs:
-      artifact_name: ${{ steps.pack-lxd.outputs.artifact_name }}
+      artifact_name: "${{ env.ARTIFACT_NAME }}"
+      artifact_file: "${{ steps.pack-lxd.outputs.artifact_file }}"
+    env:
+      VERSION: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+      ARTIFACT_NAME: "${{ github.run_id }}-lxd-image"
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+          ref: "${{ env.VERSION }}"
       - uses: whywaita/setup-lxd@v1
         with:
           lxd_version: latest/stable
       - name: Build LXD image
-        id: build-lxd
         run: |
           ./build/build-LXD.sh
       - name: Pack LXD image
         id: pack-lxd
         run: |
           . ./build/buildlib.sh
-          ARTIFACT_NAME="NextCloudPi_LXD_$( date  "+%m-%d-%y" )"
+          ARTIFACT_NAME="NextCloudPi_LXD_${VERSION//\//_}"
           lxc image export -q ncp/"${version}" "output/${ARTIFACT_NAME}"
-          echo "::set-output name=artifact_name::${ARTIFACT_NAME}.tar.gz"
+          echo "::set-output name=artifact_file::${ARTIFACT_NAME}.tar.gz"
       - name: upload LXD image to artifact store
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ github.run_id }}-lxd-image
-          path: output/${{ steps.pack-lxd.outputs.artifact_name }}
+          name: "${{ env.ARTIFACT_NAME }}"
+          path: "output/${{ steps.pack-lxd.outputs.artifact_name }}"
           if-no-files-found: error
 
-  test-lxd:
+  test:
     needs:
-      - build-lxd
+      - build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -70,7 +75,7 @@ jobs:
         run: |
           set -x
           lxc delete -q -f ncp || true
-          lxc image import -q "./${{ needs.build-lxd.outputs.artifact_name }}" --alias "ncp/test"
+          lxc image import -q "./${{ needs.build.outputs.artifact_file }}" --alias "ncp/test"
           systemd-run --user --scope -p "Delegate=yes" lxc launch -q "ncp/test" ncp
           lxc exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
           sleep 30
