@@ -10,10 +10,6 @@ on:
       git_ref:
         required: true
         type: string
-  push:
-    branches-ignore:
-      - '*/cicd/**'
-  pull_request:
 
 jobs:
   build:

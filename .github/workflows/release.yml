@@ -28,6 +28,8 @@ on:
         default: true
   push:
     tags: ["v*"]
+    branches:
+      - master
 
 permissions:
   contents: write
