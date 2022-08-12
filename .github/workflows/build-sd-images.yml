@@ -51,6 +51,7 @@ jobs:
           ./build/build-SD-armbian.sh "${{ inputs.board_id }}" "${{ inputs.board_name }}"
           
           artifacts=("armbian/output/images/Armbian"*.img)
+          mkdir -p output
           mv "${artifacts[0]}" "output/$IMG"
           echo "::set-output name=artifact_file::${IMG}"
           echo "ARTIFACT_FILE=${IMG}" >> $GITHUB_ENV
@@ -63,7 +64,7 @@ jobs:
           wget -q https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-aarch64-static -O ./qemu-aarch64-static
           [[ "${{ github.ref_protected }}" == true ]] || export DBG=x
           ./build/build-SD-rpi.sh
-          mkdir output
+          mkdir -p output
           mv "$IMG" ./output/
 
           for i in {1..10}
