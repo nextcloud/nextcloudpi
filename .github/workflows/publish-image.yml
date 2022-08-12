@@ -24,6 +24,8 @@ jobs:
         shell: bash
     env:
       VERSION: "${{ inputs.git_ref }}"
+    permissions:
+      contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -53,6 +55,8 @@ jobs:
           echo "Artifact Checksum: 
             $checksum"
           
+          [[ "${{ inputs.dry_run }}" == "true" ]] &&  exit 0
+          
           title="$(hub release show -f "%t" "${VERSION}")
           body="$(hub release show -f "%b" "${VERSION}")"
           if ! [[ "$body" =~ .*'**Checksums:**'.* ]]
@@ -68,4 +72,4 @@ jobs:
           body="${body%$'\n```'*}
           $checksum
           ```"
-          [[ "${{ inputs.dry_run }}" == "true" ]] || hub release edit -a "${IMG?}" -m "${title?}" -m "$body" "${VERSION?}"
+          hub release edit -a "${IMG?}" -m "${title?}" -m "$body" "${VERSION?}"
