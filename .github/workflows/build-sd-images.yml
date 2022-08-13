@@ -42,6 +42,7 @@ jobs:
       - name: "Build Armbian"
         if: ${{ inputs.board_id != 'raspberrypi' }}
         id: build-armbian
+        continue-on-error: true
         run: |
           set -x
           export LIB_TAG=master
@@ -50,6 +51,25 @@ jobs:
           
           ./build/build-SD-armbian.sh "${{ inputs.board_id }}" "${{ inputs.board_name }}"
           
+          artifacts=("armbian/output/images/Armbian"*.img)
+          mkdir -p output
+          mv "${artifacts[0]}" "output/$IMG"
+          echo "::set-output name=artifact_file::${IMG}"
+          echo "ARTIFACT_FILE=${IMG}" >> $GITHUB_ENV
+      - name: "Build Armbian (2nd attempt)"
+        if: ${{ inputs.board_id != 'raspberrypi' && steps.build-armbian.outcome == failure }}
+        id: build-armbian-2nd
+        run: |
+          set -x
+          echo "Cleanup armbian build leftovers..."
+          rm -rf armbian/ tmp/ output/
+          
+          export LIB_TAG=master
+          IMG="NextCloudPi_${{ inputs.board_name }}_${VERSION//\//_}.img"
+          [[ "${{ github.ref_protected }}" == true ]] || export DBG=x
+
+          ./build/build-SD-armbian.sh "${{ inputs.board_id }}" "${{ inputs.board_name }}"
+
           artifacts=("armbian/output/images/Armbian"*.img)
           mkdir -p output
           mv "${artifacts[0]}" "output/$IMG"
