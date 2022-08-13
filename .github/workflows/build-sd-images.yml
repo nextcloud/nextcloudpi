@@ -65,7 +65,7 @@ jobs:
           [[ "${{ github.ref_protected }}" == true ]] || export DBG=x
           ./build/build-SD-rpi.sh
           mkdir -p output
-          mv "$IMG" ./output/
+          mv "tmp/$IMG" ./output/
 
           for i in {1..10}
           do
@@ -77,7 +77,7 @@ jobs:
 
           echo "::set-output name=artifact_file::${IMG}"
           echo "ARTIFACT_FILE=${IMG}" >> $GITHUB_ENV
-      - name: upload Armbian image to artifact store
+      - name: upload image to artifact store
         uses: actions/upload-artifact@v3
         with:
           name: ${{ github.run_id }}-${{ inputs.board_id }}-image
