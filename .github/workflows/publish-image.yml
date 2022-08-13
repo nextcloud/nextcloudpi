@@ -55,7 +55,10 @@ jobs:
           echo "Artifact Checksum: 
             $checksum"
           
-          [[ "${{ inputs.dry_run }}" == "true" ]] &&  exit 0
+          [[ "${{ inputs.dry_run }}" == "true" ]] && {
+            echo "Dry run only. Skipping release..."
+            exit 0
+          }
           
           title="$(hub release show -f "%t" "${VERSION}")
           body="$(hub release show -f "%b" "${VERSION}")"
