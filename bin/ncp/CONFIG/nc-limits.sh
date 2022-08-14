@@ -12,6 +12,8 @@ configure()
 {
   # Set auto memory limit to 75% of the total memory
   local TOTAL_MEM="$( free -b | sed -n 2p | awk '{ print $2 }' )"
+  # special case of 32bit emulation (e.g. 32bit-docker on 64bit hardware)
+  file /bin/bash | grep 64-bit > /dev/null || TOTAL_MEM="$(( 1024 * 1024 * 1024 * 4 ))"
   AUTOMEM=$(( TOTAL_MEM * 75 / 100 ))
 
   # MAX FILESIZE

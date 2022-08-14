@@ -16,7 +16,6 @@ on:
   push:
     branches:
       - master
-      - devel
 
 jobs:
   setup-installation-test-instance:
