@@ -44,7 +44,7 @@ jobs:
         id: build-armbian
         continue-on-error: true
         run: |
-          set -x
+          set -ex
           export LIB_TAG=master
           export IMG="NextCloudPi_${{ inputs.board_name }}_${VERSION//\//_}.img"
           [[ "${{ github.ref_protected }}" == true ]] || export DBG=x
@@ -60,9 +60,9 @@ jobs:
         if: ${{ inputs.board_id != 'raspberrypi' && steps.build-armbian.outcome == 'failure' }}
         id: build-armbian-2nd
         run: |
-          set -x
+          set -ex
           echo "Cleanup armbian build leftovers..."
-          rm -rf armbian/ tmp/ output/
+          sudo rm -rf armbian/ tmp/ output/
           
           export LIB_TAG=master
           export IMG="NextCloudPi_${{ inputs.board_name }}_${VERSION//\//_}.img"
@@ -79,7 +79,7 @@ jobs:
         if: ${{ inputs.board_id == 'raspberrypi' }}
         id: build-rpi
         run: |
-          set -e
+          set -ex
           echo "Protected? ${{ github.ref_protected }}"
           export IMG="NextCloudPi_${{ inputs.board_name }}_${VERSION//\//_}.img"
           wget -q https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-aarch64-static -O ./qemu-aarch64-static
