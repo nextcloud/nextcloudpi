@@ -291,7 +291,7 @@ function download_raspbian()
   test -f "$ZIP_CACHE" && {
     echo -e "INFO: $ZIP_CACHE already exists. Skipping download ..."
   } || {
-    wget "$URL" -O "$ZIP_CACHE" || return 1
+    wget "$URL" -nv -O "$ZIP_CACHE" || return 1
   }
 
   unzip -o "$ZIP_CACHE" && \
