@@ -57,7 +57,7 @@ jobs:
           echo "::set-output name=artifact_file::${IMG}"
           echo "ARTIFACT_FILE=${IMG}" >> $GITHUB_ENV
       - name: "Build Armbian (2nd attempt)"
-        if: ${{ inputs.board_id != 'raspberrypi' && steps.build-armbian.outcome == failure }}
+        if: ${{ inputs.board_id != 'raspberrypi' && steps.build-armbian.outcome == 'failure' }}
         id: build-armbian-2nd
         run: |
           set -x
