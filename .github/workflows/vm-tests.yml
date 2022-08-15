@@ -241,7 +241,7 @@ jobs:
         HCLOUD_TOKEN: "${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}"
     strategy:
       matrix:
-        test_type: [install, update]
+        test_type: [install]
         include:
           - test_type: install
             server_address: ${{ needs.setup-installation-test-instance.outputs.server_address }}
@@ -301,7 +301,7 @@ jobs:
         HCLOUD_TOKEN: "${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}"
     strategy:
       matrix:
-        test_type: [install, update]
+        test_type: [update]
         include:
           - test_type: update
             server_address: ${{ needs.setup-update-test-instance.outputs.server_address }}
