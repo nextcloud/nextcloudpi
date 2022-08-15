@@ -76,7 +76,7 @@ function is_port_open()
   local token=$(wget -T2 -t1 -qO- --keep-session-cookies --save-cookies $tmp_file https://portchecker.co | grep -oP "_csrf\" value=\"\K.*\"")
 
   if [[ "${token}" != "" ]]; then
-    wget -T2 -t1 -qO- --load-cookies $tmp_file https://portchecker.co --post-data "target_ip=${public_ip}&port=${port}&_csrf=${token::-1}" \
+    wget -T2 -t1 -qO- --load-cookies $tmp_file https://portchecker.co/check --post-data "target_ip=${public_ip}&port=${port}&_csrf=${token::-1}" \
     | grep -q '<span class="green">open</span>' && { echo "open"; return 1; }
   fi
   rm $tmp_file
