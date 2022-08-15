@@ -309,7 +309,6 @@ jobs:
         if: ${{ (inputs.release || github.event_name != 'workflow_dispatch') && github.ref_type == 'tag' && (github.ref_protected || startsWith(github.ref, 'refs/tags/v')) }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        working-directory: ./release
         run: |
           subject="$(git tag -n10 --format="%(contents:subject)" "${{ env.VERSION }}")"
           body="$(git tag -n10 --format="%(contents:body)" "${{ env.VERSION }}")"
