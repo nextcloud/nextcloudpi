@@ -317,15 +317,6 @@ jobs:
           ---
           
           "
-          
-          checksums_str=""
-          for checksum in checksums
-          do
-            checksums_str="$checksums_str
-          ```
-          $checksum
-          ```"
-          done
 
           hub release create --draft -F - "${{ env.VERSION }}" <<EOF
           ${subject:-No message found}
