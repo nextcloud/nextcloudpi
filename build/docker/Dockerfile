@@ -1,7 +1,7 @@
-ARG arch=armhf
+ARG arch=arm32v7
 ARG arch_qemu=arm
 ARG release=bullseye
-FROM debian:${release}-slim AS qemu
+FROM --platform=linux/amd64 debian:${release}-slim AS qemu
 
 RUN apt-get update && \
 	DEBIAN_FRONTEND=noninteractive \
@@ -23,7 +23,7 @@ COPY build/docker/debian-ncp/run-parts.sh /
 
 # syntax=docker/dockerfile:experimental
 
-FROM --platform=linux/${arch_qemu} debian-ncp as lamp
+FROM --platform=linux/${arch} debian-ncp as lamp
 
 LABEL maintainer="Ignacio Núñez Hernanz <nacho@ownyourbits.com>"
 
@@ -71,7 +71,7 @@ ENTRYPOINT ["/run-parts.sh"]
 
 EXPOSE 80 443
 
-FROM --platform=linux/${arch_qemu} lamp as nextcloud
+FROM --platform=linux/${arch} lamp as nextcloud
 # syntax=docker/dockerfile:experimental
 
 ARG arch_qemu
@@ -123,7 +123,7 @@ COPY build/docker/nextcloud/020nextcloud /etc/services-enabled.d/
 COPY bin/ncp-provisioning.sh /usr/local/bin/
 # syntax=docker/dockerfile:experimental
 
-FROM --platform=linux/${arch_qemu} nextcloud as nextcloudpi
+FROM --platform=linux/${arch} nextcloud as nextcloudpi
 
 ARG ncp_ver=v0.0.0
 
@@ -189,6 +189,6 @@ echo "${ncp_ver}" > /usr/local/etc/ncp-version
 
 COPY build/docker/nextcloudpi/000ncp /etc/services-enabled.d/
 
-FROM --platform=linux/${arch_qemu} nextcloudpi as ncp-qemu-fix
+FROM --platform=linux/${arch} nextcloudpi as ncp-qemu-fix
 
 RUN echo 'Mutex posixsem' >> /etc/apache2/mods-available/ssl.conf

@@ -8,7 +8,7 @@
 # Usage: ./batch.sh <DHCP QEMU image IP>
 #
 
-set -e
+set -e"$DBG"
 source build/buildlib.sh
 
 echo -e "\e[1m\n[ Build NCP Raspberry Pi ]\e[0m"
@@ -67,7 +67,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
     # install NCP
     cd /tmp/ncp-build || exit 1
     systemctl daemon-reload
-    CODE_DIR="$(pwd)" DBG=x bash install.sh
+    CODE_DIR="$(pwd)" bash install.sh
 
     # work around dhcpcd Raspbian bug
     # https://lb.raspberrypi.org/forums/viewtopic.php?t=230779

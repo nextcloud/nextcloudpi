@@ -31,7 +31,7 @@ function launch_install_qemu()
   sleep 10
   wait_SSH "$IP"
   launch_installation_qemu "$IP" || return 1 # uses $INSTALLATION_CODE
-  wait 
+  wait
   echo "$IMGOUT generated successfully"
 }
 
@@ -59,9 +59,9 @@ function ssh_pi()
                       -o LogLevel=quiet                  )
   type sshpass &>/dev/null && local SSHPASS=( sshpass -p$PIPASS )
   if [[ "${SSHPASS[@]}" == "" ]]; then
-    ${SSH[@]} ${PIUSER}@$IP $ARGS; 
+    ${SSH[@]} ${PIUSER}@$IP $ARGS;
   else
-    ${SSHPASS[@]} ${SSH[@]} ${PIUSER}@$IP $ARGS 
+    ${SSHPASS[@]} ${SSH[@]} ${PIUSER}@$IP $ARGS
     local RET=$?
     [[ $RET -eq 5 ]] && { ${SSH[@]} ${PIUSER}@$IP $ARGS; return $?; }
     return $RET
@@ -291,12 +291,12 @@ function download_raspbian()
   test -f "$ZIP_CACHE" && {
     echo -e "INFO: $ZIP_CACHE already exists. Skipping download ..."
   } || {
-    wget "$URL" -O "$ZIP_CACHE" || return 1
+    wget "$URL" -nv -O "$ZIP_CACHE" || return 1
   }
 
   unzip -o "$ZIP_CACHE" && \
     mv *-raspios-*.img $IMG_CACHE && \
-    cp -v --reflink=auto $IMG_CACHE "$IMGFILE" 
+    cp -v --reflink=auto $IMG_CACHE "$IMGFILE"
 }
 
 function pack_image()
