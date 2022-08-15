@@ -165,7 +165,7 @@ function start_notify_push
     if [[ -f /.docker-image ]]; then
       local arch
       arch="$(dpkg --print-architecture)"
-      [[ "${arch}" = "armhf" ]] && arch="armv7"
+      [[ "${arch}" == "armhf" ]] || [[ "$(uname -m)" =~ "armv7" ]] && arch="armv7"
       NEXTCLOUD_URL=https://localhost sudo -E -u www-data /var/www/nextcloud/apps/notify_push/bin/"${arch}"/notify_push --allow-self-signed /var/www/nextcloud/config/config.php &>/dev/null &
     else
       systemctl enable --now notify_push
