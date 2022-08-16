@@ -20,10 +20,10 @@ configure()
     return 1;
   }
 
-  DATADIR="$(ncc config:system:get datadirectory)"
-  if [[ $( stat -fc%d / ) == $( stat -fc%d "$DATADIR" ) ]] && [[ "$ALLOW_DATA_DIR_REMOVAL" != "yes" ]]
+  DATADIR="$(ncc config:system:get datadirectory || true)"
+  if [[ $( stat -fc%d / ) == $( stat -fc%d "$DATADIR" ) ]] || [[ -z "$DATADIR" ]] && [[ "$ALLOW_DATA_DIR_REMOVAL" != "yes" ]]
   then
-    echo "ERROR: Data directory is on USB drive and removal of data directory was not explicitly allowed. Exiting..."
+    echo "ERROR: Data directory is on USB drive (or can't be determined) and removal of data directory was not explicitly allowed. Exiting..."
     return 1
   fi
 
