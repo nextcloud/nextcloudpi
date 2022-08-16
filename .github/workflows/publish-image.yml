@@ -39,6 +39,7 @@ jobs:
       - name: "Publish artifact"
         env:
           IMG: "${{ inputs.artifact_file }}"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -ex
           mkdir -p publish
