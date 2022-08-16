@@ -61,7 +61,7 @@ jobs:
             exit 0
           }
           
-          title="$(hub release show -f "%t" "${VERSION}")
+          title="$(hub release show -f "%t" "${VERSION}")"
           body="$(hub release show -f "%b" "${VERSION}")"
           if ! [[ "$body" =~ .*'**Checksums:**'.* ]]
           then
@@ -75,5 +75,5 @@ jobs:
           
           body="${body%$'\n```'*}
           $checksum
-          ```"
+          \`\`\`"
           hub release edit -a "${IMG?}" -m "${title?}" -m "$body" "${VERSION?}"
