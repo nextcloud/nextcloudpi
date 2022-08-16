@@ -9,16 +9,23 @@
 #
 
 
-configure() 
+configure()
 {
   # count all disk devices except mmcblk0
   local NUM=$( lsblk -ln | grep "^sd[[:alpha:]].*disk" | awk '{ print $6 }' | wc -l )
 
   # only one plugged in
-  [[ $NUM != 1 ]] && { 
+  [[ $NUM != 1 ]] && {
     echo "ERROR: counted $NUM devices. Please, only plug in the USB drive you want to format";
-    return 1; 
+    return 1;
   }
+
+  DATADIR="$(ncc config:system:get datadirectory)"
+  if [[ $( stat -fc%d / ) == $( stat -fc%d "$DATADIR" ) ]] && [[ "$ALLOW_DATA_DIR_REMOVAL" != "yes" ]]
+  then
+    echo "ERROR: Data directory is on USB drive and removal of data directory was not explicitly allowed. Exiting..."
+    return 1
+  fi
 
   # disable nc-automount if enabled
   killall -STOP udiskie 2>/dev/null
