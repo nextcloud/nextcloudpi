@@ -73,7 +73,7 @@ jobs:
           \`\`\`"
           fi
           
-          body="${body%$'\n```'*}
+          body="${body%$'\n\`\`\`'*}
           $checksum
           \`\`\`"
           hub release edit -a "${IMG?}" -m "${title?}" -m "$body" "${VERSION?}"
