@@ -68,8 +68,8 @@ jobs:
             body="${body}
           
           **Checksums:**
-          ```
-          ```"
+          \`\`\`
+          \`\`\`"
           fi
           
           body="${body%$'\n```'*}
