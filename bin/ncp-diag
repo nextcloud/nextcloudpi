@@ -66,25 +66,67 @@ echo "internet check|$( ping -W 2 -w 1 -q github.com &>/dev/null && echo ok || e
 
 function is_port_open()
 {
-  local port=$1
-  local public_ip
-  public_ip="$(curl -m4 -4 https://icanhazip.com 2>/dev/null)" || { echo "closed"; return 1; }
-  if [[ "${public_ip}" == "" ]]; then
-    public_ip="$(curl -m4 -6 https://icanhazip.com 2>/dev/null)" || { echo "closed"; return 1; }
-  fi
-  local tmp_file=$(mktemp)
-  local token=$(wget -T2 -t1 -qO- --keep-session-cookies --save-cookies $tmp_file https://portchecker.co | grep -oP "_csrf\" value=\"\K.*\"")
+  local port="$1" public_ipv4 public_ipv6 tmp_file token ipv4_check ipv4_port ipv6_check ipv6_port
+  ipv4_check=""
+  ipv4_port=""
+  ipv6_check=""
+  ipv6_port=""
 
-  if [[ "${token}" != "" ]]; then
-    wget -T2 -t1 -qO- --load-cookies $tmp_file https://portchecker.co/check --post-data "target_ip=${public_ip}&port=${port}&_csrf=${token::-1}" \
-    | grep -q '<span class="green">open</span>' && { echo "open"; return 1; }
+  public_ipv4="$(curl -s -m4 -4 https://icanhazip.com 2>/dev/null)" || { ipv4_check="1"; }
+  public_ipv6="$(curl -s -m4 -6 https://icanhazip.com 2>/dev/null)" || { ipv6_check="1"; }
+
+  if [[ "$ipv4_check" == "1" ]] && [[ "$ipv6_check" == "1" ]]
+  then
+    echo "Error - IPv4 & IPv6: N/A, couldn't get external IP."; return 1;
   fi
-  rm $tmp_file
-  echo "closed"
+
+  tmp_file=$(mktemp)
+  token=$(wget -T2 -t1 -qO- --keep-session-cookies --save-cookies $tmp_file https://portchecker.co | grep -oP "_csrf\" value=\"\K.*\"")
+
+  if [[ "${token}" != "" ]]
+  then
+    if [[ "$ipv4_check" != "1" ]] && [[ "$ipv6_check" == "1" ]]
+    then
+      wget -T2 -t1 -qO- --load-cookies $tmp_file https://portchecker.co/check \
+      --post-data "target_ip=${public_ipv4}&port=${port}&_csrf=${token::-1}" | grep -q '<span class="green">open</span>' && \
+      { echo "open IPv4 (IPv6: N/A)"; return 1; } || { echo "closed IPv4 (IPv6: N/A)"; return 1; }
+    elif [[ "$ipv4_check" == "1" ]] && [[ "$ipv6_check" != "1" ]]
+    then
+      wget -T2 -t1 -qO- --load-cookies $tmp_file https://portchecker.co/check \
+      --post-data "target_ip=${public_ipv6}&port=${port}&_csrf=${token::-1}" | grep -q '<span class="green">open</span>' && \
+      { echo "open IPv6 (IPv4: N/A)"; return 1; } || { echo "closed IPv6 (IPv4: N/A)"; return 1; }
+    else
+      wget -T2 -t1 -qO- --load-cookies $tmp_file https://portchecker.co/check \
+      --post-data "target_ip=${public_ipv4}&port=${port}&_csrf=${token::-1}" | grep -q '<span class="green">open</span>' && \
+      { ipv4_port="open"; } || { ipv4_port="closed"; }
+
+      wget -T2 -t1 -qO- --load-cookies $tmp_file https://portchecker.co/check \
+      --post-data "target_ip=${public_ipv6}&port=${port}&_csrf=${token::-1}" | grep -q '<span class="green">open</span>' && \
+      { ipv6_port="open"; } || { ipv6_port="closed"; }
+
+      if [[ "$ipv4_port" == "open" ]] && [[ "$ipv6_port" == "open" ]]
+      then
+        echo "open IPv4 & IPv6"; return 1;
+      fi
+
+      if [[ "$ipv4_port" == "open" ]] && [[ "$ipv6_port" == "closed" ]]
+      then
+        echo "open IPv4 (IPv6: closed)"; return 1;
+      elif [[ "$ipv4_port" == "closed" ]] && [[ "$ipv6_port" == "open" ]]
+      then
+        echo "open IPv6 (IPv4: closed)"; return 1;
+      else
+        echo "closed IPv4 & IPv6"; return 1;
+      fi
+    fi
+  else
+    echo "Error - Couldn't obtain a token for port check"; return 1;
+  fi
+  rm "$tmp_file"
 }
 
-echo "port check 80|$( is_port_open 80 )"
-echo "port check 443|$( is_port_open 443 )"
+echo "port check 80 | $( is_port_open 80 )"
+echo "port check 443 | $( is_port_open 443 )"
 
 # LAN
 IFACE=$( ip r | grep "default via" | awk '{ print $5 }' | head -1 )
