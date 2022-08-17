@@ -12,7 +12,37 @@
 configure()
 {
   # count all disk devices except mmcblk0
-  local NUM=$( lsblk -ln | grep "^sd[[:alpha:]].*disk" | awk '{ print $6 }' | wc -l )
+  local mounts
+  local found=false
+  local root_disk
+
+  while read -r line
+  do
+    if [[ "$found" != "true" ]]
+    then
+      mounts="$(rev <<<"$line" | cut -d" " -f1 | rev)"
+      [[ "$mounts" =~ (^|'\x0a')/($|'\x0a') ]] && {
+        echo "$line"
+        found=true
+      }
+    fi
+
+    if [[ "$found" == "true" ]]
+    then
+      if [[ "$(cut -d" " -f6 <<<"$line")" == "disk" ]]
+      then
+        root_disk="$(cut -d" " -f1 <<<"$line")"
+        break
+      fi
+    fi
+  done < <( lsblk -nr | tac )
+
+  [[ -n "$root_disk" ]] || {
+    echo "ERROR: Could not determine root disk!"
+    exit 1
+  }
+
+  local NUM=$( lsblk -ln | grep "^sd[[:alpha:]].*disk" | grep -v "^$root_disk" | awk '{ print $1 }' | wc -l )
 
   # only one plugged in
   [[ $NUM != 1 ]] && {
