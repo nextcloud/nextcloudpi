@@ -66,7 +66,8 @@ echo "internet check|$( ping -W 2 -w 1 -q github.com &>/dev/null && echo ok || e
 
 function is_port_open()
 {
-  local port="$1" public_ipv4 public_ipv6 tmp_file token ipv4_check ipv4_port ipv6_check ipv6_port
+  local port public_ipv4 public_ipv6 tmp_file token ipv4_check ipv4_port ipv6_check ipv6_port
+  port="$1"
   ipv4_check=""
   ipv4_port=""
   ipv6_check=""
@@ -125,8 +126,8 @@ function is_port_open()
   rm "$tmp_file"
 }
 
-echo "port check 80 | $( is_port_open 80 )"
-echo "port check 443 | $( is_port_open 443 )"
+echo "port check 80|$( is_port_open 80 )"
+echo "port check 443|$( is_port_open 443 )"
 
 # LAN
 IFACE=$( ip r | grep "default via" | awk '{ print $5 }' | head -1 )
