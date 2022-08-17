@@ -39,7 +39,7 @@ configure()
 
   [[ -n "$root_disk" ]] || {
     echo "ERROR: Could not determine root disk!"
-    exit 1
+    return 1
   }
 
   local NUM=$( lsblk -ln | grep "^sd[[:alpha:]].*disk" | grep -v "^$root_disk" | awk '{ print $1 }' | wc -l )
