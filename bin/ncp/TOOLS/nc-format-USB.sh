@@ -9,16 +9,56 @@
 #
 
 
-configure() 
+configure()
 {
   # count all disk devices except mmcblk0
-  local NUM=$( lsblk -ln | grep "^sd[[:alpha:]].*disk" | awk '{ print $6 }' | wc -l )
+  local mounts
+  local found=false
+  local root_disk
+
+  while read -r line
+  do
+    if [[ "$found" != "true" ]]
+    then
+      mounts="$(rev <<<"$line" | cut -d" " -f1 | rev)"
+      [[ "$mounts" =~ (^|'\x0a')/($|'\x0a') ]] && {
+        echo "$line"
+        found=true
+      }
+    fi
+
+    if [[ "$found" == "true" ]]
+    then
+      if [[ "$(cut -d" " -f6 <<<"$line")" == "disk" ]]
+      then
+        root_disk="$(cut -d" " -f1 <<<"$line")"
+        break
+      fi
+    fi
+  done < <( lsblk -nr | tac )
+
+  [[ -n "$root_disk" ]] || {
+    echo "ERROR: Could not determine root disk!"
+    return 1
+  }
+
+  local NUM=$( lsblk -ln | grep "^sd[[:alpha:]].*disk" | grep -v "^$root_disk" | awk '{ print $1 }' | wc -l )
 
   # only one plugged in
-  [[ $NUM != 1 ]] && { 
+  [[ $NUM != 1 ]] && {
     echo "ERROR: counted $NUM devices. Please, only plug in the USB drive you want to format";
-    return 1; 
+    return 1;
   }
+
+  DATADIR="$(ncc config:system:get datadirectory || true)"
+  if [[ $( stat -fc%d / ) != $( stat -fc%d "$DATADIR" ) ]] || [[ -z "$DATADIR" ]] && [[ "$ALLOW_DATA_DIR_REMOVAL" != "yes" ]]
+  then
+    echo "ERROR: Data directory is on USB drive (or can't be determined) and removal of data directory was not explicitly allowed." \
+      "Please move the data directory to SD before formatting the USB drive." \
+      "If you are certain that the data directory is not on this USB drive, check 'Allow data directory removal'." \
+      "Exiting..."
+    return 1
+  fi
 
   # disable nc-automount if enabled
   killall -STOP udiskie 2>/dev/null
