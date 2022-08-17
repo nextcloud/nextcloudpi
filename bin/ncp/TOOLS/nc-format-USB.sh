@@ -51,7 +51,7 @@ configure()
   }
 
   DATADIR="$(ncc config:system:get datadirectory || true)"
-  if [[ $( stat -fc%d / ) == $( stat -fc%d "$DATADIR" ) ]] || [[ -z "$DATADIR" ]] && [[ "$ALLOW_DATA_DIR_REMOVAL" != "yes" ]]
+  if [[ $( stat -fc%d / ) != $( stat -fc%d "$DATADIR" ) ]] || [[ -z "$DATADIR" ]] && [[ "$ALLOW_DATA_DIR_REMOVAL" != "yes" ]]
   then
     echo "ERROR: Data directory is on USB drive (or can't be determined) and removal of data directory was not explicitly allowed." \
       "Please move the data directory to SD before formatting the USB drive." \
