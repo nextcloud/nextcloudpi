@@ -12,6 +12,10 @@ on:
         type: string
   push:
     branches:
+      - devel
+  pull_request:
+    branches:
+      - devel
       - master
 
 jobs:
