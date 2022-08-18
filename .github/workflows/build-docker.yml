@@ -12,6 +12,7 @@ on:
         type: string
   push:
     branches:
+      - master
       - devel
   pull_request:
     branches:
