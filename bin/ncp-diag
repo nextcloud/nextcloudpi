@@ -66,68 +66,80 @@ echo "internet check|$( ping -W 2 -w 1 -q github.com &>/dev/null && echo ok || e
 
 function is_port_open()
 {
-  local port public_ipv4 public_ipv6 tmp_file token ipv4_check ipv4_port ipv6_check ipv6_port
-  port="$1"
-  ipv4_check=""
-  ipv4_port=""
-  ipv6_check=""
-  ipv6_port=""
-
-  public_ipv4="$(curl -s -m4 -4 https://icanhazip.com 2>/dev/null)" || { ipv4_check="1"; }
-  public_ipv6="$(curl -s -m4 -6 https://icanhazip.com 2>/dev/null)" || { ipv6_check="1"; }
-
-  if [[ "$ipv4_check" == "1" ]] && [[ "$ipv6_check" == "1" ]]
-  then
-    echo "Error - IPv4 & IPv6: N/A, couldn't get external IP."; return 1;
-  fi
-
+  local port port_url ip_url tmp_file token token_args grep_token grep_portcheck \
+  public_ipv4 ipv4_check_fail ipv4_port_access ipv4_args ipv4_portcheck_args \
+  public_ipv6 ipv6_check_fail ipv6_port_access ipv6_args ipv6_portcheck_args
   tmp_file=$(mktemp)
-  token=$(wget -T2 -t1 -qO- --keep-session-cookies --save-cookies $tmp_file https://portchecker.co | grep -oP "_csrf\" value=\"\K.*\"")
-
-  if [[ "${token}" != "" ]]
-  then
-    if [[ "$ipv4_check" != "1" ]] && [[ "$ipv6_check" == "1" ]]
+  trap "rm -rf ${tmp_file}; exit $?" EXIT ERR SIGINT SIGQUIT SIGABRT SIGTERM SIGHUP
+  
+    port="$1"
+    ipv4_check_fail=false
+    ipv6_check_fail=false
+    
+    readonly port_url="https://portchecker.co"
+    readonly ip_url="https://icanhazip.com"
+    readonly token_args=(-T2 -t1 -qO- --keep-session-cookies --save-cookies "${tmp_file}" "${port_url}")
+    readonly grep_token_args=(-oP "_csrf\" value=\"\K.*\"")
+    readonly grep_portcheck_args=(-q '<span class="green">open</span>')
+    readonly ipv4_args=(-s -m4 -4 "${ip_url}")
+    readonly ipv6_args=(-s -m4 -6 "${ip_url}")
+  
+    public_ipv4=$(curl "${ipv4_args[@]}" 2>/dev/null) || { ipv4_check_fail=:; }
+    public_ipv6=$(curl "${ipv6_args[@]}" 2>/dev/null) || { ipv6_check_fail=:; }
+  
+    if [[ "${ipv4_check_fail}" == true ]] && [[ "${ipv6_check_fail}" == true ]]
     then
-      wget -T2 -t1 -qO- --load-cookies $tmp_file https://portchecker.co/check \
-      --post-data "target_ip=${public_ipv4}&port=${port}&_csrf=${token::-1}" | grep -q '<span class="green">open</span>' && \
-      { echo "open IPv4 (IPv6: N/A)"; return 1; } || { echo "closed IPv4 (IPv6: N/A)"; return 1; }
-    elif [[ "$ipv4_check" == "1" ]] && [[ "$ipv6_check" != "1" ]]
-    then
-      wget -T2 -t1 -qO- --load-cookies $tmp_file https://portchecker.co/check \
-      --post-data "target_ip=${public_ipv6}&port=${port}&_csrf=${token::-1}" | grep -q '<span class="green">open</span>' && \
-      { echo "open IPv6 (IPv4: N/A)"; return 1; } || { echo "closed IPv6 (IPv4: N/A)"; return 1; }
-    else
-      wget -T2 -t1 -qO- --load-cookies $tmp_file https://portchecker.co/check \
-      --post-data "target_ip=${public_ipv4}&port=${port}&_csrf=${token::-1}" | grep -q '<span class="green">open</span>' && \
-      { ipv4_port="open"; } || { ipv4_port="closed"; }
-
-      wget -T2 -t1 -qO- --load-cookies $tmp_file https://portchecker.co/check \
-      --post-data "target_ip=${public_ipv6}&port=${port}&_csrf=${token::-1}" | grep -q '<span class="green">open</span>' && \
-      { ipv6_port="open"; } || { ipv6_port="closed"; }
-
-      if [[ "$ipv4_port" == "open" ]] && [[ "$ipv6_port" == "open" ]]
-      then
-        echo "open IPv4 & IPv6"; return 1;
-      fi
-
-      if [[ "$ipv4_port" == "open" ]] && [[ "$ipv6_port" == "closed" ]]
-      then
-        echo "open IPv4 (IPv6: closed)"; return 1;
-      elif [[ "$ipv4_port" == "closed" ]] && [[ "$ipv6_port" == "open" ]]
-      then
-        echo "open IPv6 (IPv4: closed)"; return 1;
-      else
-        echo "closed IPv4 & IPv6"; return 1;
-      fi
+      echo "Error - IPv4 & IPv6: N/A, couldn't get external IP."; return 1;
     fi
-  else
-    echo "Error - Couldn't obtain a token for port check"; return 1;
-  fi
-  rm "$tmp_file"
+
+    token=$(wget "${token_args[@]}" | grep "${grep_token_args[@]}" )
+    readonly ipv4_portcheck_args=(-T2 -t1 -qO- --load-cookies "${tmp_file}" "${port_url}" --post-data "target_ip=${public_ipv4}&port=${port}&_csrf=${token::-1}")
+    readonly ipv6_portcheck_args=(-T2 -t1 -qO- --load-cookies "${tmp_file}" "${port_url}" --post-data "target_ip=${public_ipv6}&port=${port}&_csrf=${token::-1}")
+  
+    if [[ -n "${token}" ]]
+    then
+      if [[ "${ipv4_check_fail}" == false ]] && [[ "${ipv6_check_fail}" == true ]]
+      then
+        grep "${grep_portcheck_args[@]}" <(wget "${ipv4_portcheck_args[@]}") && \
+        { echo "Open IPv4 (IPv6: N/A)"; return 0; } || { echo "Closed IPv4 (IPv6: N/A)"; return 0; }
+      elif [[ "${ipv4_check_fail}" == true ]] && [[ "${ipv6_check_fail}" == false ]]
+      then
+        grep "${grep_portcheck_args[@]}" <(wget "${ipv6_portcheck_args[@]}") && \
+        { echo "Open IPv6 (IPv4: N/A)"; return 0; } || { echo "Closed IPv6 (IPv4: N/A)"; return 0; }
+      else
+        grep "${grep_portcheck_args[@]}" <(wget "${ipv4_portcheck_args[@]}") && \
+        { ipv4_port_access=true; } || { ipv4_port_access=false; }
+  
+        grep "${grep_portcheck_args[@]}" <(wget "${ipv6_portcheck_args[@]}") && \
+        { ipv6_port_access=true; } || { ipv6_port_access=false; }
+  
+        if [[ "${ipv4_port_access}" == true ]] && [[ "${ipv6_port_access}" == true ]]
+        then
+          echo "Open IPv4 & IPv6"
+          return 0
+        fi
+        if [[ "${ipv4_port_access}" == true ]] && [[ "${ipv6_port_access}" == false ]]
+        then
+          echo "Open IPv4 (IPv6: Closed)"
+          return 0
+        elif [[ "${ipv4_port_access}" == false ]] && [[ "${ipv6_port_access}" == true ]]
+        then
+          echo "Open IPv6 (IPv4: Closed)"
+          return 0
+        else
+          echo "Closed IPv4 & IPv6"
+          return 1
+        fi
+      fi
+    else
+      echo "Error - Couldn't obtain a token for port check"
+      return 1
+    fi
 }
 
-echo "port check 80|$( is_port_open 80 )"
-echo "port check 443|$( is_port_open 443 )"
+echo "Port check 80|$( is_port_open 80 )"
+echo "Port check 443|$( is_port_open 443 )"
+
 
 # LAN
 IFACE=$( ip r | grep "default via" | awk '{ print $5 }' | head -1 )
