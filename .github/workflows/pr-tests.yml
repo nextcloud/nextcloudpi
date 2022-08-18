@@ -8,4 +8,4 @@ jobs:
   lxd:
     uses: ./.github/workflows/build-lxd.yml
     with:
-      git_ref: "${{ github.head_ref || github.ref_name }}"
+      git_ref: "${{ env.GITHUB_REF }}"
