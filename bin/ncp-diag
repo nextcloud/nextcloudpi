@@ -89,7 +89,7 @@ function is_port_open()
   
     if [[ "${publicIPv4_exist}" == False ]] && [[ "${publicIPv6_exist}" == False ]]
     then
-      echo "Error - IPv4 & IPv6: Couldn't get public IP."
+      echo "Error - IPv4 & IPv6: [N/A] Couldn't get public IP."
       return 1
     fi
 
@@ -117,34 +117,34 @@ function is_port_open()
        
       if [[ "${ipv4_port_access}" == True ]] && [[ "${ipv6_port_access}" == True ]]
       then
-        echo "Open. IPv4: ${ipv4_port_access} & IPv6: ${ipv6_port_access}"
+        echo "open IPv4 & IPv6"
         return 0
       elif [[ "${ipv4_port_access}" == False ]] && [[ "${ipv6_port_access}" == False ]]
       then
-        echo "Closed. IPv4 & IPv6"
+        echo "closed IPv4 & IPv6"
         return 0
       fi
       
       if [[ "${ipv4_port_access}" == True ]] && [[ "${publicIPv6_exist}" == False  ]]
       then
-        echo "Open. IPv4: ${ipv4_port_access} & IPv6: N/A" 
+        echo "open IPv4 (IPv6: N/A)" 
         return 0
       elif [[ "${ipv6_port_access}" == True ]] && [[ "${publicIPv4_exist}" == False  ]]
       then
-        echo "Open. IPv6: ${ipv6_port_access} & IPv4: N/A"
+        echo "open IPv6 (IPv4: N/A)"
         return 0
       fi
       
       if [[ "${ipv4_port_access}" == True ]] && [[ "${ipv6_port_access}" == False ]]
       then
-        echo "Open. IPv4: ${ipv4_port_access} & IPv6: ${ipv6_port_access}"
+        echo "open IPv4 (IPv6: closed)"
         return 0
       elif [[ "${ipv4_port_access}" == False ]] && [[ "${ipv6_port_access}" == True ]]
       then
-        echo "Open. IPv4: ${ipv4_port_access} & IPv6: ${ipv6_port_access}"
+        echo "open IPv6 (IPv4: closed)"
         return 0
       else
-        echo "Error - Teapot"
+        echo "Error - I'm a Teapot"
         return 1
       fi
       
