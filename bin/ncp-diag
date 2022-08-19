@@ -70,7 +70,7 @@ function is_port_open()
   publicIPv4 publicIPv4_exist ipv4_port_access ipv4_args ipv4_portcheck_args \
   publicIPv6 publicIPv6_exist ipv6_port_access ipv6_args ipv6_portcheck_args
   tmp_file=$(mktemp)
-  trap "rm -rf ${tmp_file}; exit $?" EXIT ERR SIGINT SIGQUIT SIGABRT SIGTERM SIGHUP
+  trap "rm -rf ${tmp_file}" EXIT ERR SIGINT SIGQUIT SIGABRT SIGTERM SIGHUP
   
     port="$1"
     publicIPv4_exist=True
