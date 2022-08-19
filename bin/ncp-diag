@@ -66,7 +66,7 @@ echo "Internet check|$( ping -W 2 -w 1 -q github.com &>/dev/null && echo ok || e
 
 function is_port_open()
 {
-  local port port_url ip_url tmp_file token token_args grep_token grep_portcheck \
+  local port port_url port_check_url ip_url tmp_file token token_args grep_token grep_portcheck \
   publicIPv4 publicIPv4_exist ipv4_port_access ipv4_args ipv4_portcheck_args \
   publicIPv6 publicIPv6_exist ipv6_port_access ipv6_args ipv6_portcheck_args
   tmp_file=$(mktemp)
@@ -76,6 +76,7 @@ function is_port_open()
     publicIPv4_exist=True
     publicIPv6_exist=True
     readonly port_url="https://portchecker.co"
+    readonly port_check_url="https://portchecker.co/check"
     readonly ip_url="https://icanhazip.com"
     readonly token_args=(-T2 -t1 -qO- --keep-session-cookies --save-cookies "${tmp_file}" "${port_url}")
     readonly grep_token_args=(-oP "_csrf\" value=\"\K.*\"")
@@ -93,8 +94,8 @@ function is_port_open()
     fi
 
     token=$(wget "${token_args[@]}" | grep "${grep_token_args[@]}" )
-    readonly ipv4_portcheck_args=(-T2 -t1 -qO- --load-cookies "${tmp_file}" "${port_url}" --post-data "target_ip=${publicIPv4}&port=${port}&_csrf=${token::-1}")
-    readonly ipv6_portcheck_args=(-T2 -t1 -qO- --load-cookies "${tmp_file}" "${port_url}" --post-data "target_ip=${publicIPv6}&port=${port}&_csrf=${token::-1}")
+    readonly ipv4_portcheck_args=(-T2 -t1 -qO- --load-cookies "${tmp_file}" "${port_check_url}" --post-data "target_ip=${publicIPv4}&port=${port}&_csrf=${token::-1}")
+    readonly ipv6_portcheck_args=(-T2 -t1 -qO- --load-cookies "${tmp_file}" "${port_check_url}" --post-data "target_ip=${publicIPv6}&port=${port}&_csrf=${token::-1}")
   
     if [[ -n "${token}" ]]
     then
