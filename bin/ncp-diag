@@ -66,98 +66,63 @@ echo "Internet check|$( ping -W 2 -w 1 -q github.com &>/dev/null && echo ok || e
 
 function is_port_open()
 {
-  local port port_url port_check_url ip_url \
-  tmp_file token token_args grep_token_args grep_portcheck_args \
-  publicIPv4 publicIPv4_exist ipv4_port_access ipv4_args ipv4_portcheck_args \
-  publicIPv6 publicIPv6_exist ipv6_port_access ipv6_args ipv6_portcheck_args
+  local port_url tmp_file token ipv4_portcheck_args ipv6_portcheck_args
   tmp_file=$(mktemp)
   trap 'rm -rf ${tmp_file}' EXIT ERR SIGINT SIGQUIT SIGABRT SIGTERM SIGHUP
-  
-    port="$1"
-    publicIPv4_exist=True
-    publicIPv6_exist=True
-    readonly port_url="https://portchecker.co"
-    readonly port_check_url="https://portchecker.co/check"
-    readonly ip_url="https://icanhazip.com"
-    readonly token_args=(-T2 -t1 -qO- --keep-session-cookies --save-cookies "${tmp_file}" "${port_url}")
-    readonly grep_token_args=(-oP "_csrf\" value=\"\K.*\"")
-    readonly grep_portcheck_args=(-q '<span class="green">open</span>')
-    readonly ipv4_args=(-s -m4 -4 "${ip_url}")
-    readonly ipv6_args=(-s -m4 -6 "${ip_url}")
-  
-    publicIPv4=$(curl "${ipv4_args[@]}" 2>/dev/null) || { publicIPv4_exist=False; }
-    publicIPv6=$(curl "${ipv6_args[@]}" 2>/dev/null) || { publicIPv6_exist=False; }
-  
-    if [[ "${publicIPv4_exist}" == False ]] && [[ "${publicIPv6_exist}" == False ]]
-    then
-      echo "Error - IPv4 & IPv6: [N/A] Couldn't get public IP."
-      return 1
-    fi
 
-    token=$(wget "${token_args[@]}" | grep "${grep_token_args[@]}" )
-    readonly ipv4_portcheck_args=(-T2 -t1 -qO- --load-cookies "${tmp_file}" "${port_check_url}" --post-data "target_ip=${publicIPv4}&port=${port}&_csrf=${token::-1}")
-    readonly ipv6_portcheck_args=(-T2 -t1 -qO- --load-cookies "${tmp_file}" "${port_check_url}" --post-data "target_ip=${publicIPv6}&port=${port}&_csrf=${token::-1}")
-  
-    if [[ -n "${token}" ]]
-    then
-      if [[ "${publicIPv4_exist}" == True ]] && [[ "${publicIPv6_exist}" == False ]]
-      then
-        grep "${grep_portcheck_args[@]}" <(wget "${ipv4_portcheck_args[@]}") && \
-        { ipv4_port_access=True; } || { ipv4_port_access=False; }
-      elif [[ "${publicIPv4_exist}" == False ]] && [[ "${publicIPv6_exist}" == True ]]
-      then
-        grep "${grep_portcheck_args[@]}" <(wget "${ipv6_portcheck_args[@]}") && \
-        { ipv6_port_access=True; } || { ipv6_port_access=False; }
-      else
-        grep "${grep_portcheck_args[@]}" <(wget "${ipv4_portcheck_args[@]}") && \
-        { ipv4_port_access=True; } || { ipv4_port_access=False; }
-  
-        grep "${grep_portcheck_args[@]}" <(wget "${ipv6_portcheck_args[@]}") && \
-        { ipv6_port_access=True; } || { ipv6_port_access=False; }
-      fi
-       
-      if [[ "${ipv4_port_access}" == True ]] && [[ "${ipv6_port_access}" == True ]]
-      then
-        echo "open IPv4 & IPv6"
-        return 0
-      elif [[ "${ipv4_port_access}" == False ]] && [[ "${ipv6_port_access}" == False ]]
-      then
-        echo "closed IPv4 & IPv6"
-        return 0
-      fi
-      
-      if [[ "${ipv4_port_access}" == True ]] && [[ "${publicIPv6_exist}" == False  ]]
-      then
-        echo "open IPv4 (IPv6: N/A)" 
-        return 0
-      elif [[ "${ipv6_port_access}" == True ]] && [[ "${publicIPv4_exist}" == False  ]]
-      then
-        echo "open IPv6 (IPv4: N/A)"
-        return 0
-      fi
-      
-      if [[ "${ipv4_port_access}" == True ]] && [[ "${ipv6_port_access}" == False ]]
-      then
-        echo "open IPv4 (IPv6: closed)"
-        return 0
-      elif [[ "${ipv4_port_access}" == False ]] && [[ "${ipv6_port_access}" == True ]]
-      then
-        echo "open IPv6 (IPv4: closed)"
-        return 0
-      else
-        echo "Error - I'm a Teapot"
-        return 1
-      fi
-      
-    else
-      echo "Error - Couldn't obtain a token for port check"
-      return 1
-    fi
+  local port="${1?}"
+  local publicIPv4="${2}"
+  local publicIPv6="${3}"
+
+  readonly port_url="https://portchecker.co"
+
+  if [[ -z "$publicIPv4" ]] && [[ -z "$publicIPv6" ]]
+  then
+    echo -n "Error - IPv4 & IPv6: [N/A] Couldn't get public IP."
+    return 1
+  fi
+
+  token=$(wget -T2 -t1 -qO- --keep-session-cookies --save-cookies "${tmp_file}" "${port_url}" | grep -oP "_csrf\" value=\"\K.*\"" )
+  readonly ipv4_portcheck_args=(-T2 -t1 -qO- --load-cookies "${tmp_file}" "${port_url}/check" --post-data "target_ip=${publicIPv4}&port=${port}&_csrf=${token::-1}")
+  readonly ipv6_portcheck_args=(-T2 -t1 -qO- --load-cookies "${tmp_file}" "${port_url}/check" --post-data "target_ip=${publicIPv6}&port=${port}&_csrf=${token::-1}")
+
+  [[ -n "${token}" ]] || {
+    echo -n "Error - Couldn't obtain a token for port check"
+    return 1
+  }
+
+  local ipv4_port_access=False
+  local ipv6_port_access=False
+  [[ -n "$publicIPv4" ]] && \
+    grep -q '<span class="green">open</span>' <(wget "${ipv4_portcheck_args[@]}") && \
+    ipv4_port_access=True
+  [[ -n "$publicIPv6" ]] && \
+    grep -q '<span class="green">open</span>' <(wget "${ipv6_portcheck_args[@]}") && \
+    ipv6_port_access=True
+
+  local result=""
+  if [[ "${ipv4_port_access}" == True ]] || [[ "${ipv6_port_access}" == True ]]
+  then
+    result="open ("
+  else
+    result="closed"
+  fi
+
+  [[ "${ipv4_port_access}" == True ]] && result="${result}ipv4)"
+
+  [[ "${ipv6_port_access}" == True ]] && result="${result/)/ \& }ipv6)"
+
+  echo -n "$result"
+
 }
 
-echo "Port check 80|$( is_port_open 80 )"
-echo "Port check 443|$( is_port_open 443 )"
+publicIPv4=$(curl -s -m4 -4 "https://icanhazip.com" 2>/dev/null) || unset publicIPv4
+echo "public IPv4|${publicIPv4:-"not found"}"
+publicIPv6=$(curl -s -m4 -6 "https://icanhazip.com" 2>/dev/null) || unset publicIPv6
+echo "public IPv6|${publicIPv6:-"not found"}"
 
+echo "Port check 80|$( is_port_open 80 "$publicIPv4" "$publicIPv6" )"
+echo "Port check 443|$( is_port_open 443 "$publicIPv4" "$publicIPv6" )"
 
 # LAN
 IFACE=$( ip r | grep "default via" | awk '{ print $5 }' | head -1 )
