@@ -144,12 +144,17 @@ jobs:
       - name: Update ncp
         run: |
           set -ex
-          VERSION="${VERSION/refs\/heads\//}"
-          VERSION="${VERSION/refs\/tags\//}"
-          VERSION="${VERSION/refs\/pull\//}"
+          BRANCH="${VERSION/refs\/heads\//}"
+          BRANCH="${VERSION/refs\/tags\//}"
+          if [[ "$BRANCH" =~ "/refs/pull/".* ]]
+          then
+            UPDATE_ARGS=("${{ github.base_ref }}" "$VERSION") 
+          else
+            UPDATE_ARGS=("$BRANCH")
+          fi
           echo "VERSION=${VERSION}" >> "$GITHUB_ENV"
           echo "Running update ${{ needs.build-previous.outputs.previous_version }} -> ${VERSION}"
-          lxc exec ncp -- bash -c "DBG=x ncp-update '${VERSION//}'"
+          lxc exec ncp -- bash -c "DBG=x ncp-update ${UPDATE_ARGS[*]}"
           lxc stop ncp
       - name: Checkout code
         uses: actions/checkout@v3
