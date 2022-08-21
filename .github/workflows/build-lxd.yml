@@ -145,7 +145,7 @@ jobs:
         run: |
           set -ex
           BRANCH="${VERSION/refs\/heads\//}"
-          BRANCH="${VERSION/refs\/tags\//}"
+          BRANCH="${BRANCH/refs\/tags\//}"
           if [[ "$BRANCH" =~ "refs/pull/"* ]]
           then
             UPDATE_ARGS=("${{ github.base_ref }}" "$VERSION") 
