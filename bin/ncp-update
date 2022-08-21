@@ -19,6 +19,14 @@
     exit 1
   }
 
+  [[ -z "$2" ]] || {
+    git fetch origin "$2" || {
+      echo "Error: Could not fetch $2"
+      exit 1
+    }
+    git checkout FETCH_HEAD
+  } 
+
   [[ -f /.ncp-image ]] || cd "$TMPDIR"         # update locally during build
 
   echo -e "Performing updates"
