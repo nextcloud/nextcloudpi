@@ -30,15 +30,15 @@ reload_metrics_config() {
   is_supported || return 0
 
   install_template ncp-metrics.cfg.sh "/usr/local/etc/ncp-metrics.cfg" || {
-    echo "ERROR while generating ncp-metrics.conf!"
+    echo -e "ERROR while generating ncp-metrics.conf!"
     return 1
   }
   service ncp-metrics-exporter status > /dev/null && {
     service ncp-metrics-exporter restart
     service ncp-metrics-exporter status > /dev/null 2>&1 || {
       rc=$?
-      echo -e "WARNING: An error ncp-metrics exporter failed to start (exit-code $rc)!"
-      return 1
+      echo -e "WARNING: ncp-metrics-exporter failed to start (exit-code $rc)!"
+      return $rc
     }
   }
 }

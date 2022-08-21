@@ -118,6 +118,8 @@ configure()
     . "${BINDIR?}/SYSTEM/metrics.sh"
     reload_metrics_config
   )
+
+  echo "The NC data directory has been moved successfully."
 }
 
 # License
