@@ -1,7 +1,12 @@
+name: LXD Tests
+
 on:
   pull_request:
     branches:
       - master
+      - devel
+  push:
+    branches:
       - devel
 
 jobs:
