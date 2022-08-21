@@ -25,6 +25,9 @@ export DEBIAN_FRONTEND=noninteractive
 install()
 {
     set -x
+    # Setup apt repository for php 8
+    wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
+    echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list
     apt-get update
     $APTINSTALL apt-utils cron curl
     ls -l /var/lock || true
@@ -35,7 +38,7 @@ install()
 
     $APTINSTALL -t $RELEASE php${PHPVER} php${PHPVER}-curl php${PHPVER}-gd php${PHPVER}-fpm php${PHPVER}-cli php${PHPVER}-opcache \
                             php${PHPVER}-mbstring php${PHPVER}-xml php${PHPVER}-zip php${PHPVER}-fileinfo php${PHPVER}-ldap \
-                            php${PHPVER}-intl php${PHPVER}-bz2 php${PHPVER}-json
+                            php${PHPVER}-intl php${PHPVER}-bz2 php-json
 
     mkdir -p /run/php
 
