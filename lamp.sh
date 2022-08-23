@@ -26,7 +26,7 @@ install()
 {
     set -x
     apt-get update
-    $APTINSTALL apt-utils cron curl gpg2
+    $APTINSTALL apt-utils cron curl gpg
     # Setup apt repository for php 8
     wget -qO - https://packages.sury.org/php/apt.gpg | apt-key add
     echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list
