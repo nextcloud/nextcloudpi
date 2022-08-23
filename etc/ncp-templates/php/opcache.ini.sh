@@ -8,7 +8,7 @@ PHPVER="${PHPVER?ERROR: PHPVER variable unset!}"
 
 if [[ "$1" != "--defaults" ]]
 then
-  TMP_DIR="$(source "${BINDIR}/CONFIG/nc-datadir.sh"; tmpl_opcache_tmp_dir)"
+  TMP_DIR="$(source "${BINDIR}/CONFIG/nc-datadir.sh"; tmpl_opcache_dir)"
 else
   echo -e "INFO: Restoring template to default settings"
 

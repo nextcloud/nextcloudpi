@@ -62,8 +62,9 @@ close_summary
 
 ##
 
-DATADIR="$( grep datadirectory /var/www/nextcloud/config/config.php |
-            awk '{ print $3 }' | grep -oP "[^']*[^']" | head -1 )"
+DATADIR="$( get_nc_config_value datadirectory ||
+            grep datadirectory /var/www/nextcloud/config/config.php |
+              awk '{ print $3 }' | grep -oP "[^']*[^']" | head -1 )"
 
 open_summary "Nextcloud logs"
 tail -20 "$DATADIR"/nextcloud.log

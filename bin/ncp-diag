@@ -19,8 +19,7 @@ echo "NextCloudPi version|$( cat /usr/local/etc/ncp-version )"
 echo "OS|$(cat /etc/issue  | sed 's| \\n \\l||'). $(uname -r) ($(uname -m))"
 
 # Data
-DATADIR="$( grep datadirectory /var/www/nextcloud/config/config.php |
-	    awk '{ print $3 }' | grep -oP "[^']*[^']" | head -1 )"
+DATADIR="$( get_nc_config_value datadirectory )"
 test -d "$DATADIR" || DIRINFO=" (doesn't exist)"
 USBDEVS="$( lsblk -S -o  NAME,TRAN | awk '{ if ( $2 == "usb" ) print $1; }' | tr '\n' ' ' )"
 [[ "$USBDEVS" == "" ]] && USBDEVS="none"

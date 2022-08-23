@@ -525,6 +525,11 @@ function get_ncpcfg()
   jq -r ".${name}" < "${NCPCFG}"
 }
 
+function get_nc_config_value() {
+  sudo -u www-data php -r "include(\"/var/www/nextcloud/config/config.php\"); echo(\$CONFIG[\"${1?Missing required argument: config key}\"]);"
+  #ncc config:system:get "${1?Missing required argument: config key}"
+}
+
 # License
 #
 # This script is free software; you can redistribute it and/or modify it

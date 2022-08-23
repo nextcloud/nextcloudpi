@@ -145,10 +145,10 @@ configure()
   fi
 
   # create and configure opcache dir
-  local OPCACHEDIR=/var/www/nextcloud/data/.opcache
-  sed -i "s|^opcache.file_cache=.*|opcache.file_cache=$OPCACHEDIR|" /etc/php/${PHPVER}/mods-available/opcache.ini
-  mkdir -p $OPCACHEDIR
-  chown -R www-data:www-data $OPCACHEDIR
+  local OPCACHEDIR="$(source "${BINDIR}/CONFIG/nc-datadir.sh"; tmpl_opcache_dir)"
+  mkdir -p "$OPCACHEDIR"
+  chown -R www-data:www-data "$OPCACHEDIR"
+  install_template "php/opcache.ini.sh /etc/php/${PHPVER}/mods-available/opcache.ini"
 
   ## RE-CREATE DATABASE TABLE
   # launch mariadb if not already running (for docker build)

@@ -53,7 +53,7 @@ EOF
 
 is_docker || {
 
-  DATADIR=$( ncc config:system:get datadirectory ) || {
+  DATADIR=$( get_nc_config_value datadirectory ) || {
     echo -e "ERROR: Could not get data directory. Is NextCloud running?";
     return 1;
   }
