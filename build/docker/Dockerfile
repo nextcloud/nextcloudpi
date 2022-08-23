@@ -48,7 +48,7 @@ mysqladmin -u root shutdown; \
 # mariaDB fixups (move database to /data-ro, which will be in a persistent volume)
 mkdir -p /data-ro /data; \
 mv /var/lib/mysql /data-ro/database; \
-sed -i "s|^datadir.*|datadir = /data-ro/database|" /etc/mysql/mariadb.conf.d/90-ncp.cnf; \
+sed -i "s|^datadir.*|datadir = /data-ro/database|" /etc/mysql/mariadb.conf.d/90-ncp.cnf.sh; \
 
 # package cleanup
 apt-get autoremove -y; \

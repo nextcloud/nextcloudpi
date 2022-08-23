@@ -20,6 +20,11 @@ install()
   apt_install btrfs-progs
 }
 
+tmpl_opcache_tmp_dir() {
+  DATADIR="$(ncc config:system:get datadirectory)"
+  [[ $( stat -fc%d / ) == $( stat -fc%d "$DATADIR" ) ]] && echo "/tmp" || echo "${DATADIR}/.opcache"
+}
+
 configure()
 {
   set -e -o pipefail
@@ -106,7 +111,8 @@ configure()
   sed -i "s|^;\?sys_temp_dir =.*$|sys_temp_dir = ${DATADIR}/tmp|"     /etc/php/"${PHPVER}"/fpm/php.ini
 
   # opcache dir
-  sed -i "s|^opcache.file_cache=.*|opcache.file_cache=${DATADIR}/.opcache|" /etc/php/"${PHPVER}"/mods-available/opcache.ini
+  # TODO: Check if ncc config:system:get command works in maintenance mode
+  install_template "php/opcache.ini.sh /etc/php/${PHPVER}/mods-available/opcache.ini"
 
   # update fail2ban logpath
   [[ -f /etc/fail2ban/jail.local ]] && \

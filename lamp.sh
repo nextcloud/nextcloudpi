@@ -84,18 +84,7 @@ EOF
     # CONFIGURE PHP7
     ##########################################
 
-    cat > /etc/php/${PHPVER}/mods-available/opcache.ini <<EOF
-zend_extension=opcache.so
-opcache.enable=1
-opcache.enable_cli=1
-opcache.fast_shutdown=1
-opcache.interned_strings_buffer=8
-opcache.max_accelerated_files=10000
-opcache.memory_consumption=128
-opcache.save_comments=1
-opcache.revalidate_freq=1
-opcache.file_cache=/tmp;
-EOF
+    install_template "php/opcache.ini.sh /etc/php/${PHPVER}/mods-available/opcache.ini" --defaults
 
     a2enmod http2
     a2enconf http2
