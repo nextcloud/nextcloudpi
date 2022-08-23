@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
+source /usr/local/etc/library.sh
 
 if [[ "$1" == "--defaults" ]]
 then

@@ -1,6 +1,7 @@
 #! /bin/bash
 
 set -e
+source /usr/local/etc/library.sh
 
 PHPVER="${PHPVER?ERROR: PHPVER variable unset!}"
 
