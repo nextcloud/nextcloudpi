@@ -10,9 +10,11 @@ then
 else
   if [[ "$DOCKERBUILD" -eq 1 ]]
   then
+    echo -e "INFO: Docker build detected."
     DB_DIR=/data-ro/database
   elif is_docker
   then
+    echo -e "INFO: Docker container detected."
     DB_DIR=/data/database
   else
     DB_DIR="$(source "${BINDIR}/CONFIG/nc-database.sh"; tmpl_db_dir)"
