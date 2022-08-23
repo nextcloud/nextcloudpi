@@ -148,7 +148,7 @@ configure()
   local OPCACHEDIR="$(source "${BINDIR}/CONFIG/nc-datadir.sh"; tmpl_opcache_dir)"
   mkdir -p "$OPCACHEDIR"
   chown -R www-data:www-data "$OPCACHEDIR"
-  install_template "php/opcache.ini.sh /etc/php/${PHPVER}/mods-available/opcache.ini"
+  install_template "php/opcache.ini.sh" "/etc/php/${PHPVER}/mods-available/opcache.ini"
 
   ## RE-CREATE DATABASE TABLE
   # launch mariadb if not already running (for docker build)

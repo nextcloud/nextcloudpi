@@ -1,18 +1,16 @@
 #! /bin/bash
 
 set -e
-set +u
-source /usr/local/etc/library.sh
 
 PHPVER="${PHPVER?ERROR: PHPVER variable unset!}"
 
-if [[ "$1" != "--defaults" ]]
+if [[ "$1" == "--defaults" ]]
 then
-  TMP_DIR="$(source "${BINDIR}/CONFIG/nc-datadir.sh"; tmpl_opcache_dir)"
-else
   echo -e "INFO: Restoring template to default settings"
 
   TMP_DIR="/tmp"
+else
+  TMP_DIR="$(source "${BINDIR}/CONFIG/nc-datadir.sh"; tmpl_opcache_dir)"
 fi
 
   cat > "/etc/php/${PHPVER}/mods-available/opcache.ini" <<EOF

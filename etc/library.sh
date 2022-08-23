@@ -470,7 +470,7 @@ function apt_install()
 }
 
 function is_docker() {
-  [[ -f /.dockerenv ]] || [[ "$DOCKERBUILD" == 1 ]]
+  [[ -f /.dockerenv ]] || [[ -f /.docker-image ]] || [[ "$DOCKERBUILD" == 1 ]]
 }
 
 function is_lxc() {

@@ -56,35 +56,12 @@ install()
     # CONFIGURE APACHE
     ##########################################
 
-  cat > /etc/apache2/conf-available/http2.conf <<EOF
-Protocols h2 h2c http/1.1
-
-# HTTP2 configuration
-H2Push          on
-H2PushPriority  *                       after
-H2PushPriority  text/css                before
-H2PushPriority  image/jpeg              after   32
-H2PushPriority  image/png               after   32
-H2PushPriority  application/javascript  interleaved
-
-# SSL/TLS Configuration
-SSLProtocol -all +TLSv1.2 +TLSv1.3
-SSLHonorCipherOrder on
-SSLCipherSuite ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA:ECDHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA:ECDHE-ECDSA-DES-CBC3-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:DES-CBC3-SHA:!DSS
-SSLCompression          off
-SSLSessionTickets       on
-
-# OCSP Stapling
-SSLUseStapling          on
-SSLStaplingResponderTimeout 5
-SSLStaplingReturnResponderErrors off
-SSLStaplingCache        shmcb:/var/run/ocsp(128000)
-EOF
+    install_template apache2/http2.conf.sh /etc/apache2/conf-available/http2.conf --defaults
 
     # CONFIGURE PHP7
     ##########################################
 
-    install_template "php/opcache.ini.sh /etc/php/${PHPVER}/mods-available/opcache.ini" --defaults
+    install_template "php/opcache.ini.sh" "/etc/php/${PHPVER}/mods-available/opcache.ini" --defaults
 
     a2enmod http2
     a2enconf http2
@@ -104,37 +81,9 @@ EOF
 
     $APTINSTALL ssl-cert # self signed snakeoil certs
 
-    # configure MariaDB (UTF8 4 byte support)
-    cat > /etc/mysql/mariadb.conf.d/90-ncp.cnf <<EOF
-[mysqld]
-datadir = /var/lib/mysql
-EOF
-    cat > /etc/mysql/mariadb.conf.d/91-ncp.cnf <<EOF
-[mysqld]
-transaction_isolation = READ-COMMITTED
-innodb_large_prefix=true
-innodb_file_per_table=1
-innodb_file_format=barracuda
+    install_template "mysql/90-ncp.cnf.sh" "/etc/mysql/mariadb.conf.d/90-ncp.cnf" --defaults
 
-[server]
-# innodb settings
-skip-name-resolve
-innodb_buffer_pool_size = 256M
-innodb_buffer_pool_instances = 1
-innodb_flush_log_at_trx_commit = 2
-innodb_log_buffer_size = 32M
-innodb_max_dirty_pages_pct = 90
-innodb_log_file_size = 32M
-
-# disable query cache
-query_cache_type = 0
-query_cache_size = 0
-
-# other
-tmp_table_size= 64M
-max_heap_table_size= 64M
-EOF
-
+    install_template "mysql/91-ncp.cnf.sh" "/etc/mysql/mariadb.conf.d/91-ncp.cnf" --defaults
 
   # launch mariadb if not already running
   if ! [[ -f /run/mysqld/mysqld.pid ]]; then

@@ -2,7 +2,6 @@
 
 set -e
 set +u
-source /usr/local/etc/library.sh
 
 [[ "$1" != "--defaults" ]] || echo "INFO: Restoring template to default settings" >&2
 is_docker && echo "INFO: Docker installation detected" >&2
@@ -11,7 +10,6 @@ if [[ "$1" != "--defaults" ]]; then
   LETSENCRYPT_DOMAIN="$(
     # force defaults during initial build
     if ! [[ -f /.ncp-image ]]; then
-      source "${BINDIR}/NETWORKING/letsencrypt.sh"
       tmpl_letsencrypt_domain
     fi
   )"
@@ -22,7 +20,6 @@ fi
 # skip during build
 if ! [[ -f /.ncp-image ]] && [[ "$1" != "--defaults" ]] && [[ -f "${BINDIR}/SYSTEM/metrics.sh" ]]; then
   METRICS_IS_ENABLED="$(
-  source "${BINDIR}/SYSTEM/metrics.sh"
   tmpl_metrics_enabled && echo yes || echo no
   )"
 else
@@ -54,7 +51,7 @@ if [[ "$1" != "--defaults" ]] && [[ -n "$LETSENCRYPT_DOMAIN" ]]; then
   # otherwise, in some installs this is the path we use
   [[ -f "${LETSENCRYPT_CERT_BASE_PATH}/fullchain.pem" ]] || {
     if [[ -d "/etc/letsencrypt/live/ncp-nextcloud" ]]; then
-      LETSENCRYPT_CERT_BASE_PATH="/etc/letsencrypt/live/ncp-nextcloud" 
+      LETSENCRYPT_CERT_BASE_PATH="/etc/letsencrypt/live/ncp-nextcloud"
     fi
   }
 else
@@ -140,6 +137,6 @@ cat <<EOF
 EOF
 
 if ! [[ -f /.ncp-image ]]; then
-  echo "Apache self check:" | tee /var/log/ncp.log >&2
-  apache2ctl -t 2>&1 | tee /var/log/ncp.log >&2
+  echo -e "Apache self check:"
+  apache2ctl -t 1>&2
 fi

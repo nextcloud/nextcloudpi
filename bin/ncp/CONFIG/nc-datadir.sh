@@ -137,7 +137,7 @@ configure()
 
   # opcache dir
   create_opcache_dir
-  install_template "php/opcache.ini.sh /etc/php/${PHPVER}/mods-available/opcache.ini"
+  install_template "php/opcache.ini.sh" "/etc/php/${PHPVER}/mods-available/opcache.ini"
 
   # update fail2ban logpath
   [[ -f /etc/fail2ban/jail.local ]] && \

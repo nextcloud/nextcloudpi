@@ -189,7 +189,7 @@ else
   if ! is_app_enabled notify_push; then
     ncc app:install notify_push
     ncc app:enable  notify_push
-    bash /usr/local/etc/ncp-templates/nextcloud.conf.sh > /etc/apache2/sites-available/nextcloud.conf
+    install_template nextcloud.conf.sh /etc/apache2/sites-available/nextcloud.conf
     a2enmod proxy proxy_http proxy_wstunnel
     apachectl -k graceful
     ## make sure the notify_push daemon is runnnig

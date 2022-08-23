@@ -1,3 +1,15 @@
+#!/usr/bin/env bash
+
+set -e
+
+if [[ "$1" == "--defaults" ]]
+then
+  echo -e "INFO: Restoring template to default settings"
+  INNODB_BUFFER_POOL_SIZE=256M
+else
+  INNODB_BUFFER_POOL_SIZE="$(tmpl_innodb_buffer_pool_size)"
+fi
+
 cat > /etc/mysql/mariadb.conf.d/91-ncp.cnf <<EOF
 [mysqld]
 transaction_isolation = READ-COMMITTED
@@ -8,7 +20,7 @@ innodb_file_format=barracuda
 [server]
 # innodb settings
 skip-name-resolve
-innodb_buffer_pool_size = 256M
+innodb_buffer_pool_size = ${INNODB_BUFFER_POOL_SIZE}
 innodb_buffer_pool_instances = 1
 innodb_flush_log_at_trx_commit = 2
 innodb_log_buffer_size = 32M

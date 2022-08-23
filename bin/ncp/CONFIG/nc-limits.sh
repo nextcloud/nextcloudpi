@@ -8,13 +8,27 @@
 # More at https://ownyourbits.com/2017/03/13/nextcloudpi-gets-nextcloudpi-config/
 #
 
+get_total_mem() {
+  free -b | sed -n 2p | awk '{ print $2 }'
+}
+
+tmpl_innodb_buffer_pool_size() {
+  local TOTAL_MEM="$(get_total_mem)"
+  # DATABASE MEMORY (25%)
+  local AUTOMEM=$(( TOTAL_MEM * 25 / 100 ))
+  # Maximum MySQL Memory Usage = innodb_buffer_pool_size + key_buffer_size + (read_buffer_size + sort_buffer_size) X max_connections
+  # leave 16MiB for key_buffer_size and a bit more
+  AUTOMEM=$(( AUTOMEM - (16 + 32) * 1024 * 1024 ))
+  echo -n "$AUTOMEM"
+}
+
 configure()
 {
   # Set auto memory limit to 75% of the total memory
-  local TOTAL_MEM="$( free -b | sed -n 2p | awk '{ print $2 }' )"
+  local TOTAL_MEM="$( get_total_mem )"
   # special case of 32bit emulation (e.g. 32bit-docker on 64bit hardware)
   file /bin/bash | grep 64-bit > /dev/null || TOTAL_MEM="$(( 1024 * 1024 * 1024 * 4 ))"
-  AUTOMEM=$(( TOTAL_MEM * 75 / 100 ))
+  local AUTOMEM=$(( TOTAL_MEM * 75 / 100 ))
 
   # MAX FILESIZE
   local CONF=/etc/php/${PHPVER}/fpm/conf.d/90-ncp.ini
@@ -38,18 +52,11 @@ configure()
   sed -i "s|^pm =.*|pm = static|"                                "$CONF"
   sed -i "s|^pm.max_children =.*|pm.max_children = $PHPTHREADS|" "$CONF"
 
-  # DATABASE MEMORY (25%)
-  AUTOMEM=$(( TOTAL_MEM * 25 / 100 ))
-  # Maximum MySQL Memory Usage = innodb_buffer_pool_size + key_buffer_size + (read_buffer_size + sort_buffer_size) X max_connections
-  # leave 16MiB for key_buffer_size and a bit more
-  AUTOMEM=$(( AUTOMEM - (16 + 32) * 1024 * 1024 ))
+  AUTOMEM="$(tmpl_innodb_buffer_pool_size)"
   local CONF=/etc/mysql/mariadb.conf.d/91-ncp.cnf
-  local CURRENT_DB_MEM=$(grep "^innodb_buffer_pool_size" "$CONF" | awk '{ print $3 }')
-  echo "Using $AUTOMEM memory for the database"
-  [[ "$CURRENT_DB_MEM" != "$AUTOMEM" ]] && {
-    sed -i "s|^innodb_buffer_pool_size =.*|innodb_buffer_pool_size = $AUTOMEM|" "$CONF"
-    service mariadb restart
-  }
+  CONF_VALUE="$(cat "$CONF")"
+  install_template "mysql/91-ncp.cnf.sh" "$CONF"
+  [[ "$CONF_VALUE" == "$(cat "$CONF")" ]] || service mariadb restart
 
   # RESTART PHP
   [[ "$PHPTHREADS"  != "$CURRENT_THREADS"   ]] || \

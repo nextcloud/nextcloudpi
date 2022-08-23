@@ -1,3 +1,7 @@
+#! /bin/bash
+
+set -e
+
 cat > /etc/apache2/conf-available/http2.conf <<EOF
 Protocols h2 h2c http/1.1
 

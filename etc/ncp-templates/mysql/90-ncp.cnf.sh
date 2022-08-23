@@ -1,5 +1,25 @@
+#! /bin/bash
+
+set -e
+
+if [[ "$1" == "--defaults" ]]
+then
+  echo -e "INFO: Restoring template to default settings"
+  DB_DIR=/var/lib/mysql
+else
+  if [[ "$DOCKERBUILD" -eq 1 ]]
+  then
+    DB_DIR=/data-ro/database
+  elif is_docker
+  then
+    DB_DIR=/data/database
+  else
+    DB_DIR="$(source "${BINDIR}/CONFIG/nc-database.sh"; tmpl_db_dir)"
+  fi
+fi
+
 # configure MariaDB (UTF8 4 byte support)
 cat > /etc/mysql/mariadb.conf.d/90-ncp.cnf <<EOF
 [mysqld]
-datadir = /var/lib/mysql
+datadir = ${DB_DIR?}
 EOF

@@ -31,7 +31,7 @@ echo "Starting Apache"
 /usr/sbin/apache2ctl start
 
 # adjust the dbdir to the persistent storage
-sed -i "s|^datadir.*|datadir = /data/database|" /etc/mysql/mariadb.conf.d/90-ncp.cnf
+install_template "mysql/90-ncp.cnf.sh" "/etc/mysql/mariadb.conf.d/90-ncp.cnf"
 
 # start
 echo "Starting mariaDB"
