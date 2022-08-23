@@ -7,7 +7,7 @@ then
   echo -e "INFO: Restoring template to default settings"
   INNODB_BUFFER_POOL_SIZE=256M
 else
-  INNODB_BUFFER_POOL_SIZE="$(tmpl_innodb_buffer_pool_size)"
+  INNODB_BUFFER_POOL_SIZE="$(source "${BINDIR}/CONFIG/nc-limits.sh"; tmpl_innodb_buffer_pool_size)"
 fi
 
 cat > /etc/mysql/mariadb.conf.d/91-ncp.cnf <<EOF

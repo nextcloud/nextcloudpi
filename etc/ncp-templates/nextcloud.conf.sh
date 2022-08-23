@@ -10,6 +10,7 @@ if [[ "$1" != "--defaults" ]]; then
   LETSENCRYPT_DOMAIN="$(
     # force defaults during initial build
     if ! [[ -f /.ncp-image ]]; then
+      source "${BINDIR}/NETWORKING/letsencrypt.sh"
       tmpl_letsencrypt_domain
     fi
   )"
@@ -20,6 +21,7 @@ fi
 # skip during build
 if ! [[ -f /.ncp-image ]] && [[ "$1" != "--defaults" ]] && [[ -f "${BINDIR}/SYSTEM/metrics.sh" ]]; then
   METRICS_IS_ENABLED="$(
+  source "${BINDIR}/SYSTEM/metrics.sh"
   tmpl_metrics_enabled && echo yes || echo no
   )"
 else
