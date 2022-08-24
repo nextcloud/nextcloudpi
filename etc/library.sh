@@ -385,6 +385,26 @@ function persistent_cfg()
   ln -s "$DST" "$SRC"
 }
 
+function install_with_shadow_workaround()
+{
+  # Subshell to trap trap :P
+  (
+    restore_shadow=true
+    [[ -L /etc/shadow ]] || restore_shadow=false
+    [[ "$restore_shadow" == "false" ]] || {
+      trap "mv /etc/shadow /data/etc/shadow; ln -s /data/etc/shadow /etc/shadow" EXIT
+      rm /etc/shadow
+      cp /data/etc/shadow /etc/shadow
+    }
+    DEBIAN_FRONTEND=noninteractive apt-get install -y "$@"
+    [[ "$restore_shadow" == "false" ]] || {
+      mv /etc/shadow /data/etc/shadow
+      ln -s /data/etc/shadow /etc/shadow
+    }
+    trap - EXIT
+  )
+}
+
 function is_more_recent_than()
 {
   local version_A="$1"

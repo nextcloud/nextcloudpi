@@ -36,6 +36,7 @@ install()
     mkdir -p /run/lock
     apache2ctl -V || true
 
+    install_with_shadow_workaround --no-install-recommends systemd
     $APTINSTALL -t $RELEASE php${PHPVER} php${PHPVER}-curl php${PHPVER}-gd php${PHPVER}-fpm php${PHPVER}-cli php${PHPVER}-opcache \
                             php${PHPVER}-mbstring php${PHPVER}-xml php${PHPVER}-zip php${PHPVER}-fileinfo php${PHPVER}-ldap \
                             php${PHPVER}-intl php${PHPVER}-bz2 php-json
