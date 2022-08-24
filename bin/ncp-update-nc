@@ -243,6 +243,7 @@ then
     "php${PHPVER_OLD}"-{curl,gd,fpm,cli,opcache,mbstring,xml,zip,fileinfo,ldap,intl,bz2,json,common,readline,mysql,bcmath,gmp}
 
   echo "Install PHP ${PHPVER_NEW}..."
+  install_with_shadow_workaround --no-install-recommends systemd
   apt-get install -y --no-install-recommends -t "$RELEASE" php${PHPVER_NEW} php-json \
     php${PHPVER_NEW}-{curl,gd,fpm,cli,opcache,mbstring,xml,zip,fileinfo,ldap,intl,bz2,mysql,bcmath,gmp}
 
