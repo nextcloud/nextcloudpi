@@ -36,7 +36,7 @@ set -e; \
 
 # installation
 apt-get update; \
-apt-get install --no-install-recommends -y jq wget procps; \
+apt-get install --no-install-recommends -y jq wget procps ca-certificates; \
 
 source /usr/local/etc/library.sh; \
 set +x; \
@@ -96,7 +96,7 @@ touch /.docker-image; \
 
 # installation ( /var/www/nextcloud -> /data/app which will be in a volume )
 apt-get update; \
-apt-get install --no-install-recommends -y wget ca-certificates sudo jq; \
+apt-get install --no-install-recommends -y sudo jq; \
 source /usr/local/etc/library.sh; \
 install_app /nc-nextcloud.sh; \
 run_app_unsafe /nc-nextcloud.sh; \
