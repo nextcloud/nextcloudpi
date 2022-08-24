@@ -179,7 +179,6 @@ $ncc | grep -q db:add-missing-columns && $ncc db:add-missing-columns -n
 $ncc | grep -q db:add-missing-primary-keys && $ncc db:add-missing-primary-keys -n
 $ncc | grep -q db:convert-filecache-bigint && $ncc db:convert-filecache-bigint -n
 
-
 # use the correct version for custom apps
 NCVER="$(ncc status | grep "version:" | awk '{ print $3 }')"
 if is_more_recent_than "21.0.0" "${NCVER}"; then
@@ -223,6 +222,36 @@ EOF
 fi
 rm -rf /var/www/nextcloud/apps/previewgenerator
 ln -snf "${NCPREV}" /var/www/nextcloud/apps/previewgenerator
+
+
+if is_more_recent_than "${NCVER}" "24.0.0" && is_more_recent_than "8.1.0" "${PHPVER}.0"
+then
+  echo "Upgrading PHP..."
+  PHPVER_OLD="$PHPVER"
+  PHPVER_NEW="8.1"
+
+  # Setup apt repository for php 8
+  wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
+  echo "deb https://packages.sury.org/php/ ${RELEASE} main" > /etc/apt/sources.list.d/php.list
+  apt-get update
+
+  echo "Remove old PHP (${PHPVER_OLD})..."
+  a2disconf "php${PHPVER_OLD}-fpm"
+
+  export DEBIAN_FRONTEND=noninteractive
+  apt-get remove --purge -y php-{common,igbinary,redis} "php${PHPVER_OLD}" \
+    "php${PHPVER_OLD}"-{curl,gd,fpm,cli,opcache,mbstring,xml,zip,fileinfo,ldap,intl,bz2,json,common,readline,mysql,bcmath,gmp}
+
+  echo "Install PHP ${PHPVER_NEW}..."
+  apt-get install -y --no-install-recommends -t "$RELEASE" php${PHPVER_NEW} php-json \
+    php${PHPVER_NEW}-{curl,gd,fpm,cli,opcache,mbstring,xml,zip,fileinfo,ldap,intl,bz2,mysql,bcmath,gmp}
+
+  set_ncpcfg "php_version" "${PHPVER_NEW}"
+  install_template "php/opcache.ini.sh" "/etc/php/${PHPVER_NEW}/mods-available/opcache.ini"
+  a2enconf php${PHPVER_NEW}-fpm
+
+fi
+
 
 # refresh completions
 ncc _completion -g --shell-type bash -p ncc | sed 's|/var/www/nextcloud/occ|ncc|g' > /usr/share/bash-completion/completions/ncp
