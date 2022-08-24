@@ -36,7 +36,7 @@ set -e; \
 
 # installation
 apt-get update; \
-apt-get install --no-install-recommends -y jq wget procps ca-certificates; \
+apt-get install --no-install-recommends -y jq wget procps ca-certificates lsb-release; \
 
 source /usr/local/etc/library.sh; \
 set +x; \
