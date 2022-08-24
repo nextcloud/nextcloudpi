@@ -232,7 +232,7 @@ then
 
   # Setup apt repository for php 8
   wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
-  echo "deb https://packages.sury.org/php/ ${RELEASE} main" > /etc/apt/sources.list.d/php.list
+  echo "deb https://packages.sury.org/php/ ${RELEASE%-security} main" > /etc/apt/sources.list.d/php.list
   apt-get update
 
   echo "Remove old PHP (${PHPVER_OLD})..."
@@ -249,6 +249,9 @@ then
   set_ncpcfg "php_version" "${PHPVER_NEW}"
   install_template "php/opcache.ini.sh" "/etc/php/${PHPVER_NEW}/mods-available/opcache.ini"
   a2enconf php${PHPVER_NEW}-fpm
+
+  # Reload library.sh to reset PHPVER
+  source /usr/local/etc/library.sh
 
 fi
 

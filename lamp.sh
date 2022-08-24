@@ -27,7 +27,7 @@ install()
     set -x
     # Setup apt repository for php 8
     wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
-    echo "deb https://packages.sury.org/php/ $RELEASE main" > /etc/apt/sources.list.d/php.list
+    echo "deb https://packages.sury.org/php/ ${RELEASE%-security} main" > /etc/apt/sources.list.d/php.list
     apt-get update
     $APTINSTALL apt-utils cron curl
     ls -l /var/lock || true
