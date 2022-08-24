@@ -30,6 +30,7 @@ SHELL ["/bin/bash", "-c"]
 ENV DOCKERBUILD 1
 
 COPY etc/ncp.cfg etc/library.sh lamp.sh /usr/local/etc/
+COPY etc/ncp-templates /usr/local/etc/ncp-templates
 
 RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt \
 set -e; \
@@ -83,7 +84,6 @@ ENV DOCKERBUILD 1
 COPY etc/library.sh /usr/local/etc/
 COPY bin/ncp/CONFIG/nc-nextcloud.sh /
 COPY etc/ncp-config.d/nc-nextcloud.cfg /usr/local/etc/ncp-config.d/
-COPY etc/ncp-templates /usr/local/etc/ncp-templates
 
 RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt \
 set -e; \
