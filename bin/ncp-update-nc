@@ -262,7 +262,7 @@ then
 
   echo "Stopping apache and  php-fpm..."
   service "php${PHPVER_OLD}-fpm" stop
-  systemctl stop apache2
+  service apache2 stop
 
   echo "Remove old PHP (${PHPVER_OLD})..."
   a2disconf "php${PHPVER_OLD}-fpm"
@@ -276,8 +276,7 @@ then
   set_ncpcfg "php_version" "${PHPVER_NEW}"
   install_template "php/opcache.ini.sh" "/etc/php/${PHPVER_NEW}/mods-available/opcache.ini"
   set +x
-  echo "Running nc-limits"
-  run_app nc-limits
+  PHPVER="${PHPVER_NEW}" run_app nc-limits
   echo "done."
   set -x
   a2enconf php${PHPVER_NEW}-fpm
