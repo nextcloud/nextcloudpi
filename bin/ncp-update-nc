@@ -237,6 +237,7 @@ then
     "php${PHPVER_NEW}"-{curl,gd,fpm,cli,opcache,mbstring,xml,zip,fileinfo,ldap,intl,bz2,mysql,bcmath,gmp,redis,common})
 
   php_restore() {
+    trap "" INT TERM HUP ERR
     echo "Something went wrong while upgrading PHP. Rolling back to version ${PHPVER_OLD}..."
     set +e
     service "php${PHPVER_NEW}-fpm" stop
