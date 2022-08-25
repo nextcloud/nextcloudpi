@@ -48,7 +48,7 @@ configure()
   local CONF=/etc/php/${PHPVER}/fpm/conf.d/90-ncp.ini
   local CONF_VALUE="$(cat "$CONF")"
   echo "Using $(tmpl_php_max_memory) for PHP max memory"
-  install_template "php/90-ncp.ini.sh"/etc/php/${PHPVER}/fpm/conf.d/90-ncp.ini
+  install_template "php/90-ncp.ini.sh" "$CONF"
   [[ "$CONF_VALUE" == "$(cat "$CONF")" ]] || require_fpm_restart=true
 
   # MAX PHP THREADS
