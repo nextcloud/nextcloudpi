@@ -295,6 +295,7 @@ fi
 # refresh completions
 ncc _completion -g --shell-type bash -p ncc | sed 's|/var/www/nextcloud/occ|ncc|g' > /usr/share/bash-completion/completions/ncp
 
+echo "Update completed successfully."
 # done
 ####################
 mkdir -p  "$DATADIR"/ncp-update-backups
