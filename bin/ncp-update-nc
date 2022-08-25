@@ -245,11 +245,21 @@ then
   echo "Install PHP ${PHPVER_NEW}..."
   install_with_shadow_workaround --no-install-recommends systemd
   apt-get install -y --no-install-recommends -t "$RELEASE" php${PHPVER_NEW} php-json \
-    php${PHPVER_NEW}-{curl,gd,fpm,cli,opcache,mbstring,xml,zip,fileinfo,ldap,intl,bz2,mysql,bcmath,gmp}
+    php${PHPVER_NEW}-{curl,gd,fpm,cli,opcache,mbstring,xml,zip,fileinfo,ldap,intl,bz2,mysql,bcmath,gmp,redis}
 
   set_ncpcfg "php_version" "${PHPVER_NEW}"
   install_template "php/opcache.ini.sh" "/etc/php/${PHPVER_NEW}/mods-available/opcache.ini"
   a2enconf php${PHPVER_NEW}-fpm
+
+  echo "Restarting php-fpm..."
+  if is_docker
+  then
+    pkill -f php-fpm
+    php-fpm"${PHPVER}"
+  else
+    systemctl stop "php${PHPVER_OLD}-fpm"
+    systemctl start "php${PHPVER_NEW}-fpm"
+  fi
 
   # Reload library.sh to reset PHPVER
   source /usr/local/etc/library.sh
