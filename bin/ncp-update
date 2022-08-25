@@ -18,6 +18,9 @@
     echo "No internet connectivity"
     exit 1
   }
+
+  [[ -f /.ncp-image ]] || cd "$TMPDIR"         # update locally during build
+
   [[ -z "$2" ]] || {
     git fetch origin "$2" || {
       echo "Error: Could not fetch $2"
@@ -25,8 +28,6 @@
     }
     git checkout FETCH_HEAD
   }
-
-  [[ -f /.ncp-image ]] || cd "$TMPDIR"         # update locally during build
 
   echo -e "Performing updates"
   ./update.sh || exit $?
