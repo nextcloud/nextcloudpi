@@ -22,6 +22,17 @@ tmpl_innodb_buffer_pool_size() {
   echo -n "$AUTOMEM"
 }
 
+tmpl_php_max_memory() {
+  local TOTAL_MEM="$( get_total_mem )"
+  local MEMORYLIMIT="$(find_app_param nc-limits MEMORYLIMIT)"
+  [[ "$MEMORYLIMIT" == "0" ]] && echo -n "$(( TOTAL_MEM * 75 / 100 ))" || echo -n "$MEMORYLIMIT"
+}
+
+tmpl_php_max_filesize() {
+  local FILESIZE="$(find_app_param nc-limits MAXFILESIZE)"
+  [[ "$FILESIZE" == "0" ]] && echo -n "10G" || echo -n "$FILESIZE"
+}
+
 configure()
 {
   # Set auto memory limit to 75% of the total memory
@@ -31,17 +42,14 @@ configure()
   local AUTOMEM=$(( TOTAL_MEM * 75 / 100 ))
 
   # MAX FILESIZE
-  local CONF=/etc/php/${PHPVER}/fpm/conf.d/90-ncp.ini
-  local CURRENT_FILE_SIZE="$( grep "^upload_max_filesize" "$CONF" | sed 's|.*=||' )"
-  [[ "$MAXFILESIZE" == "0" ]] && MAXFILESIZE=10G
 
   # MAX PHP MEMORY
+  local require_fpm_restart=false
   local CONF=/etc/php/${PHPVER}/fpm/conf.d/90-ncp.ini
-  local CURRENT_PHP_MEM="$( grep "^memory_limit" "$CONF" | sed 's|.*=||' )"
-  [[ "$MEMORYLIMIT" == "0" ]] && MEMORYLIMIT=$AUTOMEM && echo "Using ${AUTOMEM}B for PHP"
-  sed -i "s/^post_max_size=.*/post_max_size=$MAXFILESIZE/"             "$CONF"
-  sed -i "s/^upload_max_filesize=.*/upload_max_filesize=$MAXFILESIZE/" "$CONF"
-  sed -i "s/^memory_limit=.*/memory_limit=$MEMORYLIMIT/"               "$CONF"
+  local CONF_VALUE="$(cat "$CONF")"
+  echo "Using $(tmpl_php_max_memory) for PHP max memory"
+  install_template "php/90-ncp.ini.sh"/etc/php/${PHPVER}/fpm/conf.d/90-ncp.ini
+  [[ "$CONF_VALUE" == "$(cat "$CONF")" ]] || require_fpm_restart=true
 
   # MAX PHP THREADS
   local CONF=/etc/php/${PHPVER}/fpm/pool.d/www.conf
@@ -51,18 +59,15 @@ configure()
   echo "Using $PHPTHREADS PHP threads"
   sed -i "s|^pm =.*|pm = static|"                                "$CONF"
   sed -i "s|^pm.max_children =.*|pm.max_children = $PHPTHREADS|" "$CONF"
+  [[ "$PHPTHREADS"  == "$CURRENT_THREADS"   ]] || require_fpm_restart=true
 
-  AUTOMEM="$(tmpl_innodb_buffer_pool_size)"
   local CONF=/etc/mysql/mariadb.conf.d/91-ncp.cnf
   CONF_VALUE="$(cat "$CONF")"
   install_template "mysql/91-ncp.cnf.sh" "$CONF"
   [[ "$CONF_VALUE" == "$(cat "$CONF")" ]] || service mariadb restart
 
   # RESTART PHP
-  [[ "$PHPTHREADS"  != "$CURRENT_THREADS"   ]] || \
-  [[ "$MEMORYLIMIT" != "$CURRENT_PHP_MEM"   ]] || \
-  [[ "$MAXFILESIZE" != "$CURRENT_FILE_SIZE" ]] && \
-    bash -c "sleep 3; service php${PHPVER}-fpm restart" &>/dev/null &
+  [[ "$require_fpm_restart" == "true" ]] && bash -c "sleep 3; service php${PHPVER}-fpm restart" &>/dev/null &
 
   # redis max memory
   local CONF=/etc/redis/redis.conf

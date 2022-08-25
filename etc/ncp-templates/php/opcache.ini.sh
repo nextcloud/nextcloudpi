@@ -14,7 +14,7 @@ else
   TMP_DIR="$(source "${BINDIR}/CONFIG/nc-datadir.sh"; tmpl_opcache_dir)"
 fi
 
-  cat > "/etc/php/${PHPVER}/mods-available/opcache.ini" <<EOF
+cat <<EOF
 zend_extension=opcache.so
 opcache.enable=1
 opcache.enable_cli=1

@@ -14,6 +14,11 @@ REDIS_MEM=3gb
 APTINSTALL="apt-get install -y --no-install-recommends"
 export DEBIAN_FRONTEND=noninteractive
 
+tmpl_max_transfer_time()
+{
+  find_app_param nc-nextcloud MAXTRANSFERTIME
+}
+
 install()
 {
   # During build, this step is run before ncp.sh. Avoid executing twice
