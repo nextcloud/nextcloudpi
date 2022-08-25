@@ -5,7 +5,7 @@ source /usr/local/etc/library.sh
 
 PHPVER="${PHPVER?ERROR: PHPVER variable unset!}"
 
-if [[ "$1" == "--defaults" ]]
+if [[ "$1" == "--defaults" ]] || ! [[ -f "${BINDIR}/CONFIG/nc-datadir.sh" ]]
 then
   echo -e "INFO: Restoring template to default settings"
 
