@@ -46,7 +46,7 @@ configure()
   # MAX PHP MEMORY
   local require_fpm_restart=false
   local CONF=/etc/php/${PHPVER}/fpm/conf.d/90-ncp.ini
-  local CONF_VALUE="$(cat "$CONF")"
+  local CONF_VALUE="$(cat "$CONF" || true)"
   echo "Using $(tmpl_php_max_memory) for PHP max memory"
   install_template "php/90-ncp.ini.sh" "$CONF"
   [[ "$CONF_VALUE" == "$(cat "$CONF")" ]] || require_fpm_restart=true
@@ -62,7 +62,7 @@ configure()
   [[ "$PHPTHREADS"  == "$CURRENT_THREADS"   ]] || require_fpm_restart=true
 
   local CONF=/etc/mysql/mariadb.conf.d/91-ncp.cnf
-  CONF_VALUE="$(cat "$CONF")"
+  CONF_VALUE="$(cat "$CONF" || true)"
   install_template "mysql/91-ncp.cnf.sh" "$CONF"
   [[ "$CONF_VALUE" == "$(cat "$CONF")" ]] || service mariadb restart
 
