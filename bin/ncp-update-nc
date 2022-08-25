@@ -245,8 +245,8 @@ then
     install_template "php/opcache.ini.sh" "/etc/php/${PHPVER_NEW}/mods-available/opcache.ini"
     run_app nc-limits
     a2enconf "php${PHPVER_OLD}-fpm"
-    service php-fpm"${PHPVER_NEW}" stop
-    service php-fpm"${PHPVER_OLD}" start
+    service "php${PHPVER_NEW}-fpm" stop
+    service "php${PHPVER_OLD}-fpm" start
     service apache2 restart
     set -e
   }
