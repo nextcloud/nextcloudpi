@@ -231,8 +231,8 @@ then
   export DEBIAN_FRONTEND=noninteractive
   PHPVER_OLD="$PHPVER"
   PHPVER_NEW="8.1"
-  PHP_PACKAGES_OLD=(php-{common} "php${PHPVER_OLD}" \
-    "php${PHPVER_OLD}"-{curl,gd,fpm,cli,opcache,mbstring,xml,zip,fileinfo,ldap,intl,bz2,json,common,readline,mysql,bcmath,gmp,igbinary,redis})
+  PHP_PACKAGES_OLD=(php-{common,igbinary,redis} "php${PHPVER_OLD}" \
+    "php${PHPVER_OLD}"-{curl,gd,fpm,cli,opcache,mbstring,xml,zip,fileinfo,ldap,intl,bz2,json,common,readline,mysql,bcmath,gmp})
   PHP_PACKAGES_NEW=("php${PHPVER_NEW}" php-json \
     "php${PHPVER_NEW}"-{curl,gd,fpm,cli,opcache,mbstring,xml,zip,fileinfo,ldap,intl,bz2,mysql,bcmath,gmp,redis,common})
 
@@ -240,6 +240,8 @@ then
     set +e
     service "php${PHPVER_NEW}-fpm" stop
     a2disconf php${PHPVER_NEW}-fpm
+    rm /etc/apt/sources.list.d/php.list
+    apt-get update
     apt-get remove --purge -y "${PHP_PACKAGES_NEW[@]}" systemd
     apt-get install -y --no-install-recommends -t "$RELEASE" "${PHP_PACKAGES_OLD[@]}"
     set_ncpcfg "php_version" "${PHPVER_OLD}"
@@ -265,7 +267,7 @@ then
   echo "Remove old PHP (${PHPVER_OLD})..."
   a2disconf "php${PHPVER_OLD}-fpm"
 
-  apt-get remove --purge -y "${PHP_PACKAGES_OLD[@]}" php-{igbinary,redis}
+  apt-get remove --purge -y "${PHP_PACKAGES_OLD[@]}"
 
   echo "Install PHP ${PHPVER_NEW}..."
   install_with_shadow_workaround --no-install-recommends systemd
@@ -274,7 +276,9 @@ then
   set_ncpcfg "php_version" "${PHPVER_NEW}"
   install_template "php/opcache.ini.sh" "/etc/php/${PHPVER_NEW}/mods-available/opcache.ini"
   set +x
+  echo "Running nc-limits"
   run_app nc-limits
+  echo "done."
   set -x
   a2enconf php${PHPVER_NEW}-fpm
 
