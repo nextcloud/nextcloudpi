@@ -273,7 +273,9 @@ then
 
   set_ncpcfg "php_version" "${PHPVER_NEW}"
   install_template "php/opcache.ini.sh" "/etc/php/${PHPVER_NEW}/mods-available/opcache.ini"
+  set +x
   run_app nc-limits
+  set -x
   a2enconf php${PHPVER_NEW}-fpm
 
   echo "Starting apache and php-fpm..."
