@@ -237,6 +237,7 @@ then
     "php${PHPVER_NEW}"-{curl,gd,fpm,cli,opcache,mbstring,xml,zip,fileinfo,ldap,intl,bz2,mysql,bcmath,gmp,redis})
 
   php_restore() {
+    set +e
     a2disconf php${PHPVER_NEW}-fpm
     apt-get remove --purge -y "${PHP_PACKAGES_NEW[@]}" systemd
     apt-get install -y --no-install-recommends -t "$RELEASE" "${PHP_PACKAGES_OLD[@]}"
@@ -247,6 +248,7 @@ then
     service php-fpm"${PHPVER_NEW}" stop
     service php-fpm"${PHPVER_OLD}" start
     service apache2 restart
+    set -e
   }
 
   trap php_restore INT TERM HUP ERR
