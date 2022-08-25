@@ -237,6 +237,7 @@ then
     "php${PHPVER_NEW}"-{curl,gd,fpm,cli,opcache,mbstring,xml,zip,fileinfo,ldap,intl,bz2,mysql,bcmath,gmp,redis,common})
 
   php_restore() {
+    echo "Something went wrong while upgrading PHP. Rolling back to version ${PHPVER_OLD}..."
     set +e
     service "php${PHPVER_NEW}-fpm" stop
     a2disconf php${PHPVER_NEW}-fpm
@@ -250,6 +251,7 @@ then
     a2enconf "php${PHPVER_OLD}-fpm"
     service "php${PHPVER_OLD}-fpm" start
     service apache2 restart
+    echo "PHP upgrade has been successfully reverted"
     set -e
   }
 
@@ -275,10 +277,7 @@ then
 
   set_ncpcfg "php_version" "${PHPVER_NEW}"
   install_template "php/opcache.ini.sh" "/etc/php/${PHPVER_NEW}/mods-available/opcache.ini"
-  set +x
   ( export PHPVER="${PHPVER_NEW}"; run_app nc-limits )
-  echo "done."
-  set -x
   a2enconf php${PHPVER_NEW}-fpm
 
   echo "Starting apache and php-fpm..."
