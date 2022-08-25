@@ -235,6 +235,16 @@ then
   echo "deb https://packages.sury.org/php/ ${RELEASE%-security} main" > /etc/apt/sources.list.d/php.list
   apt-get update
 
+  echo "Stopping apache and  php-fpm..."
+  if is_docker
+  then
+    pkill -f php-fpm
+    apachectl graceful-stop
+  else
+    systemctl stop "php${PHPVER_OLD}-fpm"
+    systemctl stop apache2
+  fi
+
   echo "Remove old PHP (${PHPVER_OLD})..."
   a2disconf "php${PHPVER_OLD}-fpm"
 
@@ -251,14 +261,13 @@ then
   install_template "php/opcache.ini.sh" "/etc/php/${PHPVER_NEW}/mods-available/opcache.ini"
   a2enconf php${PHPVER_NEW}-fpm
 
-  echo "Restarting php-fpm..."
+  echo "Starting apache and php-fpm..."
   if is_docker
   then
-    pkill -f php-fpm
     php-fpm"${PHPVER}"
+    /usr/sbin/apache2ctl start
   else
-    systemctl stop "php${PHPVER_OLD}-fpm"
-    systemctl start "php${PHPVER_NEW}-fpm"
+    systemctl start "php${PHPVER_NEW}-fpm" apache2
   fi
 
   # Reload library.sh to reset PHPVER
