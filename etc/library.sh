@@ -217,7 +217,7 @@ install_template() {
       { bash "/usr/local/etc/ncp-templates/$template" --defaults > "$target"; } 2>&1
     else
       { bash "/usr/local/etc/ncp-templates/$template" > "$target"; } 2>&1 || \
-        if [[ "${3:}" == "--allow-fallback" ]]; then
+        if [[ "${3:-}" == "--allow-fallback" ]]; then
           { bash "/usr/local/etc/ncp-templates/$template" --defaults > "$target"; } 2>&1
         fi
     fi

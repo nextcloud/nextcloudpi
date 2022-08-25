@@ -238,6 +238,7 @@ then
 
   php_restore() {
     set +e
+    service "php${PHPVER_NEW}-fpm" stop
     a2disconf php${PHPVER_NEW}-fpm
     apt-get remove --purge -y "${PHP_PACKAGES_NEW[@]}" systemd
     apt-get install -y --no-install-recommends -t "$RELEASE" "${PHP_PACKAGES_OLD[@]}"
@@ -245,7 +246,6 @@ then
     install_template "php/opcache.ini.sh" "/etc/php/${PHPVER_NEW}/mods-available/opcache.ini"
     run_app nc-limits
     a2enconf "php${PHPVER_OLD}-fpm"
-    service "php${PHPVER_NEW}-fpm" stop
     service "php${PHPVER_OLD}-fpm" start
     service apache2 restart
     set -e

@@ -11,7 +11,7 @@ then
 else
   MAXFILESIZE="$(source "${BINDIR}/CONFIG/nc-limits.sh" && tmpl_php_max_filesize)"
   MEMORYLIMIT="$(source "${BINDIR}/CONFIG/nc-limits.sh" && tmpl_php_max_memory)"
-  MAXTRANSFERTIME="$(source "${BINDIR}/TOOL/nc-nextcloud.sh" && tmpl_max_transfer_time)"
+  MAXTRANSFERTIME="$(source "${BINDIR}/CONFIG/nc-nextcloud.sh" && tmpl_max_transfer_time)"
 fi
 
 cat <<EOF
