@@ -226,9 +226,30 @@ ln -snf "${NCPREV}" /var/www/nextcloud/apps/previewgenerator
 
 if is_more_recent_than "${NCVER}" "24.0.0" && is_more_recent_than "8.1.0" "${PHPVER}.0"
 then
+  (
   echo "Upgrading PHP..."
+  export DEBIAN_FRONTEND=noninteractive
   PHPVER_OLD="$PHPVER"
   PHPVER_NEW="8.1"
+  PHP_PACKAGES_OLD=(php-{common,igbinary,redis} "php${PHPVER_OLD}" \
+    "php${PHPVER_OLD}"-{curl,gd,fpm,cli,opcache,mbstring,xml,zip,fileinfo,ldap,intl,bz2,json,common,readline,mysql,bcmath,gmp})
+  PHP_PACKAGES_NEW=("php${PHPVER_NEW}" php-json \
+    "php${PHPVER_NEW}"-{curl,gd,fpm,cli,opcache,mbstring,xml,zip,fileinfo,ldap,intl,bz2,mysql,bcmath,gmp,redis})
+
+  php_restore() {
+    a2disconf php${PHPVER_NEW}-fpm
+    apt-get remove --purge -y "${PHP_PACKAGES_NEW[@]}" systemd
+    apt-get install -y --no-install-recommends -t "$RELEASE" "${PHP_PACKAGES_OLD[@]}"
+    set_ncpcfg "php_version" "${PHPVER_OLD}"
+    install_template "php/opcache.ini.sh" "/etc/php/${PHPVER_NEW}/mods-available/opcache.ini"
+    run_app nc-limits
+    a2enconf "php${PHPVER_OLD}-fpm"
+    service php-fpm"${PHPVER_NEW}" stop
+    service php-fpm"${PHPVER_OLD}" start
+    service apache2 restart
+  }
+
+  trap php_restore INT TERM HUP ERR
 
   # Setup apt repository for php 8
   wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
@@ -236,26 +257,17 @@ then
   apt-get update
 
   echo "Stopping apache and  php-fpm..."
-  if is_docker
-  then
-    pkill -f php-fpm
-    apachectl graceful-stop
-  else
-    systemctl stop "php${PHPVER_OLD}-fpm"
-    systemctl stop apache2
-  fi
+  service "php${PHPVER_OLD}" stop
+  systemctl stop apache2
 
   echo "Remove old PHP (${PHPVER_OLD})..."
   a2disconf "php${PHPVER_OLD}-fpm"
 
-  export DEBIAN_FRONTEND=noninteractive
-  apt-get remove --purge -y php-{common,igbinary,redis} "php${PHPVER_OLD}" \
-    "php${PHPVER_OLD}"-{curl,gd,fpm,cli,opcache,mbstring,xml,zip,fileinfo,ldap,intl,bz2,json,common,readline,mysql,bcmath,gmp}
+  apt-get remove --purge -y "${PHP_PACKAGES_OLD[@]}"
 
   echo "Install PHP ${PHPVER_NEW}..."
   install_with_shadow_workaround --no-install-recommends systemd
-  apt-get install -y --no-install-recommends -t "$RELEASE" php${PHPVER_NEW} php-json \
-    php${PHPVER_NEW}-{curl,gd,fpm,cli,opcache,mbstring,xml,zip,fileinfo,ldap,intl,bz2,mysql,bcmath,gmp,redis}
+  apt-get install -y --no-install-recommends -t "$RELEASE" "${PHP_PACKAGES_NEW[@]}"
 
   set_ncpcfg "php_version" "${PHPVER_NEW}"
   install_template "php/opcache.ini.sh" "/etc/php/${PHPVER_NEW}/mods-available/opcache.ini"
@@ -263,13 +275,10 @@ then
   a2enconf php${PHPVER_NEW}-fpm
 
   echo "Starting apache and php-fpm..."
-  if is_docker
-  then
-    php-fpm"${PHPVER_NEW}"
-    apache2ctl start
-  else
-    systemctl start "php${PHPVER_NEW}-fpm" apache2
-  fi
+  service "php${PHPVER_NEW}-fpm" start
+  service apache2 start
+  ncc status
+  )
 
   # Reload library.sh to reset PHPVER
   source /usr/local/etc/library.sh
