@@ -259,7 +259,7 @@ then
   apt-get update
 
   echo "Stopping apache and  php-fpm..."
-  service "php${PHPVER_OLD}" stop
+  service "php${PHPVER_OLD}-fpm" stop
   systemctl stop apache2
 
   echo "Remove old PHP (${PHPVER_OLD})..."
