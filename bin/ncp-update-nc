@@ -264,8 +264,8 @@ then
   echo "Starting apache and php-fpm..."
   if is_docker
   then
-    php-fpm"${PHPVER}"
-    /usr/sbin/apache2ctl start
+    php-fpm"${PHPVER_NEW}"
+    apache2ctl start
   else
     systemctl start "php${PHPVER_NEW}-fpm" apache2
   fi
