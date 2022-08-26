@@ -42,25 +42,163 @@ jobs:
         id: pack-lxd
         run: |
           . ./build/buildlib.sh
-          ARTIFACT_NAME="NextCloudPi_LXD_${VERSION//\//_}"
-          lxc image export -q ncp/"${version}" "output/${ARTIFACT_NAME}"
-          echo "::set-output name=artifact_file::${ARTIFACT_NAME}.tar.gz"
+          ARTIFACT_FILE="NextCloudPi_LXD_${VERSION//\//_}"
+          lxc image export -q ncp/"${version}" "output/${ARTIFACT_FILE}"
+          echo "::set-output name=artifact_file::${ARTIFACT_FILE}.tar.gz"
       - name: upload LXD image to artifact store
         uses: actions/upload-artifact@v3
         with:
           name: "${{ env.ARTIFACT_NAME }}"
-          path: "output/${{ steps.pack-lxd.outputs.artifact_name }}"
+          path: "output/${{ steps.pack-lxd.outputs.artifact_file }}"
+          if-no-files-found: error
+
+  build-previous:
+    runs-on: ubuntu-latest
+    outputs:
+      artifact_name: "${{ env.ARTIFACT_NAME }}"
+      artifact_file: "${{ steps.pack-lxd.outputs.artifact_file }}"
+      previous_version: "${{ steps.checkout_previous_version.outputs.previous_version }}"
+    env:
+      VERSION: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+      ARTIFACT_NAME: "${{ github.run_id }}-lxd-image-previous"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: "${{ env.VERSION }}"
+          fetch-depth: 0
+      - name: Checkout previous release
+        id: checkout_previous_version
+        shell: bash
+        run: |
+          set -e
+          if [[ -n "${{ github.base_ref }}" ]]
+          then
+            version="${{ github.base_ref }}"
+          elif [[ "${{ env.VERSION }}" == "refs/heads/devel" ]]
+          then
+            version="master"
+          else
+            git fetch -fu --tags origin ${{ env.VERSION }}:${{ env.VERSION }}
+            version="$(git describe --tags)"
+            [[ "$version" =~ .*-.*-.* ]] || {
+              git checkout HEAD~1
+              version="$(git describe --tags)"
+            }
+            version="${version%-*-*}"
+          fi
+          echo "Previous version is '$version'"
+          git checkout "$version"
+          echo "VERSION=$version" >> "$GITHUB_ENV"
+          echo "::set-output name=previous_version::${version}"
+      - uses: whywaita/setup-lxd@v1
+        with:
+          lxd_version: latest/stable
+      - name: Build LXD image
+        run: |
+          ./build/build-LXD.sh
+      - name: Pack LXD image
+        id: pack-lxd
+        run: |
+          . ./build/buildlib.sh
+          ARTIFACT_FILE="NextCloudPi_LXD_${VERSION//\//_}"
+          lxc image export -q ncp/"${version}" "output/${ARTIFACT_FILE}"
+          echo "::set-output name=artifact_file::${ARTIFACT_FILE}.tar.gz"
+      - name: upload LXD image to artifact store
+        uses: actions/upload-artifact@v3
+        with:
+          name: "${{ env.ARTIFACT_NAME }}"
+          path: "output/${{ steps.pack-lxd.outputs.artifact_file }}"
+          if-no-files-found: error
+
+  update-previous:
+    needs:
+      - build-previous
+    runs-on: ubuntu-latest
+    outputs:
+      artifact_name: "${{ env.ARTIFACT_NAME }}"
+      artifact_file: "${{ steps.pack-lxd.outputs.artifact_file }}"
+    env:
+      VERSION: "${{ inputs.git_ref || github.ref }}"
+      ARTIFACT_NAME: "${{ github.run_id }}-lxd-image-updated"
+    steps:
+      - uses: whywaita/setup-lxd@v1
+        with:
+          lxd_version: latest/stable
+      - name: download LXD image from artifact store
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ needs.build-previous.outputs.artifact_name }}
+      - name: Launch ncp container
+        run: |
+          set -x
+          lxc delete -q -f ncp || true
+          lxc image import -q "./${{ needs.build-previous.outputs.artifact_file }}" --alias "ncp/update"
+          systemd-run --user --scope -p "Delegate=yes" lxc launch -q "ncp/update" ncp
+          lxc exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
+          sleep 30
+          ip="$(lxc list -c n4 -f csv | grep '^ncp' | cut -d ',' -f2)"
+          ip="${ip/% *}"
+          echo "${ip} nextcloudpi.local" | sudo tee /etc/hosts
+
+      - name: Update ncp
+        run: |
+          set -ex
+          BRANCH="${VERSION/refs\/heads\//}"
+          BRANCH="${BRANCH/refs\/tags\//}"
+          if [[ "$BRANCH" =~ "refs/pull/"* ]]
+          then
+            UPDATE_ARGS=("${{ github.base_ref }}" "$VERSION") 
+          else
+            UPDATE_ARGS=("$BRANCH")
+          fi
+          echo "VERSION=${VERSION}" >> "$GITHUB_ENV"
+          echo "Running update ${{ needs.build-previous.outputs.previous_version }} -> ${VERSION}"
+          lxc exec ncp -- bash -c "DBG=x ncp-update ${UPDATE_ARGS[*]}"
+          lxc stop ncp
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: "${{ env.VERSION }}"
+      - name: Pack LXD image
+        id: pack-lxd
+        run: |
+          set -x
+          . ./build/buildlib.sh
+          ARTIFACT_FILE="NextCloudPi_LXD_${VERSION//\//_}"
+          lxc publish -q ncp -f --alias "ncp/updated"
+          mkdir -p output
+          lxc image export -q "ncp/updated" "output/${ARTIFACT_FILE}"
+          echo "::set-output name=artifact_file::${ARTIFACT_FILE}.tar.gz"
+      - name: upload LXD image to artifact store
+        uses: actions/upload-artifact@v3
+        with:
+          name: "${{ env.ARTIFACT_NAME }}"
+          path: "output/${{ steps.pack-lxd.outputs.artifact_file }}"
           if-no-files-found: error
 
   test:
     needs:
       - build
+      - update-previous
+    strategy:
+      matrix:
+        build:
+          - source: install
+            artifact_name: ${{ needs.build.outputs.artifact_name }}
+            artifact_file: ${{ needs.build.outputs.artifact_file }}
+          - source: update
+            artifact_name: ${{ needs.update-previous.outputs.artifact_name }}
+            artifact_file: ${{ needs.update-previous.outputs.artifact_file }}
+      fail-fast: false
     runs-on: ubuntu-latest
+    env:
+      VERSION: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+          ref: "${{ env.VERSION }}"
       - uses: whywaita/setup-lxd@v1
         with:
           lxd_version: latest/stable
@@ -73,12 +211,12 @@ jobs:
       - name: download LXD image from artifact store
         uses: actions/download-artifact@v3
         with:
-          name: ${{ github.run_id }}-lxd-image
+          name: ${{ matrix.build.artifact_name }}
       - name: Launch ncp container
         run: |
           set -x
           lxc delete -q -f ncp || true
-          lxc image import -q "./${{ needs.build.outputs.artifact_file }}" --alias "ncp/test"
+          lxc image import -q "./${{ matrix.build.artifact_file }}" --alias "ncp/test"
           systemd-run --user --scope -p "Delegate=yes" lxc launch -q "ncp/test" ncp
           lxc exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
           sleep 30

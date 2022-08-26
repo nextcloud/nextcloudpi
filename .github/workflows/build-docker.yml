@@ -16,7 +16,6 @@ on:
       - devel
   pull_request:
     branches:
-      - devel
       - master
 
 jobs:
@@ -30,7 +29,7 @@ jobs:
           - arm64
       fail-fast: false
     env:
-      VERSION: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+      VERSION: "${{ inputs.git_ref || github.ref }}"
     steps:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -73,7 +72,7 @@ jobs:
       - build
     runs-on: ubuntu-latest
     env:
-      VERSION: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+      VERSION: "${{ inputs.git_ref || github.ref }}"
 
     strategy:
       matrix:

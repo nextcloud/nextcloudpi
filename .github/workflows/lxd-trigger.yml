@@ -1,11 +1,16 @@
+name: LXD Tests
+
 on:
   pull_request:
     branches:
       - master
+      - devel
+  push:
+    branches:
       - devel
 
 jobs:
   lxd:
     uses: ./.github/workflows/build-lxd.yml
     with:
-      git_ref: "${{ github.head_ref || github.ref_name }}"
+      git_ref: "${{ github.ref }}"
