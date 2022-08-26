@@ -226,6 +226,7 @@ jobs:
       - name: Test LXD Image
         working-directory: ./tests
         run: |
+          lxc exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
           python activation_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
             echo "Activation test failed!"
             echo "Geckodriver logs:"

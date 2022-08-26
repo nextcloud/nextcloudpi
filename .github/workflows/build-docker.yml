@@ -107,6 +107,8 @@ jobs:
       - name: Integration Tests
         working-directory: ./tests
         run: |
+          docker logs -f | ( echo -n "CONTAINER::"; cat )
+          docker exec nextcloudpi bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
           cmd=(python activation_tests.py --no-gui localhost 8443 4443)
           [[ "${{ matrix.arch }}" == "x86" ]] || cmd+=(--timeout 300)
           "${cmd[@]}" || {
@@ -124,6 +126,13 @@ jobs:
           echo "Activation test successful"
           python system_tests.py --no-ping --non-interactive || {
             echo "System test failed!"
+            echo "Container logs:"
+            echo "==========================================="
+            docker logs nextcloudpi
+            echo "Last lines of ncp.log:"
+            echo "==========================================="
+            docker exec nextcloudpi tail /var/log/ncp.log;
+            exit 1
             exit 1
           }
           echo "System test successful"
