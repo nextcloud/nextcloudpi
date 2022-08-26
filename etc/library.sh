@@ -13,6 +13,10 @@ export BINDIR=/usr/local/bin/ncp
 export NCDIR=/var/www/nextcloud
 export ncc=/usr/local/bin/ncc
 export NCPCFG=${NCPCFG:-etc/ncp.cfg}
+export ARCH="$(dpkg --print-architecture)"
+[[ "${ARCH}" =~ ^(armhf|arm)$ ]] && ARCH="armv7"
+[[ "${ARCH}" == "arm64" ]] && ARCH=aarch64
+[[ "${ARCH}" == "amd64" ]] && ARCH=x86_64
 # Prevent systemd pager from blocking script execution
 export SYSTEMD_PAGER=
 
@@ -163,10 +167,7 @@ function start_notify_push
 {
     pgrep notify_push &>/dev/null && return
     if [[ -f /.docker-image ]]; then
-      local arch
-      arch="$(dpkg --print-architecture)"
-      [[ "${arch}" =~ ^(armhf|arm)$ ]] && arch="armv7"
-      NEXTCLOUD_URL=https://localhost sudo -E -u www-data /var/www/nextcloud/apps/notify_push/bin/"${arch}"/notify_push --allow-self-signed /var/www/nextcloud/config/config.php &>/dev/null &
+      NEXTCLOUD_URL=https://localhost sudo -E -u www-data "/var/www/nextcloud/apps/notify_push/bin/${ARCH}/notify_push" --allow-self-signed /var/www/nextcloud/config/config.php &>/dev/null &
     else
       systemctl enable --now notify_push
     fi
