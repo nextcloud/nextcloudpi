@@ -17,9 +17,11 @@ on:
   pull_request:
     branches:
       - master
+      - devel
 
 jobs:
   build:
+    if: ${{ github.repository == 'nextcloud/nextcloudpi' }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
