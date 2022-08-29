@@ -48,6 +48,12 @@ if [[ $((MAJOR_NEW - MAJOR_CUR)) -gt 1 ]]; then
   exit 1
 fi
 
+if [[ "$MAJOR_NEW" -ge 24 ]] && [[ "$(lsb_release -r)" =~ .*10 ]]
+then
+  echo -e "Nextcloud version greater than 23 are not supported with Debian 10 (Buster). Please run ncp-dist-upgrade."
+  exit 1
+fi
+
 grep -qP "\d+\.\d+\.\d+" <<<"$CURRENT" || { echo "Malformed version $CURRENT"; exit 1; }
 grep -qP "\d+\.\d+\.\d+" <<<"$VER"     || { echo "Malformed version $VER"    ; exit 1; }
 
