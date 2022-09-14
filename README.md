@@ -23,7 +23,7 @@ Find the full documentation at [docs.nextcloudpi.com](http://docs.nextcloudpi.co
 ## Features
 
  * Debian/Raspbian 11 Bullseye
- * Nextcloud 23.0.2
+ * Nextcloud 24.0.3
  * Apache 2.4.25, with HTTP2 enabled
  * PHP 7.4
  * MariaDB 10
