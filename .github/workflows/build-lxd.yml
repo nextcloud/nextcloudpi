@@ -79,7 +79,7 @@ jobs:
           then
             version="master"
           else
-            if [[ "${{ github.ref_type }}" != "tag ]] || ! git describe --tags > /dev/null
+            if [[ "${{ github.ref_type }}" != "tag" ]] || ! git describe --tags > /dev/null
             then
               git fetch -fu --tags origin ${{ env.VERSION }}:${{ env.VERSION }}
             fi
