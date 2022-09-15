@@ -211,6 +211,7 @@ install_template() {
   local template="${1?}"
   local target="${2?}"
   local bkp="$(mktemp)"
+  mkdir -p "$(dirname "$target")"
   [[ -f "$target" ]] && cp -a "$target" "$bkp"
   {
     if [[ "${3:-}" == "--defaults" ]]; then
