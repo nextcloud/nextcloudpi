@@ -17,7 +17,7 @@ install()
   systemctl disable ufw
 
   # Disable logging to kernel
-  grep -q maxsize /etc/logrotate.d/ufw || sed -i /weekly/amaxsize2M /etc/logrotate.d/ufw
+  grep -q maxsize /etc/logrotate.d/ufw || sed -i '/weekly/amaxsize 2M' /etc/logrotate.d/ufw
 
   return 0
 }
