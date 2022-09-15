@@ -33,6 +33,13 @@ tmpl_php_max_filesize() {
   [[ "$FILESIZE" == "0" ]] && echo -n "10G" || echo -n "$FILESIZE"
 }
 
+tmpl_php_threads() {
+  local PHPTHREADS="$(find_app_param nc-limits PHPTHREADS)"
+  [[ $PHPTHREADS -eq 0 ]] && PHPTHREADS=$(nproc)
+  [[ $PHPTHREADS -lt 6 ]] && PHPTHREADS=6
+  echo -n "$PHPTHREADS"
+}
+
 configure()
 {
   # Set auto memory limit to 75% of the total memory
@@ -53,13 +60,10 @@ configure()
 
   # MAX PHP THREADS
   local CONF=/etc/php/${PHPVER}/fpm/pool.d/www.conf
-  local CURRENT_THREADS="$( grep "^pm.max_children" "$CONF" 2>/dev/null | awk '{ print $3 }' || true )"
-  [[ $PHPTHREADS -eq 0 ]] && PHPTHREADS=$(nproc)
-  [[ $PHPTHREADS -lt 6 ]] && PHPTHREADS=6
-  echo "Using $PHPTHREADS PHP threads"
-  sed -i "s|^pm =.*|pm = static|"                                "$CONF"
-  sed -i "s|^pm.max_children =.*|pm.max_children = $PHPTHREADS|" "$CONF"
-  [[ "$PHPTHREADS"  == "$CURRENT_THREADS"   ]] || require_fpm_restart=true
+  CONF_VALUE="$(cat "$CONF" 2> /dev/null || true)"
+  echo "Using $(tmpl_php_threads) PHP threads"
+  install_template "php/pool.d.www.conf.sh" "$CONF"
+  [[ "$CONF_VALUE"  == "$(cat "$CONF")"   ]] || require_fpm_restart=true
 
   local CONF=/etc/mysql/mariadb.conf.d/91-ncp.cnf
   CONF_VALUE="$(cat "$CONF" 2> /dev/null || true)"
@@ -71,7 +75,7 @@ configure()
 
   # redis max memory
   local CONF=/etc/redis/redis.conf
-  local CURRENT_REDIS_MEM=$( grep "^maxmemory" "$CONF" | awk '{ print $2 }' )
+  local CURRENT_REDIS_MEM="$( grep "^maxmemory" "$CONF" | awk '{ print $2 }' )"
   [[ "$REDISMEM" != "$CURRENT_REDIS_MEM" ]] && {
     sed -i "s|^maxmemory .*|maxmemory $REDISMEM|" "$CONF"
     chown redis:redis "$CONF"
