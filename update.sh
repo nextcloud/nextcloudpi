@@ -174,6 +174,9 @@ fi
 # update to the latest NC version
 is_active_app nc-autoupdate-nc && run_app nc-autoupdate-nc
 
+# Refresh ncp config values
+source /usr/local/etc/library.sh
+
 # check dist-upgrade
 check_distro "$NCPCFG" && check_distro etc/ncp.cfg || {
   php_ver_new=$(jq -r '.php_version'   < etc/ncp.cfg)
