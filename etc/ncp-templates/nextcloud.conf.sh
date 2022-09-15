@@ -140,6 +140,6 @@ cat <<EOF
 EOF
 
 if ! [[ -f /.ncp-image ]]; then
-  echo -e "Apache self check:"
+  echo "Apache self check:" >&2
   apache2ctl -t 1>&2
 fi

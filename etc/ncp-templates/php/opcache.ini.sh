@@ -7,7 +7,7 @@ PHPVER="${PHPVER?ERROR: PHPVER variable unset!}"
 
 if [[ "$1" == "--defaults" ]] || ! [[ -f "${BINDIR}/CONFIG/nc-datadir.sh" ]]
 then
-  echo -e "INFO: Restoring template to default settings"
+  echo "INFO: Restoring template to default settings" >&2
 
   TMP_DIR="/tmp"
 else
