@@ -29,7 +29,7 @@ source /usr/local/etc/library.sh
 [[ "$VER" == "" ]] && { echo "Usage ${BIN} <version>"; exit 1; }
 [[ -f /.docker-image ]] && BASEDIR=/data || BASEDIR=/var/www
 cd "$BASEDIR"
-DATADIR="$( grep datadirectory nextcloud/config/config.php | awk '{ print $3 }' | grep -oP "[^']*[^']" | head -1 )"
+DATADIR="$( get_nc_config_value datadirectory )"
 ncc status &>/dev/null          || { echo "Nextcloud is currently down"; exit 1; }
 [[ -d /var/www/nextcloud-old ]] && { echo "Nextcloud backup directory found. Interrupted or already running installation?"; exit 1; }
 [[ -d /var/www/nextcloud     ]] || { echo "Nextcloud directory not found"      ; exit 1; }
@@ -48,12 +48,24 @@ if [[ $((MAJOR_NEW - MAJOR_CUR)) -gt 1 ]]; then
   exit 1
 fi
 
+if [[ "$MAJOR_NEW" -ge 24 ]] && [[ "$(lsb_release -r)" =~ .*10 ]]
+then
+  echo -e "Nextcloud version greater than 23 are not supported with Debian 10 (Buster). Please run ncp-dist-upgrade."
+  exit 1
+fi
+
 grep -qP "\d+\.\d+\.\d+" <<<"$CURRENT" || { echo "Malformed version $CURRENT"; exit 1; }
 grep -qP "\d+\.\d+\.\d+" <<<"$VER"     || { echo "Malformed version $VER"    ; exit 1; }
 
 echo "Current   Nextcloud version $CURRENT"
 echo "Available Nextcloud version $VER"
 is_more_recent_than "${VER}" "${CURRENT}" || { echo "Nothing to update"; exit 1; } # we want `exit 1` so the autoupdate doesn't notify success in this case
+
+if ! is_more_recent_than "24.0.0" "${VER}" && is_more_recent_than "7.4.0" "${PHPVER}.0"
+then
+  echo -e "Upgrading to Nextcloud versions > 23 requires the latest debian and PHP versions. Please run \`ncp-dist-upgrade\` and then run the update again."
+  exit 1
+fi
 
 # make sure that cron.php is not running and there are no pending jobs
 # https://github.com/nextcloud/server/issues/10949
@@ -179,7 +191,6 @@ $ncc | grep -q db:add-missing-columns && $ncc db:add-missing-columns -n
 $ncc | grep -q db:add-missing-primary-keys && $ncc db:add-missing-primary-keys -n
 $ncc | grep -q db:convert-filecache-bigint && $ncc db:convert-filecache-bigint -n
 
-
 # use the correct version for custom apps
 NCVER="$(ncc status | grep "version:" | awk '{ print $3 }')"
 if is_more_recent_than "21.0.0" "${NCVER}"; then
@@ -189,7 +200,7 @@ else
   if ! is_app_enabled notify_push; then
     ncc app:install notify_push
     ncc app:enable  notify_push
-    bash /usr/local/etc/ncp-templates/nextcloud.conf.sh > /etc/apache2/sites-available/nextcloud.conf
+    install_template nextcloud.conf.sh /etc/apache2/sites-available/nextcloud.conf
     a2enmod proxy proxy_http proxy_wstunnel
     apachectl -k graceful
     ## make sure the notify_push daemon is runnnig
@@ -224,9 +235,80 @@ fi
 rm -rf /var/www/nextcloud/apps/previewgenerator
 ln -snf "${NCPREV}" /var/www/nextcloud/apps/previewgenerator
 
+
+if ! is_more_recent_than "24.0.0" "${NCVER}" && is_more_recent_than "8.1.0" "${PHPVER}.0"
+then
+  (
+  echo "Upgrading PHP..."
+  export DEBIAN_FRONTEND=noninteractive
+  PHPVER_OLD="$PHPVER"
+  PHPVER_NEW="8.1"
+  PHP_PACKAGES_OLD=(php-{common,igbinary,redis} "php${PHPVER_OLD}" \
+    "php${PHPVER_OLD}"-{curl,gd,fpm,cli,opcache,mbstring,xml,zip,fileinfo,ldap,intl,bz2,json,common,readline,mysql,bcmath,gmp})
+  PHP_PACKAGES_NEW=("php${PHPVER_NEW}" php-json \
+    "php${PHPVER_NEW}"-{curl,gd,fpm,cli,opcache,mbstring,xml,zip,fileinfo,ldap,intl,bz2,mysql,bcmath,gmp,redis,common})
+
+  php_restore() {
+    trap "" INT TERM HUP ERR
+    echo "Something went wrong while upgrading PHP. Rolling back to version ${PHPVER_OLD}..."
+    set +e
+    service "php${PHPVER_NEW}-fpm" stop
+    a2disconf php${PHPVER_NEW}-fpm
+    rm /etc/apt/sources.list.d/php.list
+    apt-get update
+    apt-get remove --purge -y "${PHP_PACKAGES_NEW[@]}" systemd
+    apt-get install -y --no-install-recommends -t "$RELEASE" "${PHP_PACKAGES_OLD[@]}"
+    set_ncpcfg "php_version" "${PHPVER_OLD}"
+    install_template "php/opcache.ini.sh" "/etc/php/${PHPVER_NEW}/mods-available/opcache.ini"
+    run_app nc-limits
+    a2enconf "php${PHPVER_OLD}-fpm"
+    service "php${PHPVER_OLD}-fpm" start
+    service apache2 restart
+    echo "PHP upgrade has been successfully reverted"
+    set -e
+  }
+
+  trap php_restore INT TERM HUP ERR
+
+  # Setup apt repository for php 8
+  wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
+  echo "deb https://packages.sury.org/php/ ${RELEASE%-security} main" > /etc/apt/sources.list.d/php.list
+  apt-get update
+
+  echo "Stopping apache and  php-fpm..."
+  service "php${PHPVER_OLD}-fpm" stop
+  service apache2 stop
+
+  echo "Remove old PHP (${PHPVER_OLD})..."
+  a2disconf "php${PHPVER_OLD}-fpm"
+
+  apt-get remove --purge -y "${PHP_PACKAGES_OLD[@]}"
+
+  echo "Install PHP ${PHPVER_NEW}..."
+  install_with_shadow_workaround --no-install-recommends systemd
+  apt-get install -y --no-install-recommends -t "$RELEASE" "${PHP_PACKAGES_NEW[@]}"
+
+  set_ncpcfg "php_version" "${PHPVER_NEW}"
+  install_template "php/opcache.ini.sh" "/etc/php/${PHPVER_NEW}/mods-available/opcache.ini"
+  ( export PHPVER="${PHPVER_NEW}"; run_app nc-limits )
+  a2enconf php${PHPVER_NEW}-fpm
+
+  echo "Starting apache and php-fpm..."
+  service "php${PHPVER_NEW}-fpm" start
+  service apache2 start
+  ncc status
+  )
+
+  # Reload library.sh to reset PHPVER
+  source /usr/local/etc/library.sh
+
+fi
+
+
 # refresh completions
 ncc _completion -g --shell-type bash -p ncc | sed 's|/var/www/nextcloud/occ|ncc|g' > /usr/share/bash-completion/completions/ncp
 
+echo "Update completed successfully."
 # done
 ####################
 mkdir -p  "$DATADIR"/ncp-update-backups

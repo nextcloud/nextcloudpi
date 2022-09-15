@@ -19,7 +19,7 @@ configure()
   save_maintenance_mode
 
   local DATADIR
-  DATADIR=$( sudo -u www-data php /var/www/nextcloud/occ config:system:get datadirectory ) || {
+  DATADIR=$( get_nc_config_value datadirectory ) || {
     echo -e "Error reading data directory. Is NextCloud running and configured?";
     return 1;
   }

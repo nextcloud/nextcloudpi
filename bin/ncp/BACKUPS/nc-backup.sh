@@ -43,7 +43,7 @@ occ="sudo -u www-data php /var/www/nextcloud/occ"
 
 [[ "$compress" == "yes" ]] && destfile="$destfile".gz
 
-datadir=$( $occ config:system:get datadirectory ) || {
+datadir=$( get_nc_config_value datadirectory ) || {
   echo "Error reading data directory. Is NextCloud running and configured?";
   exit 1;
 }

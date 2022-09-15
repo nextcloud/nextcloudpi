@@ -217,7 +217,7 @@ install_template() {
       { bash "/usr/local/etc/ncp-templates/$template" --defaults > "$target"; } 2>&1
     else
       { bash "/usr/local/etc/ncp-templates/$template" > "$target"; } 2>&1 || \
-        if [[ "${3:}" == "--allow-fallback" ]]; then
+        if [[ "${3:-}" == "--allow-fallback" ]]; then
           { bash "/usr/local/etc/ncp-templates/$template" --defaults > "$target"; } 2>&1
         fi
     fi
@@ -385,6 +385,26 @@ function persistent_cfg()
   ln -s "$DST" "$SRC"
 }
 
+function install_with_shadow_workaround()
+{
+  # Subshell to trap trap :P
+  (
+    restore_shadow=true
+    [[ -L /etc/shadow ]] || restore_shadow=false
+    [[ "$restore_shadow" == "false" ]] || {
+      trap "mv /etc/shadow /data/etc/shadow; ln -s /data/etc/shadow /etc/shadow" EXIT
+      rm /etc/shadow
+      cp /data/etc/shadow /etc/shadow
+    }
+    DEBIAN_FRONTEND=noninteractive apt-get install -y "$@"
+    [[ "$restore_shadow" == "false" ]] || {
+      mv /etc/shadow /data/etc/shadow
+      ln -s /data/etc/shadow /etc/shadow
+    }
+    trap - EXIT
+  )
+}
+
 function is_more_recent_than()
 {
   local version_A="$1"
@@ -470,7 +490,7 @@ function apt_install()
 }
 
 function is_docker() {
-  [[ -f /.dockerenv ]] || [[ "$DOCKERBUILD" == 1 ]]
+  [[ -f /.dockerenv ]] || [[ -f /.docker-image ]] || [[ "$DOCKERBUILD" == 1 ]]
 }
 
 function is_lxc() {
@@ -523,6 +543,11 @@ function get_ncpcfg()
 {
   local name="${1}"
   jq -r ".${name}" < "${NCPCFG}"
+}
+
+function get_nc_config_value() {
+  sudo -u www-data php -r "include(\"/var/www/nextcloud/config/config.php\"); echo(\$CONFIG[\"${1?Missing required argument: config key}\"]);"
+  #ncc config:system:get "${1?Missing required argument: config key}"
 }
 
 # License

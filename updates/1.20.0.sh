@@ -22,7 +22,7 @@ source /usr/local/etc/library.sh # sets NCLATESTVER PHPVER RELEASE
 is_active_app nc-scan-auto && run_app nc-scan-auto
 
 # if using NCP original logo, replace with the new version
-datadir=$(ncc config:system:get datadirectory)
+datadir=$(get_nc_config_value datadirectory)
 id=$(grep instanceid /var/www/nextcloud/config/config.php | awk -F "=> " '{ print $2 }' | sed "s|[,']||g")
 logo_dir="${datadir}/appdata_${id}/theming/images"
 [[ -f "${logo_dir}"/logo ]] && {

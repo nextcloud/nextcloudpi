@@ -30,7 +30,7 @@ type mysqld &>/dev/null && mysql -e 'use nextcloud' &>/dev/null && { echo "The '
 
 # get dependencies
 apt-get update
-apt-get install --no-install-recommends -y git ca-certificates sudo lsb-release
+apt-get install --no-install-recommends -y git ca-certificates sudo lsb-release wget
 
 # get install code
 if [[ "${CODE_DIR}" == "" ]]; then

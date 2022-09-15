@@ -16,14 +16,14 @@ install()
 
 configure()
 {
-  [[ $ACTIVE != "yes" ]] && { 
+  [[ $ACTIVE != "yes" ]] && {
     rm -f /etc/cron.d/ncp-rsync-auto
     echo "automatic rsync disabled"
     return 0
   }
 
   local DATADIR
-  DATADIR=$( ncc config:system:get datadirectory ) || {
+  DATADIR=$( get_nc_config_value datadirectory ) || {
     echo -e "Error reading data directory. Is NextCloud running and configured?";
     return 1;
   }
