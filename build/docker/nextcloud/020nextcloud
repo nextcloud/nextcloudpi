@@ -71,10 +71,8 @@ echo "Configuring Domain"
 bash /usr/local/bin/nextcloud-domain.sh
 
 # Trusted Domain (as an argument)
-[[ -z "$2" ]] || {
+[[ "$2" != "" ]] && \
   ncc config:system:set trusted_domains 6 --value="$2"
-  ncc notify_push:self-test > /dev/null 2>&1 || ncc notify_push:setup "https://$2/push"
-}
 
 echo "Nextcloud version $(nc_version). NextCloudPi version $(cat /usr/local/etc/ncp-version)"
 

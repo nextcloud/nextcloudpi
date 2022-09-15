@@ -92,8 +92,6 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
     rm -rf /tmp/ncp-build
 EOFCHROOT
 
-basename "$IMG" > raspbian_root/usr/local/etc/ncp-baseimage
-
 trap '' EXIT
 clean_chroot_raspbian
 

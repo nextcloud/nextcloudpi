@@ -54,7 +54,7 @@ if [[ "$1" != "--defaults" ]] && [[ -n "$LETSENCRYPT_DOMAIN" ]]; then
   # otherwise, in some installs this is the path we use
   [[ -f "${LETSENCRYPT_CERT_BASE_PATH}/fullchain.pem" ]] || {
     if [[ -d "/etc/letsencrypt/live/ncp-nextcloud" ]]; then
-      LETSENCRYPT_CERT_BASE_PATH="/etc/letsencrypt/live/ncp-nextcloud"
+      LETSENCRYPT_CERT_BASE_PATH="/etc/letsencrypt/live/ncp-nextcloud" 
     fi
   }
 else
@@ -140,6 +140,6 @@ cat <<EOF
 EOF
 
 if ! [[ -f /.ncp-image ]]; then
-  echo -e "Apache self check:"
-  apache2ctl -t 1>&2
+  echo "Apache self check:" | tee /var/log/ncp.log >&2
+  apache2ctl -t 2>&1 | tee /var/log/ncp.log >&2
 fi

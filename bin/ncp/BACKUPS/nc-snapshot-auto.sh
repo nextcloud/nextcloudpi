@@ -26,7 +26,7 @@ configure()
 
   cat > /etc/cron.hourly/btrfs-snp <<EOF
 #!/bin/bash
-DATADIR=\$(get_nc_config_value datadirectory) || {
+DATADIR=\$(ncc config:system:get datadirectory) || {
   echo -e "Error reading data directory. Is NextCloud running and configured?";
   exit 1;
 }

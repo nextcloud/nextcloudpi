@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# SAMBA server for Raspbian
+# SAMBA server for Raspbian 
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -33,26 +33,26 @@ EOF
 
 configure()
 {
-  [[ $ACTIVE != "yes" ]] && {
+  [[ $ACTIVE != "yes" ]] && { 
     service smbd stop
     update-rc.d smbd disable
     update-rc.d nmbd disable
     echo "SMB disabled"
     return
-  }
+  } 
 
   # CHECKS
   ################################
   local DATADIR
-  DATADIR=$( get_nc_config_value datadirectory ) || {
-    echo -e "Error reading data directory. Is NextCloud running and configured?";
+  DATADIR=$( sudo -u www-data php /var/www/nextcloud/occ config:system:get datadirectory ) || {
+    echo -e "Error reading data directory. Is NextCloud running and configured?"; 
     return 1;
   }
   [ -d "$DATADIR" ] || { echo -e "data directory $DATADIR not found"   ; return 1; }
 
   # CONFIG
   ################################
-
+  
   # remove files from this line to the end
   sed -i '/# NextCloudPi automatically/,/\$/d' /etc/samba/smb.conf
 
@@ -63,7 +63,7 @@ EOF
 
   # create a share per Nextcloud user
   local USERS=()
-  while read -r path; do
+  while read -r path; do 
     USERS+=( "$( basename "$(dirname "$path")" )" )
   done < <( ls -d "$DATADIR"/*/files )
 

@@ -12,7 +12,7 @@ then
   "backups": []
 }
 EOF
-  exit 0
+exit 0
 fi
 
 cat <<EOF
@@ -53,7 +53,7 @@ EOF
 
 is_docker || {
 
-  DATADIR=$( get_nc_config_value datadirectory ) || {
+  DATADIR=$( ncc config:system:get datadirectory ) || {
     echo -e "ERROR: Could not get data directory. Is NextCloud running?";
     return 1;
   }

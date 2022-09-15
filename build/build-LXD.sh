@@ -37,7 +37,6 @@ lxc config device add ncp buildcode disk source="$(pwd)" path=/build
 lxc exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
 lxc exec ncp -- bash -c 'CODE_DIR=/build DBG=x bash /build/install.sh'
 lxc exec ncp -- bash -c 'source /build/etc/library.sh; run_app_unsafe /build/post-inst.sh'
-lxc exec ncp -- bash -c "echo '$(basename "$IMG")' > /usr/local/etc/ncp-baseimage"
 lxc stop ncp
 lxc config device remove ncp buildcode
 lxc publish -q ncp -f --alias ncp/"${version}"

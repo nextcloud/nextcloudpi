@@ -95,6 +95,20 @@ $APTINSTALL -t ${release_new} php${php_ver_new}-gmp
 apt-get autoremove -y
 apt-get clean
 
+# configure latest PHP version
+cat > /etc/php/${php_ver_new}/mods-available/opcache.ini <<EOF
+zend_extension=opcache.so
+opcache.enable=1
+opcache.enable_cli=1
+opcache.fast_shutdown=1
+opcache.interned_strings_buffer=8
+opcache.max_accelerated_files=10000
+opcache.memory_consumption=128
+opcache.save_comments=1
+opcache.revalidate_freq=1
+opcache.file_cache=/tmp;
+EOF
+
 cat > /etc/php/${php_ver_new}/fpm/conf.d/90-ncp.ini <<EOF
 ; disable .user.ini files for performance and workaround NC update bugs
 user_ini.filename =
@@ -122,8 +136,6 @@ is_active_app unattended-upgrades && run_app unattended-upgrades || true
 
 # mark as successful
 mv "${new_cfg}" "${old_cfg}"
-install_template "php/opcache.ini.sh" "/etc/php/${php_ver_new}/mods-available/opcache.ini" --defaults
-service "php${php_ver_new}-fpm" restart
 
 source /usr/local/etc/library.sh # refresh NCPCFG RELEASE PHPVER
 run_app nc-limits

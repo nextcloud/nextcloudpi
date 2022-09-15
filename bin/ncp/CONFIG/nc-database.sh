@@ -15,12 +15,6 @@ is_active()
   [[ "$SRCDIR" != "/var/lib/mysql" ]]
 }
 
-tmpl_db_dir() {
-  if is_active_app nc-database; then
-    find_app_param nc-database DBDIR
-  fi
-}
-
 configure()
 {
   local SRCDIR=$( grep datadir /etc/mysql/mariadb.conf.d/90-ncp.cnf | awk -F "= " '{ print $2 }' )
@@ -31,14 +25,14 @@ configure()
       echo "$DBDIR is not empty"
       return 1
     }
-    rmdir "$DBDIR"
+    rmdir "$DBDIR" 
   }
 
   local BASEDIR=$( dirname "$DBDIR" )
   mkdir -p "$BASEDIR"
 
   grep -q -e ext -e btrfs <( stat -fc%T "$BASEDIR" ) || { echo -e "Only ext/btrfs filesystems can hold the data directory"; return 1; }
-
+  
   sudo -u mysql test -x "$BASEDIR" || { echo -e "ERROR: the user mysql does not have access permissions over $BASEDIR"; return 1; }
 
   [[ $( stat -fc%d / ) == $( stat -fc%d "$BASEDIR" ) ]] && \
@@ -48,9 +42,9 @@ configure()
 
   echo "moving database to $DBDIR..."
   service mysql stop
-  mv "$SRCDIR" "$DBDIR"
-  install_template "mysql/90-ncp.cnf.sh" "/etc/mysql/mariadb.conf.d/90-ncp.cnf"
-  service mysql start
+  mv "$SRCDIR" "$DBDIR" && \
+    sed -i "s|^datadir.*|datadir = $DBDIR|" /etc/mysql/mariadb.conf.d/90-ncp.cnf
+  service mysql start 
 
   restore_maintenance_mode
 }

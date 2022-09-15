@@ -25,9 +25,6 @@ export DEBIAN_FRONTEND=noninteractive
 install()
 {
     set -x
-    # Setup apt repository for php 8
-    wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
-    echo "deb https://packages.sury.org/php/ ${RELEASE%-security} main" > /etc/apt/sources.list.d/php.list
     apt-get update
     $APTINSTALL apt-utils cron curl
     ls -l /var/lock || true
@@ -36,10 +33,9 @@ install()
     mkdir -p /run/lock
     apache2ctl -V || true
 
-    install_with_shadow_workaround --no-install-recommends systemd
     $APTINSTALL -t $RELEASE php${PHPVER} php${PHPVER}-curl php${PHPVER}-gd php${PHPVER}-fpm php${PHPVER}-cli php${PHPVER}-opcache \
                             php${PHPVER}-mbstring php${PHPVER}-xml php${PHPVER}-zip php${PHPVER}-fileinfo php${PHPVER}-ldap \
-                            php${PHPVER}-intl php${PHPVER}-bz2 php-json
+                            php${PHPVER}-intl php${PHPVER}-bz2 php${PHPVER}-json
 
     mkdir -p /run/php
 
@@ -57,12 +53,46 @@ install()
     # CONFIGURE APACHE
     ##########################################
 
-    install_template apache2/http2.conf.sh /etc/apache2/conf-available/http2.conf --defaults
+  cat > /etc/apache2/conf-available/http2.conf <<EOF
+Protocols h2 h2c http/1.1
+
+# HTTP2 configuration
+H2Push          on
+H2PushPriority  *                       after
+H2PushPriority  text/css                before
+H2PushPriority  image/jpeg              after   32
+H2PushPriority  image/png               after   32
+H2PushPriority  application/javascript  interleaved
+
+# SSL/TLS Configuration
+SSLProtocol -all +TLSv1.2 +TLSv1.3
+SSLHonorCipherOrder on
+SSLCipherSuite ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA:ECDHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA:ECDHE-ECDSA-DES-CBC3-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:DES-CBC3-SHA:!DSS
+SSLCompression          off
+SSLSessionTickets       on
+
+# OCSP Stapling
+SSLUseStapling          on
+SSLStaplingResponderTimeout 5
+SSLStaplingReturnResponderErrors off
+SSLStaplingCache        shmcb:/var/run/ocsp(128000)
+EOF
 
     # CONFIGURE PHP7
     ##########################################
 
-    install_template "php/opcache.ini.sh" "/etc/php/${PHPVER}/mods-available/opcache.ini" --defaults
+    cat > /etc/php/${PHPVER}/mods-available/opcache.ini <<EOF
+zend_extension=opcache.so
+opcache.enable=1
+opcache.enable_cli=1
+opcache.fast_shutdown=1
+opcache.interned_strings_buffer=8
+opcache.max_accelerated_files=10000
+opcache.memory_consumption=128
+opcache.save_comments=1
+opcache.revalidate_freq=1
+opcache.file_cache=/tmp;
+EOF
 
     a2enmod http2
     a2enconf http2
@@ -82,9 +112,37 @@ install()
 
     $APTINSTALL ssl-cert # self signed snakeoil certs
 
-    install_template "mysql/90-ncp.cnf.sh" "/etc/mysql/mariadb.conf.d/90-ncp.cnf" --defaults
+    # configure MariaDB (UTF8 4 byte support)
+    cat > /etc/mysql/mariadb.conf.d/90-ncp.cnf <<EOF
+[mysqld]
+datadir = /var/lib/mysql
+EOF
+    cat > /etc/mysql/mariadb.conf.d/91-ncp.cnf <<EOF
+[mysqld]
+transaction_isolation = READ-COMMITTED
+innodb_large_prefix=true
+innodb_file_per_table=1
+innodb_file_format=barracuda
 
-    install_template "mysql/91-ncp.cnf.sh" "/etc/mysql/mariadb.conf.d/91-ncp.cnf" --defaults
+[server]
+# innodb settings
+skip-name-resolve
+innodb_buffer_pool_size = 256M
+innodb_buffer_pool_instances = 1
+innodb_flush_log_at_trx_commit = 2
+innodb_log_buffer_size = 32M
+innodb_max_dirty_pages_pct = 90
+innodb_log_file_size = 32M
+
+# disable query cache
+query_cache_type = 0
+query_cache_size = 0
+
+# other
+tmp_table_size= 64M
+max_heap_table_size= 64M
+EOF
+
 
   # launch mariadb if not already running
   if ! [[ -f /run/mysqld/mysqld.pid ]]; then

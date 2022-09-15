@@ -9,10 +9,10 @@
 #
 
 
-configure()
+configure() 
 {
   local DATADIR
-  DATADIR=$( get_nc_config_value datadirectory ) || {
+  DATADIR=$( cd /var/www/nextcloud; sudo -u www-data php occ config:system:get datadirectory ) || {
     echo "data directory not found";
     return 1;
   }
