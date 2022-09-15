@@ -19,7 +19,7 @@ cat <<EOF
 [www]
 user = www-data
 group = www-data
-listen = /run/php/php7.4-fpm.sock
+listen = /run/php/php${PHPVER}-fpm.sock
 listen.owner = www-data
 listen.group = www-data
 pm = static
