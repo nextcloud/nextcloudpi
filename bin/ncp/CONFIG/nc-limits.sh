@@ -46,14 +46,14 @@ configure()
   # MAX PHP MEMORY
   local require_fpm_restart=false
   local CONF=/etc/php/${PHPVER}/fpm/conf.d/90-ncp.ini
-  local CONF_VALUE="$(cat "$CONF" || true)"
+  local CONF_VALUE="$(cat "$CONF" 2> /dev/null || true)"
   echo "Using $(tmpl_php_max_memory) for PHP max memory"
   install_template "php/90-ncp.ini.sh" "$CONF"
   [[ "$CONF_VALUE" == "$(cat "$CONF")" ]] || require_fpm_restart=true
 
   # MAX PHP THREADS
   local CONF=/etc/php/${PHPVER}/fpm/pool.d/www.conf
-  local CURRENT_THREADS=$( grep "^pm.max_children" "$CONF" | awk '{ print $3 }' )
+  local CURRENT_THREADS="$( grep "^pm.max_children" "$CONF" 2>/dev/null | awk '{ print $3 }' || true )"
   [[ $PHPTHREADS -eq 0 ]] && PHPTHREADS=$(nproc)
   [[ $PHPTHREADS -lt 6 ]] && PHPTHREADS=6
   echo "Using $PHPTHREADS PHP threads"
@@ -62,7 +62,7 @@ configure()
   [[ "$PHPTHREADS"  == "$CURRENT_THREADS"   ]] || require_fpm_restart=true
 
   local CONF=/etc/mysql/mariadb.conf.d/91-ncp.cnf
-  CONF_VALUE="$(cat "$CONF" || true)"
+  CONF_VALUE="$(cat "$CONF" 2> /dev/null || true)"
   install_template "mysql/91-ncp.cnf.sh" "$CONF"
   [[ "$CONF_VALUE" == "$(cat "$CONF")" ]] || service mariadb restart
 
