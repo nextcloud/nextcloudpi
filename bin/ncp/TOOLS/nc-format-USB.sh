@@ -50,7 +50,7 @@ configure()
     return 1;
   }
 
-  DATADIR="$(ncc config:system:get datadirectory || true)"
+  DATADIR="$(get_nc_config_value datadirectory || true)"
   if [[ $( stat -fc%d / ) != $( stat -fc%d "$DATADIR" ) ]] || [[ -z "$DATADIR" ]] && [[ "$ALLOW_DATA_DIR_REMOVAL" != "yes" ]]
   then
     echo "ERROR: Data directory is on USB drive (or can't be determined) and removal of data directory was not explicitly allowed." \

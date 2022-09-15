@@ -1,10 +1,5 @@
 #!/bin/bash
 
-apt_install_with_recommends() {
-  apt-get update --allow-releaseinfo-change
-  DEBIAN_FRONTEND=noninteractive apt-get install -y -o Dpkg::Options::=--force-confdef -o Dpkg::Options::="--force-confold" "$@"
-}
-
 is_supported() {
   [[ "${DOCKERBUILD:-0}" == 1 ]] && [[ "$(lsb_release -r)" =~ .*10 ]] && return 1
   return 0
@@ -111,26 +106,8 @@ EOF
   # shellcheck disable=SC2016
   sed -i 's|status_of_proc "$DAEMON" "$NAME" ${PIDFILE:="-p ${PIDFILE}"}|status_of_proc ${PIDFILE:+-p "$PIDFILE"} "$DAEMON" "$NAME"|' /lib/init/init-d-script
 
-  if is_docker
-  then
-    # during installation of prometheus-node-exporter `useradd` is used to create a user.
-    # However, `useradd` doesn't the symlink in /etc/shadow, so we need to temporarily move it back
-    restore_shadow=true
-    [[ -L /etc/shadow ]] || restore_shadow=false
-    [[ "$restore_shadow" == "false" ]] || {
-      trap "mv /etc/shadow /data/etc/shadow; ln -s /data/etc/shadow /etc/shadow" EXIT
-      rm /etc/shadow
-      cp /data/etc/shadow /etc/shadow
-    }
-    apt_install_with_recommends prometheus-node-exporter
-    [[ "$restore_shadow" == "false" ]] || {
-      mv /etc/shadow /data/etc/shadow
-      ln -s /data/etc/shadow /etc/shadow
-    }
-    trap - EXIT
-  else
-    apt_install_with_recommends prometheus-node-exporter
-  fi
+  apt-get update --allow-releaseinfo-change
+  install_with_shadow_workaround -o Dpkg::Options::=--force-confdef -o Dpkg::Options::="--force-confold" prometheus-node-exporter
 
   if is_docker
   then

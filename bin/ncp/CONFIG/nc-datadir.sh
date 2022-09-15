@@ -20,6 +20,37 @@ install()
   apt_install btrfs-progs
 }
 
+tmpl_opcache_dir() {
+  DATADIR="$(get_nc_config_value datadirectory)"
+  echo -n "${DATADIR}/.opcache"
+  #[[ $( stat -fc%d / ) == $( stat -fc%d "$DATADIR" ) ]] && echo "/tmp" || echo "${DATADIR}/.opcache"
+}
+
+tmpl_tmp_upload_dir() {
+  DATADIR="$(get_nc_config_value datadirectory)"
+  echo -n "${DATADIR}/tmp"
+}
+
+create_opcache_dir() {
+  OPCACHE_DIR="$(tmpl_opcache_dir)"
+  mkdir -p "$OPCACHE_DIR"
+  chown -R www-data:www-data "$OPCACHE_DIR"
+  if [[ "$(stat -fc%T "${BASEDIR}")" == "btrfs" ]]
+  then
+    chattr -R +C "$OPCACHE_DIR"
+  fi
+}
+
+create_tmp_upload_dir() {
+  UPLOAD_DIR="$(tmpl_tmp_upload_dir)"
+  mkdir -p "${UPLOAD_DIR}"
+  chown www-data:www-data "${UPLOAD_DIR}"
+  if [[ "$(stat -fc%T "${BASEDIR}")" == "btrfs" ]]
+  then
+    chattr +C "${UPLOAD_DIR}"
+  fi
+}
+
 configure()
 {
   set -e -o pipefail
@@ -27,7 +58,7 @@ configure()
 
   ## CHECKS
   local SRCDIR BASEDIR ENCDIR
-  SRCDIR=$( cd /var/www/nextcloud; ncc config:system:get datadirectory ) || {
+  SRCDIR=$( get_nc_config_value datadirectory ) || {
     echo -e "Error reading data directory. Is NextCloud running and configured?";
     return 1;
   }
@@ -98,15 +129,15 @@ configure()
   set_ncpcfg datadir "${DATADIR}"
 
   # tmp upload dir
-  mkdir -p "${DATADIR}/tmp"
-  chown www-data:www-data "${DATADIR}/tmp"
+  create_tmp_upload_dir
   ncc config:system:set tempdirectory --value "$DATADIR/tmp"
   sed -i "s|^;\?upload_tmp_dir =.*$|uploadtmp_dir = ${DATADIR}/tmp|"  /etc/php/"${PHPVER?}"/cli/php.ini
   sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = ${DATADIR}/tmp|" /etc/php/"${PHPVER}"/fpm/php.ini
   sed -i "s|^;\?sys_temp_dir =.*$|sys_temp_dir = ${DATADIR}/tmp|"     /etc/php/"${PHPVER}"/fpm/php.ini
 
   # opcache dir
-  sed -i "s|^opcache.file_cache=.*|opcache.file_cache=${DATADIR}/.opcache|" /etc/php/"${PHPVER}"/mods-available/opcache.ini
+  create_opcache_dir
+  install_template "php/opcache.ini.sh" "/etc/php/${PHPVER}/mods-available/opcache.ini"
 
   # update fail2ban logpath
   [[ -f /etc/fail2ban/jail.local ]] && \

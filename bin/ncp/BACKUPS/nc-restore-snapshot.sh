@@ -16,7 +16,7 @@ configure()
   [[ -d "$SNAPSHOT" ]] || { echo "$SNAPSHOT doesn't exist"; return 1; }
 
   local datadir mountpoint
-  datadir=$( ncc config:system:get datadirectory ) || {
+  datadir=$( get_nc_config_value datadirectory ) || {
     echo -e "Error reading data directory. Is NextCloud running?";
     return 1;
   }

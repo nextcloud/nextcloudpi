@@ -14,6 +14,11 @@ REDIS_MEM=3gb
 APTINSTALL="apt-get install -y --no-install-recommends"
 export DEBIAN_FRONTEND=noninteractive
 
+tmpl_max_transfer_time()
+{
+  find_app_param nc-nextcloud MAXTRANSFERTIME
+}
+
 install()
 {
   # During build, this step is run before ncp.sh. Avoid executing twice
@@ -145,10 +150,18 @@ configure()
   fi
 
   # create and configure opcache dir
-  local OPCACHEDIR=/var/www/nextcloud/data/.opcache
-  sed -i "s|^opcache.file_cache=.*|opcache.file_cache=$OPCACHEDIR|" /etc/php/${PHPVER}/mods-available/opcache.ini
-  mkdir -p $OPCACHEDIR
-  chown -R www-data:www-data $OPCACHEDIR
+  local OPCACHEDIR="$(
+    # shellcheck disable=SC2015
+    [ -f "${BINDIR}/CONFIG/nc-datadir.sh" ] && { source "${BINDIR}/CONFIG/nc-datadir.sh"; tmpl_opcache_dir; } || true
+  )"
+  if [[ -z "${OPCACHEDIR}" ]]
+  then
+    install_template "php/opcache.ini.sh" "/etc/php/${PHPVER}/mods-available/opcache.ini" --defaults
+  else
+    mkdir -p "$OPCACHEDIR"
+    chown -R www-data:www-data "$OPCACHEDIR"
+    install_template "php/opcache.ini.sh" "/etc/php/${PHPVER}/mods-available/opcache.ini"
+  fi
 
   ## RE-CREATE DATABASE TABLE
   # launch mariadb if not already running (for docker build)

@@ -96,7 +96,7 @@ mysql -u root nextcloud <  "$TMPDIR"/nextcloud-sqlbkp_*.bak || { echo "Error res
 if is_docker; then
   DATADIR=/data/nextcloud/data
 else
-  DATADIR="$(grep datadirectory "$NCDIR"/config/config.php | awk '{ print $3 }' | grep -oP "[^']*[^']" | head -1)"
+  DATADIR="$(get_nc_config_value datadirectory)"
 fi
 [[ "$DATADIR" == "" ]] && { echo "Error reading data directory"; exit 1; }
 
@@ -107,7 +107,7 @@ cd "$NCDIR"
 NUMFILES=2
 if [[ $( ls "$TMPDIR" | wc -l ) -eq $NUMFILES ]]; then
 
-  [[ -e "$DATADIR" ]] && { 
+  [[ -e "$DATADIR" ]] && {
     echo "backing up existing $DATADIR to $DATADIR-$( date "+%m-%d-%y" )..."
     mv "$DATADIR" "$DATADIR-$( date "+%m-%d-%y" )" || exit 1
   }
@@ -149,7 +149,7 @@ fi
 sed -i "s|'datadirectory' =>.*|'datadirectory' => '${DATADIR}',|" "${NCDIR}"/config/config.php
 
 # Just in case we moved the opcache dir
-sed -i "s|^opcache.file_cache=.*|opcache.file_cache=$DATADIR/.opcache|" /etc/php/${PHPVER}/mods-available/opcache.ini
+install_template "php/opcache.ini.sh" "/etc/php/${PHPVER}/mods-available/opcache.ini"
 
 # tmp upload dir
 mkdir -p "$DATADIR/tmp"

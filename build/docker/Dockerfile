@@ -30,13 +30,14 @@ SHELL ["/bin/bash", "-c"]
 ENV DOCKERBUILD 1
 
 COPY etc/ncp.cfg etc/library.sh lamp.sh /usr/local/etc/
+COPY etc/ncp-templates /usr/local/etc/ncp-templates
 
 RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt \
 set -e; \
 
 # installation
 apt-get update; \
-apt-get install --no-install-recommends -y jq; \
+apt-get install --no-install-recommends -y jq wget procps ca-certificates lsb-release; \
 
 source /usr/local/etc/library.sh; \
 set +x; \
@@ -48,7 +49,7 @@ mysqladmin -u root shutdown; \
 # mariaDB fixups (move database to /data-ro, which will be in a persistent volume)
 mkdir -p /data-ro /data; \
 mv /var/lib/mysql /data-ro/database; \
-sed -i "s|^datadir.*|datadir = /data-ro/database|" /etc/mysql/mariadb.conf.d/90-ncp.cnf; \
+install_template "mysql/90-ncp.cnf.sh" "/etc/mysql/mariadb.conf.d/90-ncp.cnf" \
 
 # package cleanup
 apt-get autoremove -y; \
@@ -83,7 +84,6 @@ ENV DOCKERBUILD 1
 COPY etc/library.sh /usr/local/etc/
 COPY bin/ncp/CONFIG/nc-nextcloud.sh /
 COPY etc/ncp-config.d/nc-nextcloud.cfg /usr/local/etc/ncp-config.d/
-COPY etc/ncp-templates /usr/local/etc/ncp-templates
 
 RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt \
 set -e; \
@@ -96,7 +96,7 @@ touch /.docker-image; \
 
 # installation ( /var/www/nextcloud -> /data/app which will be in a volume )
 apt-get update; \
-apt-get install --no-install-recommends -y wget ca-certificates sudo jq; \
+apt-get install --no-install-recommends -y sudo jq; \
 source /usr/local/etc/library.sh; \
 install_app /nc-nextcloud.sh; \
 run_app_unsafe /nc-nextcloud.sh; \

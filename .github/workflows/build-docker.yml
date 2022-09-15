@@ -35,14 +35,6 @@ jobs:
     steps:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
-      - name: debugging
-        run: |
-          mount
-          echo 'DOCKER_OPTS="--storage-driver=devicemapper"' | sudo tee -a /etc/default/docker
-          sudo apt-get update && sudo apt-get -y upgrade
-          sudo systemctl restart docker
-          sudo apt-get install -y qemu-user-static
-          docker run --rm -v /usr/bin/qemu-arm-static:/usr/bin/qemu-arm-static arm32v7/debian:bullseye-slim bash -c 'apt-get update && apt-get install -y apache2 && apache2ctl -V' || true
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v1
 
