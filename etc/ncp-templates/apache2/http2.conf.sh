@@ -3,7 +3,7 @@
 set -e
 source /usr/local/etc/library.sh
 
-cat > /etc/apache2/conf-available/http2.conf <<EOF
+cat <<EOF
 Protocols h2 h2c http/1.1
 
 # HTTP2 configuration

@@ -11,7 +11,7 @@ else
   INNODB_BUFFER_POOL_SIZE="$(source "${BINDIR}/CONFIG/nc-limits.sh"; tmpl_innodb_buffer_pool_size)"
 fi
 
-cat > /etc/mysql/mariadb.conf.d/91-ncp.cnf <<EOF
+cat <<EOF
 [mysqld]
 transaction_isolation = READ-COMMITTED
 innodb_large_prefix=true
