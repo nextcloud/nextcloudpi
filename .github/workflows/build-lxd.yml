@@ -157,7 +157,9 @@ jobs:
           fi
           echo "VERSION=${VERSION}" >> "$GITHUB_ENV"
           echo "Running update ${{ needs.build-previous.outputs.previous_version }} -> ${VERSION}"
+          latest_nc_version="$(cat etc/ncp.cfg | jq -r '.nextcloud_version')"
           lxc exec ncp -- bash -c "DBG=x ncp-update ${UPDATE_ARGS[*]}"
+          lxc exec ncp -- bash -c "DBG=x ncp-update-nc ${latest_nc_version?}"
           lxc stop ncp
       - name: Checkout code
         uses: actions/checkout@v3
