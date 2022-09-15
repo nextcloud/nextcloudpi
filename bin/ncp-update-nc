@@ -50,7 +50,7 @@ fi
 
 if [[ "$MAJOR_NEW" -ge 24 ]] && [[ "$(lsb_release -r)" =~ .*10 ]]
 then
-  echo -e "Nextcloud version greater than 23 are not supported with Debian 10 (Buster). Please run ncp-dist-upgrade."
+  echo -e "NCP doesn't support Nextcloud versions greater than 23 with Debian 10 (Buster). Please run ncp-dist-upgrade."
   exit 1
 fi
 
@@ -60,12 +60,6 @@ grep -qP "\d+\.\d+\.\d+" <<<"$VER"     || { echo "Malformed version $VER"    ; e
 echo "Current   Nextcloud version $CURRENT"
 echo "Available Nextcloud version $VER"
 is_more_recent_than "${VER}" "${CURRENT}" || { echo "Nothing to update"; exit 1; } # we want `exit 1` so the autoupdate doesn't notify success in this case
-
-if ! is_more_recent_than "24.0.0" "${VER}" && is_more_recent_than "7.4.0" "${PHPVER}.0"
-then
-  echo -e "Upgrading to Nextcloud versions > 23 requires the latest debian and PHP versions. Please run \`ncp-dist-upgrade\` and then run the update again."
-  exit 1
-fi
 
 # make sure that cron.php is not running and there are no pending jobs
 # https://github.com/nextcloud/server/issues/10949
