@@ -15,7 +15,7 @@ function open_summary()
 {
   echo "
 <details>
-<summary>$@</summary>
+<summary>$*</summary>
 
 \`\`\`
 "
@@ -62,8 +62,7 @@ close_summary
 
 ##
 
-DATADIR="$( get_nc_config_value datadirectory ||
-            grep datadirectory /var/www/nextcloud/config/config.php |
+DATADIR="$( grep datadirectory /var/www/nextcloud/config/config.php |
               awk '{ print $3 }' | grep -oP "[^']*[^']" | head -1 )"
 
 open_summary "Nextcloud logs"
