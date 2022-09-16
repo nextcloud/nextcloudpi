@@ -128,6 +128,10 @@ jobs:
       - uses: whywaita/setup-lxd@v1
         with:
           lxd_version: latest/stable
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: "${{ env.VERSION }}"
       - name: download LXD image from artifact store
         uses: actions/download-artifact@v3
         with:
@@ -161,10 +165,6 @@ jobs:
           lxc exec ncp -- bash -c "DBG=x ncp-update ${UPDATE_ARGS[*]}"
           lxc exec ncp -- bash -c "DBG=x ncp-update-nc ${latest_nc_version?}"
           lxc stop ncp
-      - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          ref: "${{ env.VERSION }}"
       - name: Pack LXD image
         id: pack-lxd
         run: |

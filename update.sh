@@ -205,8 +205,8 @@ chmod +x /etc/update-motd.d/30ncp-dist-upgrade
 # Remove redundant opcache configuration.
 # Related to https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=815968
 # Bug #416 reappeared after we moved to php7.3 and debian buster packages.
-[[ "$( ls -l /etc/php/"${PHPVER}"/fpm/conf.d/*-opcache.ini |  wc -l )" -gt 1 ]] && rm "$( ls /etc/php/"${PHPVER}"/fpm/conf.d/*-opcache.ini | tail -1 )"
-[[ "$( ls -l /etc/php/"${PHPVER}"/cli/conf.d/*-opcache.ini |  wc -l )" -gt 1 ]] && rm "$( ls /etc/php/"${PHPVER}"/cli/conf.d/*-opcache.ini | tail -1 )"
+[[ "$( ls -l /etc/php/"${PHPVER}"/fpm/conf.d/*-opcache.ini 2> /dev/null |  wc -l )" -gt 1 ]] && rm "$( ls /etc/php/"${PHPVER}"/fpm/conf.d/*-opcache.ini | tail -1 )"
+[[ "$( ls -l /etc/php/"${PHPVER}"/cli/conf.d/*-opcache.ini 2> /dev/null |  wc -l )" -gt 1 ]] && rm "$( ls /etc/php/"${PHPVER}"/cli/conf.d/*-opcache.ini | tail -1 )"
 
 exit 0
 
