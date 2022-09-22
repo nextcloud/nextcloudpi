@@ -13,10 +13,13 @@ then
 else
   TMP_DIR="$(source "${BINDIR}/CONFIG/nc-datadir.sh"; tmpl_opcache_dir)"
 fi
+# Workaround for https://github.com/php/php-src/issues/7817
+ENABLE_OPCACHE="1"
+[[ "$PHPVER" != '8.1' ]] || ENABLE_OPCACHE='0'
 
 cat <<EOF
 zend_extension=opcache.so
-opcache.enable=1
+opcache.enable=${ENABLE_OPCACHE}
 opcache.enable_cli=1
 opcache.fast_shutdown=1
 opcache.interned_strings_buffer=8
