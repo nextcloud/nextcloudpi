@@ -17,7 +17,7 @@
 # - failure at each test point
 # -> must pass basic NC in tests.py ( meaning it's not in a broken state )
 
-set -eE
+set -eE${DBG}
 
 VER="$1"
 BIN="${0##*/}"
