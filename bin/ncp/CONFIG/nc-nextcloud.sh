@@ -77,6 +77,7 @@ EOF
 
   service redis-server restart
   update-rc.d redis-server enable
+  clear_opcache
   service php${PHPVER}-fpm restart
 
   # service to randomize passwords on first boot

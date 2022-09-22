@@ -254,6 +254,7 @@ then
     apt-get install -y --no-install-recommends -t "$RELEASE" "${PHP_PACKAGES_OLD[@]}"
     set_ncpcfg "php_version" "${PHPVER_OLD}"
     install_template "php/opcache.ini.sh" "/etc/php/${PHPVER_NEW}/mods-available/opcache.ini"
+    clear_opcache
     run_app nc-limits
     a2enconf "php${PHPVER_OLD}-fpm"
     service "php${PHPVER_OLD}-fpm" start
@@ -285,6 +286,8 @@ then
   set_ncpcfg "php_version" "${PHPVER_NEW}"
   install_template "php/opcache.ini.sh" "/etc/php/${PHPVER_NEW}/mods-available/opcache.ini"
   ( set -e; export PHPVER="${PHPVER_NEW}"; run_app nc-limits )
+  clear_opcache
+
   a2enconf "php${PHPVER_NEW}-fpm"
 
   echo "Starting apache and php-fpm..."

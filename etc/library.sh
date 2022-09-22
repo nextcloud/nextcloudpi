@@ -551,6 +551,16 @@ function get_nc_config_value() {
   #ncc config:system:get "${1?Missing required argument: config key}"
 }
 
+function clear_opcache() {
+  # shellcheck disable=SC2155
+  local data_dir="$(get_nc_config_value datadirectory)"
+  ! [[ -d "${data_dir:-/var/www/data}/.opcache" ]] || {
+    echo "Clearing opcache..."
+    rm -rf "${data_dir:-/var/www/data}/.opcache"/*
+    echo "Done."
+  }
+}
+
 # License
 #
 # This script is free software; you can redistribute it and/or modify it

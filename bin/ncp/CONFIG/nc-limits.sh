@@ -71,7 +71,10 @@ configure()
   [[ "$CONF_VALUE" == "$(cat "$CONF")" ]] || service mariadb restart
 
   # RESTART PHP
-  [[ "$require_fpm_restart" == "true" ]] && bash -c "sleep 3; service php${PHPVER}-fpm restart" &>/dev/null &
+  [[ "$require_fpm_restart" == "true" ]] && {
+    clear_opcache
+    bash -c "sleep 3; service php${PHPVER}-fpm restart" &>/dev/null &
+  }
 
   # redis max memory
   local CONF=/etc/redis/redis.conf

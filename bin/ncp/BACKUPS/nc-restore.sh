@@ -178,8 +178,10 @@ ncc maintenance:data-fingerprint
 ncc files:scan-app-data
 
 # restart PHP if needed
-[[ "$NEED_RESTART" == "1" ]] && \
-  bash -c " sleep 3; service php${PHPVER}-fpm restart" &>/dev/null &
+[[ "$NEED_RESTART" == "1" ]] && {
+  clear_opcache
+  bash -c "sleep 3; service php${PHPVER}-fpm restart" &>/dev/null &
+}
 EOF
   chmod +x /usr/local/bin/ncp-restore
 }
