@@ -19,6 +19,7 @@
     exit 1
   }
 
+  # shellcheck disable=SC2164
   [[ -f /.ncp-image ]] || cd "$TMPDIR"         # update locally during build
 
   [[ -z "$2" ]] || {
@@ -32,7 +33,7 @@
   echo -e "Performing updates"
   ./update.sh || exit $?
 
-  cd "$TMPDIR"
+  cd "$TMPDIR" || exit 1
   git describe --always --tags --abbrev=0 2>/dev/null | grep -qoP "v\d+\.\d+\.\d+" || git fetch --unshallow --tags -q
   VER=$( git describe --always --tags --abbrev=0 | grep -oP "v\d+\.\d+\.\d+" )
 
