@@ -1,4 +1,4 @@
-## [v1.49.1](https://github.com/nextcloud/nextcloudpi/tree/v1.50.0) (2022-09-22) Update PHP to version 8.1 and Nextcloud to version 24
+## [v1.50.0](https://github.com/nextcloud/nextcloudpi/tree/v1.50.0) (2022-09-22) Update PHP to version 8.1 and Nextcloud to version 24
 
 - Add support for Nextcloud v24.0.5
 - Upgrade PHP to version 8.1 when upgrading Nextcloud to version >=24
