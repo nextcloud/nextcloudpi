@@ -61,6 +61,13 @@ echo "Current   Nextcloud version $CURRENT"
 echo "Available Nextcloud version $VER"
 is_more_recent_than "${VER}" "${CURRENT}" || { echo "Nothing to update"; exit 1; } # we want `exit 1` so the autoupdate doesn't notify success in this case
 
+
+if ! is_more_recent_than '25.0.0' "${VER}" && is_more_recent_than "8.1.0" "${PHPVER}.0" && is_docker
+then
+  echo 'You need to upgrade to a later docker image in order to upgrade to Nextcloud 25+'
+  exit 1
+fi
+
 # make sure that cron.php is not running and there are no pending jobs
 # https://github.com/nextcloud/server/issues/10949
 pgrep -cf cron.php &>/dev/null && { pkill -f cron.php; sleep 3; }
@@ -229,8 +236,7 @@ fi
 rm -rf /var/www/nextcloud/apps/previewgenerator
 ln -snf "${NCPREV}" /var/www/nextcloud/apps/previewgenerator
 
-
-if ! is_more_recent_than "24.0.0" "${NCVER}" && is_more_recent_than "8.1.0" "${PHPVER}.0"
+if ! is_docker && ! is_more_recent_than "24.0.0" "${NCVER}" && is_more_recent_than "8.1.0" "${PHPVER}.0"
 then
   (
   echo "Upgrading PHP..."
