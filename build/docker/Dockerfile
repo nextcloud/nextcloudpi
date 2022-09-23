@@ -9,7 +9,7 @@ FROM ${arch}/debian:${release}-slim as debian-ncp
 
 ARG arch_qemu
 
-LABEL maintainer="Ignacio Núñez Hernanz <nacho@ownyourbits.com>"
+LABEL maintainer="Tobias Knöppler"
 
 CMD /bin/bash
 
