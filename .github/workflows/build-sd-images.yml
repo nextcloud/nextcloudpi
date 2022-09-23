@@ -35,6 +35,8 @@ jobs:
     steps:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
+      - name: Apply workaround for sudo bug (https://github.com/multiarch/qemu-user-static/issues/17)
+        run: docker run --rm --privileged multiarch/qemu-user-static:register --reset --credential yes
       - name: Checkout code
         uses: actions/checkout@v3
         with:
@@ -124,6 +126,8 @@ jobs:
     steps:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
+      - name: Apply workaround for sudo bug (https://github.com/multiarch/qemu-user-static/issues/17)
+        run: docker run --rm --privileged multiarch/qemu-user-static:register --reset --credential yes
       - name: Checkout code
         uses: actions/checkout@v3
         with:
