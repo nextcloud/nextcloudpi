@@ -36,7 +36,12 @@ jobs:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Apply workaround for sudo bug (https://github.com/multiarch/qemu-user-static/issues/17)
-        run: docker run --rm --privileged multiarch/qemu-user-static:register --reset --credential yes
+        run: |
+          apt-get -y --no-install-recommends install binfmt-support qemu-user-static
+          for conf in qemu-{aarch64,arm}-static.conf
+          do
+            sed 's/:F$/:OC/' /usr/lib/binfmt.d/$conf > /etc/binfmt/$conf
+          done
       - name: Checkout code
         uses: actions/checkout@v3
         with:
@@ -90,7 +95,6 @@ jobs:
           set -ex
           echo "Protected? ${{ github.ref_protected }}"
           export IMG="NextCloudPi_${{ inputs.board_name }}_${VERSION//\//_}.img"
-          wget -q https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-aarch64-static -O ./qemu-aarch64-static
           [[ "${{ github.ref_protected }}" == true ]] || export DBG=x
           ./build/build-SD-rpi.sh
           mkdir -p output
@@ -128,6 +132,7 @@ jobs:
         uses: docker/setup-qemu-action@v1
       - name: Apply workaround for sudo bug (https://github.com/multiarch/qemu-user-static/issues/17)
         run: |
+          apt-get -y --no-install-recommends install binfmt-support qemu-user-static
           for conf in qemu-{aarch64,arm}-static.conf
           do
             sed 's/:F$/:OC/' /usr/lib/binfmt.d/$conf > /etc/binfmt/$conf
@@ -149,8 +154,6 @@ jobs:
           sudo rm -rf raspbian_root
           . ./build/buildlib.sh
           mount_raspbian "ncp.img"
-          sudo wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-aarch64-static -O raspbian_root/usr/bin/qemu-aarch64-static
-          sudo wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-arm-static -O raspbian_root/usr/bin/qemu-arm-static
           echo 'Mutex posixsem' | sudo tee -a raspbian_root/etc/apache2/mods-available/ssl.conf
       - name: Test image
         id: test
@@ -188,7 +191,7 @@ jobs:
               tail -n 20 geckodriver.log >&2 || true
               echo "================"
               echo "ncp.log: "
-              sudo systemd-run --wait -P --machine=ncp ncp /bin/bash -c "tail -n20 /var/log/ncp.log" || true
+              sudo systemd-run --wait -P --machine=ncp ncp /bin/bash -c "tail -n20 /var/log/ncp.log || echo 'ncp.log not found'"
               sleep 6
               continue
             }

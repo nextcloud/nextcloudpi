@@ -35,12 +35,6 @@ jobs:
     steps:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
-      - name: Apply workaround for sudo bug (https://github.com/multiarch/qemu-user-static/issues/17)
-        run: |
-          for conf in qemu-{aarch64,arm}-static.conf
-          do
-            sed 's/:F$/:OC/' /usr/lib/binfmt.d/$conf > /etc/binfmt/$conf
-          done
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v1
 
@@ -84,8 +78,6 @@ jobs:
     steps:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
-      - name: Apply workaround for sudo bug (https://github.com/multiarch/qemu-user-static/issues/17)
-        run: docker run --rm --privileged multiarch/qemu-user-static:register --reset --credential yes
 
       - name: Login to docker
         run: |
@@ -109,7 +101,9 @@ jobs:
       - name: Integration Tests
         working-directory: ./tests
         run: |
-          docker logs -f | ( echo -n "CONTAINER::"; cat )
+          docker logs |& awk '{ print "CONTAINER::" $0 }'
+          echo 'CONTAINER:: =========='
+          docker logs -f |& awk '{ print "CONTAINER::" $0 }' &
           docker exec nextcloudpi bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
           cmd=(python activation_tests.py --no-gui localhost 8443 4443)
           [[ "${{ matrix.arch }}" == "x86" ]] || cmd+=(--timeout 300)
