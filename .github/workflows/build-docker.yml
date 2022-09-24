@@ -101,7 +101,7 @@ jobs:
       - name: Integration Tests
         working-directory: ./tests
         run: |
-          docker logs |& awk '{ print "CONTAINER::" $0 }'
+          docker logs nextcloudpi |& awk '{ print "CONTAINER::" $0 }'
           echo 'CONTAINER:: =========='
           docker logs -f |& awk '{ print "CONTAINER::" $0 }' &
           docker exec nextcloudpi bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
