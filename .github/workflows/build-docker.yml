@@ -108,12 +108,25 @@ jobs:
           docker exec nextcloudpi bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
           cmd=(python activation_tests.py --no-gui localhost 8443 4443)
           [[ "${{ matrix.arch }}" == "x86" ]] || cmd+=(--timeout 300)
-          "${cmd[@]}" || {
-            tail -n 20 geckodriver.log >&2 || true
-            echo "CI:: Activation test failed!"
-            docker exec nextcloudpi bash /usr/local/bin/ncp-diag
-            docker exec nextcloudpi service redis-server status
-            docker exec nextcloudpi cat /var/log/redis/redis-server.log
+          
+          success=false
+          for attempt in {1..3}
+          do
+            echo ":: Activation Tests (attempt $attempt/3) ::"
+            "${cmd[@]}" || {
+              tail -n 20 geckodriver.log >&2 || true
+              echo "CI:: Activation test (attempt $attempt/3) failed!"
+              docker exec nextcloudpi bash /usr/local/bin/ncp-diag
+              docker exec nextcloudpi service redis-server status
+              docker exec nextcloudpi cat /var/log/redis/redis-server.log
+              sleep 6
+              continue
+            }
+            success=true
+            break
+          done
+          [[ "$success" == "true" ]] || {
+            echo "CI:: Activation test failed in all attempts!"
             exit 1
           }
           echo "CI:: Activation test successful"
