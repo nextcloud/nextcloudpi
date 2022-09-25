@@ -50,9 +50,9 @@ jobs:
           ref: "${{ env.VERSION }}"
       - name: Debug
         run: |
+          which qemu-aarch64-static
 #          update-binfmts --display qemu-aarch64
 #          update-binfmts --display qemu-arm
-          which qemu-aarch64-static
       - name: "Build Armbian"
         if: ${{ inputs.board_id != 'raspberrypi' }}
         id: build-armbian
