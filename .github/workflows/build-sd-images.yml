@@ -86,7 +86,7 @@ jobs:
           echo "ARTIFACT_FILE=${IMG}" >> $GITHUB_ENV
       - name: debug
         if: ${{ always() }}
-        run: echo "${{ inputs.board_id != 'raspberrypi' && failure() }}"
+        run: echo "${{ inputs.board_id != 'raspberrypi' && steps.build-armbian.outcome == 'failure' }}"
       - name: "Upload Armbian logs"
         if: ${{ inputs.board_id != 'raspberrypi' && failure() }}
         uses: actions/upload-artifact@v3
