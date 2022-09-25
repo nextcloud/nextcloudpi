@@ -48,9 +48,9 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: "${{ env.VERSION }}"
-      - name: Debug
-        run: |
-          which qemu-aarch64-static
+#      - name: Debug
+#        run: |
+#          which qemu-aarch64-static
 #          update-binfmts --display qemu-aarch64
 #          update-binfmts --display qemu-arm
       - name: "Build Armbian"
