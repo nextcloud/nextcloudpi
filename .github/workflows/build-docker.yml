@@ -103,46 +103,25 @@ jobs:
         run: |
           docker logs nextcloudpi |& awk '{ print "CONTAINER::" $0 }'
           echo 'CONTAINER:: =========='
-          docker logs -f |& awk '{ print "CONTAINER::" $0 }' &
+          docker logs -f nextcloudpi |& awk '{ print "CONTAINER::" $0 }' &
           docker exec nextcloudpi bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
           cmd=(python activation_tests.py --no-gui localhost 8443 4443)
           [[ "${{ matrix.arch }}" == "x86" ]] || cmd+=(--timeout 300)
           "${cmd[@]}" || {
             tail -n 20 geckodriver.log >&2 || true
-            echo "======================="
-            echo "Activation test failed!"
-            echo "Container logs:"
-            echo "==========================================="
-            docker logs nextcloudpi
-            echo "Last lines of ncp.log:"
-            echo "==========================================="
-            docker exec nextcloudpi tail /var/log/ncp.log;
+            echo "CI:: Activation test failed!"
             exit 1
           }
-          echo "Activation test successful"
+          echo "CI:: Activation test successful"
           python system_tests.py --no-ping --non-interactive || {
-            echo "System test failed!"
-            echo "Container logs:"
-            echo "==========================================="
-            docker logs nextcloudpi
-            echo "Last lines of ncp.log:"
-            echo "==========================================="
-            docker exec nextcloudpi tail /var/log/ncp.log;
-            exit 1
+            echo "CI:: System test failed!"
             exit 1
           }
-          echo "System test successful"
+          echo "CI:: System test successful"
           python nextcloud_tests.py --no-gui localhost 8443 4443 || {
             tail -n 20 geckodriver.log >&2 || true
-            echo "======================="
-            echo "Nextcloud test failed!"
-            echo "Container logs:"
-            echo "==========================================="
-            docker logs nextcloudpi
-            echo "Last lines of ncp.log:"
-            echo "==========================================="
-            docker exec nextcloudpi tail /var/log/ncp.log;
+            echo "CI:: Nextcloud test failed!"
             exit 1
           }
-          echo "Nextcloud test successful"
+          echo "CI:: Nextcloud test successful"
 
