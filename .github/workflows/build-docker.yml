@@ -111,6 +111,8 @@ jobs:
           "${cmd[@]}" || {
             tail -n 20 geckodriver.log >&2 || true
             echo "CI:: Activation test failed!"
+            docker exec nextcloudpi bash /usr/local/bin/ncp-diag
+            docker exec service redis-server status
             exit 1
           }
           echo "CI:: Activation test successful"
