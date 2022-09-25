@@ -37,6 +37,7 @@ jobs:
         uses: docker/setup-qemu-action@v2
       - name: Setup qemu-user-static
         run: |
+          sudo apt-get update
           sudo apt-get -y --no-install-recommends install qemu-user-static
 #          docker run --rm --privileged multiarch/qemu-user-static:register --reset --credential yes
 #          sudo mkdir -p /etc/binfmt
@@ -142,6 +143,7 @@ jobs:
         uses: docker/setup-qemu-action@v2
       - name: Apply workaround for sudo bug (https://github.com/multiarch/qemu-user-static/issues/17)
         run: |
+          sudo apt-get update
           sudo apt-get -y --no-install-recommends install binfmt-support qemu-user-static
           docker run --rm --privileged multiarch/qemu-user-static:register --reset --credential yes
           sudo mkdir -p /etc/binfmt
