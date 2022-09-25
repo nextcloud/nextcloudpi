@@ -37,7 +37,7 @@ jobs:
         uses: docker/setup-qemu-action@v1
       - name: Apply workaround for sudo bug (https://github.com/multiarch/qemu-user-static/issues/17)
         run: |
-          apt-get -y --no-install-recommends install binfmt-support qemu-user-static
+          sudo apt-get -y --no-install-recommends install binfmt-support qemu-user-static
           for conf in qemu-{aarch64,arm}-static.conf
           do
             sed 's/:F$/:OC/' /usr/lib/binfmt.d/$conf > /etc/binfmt/$conf
@@ -132,7 +132,7 @@ jobs:
         uses: docker/setup-qemu-action@v1
       - name: Apply workaround for sudo bug (https://github.com/multiarch/qemu-user-static/issues/17)
         run: |
-          apt-get -y --no-install-recommends install binfmt-support qemu-user-static
+          sudo apt-get -y --no-install-recommends install binfmt-support qemu-user-static
           for conf in qemu-{aarch64,arm}-static.conf
           do
             sed 's/:F$/:OC/' /usr/lib/binfmt.d/$conf > /etc/binfmt/$conf
