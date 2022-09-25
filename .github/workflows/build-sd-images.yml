@@ -38,7 +38,6 @@ jobs:
       - name: Setup qemu-user-static
         run: |
           sudo apt-get update
-          sudo apt-get -y --no-install-recommends install qemu-user-static
 #          docker run --rm --privileged multiarch/qemu-user-static:register --reset --credential yes
 #          sudo mkdir -p /etc/binfmt
 #          for conf in qemu-{aarch64,arm}-static.conf
@@ -90,9 +89,6 @@ jobs:
           mv "${artifacts[0]}" "output/$IMG"
           echo "::set-output name=artifact_file::${IMG}"
           echo "ARTIFACT_FILE=${IMG}" >> $GITHUB_ENV
-      - name: debug
-        if: ${{ always() }}
-        run: echo "${{ inputs.board_id != 'raspberrypi' && steps.build-armbian.outcome == 'failure' }}"
       - name: "Upload Armbian logs"
         if: ${{ inputs.board_id != 'raspberrypi' && failure() }}
         uses: actions/upload-artifact@v3
@@ -104,6 +100,8 @@ jobs:
         id: build-rpi
         run: |
           set -ex
+          sudo wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-aarch64-static -O raspbian_root/usr/bin/qemu-aarch64-static
+          sudo wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-arm-static -O raspbian_root/usr/bin/qemu-arm-static
           echo "Protected? ${{ github.ref_protected }}"
           export IMG="NextCloudPi_${{ inputs.board_name }}_${VERSION//\//_}.img"
           [[ "${{ github.ref_protected }}" == true ]] || export DBG=x
@@ -141,12 +139,16 @@ jobs:
     steps:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
-      - name: Apply workaround for sudo bug (https://github.com/multiarch/qemu-user-static/issues/17)
-        run: |
-          sudo apt-get update
-          sudo apt-get -y --no-install-recommends install binfmt-support qemu-user-static
-          docker run --rm --privileged multiarch/qemu-user-static:register --reset --credential yes
-          sudo mkdir -p /etc/binfmt
+#      - name: Setup qemu-user-static
+#        run: |
+#          sudo apt-get update
+#          sudo apt-get -y --no-install-recommends install qemu-user-static
+#      - name: Apply workaround for sudo bug (https://github.com/multiarch/qemu-user-static/issues/17)
+#        run: |
+#          sudo apt-get update
+#          sudo apt-get -y --no-install-recommends install binfmt-support qemu-user-static
+#          docker run --rm --privileged multiarch/qemu-user-static:register --reset --credential yes
+#          sudo mkdir -p /etc/binfmt
 #          for conf in qemu-{aarch64,arm}-static.conf
 #          do
 #            sed 's/:F$/:OC/' /usr/lib/binfmt.d/$conf | sudo tee /etc/binfmt/$conf
