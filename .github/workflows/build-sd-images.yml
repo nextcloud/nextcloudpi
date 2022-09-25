@@ -35,9 +35,9 @@ jobs:
     steps:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
-#      - name: Setup qemu-user-static
-#        run: |
-#          sudo apt-get -y --no-install-recommends install binfmt-support qemu-user-static
+      - name: Setup qemu-user-static
+        run: |
+          sudo apt-get -y --no-install-recommends install qemu-user-static
 #          docker run --rm --privileged multiarch/qemu-user-static:register --reset --credential yes
 #          sudo mkdir -p /etc/binfmt
 #          for conf in qemu-{aarch64,arm}-static.conf
