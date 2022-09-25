@@ -35,7 +35,7 @@ jobs:
     steps:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
-#      - name: Apply workaround for sudo bug (https://github.com/multiarch/qemu-user-static/issues/17)
+#      - name: Setup qemu-user-static
 #        run: |
 #          sudo apt-get -y --no-install-recommends install binfmt-support qemu-user-static
 #          docker run --rm --privileged multiarch/qemu-user-static:register --reset --credential yes
@@ -48,6 +48,11 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: "${{ env.VERSION }}"
+      - name: Debug
+        run: |
+          update-binfmts --display qemu-aarch64
+          update-binfmts --display qemu-arm
+          which qemu-aarch64-static
       - name: "Build Armbian"
         if: ${{ inputs.board_id != 'raspberrypi' }}
         id: build-armbian
