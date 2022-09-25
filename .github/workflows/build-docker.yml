@@ -14,56 +14,57 @@ on:
     branches:
       - master
       - devel
+      - fix/arm-deployments
   pull_request:
     branches:
       - master
       - devel
 
 jobs:
-  build:
-    if: ${{ github.repository == 'nextcloud/nextcloudpi' }}
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        arch:
-          - x86
-          - armhf
-          - arm64
-      fail-fast: false
-    env:
-      VERSION: "${{ inputs.git_ref || github.ref }}"
-    steps:
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-      - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v1
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-
-      - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          ref: "${{ env.VERSION }}"
-
-      - name: Login to docker
-        run: |
-          echo "${{ secrets.DOCKER_PASSWORD_INTERNAL }}" | docker login -u "${{ secrets.DOCKER_LOGIN_INTERNAL }}" --password-stdin
-
-      - name: Build images
-        id: build-container
-        run: |
-          ./build/build-docker.sh "${{ matrix.arch }}"
-          docker tag "ownyourbits/nextcloudpi-${{ matrix.arch }}:latest" "thecalcaholic/ncp-internal-${{ matrix.arch }}:${{ github.run_id }}"
-          testing_image="ownyourbits/nextcloudpi-${{ matrix.arch }}:latest"
-          [[ "${{ matrix.arch }}" == "arm64" ]] && testing_image="ownyourbits/ncp-qemu-fix-${{ matrix.arch }}:latest"
-          docker tag "${testing_image}" "thecalcaholic/ncp-internal-${{ matrix.arch }}:${{ github.run_id }}-testing"
-          docker push "thecalcaholic/ncp-internal-${{ matrix.arch }}:${{ github.run_id }}"
-          docker push "thecalcaholic/ncp-internal-${{ matrix.arch }}:${{ github.run_id }}-testing"
+#  build:
+#    if: ${{ github.repository == 'nextcloud/nextcloudpi' }}
+#    runs-on: ubuntu-latest
+#    strategy:
+#      matrix:
+#        arch:
+#          - x86
+#          - armhf
+#          - arm64
+#      fail-fast: false
+#    env:
+#      VERSION: "${{ inputs.git_ref || github.ref }}"
+#    steps:
+#      - name: Set up QEMU
+#        uses: docker/setup-qemu-action@v1
+#      - name: Setup Docker Buildx
+#        uses: docker/setup-buildx-action@v1
+#
+#      - name: Set up QEMU
+#        uses: docker/setup-qemu-action@v1
+#
+#      - name: Checkout code
+#        uses: actions/checkout@v3
+#        with:
+#          ref: "${{ env.VERSION }}"
+#
+#      - name: Login to docker
+#        run: |
+#          echo "${{ secrets.DOCKER_PASSWORD_INTERNAL }}" | docker login -u "${{ secrets.DOCKER_LOGIN_INTERNAL }}" --password-stdin
+#
+#      - name: Build images
+#        id: build-container
+#        run: |
+#          ./build/build-docker.sh "${{ matrix.arch }}"
+#          docker tag "ownyourbits/nextcloudpi-${{ matrix.arch }}:latest" "thecalcaholic/ncp-internal-${{ matrix.arch }}:${{ github.run_id }}"
+#          testing_image="ownyourbits/nextcloudpi-${{ matrix.arch }}:latest"
+#          [[ "${{ matrix.arch }}" == "arm64" ]] && testing_image="ownyourbits/ncp-qemu-fix-${{ matrix.arch }}:latest"
+#          docker tag "${testing_image}" "thecalcaholic/ncp-internal-${{ matrix.arch }}:${{ github.run_id }}-testing"
+#          docker push "thecalcaholic/ncp-internal-${{ matrix.arch }}:${{ github.run_id }}"
+#          docker push "thecalcaholic/ncp-internal-${{ matrix.arch }}:${{ github.run_id }}-testing"
 
   test:
-    needs:
-      - build
+#    needs:
+#      - build
     runs-on: ubuntu-latest
     env:
       VERSION: "${{ inputs.git_ref || github.ref }}"
@@ -84,7 +85,7 @@ jobs:
           echo "${{ secrets.DOCKER_PASSWORD_INTERNAL }}" | docker login -u "${{ secrets.DOCKER_LOGIN_INTERNAL }}" --password-stdin
       - name: Start ncp container
         run: |
-          docker run -d --rm -p 8443:443 -p 4443:4443 --name nextcloudpi thecalcaholic/ncp-internal-${{ matrix.arch }}:${{ github.run_id }}-testing
+          docker run -d --rm -p 8443:443 -p 4443:4443 --name nextcloudpi thecalcaholic/ncp-internal-${{ matrix.arch }}:3117961544-testing
 
       - name: Checkout code
         uses: actions/checkout@v3
