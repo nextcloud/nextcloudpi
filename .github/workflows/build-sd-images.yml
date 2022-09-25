@@ -41,7 +41,7 @@ jobs:
           sudo mkdir -p /etc/binfmt
           for conf in qemu-{aarch64,arm}-static.conf
           do
-            sed 's/:F$/:OC/' /usr/lib/binfmt.d/$conf > /etc/binfmt/$conf
+            sed 's/:F$/:OC/' /usr/lib/binfmt.d/$conf | sudo tee /etc/binfmt/$conf
           done
       - name: Checkout code
         uses: actions/checkout@v3
@@ -137,7 +137,7 @@ jobs:
           sudo mkdir -p /etc/binfmt
           for conf in qemu-{aarch64,arm}-static.conf
           do
-            sed 's/:F$/:OC/' /usr/lib/binfmt.d/$conf > /etc/binfmt/$conf
+            sed 's/:F$/:OC/' /usr/lib/binfmt.d/$conf | sudo tee /etc/binfmt/$conf
           done
       - name: Checkout code
         uses: actions/checkout@v3
