@@ -119,7 +119,7 @@ jobs:
               docker exec nextcloudpi bash /usr/local/bin/ncp-diag
               docker exec nextcloudpi service redis-server status
               docker exec nextcloudpi cat /var/log/redis/redis-server.log
-              sleep 6
+              sleep 12
               continue
             }
             success=true
@@ -130,14 +130,38 @@ jobs:
             exit 1
           }
           echo "CI:: Activation test successful"
-          python system_tests.py --no-ping --non-interactive || {
-            echo "CI:: System test failed!"
+          
+          success=false
+          for attempt in {1..3}
+          do
+            echo ":: System Tests (attempt $attempt/3) ::"
+            python system_tests.py --no-ping --non-interactive || {
+              echo "CI:: System test (attempt $attempt) failed!"
+              continue
+            }
+            success=true
+            break
+          done
+          [[ "$success" == "true" ]] || {
+            echo "CI:: System test failed in all attempts!"
             exit 1
           }
           echo "CI:: System test successful"
-          python nextcloud_tests.py --no-gui localhost 8443 4443 || {
-            tail -n 20 geckodriver.log >&2 || true
-            echo "CI:: Nextcloud test failed!"
+          
+          success=false
+          for attempt in {1..3}
+          do
+            echo ":: Nextcloud Tests (attempt $attempt/3) ::"
+            python nextcloud_tests.py --no-gui localhost 8443 4443 || {
+              tail -n 20 geckodriver.log >&2 || true
+              echo "CI:: Nextcloud test (attempt $attempt/3) failed!"
+              continue
+            }
+            success=true
+            break
+          done
+          [[ "$success" == "true" ]] || {
+            echo "CI:: Nextcloud test failed in all attempts!"
             exit 1
           }
           echo "CI:: Nextcloud test successful"
