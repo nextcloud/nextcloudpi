@@ -29,6 +29,8 @@ install()
   test -f /usr/bin/raspi-config && {
     sed -i '/Change User Password/i"0 NextCloudPi Configuration" "Configuration of NextCloudPi" \\' /usr/bin/raspi-config
     sed -i '/1\\ \*) do_change_pass ;;/i0\\ *) ncp-config ;;'                                       /usr/bin/raspi-config
+    # Disable raspberry pi default user
+    usermod pi -s /sbin/nologin
   }
 
   # add the ncc shortcut

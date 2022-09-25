@@ -4,6 +4,15 @@
 
 [[ -z "$DBG" ]] || set -$DBG
 
+if [[ -f /.dockerenv ]] || [[ -f /.docker-image ]] || [[ "$DOCKERBUILD" == 1 ]]
+then
+  echo "WARNING: Docker images should be updated by replacing the container from the latest docker image" \
+    "(refer to the documentation for instructions: https://docs.nextcloudpi.com)." \
+    "If you are sure that you know what you are doing, you can still execute the update script by running it like this:"
+  echo "> ALLOW_UPDATE_SCRIPT=1 ncp-update"
+  [[ "$ALLOW_UPDATE_SCRIPT" == "1" ]] || exit 1
+fi
+
 {
   [ "$(id -u)" -ne 0 ] && { printf "Must be run as root. Try 'sudo $0'\n"; exit 1; }
 
