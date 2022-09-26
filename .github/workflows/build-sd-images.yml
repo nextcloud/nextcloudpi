@@ -168,10 +168,10 @@ jobs:
           sudo pip install selenium
           sudo rm -rf raspbian_root
           . ./build/buildlib.sh
-          sudo wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-aarch64-static -O qemu-aarch64-static
-          sudo wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-arm-static -O qemu-arm-static
           mount_raspbian "ncp.img"
-          sudo cp qemu-{arm,aarch64}-static raspbian_root/usr/bin/
+          sudo wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-aarch64-static -O raspbian_root/usr/bin/qemu-aarch64-static
+          sudo wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-arm-static -O raspbian_root/usr/bin/qemu-arm-static
+          #sudo cp qemu-{arm,aarch64}-static raspbian_root/usr/bin/
           echo 'Mutex posixsem' | sudo tee -a raspbian_root/etc/apache2/mods-available/ssl.conf
       - name: Test image
         id: test
