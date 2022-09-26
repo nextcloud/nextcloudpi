@@ -209,8 +209,9 @@ jobs:
               echo "Geckodriver logs:"
               tail -n 20 geckodriver.log >&2 || true
               echo "================"
-              echo "ncp.log: "
-              sudo systemd-run --wait -P --machine=ncp ncp /bin/bash -c "tail -n20 /var/log/ncp.log" || echo 'ncp.log not found'
+              echo "mysql: "
+              sudo systemd-run --wait -P --machine=ncp bash /usr/local/bin/ncp-diag
+              sudo systemd-run --wait -P --machine=ncp systemctl status mysql
               sleep 6
               continue
             }
