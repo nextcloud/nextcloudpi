@@ -103,6 +103,7 @@ jobs:
           echo "Protected? ${{ github.ref_protected }}"
           export IMG="NextCloudPi_${{ inputs.board_name }}_${VERSION//\//_}.img"
           [[ "${{ github.ref_protected }}" == true ]] || export DBG=x
+          wget -q https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-aarch64-static -O ./qemu-aarch64-static
           ./build/build-SD-rpi.sh
           mkdir -p output
           mv "tmp/$IMG" ./output/
