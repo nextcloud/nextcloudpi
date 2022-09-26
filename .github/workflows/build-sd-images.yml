@@ -209,7 +209,7 @@ jobs:
               tail -n 20 geckodriver.log >&2 || true
               echo "================"
               echo "ncp.log: "
-              sudo systemd-run --wait -P --machine=ncp ncp /bin/bash -c "tail -n20 /var/log/ncp.log || echo 'ncp.log not found'"
+              sudo systemd-run --wait -P --machine=ncp ncp /bin/bash -c "tail -n20 /var/log/ncp.log" || echo 'ncp.log not found'
               sleep 6
               continue
             }
