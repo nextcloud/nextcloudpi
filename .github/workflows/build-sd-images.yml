@@ -181,7 +181,6 @@ jobs:
           trap 'sudo machinectl terminate ncp' EXIT
           
           sudo systemd-nspawn --boot -D ./raspbian_root/ -M ncp --hostname=nextcloudpi |& awk '{ print "CONTAINER::" $0 }' &
-          sudo systemd-run --machine=ncp -P --wait bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
           sleep 30
           
           success=false
@@ -193,6 +192,8 @@ jobs:
             success=true
             break
           done
+          sudo systemd-run --machine=ncp -P --wait bash -c 'cat /var/log/ncp.log' |& awk '{ print "NCP::" $0 }'
+          sudo systemd-run --machine=ncp -P --wait bash -c 'tail -n 0 -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
           
           [[ "$success" == "true" ]] || {
             echo "Could not reach container. Aborting..."
