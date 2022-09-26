@@ -171,7 +171,7 @@ jobs:
           mount_raspbian "ncp.img"
           sudo wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-aarch64-static -O raspbian_root/usr/bin/qemu-aarch64-static
           sudo wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-arm-static -O raspbian_root/usr/bin/qemu-arm-static
-          sudo chmod +x raspbian/usr/bin/qemu-{arm,aarch64}-static
+          sudo chmod +x raspbian_root/usr/bin/qemu-{arm,aarch64}-static
           echo 'Mutex posixsem' | sudo tee -a raspbian_root/etc/apache2/mods-available/ssl.conf
       - name: Test image
         id: test
