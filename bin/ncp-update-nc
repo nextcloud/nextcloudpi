@@ -206,22 +206,7 @@ else
     apachectl -k graceful
     ## make sure the notify_push daemon is runnnig
 
-    cat > /etc/systemd/system/notify_push.service <<EOF
-[Unit]
-Description = Push daemon for Nextcloud clients
-After=mysql.service
-After=redis.service
-Requires=redis.service
-
-[Service]
-Environment=PORT=7867
-Environment=NEXTCLOUD_URL=https://localhost
-ExecStart="/var/www/nextcloud/apps/notify_push/bin/${ARCH}/notify_push" --allow-self-signed /var/www/nextcloud/config/config.php
-User=www-data
-
-[Install]
-WantedBy = multi-user.target
-EOF
+    install_template systemd/notify_push.service.sh /etc/systemd/system/notify_push.service
     start_notify_push
     nc_domain="$(ncc config:system:get overwrite.cli.url)"
     set-nc-domain "${nc_domain}" || {

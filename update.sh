@@ -175,6 +175,8 @@ fi
 # update to the latest NC version
 is_active_app nc-autoupdate-nc && run_app nc-autoupdate-nc
 
+start_notify_push
+
 # Refresh ncp config values
 source /usr/local/etc/library.sh
 
