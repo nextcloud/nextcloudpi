@@ -35,6 +35,8 @@ run_app_unsafe post-inst.sh
 # disable SSH by default, it can be enabled through ncp-web
 systemctl disable ssh
 
+basename "$IMG" | tee /usr/local/etc/ncp-baseimage
+
 cd -
 
 
