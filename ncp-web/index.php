@@ -134,7 +134,7 @@ HTML;
 
   <header role="banner"><div id="header">
     <div id="header-left">
-      <a href="https://ownyourbits.com" id="nextcloudpi" target="_blank" tabindex="1">
+      <a href="https://nextcloudpi.com" id="nextcloudpi" target="_blank" tabindex="1">
         <div class="logo-icon">
            <h1 class="hidden-visually">NextCloudPi</h1>
         </div>
@@ -173,7 +173,7 @@ HTML;
               <input type="text" id="search-box" placeholder="find ncp-app" size="40">
           </div>
       </div>
-      <a href="https://ownyourbits.com" id="nextcloud-btn" target="_blank" tabindex="1" title="<?php echo $l->__("Launch Nextcloud"); ?>">
+      <a href="https://nextcloudpi.com/" id="nextcloud-btn" target="_blank" tabindex="1" title="<?php echo $l->__("Launch Nextcloud"); ?>">
         <div id="nc-button">
             <div class="expand">
                 <div class="icon-nc-white"></div>
@@ -207,7 +207,7 @@ HTML;
           </div>
         </div>
       </a>
-      <a href="https://github.com/nextcloud/nextcloudpi/wiki" target="_blank" tabindex="1"  title="<?php echo $l->__("NextCloudPi Wiki"); ?>">
+      <a href="https://docs.nextcloudpi.com/" target="_blank" tabindex="1"  title="<?php echo $l->__("NextCloudPi Wiki"); ?>">
         <div id="nc-button">
             <div class="expand">
                 <div class="icon-nc-info"></div>
