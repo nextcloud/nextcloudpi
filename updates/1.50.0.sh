@@ -6,4 +6,4 @@ source /usr/local/etc/library.sh
 
 
 clear_opcache
-(sleep 5 && service "php${PHPVER}-fpm" restart) &
+bash -c "sleep 6; service php${PHPVER}-fpm restart" &>/dev/null &
