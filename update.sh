@@ -17,6 +17,7 @@ UPDATESDIR=updates
 
 # don't make sense in a docker container
 EXCL_DOCKER="
+nc-autoupdate-ncp
 nc-automount
 nc-format-USB
 nc-datadir
@@ -173,6 +174,8 @@ fi
 
 # update to the latest NC version
 is_active_app nc-autoupdate-nc && run_app nc-autoupdate-nc
+
+start_notify_push
 
 # Refresh ncp config values
 source /usr/local/etc/library.sh

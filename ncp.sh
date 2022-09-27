@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# NextCloudPi additions to Raspbian 
+# NextCloudPi additions to Raspbian
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -29,6 +29,8 @@ install()
   test -f /usr/bin/raspi-config && {
     sed -i '/Change User Password/i"0 NextCloudPi Configuration" "Configuration of NextCloudPi" \\' /usr/bin/raspi-config
     sed -i '/1\\ \*) do_change_pass ;;/i0\\ *) ncp-config ;;'                                       /usr/bin/raspi-config
+    # Disable raspberry pi default user
+    usermod pi -s /sbin/nologin
   }
 
   # add the ncc shortcut
@@ -202,7 +204,7 @@ EOF
   chmod g+w           /var/run/.ncp-latest-version
 
   # Install all ncp-apps
-  bin/ncp-update $BRANCH || exit $?
+  ALLOW_UPDATE_SCRIPT=1 bin/ncp-update $BRANCH || exit $?
 
   # LIMIT LOG SIZE
   grep -q maxsize /etc/logrotate.d/apache2 || sed -i /weekly/amaxsize2M /etc/logrotate.d/apache2

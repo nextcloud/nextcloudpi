@@ -161,10 +161,20 @@ jobs:
           fi
           echo "VERSION=${VERSION}" >> "$GITHUB_ENV"
           echo "Running update ${{ needs.build-previous.outputs.previous_version }} -> ${VERSION}"
+          
+          current_nc_version="$(lxc exec ncp -- ncc status | grep "version:" | awk '{ print $3 }')"
           latest_nc_version="$(cat etc/ncp.cfg | jq -r '.nextcloud_version')"
+          
           lxc exec ncp -- bash -c "DBG=x ncp-update ${UPDATE_ARGS[*]}"
           lxc exec ncp -- /usr/local/bin/ncc status
-          lxc exec ncp -- bash -c "DBG=x ncp-update-nc ${latest_nc_version?}"
+          
+          if [[ "$current_nc_version" =~ "$latest_nc_version".* ]]
+          then
+            echo "Nextcloud is up to date - skipping NC update test."
+          else
+            lxc exec ncp -- bash -c "DBG=x ncp-update-nc ${latest_nc_version?}"
+          fi
+          
           lxc stop ncp
       - name: Pack LXD image
         id: pack-lxd

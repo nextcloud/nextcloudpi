@@ -34,18 +34,25 @@ jobs:
       artifact_name: ${{ github.run_id }}-${{ inputs.board_id }}-image
     steps:
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-      - name: Apply workaround for sudo bug (https://github.com/multiarch/qemu-user-static/issues/17)
+        uses: docker/setup-qemu-action@v2
+      - name: Setup qemu-user-static
         run: |
-          apt-get -y --no-install-recommends install binfmt-support qemu-user-static
-          for conf in qemu-{aarch64,arm}-static.conf
-          do
-            sed 's/:F$/:OC/' /usr/lib/binfmt.d/$conf > /etc/binfmt/$conf
-          done
+          sudo apt-get update
+#          docker run --rm --privileged multiarch/qemu-user-static:register --reset --credential yes
+#          sudo mkdir -p /etc/binfmt
+#          for conf in qemu-{aarch64,arm}-static.conf
+#          do
+#            sed 's/:F$/:OC/' /usr/lib/binfmt.d/$conf | sudo tee /etc/binfmt/$conf
+#          done
       - name: Checkout code
         uses: actions/checkout@v3
         with:
           ref: "${{ env.VERSION }}"
+#      - name: Debug
+#        run: |
+#          which qemu-aarch64-static
+#          update-binfmts --display qemu-aarch64
+#          update-binfmts --display qemu-arm
       - name: "Build Armbian"
         if: ${{ inputs.board_id != 'raspberrypi' }}
         id: build-armbian
@@ -83,7 +90,7 @@ jobs:
           echo "::set-output name=artifact_file::${IMG}"
           echo "ARTIFACT_FILE=${IMG}" >> $GITHUB_ENV
       - name: "Upload Armbian logs"
-        if: ${{ inputs.board_id != 'raspberrypi' && steps.build-armbian-2nd.outcome == 'failure' }}
+        if: ${{ inputs.board_id != 'raspberrypi' && failure() }}
         uses: actions/upload-artifact@v3
         with:
           name: ${{ github.run_id }}-${{ inputs.board_id }}-logs
@@ -96,6 +103,7 @@ jobs:
           echo "Protected? ${{ github.ref_protected }}"
           export IMG="NextCloudPi_${{ inputs.board_name }}_${VERSION//\//_}.img"
           [[ "${{ github.ref_protected }}" == true ]] || export DBG=x
+          wget -q https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-aarch64-static -O ./qemu-aarch64-static
           ./build/build-SD-rpi.sh
           mkdir -p output
           mv "tmp/$IMG" ./output/
@@ -129,14 +137,21 @@ jobs:
         shell: bash
     steps:
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-      - name: Apply workaround for sudo bug (https://github.com/multiarch/qemu-user-static/issues/17)
+        uses: docker/setup-qemu-action@v2
+      - name: Apt update
         run: |
-          apt-get -y --no-install-recommends install binfmt-support qemu-user-static
-          for conf in qemu-{aarch64,arm}-static.conf
-          do
-            sed 's/:F$/:OC/' /usr/lib/binfmt.d/$conf > /etc/binfmt/$conf
-          done
+          sudo apt-get update
+#          sudo apt-get -y --no-install-recommends install qemu-user-static
+#      - name: Apply workaround for sudo bug (https://github.com/multiarch/qemu-user-static/issues/17)
+#        run: |
+#          sudo apt-get update
+#          sudo apt-get -y --no-install-recommends install binfmt-support qemu-user-static
+#          docker run --rm --privileged multiarch/qemu-user-static:register --reset --credential yes
+#          sudo mkdir -p /etc/binfmt
+#          for conf in qemu-{aarch64,arm}-static.conf
+#          do
+#            sed 's/:F$/:OC/' /usr/lib/binfmt.d/$conf | sudo tee /etc/binfmt/$conf
+#          done
       - name: Checkout code
         uses: actions/checkout@v3
         with:
@@ -154,6 +169,9 @@ jobs:
           sudo rm -rf raspbian_root
           . ./build/buildlib.sh
           mount_raspbian "ncp.img"
+          sudo wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-aarch64-static -O raspbian_root/usr/bin/qemu-aarch64-static
+          sudo wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-arm-static -O raspbian_root/usr/bin/qemu-arm-static
+          sudo chmod +x raspbian_root/usr/bin/qemu-{arm,aarch64}-static
           echo 'Mutex posixsem' | sudo tee -a raspbian_root/etc/apache2/mods-available/ssl.conf
       - name: Test image
         id: test
@@ -163,8 +181,7 @@ jobs:
           trap 'sudo machinectl terminate ncp' EXIT
           
           sudo systemd-nspawn --boot -D ./raspbian_root/ -M ncp --hostname=nextcloudpi |& awk '{ print "CONTAINER::" $0 }' &
-          sudo systemd-run --machine=ncp -P --wait bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
-          sleep 30
+          sleep 60
           
           success=false
           for attempt in {1..30}
@@ -175,6 +192,8 @@ jobs:
             success=true
             break
           done
+          sudo systemd-run --machine=ncp -P --wait bash -c 'cat /var/log/ncp.log' |& awk '{ print "NCP::" $0 }'
+          sudo systemd-run --machine=ncp -P --wait bash -c 'tail -n 0 -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
           
           [[ "$success" == "true" ]] || {
             echo "Could not reach container. Aborting..."
@@ -190,8 +209,9 @@ jobs:
               echo "Geckodriver logs:"
               tail -n 20 geckodriver.log >&2 || true
               echo "================"
-              echo "ncp.log: "
-              sudo systemd-run --wait -P --machine=ncp ncp /bin/bash -c "tail -n20 /var/log/ncp.log || echo 'ncp.log not found'"
+              echo "mysql: "
+              sudo systemd-run --wait -P --machine=ncp bash /usr/local/bin/ncp-diag
+              sudo systemd-run --wait -P --machine=ncp systemctl status mysql
               sleep 6
               continue
             }
