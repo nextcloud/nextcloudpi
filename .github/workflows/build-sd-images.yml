@@ -181,7 +181,7 @@ jobs:
           trap 'sudo machinectl terminate ncp' EXIT
           
           sudo systemd-nspawn --boot -D ./raspbian_root/ -M ncp --hostname=nextcloudpi |& awk '{ print "CONTAINER::" $0 }' &
-          sleep 30
+          sleep 60
           
           success=false
           for attempt in {1..30}
