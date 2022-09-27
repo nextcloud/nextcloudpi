@@ -1,3 +1,11 @@
+## [v1.50.1](https://github.com/nextcloud/nextcloudpi/tree/v1.50.1) (2022-09-27) Various bug fixes
+
+- Fix CI/CD armbian builds
+- ncp-update: Prevent running ncp-update inside docker without explicit confirmation [#1568](https://github.com/nextcloud/nextcloudpi/issues/1568)
+- ncp-dist-upgrade: Fix attempt to install php version that is not in apt repositories of bullseye [#1570](https://github.com/nextcloud/nextcloudpi/issues/1570)
+- Automatically restart notify_push on error (all but docker) [#1565](https://github.com/nextcloud/nextcloudpi/issues/1565)
+- Fix ncp-report failing to censor gateway IP [#1561](https://github.com/nextcloud/nextcloudpi/pull/1561)
+
 ## [v1.50.0](https://github.com/nextcloud/nextcloudpi/tree/v1.50.0) (2022-09-22) Update PHP to version 8.1 and Nextcloud to version 24
 
 - Add support for Nextcloud v24.0.5
