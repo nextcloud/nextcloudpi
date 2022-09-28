@@ -258,7 +258,9 @@ jobs:
 
   docker-release:
     needs:
-      - docker
+      - docker-x86
+      - docker-armhf
+      - docker-arm64
       - test-curl-installer
     if: ${{ (inputs.release || github.event_name != 'workflow_dispatch') && github.ref_type == 'tag' && (github.ref_protected || startsWith(github.ref, 'refs/tags/v'))  }}
     runs-on: ubuntu-latest
