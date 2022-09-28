@@ -556,6 +556,7 @@ function clear_opcache() {
   local data_dir="$(get_nc_config_value datadirectory)"
   ! [[ -d "${data_dir:-/var/www/data}/.opcache" ]] || {
     echo "Clearing opcache..."
+    echo "This can take some time. Please don't interrupt the process/close your browser tab."
     rm -rf "${data_dir:-/var/www/data}/.opcache"/*
     echo "Done."
   }

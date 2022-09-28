@@ -130,7 +130,7 @@ GW=$(    ip r | grep "default via" | awk '{ print $3 }' | head -1 )
 IP="$(get_ip)"
 
 echo "IP|$IP"
-echo "Gateway|$GW"
+echo "gateway|$GW"
 echo "Interface|$IFACE"
 
 # Certificates
