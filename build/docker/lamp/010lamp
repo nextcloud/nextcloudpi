@@ -16,8 +16,8 @@ set -e
 }
 
 # MOVE CONFIGS TO PERSISTENT VOLUME
-persistent_cfg /etc/apache2/sites-available
-persistent_cfg /etc/apache2/sites-enabled
+persistent_cfg /etc/apache2/sites-available /data/etc/apache2/sites-available
+persistent_cfg /etc/apache2/sites-enabled /data/etc/apache2/sites-enabled
 
 # Run hardcoded hooks. This allows scripts in the image to change persistent values before
 # initialization. Use case is to download a new image.
