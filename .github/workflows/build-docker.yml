@@ -29,7 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       VERSION: "${{ inputs.git_ref || github.ref }}"
-      ARCH: "${{ inputs.arch }}"
+      ARCH: "${{ inputs.arch || 'x86' }}"
     steps:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -65,7 +65,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       VERSION: "${{ inputs.git_ref || github.ref }}"
-      ARCH: "${{ inputs.arch }}"
+      ARCH: "${{ inputs.arch || 'x86' }}"
     steps:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -171,7 +171,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       VERSION: "${{ inputs.git_ref || github.ref }}"
-      ARCH: "${{ inputs.arch }}"
+      ARCH: "${{ inputs.arch || 'x86' }}"
     steps:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
