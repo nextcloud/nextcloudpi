@@ -253,7 +253,7 @@ jobs:
         uses: actions/download-artifact@v3
         if: ${{ contains('success|failure', env.TEST_RESULT) }}
         with:
-          name: ${{ github.run_id }}-${TEST_TYPE}-ssh-privkey
+          name: ${{ github.run_id }}-${{ env.TEST_TYPE }}-ssh-privkey
           path: /github/workspace/.ssh
       - name: Shutdown server
         if: ${{ contains('success|failure', env.TEST_RESULT) }}
@@ -307,7 +307,7 @@ jobs:
         uses: actions/download-artifact@v3
         if: ${{ contains('success|failure', env.TEST_RESULT) }}
         with:
-          name: ${{ github.run_id }}-${TEST_TYPE?}-ssh-privkey
+          name: ${{ github.run_id }}-${{ env.TEST_TYPE }}-ssh-privkey
           path: /github/workspace/.ssh
       - name: Shutdown server
         if: ${{ contains('success|failure', env.TEST_RESULT) }}
