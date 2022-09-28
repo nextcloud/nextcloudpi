@@ -30,15 +30,16 @@ cleanup()
     else
       echo 'WARN: Backup creation failed'
     fi
-    set +x
   fi
   exit
 }
 
-grep '/data-ro' /etc/mysql/mariadb.conf.d/90-ncp.cnf > /dev/null 2>&1 \
-  && echo "WARNING: Looks like you have been affected by a critical bug in NCP that can cause data loss. We're trying" \
+grep '/data-ro' /etc/mysql/mariadb.conf.d/90-ncp.cnf > /dev/null 2>&1 && {
+  echo "WARNING: Looks like you have been affected by a critical bug in NCP that can cause data loss. We're trying" \
      "to fix this now, but if you encounter any issues, please check" \
      "https://github.com/nextcloud/nextcloudpi/issues/1577#issuecomment-1260830341"
+  chown -R mysql: /data/database || true
+}
 sed -i 's|/data-ro|/data|' "/etc/mysql/mariadb.conf.d/90-ncp.cnf" || true
 
 trap cleanup SIGTERM
@@ -87,3 +88,5 @@ done
 # wait for trap from 'docker stop'
 echo "Init done"
 while true; do sleep 0.5; done
+
+}
