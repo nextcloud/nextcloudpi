@@ -18,6 +18,7 @@ UPDATESDIR=updates
 # don't make sense in a docker container
 EXCL_DOCKER="
 nc-autoupdate-ncp
+nc-update
 nc-automount
 nc-format-USB
 nc-datadir
