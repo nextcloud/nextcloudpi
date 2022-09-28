@@ -13,7 +13,31 @@ sed -i 's|/data-ro|/data|' "/etc/mysql/mariadb.conf.d/90-ncp.cnf" || true
 trap cleanup SIGTERM
 
 # if an empty volume is mounted to /data, pre-populate it
-[[ $( ls -1A /data | wc -l ) -eq 0 ]] && { echo "Initializing empty volume.."; cp -raT /data-ro /data; }
+if [[ $( ls -1A /data | wc -l ) -eq 0 ]]
+then
+  echo "Initializing empty volume.."
+  cp -raT /data-ro /data
+else
+  echo "Cleanup old startup backups..."
+  BKPS="$(ls -1t "$BKPDIR"/nextcloud-bkp_*.tar.gz 2>/dev/null)"
+  while read -r bkp
+  do
+    rm -f "$BKPDIR/$bkp"
+  done <"$(echo "$BKPS" | tail -n + 5)"
+  BKPDIR=/data/ncp-startup-backups/
+  WITH_DATA=no
+  COMPRESSED=yes
+  LIMIT=0
+  mkdir -p "$BKPDIR"
+  echo "Back up current instance..."
+  set +eE
+  if ncp-backup "$BKPDIR" "$WITH_DATA" "$COMPRESSED" "$LIMIT"
+  then
+    echo "Backup stored at '$BKPDIR/$(ls -1t "$BKPDIR"/nextcloud-bkp_*.tar.gz 2>/dev/null | head -n1)'"
+  else
+    echo 'WARN: Backup creation failed'
+  fi
+fi
 
 # wrapper to simulate update-rc.d
 cat > /usr/local/sbin/update-rc.d <<'EOF'
