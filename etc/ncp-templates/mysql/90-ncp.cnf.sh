@@ -8,10 +8,10 @@ then
   echo "INFO: Restoring template to default settings" >&2
   DB_DIR=/var/lib/mysql
 else
-  if [[ "$DOCKERBUILD" -eq 1 ]]
+  if is_docker && [[ -f /.ncp-image ]]
   then
     echo "INFO: Docker build detected." >&2
-    DB_DIR=/data/database
+    DB_DIR=/data-ro/database
   elif is_docker
   then
     echo "INFO: Docker container detected." >&2
