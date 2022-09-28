@@ -4,29 +4,13 @@ cleanup()
 {
   if [[ -z "$NOBACKUP" ]] || [[ "$NOBACKUP" != "true" ]]
   then
-    BKPDIR=/data/docker-shutdown-backups/
+    BKPDIR=/data/docker-shutdown-backups
     WITH_DATA=no
     COMPRESSED=yes
-    LIMIT=0
+    LIMIT=5
     mkdir -p "$BKPDIR"
-    echo "Cleanup old shutdown backups..."
-    skip_bkp_cleanup=0
-    BKPS="$(ls -1t "$BKPDIR"/nextcloud-bkp_*.tar.gz 2>/dev/null || skip_bkp_cleanup=1)"
-    if [[ "$skip_bkp_cleanup" == 0 ]]
-    then
-      while read -r bkp
-      do
-        rm -f "$BKPDIR/$bkp"
-      done <"$(echo "$BKPS" | tail -n +5)"
-    fi
     echo "Back up current instance..."
-    set +eE
-    if ncp-backup "$BKPDIR" "$WITH_DATA" "$COMPRESSED" "$LIMIT"
-    then
-      echo "Backup stored at '$BKPDIR/$(ls -1t "$BKPDIR"/nextcloud-bkp_*.tar.gz 2>/dev/null | head -n1)'"
-    else
-      echo 'WARN: Backup creation failed'
-    fi
+    ncp-backup "$BKPDIR" "$WITH_DATA" "$COMPRESSED" "$LIMIT" || echo 'WARN: Backup creation failed'
   fi
 
   for file in $( ls -1rv /etc/services-enabled.d ); do
@@ -40,7 +24,7 @@ grep '/data-ro' /etc/mysql/mariadb.conf.d/90-ncp.cnf > /dev/null 2>&1 && {
      "to fix this now, but if you encounter any issues, please check" \
      "https://github.com/nextcloud/nextcloudpi/issues/1577#issuecomment-1260830341" \
      "It is likely that you will have to restore a backup"
-  chown -R mysql: /data/database || true
+  chown -R mysql:mysql /data/database || true
 }
 sed -i 's|/data-ro|/data|' "/etc/mysql/mariadb.conf.d/90-ncp.cnf" || true
 
@@ -91,4 +75,4 @@ done
 echo "Init done"
 while true; do sleep 0.5; done
 
-}
+
