@@ -22,4 +22,7 @@ persistent_cfg /etc/cron.weekly
 }
 persistent_cfg /usr/local/bin /data/bin
 
+touch /var/log/ncp.log
+tail -f -n0 /data/nextcloud/data/nextcloud.log &
+
 exit 0
