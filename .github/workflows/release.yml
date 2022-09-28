@@ -144,7 +144,6 @@ jobs:
       board_name: OdroidC2
     secrets: inherit
 
-
   lxd-release:
     needs:
       - github-release

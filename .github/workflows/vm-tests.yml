@@ -239,29 +239,24 @@ jobs:
       image: thecalcaholic/ncp-test-automation:latest
       env:
         HCLOUD_TOKEN: "${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}"
-    strategy:
-      matrix:
-        test_type: [install]
-        include:
-          - test_type: install
-            server_address: ${{ needs.setup-installation-test-instance.outputs.server_address }}
-            test_result: ${{ needs.setup-installation-test-instance.result }}
-            test_server_id: ${{ needs.setup-installation-test-instance.outputs.test_server_id }}
-            version: ${{ needs.setup-installation-test-instance.outputs.version }}
-      fail-fast: false
 
     env:
-      UID: ${{ github.run_id }}-${{ matrix.test_type }}
-      VERSION: ${{ matrix.version }}
+      TEST_TYPE: install
+      SERVER_ADDRESS: ${{ needs.setup-installation-test-instance.outputs.server_address }}
+      TEST_RESULT: ${{ needs.setup-installation-test-instance.result }}
+      TEST_SERVER_ID: ${{ needs.setup-installation-test-instance.outputs.test_server_id }}
+      VERSION: ${{ needs.setup-installation-test-instance.outputs.version }}
+
+      UID: ${{ github.run_id }}-${TEST_TYPE}
     steps:
       - name: download ssh private key from artifact store
         uses: actions/download-artifact@v3
-        if: ${{ contains('success|failure', matrix.test_result) }}
+        if: ${{ contains('success|failure', env.TEST_RESULT) }}
         with:
-          name: ${{ github.run_id }}-${{ matrix.test_type }}-ssh-privkey
+          name: ${{ github.run_id }}-${TEST_TYPE}-ssh-privkey
           path: /github/workspace/.ssh
       - name: Shutdown server
-        if: ${{ contains('success|failure', matrix.test_result) }}
+        if: ${{ contains('success|failure', env.TEST_RESULT) }}
         run: |
           chmod 0600 /github/workspace/.ssh/automation_ssh_key
           export SSH_PUBLIC_KEY="$(cat /github/workspace/.ssh/automation_ssh_key.pub)"
@@ -269,25 +264,25 @@ jobs:
           eval "$(ssh-agent)"
           ssh-add /github/workspace/.ssh/automation_ssh_key
   
-          ssh -o "StrictHostKeyChecking=no" -o "UserKnownHostsFile=/dev/null" "root@${{ matrix.server_address }}" <<EOF
+          ssh -o "StrictHostKeyChecking=no" -o "UserKnownHostsFile=/dev/null" "root@${SERVER_ADDRESS?}" <<EOF
           systemctl stop mariadb
           systemctl poweroff
           EOF
       - name: Create Snapshot
-        if: ${{ contains('success|failure', matrix.test_result) }}
+        if: ${{ contains('success|failure', env.TEST_RESULT) }}
         shell: bash
         run: |
           set -x
           echo "${{ needs.setup-installation-test-instance.outputs.test_server_id }}"
-          echo "${{ matrix.test_server_id }}"
+          echo "${TEST_SERVER_ID?}"
           cd /ncp-test-automation/bin
           
           . ./library.sh
           
           tf-init "$TF_SNAPSHOT"
-          tf-apply "$TF_SNAPSHOT" "$TF_VAR_FILE" -var="branch=${{ matrix.version }}" -var="snapshot_provider_id=${{ matrix.test_server_id }}" -var="snapshot_type=ncp-postactivation" -state="${TF_SNAPSHOT}/${VERSION//\//.}.postactivation.tfstate"
+          tf-apply "$TF_SNAPSHOT" "$TF_VAR_FILE" -var="branch=${VERSION?}" -var="snapshot_provider_id=${TEST_SERVER_ID?}" -var="snapshot_type=ncp-postactivation" -state="${TF_SNAPSHOT}/${VERSION//\//.}.postactivation.tfstate"
           snapshot_id="$(tf-output "$TF_SNAPSHOT" -state="${TF_SNAPSHOT}/${VERSION//\//.}.postactivation.tfstate" snapshot_id)"
-          hcloud image add-label -o "$snapshot_id" "test-result=${{ matrix.test_result }}"
+          hcloud image add-label -o "$snapshot_id" "test-result=${TEST_RESULT?}"
 
   update-postactivation-snapshot:
     if: ${{ always() }}
@@ -299,29 +294,23 @@ jobs:
       image: thecalcaholic/ncp-test-automation:latest
       env:
         HCLOUD_TOKEN: "${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}"
-    strategy:
-      matrix:
-        test_type: [update]
-        include:
-          - test_type: update
-            server_address: ${{ needs.setup-update-test-instance.outputs.server_address }}
-            test_result: ${{ needs.setup-update-test-instance.result }}
-            test_server_id: ${{ needs.setup-update-test-instance.outputs.test_server_id }}
-            version: ${{ needs.setup-update-test-instance.outputs.version }}
-      fail-fast: false
 
     env:
-      UID: ${{ github.run_id }}-${{ matrix.test_type }}
-      VERSION: ${{ matrix.version }}
+      TEST_TYPE: update
+      SERVER_ADDRESS: ${{ needs.setup-update-test-instance.outputs.server_address }}
+      TEST_RESULT: ${{ needs.setup-update-test-instance.result }}
+      TEST_SERVER_ID: ${{ needs.setup-update-test-instance.outputs.test_server_id }}
+      VERSION: ${{ needs.setup-update-test-instance.outputs.version }}
+      UID: ${{ github.run_id }}-${TEST_TYPE}
     steps:
       - name: download ssh private key from artifact store
         uses: actions/download-artifact@v3
-        if: ${{ contains('success|failure', matrix.test_result) }}
+        if: ${{ contains('success|failure', env.TEST_RESULT) }}
         with:
-          name: ${{ github.run_id }}-${{ matrix.test_type }}-ssh-privkey
+          name: ${{ github.run_id }}-${TEST_TYPE?}-ssh-privkey
           path: /github/workspace/.ssh
       - name: Shutdown server
-        if: ${{ contains('success|failure', matrix.test_result) }}
+        if: ${{ contains('success|failure', env.TEST_RESULT) }}
         run: |
           chmod 0600 /github/workspace/.ssh/automation_ssh_key
           export SSH_PUBLIC_KEY="$(cat /github/workspace/.ssh/automation_ssh_key.pub)"
@@ -329,25 +318,25 @@ jobs:
           eval "$(ssh-agent)"
           ssh-add /github/workspace/.ssh/automation_ssh_key
           
-          ssh -o "StrictHostKeyChecking=no" -o "UserKnownHostsFile=/dev/null" "root@${{ matrix.server_address }}" <<EOF
+          ssh -o "StrictHostKeyChecking=no" -o "UserKnownHostsFile=/dev/null" "root@${SERVER_ADDRESS?}" <<EOF
           systemctl stop mariadb
           systemctl poweroff
           EOF
       - name: Create Snapshot
-        if: ${{ contains('success|failure', matrix.test_result) }}
+        if: ${{ contains('success|failure', env.TEST_RESULT) }}
         shell: bash
         run: |
           set -x
           echo "${{ needs.setup-update-test-instance.outputs.test_server_id }}"
-          echo "${{ matrix.test_server_id }}"
+          echo "${TEST_SERVER_ID?}"
           cd /ncp-test-automation/bin
           
           . ./library.sh
           
           tf-init "$TF_SNAPSHOT"
-          tf-apply "$TF_SNAPSHOT" "$TF_VAR_FILE" -var="branch=${{ matrix.version }}" -var="snapshot_provider_id=${{ matrix.test_server_id }}" -var="snapshot_type=ncp-postactivation" -state="${TF_SNAPSHOT}/${VERSION//\//.}.postactivation.tfstate"
+          tf-apply "$TF_SNAPSHOT" "$TF_VAR_FILE" -var="branch=${VERSION?}" -var="snapshot_provider_id=${TEST_SERVER_ID?}" -var="snapshot_type=ncp-postactivation" -state="${TF_SNAPSHOT}/${VERSION//\//.}.postactivation.tfstate"
           snapshot_id="$(tf-output "$TF_SNAPSHOT" -state="${TF_SNAPSHOT}/${VERSION//\//.}.postactivation.tfstate" snapshot_id)"
-          hcloud image add-label -o "$snapshot_id" "test-result=${{ matrix.test_result }}"
+          hcloud image add-label -o "$snapshot_id" "test-result=${TEST_RESULT?}"
 
   cleanup:
     if: ${{ always() }}
@@ -373,7 +362,7 @@ jobs:
     steps:
       - name: Teardown VMs
         run: |
-          for server in $(hcloud server list -o noheader -o columns=id -l "ci=${UID}")
+          for server in $(hcloud server list -o noheader -o columns=id -l "ci=${UID?}")
           do
             echo "Deleting server '$server'..."
             hcloud server delete "$server"
