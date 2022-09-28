@@ -1,0 +1,43 @@
+# syntax=docker/dockerfile:1
+ARG BUILDPLATFORM="linux/arm64"
+ARG TARGETBUILD="linux/amd64"
+ARG DEBIAN_FRONTEND="noninteractive"
+ARG release="latest"
+FROM --platform=${BUILDPLATFORM} zendai/lamp:${release} AS nextcloud
+ARG BUILDPLATFORM
+ARG TARGETBUILD
+ARG DEBIAN_FRONTEND
+ARG release
+ENV DOCKERBUILD 1
+SHELL ["/bin/bash", "-c"]
+RUN ["/bin/bash", "-c", "mkdir -p /usr/local/etc/ncp-templates /usr/local/etc/ncp-templates/apache2 /usr/local/etc/ncp-templates/mysql /usr/local/etc/ncp-templates/php"]
+COPY --from=zendai/ncp:repo repo/etc/library.sh /usr/local/etc
+COPY --from=zendai/ncp:repo repo/etc/ncp-templates /usr/local/etc/ncp-templates
+COPY --from=zendai/ncp:repo repo/etc/ncp-templates/apache2 /usr/local/etc/ncp-templates/apache2
+COPY --from=zendai/ncp:repo repo/etc/ncp-templates/mysql /usr/local/etc/ncp-templates/mysql
+COPY --from=zendai/ncp:repo repo/etc/ncp-templates/php /usr/local/etc/ncp-templates/php
+COPY --from=zendai/ncp:repo repo/bin/ncp/CONFIG/nc-nextcloud.sh /nc-nextcloud.sh
+COPY --from=zendai/ncp:repo repo/etc/ncp-config.d/nc-nextcloud.cfg /usr/local/etc/ncp-config.d/nc-nextcloud.cfg
+RUN --mount=type=cache,target=/var/cache/apt,sharing=shared ["/bin/bash", "-c", "set -e; \
+touch /.ncp-image; \
+touch /.docker-image; \
+apt-get update -qq -y; \
+apt-get install --no-install-recommends -qq -y sudo jq; \
+source /usr/local/etc/library.sh; \
+install_app /nc-nextcloud.sh; \
+run_app_unsafe /nc-nextcloud.sh; \
+mv /var/www/nextcloud /data-ro/nextcloud; \
+ln -s /data-ro/nextcloud /var/www/nextcloud; \
+apt-get autoremove -y; \
+apt-get clean; \
+find /var/lib/apt/lists -type f | xargs rm; \
+rm -rf /usr/share/man/*; \
+rm -rf /usr/share/doc/*; \
+rm /var/cache/debconf/*-old; \
+rm -f /var/log/alternatives.log /var/log/apt/*; \
+apt-get purge -y wget ca-certificates; \
+rm /nc-nextcloud.sh /usr/local/etc/ncp-config.d/nc-nextcloud.cfg; \
+rm /.ncp-image"]
+COPY --from=zendai/ncp:repo repo/build/docker/nextcloud/020nextcloud /etc/services-enabled.d/
+COPY --from=zendai/ncp:repo repo/bin/ncp-provisioning.sh /usr/local/bin/
+CMD ["/bin/bash","-c"]

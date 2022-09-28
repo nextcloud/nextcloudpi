@@ -1,0 +1,4 @@
+# syntax=docker/dockerfile:1
+FROM bitnami/git:latest AS git
+RUN ["/bin/bash", "-c", "git clone https://github.com/nextcloud/nextcloudpi.git repo"]
+

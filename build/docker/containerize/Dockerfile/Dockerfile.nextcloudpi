@@ -1,0 +1,55 @@
+# syntax=docker/dockerfile:1
+ARG BUILDPLATFORM="linux/arm64"
+ARG TARGETBUILD="linux/amd64"
+ARG DEBIAN_FRONTEND="noninteractive"
+ARG release="latest"
+ARG ncp_ver="v0.0.0"
+FROM --platform=${BUILDPLATFORM} zendai/nextcloud:${release} AS nextcloudpi
+ARG BUILDPLATFORM
+ARG TARGETBUILD
+ARG DEBIAN_FRONTEND
+ARG release
+ARG ncp_ver
+ENV DOCKERBUILD 1
+SHELL ["/bin/bash", "-c"]
+RUN ["/bin/bash", "-c", "mkdir -p /tmp/ncp-build"]
+COPY --from=zendai/ncp:repo repo/bin/                          /tmp/ncp-build/bin/
+COPY --from=zendai/ncp:repo repo/etc                           /tmp/ncp-build/etc/
+COPY --from=zendai/ncp:repo repo/ncp-web                       /tmp/ncp-build/ncp-web/
+COPY --from=zendai/ncp:repo repo/ncp-app                       /tmp/ncp-build/ncp-app/
+COPY --from=zendai/ncp:repo repo/ncp-previewgenerator          /tmp/ncp-build/ncp-previewgenerator/
+COPY --from=zendai/ncp:repo repo/build/docker                  /tmp/ncp-build/build/docker/
+COPY --from=zendai/ncp:repo repo/ncp.sh repo/update.sh repo/post-inst.sh /tmp/ncp-build/
+COPY --from=zendai/ncp:repo repo/etc/ncp-config.d/nc-init.cfg /usr/local/etc/ncp-config.d/nc-init-copy.cfg
+RUN --mount=type=cache,target=/var/cache/apt,sharing=shared ["/bin/bash", "-c", "set -e; \
+rm -f ncp-web/{wizard.cfg,ncp-web.cfg}; \
+touch /.ncp-image; \
+# mark as docker image
+touch /.docker-image; \
+apt-get update -y -qq; \
+apt-get install --no-install-recommends -qq -y wget ca-certificates; \
+source /usr/local/etc/library.sh; \
+cd /tmp/ncp-build/; \
+install_app ncp.sh; \
+mv /usr/local/etc/ncp-config.d/nc-init-copy.cfg /usr/local/etc/ncp-config.d/nc-init.cfg; \
+run_app_unsafe bin/ncp/CONFIG/nc-init.sh; \
+sed -i 's|data-ro|data|' /data-ro/nextcloud/config/config.php; \
+sed -i 's|/media/USBdrive|/data/backups|' /usr/local/etc/ncp-config.d/nc-backup.cfg; \
+sed -i 's|/media/USBdrive|/data/backups|' /usr/local/etc/ncp-config.d/nc-backup-auto.cfg; \
+run_app_unsafe post-inst.sh; \
+cd /; rm -r /tmp/ncp-build; \
+rm /usr/local/etc/ncp-config.d/nc-init.cfg; \
+rm -rf /usr/share/man/*; \
+rm -rf /usr/share/doc/*; \
+rm -f /var/log/alternatives.log /var/log/apt/*; \
+rm /var/cache/debconf/*-old; \
+echo ${ncp_ver} > /usr/local/etc/ncp-version"]
+COPY --from=zendai/ncp:repo repo/build/docker/nextcloudpi/000ncp /etc/services-enabled.d/
+ARG BUILDPLATFORM="linux/arm64"
+ARG TARGETBUILD="linux/amd64"
+FROM --platform=$BUILDPLATFORM nextcloudpi as ncp-qemu-fix
+ARG BUILDPLATFORM
+ARG TARGETBUILD
+ENV DOCKERBUILD 1
+ARG DEBIAN_FRONTEND
+RUN echo 'Mutex posixsem' >> /etc/apache2/mods-available/ssl.conf

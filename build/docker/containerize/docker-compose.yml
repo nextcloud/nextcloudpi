@@ -1,0 +1,32 @@
+services:
+  nextcloudpi:
+    cap_add:
+    - SYS_ADMIN
+    command: 192.168.178.15
+    container_name: nextcloudpi
+    devices:
+    - /dev/fuse:/dev/fuse
+    environment:
+      APACHE_LOCK_DIR: /var/lock/apache2
+      APACHE_LOG_DIR: /var/log/apache2
+      APACHE_PID_FILE: /var/run/apache2.pid
+      APACHE_RUN_DIR: /var/run/apache2
+      APACHE_RUN_GROUP: www-data
+      APACHE_RUN_USER: www-data
+    image: ownyourbits/nextcloudpi:latest
+    ports:
+    - published: 80
+      target: 80
+    - published: 443
+      target: 443
+    - published: 4443
+      target: 4443
+    restart: unless-stopped
+    volumes:
+    - ncdata:/data:rw
+    - /etc/localtime:/etc/localtime:ro
+version: '3.3'
+volumes:
+  ncdata:
+    external: false
+

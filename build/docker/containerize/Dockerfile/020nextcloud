@@ -1,0 +1,84 @@
+#!/bin/bash
+
+source /usr/local/etc/library.sh
+
+set -e
+
+[[ "$1" == "stop" ]] && {
+  echo "stopping Cron..."
+  killall cron
+  echo "stopping Redis..."
+  killall redis-server
+  echo "stopping Postfix..."
+  postfix stop
+  echo "stopping HPB..."
+  killall notify_push
+  postfix stop
+  echo "stopping logs..."
+  killall tail
+  exit 0
+}
+
+# we want to work in the volume version of the code
+rm /var/www/nextcloud
+ln -s /data/nextcloud /var/www/nextcloud
+
+echo "Starting Redis"
+sed -i 's|^requirepass .*|requirepass default|' /etc/redis/redis.conf
+chown redis:redis /etc/redis/redis.conf
+mkdir -p /var/run/redis
+chown redis /var/run/redis
+sudo -u redis redis-server /etc/redis/redis.conf
+
+echo "Starting Cron"
+cron
+
+echo "Starting Postfix"
+postfix start
+
+# Better do real provisioning at the end, as it can restart PHP asynchronously
+sed -i "s|'password'.*|'password' => 'default',|"        /data/nextcloud/config/config.php
+sed -i "s|'dbpassword' =>.*|'dbpassword' => 'default',|" /data/nextcloud/config/config.php
+echo -e "[client]\npassword=default" > /root/.my.cnf
+chmod 600 /root/.my.cnf
+DBPASSWD=default
+DBADMIN=ncadmin
+mysql <<EOF
+GRANT USAGE ON *.* TO '$DBADMIN'@'localhost' IDENTIFIED BY '$DBPASSWD';
+DROP USER '$DBADMIN'@'localhost';
+CREATE USER '$DBADMIN'@'localhost' IDENTIFIED BY '$DBPASSWD';
+GRANT ALL PRIVILEGES ON nextcloud.* TO $DBADMIN@localhost;
+FLUSH PRIVILEGES;
+EXIT
+EOF
+
+echo "Provisioning"
+bash /usr/local/bin/ncp-provisioning.sh
+
+echo "Starting notify_push daemon"
+start_notify_push
+
+if needs_decrypt; then
+  echo "Waiting for user to decrypt instance"
+  while :; do
+    sleep 1
+    needs_decrypt || break
+  done
+fi
+
+echo "Configuring Domain"
+# Trusted Domain (local/public IP)
+bash /usr/local/bin/nextcloud-domain.sh
+
+# Trusted Domain (as an argument)
+[[ -z "$2" ]] || {
+  ncc config:system:set trusted_domains 6 --value="$2"
+  ncc notify_push:self-test > /dev/null 2>&1 || ncc notify_push:setup "https://$2/push"
+}
+
+echo "Nextcloud version $(nc_version). NextCloudPi version $(cat /usr/local/etc/ncp-version)"
+
+# Display NC logs in the docker logs
+tail -f -n0 /data/nextcloud/data/nextcloud.log &
+
+exit 0

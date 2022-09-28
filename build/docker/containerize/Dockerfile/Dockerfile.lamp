@@ -1,0 +1,41 @@
+# syntax=docker/dockerfile:1
+ARG BUILDPLATFORM="linux/arm64"
+ARG TARGETBUILD="linux/amd64"
+ARG DEBIAN_FRONTEND="noninteractive"
+ARG release="debian"
+FROM --platform=${BUILDPLATFORM} zendai/ncp:${release} AS lamp
+ARG BUILDPLATFORM
+ARG TARGETBUILD
+ARG DEBIAN_FRONTEND
+ARG release
+ENV DOCKERBUILD 1
+SHELL ["/bin/bash", "-c"]
+# ADD https://github.com/nextcloud/nextcloudpi/raw/master/etc/ncp.cfg /usr/local/etc/ncp.cfg
+# ADD https://github.com/nextcloud/nextcloudpi/raw/master/etc/library.sh /usr/local/etc/library.sh
+# ADD https://github.com/nextcloud/nextcloudpi/raw/master/lamp.sh /usr/local/etc/lamp.sh
+COPY --from=zendai/ncp:repo repo/etc/ncp-templates /usr/local/etc/
+COPY --from=zendai/ncp:repo repo/etc/ncp.cfg /usr/local/etc/
+COPY --from=zendai/ncp:repo repo/etc/library.sh /usr/local/etc/
+COPY --from=zendai/ncp:repo repo/lamp.sh /usr/local/etc/
+RUN --mount=type=cache,target=/var/cache/apt,sharing=shared ["/bin/bash", "-c", "apt-get update -qq -y; apt-get install -qq -y --no-install-recommends \
+ca-certificates jq wget procps lsb-release; \
+source /usr/local/etc/library.sh; \
+set +x; \
+install_app /usr/local/etc/lamp.sh; \
+mysqladmin -u root shutdown; \
+mkdir -p /data-ro /data; \
+mv /var/lib/mysql /data-ro/database; \
+ln -s /data-ro/database /var/lib/mysql; \
+install_template mysql/90-ncp.cnf.sh /etc/mysql/mariadb.conf.d/90-ncp.cnf; \
+apt-get autoremove -y; \
+apt-get clean; \
+find /var/lib/apt/lists -type f | xargs rm; \
+rm -rf /usr/share/man/*; \
+rm -rf /usr/share/doc/*; \
+rm /var/cache/debconf/*-old; \
+rm -f /var/log/alternatives.log /var/log/apt/*; \
+rm /data-ro/database/ib_logfile*; \
+rm /usr/local/etc/lamp.sh"]
+COPY --from=zendai/ncp:repo repo/build/docker/lamp/010lamp /etc/services-enabled.d/
+ENTRYPOINT ["/run-parts.sh"]
+EXPOSE 80 443

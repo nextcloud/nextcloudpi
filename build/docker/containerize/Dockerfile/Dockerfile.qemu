@@ -1,0 +1,13 @@
+# syntax=docker/dockerfile:1
+ARG BUILDPLATFORM="linux/arm64"
+ARG TARGETBUILD="linux/amd64"
+ARG DEBIAN_FRONTEND="noninteractive"
+ARG arch_qemu="aarch64"
+ARG release="bullseye"
+FROM --platform=${BUILDPLATFORM} debian:${release}-slim AS qemu
+ARG BUILDPLATFORM
+ARG TARGETBUILD
+ARG DEBIAN_FRONTEND
+ARG release
+ARG arch_qemu
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked ["/bin/bash", "-c", "apt-get update -qq -y; apt-get install -qq -y --no-install-recommends qemu-user-static; rm -rf /var/lib/apt/lists/*;"] 
