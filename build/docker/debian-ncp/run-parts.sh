@@ -5,6 +5,33 @@ cleanup()
   for file in $( ls -1rv /etc/services-enabled.d ); do
     /etc/services-enabled.d/"$file" stop "$1"
   done
+  if [[ -z "$NOBACKUP" ]] || [[ "$NOBACKUP" != "true" ]]
+  then
+    BKPDIR=/data/docker-shutdown-backups/
+    WITH_DATA=no
+    COMPRESSED=yes
+    LIMIT=0
+    mkdir -p "$BKPDIR"
+    echo "Cleanup old shutdown backups..."
+    skip_bkp_cleanup=0
+    BKPS="$(ls -1t "$BKPDIR"/nextcloud-bkp_*.tar.gz 2>/dev/null || skip_bkp_cleanup=1)"
+    if [[ "$skip_bkp_cleanup" == 0 ]]
+    then
+      while read -r bkp
+      do
+        rm -f "$BKPDIR/$bkp"
+      done <"$(echo "$BKPS" | tail -n +5)"
+    fi
+    echo "Back up current instance..."
+    set +eE
+    if ncp-backup "$BKPDIR" "$WITH_DATA" "$COMPRESSED" "$LIMIT"
+    then
+      echo "Backup stored at '$BKPDIR/$(ls -1t "$BKPDIR"/nextcloud-bkp_*.tar.gz 2>/dev/null | head -n1)'"
+    else
+      echo 'WARN: Backup creation failed'
+    fi
+    set +x
+  fi
   exit
 }
 
@@ -17,33 +44,6 @@ if [[ $( ls -1A /data | wc -l ) -eq 0 ]]
 then
   echo "Initializing empty volume.."
   cp -raT /data-ro /data
-elif [[ -z "$NOBACKUP" ]] || [[ "$NOBACKUP" != "true" ]]
-then
-  set -x
-  BKPDIR=/data/ncp-startup-backups/
-  WITH_DATA=no
-  COMPRESSED=yes
-  LIMIT=0
-  mkdir -p "$BKPDIR"
-  echo "Cleanup old startup backups..."
-  skip_bkp_cleanup=0
-  BKPS="$(ls -1t "$BKPDIR"/nextcloud-bkp_*.tar.gz 2>/dev/null || skip_bkp_cleanup=1)"
-  if [[ "$skip_bkp_cleanup" == 0 ]]
-  then
-    while read -r bkp
-    do
-      rm -f "$BKPDIR/$bkp"
-    done <"$(echo "$BKPS" | tail -n +5)"
-  fi
-  echo "Back up current instance..."
-  set +eE
-  if ncp-backup "$BKPDIR" "$WITH_DATA" "$COMPRESSED" "$LIMIT"
-  then
-    echo "Backup stored at '$BKPDIR/$(ls -1t "$BKPDIR"/nextcloud-bkp_*.tar.gz 2>/dev/null | head -n1)'"
-  else
-    echo 'WARN: Backup creation failed'
-  fi
-  set +x
 fi
 
 # wrapper to simulate update-rc.d
