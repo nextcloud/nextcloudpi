@@ -23,7 +23,7 @@ else
   while read -r bkp
   do
     rm -f "$BKPDIR/$bkp"
-  done <"$(echo "$BKPS" | tail -n + 5)"
+  done <"$(echo "$BKPS" | tail -n +5)"
   BKPDIR=/data/ncp-startup-backups/
   WITH_DATA=no
   COMPRESSED=yes
