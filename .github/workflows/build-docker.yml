@@ -73,7 +73,9 @@ jobs:
       - name: Start ncp container
         run: |
           docker volume create ncdata
-          docker run --platform "linux/${ARCH?}" -v ncdata:/data -d --rm -p 8443:443 -p 4443:4443 --name nextcloudpi ownyourbits/nextcloudpi:latest
+          platform=linux/${ARCH?}
+          [[ "$ARCH" == 'x86' ]] && platform=linux/amd64
+          docker run --platform "$platform" -v ncdata:/data -d --rm -p 8443:443 -p 4443:4443 --name nextcloudpi ownyourbits/nextcloudpi:latest
 
       - name: Checkout code
         uses: actions/checkout@v3
