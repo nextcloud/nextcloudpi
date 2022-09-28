@@ -8,6 +8,8 @@ cleanup()
   exit
 }
 
+sed -i 's|/data-ro|/data|' "/etc/mysql/mariadb.conf.d/90-ncp.cnf" || true
+
 trap cleanup SIGTERM
 
 # if an empty volume is mounted to /data, pre-populate it
