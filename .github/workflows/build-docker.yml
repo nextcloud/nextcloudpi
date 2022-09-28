@@ -29,6 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       VERSION: "${{ inputs.git_ref || github.ref }}"
+      ARCH: "${{ inputs.arch }}"
     steps:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -50,13 +51,13 @@ jobs:
       - name: Build images
         id: build-container
         run: |
-          ./build/build-docker.sh "${{ inputs.arch }}"
-          docker tag "ownyourbits/nextcloudpi-${{ inputs.arch }}:latest" "thecalcaholic/ncp-internal-${{ inputs.arch }}:${{ github.run_id }}"
-          testing_image="ownyourbits/nextcloudpi-${{ inputs.arch }}:latest"
-          [[ "${{ inputs.arch }}" == "arm64" ]] && testing_image="ownyourbits/ncp-qemu-fix-${{ inputs.arch }}:latest"
-          docker tag "${testing_image}" "thecalcaholic/ncp-internal-${{ inputs.arch }}:${{ github.run_id }}-testing"
-          docker push "thecalcaholic/ncp-internal-${{ inputs.arch }}:${{ github.run_id }}"
-          docker push "thecalcaholic/ncp-internal-${{ inputs.arch }}:${{ github.run_id }}-testing"
+          ./build/build-docker.sh "${ARCH?}"
+          docker tag "ownyourbits/nextcloudpi-${ARCH?}:latest" "thecalcaholic/ncp-internal-${ARCH?}:${{ github.run_id }}"
+          testing_image="ownyourbits/nextcloudpi-${ARCH?}:latest"
+          [[ "${ARCH?}" == "arm64" ]] && testing_image="ownyourbits/ncp-qemu-fix-${ARCH?}:latest"
+          docker tag "${testing_image}" "thecalcaholic/ncp-internal-${ARCH?}:${{ github.run_id }}-testing"
+          docker push "thecalcaholic/ncp-internal-${ARCH?}:${{ github.run_id }}"
+          docker push "thecalcaholic/ncp-internal-${ARCH?}:${{ github.run_id }}-testing"
 
   update-test:
     needs:
@@ -64,7 +65,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       VERSION: "${{ inputs.git_ref || github.ref }}"
-
+      ARCH: "${{ inputs.arch }}"
     steps:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -72,7 +73,7 @@ jobs:
       - name: Start ncp container
         run: |
           docker volume create ncdata
-          docker run --platform "linux/${{ inputs.arch }}" -v ncdata:/data -d --rm -p 8443:443 -p 4443:4443 --name nextcloudpi ownyourbits/nextcloudpi:latest
+          docker run --platform "linux/${ARCH?}" -v ncdata:/data -d --rm -p 8443:443 -p 4443:4443 --name nextcloudpi ownyourbits/nextcloudpi:latest
 
       - name: Checkout code
         uses: actions/checkout@v3
@@ -94,7 +95,7 @@ jobs:
           docker logs -f nextcloudpi |& awk '{ print "CONTAINER::" $0 }' &
           docker exec nextcloudpi bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
           cmd=(python activation_tests.py --no-gui localhost 8443 4443)
-          [[ "${{ inputs.arch }}" == "x86" ]] || cmd+=(--timeout 300)
+          [[ "${ARCH?}" == "x86" ]] || cmd+=(--timeout 300)
           
           success=false
           for attempt in {1..3}
@@ -118,7 +119,7 @@ jobs:
       - name: Start new container
         run: |
           docker stop nextcloudpi
-          docker run -d -v ncdata:/data --rm -p 8443:443 -p 4443:4443 --name nextcloudpi thecalcaholic/ncp-internal-${{ inputs.arch }}:${{ github.run_id }}-testing
+          docker run -d -v ncdata:/data --rm -p 8443:443 -p 4443:4443 --name nextcloudpi thecalcaholic/ncp-internal-${ARCH?}:${{ github.run_id }}-testing
       - name: Integration Tests
         working-directory: ./tests
         run: |
@@ -127,7 +128,7 @@ jobs:
           docker logs -f nextcloudpi |& awk '{ print "CONTAINER::" $0 }' &
           docker exec nextcloudpi bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
           cmd=(python activation_tests.py --no-gui localhost 8443 4443)
-          [[ "${{ inputs.arch }}" == "x86" ]] || cmd+=(--timeout 300)
+          [[ "${ARCH?}" == "x86" ]] || cmd+=(--timeout 300)
                     
           success=false
           for attempt in {1..3}
@@ -170,7 +171,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       VERSION: "${{ inputs.git_ref || github.ref }}"
-
+      ARCH: "${{ inputs.arch }}"
     steps:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -180,7 +181,7 @@ jobs:
           echo "${{ secrets.DOCKER_PASSWORD_INTERNAL }}" | docker login -u "${{ secrets.DOCKER_LOGIN_INTERNAL }}" --password-stdin
       - name: Start ncp container
         run: |
-          docker run -d --rm -p 8443:443 -p 4443:4443 --name nextcloudpi thecalcaholic/ncp-internal-${{ inputs.arch }}:${{ github.run_id }}-testing
+          docker run -d --rm -p 8443:443 -p 4443:4443 --name nextcloudpi thecalcaholic/ncp-internal-${ARCH?}:${{ github.run_id }}-testing
 
       - name: Checkout code
         uses: actions/checkout@v3
@@ -202,7 +203,7 @@ jobs:
           docker logs -f nextcloudpi |& awk '{ print "CONTAINER::" $0 }' &
           docker exec nextcloudpi bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
           cmd=(python activation_tests.py --no-gui localhost 8443 4443)
-          [[ "${{ inputs.arch }}" == "x86" ]] || cmd+=(--timeout 300)
+          [[ "${ARCH?}" == "x86" ]] || cmd+=(--timeout 300)
           
           success=false
           for attempt in {1..3}
