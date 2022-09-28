@@ -19,17 +19,22 @@ then
   cp -raT /data-ro /data
 elif [[ -z "$NOBACKUP" ]] || [[ "$NOBACKUP" != "true" ]]
 then
+  set -x
   BKPDIR=/data/ncp-startup-backups/
   WITH_DATA=no
   COMPRESSED=yes
   LIMIT=0
   mkdir -p "$BKPDIR"
   echo "Cleanup old startup backups..."
-  BKPS="$(ls -1t "$BKPDIR"/nextcloud-bkp_*.tar.gz 2>/dev/null || true)"
-  while read -r bkp
-  do
-    rm -f "$BKPDIR/$bkp"
-  done <"$(echo "$BKPS" | tail -n +5)"
+  skip_bkp_cleanup=0
+  BKPS="$(ls -1t "$BKPDIR"/nextcloud-bkp_*.tar.gz 2>/dev/null || skip_bkp_cleanup=1)"
+  if [[ "$skip_bkp_cleanup" == 0 ]]
+  then
+    while read -r bkp
+    do
+      rm -f "$BKPDIR/$bkp"
+    done <"$(echo "$BKPS" | tail -n +5)"
+  fi
   echo "Back up current instance..."
   set +eE
   if ncp-backup "$BKPDIR" "$WITH_DATA" "$COMPRESSED" "$LIMIT"
@@ -38,6 +43,7 @@ then
   else
     echo 'WARN: Backup creation failed'
   fi
+  set +x
 fi
 
 # wrapper to simulate update-rc.d
