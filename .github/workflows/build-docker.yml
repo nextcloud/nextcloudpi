@@ -170,6 +170,8 @@ jobs:
             exit 1
           }
           echo "CI:: Nextcloud test successful"
+          
+          docker exec nextcloudpi bash /usr/local/bin/ncp-diag
 
   test:
     needs:
@@ -265,4 +267,6 @@ jobs:
             exit 1
           }
           echo "CI:: Nextcloud test successful"
+          
+          docker exec nextcloudpi bash /usr/local/bin/ncp-diag
 
