@@ -129,8 +129,7 @@ jobs:
           echo 'CONTAINER:: =========='
           docker logs -f nextcloudpi |& awk '{ print "CONTAINER::" $0 }' &
           docker exec nextcloudpi bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
-          cmd=(python activation_tests.py --no-gui localhost 8443 4443)
-          [[ "${ARCH?}" == "x86" ]] || cmd+=(--timeout 300)
+          [[ "${ARCH?}" == "x86" ]] || sleep 30
           
           sleep 20
                     
@@ -239,6 +238,7 @@ jobs:
             echo ":: System Tests (attempt $attempt/3) ::"
             python system_tests.py --no-ping --non-interactive || {
               echo "CI:: System test (attempt $attempt) failed!"
+              sleep 5
               continue
             }
             success=true
@@ -257,6 +257,7 @@ jobs:
             python nextcloud_tests.py --no-gui localhost 8443 4443 || {
               tail -n 20 geckodriver.log >&2 || true
               echo "CI:: Nextcloud test (attempt $attempt/3) failed!"
+              sleep 5
               continue
             }
             success=true

@@ -2,9 +2,6 @@
 
 cleanup()
 {
-  for file in $( ls -1rv /etc/services-enabled.d ); do
-    /etc/services-enabled.d/"$file" stop "$1"
-  done
   if [[ -z "$NOBACKUP" ]] || [[ "$NOBACKUP" != "true" ]]
   then
     BKPDIR=/data/docker-shutdown-backups/
@@ -31,6 +28,10 @@ cleanup()
       echo 'WARN: Backup creation failed'
     fi
   fi
+
+  for file in $( ls -1rv /etc/services-enabled.d ); do
+    /etc/services-enabled.d/"$file" stop "$1"
+  done
   exit
 }
 
