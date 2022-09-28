@@ -17,18 +17,19 @@ if [[ $( ls -1A /data | wc -l ) -eq 0 ]]
 then
   echo "Initializing empty volume.."
   cp -raT /data-ro /data
-else
-  echo "Cleanup old startup backups..."
-  BKPS="$(ls -1t "$BKPDIR"/nextcloud-bkp_*.tar.gz 2>/dev/null)"
-  while read -r bkp
-  do
-    rm -f "$BKPDIR/$bkp"
-  done <"$(echo "$BKPS" | tail -n +5)"
+elif [[ -z "$NOBACKUP" ]] || [[ "$NOBACKUP" != "true" ]]
+then
   BKPDIR=/data/ncp-startup-backups/
   WITH_DATA=no
   COMPRESSED=yes
   LIMIT=0
   mkdir -p "$BKPDIR"
+  echo "Cleanup old startup backups..."
+  BKPS="$(ls -1t "$BKPDIR"/nextcloud-bkp_*.tar.gz 2>/dev/null || true)"
+  while read -r bkp
+  do
+    rm -f "$BKPDIR/$bkp"
+  done <"$(echo "$BKPS" | tail -n +5)"
   echo "Back up current instance..."
   set +eE
   if ncp-backup "$BKPDIR" "$WITH_DATA" "$COMPRESSED" "$LIMIT"
