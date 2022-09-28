@@ -65,7 +65,7 @@ rm -f /var/log/alternatives.log /var/log/apt/*; \
 
 # specific cleanup
 rm /data-ro/database/ib_logfile*; \
-rm /usr/local/etc/lamp.sh \
+rm /usr/local/etc/lamp.sh; \
 rm /.ncp-image;
 
 COPY build/docker/lamp/010lamp /etc/services-enabled.d/
