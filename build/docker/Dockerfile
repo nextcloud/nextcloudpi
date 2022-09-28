@@ -172,6 +172,7 @@ sed -i 's|data-ro|data|' /data-ro/nextcloud/config/config.php; \
 # fix default paths
 sed -i 's|/media/USBdrive|/data/backups|' /usr/local/etc/ncp-config.d/nc-backup.cfg; \
 sed -i 's|/media/USBdrive|/data/backups|' /usr/local/etc/ncp-config.d/nc-backup-auto.cfg; \
+sed -i 's|/data-ro|/data|' /etc/mysql/mariadb.conf.d/90-ncp.cnf; \
 
 # cleanup all NCP extras
 run_app_unsafe post-inst.sh; \
