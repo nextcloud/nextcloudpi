@@ -11,7 +11,7 @@ else
   if [[ "$DOCKERBUILD" -eq 1 ]]
   then
     echo "INFO: Docker build detected." >&2
-    DB_DIR=/data-ro/database
+    DB_DIR=/data/database
   elif is_docker
   then
     echo "INFO: Docker container detected." >&2
