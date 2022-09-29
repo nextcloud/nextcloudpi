@@ -247,7 +247,7 @@ jobs:
       TEST_SERVER_ID: ${{ needs.setup-installation-test-instance.outputs.test_server_id }}
       VERSION: ${{ needs.setup-installation-test-instance.outputs.version }}
 
-      UID: ${{ github.run_id }}-${TEST_TYPE}
+      UID: ${{ github.run_id }}-${{ env.TEST_TYPE }}
     steps:
       - name: download ssh private key from artifact store
         uses: actions/download-artifact@v3
@@ -301,7 +301,7 @@ jobs:
       TEST_RESULT: ${{ needs.setup-update-test-instance.result }}
       TEST_SERVER_ID: ${{ needs.setup-update-test-instance.outputs.test_server_id }}
       VERSION: ${{ needs.setup-update-test-instance.outputs.version }}
-      UID: ${{ github.run_id }}-${TEST_TYPE}
+      UID: ${{ github.run_id }}-${{ env.TEST_TYPE }}
     steps:
       - name: download ssh private key from artifact store
         uses: actions/download-artifact@v3

@@ -35,7 +35,3 @@ while :; do
   break
 done
 
-[[ -z "$nc_domain" ]] || {
-  echo "Starting notify_push daemon"
-  start_notify_push
-}

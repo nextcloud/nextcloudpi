@@ -163,7 +163,7 @@ function set-nc-domain()
   fi
 }
 
-function start_notify_push
+function start_notify_push()
 {
     pgrep notify_push &>/dev/null && return
     if [[ -f /.docker-image ]]; then
