@@ -35,7 +35,7 @@ reload_metrics_config() {
       echo -e "WARNING: ncp-metrics-exporter failed to start (exit-code $rc)!"
       return $rc
     }
-  }
+  } || return 0
 }
 
 metrics_services() {

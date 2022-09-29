@@ -55,9 +55,6 @@ EOF
 echo "Provisioning"
 bash /usr/local/bin/ncp-provisioning.sh
 
-echo "Starting notify_push daemon"
-start_notify_push
-
 if needs_decrypt; then
   echo "Waiting for user to decrypt instance"
   while :; do

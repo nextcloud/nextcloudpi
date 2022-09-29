@@ -1,3 +1,16 @@
+## [v1.50.2](https://github.com/nextcloud/nextcloudpi/tree/v1.50.1) (2022-09-27) Various bug fixes
+
+### docker
+
+- Fix misconfigured database directory on docker (/data-ro)
+- Create backup on container startup
+- Fix changed user ids between container versions
+- Remove nc-update from docker
+
+### CI/CD
+
+- Add tests for container updates
+
 ## [v1.50.1](https://github.com/nextcloud/nextcloudpi/tree/v1.50.1) (2022-09-27) Various bug fixes
 
 - Fix CI/CD armbian builds
