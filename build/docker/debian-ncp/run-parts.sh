@@ -61,10 +61,8 @@ for file in $( ls -1v /etc/services-enabled.d | grep -v ^000.* ); do
   /etc/services-enabled.d/"$file" start "$1"
 done
 
-# wait for trap from 'docker stop'
-echo "Init done"
 
-if [[ -z "$NOBACKUP" ]] || [[ "$NOBACKUP" != "true" ]]
+if [[ -z "$NOBACKUP" ]] || [[ "$NOBACKUP" != "true" ]] && ! a2query -s ncp-activation -q
 then
   BKPDIR=/data/docker-startup-backups
   WITH_DATA=no
@@ -75,6 +73,8 @@ then
   ncp-backup "$BKPDIR" "$WITH_DATA" "$COMPRESSED" "$LIMIT" || echo 'WARN: Backup creation failed'
 fi
 
+# wait for trap from 'docker stop'
+echo "Init done"
 while true; do sleep 0.5; done
 
 

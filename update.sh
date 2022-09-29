@@ -12,6 +12,16 @@ source /usr/local/etc/library.sh
 
 set -e$DBG
 
+
+if is_docker
+then
+  echo "WARNING: Docker images should be updated by replacing the container from the latest docker image" \
+    "(refer to the documentation for instructions: https://docs.nextcloudpi.com)." \
+    "If you are sure that you know what you are doing, you can still execute the update script by running it like this:"
+  echo "> ALLOW_UPDATE_SCRIPT=1 ncp-update"
+  [[ "$ALLOW_UPDATE_SCRIPT" == "1" ]] || exit 1
+fi
+
 CONFDIR=/usr/local/etc/ncp-config.d/
 UPDATESDIR=updates
 
