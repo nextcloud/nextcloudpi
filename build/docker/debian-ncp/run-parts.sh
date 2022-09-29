@@ -2,16 +2,6 @@
 
 cleanup()
 {
-  if [[ -z "$NOBACKUP" ]] || [[ "$NOBACKUP" != "true" ]]
-  then
-    BKPDIR=/data/docker-shutdown-backups
-    WITH_DATA=no
-    COMPRESSED=yes
-    LIMIT=5
-    mkdir -p "$BKPDIR"
-    echo "Back up current instance..."
-    ncp-backup "$BKPDIR" "$WITH_DATA" "$COMPRESSED" "$LIMIT" || echo 'WARN: Backup creation failed'
-  fi
 
   for file in $( ls -1rv /etc/services-enabled.d ); do
     /etc/services-enabled.d/"$file" stop "$1"
@@ -73,6 +63,18 @@ done
 
 # wait for trap from 'docker stop'
 echo "Init done"
+
+if [[ -z "$NOBACKUP" ]] || [[ "$NOBACKUP" != "true" ]]
+then
+  BKPDIR=/data/docker-startup-backups
+  WITH_DATA=no
+  COMPRESSED=yes
+  LIMIT=5
+  mkdir -p "$BKPDIR"
+  echo "Back up current instance..."
+  ncp-backup "$BKPDIR" "$WITH_DATA" "$COMPRESSED" "$LIMIT" || echo 'WARN: Backup creation failed'
+fi
+
 while true; do sleep 0.5; done
 
 
