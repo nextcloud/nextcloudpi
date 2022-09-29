@@ -97,7 +97,7 @@ jobs:
           docker logs -f nextcloudpi |& awk '{ print "CONTAINER::" $0 }' &
           docker exec nextcloudpi bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
           cmd=(python activation_tests.py --no-gui localhost 8443 4443)
-          [[ "${ARCH?}" == "x86" ]] || cmd+=(--timeout 300)
+          [[ "${ARCH?}" == "x86" ]] || { sleep 30; cmd+=(--timeout 300); }
           
           success=false
           for attempt in {1..3}
