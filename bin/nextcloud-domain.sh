@@ -34,3 +34,8 @@ while :; do
   set-nc-domain "${nc_domain}" >> /var/log/ncp.log
   break
 done
+
+[[ -z "$nc_domain" ]] || {
+  echo "Starting notify_push daemon"
+  start_notify_push
+}

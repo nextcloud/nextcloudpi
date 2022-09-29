@@ -35,6 +35,9 @@ COPY etc/ncp-templates /usr/local/etc/ncp-templates
 RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt \
 set -e; \
 
+# mark as image build
+touch /.ncp-image; \
+
 # installation
 apt-get update; \
 apt-get install --no-install-recommends -y jq wget procps ca-certificates lsb-release; \
@@ -62,7 +65,8 @@ rm -f /var/log/alternatives.log /var/log/apt/*; \
 
 # specific cleanup
 rm /data-ro/database/ib_logfile*; \
-rm /usr/local/etc/lamp.sh
+rm /usr/local/etc/lamp.sh; \
+rm /.ncp-image;
 
 COPY build/docker/lamp/010lamp /etc/services-enabled.d/
 
@@ -168,6 +172,7 @@ sed -i 's|data-ro|data|' /data-ro/nextcloud/config/config.php; \
 # fix default paths
 sed -i 's|/media/USBdrive|/data/backups|' /usr/local/etc/ncp-config.d/nc-backup.cfg; \
 sed -i 's|/media/USBdrive|/data/backups|' /usr/local/etc/ncp-config.d/nc-backup-auto.cfg; \
+sed -i 's|/data-ro|/data|' /etc/mysql/mariadb.conf.d/90-ncp.cnf; \
 
 # cleanup all NCP extras
 run_app_unsafe post-inst.sh; \

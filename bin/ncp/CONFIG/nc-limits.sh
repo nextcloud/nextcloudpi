@@ -9,7 +9,15 @@
 #
 
 get_total_mem() {
-  free -b | sed -n 2p | awk '{ print $2 }'
+  local total_mem="$(free -b | sed -n 2p | awk '{ print $2 }')"
+  local MAX_32BIT=4096000000
+  if [[ "$ARCH" == 'armv7' ]] && [[ $MAX_32BIT -lt "$total_mem" ]]
+  then
+    echo "$MAX_32BIT"
+  else
+    echo "$total_mem"
+  fi
+
 }
 
 tmpl_innodb_buffer_pool_size() {
