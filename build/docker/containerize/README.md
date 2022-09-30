@@ -148,6 +148,32 @@ New syntax - V2
 
 - `docker compose`
 
+File `docker-compose.yml`
+
+```yaml
+services:
+  nextcloudpi:
+    command: "$(ip addr | grep 192 | awk '{print $2}' | cut -b 1-14)"
+    container_name: nextcloudpi
+    image: ownyourbits/nextcloudpi:latest
+    ports:
+    - published: 80
+      target: 80
+    - published: 443
+      target: 443
+    - published: 4443
+      target: 4443
+    restart: unless-stopped
+    volumes:
+    - ncdata:/data:rw
+    - /etc/localtime:/etc/localtime:ro
+version: '3.3'
+volumes:
+  ncdata:
+    external: false
+
+```
+
 <!--
 [Notes - Installation Commands][cmd-install]
 [cmd-install]: https://gist.github.com/ZendaiOwl/9d4184aac07e2f888201d227a0fa2b39
