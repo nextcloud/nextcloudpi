@@ -3,7 +3,7 @@ ARG OWNER ["nextcloud"]
 ARG REPO ["nextcloudpi"]
 ARG PATH ["bin/ncp"]
 ARG CATEGORY ["BACKUPS"]
-ARG SCRIPT ["nc-autobackup.sh"]
+ARG SCRIPT ["nc-backup-auto.sh"]
 ARG URL ["https://raw.githubusercontent.com"]
 FROM --platform=$BUILDPLATFORM bash:latest AS bash
 ARG OWNER
