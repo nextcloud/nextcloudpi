@@ -135,7 +135,7 @@ URL to fetch scripts in raw text
 
 https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/${PATH}
 
-```yaml
+```docker
 Image: bash
 Image: scratch (?)
 
