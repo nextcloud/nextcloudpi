@@ -59,6 +59,7 @@ TODO
 [Docker - Multi-stage builds][13]  
 [Docker - Compose, Overview][14]  
 [Docker - Reference, run command][15]  
+[Docker - Specify a Dockerfile][18]
 
 [Docker - Announcement, Compose V2][16]
 
@@ -82,6 +83,7 @@ TODO
 [15]: https://docs.docker.com/engine/reference/run
 [16]: https://www.docker.com/blog/announcing-compose-v2-general-availability/
 [17]: https://developers.redhat.com/blog/2019/04/24/how-to-run-systemd-in-a-container
+[18]: https://docs.docker.com/engine/reference/commandline/build/#specify-a-dockerfile--f
 <!-- END Help articles -->
 
 ## Notes
@@ -128,6 +130,10 @@ docker run --init \
 _Greps an IP-address beginning with 192, modify to fit your system, test in terminal._
 
 #### Dockerfile
+
+- Naming scheme
+
+`Dockerfile.name`
 
 Use `ADD` in Dockerfile to import scripts
 
