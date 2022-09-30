@@ -3,6 +3,7 @@ FROM --platform=$BUILDPLATFORM bash:latest AS bash
 
 ARG OWNER ["nextcloud"]
 ARG REPO ["nextcloudpi"]
+ARG BRANCH ["master"]
 ARG PATH ["bin/ncp"]
 ARG CATEGORY ["BACKUPS"]
 ARG SCRIPT ["nc-backup-auto.sh"]
@@ -11,6 +12,7 @@ ARG PATH_BASH ["/usr/local/bin/bash"]
 FROM --platform=$BUILDPLATFORM ["scratch"]
 ARG OWNER
 ARG REPO 
+ARG BRANCH 
 ARG PATH 
 ARG URL 
 ARG CATEGORY
