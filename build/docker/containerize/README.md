@@ -22,6 +22,12 @@ Convert `ncp-config`'s various scripts into individual containers & `ncp-config`
 - [ ] [NCP-Config][ncp-config]   _Check me when the conversion is complete._
   - [ ] Category re-design/re-structuring
 
+- [ ] New category suggestion
+  - BACKUP
+  - NETWORK
+  - SYSTEM
+  - UPDATE
+
 TODO
   1. - [X] Added a few relevant help articles, for basic understanding around the subject of the project.
   2. - [X] Added some more relevant help articles from the Docker documentation, can be really hard to find otherwise.
