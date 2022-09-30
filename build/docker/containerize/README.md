@@ -9,6 +9,8 @@ A very much Work In Progress, confirming and testing if a design idea could inde
 
 Convert NCP and it's tool into a "binary" application container (or containers that only do "one thing/task") and services capable of being integrated with others, also making it possible to update/upgrade parts of the whole instead of everything.
 
+Where ncp-config is the master container over the others, and this image can then be used as a service. 
+
 ## End goal
  
 Containerize NCP completely
