@@ -137,9 +137,18 @@ Drivers
 #### Docker Compose 
 
 [Docker docs, Compose extend services][docker-extend-services]  
-[Docker docs, Compose networking](https://docs.docker.com/compose/networking/)  
-[Docker docs, Compose in production](https://docs.docker.com/compose/production/)  
-[Docker docs, Compose V2 compatibility](https://docs.docker.com/compose/cli-command-compatibility/)  
+[Docker docs, Compose networking][compose-networking]  
+[Docker docs, Compose in production][compose-production]  
+[Docker docs, Compose V2 compatibility][compose-v2-compat]  
+[Docker docs, Compose FAQ][compose-faq]  
+
+<!-- START Compose Links -->
+[docker-extend-services]: https://docs.docker.com/compose/extends/
+[compose-networking]: https://docs.docker.com/compose/networking/
+[compose-production]: https://docs.docker.com/compose/production/
+[compose-v2-compat]: https://docs.docker.com/compose/cli-command-compatibility/
+[compose-faq]: https://docs.docker.com/compose/faq/
+<!-- END Compose Links -->
 
 Old syntax - V1  
 
@@ -179,10 +188,6 @@ volumes:
 [Notes - Installation Commands][cmd-install]
 [cmd-install]: https://gist.github.com/ZendaiOwl/9d4184aac07e2f888201d227a0fa2b39
 -->
-
-<!-- START Compose Links -->
-[docker-extend-services]: https://docs.docker.com/compose/extends/
-<!-- END Compose Links -->
 
 #### Docker Run 
 
