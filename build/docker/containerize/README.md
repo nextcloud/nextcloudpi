@@ -242,6 +242,10 @@ SHELL ["$PATH_BASH"]
 ENTRYPOINT ["$PATH_BASH","-c","${PATH}/${CATEGORY}/${SCRIPT}"]
 ```
 
+#### Dockerized Bash Scripts - Examples
+
+[Ex 1.](https://fiberplane.dev/blog/transforming-bash-scripts-into-docker-compose/)
+
 #### [CATEGORIES][dirCategories]
 
 * Conversion progress, check the box when the category has been completely converted to individual container images
