@@ -212,7 +212,7 @@ Use `ADD` in Dockerfile to import scripts
 
 URL to fetch scripts in raw text
 
-https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/${PATH}
+`https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/${PATH}`
 
 ```docker
 Image: bash
