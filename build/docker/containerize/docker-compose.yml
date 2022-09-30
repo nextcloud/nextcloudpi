@@ -1,11 +1,7 @@
 services:
   nextcloudpi:
-    cap_add:
-    - SYS_ADMIN
-    command: 192.168.178.15
+    command: "$(ip addr | grep 192 | awk '{print $2}' | cut -b 1-14)"
     container_name: nextcloudpi
-    devices:
-    - /dev/fuse:/dev/fuse
     image: ownyourbits/nextcloudpi:latest
     ports:
     - published: 80
