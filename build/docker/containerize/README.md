@@ -103,6 +103,33 @@ TODO
 [ncp-docker-hub]: https://hub.docker.com/r/ownyourbits/nextcloudpi
 <!-- END Notes Links -->
 
+#### Docker Buildx
+
+- `docker buildx build . -f /path/Dockerfile --tag ${OWNER}/${REPO}:${TAG}`
+
+Options
+
+- `--platform`
+- `--builder`
+- `--push`
+
+Create builder
+
+- `docker buildx create --use --name container --driver docker-container`
+
+Drivers
+
+- `docker`
+- `docker-container` _recommended for multiple architecture compatibility_
+- `kubernetes` _recommended for simultaneous multiple architecture build, one node per architecture in the cluster, combine with docker-container driver_
+
+Orchestrator
+
+- `Docker`
+- `Docker Swarm`
+- `Kubernetes`
+
+
 #### Docker Compose 
 
 Old syntax - V1  
