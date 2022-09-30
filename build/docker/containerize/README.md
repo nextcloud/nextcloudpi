@@ -49,27 +49,27 @@ TODO
 
 ## Related Help articles & Documentation information
 
-[Google - Best practice, Building containers][1]  
-[Google - Best practice, Operating containers][2]  
-[Docker - Best practice, Dockerfile][3]  
-[Docker - Best practice, Development][4]  
-[Docker - Best practice, Image-building][9]  
-[Docker - Build enhancements][5]  
-[Docker - Choosing a build driver][6]  
-[Docker - Manage images][7]  
-[Docker - Create a base image][8]  
+- [Google - Best practice, Building containers][1]  
+- [Google - Best practice, Operating containers][2]  
+- [Docker - Best practice, Dockerfile][3]  
+- [Docker - Best practice, Development][4]  
+- [Docker - Best practice, Image-building][9]  
+- [Docker - Build enhancements][5]  
+- [Docker - Choosing a build driver][6]  
+- [Docker - Manage images][7]  
+- [Docker - Create a base image][8]  
 
-[Docker - Multi-container apps][10]  
-[Docker - Update the application][11]  
-[Docker - Packaging your software][12]  
-[Docker - Multi-stage builds][13]  
-[Docker - Compose, Overview][14]  
-[Docker - Reference, run command][15]  
-[Docker - Specify a Dockerfile][18]
+- [Docker - Multi-container apps][10]  
+- [Docker - Update the application][11]  
+- [Docker - Packaging your software][12]  
+- [Docker - Multi-stage builds][13]  
+- [Docker - Compose, Overview][14]  
+- [Docker - Reference, run command][15]  
+- [Docker - Specify a Dockerfile][18]  
 
-[Docker - Announcement, Compose V2][16]
+- [Docker - Announcement, Compose V2][16]
 
-[Red Hat Dev - Blog Post, Systemd in Containers][17]
+- [Red Hat Dev - Blog Post, Systemd in Containers][17]
 
 <!-- START Help articles -->
 [1]: https://cloud.google.com/architecture/best-practices-for-building-containers#signal-handling
@@ -101,6 +101,7 @@ TODO
 <!-- START Notes Links --> 
 [docker-cmd]: https://gist.github.com/ZendaiOwl/f80b09d792d3b7ed51eb00e72ab866de
 [ncp-docker-hub]: https://hub.docker.com/r/ownyourbits/nextcloudpi
+[docker-orchestration]: https://docs.docker.com/get-started/orchestration/
 <!-- END Notes Links -->
 
 #### Docker Buildx
@@ -124,14 +125,20 @@ Drivers
 - `docker-container` _recommended for multiple architecture compatibility_
 - `kubernetes` _recommended for simultaneous multiple architecture build, one node per architecture in the cluster, combine with docker-container driver_
 
-Orchestrator
+[Orchestration][docker-orchestration]
 
-- `Docker`
 - `Docker Swarm`
 - `Kubernetes`
 
-
 #### Docker Compose 
+
+[Docker docs, Compose extend services][docker-extend-services]
+
+[Docker docs, Compose networking](https://docs.docker.com/compose/networking/)
+
+[Docker docs, Compose in production](https://docs.docker.com/compose/production/)
+
+[Docker docs, Compose V2 compatibility](https://docs.docker.com/compose/cli-command-compatibility/)
 
 Old syntax - V1  
 
@@ -145,6 +152,10 @@ New syntax - V2
 [Notes - Installation Commands][cmd-install]
 [cmd-install]: https://gist.github.com/ZendaiOwl/9d4184aac07e2f888201d227a0fa2b39
 -->
+
+<!-- START Compose Links -->
+[docker-extend-services]: https://docs.docker.com/compose/extends/
+<!-- END Compose Links -->
 
 #### Docker Run 
 
