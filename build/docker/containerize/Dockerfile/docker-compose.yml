@@ -1,6 +1,6 @@
 services:
   nextcloudpi:
-    command: 192.168.178.15
+    command: "$(ip addr | grep 192 | awk '{print $2}' | cut -b 1-14)"
     container_name: nextcloudpi
     image: zendai/nextcloudpi:latest
     ports:
@@ -18,4 +18,3 @@ version: '3.3'
 volumes:
   ncdata:
     external: false
-
