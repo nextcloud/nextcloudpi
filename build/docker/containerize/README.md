@@ -248,6 +248,8 @@ ENTRYPOINT ["$PATH_BASH","-c","${PATH}/${CATEGORY}/${SCRIPT}"]
 
 [Ex 2.](https://assistanz.com/automatic-docker-container-creation-via-linux-bash-script/)
 
+[Ex 3.](https://ypereirareis.github.io/blog/2015/05/04/docker-with-shell-script-or-makefile/)
+
 #### [CATEGORIES][dirCategories]
 
 * Conversion progress, check the box when the category has been completely converted to individual container images
