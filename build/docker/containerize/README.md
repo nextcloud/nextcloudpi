@@ -98,8 +98,11 @@ TODO
 #### Docker Compose 
 
 Old syntax - V1  
+
 - `docker-compose`
+
 New syntax - V2  
+
 - `docker compose`
 
 <!--
