@@ -107,7 +107,7 @@ New syntax - V2
 
 #### Docker - Commands
 
-* A working `docker run` command with the `--init` flag for PID 1 management and reaping of zombie processes.
+A working `docker run` command with the `--init` flag for PID 1 management and reaping of zombie processes.
 
 ```bash
 docker run --init \
@@ -120,7 +120,18 @@ docker run --init \
 "$IP_OR_DOMAIN"
 ```
 
----
+Use `ADD` to import scripts
+
+`ADD ${URL} ${PATH}` 
+
+URL to fetch scripts in raw text
+
+https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/${PATH}
+
+OWNER nextcloud 
+REPO nextcloudpi
+BRANCH master 
+PATH bin/ncp/
 
 #### [CATEGORIES][dirCategories]
 
