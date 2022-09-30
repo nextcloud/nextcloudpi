@@ -250,6 +250,10 @@ ENTRYPOINT ["$PATH_BASH","-c","${PATH}/${CATEGORY}/${SCRIPT}"]
 
 [Ex 3.](https://ypereirareis.github.io/blog/2015/05/04/docker-with-shell-script-or-makefile/)
 
+[Ex 4.](https://devopscube.com/run-scripts-docker-arguments/)
+
+[Ex 5.](https://www.commands.dev/workflows/run_a_script_inside_a_docker_container_using_a_shell_script)
+
 #### [CATEGORIES][dirCategories]
 
 * Conversion progress, check the box when the category has been completely converted to individual container images
