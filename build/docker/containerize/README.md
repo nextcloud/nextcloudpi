@@ -41,22 +41,22 @@ TODO
 
 ## Related Help articles & Documentation information
 
-[Google - Best practice, Building containers][1]
-[Google - Best practice, Operating containers][2]
-[Docker - Best practice, Dockerfile][3]
-[Docker - Best practice, Development][4]
-[Docker - Best practice, Image-building][9]
-[Docker - Build enhancements][5]
-[Docker - Choosing a build driver][6]
-[Docker - Manage images][7]
-[Docker - Create a base image][8]
+[Google - Best practice, Building containers][1]  
+[Google - Best practice, Operating containers][2]  
+[Docker - Best practice, Dockerfile][3]  
+[Docker - Best practice, Development][4]  
+[Docker - Best practice, Image-building][9]  
+[Docker - Build enhancements][5]  
+[Docker - Choosing a build driver][6]  
+[Docker - Manage images][7]  
+[Docker - Create a base image][8]  
 
-[Docker - Multi-container apps][10]
-[Docker - Update the application][11]
-[Docker - Packaging your software][12]
-[Docker - Multi-stage builds][13]
-[Docker - Compose, Overview][14]
-[Docker - Reference, run command][15]
+[Docker - Multi-container apps][10]  
+[Docker - Update the application][11]  
+[Docker - Packaging your software][12]  
+[Docker - Multi-stage builds][13]  
+[Docker - Compose, Overview][14]  
+[Docker - Reference, run command][15]  
 
 [Docker - Announcement, Compose V2][16]
 
@@ -94,9 +94,10 @@ TODO
 <!-- END Notes Links -->
 
 #### Docker Compose 
-Old syntax - V1
+
+Old syntax - V1  
 - `docker-compose`
-New syntax - V2
+New syntax - V2  
 - `docker compose`
 
 <!--
