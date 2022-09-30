@@ -141,7 +141,7 @@ BRANCH master
 
 PATH bin/ncp/
 
-PATH_NCP-CONFIG ncp-config
+PATH_NCP-CONFIG bin/ncp/ncp-config
 
 #### [CATEGORIES][dirCategories]
 
