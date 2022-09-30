@@ -136,10 +136,10 @@ Drivers
 
 #### Docker Compose 
 
-[Docker docs, Compose extend services][docker-extend-services]
-[Docker docs, Compose networking](https://docs.docker.com/compose/networking/)
-[Docker docs, Compose in production](https://docs.docker.com/compose/production/)
-[Docker docs, Compose V2 compatibility](https://docs.docker.com/compose/cli-command-compatibility/)
+[Docker docs, Compose extend services][docker-extend-services]  
+[Docker docs, Compose networking](https://docs.docker.com/compose/networking/)  
+[Docker docs, Compose in production](https://docs.docker.com/compose/production/)  
+[Docker docs, Compose V2 compatibility](https://docs.docker.com/compose/cli-command-compatibility/)  
 
 Old syntax - V1  
 
@@ -248,12 +248,14 @@ ENTRYPOINT ["$PATH_BASH","-c","${PATH}/${CATEGORY}/${SCRIPT}"]
 3. [Docker w/Shell script or Makefile][ex3]  
 4. [Run scripts, Docker arguments][ex4]  
 5. [Run a scripts inside Docker container using Shell script][ex5]  
+6. [Run Script, with dev docker image][ex6]  
 
 [ex1]: https://fiberplane.dev/blog/transforming-bash-scripts-into-docker-compose/
 [ex2]: https://assistanz.com/automatic-docker-container-creation-via-linux-bash-script/
 [ex3]: https://ypereirareis.github.io/blog/2015/05/04/docker-with-shell-script-or-makefile/
 [ex4]: https://devopscube.com/run-scripts-docker-arguments/
 [ex5]: https://www.commands.dev/workflows/run_a_script_inside_a_docker_container_using_a_shell_script
+[ex6]: https://gist.github.com/austinhyde/2e39c01d6b0ebf4aef7409e129c47ea7
 
 #### [CATEGORIES][dirCategories]
 
