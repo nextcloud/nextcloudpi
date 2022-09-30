@@ -38,6 +38,9 @@ configure()
   id "$USER" &>/dev/null || { echo "$USER doesn't exist"; return 1; }
   echo -e "$PASS\n$CONFIRM" | passwd "$USER" || return 1
 
+  # Reenable pi user
+  [[ "$USER" == "pi" ]] && usermod pi -s /bin/bash
+
   # Check for insecure default pi password ( taken from old jessie method )
   # TODO Due to Debian bug #1003151 with mkpasswd this feature is not working properly at the moment - https://www.mail-archive.com/debian-bugs-dist@lists.debian.org/msg1837456.html
   #local SHADOW SALT HASH
