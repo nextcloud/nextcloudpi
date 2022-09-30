@@ -131,7 +131,7 @@ _Greps an IP-address beginning with 192, modify to fit your system, test in term
 
 #### Dockerfile
 
-- Naming scheme
+Naming scheme
 
 `Dockerfile.name`
 
