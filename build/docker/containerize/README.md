@@ -71,6 +71,8 @@ TODO
 
 [Red Hat Dev - Blog Post, Systemd in Containers][17]
 
+[Docker docs, Deprecated Features][docker-deprecated]
+
 <!-- START Help articles -->
 [1]: https://cloud.google.com/architecture/best-practices-for-building-containers#signal-handling
 [2]: https://cloud.google.com/architecture/best-practices-for-operating-containers
@@ -90,6 +92,7 @@ TODO
 [16]: https://www.docker.com/blog/announcing-compose-v2-general-availability/
 [17]: https://developers.redhat.com/blog/2019/04/24/how-to-run-systemd-in-a-container
 [18]: https://docs.docker.com/engine/reference/commandline/build/#specify-a-dockerfile--f
+[docker-deprecated]: https://docs.docker.com/engine/deprecated/
 <!-- END Help articles -->
 
 ## Notes
