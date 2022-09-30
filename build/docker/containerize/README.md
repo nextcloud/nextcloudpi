@@ -7,7 +7,7 @@ A very much Work In Progress, confirming and testing if a design idea could inde
 
 ## Project idea 
 
-Convert NCP and it's tool into a "binary" application container (or containers that only do "one thing/task") and services capable of being integrated with others, also making it possible to update/upgrade parts of the whole instead of everything.
+Convert NCP and it's tool into something like a "binary" application container (or containers that only do "one thing/task") and services capable of being integrated with others, also making it possible to update/upgrade parts of the whole instead of everything.
 
 Where ncp-config is the master container over the others, and this image can then be used as a service. 
 
@@ -110,7 +110,7 @@ New syntax - V2
 [cmd-install]: https://gist.github.com/ZendaiOwl/9d4184aac07e2f888201d227a0fa2b39
 -->
 
-#### Docker - Commands
+#### Docker Run 
 
 A working `docker run` command with the `--init` flag for PID 1 management and reaping of zombie processes.
 
@@ -125,6 +125,8 @@ docker run --init \
 "$IP_OR_DOMAIN"
 ```
 
+#### Dockerfile
+
 Use `ADD` in Dockerfile to import scripts
 
 `ADD ${URL} ${PATH}` 
@@ -133,15 +135,25 @@ URL to fetch scripts in raw text
 
 https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/${PATH}
 
-OWNER nextcloud
+```yaml
+Image: bash
+Image: scratch (?)
 
-REPO nextcloudpi
- 
-BRANCH master
+ARG OWNER ["nextcloud"]
+ARG REPO ["nextcloudpi"]
+ARG BRANCH ["master"]
+ARG PATH ["bin/ncp"]
+ARG CATEGORY ["BACKUPS"]
+ARG SCRIPT ["nc-backup-auto.sh"]
+ARG URL ["https://raw.githubusercontent.com"]
+ARG PATH_BASH ["/usr/local/bin/bash"]
 
-PATH bin/ncp/
-
-PATH_NCP-CONFIG bin/ncp-config
+ADD ["${URL}/${OWNER}/${REPO}/${BRANCH}/${PATH}/${CATEGORY}/${SCRIPT}", "${PATH}/${CATEGORY}/${SCRIPT}"]
+COPY --from=bash ["$PATH_BASH", "$PATH_BASH"]
+RUN ["$PATH_BASH","-c","chmod","+x","${PATH}/${CATEGORY}/${SCRIPT}"]
+SHELL ["$PATH_BASH"]
+ENTRYPOINT ["$PATH_BASH","-c","${PATH}/${CATEGORY}/${SCRIPT}"]
+```
 
 #### [CATEGORIES][dirCategories]
 
