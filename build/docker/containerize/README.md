@@ -246,6 +246,8 @@ ENTRYPOINT ["$PATH_BASH","-c","${PATH}/${CATEGORY}/${SCRIPT}"]
 
 [Ex 1.](https://fiberplane.dev/blog/transforming-bash-scripts-into-docker-compose/)
 
+[Ex 2.](https://assistanz.com/automatic-docker-container-creation-via-linux-bash-script/)
+
 #### [CATEGORIES][dirCategories]
 
 * Conversion progress, check the box when the category has been completely converted to individual container images
