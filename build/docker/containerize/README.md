@@ -202,6 +202,10 @@ _Greps an IP-address beginning with 192, modify to fit your system, test in term
 
 #### Dockerfile
 
+[Docker docs, Dockerfile reference][dockerfile-ref]
+
+[dockerfile-ref]: https://docs.docker.com/engine/reference/builder/
+
 Naming scheme
 
 `Dockerfile.name`
