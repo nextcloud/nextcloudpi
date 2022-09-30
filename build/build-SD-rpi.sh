@@ -80,11 +80,6 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
     sed -i 's|^#PermitRootLogin .*|PermitRootLogin no|' /etc/ssh/sshd_config
 
     # default user 'pi' for SSH
-    cfg="$(jq '.' etc/ncp-config.d/SSH.cfg)"
-    cfg="$(jq '.params[1].value = "pi"'        <<<"$cfg")"
-    cfg="$(jq '.params[2].value = "raspberry"' <<<"$cfg")"
-    cfg="$(jq '.params[3].value = "raspberry"' <<<"$cfg")"
-    echo "$cfg" > /usr/local/etc/ncp-config.d/SSH.cfg
 
     # cleanup
     source etc/library.sh && run_app_unsafe post-inst.sh
