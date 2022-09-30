@@ -122,7 +122,7 @@ docker run --init \
 "$IP_OR_DOMAIN"
 ```
 
-Use `ADD` to import scripts
+Use `ADD` in Dockerfile to import scripts
 
 `ADD ${URL} ${PATH}` 
 
@@ -130,10 +130,10 @@ URL to fetch scripts in raw text
 
 https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/${PATH}
 
-OWNER nextcloud 
-REPO nextcloudpi
-BRANCH master 
-PATH bin/ncp/
+OWNER nextcloud  
+REPO nextcloudpi   
+BRANCH master   
+PATH bin/ncp/  
 
 #### [CATEGORIES][dirCategories]
 
