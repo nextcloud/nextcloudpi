@@ -406,6 +406,7 @@ ENTRYPOINT ["$PATH_BASH","-c","${PATH}/${CATEGORY}/${SCRIPT}"]
 ### Existing Containers
 
 - [Nextcloud][nextcloud]
+- [Linuxserver.io/Nextcloud][linuxserver-nextcloud]
 - [MariaDB][mariadb]
 - [MySQL][mysql]
 - [PHP][php]
@@ -415,6 +416,7 @@ ENTRYPOINT ["$PATH_BASH","-c","${PATH}/${CATEGORY}/${SCRIPT}"]
 
 <!-- START Container Links -->
 [nextcloud]: https://hub.docker.com/_/nextcloud
+[linuxserver-nextcloud]: https://hub.docker.com/r/linuxserver/nextcloud  
 [mariadb]: https://hub.docker.com/_/mariadb
 [mysql]: https://hub.docker.com/_/mysql
 [php]: https://hub.docker.com/_/php
