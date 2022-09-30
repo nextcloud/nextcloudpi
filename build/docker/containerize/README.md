@@ -112,6 +112,7 @@ Options
 - `--platform`
 - `--builder`
 - `--push`
+- `--build-arg`
 
 Create builder
 
