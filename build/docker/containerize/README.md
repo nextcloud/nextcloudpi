@@ -122,8 +122,10 @@ docker run --init \
 --volume ncdata:/data \
 --name nextcloudpi \
 --detach ownyourbits/nextcloudpi:latest \
-"$IP_OR_DOMAIN"
+"$(ip addr | grep 192 | awk '{print $2}' | cut -b 1-14)"
 ```
+
+_Greps an IP-address beginning with 192, modify to fit your system, test in terminal._
 
 #### Dockerfile
 
