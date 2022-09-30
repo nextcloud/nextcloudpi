@@ -8,7 +8,7 @@ ARG CATEGORY ["BACKUPS"]
 ARG SCRIPT ["nc-backup-auto.sh"]
 ARG URL ["https://raw.githubusercontent.com"]
 ARG PATH_BASH ["/usr/local/bin/bash"]
-FROM --platform=$BUILDPLATFORM scratch 
+FROM --platform=$BUILDPLATFORM ["scratch"]
 ARG OWNER
 ARG REPO 
 ARG PATH 
@@ -16,8 +16,8 @@ ARG URL
 ARG CATEGORY
 ARG SCRIPT 
 ARG PATH_BASH 
-ADD ${URL}/${OWNER}/${REPO}/${PATH}/${CATEGORY}/${SCRIPT} ${PATH}/${CATEGORY}/${SCRIPT}
-COPY --from=bash $PATH_BASH $PATH_BASH
+ADD ["${URL}/${OWNER}/${REPO}/${PATH}/${CATEGORY}/${SCRIPT}", "${PATH}/${CATEGORY}/${SCRIPT}"]
+COPY --from=bash ["$PATH_BASH", "$PATH_BASH"]
 SHELL ["$PATH_BASH"]
 CMD ["$PATH_BASH","-c"]
-ENTRYPOINT ["${PATH}/${CATEGORY}/${SCRIPT"]
+ENTRYPOINT ["$PATH_BASH","-c","${PATH}/${CATEGORY}/${SCRIPT"]
