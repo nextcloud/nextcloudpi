@@ -49,27 +49,27 @@ TODO
 
 ## Related Help articles & Documentation information
 
-- [Google - Best practice, Building containers][1]  
-- [Google - Best practice, Operating containers][2]  
-- [Docker - Best practice, Dockerfile][3]  
-- [Docker - Best practice, Development][4]  
-- [Docker - Best practice, Image-building][9]  
-- [Docker - Build enhancements][5]  
-- [Docker - Choosing a build driver][6]  
-- [Docker - Manage images][7]  
-- [Docker - Create a base image][8]  
+[Google - Best practice, Building containers][1]  
+[Google - Best practice, Operating containers][2]  
+[Docker - Best practice, Dockerfile][3]  
+[Docker - Best practice, Development][4]  
+[Docker - Best practice, Image-building][9]  
+[Docker - Build enhancements][5]  
+[Docker - Choosing a build driver][6]  
+[Docker - Manage images][7]  
+[Docker - Create a base image][8]  
 
-- [Docker - Multi-container apps][10]  
-- [Docker - Update the application][11]  
-- [Docker - Packaging your software][12]  
-- [Docker - Multi-stage builds][13]  
-- [Docker - Compose, Overview][14]  
-- [Docker - Reference, run command][15]  
-- [Docker - Specify a Dockerfile][18]  
+[Docker - Multi-container apps][10]  
+[Docker - Update the application][11]  
+[Docker - Packaging your software][12]  
+[Docker - Multi-stage builds][13]  
+[Docker - Compose, Overview][14]  
+[Docker - Reference, run command][15]  
+[Docker - Specify a Dockerfile][18]  
 
-- [Docker - Announcement, Compose V2][16]
+[Docker - Announcement, Compose V2][16]
 
-- [Red Hat Dev - Blog Post, Systemd in Containers][17]
+[Red Hat Dev - Blog Post, Systemd in Containers][17]
 
 <!-- START Help articles -->
 [1]: https://cloud.google.com/architecture/best-practices-for-building-containers#signal-handling
@@ -137,11 +137,8 @@ Drivers
 #### Docker Compose 
 
 [Docker docs, Compose extend services][docker-extend-services]
-
 [Docker docs, Compose networking](https://docs.docker.com/compose/networking/)
-
 [Docker docs, Compose in production](https://docs.docker.com/compose/production/)
-
 [Docker docs, Compose V2 compatibility](https://docs.docker.com/compose/cli-command-compatibility/)
 
 Old syntax - V1  
@@ -202,6 +199,8 @@ docker run --init \
 "$(ip addr | grep 192 | awk '{print $2}' | cut -b 1-14)"
 ```
 
+- `"$(ip addr | grep 192 | awk '{print $2}' | cut -b 1-14)"`
+
 _Greps an IP-address beginning with 192, modify to fit your system, test in terminal._
 
 #### Dockerfile
@@ -212,15 +211,15 @@ _Greps an IP-address beginning with 192, modify to fit your system, test in term
 
 Naming scheme
 
-`Dockerfile.name`
+- `Dockerfile.name`
 
 Use `ADD` in Dockerfile to import scripts
 
-`ADD ${URL} ${PATH}` 
+- `ADD ${URL} ${PATH}` 
 
 URL to fetch scripts in raw text
 
-`https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/${PATH}`
+- `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/${PATH}`
 
 ```docker
 Image: bash
@@ -244,15 +243,17 @@ ENTRYPOINT ["$PATH_BASH","-c","${PATH}/${CATEGORY}/${SCRIPT}"]
 
 #### Dockerized Bash Scripts - Examples
 
-[Ex 1.](https://fiberplane.dev/blog/transforming-bash-scripts-into-docker-compose/)
+1. [Transforming Bash Script to Docker Compose][ex1]  
+2. [Automatic Docker Container creation w/bash script][ex2]  
+3. [Docker w/Shell script or Makefile][ex3]  
+4. [Run scripts, Docker arguments][ex4]  
+5. [Run a scripts inside Docker container using Shell script][ex5]  
 
-[Ex 2.](https://assistanz.com/automatic-docker-container-creation-via-linux-bash-script/)
-
-[Ex 3.](https://ypereirareis.github.io/blog/2015/05/04/docker-with-shell-script-or-makefile/)
-
-[Ex 4.](https://devopscube.com/run-scripts-docker-arguments/)
-
-[Ex 5.](https://www.commands.dev/workflows/run_a_script_inside_a_docker_container_using_a_shell_script)
+[ex1]: https://fiberplane.dev/blog/transforming-bash-scripts-into-docker-compose/
+[ex2]: https://assistanz.com/automatic-docker-container-creation-via-linux-bash-script/
+[ex3]: https://ypereirareis.github.io/blog/2015/05/04/docker-with-shell-script-or-makefile/
+[ex4]: https://devopscube.com/run-scripts-docker-arguments/
+[ex5]: https://www.commands.dev/workflows/run_a_script_inside_a_docker_container_using_a_shell_script
 
 #### [CATEGORIES][dirCategories]
 
