@@ -162,9 +162,14 @@ Options
 
 Create builder
 
-- `docker buildx create --use --name container --driver docker-container --platform linux/arm64,linux/amd64,linux/armhf`
+- `docker buildx create --use \
+--name container \
+--driver docker-container \
+--platform linux/arm64,linux/amd64,linux/armhf`
 
-Drivers
+[Docker Driver][docker-driver]
+
+[docker-driver]: https://docs.docker.com/build/building/drivers/docker/
 
 - `docker`
 - `docker-container` _Recommended for multiple architecture compatibility_
@@ -172,8 +177,8 @@ Drivers
 
 [Orchestration][docker-orchestration]
 
-- `Docker Swarm`
-- `Kubernetes` _Recommended for simultaneous multiple architecture build, one node per architecture in the cluster, combine with docker-container driver_
+- `Docker Swarm` _Default_
+- `Kubernetes` _Deprecated in stack & context @v20.10 [Source](https://docs.docker.com/engine/deprecated/#kubernetes-stack-and-context-support)_
 
 
 #### Docker Compose 
