@@ -113,32 +113,34 @@ TODO
 <details><summary>CMD's to get Private & Public IP-address</summary>
 
 ```bash
-# Internal IPv4 - String manipulation
+# INTERNAL IP-ADDRESS
+# IPv4 - String manipulation
 "$(ip addr | grep 192 | awk '{print $2}' | cut -b 1-14)"
 
-# Internal IPv4 & IPv6 - String manipulation
+# IPv4 & IPv6 - String manipulation
 ip a | grep "scope global" | awk '{print $2}' | head -2 | sed 's|/.*||g'
 
-# Internal IPv4, IPv6 & Link-local - JSON
+# IPv4, IPv6 & Link-local - JSON
 ip -j address | jq '.[2].addr_info' | jq '.[].local'
 
 # Without quotes - JSON
 ip -j address | jq '.[2].addr_info' | jq '.[].local' | sed 's|"||g'
 
-# Internal IPv4 - JSON
+# IPv4 - JSON
 ip -j address | jq '.[2].addr_info' | jq '.[0].local' | sed 's|"||g'
 
-# Internal IPv6 - JSON
+# IPv6 - JSON
 ip -j address | jq '.[2].addr_info' | jq '.[1].local' | sed 's|"||g'
 
-# Internal Link-local - JSON
+# Link-local - JSON
 ip -j address | jq '.[2].addr_info' | jq '.[0].local' | sed 's|"||g'
 ```
 
 ```bash
-# Public IPv4
+# PUBLIC IP-ADDRESS
+# IPv4
 curl -sL -m4 -4 https://icanhazip.com
-# Public IPv6
+# IPv6
 curl -sL -m4 -6 https://icanhazip.com
 ```
 </details>
