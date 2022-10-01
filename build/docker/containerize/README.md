@@ -290,9 +290,21 @@ ENTRYPOINT ["$PATH_BASH","-c","${PATH}/${CATEGORY}/${SCRIPT}"]
 
 ---
 
+#### Script Dependencies & Packages
+
+|Script|Repository|Installed|
+:-:|:-:|:-:
+`library.sh`|`/etc/library.sh`|`/usr/local/etc/library.sh`
+`ncc`|`/bin/ncc`|`/usr/local/bin/ncc`
+
+
 #### [BACKUPS][dirBackups]
  
 - [ ] 1. [nc-backup-auto.sh][nc-backup-auto.sh]
+  - Dependencies & Packages
+    - library.sh `/usr/local/etc/library.sh`
+    - ncp-backup `/usr/local/bin/ncp-backup`
+    - metrics.sh `SYSTEM/metrics.sh`
 - [ ] 2. [nc-backup.sh][nc-backup.sh]
 - [ ] 3. [nc-export-ncp.sh][nc-export-ncp.sh]
 - [ ] 4. [nc-import-ncp.sh][nc-import-ncp.sh]
