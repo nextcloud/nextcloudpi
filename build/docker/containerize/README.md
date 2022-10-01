@@ -129,13 +129,14 @@ Create builder
 Drivers
 
 - `docker`
-- `docker-container` _recommended for multiple architecture compatibility_
-- `kubernetes` _recommended for simultaneous multiple architecture build, one node per architecture in the cluster, combine with docker-container driver_
+- `docker-container` _Recommended for multiple architecture compatibility_
+- `kubernetes` 
 
 [Orchestration][docker-orchestration]
 
 - `Docker Swarm`
-- `Kubernetes`
+- `Kubernetes` _Recommended for simultaneous multiple architecture build, one node per architecture in the cluster, combine with docker-container driver_
+
 
 #### Docker Compose 
 
