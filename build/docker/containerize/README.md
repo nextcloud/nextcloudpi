@@ -165,7 +165,7 @@ New syntax - V2
 
 - `docker compose`
 
-File `docker-compose.yml`
+<details><summary>docker-compose.yml</summary>
 
 ```yaml
 services:
@@ -190,6 +190,7 @@ volumes:
     external: false
 
 ```
+</details>
 
 <!--
 [Notes - Installation Commands][cmd-install]
@@ -219,7 +220,9 @@ _Example from Nextcloud AIO container_
 
 [Nextcloud AIO][nextcloud-aio]
 
-```yaml
+<details><summary>Docker Run Example AIO</summary>
+
+```bash
 sudo docker run \
 --sig-proxy=false \
 --name nextcloud-aio-mastercontainer \
@@ -231,6 +234,8 @@ sudo docker run \
 --volume /var/run/docker.sock:/var/run/docker.sock:ro \
 nextcloud/all-in-one:latest-arm64
 ```
+
+</details>
 
 [Reverse proxy AIO][aio-reverse-proxy]
 
@@ -256,23 +261,19 @@ URL to fetch scripts in raw text
 
 - `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/${PATH}`
 
-<details><summary>Images</summary>
+<details><summary>Docker ARG</summary>
 
-```yaml
-Image: bash
-Image: curl
-Image: scratch (?)
-Image: bullseye-slim (?)
-Image: alpine (?)
-Image: alpine-RPi4 (?) 
-```
+ARG|DESCRIPTION
+-:|:-
+OWNER|Repository owner @ GitHub
+REPO|Repository @ GitHub
+BRANCH|Branch of repository @ GitHub
+PATH|Path to the script directory
+CATEGORY|Category in /bin/ncp 
+PATH_BASH|Path to bash binary in bash docker container
 
-</details>
-
-
-
+_ARG Example_
 ```docker
-
 ARG OWNER ["nextcloud"]
 ARG REPO ["nextcloudpi"]
 ARG BRANCH ["master"]
@@ -288,6 +289,29 @@ RUN ["$PATH_BASH","-c","chmod","+x","${PATH}/${CATEGORY}/${SCRIPT}"]
 SHELL ["$PATH_BASH"]
 ENTRYPOINT ["$PATH_BASH","-c","${PATH}/${CATEGORY}/${SCRIPT}"]
 ```
+</details>
+
+### Existing Containers
+
+- [Nextcloud][nextcloud]
+- [Linuxserver.io/Nextcloud][linuxserver-nextcloud]
+- [MariaDB][mariadb]
+- [MySQL][mysql]
+- [PHP][php]
+- [Debian][debian]
+- [Bash][bash]
+- [Curl][curl]
+
+<!-- START Container Links -->
+[nextcloud]: https://hub.docker.com/_/nextcloud
+[linuxserver-nextcloud]: https://hub.docker.com/r/linuxserver/nextcloud  
+[mariadb]: https://hub.docker.com/_/mariadb
+[mysql]: https://hub.docker.com/_/mysql
+[php]: https://hub.docker.com/_/php
+[debian]: https://hub.docker.com/_/debian
+[bash]: https://hub.docker.com/_/bash
+[curl]: https://hub.docker.com/r/curlimages/curl
+<!-- END Container Links -->
 
 #### Dockerized Bash Scripts - Examples
 
@@ -415,17 +439,18 @@ _WiP Status menu_
 
 #### [BACKUPS][dirBackups]
  
+<details><summary>Scripts</summary>
+
 - [ ] 1. [nc-backup-auto.sh][nc-backup-auto.sh]
   <details><summary>Dependencies & Packages</summary>
     
     - library.sh
     - ncp-backup
     - metrics.sh
-    
     </details>
 - [ ] 2. [nc-backup.sh][nc-backup.sh]
   <details><summary>Dependencies & Packages</summary>
-  
+  - TODO
   </details>
 - [ ] 3. [nc-export-ncp.sh][nc-export-ncp.sh]
 - [ ] 4. [nc-import-ncp.sh][nc-import-ncp.sh]
@@ -450,8 +475,11 @@ _WiP Status menu_
 [nc-snapshot-sync.sh]: https://github.com/nextcloud/nextcloudpi/blob/containerize/bin/ncp/BACKUPS/nc-snapshot-sync.sh
 [nc-snapshot.sh]: https://github.com/nextcloud/nextcloudpi/blob/containerize/bin/ncp/BACKUPS/nc-snapshot.sh
 <!-- END BACKUPS links -->
+</details>
 
 #### [CONFIG][dirConfig]
+
+<details><summary>Scripts</summary>
 
 - [ ] 1. [nc-admin.sh][nc-admin]
 - [ ] 2. [nc-database.sh][nc-database]
@@ -482,8 +510,11 @@ _WiP Status menu_
 [nc-trusted-domains]: https://github.com/nextcloud/nextcloudpi/blob/containerize/bin/ncp/CONFIG/nc-trusted-domains.sh
 [nc-webui]: https://github.com/nextcloud/nextcloudpi/blob/containerize/bin/ncp/CONFIG/nc-webui.sh
 <!-- END CONFIG Script links -->
+</details>
 
 #### [NETWORKING][dirNetworking]
+
+<details><summary>Scripts</summary>
 
 - [ ] 1. [NFS.sh](https://github.com/nextcloud/nextcloudpi/blob/containerize/bin/ncp/NETWORKING/NFS.sh)
 - [ ] 2. [SSH.sh](https://github.com/nextcloud/nextcloudpi/blob/containerize/bin/ncp/NETWORKING/SSH.sh)
@@ -498,16 +529,22 @@ _WiP Status menu_
 - [ ] 11. [no-ip.sh](https://github.com/nextcloud/nextcloudpi/blob/containerize/bin/ncp/NETWORKING/no-ip.sh)
 - [ ] 12. [samba.sh](https://github.com/nextcloud/nextcloudpi/blob/containerize/bin/ncp/NETWORKING/samba.sh)
 - [ ] 13. [spDYN.sh](https://github.com/nextcloud/nextcloudpi/blob/containerize/bin/ncp/NETWORKING/spDYN.sh)
+</details>
 
 #### [SECURITY][dirSecurity]
+
+<details><summary>Scripts</summary>
 
 - [ ] 1. [UFW.sh](https://github.com/nextcloud/nextcloudpi/blob/containerize/bin/ncp/SECURITY/UFW.sh)
 - [ ] 2. [fail2ban.sh](https://github.com/nextcloud/nextcloudpi/blob/containerize/bin/ncp/SECURITY/fail2ban.sh)
 - [ ] 3. [modsecurity.sh](https://github.com/nextcloud/nextcloudpi/blob/containerize/bin/ncp/SECURITY/modsecurity.sh)
 - [ ] 4. [nc-audit.sh](https://github.com/nextcloud/nextcloudpi/blob/containerize/bin/ncp/SECURITY/nc-audit.sh)
 - [ ] 5. [nc-encrypt.sh](https://github.com/nextcloud/nextcloudpi/blob/containerize/bin/ncp/SECURITY/nc-encrypt.sh)
+</details>
 
 #### [SYSTEM][dirSystem]
+
+<details><summary>Scripts</summary>
 
 - [ ] 1. [metrics.sh](https://github.com/nextcloud/nextcloudpi/blob/containerize/bin/ncp/SYSTEM/metrics.sh)
 - [ ] 2. [nc-automount.sh](https://github.com/nextcloud/nextcloudpi/blob/containerize/bin/ncp/SYSTEM/nc-automount.sh)
@@ -517,16 +554,22 @@ _WiP Status menu_
 - [ ] 6. [nc-ramlogs.sh](https://github.com/nextcloud/nextcloudpi/blob/containerize/bin/ncp/SYSTEM/nc-ramlogs.sh)
 - [ ] 7. [nc-swapfile.sh](https://github.com/nextcloud/nextcloudpi/blob/containerize/bin/ncp/SYSTEM/nc-swapfile.sh)
 - [ ] 8. [nc-zram.sh](https://github.com/nextcloud/nextcloudpi/blob/containerize/bin/ncp/SYSTEM/nc-zram.sh)
+</details>
 
 #### [TOOLS][dirTools]
+
+<details><summary>Scripts</summary>
 
 - [ ] 1. [nc-fix-permissions.sh](https://github.com/nextcloud/nextcloudpi/blob/containerize/bin/ncp/TOOLS/nc-fix-permissions.sh)
 - [ ] 2. [nc-format-USB.sh](https://github.com/nextcloud/nextcloudpi/blob/containerize/bin/ncp/TOOLS/nc-format-USB.sh)
 - [ ] 3. [nc-maintenance.sh](https://github.com/nextcloud/nextcloudpi/blob/containerize/bin/ncp/TOOLS/nc-maintenance.sh)
 - [ ] 4. [nc-previews.sh](https://github.com/nextcloud/nextcloudpi/blob/containerize/bin/ncp/TOOLS/nc-previews.sh)
 - [ ] 5. [nc-scan.sh](https://github.com/nextcloud/nextcloudpi/blob/containerize/bin/ncp/TOOLS/nc-scan.sh)
+</details>
 
 #### [UPDATES][dirUpdates]
+
+<details><summary>Scripts</summary>
 
 - [ ] 1. [nc-autoupdate-nc.sh](https://github.com/nextcloud/nextcloudpi/blob/containerize/bin/ncp/UPDATES/nc-autoupdate-nc.sh)
 - [ ] 2. [nc-autoupdate-ncp.sh](https://github.com/nextcloud/nextcloudpi/blob/containerize/bin/ncp/UPDATES/nc-autoupdate-ncp.sh)
@@ -536,29 +579,6 @@ _WiP Status menu_
 - [ ] 6. [nc-update-nextcloud.sh](https://github.com/nextcloud/nextcloudpi/blob/containerize/bin/ncp/UPDATES/nc-update-nextcloud.sh)
 - [ ] 7. [nc-update.sh](https://github.com/nextcloud/nextcloudpi/blob/containerize/bin/ncp/UPDATES/nc-update.sh)
 - [ ] 8. [unattended-upgrades.sh](https://github.com/nextcloud/nextcloudpi/blob/containerize/bin/ncp/UPDATES/unattended-upgrades.sh)
-
----
-
-### Existing Containers
-
-- [Nextcloud][nextcloud]
-- [Linuxserver.io/Nextcloud][linuxserver-nextcloud]
-- [MariaDB][mariadb]
-- [MySQL][mysql]
-- [PHP][php]
-- [Debian][debian]
-- [Bash][bash]
-- [Curl][curl]
-
-<!-- START Container Links -->
-[nextcloud]: https://hub.docker.com/_/nextcloud
-[linuxserver-nextcloud]: https://hub.docker.com/r/linuxserver/nextcloud  
-[mariadb]: https://hub.docker.com/_/mariadb
-[mysql]: https://hub.docker.com/_/mysql
-[php]: https://hub.docker.com/_/php
-[debian]: https://hub.docker.com/_/debian
-[bash]: https://hub.docker.com/_/bash
-[curl]: https://hub.docker.com/r/curlimages/curl
-<!-- END Container Links -->
+</details>
 
 ---
