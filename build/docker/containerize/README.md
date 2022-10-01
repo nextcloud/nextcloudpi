@@ -161,6 +161,8 @@ curl -sL -m4 -6 https://icanhazip.com
 docker buildx build . \
 --file /path/Dockerfile \
 --tag ${OWNER}/${REPO}:${TAG}
+# In this context it's regarding the docker hub
+# Owner, Repo & Tag @DockerHub
 ```
 
 Options
