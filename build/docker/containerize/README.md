@@ -114,9 +114,7 @@ A Nextcloud instance's directories to restore settings.
 
 1. Config
 2. Database
-3. App data
-
-(4. User files (?)) 
+3. Data (User files & App data (?)) 
 
 <details><summary>CMD's to get IP</summary>
 
