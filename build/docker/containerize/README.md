@@ -110,6 +110,39 @@ TODO
 [docker-ipv6]: https://docs.docker.com/config/daemon/ipv6/
 <!-- END Notes Links -->
 
+<details><summary>CMD's to get Private & Public IP-address</summary>
+
+```bash
+# Internal IPv4 - String manipulation
+"$(ip addr | grep 192 | awk '{print $2}' | cut -b 1-14)"
+
+# Internal IPv4 & IPv6 - String manipulation
+ip a | grep "scope global" | awk '{print $2}' | head -2 | sed 's|/.*||g'
+
+# Internal IPv4, IPv6 & Link-local - JSON
+ip -j address | jq '.[2].addr_info' | jq '.[].local'
+
+# Without quotes - JSON
+ip -j address | jq '.[2].addr_info' | jq '.[].local' | sed 's|"||g'
+
+# Internal IPv4 - JSON
+ip -j address | jq '.[2].addr_info' | jq '.[0].local' | sed 's|"||g'
+
+# Internal IPv6 - JSON
+ip -j address | jq '.[2].addr_info' | jq '.[1].local' | sed 's|"||g'
+
+# Internal Link-local - JSON
+ip -j address | jq '.[2].addr_info' | jq '.[0].local' | sed 's|"||g'
+```
+
+```bash
+# Public IPv4
+curl -sL -m4 -4 https://icanhazip.com
+# Public IPv6
+curl -sL -m4 -6 https://icanhazip.com
+```
+</details>
+
 #### Docker Context
 
 [Docker docs, Manage contexts](https://docs.docker.com/engine/reference/commandline/context/)
