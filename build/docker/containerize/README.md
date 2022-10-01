@@ -133,7 +133,7 @@ ip -j address | jq '.[2].addr_info' | jq '.[0].local' | sed 's|"||g'
 ip -j address | jq '.[2].addr_info' | jq '.[1].local' | sed 's|"||g'
 
 # Link-local - JSON
-ip -j address | jq '.[2].addr_info' | jq '.[0].local' | sed 's|"||g'
+ip -j address | jq '.[2].addr_info' | jq '.[2].local' | sed 's|"||g'
 ```
 
 ```bash
