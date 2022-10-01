@@ -159,14 +159,20 @@ curl -sL -m4 -6 https://icanhazip.com
 
 #### Docker Buildx
 
-- `docker buildx build . -f /path/Dockerfile --tag ${OWNER}/${REPO}:${TAG}`
+```bash
+docker buildx build . \
+--file /path/Dockerfile \
+--tag ${OWNER}/${REPO}:${TAG}
+```
 
 Options
 
 - `--platform`
+  + Architecture(s) for the image
 - `--builder`
 - `--push`
 - `--build-arg`
+  + Used to override default environment/argument variables set in a Dockerfile or add new ones.
 
 Create builder
 
