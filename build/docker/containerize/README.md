@@ -101,10 +101,13 @@ TODO
 
 [Docker Hub, Nextcloudpi][ncp-docker-hub]
 
+[Docker docs, IPv6 Support][docker-ipv6]
+
 <!-- START Notes Links --> 
 [docker-cmd]: https://gist.github.com/ZendaiOwl/f80b09d792d3b7ed51eb00e72ab866de
 [ncp-docker-hub]: https://hub.docker.com/r/ownyourbits/nextcloudpi
 [docker-orchestration]: https://docs.docker.com/get-started/orchestration/
+[docker-ipv6]: https://docs.docker.com/config/daemon/ipv6/
 <!-- END Notes Links -->
 
 #### Docker Context
@@ -179,7 +182,7 @@ services:
       target: 4443
     restart: unless-stopped
     volumes:
-    - ncdata:/data:rw
+    - ncdata:/data:ro
     - /etc/localtime:/etc/localtime:ro
 version: '3.3'
 volumes:
@@ -212,7 +215,9 @@ docker run --init \
 
 _Greps an IP-address beginning with 192, modify to fit your system, test in terminal._
 
-_Example from Nextcloud_
+_Example from Nextcloud AIO container_
+
+[Nextcloud AIO][nextcloud-aio]
 
 ```yaml
 sudo docker run \
@@ -227,6 +232,11 @@ sudo docker run \
 nextcloud/all-in-one:latest-arm64
 ```
 
+[Reverse proxy AIO][aio-reverse-proxy]
+
+[nextcloud-aio]: https://github.com/nextcloud/all-in-one
+
+[aio-reverse-proxy]: https://github.com/nextcloud/all-in-one/blob/main/reverse-proxy.md
 
 #### Dockerfile
 
@@ -246,9 +256,22 @@ URL to fetch scripts in raw text
 
 - `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/${PATH}`
 
-```docker
+<details><summary>Images</summary>
+
+```yaml
 Image: bash
+Image: curl
 Image: scratch (?)
+Image: bullseye-slim (?)
+Image: alpine (?)
+Image: alpine-RPi4 (?) 
+```
+
+</details>
+
+
+
+```docker
 
 ARG OWNER ["nextcloud"]
 ARG REPO ["nextcloudpi"]
@@ -313,8 +336,7 @@ ENTRYPOINT ["$PATH_BASH","-c","${PATH}/${CATEGORY}/${SCRIPT}"]
 
 Script shebang must be `#!/usr/bin/env bash` and not `#!/bin/bash`, to be compatible with the `bash` [docker image][bash] natively. 
 
-<details>
-<summary>Quote</summary>
+<details><summary>Quote</summary>
 
 > Notes  
 > There are a few main things that are important to note regarding this image:
@@ -324,8 +346,7 @@ Script shebang must be `#!/usr/bin/env bash` and not `#!/bin/bash`, to be compat
 > Bash is the only thing included, so if your scripts rely on external tools (such as jq, for example), those will need to be added manually (via apk add --no-cache jq, for example).
 </details>
 
-<details>
-<summary>Files</summary>
+<details><summary>Files</summary>
 
 |File|Repository|Installed|Dependencies
 :-:|:-:|:-:|:-:
@@ -335,8 +356,7 @@ Script shebang must be `#!/usr/bin/env bash` and not `#!/bin/bash`, to be compat
 `occ`|`-`|`/var/www/nextcloud/`|`$NCDIR`
 </details>
 
-<details>
-<summary>Environment variables</summary>
+<details><summary>Environment variables</summary>
 
 |ENVIRONMENT VARIABLE|VALUE|
 -:|:-
@@ -357,8 +377,7 @@ Script shebang must be `#!/usr/bin/env bash` and not `#!/bin/bash`, to be compat
 `$NEXTCLOUD_URL`|`https://localhost sudo -E -u www-data "/var/www/nextcloud/apps/notify_push/bin/${ARCH}/notify_push" --allow-self-signed /var/www/nextcloud/config/config.php &>/dev/null &`
 </details>
 
-<details>
-<summary>PKG</summary>
+<details><summary>Packages</summary>
 
 ||PACKAGES||
 :-:|:-:|:-:
@@ -367,16 +386,14 @@ Script shebang must be `#!/usr/bin/env bash` and not `#!/bin/bash`, to be compat
 `awk`|`mktemp`|`sudo`|
 </details>
 
-<details>
-<summary>Users</summary>
+<details><summary>Users</summary>
 
 USERS|
 :-:
 `www-data`|
 </details>
 
-<details>
-<summary>Permissions</summary>
+<details><summary>Permissions</summary>
 
 PERMISSIONS|
 :-:
@@ -385,8 +402,7 @@ PERMISSIONS|
 
 _WiP Status menu_
 
-<details>
-<summary>STATUS</summary>
+<details><summary>Status</summary>
 
 + [ ] Stopped
 + [ ] Not started
@@ -405,8 +421,12 @@ _WiP Status menu_
     - library.sh
     - ncp-backup
     - metrics.sh
+    
     </details>
 - [ ] 2. [nc-backup.sh][nc-backup.sh]
+  <details><summary>Dependencies & Packages</summary>
+  
+  </details>
 - [ ] 3. [nc-export-ncp.sh][nc-export-ncp.sh]
 - [ ] 4. [nc-import-ncp.sh][nc-import-ncp.sh]
 - [ ] 5. [nc-restore-snapshot.sh][nc-restore-snapshot.sh]
