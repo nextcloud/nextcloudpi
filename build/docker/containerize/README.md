@@ -250,12 +250,13 @@ docker run --init \
 - `"$(ip addr | grep 192 | awk '{print $2}' | cut -b 1-14)"`
 
 _Greps an IP-address beginning with 192, modify to fit your system, test in terminal._
-
-_Example from Nextcloud AIO container_
+_See [CMD's to get IP](https://github.com/nextcloud/nextcloudpi/blob/containerize/build/docker/containerize/README.md#notes) above_
 
 [Nextcloud AIO][nextcloud-aio]
 
-<details><summary>Docker Run Example AIO</summary>
+_Used as example and reference_
+
+<details><summary>Docker Run AIO arm64</summary>
 
 ```bash
 sudo docker run \
@@ -294,7 +295,8 @@ Use `ADD` in Dockerfile to import scripts
 
 URL to fetch scripts in raw text
 
-- `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/${PATH}`
++ `https://raw.githubusercontent.com/`
++ Ex. `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/${PATH}`
 
 <details><summary>Docker ARG</summary>
 
@@ -304,8 +306,9 @@ OWNER|Repository owner @ GitHub
 REPO|Repository @ GitHub
 BRANCH|Branch of repository @ GitHub
 PATH|Path to the script directory
-CATEGORY|Category in /bin/ncp 
-PATH_BASH|Path to bash binary in bash docker container
+CATEGORY|Category in /bin/ncp (PATH)
+PATH_BASH|Path to bash binary
+URL|GH URL to get scripts in raw text
 
 _ARG Example_
 ```docker
@@ -318,9 +321,9 @@ ARG SCRIPT ["nc-backup-auto.sh"]
 ARG URL ["https://raw.githubusercontent.com"]
 ARG PATH_BASH ["/usr/local/bin/bash"]
 
-ADD ["${URL}/${OWNER}/${REPO}/${BRANCH}/${PATH}/${CATEGORY}/${SCRIPT}", "${PATH}/${CATEGORY}/${SCRIPT}"]
+ADD ["${URL}/${OWNER}/${REPO}/${BRANCH}/${PATH}/${CATEGORY}/${SCRIPT}","${PATH}/${CATEGORY}/${SCRIPT}"]
 COPY --from=bash ["$PATH_BASH", "$PATH_BASH"]
-RUN ["$PATH_BASH","-c","chmod","+x","${PATH}/${CATEGORY}/${SCRIPT}"]
+RUN ["$PATH_BASH","-c","chmod +x ${PATH}/${CATEGORY}/${SCRIPT}"]
 SHELL ["$PATH_BASH"]
 ENTRYPOINT ["$PATH_BASH","-c","${PATH}/${CATEGORY}/${SCRIPT}"]
 ```
@@ -329,11 +332,13 @@ ENTRYPOINT ["$PATH_BASH","-c","${PATH}/${CATEGORY}/${SCRIPT}"]
 ### Existing Containers
 
 - [Nextcloud][nextcloud]
+- [Nextcloud AIO][nextcloud-aio]
 - [Linuxserver.io/Nextcloud][linuxserver-nextcloud]
 - [MariaDB][mariadb]
 - [MySQL][mysql]
 - [PHP][php]
 - [Debian][debian]
+- [Alpine][alpine]
 - [Bash][bash]
 - [Curl][curl]
 
@@ -344,6 +349,7 @@ ENTRYPOINT ["$PATH_BASH","-c","${PATH}/${CATEGORY}/${SCRIPT}"]
 [mysql]: https://hub.docker.com/_/mysql
 [php]: https://hub.docker.com/_/php
 [debian]: https://hub.docker.com/_/debian
+[alpine]: https://hub.docker.com/_/alpine
 [bash]: https://hub.docker.com/_/bash
 [curl]: https://hub.docker.com/r/curlimages/curl
 <!-- END Container Links -->
@@ -366,9 +372,19 @@ ENTRYPOINT ["$PATH_BASH","-c","${PATH}/${CATEGORY}/${SCRIPT}"]
 
 #### [CATEGORIES][dirCategories]
 
-* Conversion progress, check the box when the category has been completely converted to individual container images
++ Conversion progress, check the box when the category has been completely converted to individual container images
 
 - [ ] 1. [BACKUPS][dirBackups]
+  + <details><summary>Status</summary>
+  
+  + [ ] Stopped
+  + [ ] Not started
+  + [X] Research
+  + [ ] Testing
+  + [X] Ongoing
+  + [ ] Paused
+  + [ ] Completed
+  </details>
 - [ ] 2. [CONFIG][dirConfig]
 - [ ] 3. [NETWORKING][dirNetworking]
 - [ ] 4. [SECURITY][dirSecurity]
@@ -393,9 +409,7 @@ ENTRYPOINT ["$PATH_BASH","-c","${PATH}/${CATEGORY}/${SCRIPT}"]
 
 > _IMPORTANT_
 
-Script shebang must be `#!/usr/bin/env bash` and not `#!/bin/bash`, to be compatible with the `bash` [docker image][bash] natively, see Quote below. 
-
-<details><summary>Quote</summary>
+Script shebang must be `#!/usr/bin/env bash` and not `#!/bin/bash`, to be compatible with the `bash` [docker image][bash] natively.
 
 > Notes  
 > There are a few main things that are important to note regarding this image:
@@ -403,9 +417,22 @@ Script shebang must be `#!/usr/bin/env bash` and not `#!/bin/bash`, to be compat
 > Bash itself is installed at /usr/local/bin/bash, not /bin/bash, so the recommended shebang is #!/usr/bin/env bash, not #!/bin/bash (or explicitly running your script via bash /.../script.sh instead of letting the shebang invoke Bash automatically). The image does not include /bin/bash, but if it is installed via the package manager included in the image, that package will install to /bin/bash and might cause confusion (although /usr/local/bin is ahead of /bin in $PATH, so as long as plain bash or /usr/bin/env are used consistently, the image-provided Bash will be preferred).
 > 
 > Bash is the only thing included, so if your scripts rely on external tools (such as jq, for example), those will need to be added manually (via apk add --no-cache jq, for example).
+
+Extraction of the different environment variables, dependencies on/in other scripts & their dependencies in turn and which packages are required together with their location.
+
+<details><summary>Status</summary>
+
++ [ ] Stopped
++ [ ] Not started
++ [X] Research
++ [ ] Testing
++ [X] Ongoing
++ [ ] Paused
++ [ ] Completed
 </details>
 
-<details><summary>Files</summary>
+
+<details><summary>File & location</summary>
 
 |File|Repository|Installed|Dependencies
 :-:|:-:|:-:|:-:
@@ -459,21 +486,19 @@ PERMISSIONS|
 `sudo`|
 </details>
 
-_WiP Status menu_
-
+#### [BACKUPS][dirBackups]
+ 
 <details><summary>Status</summary>
 
 + [ ] Stopped
 + [ ] Not started
-+ [ ] Research
++ [X] Research
 + [ ] Testing
-+ [ ] Ongoing
++ [X] Ongoing
 + [ ] Paused
 + [ ] Completed
 </details>
 
-#### [BACKUPS][dirBackups]
- 
 <details><summary>Scripts</summary>
 
 - [ ] 1. [nc-backup-auto.sh][nc-backup-auto.sh]
