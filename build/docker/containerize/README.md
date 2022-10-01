@@ -110,10 +110,18 @@ TODO
 [docker-ipv6]: https://docs.docker.com/config/daemon/ipv6/
 <!-- END Notes Links -->
 
-<details><summary>CMD's to get Private & Public IP-address</summary>
+A Nextcloud instance's directories to restore settings.
+
+1. Config
+2. Database
+3. App data
+
+(4. User files (?)) 
+
+<details><summary>CMD's to get IP</summary>
 
 ```bash
-# INTERNAL IP-ADDRESS
+# INTERNAL IP ADDRESS
 # IPv4 - String manipulation
 "$(ip addr | grep 192 | awk '{print $2}' | cut -b 1-14)"
 
@@ -137,7 +145,7 @@ ip -j address | jq '.[2].addr_info' | jq '.[2].local' | sed 's|"||g'
 ```
 
 ```bash
-# PUBLIC IP-ADDRESS
+# PUBLIC IP ADDRESS
 # IPv4
 curl -sL -m4 -4 https://icanhazip.com
 # IPv6
@@ -205,7 +213,7 @@ New syntax - V2
 
 - `docker compose`
 
-<details><summary>docker-compose.yml</summary>
+<details><summary>Ex. docker-compose.yml</summary>
 
 ```yaml
 services:
@@ -346,6 +354,8 @@ ENTRYPOINT ["$PATH_BASH","-c","${PATH}/${CATEGORY}/${SCRIPT}"]
 - [Alpine][alpine]
 - [Bash][bash]
 - [Curl][curl]
+- Apache2
+- Caddy
 
 <!-- START Container Links -->
 [nextcloud]: https://hub.docker.com/_/nextcloud
@@ -381,14 +391,14 @@ ENTRYPOINT ["$PATH_BASH","-c","${PATH}/${CATEGORY}/${SCRIPT}"]
 
 - [ ] 1. [BACKUPS][dirBackups]
   + <details><summary>Status</summary>
-  
-  + [ ] Stopped
-  + [ ] Not started
-  + [X] Research
-  + [ ] Testing
-  + [X] Ongoing
-  + [ ] Paused
-  + [ ] Completed
+    
+    + [ ] Stopped
+    + [ ] Not started
+    + [X] Research
+    + [ ] Testing
+    + [X] Ongoing
+    + [ ] Paused
+    + [ ] Completed
   </details>
 - [ ] 2. [CONFIG][dirConfig]
 - [ ] 3. [NETWORKING][dirNetworking]
