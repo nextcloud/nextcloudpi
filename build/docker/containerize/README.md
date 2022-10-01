@@ -337,6 +337,11 @@ PACKAGES|
 `cat`|
 `awk`|
 `mktemp`|
+`sudo`|
+
+USER|
+:-:
+`www-data`|
 
 #### [BACKUPS][dirBackups]
  
