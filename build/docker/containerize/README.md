@@ -327,29 +327,27 @@ Script shebang must be `#!/usr/bin/env bash` and not `#!/bin/bash`, to be compat
 `$RELEASE`|`$(jq -r .release < "$NCPCFG")`
 `$NEXTCLOUD_URL`|`https://localhost sudo -E -u www-data "/var/www/nextcloud/apps/notify_push/bin/${ARCH}/notify_push" --allow-self-signed /var/www/nextcloud/config/config.php &>/dev/null &`
 
-PACKAGES|
-:-:
-`dpkg`|
-`bash`|
-`jq`|
-`apt`|
-`dialog`|
-`cat`|
-`awk`|
-`mktemp`|
-`sudo`|
+PACKAGES|||
+:-:|:-:|:-:
+`dpkg`|`bash`|`jq`|
+`apt`|`dialog`|`cat`|
+`awk`|`mktemp`|`sudo`|
 
-USER|
+USERS|
 :-:
 `www-data`|
+
+PERMISSIONS|
+:-:
+`sudo`|
 
 #### [BACKUPS][dirBackups]
  
 - [ ] 1. [nc-backup-auto.sh][nc-backup-auto.sh]
   - Dependencies & Packages
-    - library.sh `/usr/local/etc/library.sh`
-    - ncp-backup `/usr/local/bin/ncp-backup`
-    - metrics.sh `SYSTEM/metrics.sh`
+    - library.sh
+    - ncp-backup
+    - metrics.sh
 - [ ] 2. [nc-backup.sh][nc-backup.sh]
 - [ ] 3. [nc-export-ncp.sh][nc-export-ncp.sh]
 - [ ] 4. [nc-import-ncp.sh][nc-import-ncp.sh]
