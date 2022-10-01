@@ -124,7 +124,7 @@ Options
 
 Create builder
 
-- `docker buildx create --use --name container --driver docker-container`
+- `docker buildx create --use --name container --driver docker-container --platform linux/arm64,linux/amd64,linux/armhf`
 
 Drivers
 
@@ -313,21 +313,32 @@ ENTRYPOINT ["$PATH_BASH","-c","${PATH}/${CATEGORY}/${SCRIPT}"]
 
 Script shebang must be `#!/usr/bin/env bash` and not `#!/bin/bash`, to be compatible with the `bash` [docker image][bash] natively. 
 
+<details>
+<summary>Quote</summary>
+
 > Notes  
 > There are a few main things that are important to note regarding this image:
 > 
 > Bash itself is installed at /usr/local/bin/bash, not /bin/bash, so the recommended shebang is #!/usr/bin/env bash, not #!/bin/bash (or explicitly running your script via bash /.../script.sh instead of letting the shebang invoke Bash automatically). The image does not include /bin/bash, but if it is installed via the package manager included in the image, that package will install to /bin/bash and might cause confusion (although /usr/local/bin is ahead of /bin in $PATH, so as long as plain bash or /usr/bin/env are used consistently, the image-provided Bash will be preferred).
 > 
 > Bash is the only thing included, so if your scripts rely on external tools (such as jq, for example), those will need to be added manually (via apk add --no-cache jq, for example).
+</details>
 
-|File|Repository|Installed|Dependency
+<details>
+<summary>Files</summary>
+
+|File|Repository|Installed|Dependencies
 :-:|:-:|:-:|:-:
 `library.sh`|`/etc/library.sh`|`/usr/local/etc/library.sh`|`$ncc`,`$ARCH`,`$NCPCFG`,`$CFGDIR`,`$BINDIR`,`$NCDIR`
 `ncc`|`/bin/ncc`|`/usr/local/bin/ncc`|`occ`,`$NCDIR`
 `ncp.cfg`|`/etc/ncp.cfg`|`/usr/local/etc/ncp.cfg`|`-`
 `occ`|`-`|`/var/www/nextcloud/`|`$NCDIR`
+</details>
 
-|VARIABLES|ENVIRONMENT|
+<details>
+<summary>Environment variables</summary>
+
+|ENVIRONMENT VARIABLE|VALUE|
 -:|:-
 `$ncc`|`/usr/local/bin/ncc`
 `$CFGDIR`|`/usr/local/etc/ncp-config.d/`
@@ -344,28 +355,57 @@ Script shebang must be `#!/usr/bin/env bash` and not `#!/bin/bash`, to be compat
 `$PHPVER`|`$(jq -r .php_version < "$NCPCFG")`
 `$RELEASE`|`$(jq -r .release < "$NCPCFG")`
 `$NEXTCLOUD_URL`|`https://localhost sudo -E -u www-data "/var/www/nextcloud/apps/notify_push/bin/${ARCH}/notify_push" --allow-self-signed /var/www/nextcloud/config/config.php &>/dev/null &`
+</details>
 
-PACKAGES|||
+<details>
+<summary>PKG</summary>
+
+||PACKAGES||
 :-:|:-:|:-:
 `dpkg`|`bash`|`jq`|
 `apt`|`dialog`|`cat`|
 `awk`|`mktemp`|`sudo`|
+</details>
+
+<details>
+<summary>Users</summary>
 
 USERS|
 :-:
 `www-data`|
+</details>
+
+<details>
+<summary>Permissions</summary>
 
 PERMISSIONS|
 :-:
 `sudo`|
+</details>
+
+_WiP Status menu_
+
+<details>
+<summary>STATUS</summary>
+
++ [ ] Stopped
++ [ ] Not started
++ [ ] Research
++ [ ] Testing
++ [ ] Ongoing
++ [ ] Paused
++ [ ] Completed
+</details>
 
 #### [BACKUPS][dirBackups]
  
 - [ ] 1. [nc-backup-auto.sh][nc-backup-auto.sh]
-  - Dependencies & Packages
+  <details><summary>Dependencies & Packages</summary>
+    
     - library.sh
     - ncp-backup
     - metrics.sh
+    </details>
 - [ ] 2. [nc-backup.sh][nc-backup.sh]
 - [ ] 3. [nc-export-ncp.sh][nc-export-ncp.sh]
 - [ ] 4. [nc-import-ncp.sh][nc-import-ncp.sh]
