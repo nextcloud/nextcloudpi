@@ -303,7 +303,7 @@ Script shebang must be `#!/usr/bin/env bash` and not `#!/bin/bash`, to be compat
 > 
 > Bash is the only thing included, so if your scripts rely on external tools (such as jq, for example), those will need to be added manually (via apk add --no-cache jq, for example).
 
-|Script|Repository|Installed|Dependency
+|File|Repository|Installed|Dependency
 :-:|:-:|:-:|:-:
 `library.sh`|`/etc/library.sh`|`/usr/local/etc/library.sh`|`$ncc`,`$ARCH`,`$NCPCFG`,`$CFGDIR`,`$BINDIR`,`NCDIR`
 `ncc`|`/bin/ncc`|`/usr/local/bin/ncc`|`occ`,`$NCDIR`
