@@ -305,9 +305,10 @@ Script shebang must be `#!/usr/bin/env bash` and not `#!/bin/bash`, to be compat
 
 |File|Repository|Installed|Dependency
 :-:|:-:|:-:|:-:
-`library.sh`|`/etc/library.sh`|`/usr/local/etc/library.sh`|`$ncc`,`$ARCH`,`$NCPCFG`,`$CFGDIR`,`$BINDIR`,`NCDIR`
+`library.sh`|`/etc/library.sh`|`/usr/local/etc/library.sh`|`$ncc`,`$ARCH`,`$NCPCFG`,`$CFGDIR`,`$BINDIR`,`$NCDIR`
 `ncc`|`/bin/ncc`|`/usr/local/bin/ncc`|`occ`,`$NCDIR`
 `ncp.cfg`|`/etc/ncp.cfg`|`/usr/local/etc/ncp.cfg`|`-`
+`occ`|`-`|`/var/www/nextcloud/`|`$NCDIR`
 
 |VARIABLES|ENVIRONMENT|
 -:|:-
