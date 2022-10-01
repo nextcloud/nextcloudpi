@@ -212,6 +212,22 @@ docker run --init \
 
 _Greps an IP-address beginning with 192, modify to fit your system, test in terminal._
 
+_Example from Nextcloud_
+
+```yaml
+sudo docker run \
+--sig-proxy=false \
+--name nextcloud-aio-mastercontainer \
+--restart always \
+--publish 80:80 \
+--publish 8080:8080 \
+--publish 8443:8443 \
+--volume nextcloud_aio_mastercontainer:/mnt/docker-aio-config \
+--volume /var/run/docker.sock:/var/run/docker.sock:ro \
+nextcloud/all-in-one:latest-arm64
+```
+
+
 #### Dockerfile
 
 [Docker docs, Dockerfile reference][dockerfile-ref]
