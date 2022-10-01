@@ -170,10 +170,12 @@ Options
 
 Create builder
 
-- `docker buildx create --use \
+```bash
+docker buildx create --use \
 --name container \
 --driver docker-container \
---platform linux/arm64,linux/amd64,linux/armhf`
+--platform linux/arm64,linux/amd64,linux/armhf
+```
 
 [Docker Driver][docker-driver]
 
