@@ -317,6 +317,11 @@ URL to fetch scripts in raw text
 + `https://raw.githubusercontent.com/`
 + Ex. `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/${PATH}`
 
+Instead of using the ARG example below and getting each individual script.
+Use [alpine-git][alpinegit] image instead and clone repo, alternatively clone it beforehand
+
+[alpinegit]: https://hub.docker.com/r/alpine/git
+
 <details><summary>Docker ARG</summary>
 
 ARG|DESCRIPTION
@@ -328,11 +333,6 @@ PATH|Path to the script directory
 CATEGORY|Category in /bin/ncp (PATH)
 PATH_BASH|Path to bash binary
 URL|GH URL to get scripts in raw text
-
-Instead of using the ARG example below and getting each individual script.
-Use [alpine-git][alpinegit] image instead and clone repo, alternatively clone it beforehand
-
-[alpinegit]: https://hub.docker.com/r/alpine/git
 
 _ARG Example_
 ```docker
@@ -395,28 +395,6 @@ ENTRYPOINT ["$PATH_BASH","-c","${PATH}/${CATEGORY}/${SCRIPT}"]
 [ex4]: https://devopscube.com/run-scripts-docker-arguments/
 [ex5]: https://www.commands.dev/workflows/run_a_script_inside_a_docker_container_using_a_shell_script
 [ex6]: https://gist.github.com/austinhyde/2e39c01d6b0ebf4aef7409e129c47ea7
-
-#### [CATEGORIES][dirCategories]
-
-+ Conversion progress, check the box when the category has been completely converted to individual container images
-
-- [ ] 1. [BACKUPS][dirBackups]
-  + <details><summary>Status</summary>
-    
-    + [ ] Stopped
-    + [ ] Not started
-    + [X] Research
-    + [ ] Testing
-    + [X] Ongoing
-    + [ ] Paused
-    + [ ] Completed
-  </details>
-- [ ] 2. [CONFIG][dirConfig]
-- [ ] 3. [NETWORKING][dirNetworking]
-- [ ] 4. [SECURITY][dirSecurity]
-- [ ] 5. [SYSTEM][dirSystem]
-- [ ] 6. [TOOLS][dirTools]
-- [ ] 7. [UPDATES][dirUpdates]
 
 <!-- START Directory links -->
 [dirCategories]: https://github.com/nextcloud/nextcloudpi/tree/containerize/bin/ncp
