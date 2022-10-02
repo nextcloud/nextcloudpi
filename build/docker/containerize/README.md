@@ -17,10 +17,13 @@ Containerize NCP completely
 
 ## Starting point & proof-of-concept
 
-Convert `ncp-config`'s various scripts into individual containers & `ncp-config` to a container as well, being used as the master container, to control the others. 
+~~Convert `ncp-config`'s various scripts into individual containers & `ncp-config` to a container as well, being used as the master container, to control the others~~
 
-- [ ] [NCP-Config][ncp-config]   _Check me when the conversion is complete._
-  - [ ] Category re-design/re-structuring
+Edit: To use one container, ncp-config is entrypoint, possibly install it as plugin or only nc-encrypt which needs admin permissions. And in that way combine the bigger ncp tools into one, or maybe, just put them all into one directly using a bash script as a controller with case checking for the different parts inside the container. Which right now seems to be the better option, but I don't know
+
+Then combine that with nextcloud-aio, Nextcloud, PHP, mariaDB or a database and Caddy as front-end or reverse proxy, which is how I've used Caddy the most (reverse-proxy)
+
+- [ ] Category re-design/re-structuring (?)
 
 - [ ] New category suggestion
   - BACKUP
