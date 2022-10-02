@@ -1,8 +1,8 @@
 # syntax=docker/dockerfile:1
-FROM caddy:latest AS builder
+FROM caddy:2.6.1-alpine AS builder
 RUN xcaddy build \
 --with github.com/greenpau/caddy-security \
---with github.com/caddyserver/format-encoder \
+--with github.com/caddyserver/transform-encoder \
 --with github.com/mholt/caddy-webdav \
 --with github.com/greenpau/caddy-trace \
 --with github.com/hairyhenderson/caddy-teapot-module \
@@ -21,5 +21,6 @@ RUN xcaddy build \
 --with github.com/ueffel/caddy-basic-auth-filter \
 --with github.com/firecow/caddy-forward-auth
 
-FROM caddy:latest AS cadbase
+FROM caddy:2.6.1-alpine AS cad
 COPY --from=builder ["/usr/bin/caddy","/usr/bin/caddy"]
+ENTRYPOINT ["/usr/bin/caddy"]
