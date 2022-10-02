@@ -22,5 +22,5 @@ RUN xcaddy build \
 --with github.com/firecow/caddy-forward-auth
 
 FROM caddy:2.6.1-alpine AS cad
-COPY --from=builder ["/usr/bin/caddy","/usr/bin/caddy"]
-ENTRYPOINT ["/usr/bin/caddy"]
+COPY --from=builder ["/usr/bin/caddy","/usr/local/bin/caddy"]
+ENTRYPOINT ["/usr/local/bin/caddy"]
