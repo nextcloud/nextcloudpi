@@ -94,7 +94,7 @@ wget -q "$URL" -O nextcloud.tar.bz2 || { echo "Error downloading"; exit 1; }
 
 # backup
 ####################
-BKPDIR=/var/www/
+BKPDIR="$BASEDIR"
 WITH_DATA=no
 COMPRESSED=yes
 LIMIT=0
