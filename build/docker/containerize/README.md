@@ -31,6 +31,18 @@ Then combine that with nextcloud-aio, Nextcloud, PHP, mariaDB or a database and 
   - SYSTEM
   - UPDATE
 
+<details><summary>Status</summary>
+
++ [ ] Stopped
++ [ ] Not started
++ [ ] Not continuing
++ [X] Researching
++ [X] Testing
++ [X] Ongoing
++ [ ] Paused
++ [ ] Completed
+</details>
+
 TODO
   1. - [X] Added a few relevant help articles, for basic understanding around the subject of the project.
   2. - [X] Added some more relevant help articles from the Docker documentation, can be really hard to find otherwise.
@@ -433,18 +445,6 @@ DOCKER PACKAGES||
 
 Extraction of the different environment variables, dependencies on/in other scripts & their dependencies in turn and which packages are required together with their location.
 
-<details><summary>Status</summary>
-
-+ [ ] Stopped
-+ [ ] Not started
-+ [X] Research
-+ [ ] Testing
-+ [X] Ongoing
-+ [ ] Paused
-+ [ ] Completed
-</details>
-
-
 <details><summary>File & location</summary>
 
 |File|Repository|Installed|Dependencies
@@ -468,6 +468,7 @@ Extraction of the different environment variables, dependencies on/in other scri
 `$DESTDIR`|``
 `$INCLUDEDATA`|``
 `$COMPRESS`|``
+  ncp-tools:
 `$BACKUPLIMIT`|``
 `$BACKUPDAYS`|``
 `$NCLATESTVER`|`$(jq -r .nextcloud_version < "$NCPCFG")`
@@ -498,6 +499,8 @@ PERMISSIONS|
 :-:
 `sudo`|
 </details>
+
+<!--
 
 #### [BACKUPS][dirBackups]
  
@@ -653,5 +656,7 @@ PERMISSIONS|
 - [ ] 7. [nc-update.sh](https://github.com/nextcloud/nextcloudpi/blob/containerize/bin/ncp/UPDATES/nc-update.sh)
 - [ ] 8. [unattended-upgrades.sh](https://github.com/nextcloud/nextcloudpi/blob/containerize/bin/ncp/UPDATES/unattended-upgrades.sh)
 </details>
+
+-->
 
 ---
