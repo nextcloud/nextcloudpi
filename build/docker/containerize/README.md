@@ -442,6 +442,15 @@ Script shebang must be `#!/usr/bin/env bash` and not `#!/bin/bash`, to be compat
 > 
 > Bash is the only thing included, so if your scripts rely on external tools (such as jq, for example), those will need to be added manually (via apk add --no-cache jq, for example).
 
+Packages in Docker environment/build
+
+<details><summary> Docker Packages</summary>
+
+DOCKER PACKAGES||
+:-:|:-:
+`git`|`bash`
+</details>
+
 Extraction of the different environment variables, dependencies on/in other scripts & their dependencies in turn and which packages are required together with their location.
 
 <details><summary>Status</summary>
