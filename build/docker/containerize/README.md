@@ -500,7 +500,7 @@ PERMISSIONS|
 `sudo`|
 </details>
 
-<!--
+<!-- 
 
 #### [BACKUPS][dirBackups]
  
@@ -538,7 +538,6 @@ PERMISSIONS|
 - [ ] 10. [nc-snapshot-sync.sh][nc-snapshot-sync.sh]
 - [ ] 11. [nc-snapshot.sh][nc-snapshot.sh]
 
-<!-- START BACKUPS Script links -->
 [nc-backup-auto.sh]: https://github.com/nextcloud/nextcloudpi/blob/containerize/bin/ncp/BACKUPS/nc-backup-auto.sh
 [nc-backup.sh]: https://github.com/nextcloud/nextcloudpi/blob/containerize/bin/ncp/BACKUPS/nc-backup.sh
 [nc-export-ncp.sh]: https://github.com/nextcloud/nextcloudpi/blob/containerize/bin/ncp/BACKUPS/nc-export-ncp.sh
@@ -550,7 +549,6 @@ PERMISSIONS|
 [nc-snapshot-auto.sh]: https://github.com/nextcloud/nextcloudpi/blob/containerize/bin/ncp/BACKUPS/nc-snapshot-auto.sh
 [nc-snapshot-sync.sh]: https://github.com/nextcloud/nextcloudpi/blob/containerize/bin/ncp/BACKUPS/nc-snapshot-sync.sh
 [nc-snapshot.sh]: https://github.com/nextcloud/nextcloudpi/blob/containerize/bin/ncp/BACKUPS/nc-snapshot.sh
-<!-- END BACKUPS links -->
 </details>
 
 #### [CONFIG][dirConfig]
@@ -571,7 +569,6 @@ PERMISSIONS|
 - [ ] 12. [nc-trusted-domains.sh][nc-trusted-domains]
 - [ ] 13. [nc-webui.sh][nc-webui]
 
-<!-- START CONFIG Script links -->
 [nc-admin]: https://github.com/nextcloud/nextcloudpi/blob/containerize/bin/ncp/CONFIG/nc-admin.sh
 [nc-database]: https://github.com/nextcloud/nextcloudpi/blob/containerize/bin/ncp/CONFIG/nc-database.sh
 [nc-datadir]: https://github.com/nextcloud/nextcloudpi/blob/containerize/bin/ncp/CONFIG/nc-datadir.sh
@@ -585,7 +582,6 @@ PERMISSIONS|
 [nc-scan-auto]: https://github.com/nextcloud/nextcloudpi/blob/containerize/bin/ncp/CONFIG/nc-scan-auto.sh
 [nc-trusted-domains]: https://github.com/nextcloud/nextcloudpi/blob/containerize/bin/ncp/CONFIG/nc-trusted-domains.sh
 [nc-webui]: https://github.com/nextcloud/nextcloudpi/blob/containerize/bin/ncp/CONFIG/nc-webui.sh
-<!-- END CONFIG Script links -->
 </details>
 
 #### [NETWORKING][dirNetworking]
