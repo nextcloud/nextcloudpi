@@ -329,6 +329,11 @@ CATEGORY|Category in /bin/ncp (PATH)
 PATH_BASH|Path to bash binary
 URL|GH URL to get scripts in raw text
 
+Instead of using the ARG example below and getting each individual script.
+Use [alpine-git][alpinegit] image instead and clone repo, alternatively clone it beforehand
+
+[alpinegit]: https://hub.docker.com/r/alpine/git
+
 _ARG Example_
 ```docker
 ARG OWNER ["nextcloud"]
