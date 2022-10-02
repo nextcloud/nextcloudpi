@@ -17,5 +17,5 @@ services:
 version: '3.3'
 volumes:
   ncdata:
-    external: false
+    external: true
 
