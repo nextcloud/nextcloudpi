@@ -31,14 +31,7 @@ Convert `ncp-config`'s various scripts into individual containers & `ncp-config`
 TODO
   1. - [X] Added a few relevant help articles, for basic understanding around the subject of the project.
   2. - [X] Added some more relevant help articles from the Docker documentation, can be really hard to find otherwise.
-  3. - [x] Add links and script names to the list until completed
-      1.  - [X] [BACKUPS][dirBackups] 
-      4.  - [X] [CONFIG][dirConfig]  
-      5.  - [x] [NETWORKING][dirNetworking]
-      6.  - [x] [SECURITY][dirSecurity]
-      7.  - [x] [SYSTEM][dirSystem]
-      8.  - [x] [TOOLS][dirTools]
-      9.  - [x] [UPDATES][dirUpdates]
+  3. - [x] Add links and script names to the categories for ncp-config until completed
   2. - [ ] Expand explanations 
   3. - [ ] Begin research & testing
   4. - [ ] What else? ..
