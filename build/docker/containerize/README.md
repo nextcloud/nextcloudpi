@@ -259,9 +259,9 @@ A working `docker run` command with the `--init` flag for PID 1 management and r
 
 ```bash
 docker run --init \
--p 4443:4443 \
--p 443:443 \
--p 80:80 \
+--publish 4443:4443 \
+--publish 443:443 \
+--publish 80:80 \
 --volume ncdata:/data \
 --name nextcloudpi \
 --detach ownyourbits/nextcloudpi:latest \
@@ -271,7 +271,8 @@ docker run --init \
 - `"$(ip addr | grep 192 | awk '{print $2}' | cut -b 1-14)"`
 
 _Greps an IP-address beginning with 192, modify to fit your system, test in terminal._
-_See [CMD's to get IP](https://github.com/nextcloud/nextcloudpi/blob/containerize/build/docker/containerize/README.md#notes) above_
+
+_See [CMD's to get IP](https://github.com/nextcloud/nextcloudpi/blob/containerize/build/docker/containerize/README.md#notes) above for other examples._
 
 [Nextcloud AIO][nextcloud-aio]
 
