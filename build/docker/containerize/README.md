@@ -32,9 +32,10 @@ TODO
   1. - [X] Added a few relevant help articles, for basic understanding around the subject of the project.
   2. - [X] Added some more relevant help articles from the Docker documentation, can be really hard to find otherwise.
   3. - [x] Add links and script names to the categories for ncp-config until completed
-  2. - [ ] Expand explanations 
-  3. - [ ] Begin research & testing
-  4. - [ ] What else? ..
+  2. - [X] Expand explanations (_partly done_)
+  3. - [X] Begin research 
+  4. - [ ] Begin testing
+  5. - [ ] What else? ..
 
 <!-- START Master scripts links -->
 [ncp-config]: https://github.com/nextcloud/nextcloudpi/blob/master/bin/ncp-config
