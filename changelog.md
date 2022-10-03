@@ -1,4 +1,8 @@
-## [v1.50.2](https://github.com/nextcloud/nextcloudpi/tree/v1.50.1) (2022-09-27) Various bug fixes
+## [v1.50.3](https://github.com/nextcloud/nextcloudpi/tree/v1.50.3) (2022-10-03) Fix SSH login on raspberry pi
+
+- Fix ssh users staying disabled when activating SSH
+
+## [v1.50.2](https://github.com/nextcloud/nextcloudpi/tree/v1.50.2) (2022-09-27) Various bug fixes
 
 ### docker
 
