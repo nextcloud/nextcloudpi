@@ -15,7 +15,7 @@ is_active()
   systemctl -q is-enabled ssh &>/dev/null
 }
 
-configure() 
+configure()
 {
   [[ $ACTIVE != "yes" ]]  && {
     systemctl stop    ssh
@@ -29,8 +29,8 @@ configure()
     echo "Refusing to use the default Raspbian user and password. It's insecure"
     return 1
   }
-  [[ "$USER" == "root" ]] && [[ "$PASS" == "1234" ]] && {
-    echo "Refusing to use the default Armbian user and password. It's insecure"
+  [[ "$USER" == "root" ]] && {
+    echo "Refusing to use the root user for SSH. It's insecure"
     return 1
   }
 
@@ -39,7 +39,7 @@ configure()
   echo -e "$PASS\n$CONFIRM" | passwd "$USER" || return 1
 
   # Reenable pi user
-  [[ "$USER" == "pi" ]] && usermod pi -s /bin/bash
+  usermod "$USER" -s /bin/bash
 
   # Check for insecure default pi password ( taken from old jessie method )
   # TODO Due to Debian bug #1003151 with mkpasswd this feature is not working properly at the moment - https://www.mail-archive.com/debian-bugs-dist@lists.debian.org/msg1837456.html
