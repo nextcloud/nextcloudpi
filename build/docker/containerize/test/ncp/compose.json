@@ -1,0 +1,60 @@
+{
+  "name": "ncp",
+  "services": {
+    "base": {
+      "command": [
+        "bash"
+      ],
+      "entrypoint": [
+        "/usr/local/bin/bash"
+      ],
+      "image": "zendai/ncp-test:base",
+      "networks": {
+        "link": null
+      },
+      "ports": [
+        {
+          "mode": "bridge",
+          "target": 80,
+          "published": "80",
+          "protocol": "tcp"
+        }
+      ],
+      "restart": "unless-stopped"
+    },
+    "request": {
+      "command": [
+        "curl"
+      ],
+      "depends_on": {
+        "base": {
+          "condition": "service_started"
+        }
+      },
+      "entrypoint": [
+        "/usr/bin/curl"
+      ],
+      "image": "curlimages/curl:latest",
+      "networks": {
+        "link": null
+      },
+      "ports": [
+        {
+          "mode": "bridge",
+          "target": 80,
+          "published": "80",
+          "protocol": "tcp"
+        }
+      ]
+    }
+  },
+  "networks": {
+    "link": {
+      "name": "ncp_link",
+      "ipam": {
+        "driver": "Default"
+      },
+      "external": false
+    }
+  }
+}

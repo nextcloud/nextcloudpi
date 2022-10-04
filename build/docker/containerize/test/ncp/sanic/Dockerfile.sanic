@@ -1,0 +1,5 @@
+# syntax=docker/dockerfile:1
+FROM --platform=$BUILDPLATFORM sanicframework/sanic:LTS
+ADD ./main.py /srv/
+EXPOSE 4000
+ENTRYPOINT ["python3" "/srv/my-sanic-server.py"]

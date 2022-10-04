@@ -10,6 +10,5 @@ rm -R ncp
 FROM --platform=$BUILDPLATFORM alpine:latest AS base
 COPY --from=bash:latest --link ["/","/"]
 COPY --from=git --link ["/ncp-tools","/usr/local/"]
-RUN apk add --no-cache util-linux-misc
 SHELL ["/usr/local/bin/bash","-c"]
 ENTRYPOINT ["bash"]
