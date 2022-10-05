@@ -12,7 +12,7 @@ services:
       target: 4443
     restart: unless-stopped
     volumes:
-    - ncdata:/data:rw
+    - ncdata:/data:ro
     - /etc/localtime:/etc/localtime:ro
 version: '3.3'
 volumes:
