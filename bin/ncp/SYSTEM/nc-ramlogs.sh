@@ -17,7 +17,7 @@ is_active()
 
 install()
 {
-  VERSION=1.5.2
+  VERSION=1.6.1
   [[ -d /var/log.hdd ]] || [[ -d /var/hdd.log ]] && { echo "log2ram detected, not installing"; return; }
   cd /tmp
   curl -Lo log2ram.tar.gz https://github.com/azlux/log2ram/archive/${VERSION}.tar.gz
