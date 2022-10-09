@@ -149,6 +149,13 @@ done
 
 #false # test point
 
+# fix permissions
+####################
+echo "Fix permissions..."
+chown -R www-data:www-data nextcloud
+find nextcloud/ -type d -exec chmod 750 {} \;
+find nextcloud/ -type f -exec chmod 640 {} \;
+
 # copy data if it was at the default location
 ####################
 if [[ "$DATADIR" == "/var/www/nextcloud/data" ]] || [[ "$DATADIR" == "/data/nextcloud/data" ]]; then
@@ -174,13 +181,6 @@ rollback() {
   exit 1
 }
 trap rollback INT TERM HUP ERR
-
-# fix permissions
-####################
-echo "Fix permissions..."
-chown -R www-data:www-data nextcloud
-find nextcloud/ -type d -exec chmod 750 {} \;
-find nextcloud/ -type f -exec chmod 640 {} \;
 
 # upgrade
 ####################
