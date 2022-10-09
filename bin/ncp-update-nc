@@ -129,7 +129,7 @@ trap rollback_simple INT TERM HUP ERR
 echo "Install Nextcloud $VER..."
 mv -T nextcloud nextcloud-old
 tar -xf nextcloud.tar.bz2             # && false # test point
-rm -rf /var/www/nextcloud.tar.bz2
+rm -rf "$BASEDIR"/nextcloud.tar.bz2
 
 # copy old config
 ####################
@@ -143,7 +143,7 @@ cp -raT nextcloud-old/themes/ nextcloud/themes/
 ####################
 for app in nextcloudpi previewgenerator; do
   if [[ -d nextcloud-old/apps/"${app}" ]]; then
-    cp -r -L nextcloud-old/apps/"${app}" /var/www/nextcloud/apps/
+    cp -r -L nextcloud-old/apps/"${app}" nextcloud/apps/
   fi
 done
 
