@@ -1,7 +1,7 @@
 {
     "translations":{
         "ACTIVE":"開啟",
-        "Automatically apply NextCloudPi updates":"自動更新NextcloudPi",
+        "Automatically apply NextcloudPi updates":"自動更新NextcloudPi",
         "nc-autoupdate-ncp":"自動更新NCP"
     }
 }

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Fail2ban for NextCloudPi
+# Fail2ban for NextcloudPi
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -30,7 +30,7 @@ install()
 
   # tweak fail2ban email
   local F=/etc/fail2ban/action.d/sendmail-common.conf
-  sed -i 's|Fail2Ban|NextCloudPi|' /etc/fail2ban/action.d/sendmail-whois-lines.conf
+  sed -i 's|Fail2Ban|NextcloudPi|' /etc/fail2ban/action.d/sendmail-whois-lines.conf
   grep -q actionstart_ "$F" || sed -i 's|actionstart|actionstart_|' "$F"
   grep -q actionstop_  "$F" || sed -i 's|actionstop|actionstop_|'   "$F"
 

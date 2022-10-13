@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Use uPnP to forward router ports for NextCloudPi
+# Use uPnP to forward router ports for NextcloudPi
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -15,7 +15,7 @@ install()
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends miniupnpc
 }
 
-configure() 
+configure()
 {
   local ip
   ip="$(get_ip)"

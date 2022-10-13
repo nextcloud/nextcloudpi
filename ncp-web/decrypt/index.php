@@ -26,7 +26,7 @@
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta charset="utf-8">
-  <title> Unlock NextCloudPi </title>
+  <title> Unlock NextcloudPi </title>
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="referrer" content="never">
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
@@ -49,7 +49,7 @@
           <img id="ncp-logo" src="../img/ncp-logo.svg">
 <?php
     echo <<<HTML
-          <h1>NextCloudPi</h1>
+          <h1>NextcloudPi</h1>
           <p>Encrypted instance</p>
 
           <div id="decrypt-config-box" class="content-box table-wrapper">
@@ -80,7 +80,7 @@ HTML;
   </div>
   <footer role="contentinfo">
   <p class="info">
-  <a href="https://nextcloudpi.com" target="_blank" rel="noreferrer noopener">NextCloudPi</a> – Keep your data close</p>
+  <a href="https://nextcloudpi.com" target="_blank" rel="noreferrer noopener">NextcloudPi</a> – Keep your data close</p>
   </footer>
   <?php
     include('../csrf.php');

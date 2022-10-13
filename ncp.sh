@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# NextCloudPi additions to Raspbian
+# NextcloudPi additions to Raspbian
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -27,7 +27,7 @@ install()
 
   # include option in raspi-config (only Raspbian)
   test -f /usr/bin/raspi-config && {
-    sed -i '/Change User Password/i"0 NextCloudPi Configuration" "Configuration of NextCloudPi" \\' /usr/bin/raspi-config
+    sed -i '/Change User Password/i"0 NextcloudPi Configuration" "Configuration of NextcloudPi" \\' /usr/bin/raspi-config
     sed -i '/1\\ \*) do_change_pass ;;/i0\\ *) ncp-config ;;'                                       /usr/bin/raspi-config
     # Disable raspberry pi default user
     usermod pi -s /sbin/nologin
@@ -253,7 +253,7 @@ EOF
     ## tag image
     is_docker && local DOCKER_TAG="_docker"
     is_lxc && local DOCKER_TAG="_lxc"
-    echo "NextCloudPi${DOCKER_TAG}_$( date  "+%m-%d-%y" )" > /usr/local/etc/ncp-baseimage
+    echo "NextcloudPi${DOCKER_TAG}_$( date  "+%m-%d-%y" )" > /usr/local/etc/ncp-baseimage
 
     ## SSH hardening
     if [[ -f /etc/ssh/sshd_config ]]; then

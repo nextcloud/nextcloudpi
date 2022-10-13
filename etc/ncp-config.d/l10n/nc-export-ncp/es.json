@@ -1,7 +1,7 @@
 {
     "translations": {
         "DIR": "Directorio",
-        "Export NextCloudPi configuration": "Exportar la configuración de NextCloudPi",
+        "Export NextcloudPi configuration": "Exportar la configuración de NextcloudPi",
         "nc-export-ncp": "nc-export-ncp"
     }
 }

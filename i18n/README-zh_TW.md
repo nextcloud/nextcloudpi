@@ -1,14 +1,14 @@
 [English](/README.md) | Traditional Chinese 繁體中文 | [Simplified Chinese 简体中文](README-zh_CN.md)
 
 
-# NextCloudPi [![chatroom icon](https://patrolavia.github.io/telegram-badge/chat.png)](https://t.me/NextCloudPi) [![forums icon](https://img.shields.io/badge/help-forums-blue.svg)](https://help.nextcloud.com/c/support/appliances-docker-snappy-vm) [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=N8PJHSEQF4G7Y&lc=US&item_name=Own%20Your%20Bits&item_number=NextCloudPi&no_note=1&no_shipping=1&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted) [![blog](https://img.shields.io/badge/follow-blog-orange.svg)](https://ownyourbits.com)
+# NextcloudPi [![chatroom icon](https://patrolavia.github.io/telegram-badge/chat.png)](https://t.me/NextCloudPi) [![forums icon](https://img.shields.io/badge/help-forums-blue.svg)](https://help.nextcloud.com/c/support/appliances-docker-snappy-vm) [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=N8PJHSEQF4G7Y&lc=US&item_name=Own%20Your%20Bits&item_number=NextCloudPi&no_note=1&no_shipping=1&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted) [![blog](https://img.shields.io/badge/follow-blog-orange.svg)](https://ownyourbits.com)
 
 
 ![NC Logo](https://ownyourbits.com/wp-content/uploads/2017/11/ncp-square.png)
 
-歡迎來到 [NextCloudPi](https://nextcloudpi.com)！
+歡迎來到 [NextcloudPi](https://nextcloudpi.com)！
 
-NextCloudPi 是專門為 Raspberry Pi、Odroid HC1、rock64 以及其它單板電腦所製作的映象檔。
+NextcloudPi 是專門為 Raspberry Pi、Odroid HC1、rock64 以及其它單板電腦所製作的映象檔。
 
 為了方便使用者簡單地安裝 NextCloud 所製作。
 
@@ -40,7 +40,7 @@ NextCloudPi 是專門為 Raspberry Pi、Odroid HC1、rock64 以及其它單板�
 ## 特別之處
 
  * 首次安裝導覽頁面
- * NextCloudPi 網路 面板
+ * NextcloudPi 網路 面板
  * 可使用 Wi-Fi
  * Ram logs
  * 自動安裝安全更新，且預設如此。
@@ -58,7 +58,7 @@ NextCloudPi 是專門為 Raspberry Pi、Odroid HC1、rock64 以及其它單板�
  * SAMBA ready to share your files with Windows/Mac/Linux
  * USB 自動掛載
  * 遠端更新
- * 自動更新 NextCloudPi
+ * 自動更新 NextcloudPi
  * 自動更新 Nextcloud
  * 更新通知
  * NextCloud 備份、復原備份
@@ -113,7 +113,7 @@ cd nextcloudpi
 ./build-docker.sh arm64
 ```
 
-NextCloudPi 可以安裝在運行最新的 debian 的任何體系結構中
+NextcloudPi 可以安裝在運行最新的 debian 的任何體系結構中
 
 ```
 # curl -sSL https://raw.githubusercontent.com/nextcloud/nextcloudpi/master/install.sh | bash

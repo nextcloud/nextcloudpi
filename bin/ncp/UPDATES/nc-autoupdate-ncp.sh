@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Automatically apply NextCloudPi updates
+# Automatically apply NextcloudPi updates
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -11,9 +11,9 @@
 
 configure()
 {
-  [[ $ACTIVE != "yes" ]] && { 
+  [[ $ACTIVE != "yes" ]] && {
     rm -f /etc/cron.daily/ncp-autoupdate
-    echo "automatic NextCloudPi updates disabled"
+    echo "automatic NextcloudPi updates disabled"
     return 0
   }
 
@@ -25,11 +25,11 @@ exec >> /var/log/ncp.log 2>&1
 echo "\$(date) - Running \$0..."
 if /usr/local/bin/ncp-test-updates; then
   /usr/local/bin/ncp-update || exit 1
-  notify_admin "NextCloudPi" "NextCloudPi was updated to \$(cat /usr/local/etc/ncp-version)"
+  notify_admin "NextcloudPi" "NextcloudPi was updated to \$(cat /usr/local/etc/ncp-version)"
 fi
 EOF
   chmod 755 /etc/cron.daily/ncp-autoupdate
-  echo "automatic NextCloudPi updates enabled"
+  echo "automatic NextcloudPi updates enabled"
 }
 
 install() { :; }

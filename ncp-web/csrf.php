@@ -1,6 +1,6 @@
 <?php
 ///
-// NextCloudPi Web Panel CSRF protection library
+// NextcloudPi Web Panel CSRF protection library
 //
 // Inspired by http://blog.ircmaxell.com/2013/02/preventing-csrf-attacks.html
 //
@@ -10,19 +10,19 @@
 // More at https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/
 ///
 
-function getCSRFToken() 
+function getCSRFToken()
 {
   $nonce = base64_encode( random_bytes(32) );
-  if (empty($_SESSION['csrf_tokens'])) 
+  if (empty($_SESSION['csrf_tokens']))
     $_SESSION['csrf_tokens'] = array();
 
   $_SESSION['csrf_tokens'][$nonce] = true;
   return $nonce;
 }
 
-function validateCSRFToken($token) 
+function validateCSRFToken($token)
 {
-  if (isset($_SESSION['csrf_tokens'][$token])) 
+  if (isset($_SESSION['csrf_tokens'][$token]))
   {
     unset($_SESSION['csrf_tokens'][$token]);
     return true;

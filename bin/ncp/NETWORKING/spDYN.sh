@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# spDYN setup for NextCloudPi
+# spDYN setup for NextcloudPi
 #
 #
 # Copyleft 2017/2018 by Timm Goldenstein and Timo Stiefel
@@ -19,7 +19,7 @@ install()
   # Create the spdnsUpdater.sh
   mkdir -p "$INSTALLPATH"
   # Write the script to file
-  cat > "$INSTALLPATH"/spdnsUpdater.sh <<'EOF' 
+  cat > "$INSTALLPATH"/spdnsUpdater.sh <<'EOF'
 #!/bin/bash
 
 ### Usage
@@ -39,14 +39,14 @@ update_url="https://update.spdyn.de/nic/update"
 
 
 ### Update procedure
-function spdnsUpdater { 
+function spdnsUpdater {
 	# Send the current IP address to spdyn.de
 	# and show the response
-	
+
 	params=$1
 	updater=$(wget -qO- --post-data $params $update_url)
 	updater=$(echo $updater | grep -o '^[a-z]*')
-	
+
 	case "$updater" in
 		abuse) echo "[$updater] Der Host kann nicht aktualisiert werden, da er aufgrund vorheriger fehlerhafter Updateversuche gesperrt ist."
 			;;
@@ -89,10 +89,10 @@ EOF
 
 }
 
-configure() 
+configure()
 {
   if [[ $ACTIVE == "yes" ]]; then
-    
+
     # Adds file to cron to run script for DNS record updates and change permissions
     touch $CRONFILE
     echo "10 * * * * root $INSTALLPATH/spdnsUpdater.sh $DOMAIN $TOKEN >/dev/null 2>&1" > "$CRONFILE"
@@ -100,7 +100,7 @@ configure()
 
     # First-time execution of update script and print response from spdns.de server
     "$INSTALLPATH"/spdnsUpdater.sh "$DOMAIN" "$TOKEN"
-		
+
 		echo -e "\nspdnsUpdater is now enabled"
 
     # Removes config files and cron job if ACTIVE_ is set to no

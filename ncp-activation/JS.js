@@ -1,5 +1,5 @@
 ///
-// NextCloudPi Web Panel javascript library
+// NextcloudPi Web Panel javascript library
 //
 // Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 // GPL licensed (see end of file) * Use at your own risk!
@@ -13,8 +13,8 @@ var selectedID = null;
 var confLock   = false;
 
 function errorMsg()
-{ 
-  $('#error-box').fill( "Something went wrong. Try refreshing the page" ); 
+{
+  $('#error-box').fill( "Something went wrong. Try refreshing the page" );
 }
 
 function launch_nc_passwd()
@@ -31,20 +31,20 @@ function launch_nc_passwd()
       var ret = $.parseJSON( result );
       if ( ret.ret == '0' )
       {
-        setTimeout( function(){ 
+        setTimeout( function(){
           $('#loading-gif').hide();
-          $('#error-box').fill( "ACTIVATION SUCCESSFUL" ); 
+          $('#error-box').fill( "ACTIVATION SUCCESSFUL" );
           var url = window.location.protocol + '//' + window.location.hostname + ':4443';
           if ( !window.open( url, '_blank' ) ) // try to open in a new tab first
             window.location.replace( url );
         }, 4000 );
       } else {
-        $('#error-box').fill( "nc-passwd error" ); 
+        $('#error-box').fill( "nc-passwd error" );
       }
   } ).error( errorMsg );
 }
 
-function nc_admin_ok_cb( result ) 
+function nc_admin_ok_cb( result )
 {
   var ret = $.parseJSON( result );
   if ( ret.token )
@@ -52,7 +52,7 @@ function nc_admin_ok_cb( result )
   if ( ret.ret == '0' ) {
     launch_nc_passwd();
   } else {
-    $('#error-box').fill( "NextCloudPi not yet initialized, trying again in a few seconds ..." ); 
+    $('#error-box').fill( "NextcloudPi not yet initialized, trying again in a few seconds ..." );
     setTimeout( launch_activation, 10000 );
   }
 }
@@ -61,15 +61,15 @@ function launch_activation()
 {
   // request
   $.request('post', '../ncp-launcher.php', { action: 'launch',
-                                             ref   : 'nc-admin', 
+                                             ref   : 'nc-admin',
                                              config: '{ "PASSWORD":"' + $('#nc-pwd').get('.value') + '",'
                                                      + '"CONFIRM" :"' + $('#nc-pwd').get('.value') + '",'
                                                      + '"USER"    : "ncp" }',
-                                             csrf_token: $( '#csrf-token' ).get( '.value' ) } 
+                                             csrf_token: $( '#csrf-token' ).get( '.value' ) }
   ).then( nc_admin_ok_cb ).error( errorMsg );
 }
 
-$(function() 
+$(function()
 {
   // print info page
   $( '#print-pwd' ).on( 'click', function(e) { window.print(); } );
@@ -96,7 +96,7 @@ $(function()
       input.selectionStart = input.selectionEnd;
     } );
 
-  // activate NextCloudPi
+  // activate NextcloudPi
   $( '#activate-ncp' ).on( 'click', function(e)
   {
     $( '#activate-ncp' ).hide();

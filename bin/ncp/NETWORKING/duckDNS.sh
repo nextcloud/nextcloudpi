@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# DuckDNS installation on Raspbian for NextCloudPi
+# DuckDNS installation on Raspbian for NextcloudPi
 #
 #
 # Copyleft 2017 by Courtney Hicks
@@ -12,7 +12,7 @@ INSTALLDIR=duckdns
 INSTALLPATH=/usr/local/etc/$INSTALLDIR
 CRONFILE=/etc/cron.d/duckdns
 
-configure() 
+configure()
 {
   local DOMAIN="$( sed 's|.duckdns.org||' <<<"$DOMAIN" )"
   if [[ $ACTIVE == "yes" ]]; then
@@ -23,7 +23,7 @@ configure()
     touch "$INSTALLPATH"/duck.log
     echo -e "echo url=\"https://www.duckdns.org/update?domains=$DOMAIN&token=$TOKEN&ip=\" | curl -k -o "$INSTALLPATH"/duck.log -K -" > "$INSTALLPATH"/duck.sh
 
-    # Adds file to cron to run script for DNS record updates and change permissions 
+    # Adds file to cron to run script for DNS record updates and change permissions
     touch $CRONFILE
     echo "*/5 * * * * root $INSTALLPATH/duck.sh >/dev/null 2>&1" > "$CRONFILE"
     chmod 700 "$INSTALLPATH"/duck.sh

@@ -27,7 +27,7 @@ install()
 
   cat >> /etc/samba/smb.conf <<EOF
 
-# NextCloudPi automatically generated from here. Do not remove this comment
+# NextcloudPi automatically generated from here. Do not remove this comment
 EOF
 }
 
@@ -54,11 +54,11 @@ configure()
   ################################
 
   # remove files from this line to the end
-  sed -i '/# NextCloudPi automatically/,/\$/d' /etc/samba/smb.conf
+  sed -i '/# NextcloudPi automatically/,/\$/d' /etc/samba/smb.conf
 
   # restore this line
   cat >> /etc/samba/smb.conf <<EOF
-# NextCloudPi automatically generated from here. Do not remove this comment
+# NextcloudPi automatically generated from here. Do not remove this comment
 EOF
 
   # create a share per Nextcloud user

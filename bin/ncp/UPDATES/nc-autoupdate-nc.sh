@@ -29,7 +29,7 @@ if [[ \${PIPESTATUS[0]} -eq 0 ]]; then
 
   VER="\$( /usr/local/bin/ncc status | grep "version:" | awk '{ print \$3 }' )"
 
-  notify_admin "NextCloudPi" "Nextcloud was updated to \$VER"
+  notify_admin "NextcloudPi" "Nextcloud was updated to \$VER"
 fi
 echo "" >> /var/log/ncp.log
 EOF

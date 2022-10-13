@@ -1,6 +1,6 @@
 <?php
 ///
-// NextCloudPi Web Panel backend
+// NextcloudPi Web Panel backend
 //
 // Copyleft 2019 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 // GPL licensed (see end of file) * Use at your own risk!
@@ -19,7 +19,7 @@ if ( empty($token) || !validateCSRFToken($token) )
 isset($_FILES['backup']) or exit( '{ "output": "no upload" }' );
 
 $error=$_FILES['backup']['error'];
-if ($error !== 0) 
+if ($error !== 0)
   exit( '{ "output": "upload error ' . $error . '" }' );
 
 $file_name = $_POST['csrf_token'] . basename($_FILES['backup']['name']);

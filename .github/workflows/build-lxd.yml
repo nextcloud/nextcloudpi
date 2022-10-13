@@ -42,7 +42,7 @@ jobs:
         id: pack-lxd
         run: |
           . ./build/buildlib.sh
-          ARTIFACT_FILE="NextCloudPi_LXD_${VERSION//\//_}"
+          ARTIFACT_FILE="NextcloudPi_LXD_${VERSION//\//_}"
           lxc image export -q ncp/"${version}" "output/${ARTIFACT_FILE}"
           echo "::set-output name=artifact_file::${ARTIFACT_FILE}.tar.gz"
       - name: upload LXD image to artifact store
@@ -104,7 +104,7 @@ jobs:
         id: pack-lxd
         run: |
           . ./build/buildlib.sh
-          ARTIFACT_FILE="NextCloudPi_LXD_${VERSION//\//_}"
+          ARTIFACT_FILE="NextcloudPi_LXD_${VERSION//\//_}"
           lxc image export -q ncp/"${version}" "output/${ARTIFACT_FILE}"
           echo "::set-output name=artifact_file::${ARTIFACT_FILE}.tar.gz"
       - name: upload LXD image to artifact store
@@ -181,7 +181,7 @@ jobs:
         run: |
           set -x
           . ./build/buildlib.sh
-          ARTIFACT_FILE="NextCloudPi_LXD_${VERSION//\//_}"
+          ARTIFACT_FILE="NextcloudPi_LXD_${VERSION//\//_}"
           lxc publish -q ncp -f --alias "ncp/updated"
           mkdir -p output
           lxc image export -q "ncp/updated" "output/${ARTIFACT_FILE}"

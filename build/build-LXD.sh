@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Batch creation of NextCloudPi LXD image
+# Batch creation of NextcloudPi LXD image
 #
 # Copyleft 2021 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -14,7 +14,7 @@ source build/buildlib.sh
 echo -e "\e[1m\n[ Build NCP LXD ]\e[0m"
 
 #CLEAN=0                    # Pass this envvar to skip cleaning download cache
-IMG="NextCloudPi_LXD_$( date  "+%m-%d-%y" ).img"
+IMG="NextcloudPi_LXD_$( date  "+%m-%d-%y" ).img"
 IMG=tmp/"$IMG"
 
 TAR=output/"$( basename "$IMG" .img ).tar.bz2"

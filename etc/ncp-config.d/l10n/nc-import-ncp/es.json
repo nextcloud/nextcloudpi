@@ -1,7 +1,7 @@
 {
     "translations": {
         "FILE": "Fichero",
-        "Import NextCloudPi configuration from file": "Importa la configuración de NextCloudPi desde un fichero",
+        "Import NextcloudPi configuration from file": "Importa la configuración de NextcloudPi desde un fichero",
         "nc-import-ncp": "nc-import-ncp"
     }
 }
