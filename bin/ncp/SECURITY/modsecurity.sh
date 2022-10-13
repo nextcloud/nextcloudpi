@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# modsecurity WAF installation on Raspbian 
+# modsecurity WAF installation on Raspbian
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -16,7 +16,7 @@ install()
 
   cat >> /etc/modsecurity/crs/crs-setup.conf <<'EOF'
 
-  # NextCloudPi: allow PROPFIND for webDAV
+  # NextcloudPi: allow PROPFIND for webDAV
   SecAction "id:900200, phase:1, nolog, pass, t:none, setvar:'tx.allowed_methods=GET HEAD POST OPTIONS PROPFIND'"
 EOF
 
@@ -37,8 +37,8 @@ EOF
 EOF
 }
 
-configure() 
-{ 
+configure()
+{
   local NCDIR=/var/www/nextcloud/
   local NCPWB=/var/www/ncp-web/
 

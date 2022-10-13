@@ -1,5 +1,5 @@
 ///
-// NextCloudPi Web Panel javascript library
+// NextcloudPi Web Panel javascript library
 //
 // Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 // GPL licensed (see end of file) * Use at your own risk!
@@ -11,22 +11,22 @@ var MINI = require('minified');
 var $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
 
 function errorMsg()
-{ 
-  $('#error-box').fill("Something went wrong. Try refreshing the page"); 
+{
+  $('#error-box').fill("Something went wrong. Try refreshing the page");
 }
 
-function decrypt_ok_cb(result) 
+function decrypt_ok_cb(result)
 {
   var ret = $.parseJSON(result);
   $('#loading-gif').hide();
   if ( ret.token )
     $('#csrf-token').set( { value: ret.token } );
   if ( ret.ret == '0' ) {
-    $('#error-box').fill("OK"); 
+    $('#error-box').fill("OK");
       var url = window.location.protocol + '//' + window.location.hostname;
       window.location.replace( url );
   } else {
-    $('#error-box').fill("Password error"); 
+    $('#error-box').fill("Password error");
     $('#decrypt-btn').show();
   }
 }
@@ -35,9 +35,9 @@ function decrypt()
 {
   // request
   $.request('post', '../ncp-launcher.php', { action: 'launch',
-                                             ref   : 'nc-encrypt', 
+                                             ref   : 'nc-encrypt',
                                              config: '{ "ACTIVE": "yes", "PASSWORD":"' + $('#encryption-pass').get('.value') + '" }',
-                                             csrf_token: $('#csrf-token').get('.value') } 
+                                             csrf_token: $('#csrf-token').get('.value') }
   ).then(decrypt_ok_cb).error(errorMsg);
 }
 
@@ -51,7 +51,7 @@ $( '.pwd-btn' ).on('click', function(e)
       input.set('.type', 'password');
   });
 
-$(function() 
+$(function()
 {
   $('#decrypt-btn').on('click', function(e)
   {

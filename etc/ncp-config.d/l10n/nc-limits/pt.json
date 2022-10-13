@@ -1,6 +1,6 @@
 {
     "translations": {
-        "Configure system limits for NextCloudPi": "Configura os limites de sistema para NextCloudPi",
+        "Configure system limits for NextcloudPi": "Configura os limites de sistema para NextcloudPi",
         "MAXFILESIZE":"Tamanho máximo de arquivo para upload",
         "MEMORYLIMIT": "Limite  de memória",
         "PHPTHREADS": "THREADS PHP",

@@ -1,7 +1,7 @@
 {
     "translations": {
         "FILE": "檔案位置",
-        "Import NextCloudPi configuration from file": "匯入NextCloudPi設定",
+        "Import NextcloudPi configuration from file": "匯入NextcloudPi設定",
         "nc-import-ncp": "匯入NCP設定"
     }
 }

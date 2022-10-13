@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-Automatic system testing for NextCloudPi
+Automatic system testing for NextcloudPi
 
 Copyleft 2018 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 GPL licensed (see LICENSE file in repository root).
@@ -275,7 +275,7 @@ if __name__ == "__main__":
 
     print(pre_cmd)
     # checks
-    print("\nNextCloudPi system checks")
+    print("\nNextcloudPi system checks")
     print("-------------------------")
     running_result = check_processes_running(processes_must_be_running)
     install_result = check_binaries_installed(binaries_must_be_installed)

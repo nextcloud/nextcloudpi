@@ -1,6 +1,6 @@
 <?php
 /*
- NextCloudPi Web Panel frontend
+ NextcloudPi Web Panel frontend
 
  Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
  GPL licensed (see end of file) * Use at your own risk!
@@ -53,7 +53,7 @@ header("Link: </js/minified.js>; rel=preload; as=script;,</js/ncp.js>; rel=prelo
 <html class="ng-csp" data-placeholder-focus="false" lang="en">
 <head>
     <meta charset="utf-8">
-    <title>NextCloudPi Panel</title>
+    <title>NextcloudPi Panel</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="referrer" content="never">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
@@ -102,7 +102,7 @@ header("Link: </js/minified.js>; rel=preload; as=script;,</js/ncp.js>; rel=prelo
     <div id="first-run-wizard">
       <div class='dialog'>
         <br><br>
-        <h2 id="config-box-title">NextCloudPi First Run</h2>
+        <h2 id="config-box-title">NextcloudPi First Run</h2>
         <p>Click to start the configuration wizard</p>
         <br>
         <a href="wizard"><img class="wizard-btn" src="wizard/img/ncp-logo.svg" class="wizard"></a>
@@ -136,7 +136,7 @@ HTML;
     <div id="header-left">
       <a href="https://nextcloudpi.com" id="nextcloudpi" target="_blank" tabindex="1">
         <div class="logo-icon">
-           <h1 class="hidden-visually">NextCloudPi</h1>
+           <h1 class="hidden-visually">NextcloudPi</h1>
         </div>
       </a>
       <a id=versionlink target="_blank" href="https://github.com/nextcloud/nextcloudpi/blob/master/changelog.md">
@@ -200,14 +200,14 @@ HTML;
               <div class="icon-logs"></div>
           </div>
       </div>
-      <a href="wizard" title="<?php echo $l->__("NextCloudPi Wizard"); ?>">
+      <a href="wizard" title="<?php echo $l->__("NextcloudPi Wizard"); ?>">
         <div class="wizard-btn">
           <div class="expand">
             <div class="icon-wizard-white"></div>
           </div>
         </div>
       </a>
-      <a href="https://docs.nextcloudpi.com/" target="_blank" tabindex="1"  title="<?php echo $l->__("NextCloudPi Wiki"); ?>">
+      <a href="https://docs.nextcloudpi.com/" target="_blank" tabindex="1"  title="<?php echo $l->__("NextcloudPi Wiki"); ?>">
         <div id="nc-button">
             <div class="expand">
                 <div class="icon-nc-info"></div>
@@ -285,7 +285,7 @@ HTML
           </div>
         </div>
         <div id="logs-wrapper" class="content-box <?php if(!array_key_exists('app',$_GET) || (array_key_exists('app',$_GET) && $_GET['app'] != 'logs')) echo 'hidden';?>">
-          <h2 class="text-title"><?php echo $l->__("NextCloudPi logs"); ?></h2>
+          <h2 class="text-title"><?php echo $l->__("NextcloudPi logs"); ?></h2>
           <div id="logs-content" class="table-wrapper">
             <div id="logs-details-box" class="outputbox"><?php echo str_replace(array("\r\n", "\n", "\r"), '<br/>', file_get_contents('/var/log/ncp.log')) ?></div>
             <div id="log-download-btn-wrapper"><input id="log-download-btn" type="button" value="Download"/></div>

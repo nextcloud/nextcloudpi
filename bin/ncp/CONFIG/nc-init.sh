@@ -126,7 +126,7 @@ EOF
   }
 
   mysql nextcloud <<EOF
-replace into  oc_appconfig values ( 'theming', 'name'          , "NextCloudPi"             );
+replace into  oc_appconfig values ( 'theming', 'name'          , "NextcloudPi"             );
 replace into  oc_appconfig values ( 'theming', 'slogan'        , "keep your data close"    );
 replace into  oc_appconfig values ( 'theming', 'url'           , "https://ownyourbits.com" );
 replace into  oc_appconfig values ( 'theming', 'logoMime'      , "image/svg+xml"           );

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Launch security audit reports for NextCloudPi
+# Launch security audit reports for NextcloudPi
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -22,7 +22,7 @@ skip-test=CUST-0810
 # Won't install puppet or similar
 skip-test=TOOL-5002
 
-# Raspbian doesn't have security sources ( https://www.raspberrypi.org/forums/viewtopic.php?t=98006&p=680175 ) 
+# Raspbian doesn't have security sources ( https://www.raspberrypi.org/forums/viewtopic.php?t=98006&p=680175 )
 skip-test=PKGS-7388
 
 # We have a preset partition scheme in the SD card
