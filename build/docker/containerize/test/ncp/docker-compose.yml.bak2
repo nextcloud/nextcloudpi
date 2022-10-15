@@ -1,0 +1,76 @@
+name: nextcloudpi
+services:
+  base:
+    container_name: nextcloudpi
+    image: zendai/ncp-test:base
+    networks:
+      ncp: null
+    ports:
+    - mode: ingress
+      target: 80
+      published: "80"
+      protocol: tcp
+    - mode: ingress
+      target: 8080
+      published: "8080"
+      protocol: tcp
+    - mode: ingress
+      target: 8443
+      published: "8443"
+      protocol: tcp
+    restart: always
+    volumes:
+    - type: volume
+      source: ncp
+      target: /mnt/nextcloudpi
+      volume: {}
+    - type: volume
+      source: nextcloud_aio_mastercontainer
+      target: /mnt/docker-aio-config
+      volume: {}
+    - type: bind
+      source: /var/run/docker.sock
+      target: /var/run/docker.sock
+      read_only: true
+      bind:
+        create_host_path: true
+  nextcloud:
+    container_name: nextcloud-aio-mastercontainer
+    image: nextcloud/all-in-one:latest
+    networks:
+      default: null
+    ports:
+    - mode: ingress
+      target: 80
+      published: "80"
+      protocol: tcp
+    - mode: ingress
+      target: 8080
+      published: "8080"
+      protocol: tcp
+    - mode: ingress
+      target: 8443
+      published: "8443"
+      protocol: tcp
+    restart: always
+    volumes:
+    - type: volume
+      source: nextcloud_aio_mastercontainer
+      target: /mnt/docker-aio-config
+      volume: {}
+    - type: bind
+      source: /var/run/docker.sock
+      target: /var/run/docker.sock
+      read_only: true
+      bind:
+        create_host_path: true
+networks:
+  default:
+    name: nextcloudpi_default
+  ncp:
+    name: nextcloudpi
+volumes:
+  ncp:
+    name: nextcloudpi
+  nextcloud_aio_mastercontainer:
+    name: nextcloud_aio_mastercontainer

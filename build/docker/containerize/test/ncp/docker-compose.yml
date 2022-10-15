@@ -1,18 +1,27 @@
-name: ncp
+version: "3.8"
+name: nextcloudpi
 services:
   base:
     image: zendai/ncp-test:base
-    networks: 
+    container_name: nextcloud-aio-mastercontainer
+    networks:
     - ncp
+    restart: always
+    volumes:
+    - ncp:/mnt/nextcloudpi
+    - nextcloud_aio_mastercontainer:/mnt/docker-aio-config
+    - /var/run/docker.sock:/var/run/docker.sock:ro
     ports:
-    - 60302:60302
+      - 80:80 # Can be removed when running behind a reverse proxy. See https://github.com/nextcloud/all-in-one/blob/main/reverse-proxy.md
+      - 8080:8080
+      - 8443:8443
 
-  extra:
-    image: curlimages/curl:7.84.0
-    networks: 
-    - ncp
-    ports:
-    - 60303:60303
+volumes:
+    ncp:
+      name: nextcloudpi
+    nextcloud_aio_mastercontainer:
+      name: nextcloud_aio_mastercontainer
 
 networks:
-  ncp:
+    ncp:
+      name: nextcloudpi
