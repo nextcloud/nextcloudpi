@@ -74,7 +74,7 @@ fi
 # The escaped quotes are to add double-quotation marks for the String comparison in the IF-state
 if [[ "$ARCH" == "armv7" ]]
 then
-  LATEST_NC24_VERSION="\"$(curl -sSL https://nextcloud.com/changelog/#latest24 | grep 'Version 24' | awk '{print $3}' | head -1)\""
+  LATEST_NC24_VERSION="$(curl -sSL https://nextcloud.com/changelog/#latest24 | grep 'Version 24' | awk '{print $3}' | head -1)"
   if [[ "$VER" > "$LATEST_NC24_VERSION" ]]
   then
     ERRMSG="This system is running a 32bit architecture and is trying to update beyond the latest version for NC24, "
