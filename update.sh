@@ -25,6 +25,24 @@ fi
 CONFDIR=/usr/local/etc/ncp-config.d/
 UPDATESDIR=updates
 
+# Used to prevent updates beyond Nextcloud v.24, as v.25 does not support 32bit architecture.
+# See System Requirements: https://docs.nextcloud.com/server/latest/admin_manual/installation/system_requirements.html
+# See Nextcloud Changelog for current latest versions: https://nextcloud.com/changelog/#latest24
+# The escaped quotes are to add double-quotation marks for the String comparison in the IF-statement, 
+# the JQ command is also set without -r to get the version as a String with double-quotes, for the same reason.
+LATEST_NC24_VERSION="\"$(curl -sSL https://nextcloud.com/changelog/#latest24 | grep 'Version 24' | awk '{print $3}' | head -1)\""
+NC_VERSION="$(jq '.nextcloud_version' < etc/ncp.cfg)"
+if [[ "$ARCH" == "armv7" ]] && [[ "$NC_VERSION" > "$LATEST_NC24_VERSION" ]]
+then
+  ERRMSG="This system is running a 32bit architecture and is trying to update beyond the latest version for NC24, "
+  ERRMSG+="this will not work as 32bit support is not available after NC24, latest version for NC24 is: ${LATEST_NC24_VERSION}\n\n"
+  ERRMSG+="See latest available version for NC24: https://nextcloud.com/changelog/#latest24 \n"
+  ERRMSG+="See system requirements for latest NC release: https://docs.nextcloud.com/server/latest/admin_manual/installation/system_requirements.html \n"
+  printf "${ERRMSG}"
+  exit 1
+fi
+
+
 # don't make sense in a docker container
 EXCL_DOCKER="
 nc-autoupdate-ncp
