@@ -68,6 +68,24 @@ then
   exit 1
 fi
 
+# Used to prevent updates beyond Nextcloud v.24, as v.25 does not support 32bit architecture.
+# See System Requirements: https://docs.nextcloud.com/server/latest/admin_manual/installation/system_requirements.html
+# See Nextcloud Changelog for current latest versions: https://nextcloud.com/changelog/#latest24
+# The escaped quotes are to add double-quotation marks for the String comparison in the IF-state
+if [[ "$ARCH" == "armv7" ]]
+then
+  LATEST_NC24_VERSION="\"$(curl -sSL https://nextcloud.com/changelog/#latest24 | grep 'Version 24' | awk '{print $3}' | head -1)\""
+  if [[ "$VER" > "$LATEST_NC24_VERSION" ]]
+  then
+    ERRMSG="This system is running a 32bit architecture and is trying to update beyond the latest version for NC24, "
+    ERRMSG+="this will not work as 32bit support is not available after NC24, latest version for NC24 is: ${LATEST_NC24_VERSION}\n\n"
+    ERRMSG+="See latest available version for NC24: https://nextcloud.com/changelog/#latest24 \n"
+    ERRMSG+="See system requirements for latest NC release: https://docs.nextcloud.com/server/latest/admin_manual/installation/system_requirements.html \n"
+    printf "${ERRMSG}"
+    exit 1
+  fi
+fi
+
 # make sure that cron.php is not running and there are no pending jobs
 # https://github.com/nextcloud/server/issues/10949
 pgrep -cf cron.php &>/dev/null && { pkill -f cron.php; sleep 3; }
