@@ -16,13 +16,7 @@ fi
 
 cat <<EOF
 zend_extension=opcache.so
-opcache.enable=1
-opcache.enable_cli=1
-opcache.fast_shutdown=1
-opcache.interned_strings_buffer=8
-opcache.max_accelerated_files=10000
-opcache.memory_consumption=128
-opcache.save_comments=1
-opcache.revalidate_freq=1
+opcache.interned_strings_buffer=16
+opcache.revalidate_freq=60
 opcache.file_cache=${TMP_DIR};
 EOF
