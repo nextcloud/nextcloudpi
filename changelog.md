@@ -1,3 +1,7 @@
+## [v1.50.4](https://github.com/nextcloud/nextcloudpi/tree/v1.50.4) (2022-12-17) Installer Fix
+
+- Don't install deprecated PHP packages during installation (`php-json`)
+
 ## [v1.50.3](https://github.com/nextcloud/nextcloudpi/tree/v1.50.3) (2022-10-03) Fix SSH login on raspberry pi
 
 - Fix ssh users staying disabled when activating SSH
