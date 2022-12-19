@@ -134,7 +134,7 @@ HTML;
 
   <header role="banner"><div id="header">
     <div id="header-left">
-      <a href="https://ownyourbits.com" id="nextcloudpi" target="_blank" tabindex="1">
+      <a href="https://nextcloudpi.com/" id="nextcloudpi" target="_blank" tabindex="1">
         <div class="logo-icon">
            <h1 class="hidden-visually">NextCloudPi</h1>
         </div>
