@@ -173,7 +173,7 @@ HTML;
               <input type="text" id="search-box" placeholder="find ncp-app" size="40">
           </div>
       </div>
-      <a href="https://ownyourbits.com" id="nextcloud-btn" target="_blank" tabindex="1" title="<?php echo $l->__("Launch Nextcloud"); ?>">
+      <a href="https://nextcloudpi.com" id="nextcloud-btn" target="_blank" tabindex="1" title="<?php echo $l->__("Launch Nextcloud"); ?>">
         <div id="nc-button">
             <div class="expand">
                 <div class="icon-nc-white"></div>
