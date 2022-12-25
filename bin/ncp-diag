@@ -91,9 +91,9 @@ function is_port_open()
     return 1
   fi
   # Checks both port 80 & 443 for IPv4
-  test -n "$publicIPv4" && result=($(curl --silent --max-time 4 --ipv4 "$port_url" | jq '."80",."443"' ))
+  test -n "$publicIPv4" && result=($(curl --silent --max-time 4 --ipv4 "$port_url" | jq -r '."80",."443"' ))
   # Check both port 80 & 443 for IPv6
-  test -n "$publicIPv6" && result=($(curl --silent --max-time 4 --ipv6 "$port_url" | jq '."80",."443"' ))
+  test -n "$publicIPv6" && result=($(curl --silent --max-time 4 --ipv6 "$port_url" | jq -r '."80",."443"' ))
   # Prints the result for port 80 & 443 respectively: "open" "open" || "closed" "closed" || "open" "closed" || "closed" "open"
   echo -n "${result[@]}"
 }
