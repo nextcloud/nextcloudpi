@@ -81,7 +81,7 @@ function is_port_open()
   test "$TYPE" -eq 4 && RESULT=($(curl --silent --max-time 4 --ipv4 "$PORTURL" | jq -r '."80",."443"' ))
   test "$TYPE" -eq 6 && RESULT=($(curl --silent --max-time 4 --ipv6 "$PORTURL" | jq -r '."80",."443"' ))
   test "$TYPE" -eq 0 && RESULT=("[N/A]" "[N/A]")
-  return echo -n "${RESULT[@]}"
+  echo -n "${RESULT[@]}"
 }
 
 publicIPv4=$(curl --silent --max-time 4 --ipv4 "https://ipv4.icanhazip.com" 2>/dev/null) || unset publicIPv4
