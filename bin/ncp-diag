@@ -14,8 +14,8 @@
 source /usr/local/etc/library.sh
 
 # Distro, NCP version and tag
-echo "NextCloudPi version|$( cat /usr/local/etc/ncp-version )"
-[[ -f /usr/local/etc/ncp-baseimage ]] && echo "NextCloudPi image|$( cat /usr/local/etc/ncp-baseimage )"
+echo "NextcloudPi version|$( cat /usr/local/etc/ncp-version )"
+[[ -f /usr/local/etc/ncp-baseimage ]] && echo "NextcloudPi image|$( cat /usr/local/etc/ncp-baseimage )"
 echo "OS|$(cat /etc/issue  | sed 's| \\n \\l||'). $(uname -r) ($(uname -m))"
 
 # Data
@@ -66,45 +66,37 @@ echo "Internet check|$( ping -W 2 -w 1 -q github.com &>/dev/null && echo ok || e
 
 function is_port_open()
 {
-  local IPv4PORTS IPv6PORTS result=("")
   # The URL leads to an application I've deployed for NCP on https://fly.io using a Docker container I made.
   # The image for the container is available on Docker Hub (zendai/checkport:sanic) if you wish to deploy one yourself.
-  # The code for the Sanic server and Docker image is available at https://github.com/ZendaiOwl/Build/tree/master/Docker/Python/Sanic/checkport
+  # The code for the Sanic server and Docker image is available at: https://github.com/ZendaiOwl/Build/tree/master/Docker/Python/Sanic/checkport
   # I only have a free tier with limited outbound data per month, 100GB p/month.
   # If we go over 100GB outbound data in a month, I will start being charged for the data going over that limit.
-  # I used a low level Python socket library & fortunately each request only consumes aprox. ~ 60-74 bytes.
-  # Meaning 100GB should be plenty, however this will quickly accumulate though if we have people abusing it or hundreds of thousands of users.
-  # So .. Please don't abuse it? Thank you :pray: from Victor-ray, S. https://github.com/ZendaiOwl
-  local -r port_url="https://checkport.zendai.net.eu.org/check"
-  local type="${1?}"
-  test "$type" -eq 4 && local publicIPv4="${2}"
-  test "$type" -eq 6 && local publicIPv6="${2}"
-  
-  if test "$type" -eq 4 && test -z "$publicIPv4"
-  then
-    echo -n "Error: [N/A] No public IPv4"
-    return 1
-  fi
-  if test "$type" -eq 6 && test -z "$publicIPv6"
-  then
-    echo -n "Error: [N/A] No public IPv6."
-    return 1
-  fi
-  # Checks both port 80 & 443 for IPv4
-  test -n "$publicIPv4" && result=($(curl --silent --max-time 4 --ipv4 "$port_url" | jq -r '."80",."443"' ))
-  # Check both port 80 & 443 for IPv6
-  test -n "$publicIPv6" && result=($(curl --silent --max-time 4 --ipv6 "$port_url" | jq -r '."80",."443"' ))
-  # Prints the result for port 80 & 443 respectively: "open" "open" || "closed" "closed" || "open" "closed" || "closed" "open"
-  echo -n "${result[@]}"
+  # I used a low level Python socket library & fortunately each request only consumes aprox. ~ 60-74 bytes p/second.
+  # Meaning 100GB should be plenty, it should be enough to handle a little less
+  # than 450 request p/second a month, unless my calculations are wrong.
+  # Thank you :pray: from Victor-ray, S. https://github.com/ZendaiOwl
+  local -r PORTURL="https://checkport.zendai.net.eu.org/check"
+  local TYPE="${1?}" RESULT=("")
+  # Checks both port 80 & 443 for IPv4/IPv6 and returns the result or [N/A] [N/A]
+  test "$TYPE" -eq 4 && RESULT=($(curl --silent --max-time 4 --ipv4 "$PORTURL" | jq -r '."80",."443"' ))
+  test "$TYPE" -eq 6 && RESULT=($(curl --silent --max-time 4 --ipv6 "$PORTURL" | jq -r '."80",."443"' ))
+  test "$TYPE" -eq 0 && RESULT=("[N/A]" "[N/A]")
+  return echo -n "${RESULT[@]}"
 }
 
 publicIPv4=$(curl --silent --max-time 4 --ipv4 "https://ipv4.icanhazip.com" 2>/dev/null) || unset publicIPv4
-echo "public IPv4|${publicIPv4:-"not found"}"
+echo "Public IPv4|${publicIPv4:-"not found"}"
 publicIPv6=$(curl --silent --max-time 4 --ipv6 "https://ipv6.icanhazip.com" 2>/dev/null) || unset publicIPv6
-echo "public IPv6|${publicIPv6:-"not found"}"
+echo "Public IPv6|${publicIPv6:-"not found"}"
 
-echo "IPv4 Port 80 & 443|$( is_port_open 4 "$publicIPv4" )"
-echo "IPv6 Port 80 & 443|$( is_port_open 6 "$publicIPv6" )"
+test -n "$publicIPv4" && IPv4PORTS=($(is_port_open 4)) || IPv4PORTS=($(is_port_open 0))
+test -n "$publicIPv6" && IPv6PORTS=($(is_port_open 6)) || IPv6PORTS=($(is_port_open 0))
+
+test "${IPv4PORTS[0]}" == "open" || test "${IPv6PORTS[0]}" == "open" && PORT80="open" || PORT80="closed"
+test "${IPv4PORTS[1]}" == "open" || test "${IPv6PORTS[1]}" == "open" && PORT443="open" || PORT443="closed"
+
+echo "Port 80|$PORT80"
+echo "Port 443|$PORT443"
 
 # LAN
 IFACE=$( ip r | grep "default via" | awk '{ print $5 }' | head -1 )
@@ -112,14 +104,14 @@ GW=$(    ip r | grep "default via" | awk '{ print $3 }' | head -1 )
 IP="$(get_ip)"
 
 echo "IP|$IP"
-echo "gateway|$GW"
+echo "Gateway|$GW"
 echo "Interface|$IFACE"
 
 # Certificates
 CERTS="$( grep "SSLCertificateFile */etc/letsencrypt/live/" /etc/apache2/sites-available/nextcloud.conf \
         | sed 's|.*SSLCertificateFile */etc/letsencrypt/live/||;s|/fullchain.pem||' )"
 [[ "$CERTS" == "" ]] && CERTS=none
-echo "certificates|$CERTS"
+echo "Certificates|$CERTS"
 
 RESOLV="$( ping -c1 -w1 "$CERTS" 2>/dev/null | head -1 | grep -oP '\d{1,3}(.\d{1,3}){3}' )"
 echo "NAT loopback|$( [[ "$RESOLV" == "$IP" ]] && echo yes || echo no )"

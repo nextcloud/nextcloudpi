@@ -1,6 +1,6 @@
 <?php 
 /*
- NextCloudPi Wizard
+ NextcloudPi Wizard
 
  Copyleft 2017 by Pantelis Sarantos and Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
  GPL licensed (see end of file) * Use at your own risk!
@@ -27,7 +27,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>NextCloudPi Wizard</title>
+		<title>NextcloudPi Wizard</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<!-- Bootstrap -->
@@ -57,7 +57,7 @@ HTML
 		<!-- Tab 1 content - Welcome -->
 		<div class="tab-pane" id="tab1">
 			<div class="ncp-tab-pane">
-				<h1>Welcome to NextCloudPi</h1>
+				<h1>Welcome to NextcloudPi</h1>
                 <img id="ncp-welcome-logo" src="img/ncp-logo.svg">
 				<p>This wizard will help you configure your personal cloud.</p>
 			</div>
@@ -81,7 +81,7 @@ HTML
 				<!-- Format USB drive -->
 				<div class="ncp-hidden" id="format-usb">
 					<p class="instructions">
-						If you want to prepare the USB drive to be used with NextCloudPi hit Format USB. Skip if already formated as ext4 or BTRFS.
+						If you want to prepare the USB drive to be used with NextcloudPi hit Format USB. Skip if already formated as ext4 or BTRFS.
 						<br>	
 						<strong>Attention!</strong> This will format your USB drive as BTRFS and <strong>will destroy any current data.</strong> 
 					</p>
@@ -111,7 +111,7 @@ HTML
                     <h3>Port forwarding</h3>
                     <p class="instructions">
                         To access from the outside, your need to forward ports 80 and 443 to your RPi IP address <br>
-                        You can have NextCloudPi try to do this automatically for you<br>
+                        You can have NextcloudPi try to do this automatically for you<br>
                         To do it manually yourself, you must access your router interface, usually at <a href="http://192.168.1.1" target="_blank">http://192.168.1.1</a><br>
                     </p>
                     <div class="buttons-area">
@@ -200,7 +200,7 @@ HTML
           <!-- Tab 4 content - Finish -->
           <div class="tab-pane" id="tab4">
               <div class="ncp-tab-pane">
-                  <p class="instructions"> NextCloudPi is ready!</p>
+                  <p class="instructions"> NextcloudPi is ready!</p>
 
                   <div class="linkbox">
                     <a id='gotonextcloud' href="#"><img id="nextcloud" src="img/nc-logo.png"></a>
@@ -208,7 +208,7 @@ HTML
                   </div>
                   <div class="linkbox">
                     <a href=".."><img id="ncp-web" src="img/ncp-logo.svg"></a>
-                    <br>go back to NextCloudPi web panel
+                    <br>go back to NextcloudPi web panel
                   </div>
 
               </div>		
