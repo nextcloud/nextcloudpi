@@ -10,13 +10,13 @@
 #
 # More at https://ownyourbits.com
 #
-
+# shellcheck disable=SC1091
 source /usr/local/etc/library.sh
 
 # Distro, NCP version and tag
 echo "NextcloudPi version|$( cat /usr/local/etc/ncp-version )"
 [[ -f /usr/local/etc/ncp-baseimage ]] && echo "NextcloudPi image|$( cat /usr/local/etc/ncp-baseimage )"
-echo "OS|$(cat /etc/issue  | sed 's| \\n \\l||'). $(uname -r) ($(uname -m))"
+echo "OS|$(sed 's| \\n \\l||' /etc/issue). $(uname -r) ($(uname -m))"
 
 # Data
 DATADIR="$( grep datadirectory /var/www/nextcloud/config/config.php |
@@ -31,7 +31,7 @@ echo "USB devices|$USBDEVS"
 echo "datadir|$DATADIR$DIRINFO"
 [[ "$DIRINFO" == "" ]] && {
   echo "data in SD|$( [[ $( stat -fc%d / ) == $( stat -fc%d "$DATADIR" ) ]] && echo yes || echo no )"
-  echo "data filesystem|$( stat -fc%T $DATADIR )"
+  echo "data filesystem|$( stat -fc%T "$DATADIR" )"
   echo "data disk usage|$( df -h "$DATADIR" | tail -1 | awk '{ print $3"/"$2 }')"
 }
 echo "rootfs usage|$( df -h / | tail -1 | awk '{ print $3"/"$2 }')"
@@ -78,8 +78,8 @@ function is_port_open()
   local -r PORTURL="https://checkport.zendai.net.eu.org/check"
   local TYPE="${1?}" RESULT=("")
   # Checks both port 80 & 443 for IPv4/IPv6 and returns the result or [N/A] [N/A]
-  test "$TYPE" -eq 4 && RESULT=($(curl --silent --max-time 4 --ipv4 "$PORTURL" | jq -r '."80",."443"' ))
-  test "$TYPE" -eq 6 && RESULT=($(curl --silent --max-time 4 --ipv6 "$PORTURL" | jq -r '."80",."443"' ))
+  test "$TYPE" -eq 4 && RESULT=("$(curl --silent --max-time 4 --ipv4 "$PORTURL" | jq -r '."80",."443"' )")
+  test "$TYPE" -eq 6 && RESULT=("$(curl --silent --max-time 4 --ipv6 "$PORTURL" | jq -r '."80",."443"' )")
   test "$TYPE" -eq 0 && RESULT=("[N/A]" "[N/A]")
   echo -n "${RESULT[@]}"
 }
@@ -89,8 +89,8 @@ echo "Public IPv4|${publicIPv4:-"not found"}"
 publicIPv6=$(curl --silent --max-time 4 --ipv6 "https://ipv6.icanhazip.com" 2>/dev/null) || unset publicIPv6
 echo "Public IPv6|${publicIPv6:-"not found"}"
 
-test -n "$publicIPv4" && IPv4PORTS=($(is_port_open 4)) || IPv4PORTS=($(is_port_open 0))
-test -n "$publicIPv6" && IPv6PORTS=($(is_port_open 6)) || IPv6PORTS=($(is_port_open 0))
+test -n "$publicIPv4" && IPv4PORTS=("$(is_port_open 4)") || IPv4PORTS=("$(is_port_open 0)")
+test -n "$publicIPv6" && IPv6PORTS=("$(is_port_open 6)") || IPv6PORTS=("$(is_port_open 0)")
 
 test "${IPv4PORTS[0]}" == "open" || test "${IPv6PORTS[0]}" == "open" && PORT80="open" || PORT80="closed"
 test "${IPv4PORTS[1]}" == "open" || test "${IPv6PORTS[1]}" == "open" && PORT443="open" || PORT443="closed"

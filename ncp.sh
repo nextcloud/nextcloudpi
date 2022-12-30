@@ -17,7 +17,6 @@ CONFDIR=/usr/local/etc/ncp-config.d/
 APTINSTALL="apt-get install -y --no-install-recommends"
 export DEBIAN_FRONTEND=noninteractive
 
-
 install()
 {
   # NCP-CONFIG
