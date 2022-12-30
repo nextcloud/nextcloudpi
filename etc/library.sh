@@ -305,11 +305,10 @@ function run_app_unsafe()
 
   # read cfg parameters
   [[ -f "$cfg_file" ]] && {
-    local len cfg
+    local len cfg var val
     cfg="$( cat "$cfg_file" )"
     len="$(jq '.params | length' <<<"$cfg")"
     for (( i = 0 ; i < len ; i++ )); do
-      local var val
       var="$(jq -r ".params[$i].id"    <<<"$cfg")"
       val="$(jq -r ".params[$i].value" <<<"$cfg")"
       eval "$var=$val"
@@ -343,11 +342,10 @@ function is_active_app()
   [[ $( type -t is_active ) == function ]] && {
     # read cfg parameters
     [[ -f "$cfg_file" ]] && {
-      local cfg len
+      local cfg len var val
       cfg="$( cat "$cfg_file" )"
       len="$(jq '.params | length' <<<"$cfg")"
       for (( i = 0 ; i < len ; i++ )); do
-        local var val
         var="$(jq -r ".params[$i].id"    <<<"$cfg")"
         val="$(jq -r ".params[$i].value" <<<"$cfg")"
         eval "$var=$val"
