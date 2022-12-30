@@ -1,15 +1,15 @@
 English | [Traditional Chinese 繁體中文](i18n/README-zh_TW.md) | [Simplified Chinese 简体中文](i18n/README-zh_CN.md)
 
-# NextCloudPi [![chatroom icon](https://patrolavia.github.io/telegram-badge/chat.png)](https://t.me/NextCloudPi) [![forums icon](https://img.shields.io/badge/help-forums-blue.svg)](https://help.nextcloud.com/c/support/appliances-docker-snappy-vm) [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=N8PJHSEQF4G7Y&lc=US&item_name=Own%20Your%20Bits&item_number=NextCloudPi&no_note=1&no_shipping=1&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted) [![blog](https://img.shields.io/badge/follow-blog-orange.svg)](https://ownyourbits.com)
+# NextcloudPi [![chatroom icon](https://patrolavia.github.io/telegram-badge/chat.png)](https://t.me/NextcloudPi) [![forums icon](https://img.shields.io/badge/help-forums-blue.svg)](https://help.nextcloud.com/c/support/appliances-docker-snappy-vm) [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=N8PJHSEQF4G7Y&lc=US&item_name=Own%20Your%20Bits&item_number=NextcloudPi&no_note=1&no_shipping=1&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted) [![blog](https://img.shields.io/badge/follow-blog-orange.svg)](https://ownyourbits.com)
 
 
 ![NC Logo](https://ownyourbits.com/wp-content/uploads/2017/11/ncp-square.png)
 
-This is the build code for [NextCloudPi](https://nextcloudpi.com).
+This is the build code for [NextcloudPi](https://nextcloudpi.com).
 
-NextCloudPi is a ready to use image for Virtual Machines, Raspberry Pi, Odroid HC1, rock64 and other boards [(⇒Downloads)](https://github.com/nextcloud/nextcloudpi/releases).
+NextcloudPi is a ready to use image for Virtual Machines, Raspberry Pi, Odroid HC1, rock64 and other boards [(⇒Downloads)](https://github.com/nextcloud/nextcloudpi/releases).
 
-This code also generates the NextCloudPi [docker image](https://hub.docker.com/r/ownyourbits/nextcloudpi), LXD and VM, and includes an installer for any Debian based system.
+This code also generates the NextcloudPi [docker image](https://hub.docker.com/r/ownyourbits/nextcloudpi), LXD and VM, and includes an installer for any Debian based system.
 
 Find the full documentation at [docs.nextcloudpi.com](http://docs.nextcloudpi.com)
 
@@ -42,7 +42,7 @@ Find the full documentation at [docs.nextcloudpi.com](http://docs.nextcloudpi.co
 ## Extras
 
  * Setup wizard
- * NextCloudPi Web Panel
+ * NextcloudPi Web Panel
  * Wi-Fi ready
  * Ram logs
  * Automatic security updates, activated by default.
@@ -98,7 +98,7 @@ docker run -d -p 4443:4443 -p 443:443 -p 80:80 -v ncdata:/data --name nextcloudp
 ## Run in LXD
 
 ```
-lxc import NextCloudPi_LXD_09-29-21.tar.bz
+lxc import NextcloudPi_LXD_09-29-21.tar.bz
 lxc start ncp
 ```
 
@@ -134,7 +134,7 @@ build/build-docker.sh arm64
 build/build-LXD.sh
 ```
 
-NextCloudPi can be installed in any architecture running the latest Debian
+NextcloudPi can be installed in any architecture running the latest Debian
 
 _Note: this assumes a clean Debian install, and there is no rollback method_
 
@@ -150,4 +150,4 @@ https://hub.docker.com/r/ownyourbits/nextcloudpi
 
 ## Contact
 
-You can find us in the [forums](https://help.nextcloud.com/c/support/appliances-docker-snappy-vm) and a [Telegram group](https://t.me/NextCloudPi)
+You can find us in the [forums](https://help.nextcloud.com/c/support/appliances-docker-snappy-vm) and a [Telegram group](https://t.me/NextcloudPi)
