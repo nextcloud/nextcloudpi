@@ -2,7 +2,6 @@ English | [Traditional Chinese 繁體中文](i18n/README-zh_TW.md) | [Simplified
 
 # NextcloudPi [![chatroom icon](https://patrolavia.github.io/telegram-badge/chat.png)](https://t.me/NextcloudPi) [![forums icon](https://img.shields.io/badge/help-forums-blue.svg)](https://help.nextcloud.com/c/support/appliances-docker-snappy-vm) [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=N8PJHSEQF4G7Y&lc=US&item_name=Own%20Your%20Bits&item_number=NextcloudPi&no_note=1&no_shipping=1&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted) [![blog](https://img.shields.io/badge/follow-blog-orange.svg)](https://ownyourbits.com)
 
-
 ![NCP Logo](https://github.com/nextcloud/nextcloudpi/blob/master/ncp-app/img/app.svg)
 
 This is the build code for [NextcloudPi](https://nextcloudpi.com).
@@ -14,6 +13,7 @@ This code also generates the NextcloudPi [docker image](https://hub.docker.com/r
 Find the full documentation at [docs.nextcloudpi.com](http://docs.nextcloudpi.com)
 
 ---
+
 [![VM Integration Tests](https://github.com/nextcloud/nextcloudpi/workflows/VM%20Integration%20Tests/badge.svg)](https://github.com/nextcloud/nextcloudpi/actions/workflows/vm-tests.yml)
 
 [![Docker Integration Tests](https://github.com/nextcloud/nextcloudpi/actions/workflows/build-docker.yml/badge.svg)](https://github.com/nextcloud/nextcloudpi/actions/workflows/build-docker.yml)
@@ -80,13 +80,13 @@ Extras can be activated and configured using the web interface at HTTPS port 444
 
 ![ncp-web](https://user-images.githubusercontent.com/21343324/136853829-f4e99ec0-6307-431f-b4c7-21b2330cae7f.png)
 
-, or from the command line from
+Or from the command line using
 
 ```
 sudo ncp-config
 ```
 
-![NCP-config](https://ownyourbits.com/wp-content/uploads/2017/03/ncp-conf-700x456.jpg)
+![NCP-config](https://help.nextcloud.com/uploads/default/original/3X/b/3/b3d157022a32296ab54428b14b5df02104a91f18.png)
 
 
 ## Run in docker
