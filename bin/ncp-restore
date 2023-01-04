@@ -62,8 +62,6 @@ then
   target="$NCDIR/data"
   [[ -d "$target" ]] && target="$NCDIR/.data_$(date)"
   mv -T "$DATA_BKP_DIR" "$target"
-else
-  echo "Dataless backup detected - not restoring data"
 fi
 
 # update NC database password to this instance
@@ -93,10 +91,9 @@ mysql -u root nextcloud <  "$TMPDIR"/nextcloud-sqlbkp_*.bak || { echo "Error res
 
 ## RESTORE DATADIR
 
-if is_docker; then
+DATADIR="$(get_nc_config_value datadirectory)"
+if is_docker && [[ "$DATADIR" == "/var/www/nextcloud/data" ]]; then
   DATADIR=/data/nextcloud/data
-else
-  DATADIR="$(get_nc_config_value datadirectory)"
 fi
 [[ "$DATADIR" == "" ]] && { echo "Error reading data directory"; exit 1; }
 
