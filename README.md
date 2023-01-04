@@ -63,8 +63,8 @@ Find the full documentation at [docs.nextcloudpi.com](http://docs.nextcloudpi.co
  * Automatic NCP updates
  * Automatic Nextcloud updates
  * Update notifications
- * NextCloud backup and restore
- * NextCloud online installation
+ * Nextcloud backup and restore
+ * Nextcloud online installation
  * Format USB drive to BTRFS
  * BTRFS snapshots
  * Automatic BTRFS snapshots
@@ -104,15 +104,27 @@ lxc start ncp
 
 ## How to build
 
-Install git, docker, qemu-user-static, chroot and all the usual building tools.
+Install:
+
+- `git`
+- `docker`
+- `build-essential`
+- `qemu`
+- `qemu-user-static`
+- `chroot`
+- `jq`
+- `psmisc`
+- `procps`
+
+and all the usual building tools.
 
 ```
 git clone https://github.com/nextcloud/nextcloudpi.git
 cd nextcloudpi
-build/build-SD-rpi.sh
+./build/build-SD-rpi.sh
 ```
 
-, or for an Armbian based board
+### Armbian-based board
 
 ```
 ./build-SD-armbian.sh odroidxu4   # supported board code name
@@ -128,15 +140,17 @@ build/build-docker.sh armhf
 build/build-docker.sh arm64
 ```
 
-, for LXD
+### LXD
 
 ```
-build/build-LXD.sh
+./build/build-LXD.sh
 ```
 
 NextcloudPi can be installed in any architecture running the latest Debian
 
 _Note: this assumes a clean Debian install, and there is no rollback method_
+
+### Curl install scripts
 
 ```
 # curl -sSL https://raw.githubusercontent.com/nextcloud/nextcloudpi/master/install.sh | bash
