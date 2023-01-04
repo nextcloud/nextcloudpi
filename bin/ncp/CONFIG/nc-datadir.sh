@@ -106,7 +106,7 @@ configure()
   echo "moving data directory from ${SRCDIR} to ${BASEDIR}..."
 
   # use subvolumes, if BTRFS
-  [[ "$(stat -fc%T "${BASEDIR}")" == "btrfs" ]] && {
+  [[ "$(stat -fc%T "${BASEDIR}")" == "btrfs" ]] && ! is_docker && {
     echo "BTRFS filesystem detected"
     rmdir "${BASEDIR}"
     btrfs subvolume create "${BASEDIR}"
