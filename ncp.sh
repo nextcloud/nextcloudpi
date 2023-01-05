@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# NextCloudPi additions to Raspbian
+# NextcloudPi additions to Raspbian
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -25,12 +25,13 @@ install()
   $APTINSTALL git dialog whiptail jq file lsb-release
   mkdir -p "$CONFDIR" "$BINDIR"
 
-  # include option in raspi-config (only Raspbian)
+  # This has changed, pi user no longer exists by default, the user needs to create it with Raspberry Pi imager
+  # The raspi-config layout and options have also changed
+  # https://github.com/RPi-Distro/raspi-config/blob/master/raspi-config
   test -f /usr/bin/raspi-config && {
-    sed -i '/Change User Password/i"0 NextCloudPi Configuration" "Configuration of NextCloudPi" \\' /usr/bin/raspi-config
-    sed -i '/1\\ \*) do_change_pass ;;/i0\\ *) ncp-config ;;'                                       /usr/bin/raspi-config
-    # Disable raspberry pi default user
-    usermod pi -s /sbin/nologin
+    # shellcheck disable=SC1003
+    sed -i '/S3 Password/i "S0 NextcloudPi Configuration" "Configuration of NextcloudPi" \\' /usr/bin/raspi-config
+    sed -i '/S3\\ \*) do_change_pass ;;/i S0\\ *) ncp-config ;;'                             /usr/bin/raspi-config
   }
 
   # add the ncc shortcut
@@ -205,7 +206,7 @@ EOF
   chmod g+w           /var/run/.ncp-latest-version
 
   # Install all ncp-apps
-  ALLOW_UPDATE_SCRIPT=1 bin/ncp-update $BRANCH || exit $?
+  ALLOW_UPDATE_SCRIPT=1 bin/ncp-update "$BRANCH" || exit $?
 
   # LIMIT LOG SIZE
   grep -q maxsize /etc/logrotate.d/apache2 || sed -i /weekly/amaxsize2M /etc/logrotate.d/apache2
@@ -254,7 +255,7 @@ EOF
     ## tag image
     is_docker && local DOCKER_TAG="_docker"
     is_lxc && local DOCKER_TAG="_lxc"
-    echo "NextCloudPi${DOCKER_TAG}_$( date  "+%m-%d-%y" )" > /usr/local/etc/ncp-baseimage
+    echo "NextcloudPi${DOCKER_TAG}_$( date  "+%m-%d-%y" )" > /usr/local/etc/ncp-baseimage
 
     ## SSH hardening
     if [[ -f /etc/ssh/sshd_config ]]; then
