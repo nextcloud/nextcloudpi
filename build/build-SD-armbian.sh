@@ -69,7 +69,8 @@ EXTRA_CONF=build/armbian/"config-$BOARD".conf
 rm -rf armbian/output/images
 mkdir -p armbian/userpatches
 sed -e '/docker.*run/s/-it//' armbian/config/templates/config-docker.conf > armbian/userpatches/config-docker.conf
-docker pull "ghcr.io/armbian/build:$(cut -d"." -f1-2 < armbian/VERSION)-$(dpkg --print-architecture)"
+docker pull "ghcr.io/armbian/build:$(cut -d"." -f1-2 < armbian/VERSION)-$(dpkg --print-architecture)" \
+ || docker pull "ghcr.io/armbian/build:latest-$(dpkg --print-architecture)"
 armbian/compile.sh docker ncp
 rm "$CONF"
 

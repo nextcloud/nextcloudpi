@@ -79,8 +79,8 @@ configure()
   ENCDIR="${BASEDIR}"/ncdata_enc
 
   # checks
-  grep -q -e ext -e btrfs <( stat -fc%T "${BASEDIR}" ) || {
-    echo -e "Only ext/btrfs filesystems can hold the data directory"
+  [[ "$DISABLE_FS_CHECK" == 1 ]] || grep -q -e ext -e btrfs <( stat -fc%T "${BASEDIR}" ) || {
+    echo -e "Only ext/btrfs filesystems can hold the data directory (found '$(stat -fc%T "${BASEDIR}")')"
     return 1
   }
 

@@ -31,7 +31,7 @@ DIR="$( cd "$( dirname "$BACKUPFILE" )" &>/dev/null && pwd )" #abspath
 [[ "$DIR" =~ "$NCDIR" ]] && { echo "Refusing to restore from $NCDIR"; exit 1; }
 
 TMPDIR="$( mktemp -d "$( dirname "$BACKUPFILE" )"/ncp-restore.XXXXXX )" || { echo "Failed to create temp dir" >&2; exit 1; }
-grep -q -e ext -e btrfs -e zfs <( stat -fc%T "$TMPDIR" ) || { echo "Can only restore from ext/btrfs/zfs filesystems"     >&2; exit 1; }
+grep -q -e ext -e btrfs -e zfs <( stat -fc%T "$TMPDIR" ) || { echo "Can only restore from ext/btrfs/zfs filesystems (found '$(stat -fc%T "${TMPDIR}")"     >&2; exit 1; }
 
 TMPDIR="$( cd "$TMPDIR" &>/dev/null && pwd )" || { echo "$TMPDIR not found"; exit 1; } #abspath
 cleanup(){  local RET=$?; echo "Cleanup..."; rm -rf "${TMPDIR}"; trap "" EXIT; exit $RET; }
@@ -77,6 +77,7 @@ then
   [[ -d "$target" ]] && target="$NCDIR/.data_$(date)"
   mv -T "$DATA_BKP_DIR" "$target"
 else
+  echo "Not overwriting data directory"
 fi
 
 if [[ -n "$DATA_BKP_DIR" ]]
