@@ -130,7 +130,7 @@ jobs:
   
           RUN echo 'Mutex posixsem' >> /etc/apache2/mods-available/ssl.conf
           EOF
-          docker buildx build --platform "$platform" . -t ncp-testing -f Dockerfile
+          docker buildx build --platform "$platform" -t ncp-testing -f Dockerfile -o type=image,name=ncp-testing .
           popd
           rm -r "$tmpdir"
           docker run --platform "$platform" -v ncdata:/data -d --rm -p 8443:443 -p 4443:4443 --name nextcloudpi ncp-testing localhost
