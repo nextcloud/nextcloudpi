@@ -67,6 +67,41 @@ jobs:
       VERSION: "${{ inputs.git_ref || github.ref }}"
       ARCH: "${{ inputs.arch || 'x86' }}"
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: "${{ env.VERSION }}"
+          fetch-depth: 0
+      - name: Get previous release
+        id: get_previous_version
+        shell: bash
+        run: |
+          set -ex
+          if [[ -n "${{ github.base_ref }}" ]]
+          then
+            version="${{ github.base_ref }}"
+          elif [[ "${{ env.VERSION }}" == "refs/heads/devel" ]]
+          then
+            version="latest"
+          else
+            if [[ "${{ github.ref_type }}" != "tag" ]] || ! git describe --tags > /dev/null
+            then
+              git fetch -fu --tags origin ${{ env.VERSION }}:${{ env.VERSION }}
+            fi
+            version="$(git describe --tags || true)"
+            [[ "$version" =~ .*-.*-.* ]] || {
+              git checkout HEAD~1
+              version="$(git describe --tags || echo latest)"
+            }
+            version="${version%-*-*}"
+          fi
+          curl "https://hub.docker.com/v2/repositories/ownyourbits/nextcloudpi-${ARCH}/tags/${version}" | grep 'errinfo' > /dev/null && {
+            echo "Image ownyourbits/nextcloudpi-${ARCH}:${version} does not exist - falling back to :latest"
+            version="latest"
+          }
+          echo "Previous version is '$version'"
+          echo "PREVIOUS_VERSION=$version" >> "$GITHUB_ENV"
+          echo "::set-output name=previous_version::${version}"
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
 
@@ -75,7 +110,17 @@ jobs:
           docker volume create ncdata
           platform=linux/${ARCH?}
           [[ "$ARCH" == 'x86' ]] && platform=linux/amd64
-          docker run --platform "$platform" -v ncdata:/data -d --rm -p 8443:443 -p 4443:4443 --name nextcloudpi ownyourbits/nextcloudpi:latest
+          tmpdir=$(mktemp -d)
+          pushd "$tmpdir" 
+          cat <<EOF > ./Dockerfile
+          FROM --platform=$platform ownyourbits/nextcloudpi:${{ steps.get_previous_version.outputs.previous_version }}
+  
+          RUN echo 'Mutex posixsem' >> /etc/apache2/mods-available/ssl.conf
+          EOF
+          docker build . -t ncp-testing -f Dockerfile
+          popd
+          rm -r "$tmpdir"
+          docker run --platform "$platform" -v ncdata:/data -d --rm -p 8443:443 -p 4443:4443 --name nextcloudpi ncp-testing
 
       - name: Checkout code
         uses: actions/checkout@v3

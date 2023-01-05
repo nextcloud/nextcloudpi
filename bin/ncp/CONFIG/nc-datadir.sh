@@ -147,7 +147,11 @@ configure()
 
   (
     . "${BINDIR?}/SYSTEM/metrics.sh"
-    reload_metrics_config
+    reload_metrics_config || {
+      echo 'WARN: There was an issue reloading ncp metrics. This might not affect your installation,
+      but keep it in mind if there is an issue with metrics.'
+      true
+    }
   )
 
   echo "The NC data directory has been moved successfully."
