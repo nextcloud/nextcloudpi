@@ -7,9 +7,9 @@ on:
         type: string
     outputs:
       artifact_name:
-        value: "${{ jobs.build.outputs.artifact_name }}"
+        value: "${{ jobs.build-current.outputs.artifact_name }}"
       artifact_file:
-        value: "${{ jobs.build.outputs.artifact_file }}"
+        value: "${{ jobs.build-current.outputs.artifact_file }}"
   push:
     branches:
       - "**"
