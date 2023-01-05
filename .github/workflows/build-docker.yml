@@ -130,7 +130,7 @@ jobs:
   
           RUN echo 'Mutex posixsem' >> /etc/apache2/mods-available/ssl.conf
           EOF
-          docker buildx build --platform "$platform" -t ncp-testing -f Dockerfile -o type=image,name=ncp-testing .
+          docker buildx build --platform "$platform" -t ncp-testing -f Dockerfile --load .
           popd
           rm -r "$tmpdir"
           docker run --platform "$platform" -v ncdata:/data -d --rm -p 8443:443 -p 4443:4443 --name nextcloudpi ncp-testing localhost
@@ -201,7 +201,7 @@ jobs:
           for attempt in {1..3}
           do
             echo ":: System Tests (attempt $attempt/3) ::"
-            python system_tests.py --no-ping --non-interactive || awk "{ print \"${LOG_TEST} \" \$0 }"
+            python system_tests.py --no-ping --non-interactive |& awk "{ print \"${LOG_TEST} \" \$0 }"
             [[ ${PIPESTATUS[0]} -eq 0 ]] || {
               echo -e "${LOG_CICD} System test (attempt $attempt) failed!"
               sleep 12
