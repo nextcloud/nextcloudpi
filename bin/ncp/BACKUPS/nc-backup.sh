@@ -114,6 +114,7 @@ tar $compress_arg -cf "$destfile" \
     --exclude "nextcloud/data/*/files_versions/*" \
     --exclude "nextcloud/data/ncp-update-backups" \
     --exclude "nextcloud/data/__groupfolders" \
+    --exclude "nextcloud/.data_*" \
     -C $basedir nextcloud/ \
   || {
         echo "error generating backup"
