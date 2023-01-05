@@ -21,7 +21,13 @@ persistent_cfg /etc/cron.weekly
 }
 persistent_cfg /usr/local/bin /data/bin
 
+install_template "php/opcache.ini.sh" "/etc/php/${PHPVER}/mods-available/opcache.ini"
+install_template "php/90-ncp.ini.sh" "/etc/php/${PHPVER}/fpm/conf.d/90-ncp.ini"
+install_template "php/pool.d.www.conf.sh" "/etc/php/${PHPVER}/fpm/pool.d/www.conf"
+#install_template "mysql/91-ncp.cnf.sh" "/etc/mysql/mariadb.conf.d/91-ncp.cnf"
+install_template "ncp-metrics.cfg.sh" "/usr/local/etc/ncp-metrics.cfg"
+
 touch /var/log/ncp.log
-tail -f -n0 /data/nextcloud/data/nextcloud.log &
+{ tail -f -n0 /data/ncdata/data/nextcloud.log || tail -f -n0 /data/nextcloud/data/nextcloud.log; } &
 
 exit 0

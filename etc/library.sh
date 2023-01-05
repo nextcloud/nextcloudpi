@@ -216,6 +216,9 @@ install_template() {
   local template="${1?}"
   local target="${2?}"
   local bkp="$(mktemp)"
+
+  echo "Installing template '$template'..."
+
   mkdir -p "$(dirname "$target")"
   [[ -f "$target" ]] && cp -a "$target" "$bkp"
   {
