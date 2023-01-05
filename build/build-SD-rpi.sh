@@ -79,8 +79,6 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
     # harden SSH further for Raspbian
     sed -i 's|^#PermitRootLogin .*|PermitRootLogin no|' /etc/ssh/sshd_config
 
-    # default user 'pi' for SSH
-
     # cleanup
     source etc/library.sh && run_app_unsafe post-inst.sh
     rm /etc/resolv.conf

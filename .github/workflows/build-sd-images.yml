@@ -68,7 +68,7 @@ jobs:
           artifacts=("armbian/output/images/Armbian"*.img)
           mkdir -p output
           mv "${artifacts[0]}" "output/$IMG"
-          echo "::set-output name=artifact_file::${IMG}"
+          echo "artifact_file=${IMG}" >> $GITHUB_OUTPUT
           echo "ARTIFACT_FILE=${IMG}" >> $GITHUB_ENV
       - name: "Build Armbian (2nd attempt)"
         if: ${{ inputs.board_id != 'raspberrypi' && steps.build-armbian.outcome == 'failure' }}
@@ -87,7 +87,7 @@ jobs:
           artifacts=("armbian/output/images/Armbian"*.img)
           mkdir -p output
           mv "${artifacts[0]}" "output/$IMG"
-          echo "::set-output name=artifact_file::${IMG}"
+          echo "artifact_file=${IMG}" >> $GITHUB_OUTPUT
           echo "ARTIFACT_FILE=${IMG}" >> $GITHUB_ENV
       - name: "Upload Armbian logs"
         if: ${{ inputs.board_id != 'raspberrypi' && failure() }}
@@ -116,7 +116,7 @@ jobs:
             echo "Retrying ($i out of 10)"
           done
 
-          echo "::set-output name=artifact_file::${IMG}"
+          echo "artifact_file=${IMG}" >> $GITHUB_OUTPUT
           echo "ARTIFACT_FILE=${IMG}" >> $GITHUB_ENV
       - name: upload image to artifact store
         uses: actions/upload-artifact@v3

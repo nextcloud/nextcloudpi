@@ -132,6 +132,7 @@ EOF
   id -u "$WEBADMIN" &>/dev/null || useradd --home-dir /nonexistent "$WEBADMIN"
   echo -e "$WEBPASSWD\n$WEBPASSWD" | passwd "$WEBADMIN"
   chsh -s /usr/sbin/nologin "$WEBADMIN"
+  chsh -s /usr/sbin/nologin root
 
   ## NCP LAUNCHER
   mkdir -p /home/www

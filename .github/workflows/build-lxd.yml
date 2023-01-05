@@ -7,9 +7,9 @@ on:
         type: string
     outputs:
       artifact_name:
-        value: "${{ jobs.build.outputs.artifact_name }}"
+        value: "${{ jobs.build-current.outputs.artifact_name }}"
       artifact_file:
-        value: "${{ jobs.build.outputs.artifact_file }}"
+        value: "${{ jobs.build-current.outputs.artifact_file }}"
   push:
     branches:
       - "**"
@@ -19,8 +19,8 @@ on:
       - "devel"
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  build-current:
+    runs-on: ubuntu-20.04
     outputs:
       artifact_name: "${{ env.ARTIFACT_NAME }}"
       artifact_file: "${{ steps.pack-lxd.outputs.artifact_file }}"
@@ -35,6 +35,28 @@ jobs:
       - uses: whywaita/setup-lxd@v1
         with:
           lxd_version: latest/stable
+
+#      - name: Fix LXD
+#        run: |
+#          ip address
+#          ip route list
+#          lxc profile create network
+#          cat <<EOF | lxc profile edit network
+#          devices:
+#            eth0:
+#              name: eth0
+#              parent: lxdbr0
+#              nictype: bridged
+#              type: nic
+#          EOF
+#          ip route list
+#          ifconfig lxdbr0
+
+      - name: Debug LXD
+        run: |
+          lxc version
+          lxc network set lxdbr0 ipv4.nat true
+          lxc network list
       - name: Build LXD image
         run: |
           ./build/build-LXD.sh
@@ -44,7 +66,7 @@ jobs:
           . ./build/buildlib.sh
           ARTIFACT_FILE="NextCloudPi_LXD_${VERSION//\//_}"
           lxc image export -q ncp/"${version}" "output/${ARTIFACT_FILE}"
-          echo "::set-output name=artifact_file::${ARTIFACT_FILE}.tar.gz"
+          echo "artifact_file=${ARTIFACT_FILE}.tar.gz" >> $GITHUB_OUTPUT
       - name: upload LXD image to artifact store
         uses: actions/upload-artifact@v3
         with:
@@ -53,7 +75,7 @@ jobs:
           if-no-files-found: error
 
   build-previous:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     outputs:
       artifact_name: "${{ env.ARTIFACT_NAME }}"
       artifact_file: "${{ steps.pack-lxd.outputs.artifact_file }}"
@@ -61,6 +83,7 @@ jobs:
     env:
       VERSION: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
       ARTIFACT_NAME: "${{ github.run_id }}-lxd-image-previous"
+      LXD_EXTRA_PROFILE: network
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -93,10 +116,21 @@ jobs:
           echo "Previous version is '$version'"
           git checkout "$version"
           echo "VERSION=$version" >> "$GITHUB_ENV"
-          echo "::set-output name=previous_version::${version}"
+          echo "previous_version=${version}" >> $GITHUB_OUTPUT
       - uses: whywaita/setup-lxd@v1
         with:
           lxd_version: latest/stable
+      - name: Fix LXD
+        run: |
+          lxc profile create network
+          cat <<EOF | lxc profile edit network
+          devices:
+            eth0:
+              name: eth0
+              parent: lxdbr0
+              nictype: bridged
+              type: nic
+          EOF
       - name: Build LXD image
         run: |
           ./build/build-LXD.sh
@@ -106,7 +140,7 @@ jobs:
           . ./build/buildlib.sh
           ARTIFACT_FILE="NextCloudPi_LXD_${VERSION//\//_}"
           lxc image export -q ncp/"${version}" "output/${ARTIFACT_FILE}"
-          echo "::set-output name=artifact_file::${ARTIFACT_FILE}.tar.gz"
+          echo "artifact_file=${ARTIFACT_FILE}.tar.gz" >> $GITHUB_OUTPUT
       - name: upload LXD image to artifact store
         uses: actions/upload-artifact@v3
         with:
@@ -117,7 +151,7 @@ jobs:
   update-previous:
     needs:
       - build-previous
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     outputs:
       artifact_name: "${{ env.ARTIFACT_NAME }}"
       artifact_file: "${{ steps.pack-lxd.outputs.artifact_file }}"
@@ -128,6 +162,17 @@ jobs:
       - uses: whywaita/setup-lxd@v1
         with:
           lxd_version: latest/stable
+      - name: Fix LXD
+        run: |
+          lxc profile create network
+          cat <<EOF | lxc profile edit network
+          devices:
+            eth0:
+              name: eth0
+              parent: lxdbr0
+              nictype: bridged
+              type: nic
+          EOF
       - name: Checkout code
         uses: actions/checkout@v3
         with:
@@ -185,7 +230,7 @@ jobs:
           lxc publish -q ncp -f --alias "ncp/updated"
           mkdir -p output
           lxc image export -q "ncp/updated" "output/${ARTIFACT_FILE}"
-          echo "::set-output name=artifact_file::${ARTIFACT_FILE}.tar.gz"
+          echo "artifact_file=${ARTIFACT_FILE}.tar.gz" >> $GITHUB_OUTPUT
       - name: upload LXD image to artifact store
         uses: actions/upload-artifact@v3
         with:
@@ -193,23 +238,14 @@ jobs:
           path: "output/${{ steps.pack-lxd.outputs.artifact_file }}"
           if-no-files-found: error
 
-  test:
+  test-fresh-install:
     needs:
-      - build
-      - update-previous
-    strategy:
-      matrix:
-        build:
-          - source: install
-            artifact_name: ${{ needs.build.outputs.artifact_name }}
-            artifact_file: ${{ needs.build.outputs.artifact_file }}
-          - source: update
-            artifact_name: ${{ needs.update-previous.outputs.artifact_name }}
-            artifact_file: ${{ needs.update-previous.outputs.artifact_file }}
-      fail-fast: false
-    runs-on: ubuntu-latest
+      - build-current
+    runs-on: ubuntu-20.04
     env:
       VERSION: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+      ARTIFACT_NAME: ${{ needs.build-current.outputs.artifact_name }}
+      ARTIFACT_FILE: ${{ needs.build-current.outputs.artifact_file }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -218,6 +254,16 @@ jobs:
       - uses: whywaita/setup-lxd@v1
         with:
           lxd_version: latest/stable
+      - name: Fix LXD
+        run: |
+          lxc profile create network
+          cat <<EOF | lxc profile edit network
+          devices:
+            eth0:
+              name: eth0
+              network: lxdbr0
+              type: nic
+          EOF
       - name: Setup Firefox
         uses: browser-actions/setup-firefox@latest
       - name: Setup GeckoDriver
@@ -227,12 +273,87 @@ jobs:
       - name: download LXD image from artifact store
         uses: actions/download-artifact@v3
         with:
-          name: ${{ matrix.build.artifact_name }}
+          name: ${{ env.ARTIFACT_NAME }}
       - name: Launch ncp container
         run: |
           set -x
           lxc delete -q -f ncp || true
-          lxc image import -q "./${{ matrix.build.artifact_file }}" --alias "ncp/test"
+          lxc image import -q "./${ARTIFACT_FILE?}" --alias "ncp/test"
+          systemd-run --user --scope -p "Delegate=yes" lxc launch -q "ncp/test" ncp
+          lxc exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
+          sleep 30
+          ip="$(lxc list -c n4 -f csv | grep '^ncp' | cut -d ',' -f2)"
+          ip="${ip/% *}"
+          echo "${ip} nextcloudpi.local" | sudo tee /etc/hosts
+      - name: Test LXD Image
+        working-directory: ./tests
+        run: |
+          lxc exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
+          python activation_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
+            echo "Activation test failed!"
+            echo "Geckodriver logs:"
+            tail -n 20 geckodriver.log >&2 || true
+            echo "================"
+            echo "ncp.log: "
+            lxc exec ncp -- "tail -n20 /var/log/ncp.log"
+            exit 1
+          }
+          python system_tests.py --non-interactive || {
+            echo "System test failed!"
+            exit 1
+          }
+          python nextcloud_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
+            echo "Nextcloud test failed!"
+            echo "Geckodriver logs:"
+            tail -n 20 geckodriver.log >&2 || true
+            echo "================"
+            echo "ncp.log: "
+            lxc exec ncp -- "tail -n20 /var/log/ncp.log"
+            exit 1
+          }
+          lxc stop ncp
+
+  test-update:
+    needs:
+      - update-previous
+    runs-on: ubuntu-20.04
+    env:
+      VERSION: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+      ARTIFACT_NAME: ${{ needs.update-previous.outputs.artifact_name }}
+      ARTIFACT_FILE: ${{ needs.update-previous.outputs.artifact_file }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: "${{ env.VERSION }}"
+      - uses: whywaita/setup-lxd@v1
+        with:
+          lxd_version: latest/stable
+      - name: Fix LXD
+        run: |
+          lxc profile create network
+          cat <<EOF | lxc profile edit network
+          devices:
+            eth0:
+              name: eth0
+              network: lxdbr0
+              type: nic
+          EOF
+      - name: Setup Firefox
+        uses: browser-actions/setup-firefox@latest
+      - name: Setup GeckoDriver
+        uses: browser-actions/setup-geckodriver@latest
+      - name: Setup Selenium
+        run: pip install selenium
+      - name: download LXD image from artifact store
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ env.ARTIFACT_NAME }}
+      - name: Launch ncp container
+        run: |
+          set -x
+          lxc delete -q -f ncp || true
+          lxc image import -q "./${ARTIFACT_FILE?}" --alias "ncp/test"
           systemd-run --user --scope -p "Delegate=yes" lxc launch -q "ncp/test" ncp
           lxc exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
           sleep 30
