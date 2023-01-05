@@ -67,6 +67,14 @@ rm /usr/local/etc/ncp-config.d/nc-nextcloud.cfg    # armbian overlay is ro
 systemctl restart mysqld # TODO this shouldn't be necessary, but somehow it's needed in Debian 9.6. Fixme
 install_app    ncp.sh
 run_app_unsafe bin/ncp/CONFIG/nc-init.sh
+echo 'Moving data directory to a more sensible location'
+mkdir -p /opt/ncdata
+[[ -f "/usr/local/etc/nc-datadir.cfg" ]] || {
+  should_rm_datadir_cfg=true
+  cp etc/ncp-config.d/nc-datadir.cfg /usr/local/etc/nc-datadir.cfg
+}
+run_app_unsafe bin/ncp/CONFIG/nc-datadir.sh
+[[ -z "$should_rm_datadir_cfg" ]] || rm /usr/local/etc/nc-datadir.cfg
 rm /.ncp-image
 
 # skip on Armbian / Vagrant / LXD ...
