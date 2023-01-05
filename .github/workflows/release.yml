@@ -283,7 +283,7 @@ jobs:
             docker tag "thecalcaholic/ncp-internal-${arch}:${{ github.run_id }}" "ownyourbits/nextcloudpi-${arch}:${version?}"
             docker tag "ownyourbits/nextcloudpi-${arch}:${version?}" "ownyourbits/nextcloudpi-${arch}:latest"
             docker push "ownyourbits/nextcloudpi-${arch}:${version?}"
-            docker push "ownyourbits/nextcloudpi-${arch}:latest"
+            [[ "$version" =~ ^v[0-9]+'.'[0-9]+'.'[0-9]+$ ]] && docker push "ownyourbits/nextcloudpi-${arch}:latest"
           done
 
           docker manifest create ownyourbits/nextcloudpi:${version?} \
@@ -294,6 +294,10 @@ jobs:
 
       - name: Create manifest and push as latest to docker hub
         run: |
+          [[ "$version" =~ ^v[0-9]+'.'[0-9]+'.'[0-9]+$ ]] || {
+            echo "not tagging latest - is a pre-/beta-release"
+            exit 0
+          }
           docker manifest create ownyourbits/nextcloudpi:latest \
           ownyourbits/nextcloudpi-armhf:latest \
           ownyourbits/nextcloudpi-x86:latest \
