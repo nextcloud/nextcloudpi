@@ -7,10 +7,10 @@
 #
 # More at https://ownyourbits.com/
 #
-
+# shellcheck disable=SC1091
 source /usr/local/etc/library.sh
 
-set -e$DBG
+set -e"$DBG"
 
 
 if is_docker
@@ -22,7 +22,7 @@ then
   [[ "$ALLOW_UPDATE_SCRIPT" == "1" ]] || exit 1
 fi
 
-CONFDIR=/usr/local/etc/ncp-config.d/
+CONFDIR=/usr/local/etc/ncp-config.d
 UPDATESDIR=updates
 
 # don't make sense in a docker container
@@ -68,7 +68,7 @@ fi
 pgrep -x "apt|apt-get" &>/dev/null && { echo "apt is currently running. Try again later";  exit 1; }
 
 cp etc/library.sh /usr/local/etc/
-
+# shellcheck disable=SC1091
 source /usr/local/etc/library.sh
 
 mkdir -p "$CONFDIR"
@@ -76,7 +76,7 @@ mkdir -p "$CONFDIR"
 # prevent installing some ncp-apps in the containerized versions
 if is_docker || is_lxc; then
   for opt in $EXCL_DOCKER; do
-    touch $CONFDIR/$opt.cfg
+    touch "$CONFDIR"/"$opt".cfg
   done
 fi
 
@@ -167,7 +167,7 @@ chown -R www-data:     /var/www/nextcloud/apps/nextcloudpi
 # remove unwanted ncp-apps for containerized versions
 if is_docker || is_lxc; then
   for opt in $EXCL_DOCKER; do
-    rm $CONFDIR/$opt.cfg
+    rm "$CONFDIR"/"$opt".cfg
     find /usr/local/bin/ncp -name "$opt.sh" -exec rm '{}' \;
   done
 fi
@@ -189,6 +189,7 @@ is_active_app nc-autoupdate-nc && run_app nc-autoupdate-nc
 start_notify_push
 
 # Refresh ncp config values
+# shellcheck disable=SC1091
 source /usr/local/etc/library.sh
 
 # check dist-upgrade
