@@ -45,19 +45,19 @@ close_summary
 ##
 
 open_summary "Nextcloud configuration"
-sudo -u www-data php /var/www/nextcloud/occ config:list system
+sudo -u www-data php /var/www/nextcloud/occ config:list system 2>&1 || true
 close_summary
 
 ##
 
 open_summary "HTTPd logs"
-tail -20 /var/log/apache2/error.log
+tail -20 /var/log/apache2/error.log 2>&1 || true
 close_summary
 
 ##
 
 open_summary "Database logs"
-tail -20 /var/log/mysql/*.log
+tail -20 /var/log/mysql/*.log 2>&1 || true
 close_summary
 
 ##
@@ -66,7 +66,7 @@ DATADIR="$( grep datadirectory /var/www/nextcloud/config/config.php |
               awk '{ print $3 }' | grep -oP "[^']*[^']" | head -1 )"
 
 open_summary "Nextcloud logs"
-tail -20 "$DATADIR"/nextcloud.log
+tail -20 "$DATADIR"/nextcloud.log 2>&1 || true
 close_summary
 
 # License

@@ -30,14 +30,17 @@ jobs:
     env:
       VERSION: "${{ inputs.git_ref || github.ref }}"
       ARCH: "${{ inputs.arch || 'x86' }}"
+      LOG_DCKR: "\\033[1;34mDCKR::\\033[0m"
+      LOG_NCP: "\\033[1;36m~NCP::\\033[0m"
+      LOG_CICD: "\\033[1;35mCICD::\\033[0m"
+      LOG_TEST: "\\033[1;33mTEST::\\033[0m"
+      LOG_DIAG: "\\033[1;31mDIAG::\\033[0m"
     steps:
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
       - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v2
 
       - name: Checkout code
         uses: actions/checkout@v3
@@ -66,7 +69,14 @@ jobs:
     env:
       VERSION: "${{ inputs.git_ref || github.ref }}"
       ARCH: "${{ inputs.arch || 'x86' }}"
+      LOG_DCKR: "\\033[1;34mDCKR::\\033[0m"
+      LOG_NCP: "\\033[1;36m~NCP::\\033[0m"
+      LOG_CICD: "\\033[1;35mCICD::\\033[0m"
+      LOG_TEST: "\\033[1;33mTEST::\\033[0m"
+      LOG_DIAG: "\\033[1;31mDIAG::\\033[0m"
     steps:
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v2
       - name: Checkout code
         uses: actions/checkout@v3
         with:
@@ -101,9 +111,12 @@ jobs:
           }
           echo "Previous version is '$version'"
           echo "PREVIOUS_VERSION=$version" >> "$GITHUB_ENV"
-          echo "::set-output name=previous_version::${version}"
+          echo "previous_version=${version}" >> $GITHUB_OUTPUT
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v2
+
+      - name: Enable qemu SUID
+        run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes --credential yes
 
       - name: Start ncp container
         run: |
@@ -117,10 +130,10 @@ jobs:
   
           RUN echo 'Mutex posixsem' >> /etc/apache2/mods-available/ssl.conf
           EOF
-          docker build . -t ncp-testing -f Dockerfile
+          docker buildx build --platform "$platform" . -t ncp-testing -f Dockerfile
           popd
           rm -r "$tmpdir"
-          docker run --platform "$platform" -v ncdata:/data -d --rm -p 8443:443 -p 4443:4443 --name nextcloudpi ncp-testing
+          docker run --platform "$platform" -v ncdata:/data -d --rm -p 8443:443 -p 4443:4443 --name nextcloudpi ncp-testing localhost
 
       - name: Checkout code
         uses: actions/checkout@v3
@@ -137,10 +150,10 @@ jobs:
       - name: Activate container
         working-directory: ./tests
         run: |
-          docker logs nextcloudpi |& awk '{ print "CONTAINER::" $0 }'
-          echo 'CONTAINER:: =========='
-          docker logs -f nextcloudpi |& awk '{ print "CONTAINER::" $0 }' &
-          docker exec nextcloudpi bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
+          docker logs nextcloudpi                                    |& awk "{ print \"${LOG_DCKR} \" \$0 }"
+          echo -e "${LOG_DCKR} =========="
+          docker logs -f nextcloudpi                                 |& awk "{ print \"${LOG_DCKR} \" \$0 }" &
+          docker exec nextcloudpi bash -c 'tail -f /var/log/ncp.log' |& awk "{ print \"${LOG_NCP} \" \$0 }" &
           cmd=(python activation_tests.py --no-gui localhost 8443 4443)
           [[ "${ARCH?}" == "x86" ]] || { sleep 30; cmd+=(--timeout 300); }
           
@@ -148,10 +161,13 @@ jobs:
           for attempt in {1..3}
           do
             echo ":: Activation Tests (attempt $attempt/3) ::"
-            "${cmd[@]}" || {
-              tail -n 20 geckodriver.log >&2 || true
-              echo "CI:: Activation test (attempt $attempt/3) failed!"
-              docker exec nextcloudpi bash /usr/local/bin/ncp-diag
+            "${cmd[@]}"                                               |& awk "{ print \"${LOG_TEST} \" \$0 }"
+            [[ ${PIPESTATUS[0]} -eq 0 ]] || {
+              tail -n 20 geckodriver.log                              |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
+              echo -e "${LOG_CICD} Activation test (attempt $attempt/3) failed!"
+              docker exec nextcloudpi bash /usr/local/bin/ncp-diag    |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
+              cat /proc/sys/fs/binfmt_misc/qemu-aarch64               |& awk "{ print \"${LOG_DIAG} (qemu-aarch64) \" \$0 }" || true
+              cat /proc/sys/fs/binfmt_misc/qemu-arm                   |& awk "{ print \"${LOG_DIAG} (qemu-arm) \" \$0 }" || true
               sleep 12
               continue
             }
@@ -159,21 +175,24 @@ jobs:
             break
           done
           [[ "$success" == "true" ]] || {
-            echo "CI:: Activation test failed in all attempts!"
+            echo -e "${LOG_CICD} Activation test failed in all attempts!"
+            echo "Creating error report..."
+            docker exec nextcloudpi bash /usr/local/bin/ncp-report > error-report.txt
+            echo "done."
             exit 1
           }
-          echo "CI:: Activation test successful"
+          echo -e "${LOG_CICD} Activation test successful"
       - name: Start new container
         run: |
           docker stop nextcloudpi
-          docker run -d -v ncdata:/data --rm -p 8443:443 -p 4443:4443 --name nextcloudpi thecalcaholic/ncp-internal-${ARCH?}:${{ github.run_id }}-testing
+          docker run -d -v ncdata:/data --rm -p 8443:443 -p 4443:4443 --name nextcloudpi thecalcaholic/ncp-internal-${ARCH?}:${{ github.run_id }}-testing localhost
       - name: Integration Tests
         working-directory: ./tests
         run: |
-          docker logs nextcloudpi |& awk '{ print "CONTAINER::" $0 }'
-          echo 'CONTAINER:: =========='
-          docker logs -f nextcloudpi |& awk '{ print "CONTAINER::" $0 }' &
-          docker exec nextcloudpi bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
+          docker logs nextcloudpi                                    |& awk "{ print \"${LOG_DCKR} \" \$0 }"
+          echo -e "${LOG_DCKR} =========="
+          docker logs -f nextcloudpi                                 |& awk "{ print \"${LOG_DCKR} \" \$0 }" &
+          docker exec nextcloudpi bash -c 'tail -f /var/log/ncp.log' |& awk "{ print \"${LOG_NCP} \" \$0 }" &
           [[ "${ARCH?}" == "x86" ]] || sleep 30
           
           sleep 20
@@ -182,8 +201,9 @@ jobs:
           for attempt in {1..3}
           do
             echo ":: System Tests (attempt $attempt/3) ::"
-            python system_tests.py --no-ping --non-interactive || {
-              echo "CI:: System test (attempt $attempt) failed!"
+            python system_tests.py --no-ping --non-interactive || awk "{ print \"${LOG_TEST} \" \$0 }"
+            [[ ${PIPESTATUS[0]} -eq 0 ]] || {
+              echo -e "${LOG_CICD} System test (attempt $attempt) failed!"
               sleep 12
               continue
             }
@@ -191,18 +211,19 @@ jobs:
             break
           done
           [[ "$success" == "true" ]] || {
-            echo "CI:: System test failed in all attempts!"
+            echo -e "${LOG_CICD} System test failed in all attempts!"
             exit 1
           }
-          echo "CI:: System test successful"
+          echo -e "${LOG_CICD} System test successful"
           
           success=false
           for attempt in {1..3}
           do
             echo ":: Nextcloud Tests (attempt $attempt/3) ::"
-            python nextcloud_tests.py --no-gui localhost 8443 4443 || {
-              tail -n 20 geckodriver.log >&2 || true
-              echo "CI:: Nextcloud test (attempt $attempt/3) failed!"
+            python nextcloud_tests.py --no-gui localhost 8443 4443   |& awk "{ print \"${LOG_TEST} \" \$0 }" 
+            [[ ${PIPESTATUS[0]} -eq 0 ]] || {
+              tail -n 20 geckodriver.log                             |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
+              echo -e "${LOG_CICD} Nextcloud test (attempt $attempt/3) failed!"
               sleep 12
               continue
             }
@@ -210,12 +231,21 @@ jobs:
             break
           done
           [[ "$success" == "true" ]] || {
-            echo "CI:: Nextcloud test failed in all attempts!"
+            echo -e "${LOG_CICD} Nextcloud test failed in all attempts!"
+            echo -e "${LOG_CICD} Creating error report..."
+            docker exec nextcloudpi bash /usr/local/bin/ncp-report > error-report.txt
+            echo -e "${LOG_CICD} done."
             exit 1
           }
-          echo "CI:: Nextcloud test successful"
+          echo -e "${LOG_CICD} Nextcloud test successful"
           
-          docker exec nextcloudpi bash /usr/local/bin/ncp-diag
+          docker exec nextcloudpi bash /usr/local/bin/ncp-diag |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+      - name: "Upload error report"
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ github.run_id }}-docker-${{ env.ARCH }}-update-test-error-report
+          path: tests/error-report.txt
 
   test:
     needs:
@@ -224,16 +254,21 @@ jobs:
     env:
       VERSION: "${{ inputs.git_ref || github.ref }}"
       ARCH: "${{ inputs.arch || 'x86' }}"
+      LOG_DCKR: "\\033[1;34mDCKR::\\033[0m"
+      LOG_NCP: "\\033[1;36m~NCP::\\033[0m"
+      LOG_CICD: "\\033[1;35mCICD::\\033[0m"
+      LOG_TEST: "\\033[1;33mTEST::\\033[0m"
+      LOG_DIAG: "\\033[1;31mDIAG::\\033[0m"
     steps:
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v2
 
       - name: Login to docker
         run: |
           echo "${{ secrets.DOCKER_PASSWORD_INTERNAL }}" | docker login -u "${{ secrets.DOCKER_LOGIN_INTERNAL }}" --password-stdin
       - name: Start ncp container
         run: |
-          docker run -d --rm -p 8443:443 -p 4443:4443 --name nextcloudpi thecalcaholic/ncp-internal-${ARCH?}:${{ github.run_id }}-testing
+          docker run -d --rm -p 8443:443 -p 4443:4443 --name nextcloudpi thecalcaholic/ncp-internal-${ARCH?}:${{ github.run_id }}-testing localhost
 
       - name: Checkout code
         uses: actions/checkout@v3
@@ -250,10 +285,10 @@ jobs:
       - name: Integration Tests
         working-directory: ./tests
         run: |
-          docker logs nextcloudpi |& awk '{ print "CONTAINER::" $0 }'
-          echo 'CONTAINER:: =========='
-          docker logs -f nextcloudpi |& awk '{ print "CONTAINER::" $0 }' &
-          docker exec nextcloudpi bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
+          docker logs nextcloudpi                                    |& awk "{ print \"${LOG_DCKR} \" \$0 }"
+          echo -e "${LOG_DCKR} =========="
+          docker logs -f nextcloudpi                                 |& awk "{ print \"${LOG_DCKR} \" \$0 }" &
+          docker exec nextcloudpi bash -c 'tail -f /var/log/ncp.log' |& awk "{ print \"${LOG_NCP} \" \$0 }" &
           cmd=(python activation_tests.py --no-gui localhost 8443 4443)
           [[ "${ARCH?}" == "x86" ]] || cmd+=(--timeout 300)
           
@@ -261,10 +296,11 @@ jobs:
           for attempt in {1..3}
           do
             echo ":: Activation Tests (attempt $attempt/3) ::"
-            "${cmd[@]}" || {
-              tail -n 20 geckodriver.log >&2 || true
-              echo "CI:: Activation test (attempt $attempt/3) failed!"
-              docker exec nextcloudpi bash /usr/local/bin/ncp-diag
+            "${cmd[@]}"                                              |& awk "{ print \"${LOG_TEST} \" \$0 }"
+            [[ ${PIPESTATUS[0]} -eq 0 ]] || {
+              tail -n 20 geckodriver.log >&2                         |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
+              echo -e "${LOG_CICD} Activation test (attempt $attempt/3) failed!"
+              docker exec nextcloudpi bash /usr/local/bin/ncp-diag   |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
               sleep 12
               continue
             }
@@ -272,17 +308,18 @@ jobs:
             break
           done
           [[ "$success" == "true" ]] || {
-            echo "CI:: Activation test failed in all attempts!"
+            echo -e "${LOG_CICD} Activation test failed in all attempts!"
             exit 1
           }
-          echo "CI:: Activation test successful"
+          echo -e "${LOG_CICD} Activation test successful"
           
           success=false
           for attempt in {1..3}
           do
             echo ":: System Tests (attempt $attempt/3) ::"
-            python system_tests.py --no-ping --non-interactive || {
-              echo "CI:: System test (attempt $attempt) failed!"
+            python system_tests.py --no-ping --non-interactive       |& awk "{ print \"${LOG_TEST} \" \$0 }" 
+            [[ ${PIPESTATUS[0]} -eq 0 ]] || {
+              echo -e "${LOG_CICD} System test (attempt $attempt) failed!"
               sleep 5
               continue
             }
@@ -290,18 +327,19 @@ jobs:
             break
           done
           [[ "$success" == "true" ]] || {
-            echo "CI:: System test failed in all attempts!"
+            echo -e "${LOG_CICD} System test failed in all attempts!"
             exit 1
           }
-          echo "CI:: System test successful"
+          echo -e "${LOG_CICD} System test successful"
           
           success=false
           for attempt in {1..3}
           do
             echo ":: Nextcloud Tests (attempt $attempt/3) ::"
-            python nextcloud_tests.py --no-gui localhost 8443 4443 || {
-              tail -n 20 geckodriver.log >&2 || true
-              echo "CI:: Nextcloud test (attempt $attempt/3) failed!"
+            python nextcloud_tests.py --no-gui localhost 8443 4443   |& awk "{ print \"${LOG_TEST} \" \$0 }" 
+            [[ ${PIPESTATUS[0]} -eq 0 ]] || {
+              tail -n 20 geckodriver.log >&2                         |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
+              echo -e "${LOG_CICD} Nextcloud test (attempt $attempt/3) failed!"
               sleep 5
               continue
             }
@@ -309,10 +347,19 @@ jobs:
             break
           done
           [[ "$success" == "true" ]] || {
-            echo "CI:: Nextcloud test failed in all attempts!"
+            echo -e "${LOG_CICD} Nextcloud test failed in all attempts!"
+            echo -e "${LOG_CICD} Creating error report..."
+            docker exec nextcloudpi bash /usr/local/bin/ncp-report > error-report.txt
+            echo -e "${LOG_CICD} done."
             exit 1
           }
-          echo "CI:: Nextcloud test successful"
+          echo -e "${LOG_CICD} Nextcloud test successful"
           
-          docker exec nextcloudpi bash /usr/local/bin/ncp-diag
+          docker exec nextcloudpi bash /usr/local/bin/ncp-diag |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
 
+      - name: "Upload error report"
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ github.run_id }}-docker-${{ env.ARCH }}-install-test-error-report
+          path: tests/error-report.txt
