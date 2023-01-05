@@ -21,13 +21,13 @@ install()
 }
 
 tmpl_opcache_dir() {
-  DATADIR="$(get_nc_config_value datadirectory)"
+  DATADIR="$(get_nc_config_value datadirectory || find_app_param nc-datadir DATADIR)"
   echo -n "${DATADIR}/.opcache"
   #[[ $( stat -fc%d / ) == $( stat -fc%d "$DATADIR" ) ]] && echo "/tmp" || echo "${DATADIR}/.opcache"
 }
 
 tmpl_tmp_upload_dir() {
-  DATADIR="$(get_nc_config_value datadirectory)"
+  DATADIR="$(get_nc_config_value datadirectory || find_app_param nc-datadir DATADIR)"
   echo -n "${DATADIR}/tmp"
 }
 
@@ -101,7 +101,7 @@ configure()
 
   ## COPY
   cd /var/www/nextcloud
-  save_maintenance_mode
+  [[ "$BUILD_MODE" == 1 ]] || save_maintenance_mode
 
   echo "moving data directory from ${SRCDIR} to ${BASEDIR}..."
 
@@ -124,13 +124,17 @@ configure()
   chown www-data: "${DATADIR}"
 
   # datadir
-  sed -i "s|'datadirectory' =>.*|'datadirectory' => '${DATADIR}',|" "${NCDIR?}"/config/config.php
-  ncc config:system:set logfile --value="${DATADIR}/nextcloud.log"
+  ncc config:system:set datadirectory  --value="${DATADIR}" \
+  || sed -i "s|'datadirectory' =>.*|'datadirectory' => '${DATADIR}',|" "${NCDIR?}"/config/config.php
+  
+  ncc config:system:set logfile --value="${DATADIR}/nextcloud.log" \
+  || sed -i "s|'logfile' =>.*|'logfile' => '${DATADIR}/nextcloud.log',|" "${NCDIR?}"/config/config.php
   set_ncpcfg datadir "${DATADIR}"
 
   # tmp upload dir
   create_tmp_upload_dir
-  ncc config:system:set tempdirectory --value "$DATADIR/tmp"
+  ncc config:system:set tempdirectory --value "$DATADIR/tmp" \
+  || sed -i "s|'tempdirectory' =>.*|'tempdirectory' => '${DATADIR}/tmp',|" "${NCDIR?}"/config/config.php
   sed -i "s|^;\?upload_tmp_dir =.*$|uploadtmp_dir = ${DATADIR}/tmp|"  /etc/php/"${PHPVER?}"/cli/php.ini
   sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = ${DATADIR}/tmp|" /etc/php/"${PHPVER}"/fpm/php.ini
   sed -i "s|^;\?sys_temp_dir =.*$|sys_temp_dir = ${DATADIR}/tmp|"     /etc/php/"${PHPVER}"/fpm/php.ini
@@ -143,7 +147,7 @@ configure()
   [[ -f /etc/fail2ban/jail.local ]] && \
   sed -i "s|logpath  =.*nextcloud.log|logpath  = ${DATADIR}/nextcloud.log|" /etc/fail2ban/jail.local
 
-  restore_maintenance_mode
+  [[ "$BUILD_MODE" == 1 ]] || restore_maintenance_mode
 
   (
     . "${BINDIR?}/SYSTEM/metrics.sh"
