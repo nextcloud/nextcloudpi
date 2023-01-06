@@ -18,9 +18,6 @@ install()
 {
   apt-get update
   apt-get install -y --no-install-recommends pigz
-
-  ln -s /usr/local/bin/ncp-backup /usr/local/bin/ncp/ncp-backup
-  chmod +x /usr/local/bin/ncp/ncp-backup
 }
 
 configure()
