@@ -9,11 +9,7 @@
 # More at https://ownyourbits.com/2017/02/13/nextcloud-ready-raspberry-pi-image/
 #
 
-install()
-{
-  ln -s /usr/local/bin/ncp-restore /usr/local/bin/ncp/ncp-restore
-  chmod +x /usr/local/bin/ncp/ncp-restore
-}
+install() { :; }
 
 configure()
 {
