@@ -11,7 +11,6 @@
 
 install()
 {
-  ln -s /usr/local/bin/ncp-restore /usr/local/bin/ncp/ncp-restore
   chmod +x /usr/local/bin/ncp/ncp-restore
 }
 
