@@ -179,8 +179,9 @@ trap rollback INT TERM HUP ERR
 ####################
 echo "Fix permissions..."
 chown -R www-data:www-data nextcloud
-find nextcloud/ -type d -exec chmod 750 {} \;
-find nextcloud/ -type f -exec chmod 640 {} \;
+
+# this command sets the permissions to 750 for directories and to 640 for files
+chmod -R a-x,u=rwX,g=rX,o= nextcloud
 
 # upgrade
 ####################
