@@ -79,8 +79,14 @@ function is_port_open()
   # Checks both port 80 & 443 for IPv4/IPv6 and returns the result or [N/A] [N/A]
   if ! [[ "$TYPE" =~ ^(0|4|6)$ ]]
   then
-    echo "Invalid type parameter: $TYPE"
-    return 1
+    if [[ -n "$TYPE" ]]
+    then
+      echo "No type parameter provided"
+      return 1
+    else
+      echo "Invalid type parameter: $TYPE"
+      return 1
+    fi
   elif [[ "$TYPE" == 0 ]]
   then
     echo -e "[N/A]\n[N/A]"
