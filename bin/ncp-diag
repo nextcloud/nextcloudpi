@@ -1,6 +1,5 @@
 #!/bin/bash
-
-# NextCloudPi diagnostics report
+# NextcloudPi diagnostics report
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -76,24 +75,56 @@ function is_port_open()
   # than 450 request p/second a month, unless my calculations are wrong.
   # Thank you :pray: from Victor-ray, S. https://github.com/ZendaiOwl
   local -r PORTURL="https://checkport.zendai.net.eu.org/check"
-  local TYPE="${1?}" RESULT=("")
+  local TYPE="${1?}" IPType
   # Checks both port 80 & 443 for IPv4/IPv6 and returns the result or [N/A] [N/A]
-  test "$TYPE" -eq 4 && RESULT=("$(curl --silent --max-time 4 --ipv4 "$PORTURL" | jq -r '."80",."443"' )")
-  test "$TYPE" -eq 6 && RESULT=("$(curl --silent --max-time 4 --ipv6 "$PORTURL" | jq -r '."80",."443"' )")
-  test "$TYPE" -eq 0 && RESULT=("[N/A]" "[N/A]")
-  echo -n "${RESULT[@]}"
+  if ! [[ "$TYPE" =~ ^(0|4|6)$ ]]
+  then
+    echo "Invalid type parameter: $TYPE" 2>&1
+    return 1
+  elif [[ "$TYPE" == 0 ]]
+  then
+    echo -e "[N/A]\n[N/A]"
+  else
+    IPType="--ipv6"
+    [[ "$TYPE" -eq 6 ]] || IPType="--ipv4"
+    curl --silent --max-time 4 "$IPType" "$PORTURL" | jq -r '."80",."443"'
+  fi
 }
-
 publicIPv4=$(curl --silent --max-time 4 --ipv4 "https://ipv4.icanhazip.com" 2>/dev/null) || unset publicIPv4
 echo "Public IPv4|${publicIPv4:-"not found"}"
 publicIPv6=$(curl --silent --max-time 4 --ipv6 "https://ipv6.icanhazip.com" 2>/dev/null) || unset publicIPv6
 echo "Public IPv6|${publicIPv6:-"not found"}"
 
-test -n "$publicIPv4" && IPv4PORTS=("$(is_port_open 4)") || IPv4PORTS=("$(is_port_open 0)")
-test -n "$publicIPv6" && IPv6PORTS=("$(is_port_open 6)") || IPv6PORTS=("$(is_port_open 0)")
+# Reads each line as an array index element to input into IPv4PORTS array
+if [[ -n "$publicIPv4" ]]
+then
+  mapfile -t IPv4PORTS < <(is_port_open 4)
+else
+  mapfile -t IPv4PORTS < <(is_port_open 0)
+fi
 
-test "${IPv4PORTS[0]}" == "open" || test "${IPv6PORTS[0]}" == "open" && PORT80="open" || PORT80="closed"
-test "${IPv4PORTS[1]}" == "open" || test "${IPv6PORTS[1]}" == "open" && PORT443="open" || PORT443="closed"
+# Reads each line as an array index element to input into IPv6PORTS array
+if [[ -n "$publicIPv6" ]]
+then
+  mapfile -t IPv6PORTS < <(is_port_open 6)
+else
+  mapfile -t IPv6PORTS < <(is_port_open 0)
+fi
+
+# Checks if Port 80 is open on IPv4 or IPv6
+if [[ "${IPv4PORTS[0]}" == "open" ]] || [[ "${IPv6PORTS[0]}" == "open" ]]
+then
+  PORT80="open"
+else
+  PORT80="closed"
+fi
+# Checks if Port 443 is open on IPv4 or IPv6
+if [[ "${IPv4PORTS[1]}" == "open" ]] || [[ "${IPv6PORTS[1]}" == "open" ]]
+then
+  PORT443="open"
+else
+  PORT443="closed"
+fi
 
 echo "Port 80|$PORT80"
 echo "Port 443|$PORT443"
