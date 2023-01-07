@@ -61,7 +61,7 @@ then
   target="$NCDIR/data"
   [[ -d "$target" ]] && {
     target="$NCDIR/.data_$(date -I)"
-    echo "DATA CONFLICT! Your old '$NCDIR/data' directory can be found in '$target' after the restore script is done. The new '$NCDIR/data' directory will be restored from the backup."
+    echo "DATA CONFLICT! Your old '$NCDIR/data' directory can be found in '$target' after the restore script is done. The new '$NCDIR/data' directory will be restored from the backup. You can manually merge these directories with this command (run nc-fix-permissions and nc-scan afterwards): cp -rn '$target/'* '$target/'.[!.]* '$NCDIR/data/'"
   }
   echo "Restoring old '$NCDIR/data' to '$target'..."
   mv -T "$DATA_BKP_DIR" "$target"
