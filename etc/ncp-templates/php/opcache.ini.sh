@@ -12,13 +12,12 @@ then
   TMP_DIR="/tmp"
 elif is_docker
 then
-  DATADIR="$(get_nc_config_value datadirectory || echo '/data/ncdata/data')"
+  DATADIR="/data-ro/ncdata/data"
+  [[ "$DOCKERBUILD" == 1 ]] || DATADIR="$(get_nc_config_value datadirectory || echo '/data/ncdata/data')"
   TMP_DIR="$DATADIR/.opcache"
 else
   TMP_DIR="$(source "${BINDIR}/CONFIG/nc-datadir.sh"; tmpl_opcache_dir)"
 fi
-
-mkdir -p "$TMP_DIR"
 
 cat <<EOF
 zend_extension=opcache.so
