@@ -58,9 +58,12 @@ mv -T "$TMPDIR"/nextcloud "$NCDIR" || { echo "Error restoring base files"; exit 
 
 if [[ -n "$DATA_BKP_DIR" ]]
 then
-  echo "Restoring $NCDIR/data..."
   target="$NCDIR/data"
-  [[ -d "$target" ]] && target="$NCDIR/.data_$(date)"
+  [[ -d "$target" ]] && {
+    target="$NCDIR/.data_$(date -I)"
+    echo "DATA CONFLICT! Your old '$NCDIR/data' directory can be found in '$target' after the restore script is done. The new '$NCDIR/data' directory will be restored from the backup."
+  }
+  echo "Restoring old '$NCDIR/data' to '$target'..."
   mv -T "$DATA_BKP_DIR" "$target"
 fi
 
@@ -105,8 +108,8 @@ NUMFILES=2
 if [[ $( ls "$TMPDIR" | wc -l ) -eq $NUMFILES ]]; then
 
   [[ -e "$DATADIR" ]] && {
-    echo "backing up existing $DATADIR to $DATADIR-$( date "+%m-%d-%y" )..."
-    mv "$DATADIR" "$DATADIR-$( date "+%m-%d-%y" )" || exit 1
+    echo "backing up existing $DATADIR to $DATADIR-$( date -I )..."
+    mv "$DATADIR" "$DATADIR-$( date -I )" || exit 1
   }
 
   echo "restore datadir to $DATADIR..."
