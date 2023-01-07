@@ -79,16 +79,10 @@ function is_port_open()
   # Checks both port 80 & 443 for IPv4/IPv6 and returns the result or [N/A] [N/A]
   if ! [[ "$TYPE" =~ ^(0|4|6)$ ]]
   then
-    if [[ -n "$TYPE" ]]
-    then
-      echo "No type parameter provided"
-      return 1
-    else
-      echo "Invalid type parameter: $TYPE"
-      return 1
-    fi
+    return 1
   elif [[ "$TYPE" == 0 ]]
   then
+    # Public IPv4/6 is not available
     echo -e "[N/A]\n[N/A]"
   else
     IPType="--ipv6"
@@ -121,6 +115,9 @@ fi
 if [[ "${IPv4PORTS[0]}" == "open" ]] || [[ "${IPv6PORTS[0]}" == "open" ]]
 then
   PORT80="open"
+elif [[ "${IPv4PORTS[0]}" == "[N/A]" ]] && [[ "${IPv6PORTS[0]}" == "[N/A]" ]]
+then
+  PORT80="[N/A]"
 else
   PORT80="closed"
 fi
@@ -128,6 +125,9 @@ fi
 if [[ "${IPv4PORTS[1]}" == "open" ]] || [[ "${IPv6PORTS[1]}" == "open" ]]
 then
   PORT443="open"
+elif [[ "${IPv4PORTS[1]}" == "[N/A]" ]] && [[ "${IPv6PORTS[1]}" == "[N/A]" ]]
+then
+  PORT443="[N/A]"
 else
   PORT443="closed"
 fi
