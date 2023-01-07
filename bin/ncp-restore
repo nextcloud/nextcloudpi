@@ -132,8 +132,10 @@ else
   echo "No datadir found in backup"
 
   [[ -e "$DATADIR" ]] || {
-    echo "${DATADIR} not found. Resetting to ${NCDIR}/data"
-    DATADIR="$NCDIR"/data
+    echo -n "${DATADIR} not found."
+    DATADIR="/data/ncdata/data"
+    is_docker || DATADIR="/opt/data"
+    echo "Resetting to ${DATADIR}"
     mkdir -p "${DATADIR}"
     touch "${DATADIR}"/.ocdata
     chown -R www-data: "${DATADIR}"
