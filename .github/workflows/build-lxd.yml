@@ -267,7 +267,9 @@ jobs:
       - name: Setup Firefox
         uses: browser-actions/setup-firefox@latest
       - name: Setup GeckoDriver
-        uses: browser-actions/setup-geckodriver@latest
+        uses: ChlodAlejandro/setup-geckodriver@latest
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Selenium
         run: pip install selenium
       - name: download LXD image from artifact store
@@ -342,7 +344,9 @@ jobs:
       - name: Setup Firefox
         uses: browser-actions/setup-firefox@latest
       - name: Setup GeckoDriver
-        uses: browser-actions/setup-geckodriver@latest
+        uses: ChlodAlejandro/setup-geckodriver@latest
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Selenium
         run: pip install selenium
       - name: download LXD image from artifact store
