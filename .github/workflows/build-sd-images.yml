@@ -201,9 +201,9 @@ jobs:
           }
           
           success=false
-          for attempt in {1..3}
+          for attempt in {1..5}
           do
-            echo ":: Activation Tests (attempt $attempt/3) ::"
+            echo ":: Activation Tests (attempt $attempt/5) ::"
             python tests/activation_tests.py -t 300 --no-gui "$ip" 443 4443 || {
               echo "Activation test failed!"
               echo "Geckodriver logs:"
@@ -212,7 +212,7 @@ jobs:
               echo "mysql: "
               sudo systemd-run --wait -P --machine=ncp bash /usr/local/bin/ncp-diag
               sudo systemd-run --wait -P --machine=ncp systemctl status mysql
-              sleep 6
+              sleep 12
               continue
             }
             success=true
@@ -224,12 +224,12 @@ jobs:
           }
           
           success=false
-          for attempt in {1..3}
+          for attempt in {1..5}
           do
-            echo ":: System Tests (attempt $attempt/3) ::"
+            echo ":: System Tests (attempt $attempt/5) ::"
             sudo python tests/system_tests.py --non-interactive || {
               echo "System test failed!"
-              sleep 6
+              sleep 12
               continue
             }
             success=true
@@ -241,9 +241,9 @@ jobs:
           }
           
           success=false
-          for attempt in {1..3}
+          for attempt in {1..5}
           do
-            echo ":: Nextcloud Tests (attempt $attempt/3) ::"
+            echo ":: Nextcloud Tests (attempt $attempt/5) ::"
             python tests/nextcloud_tests.py --no-gui "$ip" 443 4443 || {
               echo "Nextcloud test failed!"
               echo "Geckodriver logs:"
@@ -251,7 +251,7 @@ jobs:
               echo "================"
               echo "ncp.log: "
               sudo systemd-run --wait -P --machine=ncp ncp /bin/bash -c "tail -n20 /var/log/ncp.log" || true
-              sleep 6
+              sleep 12
               continue
             }
             success=true

@@ -88,6 +88,7 @@ CREATE USER '$DBADMIN'@'localhost' IDENTIFIED BY '$DBPASSWD';
 GRANT ALL PRIVILEGES ON nextcloud.* TO $DBADMIN@localhost;
 EXIT
 EOFMYSQL
+# shellcheck disable=SC2181
 [ $? -ne 0 ] && { echo "Error configuring nextcloud database"; exit 1; }
 
 mysql -u root nextcloud <  "$TMPDIR"/nextcloud-sqlbkp_*.bak || { echo "Error restoring nextcloud database"; exit 1; }
@@ -157,9 +158,9 @@ install_template "php/opcache.ini.sh" "/etc/php/${PHPVER}/mods-available/opcache
 mkdir -p "$DATADIR/tmp"
 chown www-data: "$DATADIR/tmp"
 ncc config:system:set tempdirectory --value "$DATADIR/tmp"
-sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $DATADIR/tmp|" /etc/php/${PHPVER}/cli/php.ini
-sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $DATADIR/tmp|" /etc/php/${PHPVER}/fpm/php.ini
-sed -i "s|^;\?sys_temp_dir =.*$|sys_temp_dir = $DATADIR/tmp|"     /etc/php/${PHPVER}/fpm/php.ini
+sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $DATADIR/tmp|" "/etc/php/${PHPVER}/cli/php.ini"
+sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = $DATADIR/tmp|" "/etc/php/${PHPVER}/fpm/php.ini"
+sed -i "s|^;\?sys_temp_dir =.*$|sys_temp_dir = $DATADIR/tmp|"     "/etc/php/${PHPVER}/fpm/php.ini"
 
 # logs
 ncc config:system:set logfile --value="$DATADIR/nextcloud.log"
