@@ -32,7 +32,10 @@ prepare_dirs                   # tmp cache output
 ## BUILD NCP
 
 lxc delete -f ncp 2>/dev/null || true
-systemd-run --user --scope -p "Delegate=yes" lxc launch -q images:debian/bullseye ncp
+LXC_LAUNCH=(lxc launch -p default)
+[[ -n "$LXD_EXTRA_PROFILE" ]] && LXC_LAUNCH+=(-p "$LXD_EXTRA_PROFILE")
+LXC_LAUNCH+=(-q 'images:debian/bullseye' ncp)
+systemd-run --user --scope -p "Delegate=yes" "${LXC_LAUNCH[@]}"
 lxc config device add ncp buildcode disk source="$(pwd)" path=/build
 lxc exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
 lxc exec ncp -- bash -c 'CODE_DIR=/build DBG=x bash /build/install.sh'

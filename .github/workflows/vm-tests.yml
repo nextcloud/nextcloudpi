@@ -81,7 +81,7 @@ jobs:
             version="${version%-*-*}"
           fi
           echo "Previous version is '$version'"
-          echo "::set-output name=previous_version::${version}"
+          echo "previous_version=${version}" >> $GITHUB_OUTPUT
       - run: |
           set -x
           mkdir -p ./.ssh
@@ -387,7 +387,7 @@ jobs:
     steps:
       - name: Delete old snapshots
         run: |
-          for snapshot in $(hcloud image list -t snapshot -o noheader -o columns=id | head -n -20)
+          for snapshot in $(hcloud image list -t snapshot -o noheader -o columns=id | head -n -16)
           do
             echo "Deleting snapshot '$snapshot'..."
             hcloud image delete "$snapshot"

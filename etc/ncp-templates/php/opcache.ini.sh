@@ -5,11 +5,16 @@ source /usr/local/etc/library.sh
 
 PHPVER="${PHPVER?ERROR: PHPVER variable unset!}"
 
-if [[ "$1" == "--defaults" ]] || ! [[ -f "${BINDIR}/CONFIG/nc-datadir.sh" ]]
+if [[ "$1" == "--defaults" ]] || ! [[ -f "${BINDIR}/CONFIG/nc-datadir.sh" ]] && ! is_docker
 then
   echo "INFO: Restoring template to default settings" >&2
 
   TMP_DIR="/tmp"
+elif is_docker
+then
+  DATADIR="/data-ro/ncdata/data"
+  [[ "$DOCKERBUILD" == 1 ]] || DATADIR="$(get_nc_config_value datadirectory || echo '/data/ncdata/data')"
+  TMP_DIR="$DATADIR/.opcache"
 else
   TMP_DIR="$(source "${BINDIR}/CONFIG/nc-datadir.sh"; tmpl_opcache_dir)"
 fi
