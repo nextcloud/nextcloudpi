@@ -1,3 +1,24 @@
+## [v1.50.5](https://github.com/nextcloud/nextcloudpi/tree/v1.50.5) (2023-01-08) Various fixes and update to NC 24.0.8
+
+### Changes
+
+- Move default location of data directory out of nextcloud directory (partial fix for [#1417](https://github.com/nextcloud/nextcloudpi/issues/1417))
+- ssh: Add option to add ssh user to sudo group
+- Disable root user for login
+- Install various templates on docker container start (improves config persistence)
+
+### Fixes
+
+- Keep old data directory if present (partial fix for [#1417](https://github.com/nextcloud/nextcloudpi/issues/1417))
+- Temporarily move and restore user files during nc-restore (partial fix for [#1417](https://github.com/nextcloud/nextcloudpi/issues/1417))
+- Improve robustness of the setup process for notify_push
+
+### Development related
+
+- build-docker.yml: Fix update-test on architectures other than x86
+- Many fixes and improvements for the CICD pipelines
+- Add basic integration test for nc-backup
+
 ## [v1.50.4](https://github.com/nextcloud/nextcloudpi/tree/v1.50.4) (2022-12-17) Installer Fix
 
 - Don't install deprecated PHP packages during installation (`php-json`)
