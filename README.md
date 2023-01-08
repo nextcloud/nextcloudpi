@@ -24,11 +24,11 @@ Find the full documentation at [docs.nextcloudpi.com](http://docs.nextcloudpi.co
 
  * Debian/Raspbian 11 Bullseye
  * Nextcloud 24.0.8
- * Apache 2.4.25, with HTTP2 enabled
- * PHP 7.4
+ * Apache, with HTTP2 enabled
+ * PHP 8.1
  * MariaDB 10
  * Redis memory cache
- * ncp-config for easy setup ( RAM logs, USB drive and more )
+ * ncp-config TUI for easy setup ( RAM logs, USB drive and more )
  * Automatic redirection to HTTPS
  * ACPU PHP cache
  * PHP Zend OPcache enabled with file cache
