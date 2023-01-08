@@ -39,7 +39,12 @@ configure()
   echo -e "$PASS\n$CONFIRM" | passwd "$USER" || return 1
 
   # Reenable pi user
-  usermod "$USER" -s /bin/bash
+  chsh -s /bin/bash "$USER"
+
+  [[ "$SUDO" == "yes" ]] && {
+    usermod -aG sudo "$USER"
+    echo "Enabled sudo for $USER"
+  }
 
   # Check for insecure default pi password ( taken from old jessie method )
   # TODO Due to Debian bug #1003151 with mkpasswd this feature is not working properly at the moment - https://www.mail-archive.com/debian-bugs-dist@lists.debian.org/msg1837456.html
