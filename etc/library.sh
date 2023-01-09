@@ -638,13 +638,14 @@ function apt_install() {
 # Installs package(s) using the package manager and pre-configured options
 # Return codes
 # 0: Install completed
-# 1: Error during installation
-# 2: Missing package argument
+# 1: Coudn't update apt list
+# 2: Error during installation
+# 3: Missing package argument
 installPKG() {
   if [[ ! "$#" -eq 1 ]]
   then
     log 2 "Requires 1 argument: [PKG(s) to install]"
-    return 1
+    return 3
   else
     local -r PKG="$1" OPTIONS='--quiet --assume-yes --no-show-upgraded --auto-remove=true --no-install-recommends'
     local -r SUDOUPDATE="sudo apt-get $OPTIONS update" \
@@ -671,7 +672,7 @@ installPKG() {
         return 0
       else
         log 2 "Something went wrong during installation"
-        return 1
+        return 2
       fi
     else
       # Do not double-quote $ROOTUPDATE
