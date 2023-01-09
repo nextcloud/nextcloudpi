@@ -131,21 +131,13 @@ function addPATHS() {
   done
 }
 
-# Adds PATHS to check if they exist and store existing ones in NCP_PATHS array
-addPATHS '/var/www/nextcloud' \
-         '/usr/local/bin/ncp' \
-         '/usr/local/bin/ncc' \
-         '/usr/local/etc/ncp-config.d' \
-         '/usr/local/etc/ncp.cfg' \
-         'etc/ncp.cfg'
-
 # Fetches the stored directoris from the array variable
 function getPATHS() {
   printf '%s\n' "${NCP_PATHS[@]}"
 }
 
 # Gets the name at the end of a path string after stripping the path 
-getPathName() {
+function getPathName() {
   if [[ ! "$#" -eq 1 ]]
   then
     log 2 "Requires 1 argument: [Path to get the name at the end of]"
@@ -172,6 +164,14 @@ function getPATHIndex() {
     fi
   done  
 }
+
+# Adds PATHS to check if they exist and store existing ones in NCP_PATHS array
+addPATHS '/var/www/nextcloud' \
+         '/usr/local/bin/ncp' \
+         '/usr/local/bin/ncc' \
+         '/usr/local/etc/ncp-config.d' \
+         '/usr/local/etc/ncp.cfg' \
+         'etc/ncp.cfg'
 
 # Locate & export the NCP PATH's environment variables
 # If 2 paths exist the last one added in addPATHS,
