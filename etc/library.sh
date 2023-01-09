@@ -8,50 +8,55 @@
 # More at ownyourbits.com
 #
 
-# Tests for nc-config.d directory and exits 1 if not found
-if test -d '/usr/local/etc/ncp-config.d'
+# Tests for nc-config.d directory before export and exits with code 1 if not found
+if [[ -d '/usr/local/etc/ncp-config.d' ]]
 then
-  export CFGDIR=/usr/local/etc/ncp-config.d
+  export CFGDIR='/usr/local/etc/ncp-config.d'
 else
-  echo "/usr/local/etc/ncp-config.d directory was not found" 2>&1 && exit 1
+  echo "Directory not found: ncp-config.d"
+  exit 1
 fi
-
-if test -d '/usr/local/bin/ncp'
+# Tests for ncp directory before export and exits with code 1 if not found
+if [[ -d '/usr/local/bin/ncp' ]]
 then
-  export BINDIR=/usr/local/bin/ncp
+  export BINDIR='/usr/local/bin/ncp'
 else
-  echo "/usr/local/bin/ncp directory was not found" 2>&1 && exit 1
+  echo "Directory not found: ncp"
+  exit 1
 fi
-
-if test -d '/var/www/nextcloud'
+# Tests for nextcloud directory before export and exits with code 1 if not found
+if [[ -d '/var/www/nextcloud' ]]
 then
-  export NCDIR=/var/www/nextcloud
+  export NCDIR='/var/www/nextcloud'
 else
-  echo "/var/www/nextcloud directory was not found" 2>&1 && exit 1
+  echo "Directory not found: nextcloud"
+  exit 1
 fi
-
-if test -f '/usr/local/bin/ncc'
+# Tests for ncc script file before export and exits with code 1 if not found 
+if [[ -f '/usr/local/bin/ncc' ]]
 then
-  export ncc=/usr/local/bin/ncc
+  export ncc='/usr/local/bin/ncc'
 else
-  echo "/usr/local/bin/ncc file was not found" 2>&1 && exit 1
+  echo "File not found: ncc"
+  exit 1
 fi
-
-if test -f 'etc/ncp.cfg'
+# Tests for ncp.cfg file before export and exits with code 1 if not found
+if [[ -f 'etc/ncp.cfg' ]]
 then
-  export NCPCFG=etc/ncp.cfg
-elif test -f /usr/local/etc/ncp.cfg
+  export NCPCFG='etc/ncp.cfg'
+elif [[ -f '/usr/local/etc/ncp.cfg' ]]
 then
-  export NCPCFG=/usr/local/etc/ncp.cfg
+  export NCPCFG='/usr/local/etc/ncp.cfg'
 else
-  echo "ncp.cfg file was not found" 2>&1 && exit 1
+  echo "File not found: ncp.cfg"
+  exit 1
 fi
 
 ARCH="$(dpkg --print-architecture)"
 export ARCH
-[[ "$ARCH" =~ ^(armhf|arm)$ ]] && ARCH="armv7"
-[[ "$ARCH" == "arm64" ]] && ARCH=aarch64
-[[ "$ARCH" == "amd64" ]] && ARCH=x86_64
+[[ "$ARCH" =~ ^(armhf|arm)$ ]] && ARCH='armv7'
+[[ "$ARCH" == "arm64" ]] && ARCH='aarch64'
+[[ "$ARCH" == "amd64" ]] && ARCH='x86_64'
 
 # Prevent systemd pager from blocking script execution
 export SYSTEMD_PAGER=
@@ -79,10 +84,98 @@ export INIT_SYSTEM
   #[letsencrypt_2]=13 [hostname]=14 [trusted_domain_1]=20 [trusted_domain_2]=21 [trusted_domain_3]=22
 #)
 
-command -v jq &>/dev/null || {
-  apt-get update
-  apt-get install -y --no-install-recommends jq
+# A log function that uses log levels for logging different outputs
+# Log levels
+# -2: Debug
+# -1: Info
+#  0: Success
+#  1: Warning
+#  2: Error
+function log() {
+  if [[ "$#" -gt 0 ]]
+  then
+    local -r LOGLEVEL="$1" TEXT="${*:2}" Z='\e[0m'
+    if [[ "$LOGLEVEL" =~ [(-2)-2] ]]
+    then
+      case "$LOGLEVEL" in
+        -2)
+          local -r CYAN='\e[1;36m' PFX="DEBUG"
+          printf "${CYAN}%s${Z}: %s\n" "$PFX" "$TEXT"
+          ;;
+        -1)
+          local -r BLUE='\e[1;34m' PFX="INFO"
+          printf "${BLUE}%s${Z}: %s\n" "$PFX" "$TEXT"
+          ;;
+        0)
+          local -r GREEN='\e[1;32m' PFX="SUCCESS"
+          printf "${GREEN}%s${Z}: %s\n" "$PFX" "$TEXT"
+          ;;
+        1)
+          local -r YELLOW='\e[1;33m' PFX="WARNING"
+          printf "${YELLOW}%s${Z}: %s\n" "$PFX" "$TEXT"
+          ;;
+        2)
+          local -r RED='\e[1;31m' PFX="ERROR"
+          printf "${RED}%s${Z}: %s\n" "$PFX" "$TEXT"
+          ;;
+      esac
+    else
+      log 2 "Invalid log level: [Debug: -2|Info: -1|Success: 0|Warning: 1|Error: 2]"
+    fi
+  fi
 }
+
+# Checks if a command exists on the system
+# Return status codes
+# 0: Command exists on the system
+# 1: Command is unavailable on the system
+# 2: Missing command argument to check
+function hasCMD() {
+  if [[ "$#" -eq 1 ]]
+  then
+    local -r CHECK="$1"
+    if command -v "$CHECK" &>/dev/null
+    then
+      return 0
+    else
+      return 1
+    fi
+  else
+    return 2
+  fi
+}
+
+# Checks if a package exists on the system
+# Return status codes
+# 0: Package is installed
+# 1: Package is not installed but is available in apt
+# 2: Package is not installed and is not available in apt
+# 3: Missing package argument to check
+function hasPKG() {
+  if [[ "$#" -eq 1 ]]
+  then
+    local -r CHECK="$1"
+    if dpkg-query --status "$CHECK" &>/dev/null
+    then
+      return 0
+    elif apt-cache show "$CHECK" &>/dev/null
+    then
+      return 1
+    else
+      return 2
+    fi
+  else
+    return 3
+  fi
+}
+
+# Checks if jq command is available
+# If not install it using function for single installs
+if ! hasCMD jq
+then
+  installPKG jq
+fi
+
 
 NCLATESTVER=$(jq -r '.nextcloud_version' < "$NCPCFG")
 PHPVER=$(     jq -r '.php_version'       < "$NCPCFG")
@@ -103,8 +196,8 @@ function configure_app() {
   local backtitle="NextcloudPi installer configuration"
   local ret=1
 
-  # checks
-  type dialog &>/dev/null || { echo "please, install dialog for interactive configuration" 2>&1 && return 1; }
+  # Checks for dialog and installs it if not available
+  type dialog &>/dev/null || installPKG dialog
   [[ -f "$cfg_file" ]]    || return 0;
 
   local cfg len
@@ -131,7 +224,7 @@ function configure_app() {
   local DIALOG_ESC=255
   local res=0
 
-  while test "$res" != 1 && test "$res" != 250; do
+  while [[ "$res" != 1 && "$res" != 250 ]]; do
     local value
     value="$( dialog --ok-label "Start" \
                      --no-lines --backtitle "$backtitle" \
@@ -149,7 +242,7 @@ function configure_app() {
 
         for (( i = 0 ; i < len ; i++ )); do
           # check for invalid characters
-          grep -q '[\\&#;'"'"'`|*?~<>^"()[{}$&[:space:]]' <<< "${ret_vals[$i]}" && { echo "Invalid characters in field ${vars[$i]}"; return 1; }
+          grep -q '[\\&#;'"'"'`|*?~<>^"()[{}$&[:space:]]' <<< "${ret_vals[$i]}" && { log 2 "Invalid characters in field ${vars[$i]}"; return 1; }
 
           cfg="$(jq ".params[$i].value = \"${ret_vals[$i]}\"" <<<"$cfg")"
         done
@@ -157,15 +250,15 @@ function configure_app() {
         break
         ;;
       "$DIALOG_ERROR")
-        echo "ERROR!$value"
+        log 2 "$value"
         break
         ;;
       "$DIALOG_ESC")
-        echo "ESC pressed."
+        log -1 "ESC was pressed."
         break
         ;;
       *)
-        echo "Return code was $res"
+        log -1 "Return code was $res"
         break
         ;;
     esac
@@ -179,11 +272,14 @@ function configure_app() {
 function set-nc-domain() {
   local domain="${1?}"
   domain="$(sed 's|http.\?://||;s|\(/.*\)||' <<<"$domain")"
-  if ! ping -c1 -w1 -q "$domain" &>/dev/null; then
+  if ! ping -c1 -w1 -q "$domain" &>/dev/null
+  then
     unset domain
   fi
-  if [[ "$domain" == "" ]] || is_an_ip "$domain"; then
-    echo "warning: No domain found. Defaulting to '$(hostname)'"
+  if [[ "$domain" == "" ]] || is_an_ip "$domain"
+  then
+    # Warning
+    log 1 "No domain found. Defaulting to '$(hostname)'"
     domain="$(hostname)"
   fi
   local proto
@@ -192,7 +288,8 @@ function set-nc-domain() {
   local url="${proto}://${domain%*/}"
   [[ "$2" == "--no-trusted-domain" ]] || ncc config:system:set trusted_domains 3 --value="${domain%*/}"
   ncc config:system:set overwrite.cli.url --value="${url}/"
-  if is_ncp_activated && is_app_enabled notify_push; then
+  if is_ncp_activated && is_app_enabled notify_push
+  then
     ncc config:system:set trusted_proxies 11 --value="127.0.0.1"
     ncc config:system:set trusted_proxies 12 --value="::1"
     ncc config:system:set trusted_proxies 13 --value="$domain"
@@ -215,18 +312,20 @@ function start_notify_push() {
 function run_app() {
   local ncp_app="$1" script
   script="$(find "$BINDIR" -name "$ncp_app".sh | head -1)"
-  [[ -f "$script" ]] || { echo "file $script not found"; return 1; }
+  [[ -f "$script" ]] || { log 2 "File not found: $script"; return 1; }
   run_app_unsafe "$script"
 }
 
 function find_app_param_num() {
-  local script="${1?}" param_id="${2?}" ncp_app cfg len p_id
+  local script="${1?}" param_id="${2?}" cfg_file ncp_app cfg len p_id
   ncp_app="$(basename "$script" .sh)"
-  local cfg_file="$CFGDIR/$ncp_app.cfg"
-  [[ -f "$cfg_file" ]] && {
+  cfg_file="${CFGDIR}/${ncp_app}.cfg"
+  if [[ -f "$cfg_file" ]]
+  then
     cfg="$( cat "$cfg_file" )"
     len="$(jq '.params | length' <<<"$cfg")"
-    for (( i = 0 ; i < len ; i++ )); do
+    for (( i = 0 ; i < len ; i++ ))
+    do
       p_id="$(jq -r ".params[$i].id"    <<<"$cfg")"
       if [[ "$param_id" == "$p_id" ]]
       then
@@ -234,8 +333,9 @@ function find_app_param_num() {
         return 0
       fi
     done
-  }
-  return 1
+  else
+    return 1
+  fi
 }
 
 function install_template() {
@@ -253,7 +353,7 @@ function install_template() {
         fi
     fi
   } || {
-    echo "ERROR: Could not generate $target from template $template. Rolling back..."
+    log 2 "Could not generate $target from template $template. Rolling back..."
     mv "$bkp" "$target"
     return 1
   }
@@ -274,15 +374,15 @@ function run_app_unsafe() {
   local script="$1" ncp_app cfg_file
   ncp_app="$(basename "$script" .sh)"
   cfg_file="${CFGDIR}/${ncp_app}.cfg"
-  local log=/var/log/ncp.log
+  local log='/var/log/ncp.log'
 
-  [[ -f "$script" ]] || { echo "file $script not found" && return 1; }
+  [[ -f "$script" ]] || { log 2 "File not found: $script"; return 1; }
 
   touch               "$log"
   chmod 640           "$log"
   chown root:www-data "$log"
 
-  echo "Running $ncp_app"
+  log -1 "Running $ncp_app"
   echo "[ $ncp_app ] ($(date))" >> "$log"
 
   # read script
@@ -318,7 +418,7 @@ function is_active_app() {
   local cfg_file="${CFGDIR}/${ncp_app}.cfg"
 
   [[ -f "$script" ]] || script="$(find "$BINDIR" -name "$ncp_app".sh | head -1)"
-  [[ -f "$script" ]] || { echo "file $script not found" && return 1; }
+  [[ -f "$script" ]] || { log 2 "File not found: $script"; return 1; }
 
   # function
   unset is_active
@@ -384,7 +484,7 @@ function install_app() {
   unset install
   # shellcheck disable=SC1090
   source "$script"
-  echo "Installing $ncp_app"
+  log -1 "Installing $ncp_app"
   (install)
 }
 
@@ -402,10 +502,10 @@ function cleanup_script() {
 
 function persistent_cfg() {
   local SRC="$1" DST="${2:-/data/etc/$( basename "$SRC" )}"
-  test -e /changelog.md && return        # trick to disable in dev docker
+  [[ -e /changelog.md ]] && return        # trick to disable in dev docker
   mkdir -p "$( dirname "$DST" )"
-  test -e "$DST" || {
-    echo "Making $SRC persistent ..."
+  [[ -e "$DST" ]] || {
+    log -1 "Making $SRC persistent ..."
     mv    "$SRC" "$DST"
   }
   rm -rf "$SRC"
@@ -505,6 +605,74 @@ function clear_password_fields() {
 function apt_install() {
   apt-get update --allow-releaseinfo-change
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends -o Dpkg::Options::=--force-confdef -o Dpkg::Options::="--force-confold" "$@"
+}
+
+# Installs a single package using the package manager and pre-configured options
+# Return codes
+# 1: Missing package argument
+# 0: Install completed
+installPKG() {
+  if [[ ! "$#" -eq 1 ]]
+  then
+    log 2 "Requires 1 argument: [PKG to install]"
+    return 1
+  else
+    local -r PKG="$1" OPTIONS='--quiet --assume-yes --no-show-upgraded --auto-remove=true --no-install-recommends'
+    local -r SUDOUPDATE="sudo apt-get $OPTIONS update" SUDOINSTALL="sudo apt-get $OPTIONS install" \
+             ROOTUPDATE="apt-get $OPTIONS update" ROOTINSTALL="apt-get $OPTIONS install"
+    if [[ ! "$EUID" -eq 0 ]]
+    then
+      # Do not double-quote $SUDOUPDATE
+      $SUDOUPDATE &>/dev/null
+      log -1 "Installing $PKG"
+      # Do not double-quote $SUDOINSTALL
+      $SUDOINSTALL "$PKG"
+      log 0 "Installed $PKG"
+      return 0
+    else
+      # Do not double-quote $ROOTUPDATE
+      $ROOTUPDATE &>/dev/null
+      log -1 "Installing $PKG"
+      # Do not double-quote $ROOTINSTALL
+      $ROOTINSTALL "$PKG"
+      log 0 "Installed $PKG"
+      return 0
+    fi
+  fi
+}
+
+# Installs multiple packages using the package manager and pre-configured options
+# Return codes
+# 1: Missing package arguments
+# 0: Install completed
+installPackages() {
+  if [[ "$#" -eq 0 ]]
+  then
+    log 2 "Requires argument(s): [Package(s) to install]"
+    return 1
+  else
+  local -r PACKAGES="$*" OPTIONS='--quiet --assume-yes --no-show-upgraded --auto-remove=true --no-install-recommends'
+  local -r SUDOUPDATE="sudo apt-get $OPTIONS update" SUDOINSTALL="sudo apt-get $OPTIONS install" \
+           ROOTUPDATE="apt-get $OPTIONS update" ROOTINSTALL="apt-get $OPTIONS install"
+    if [[ ! "$EUID" -eq 0 ]]
+    then
+      # Do not double-quote $SUDOUPDATE
+      $SUDOUPDATE &>/dev/null
+      log -1 "Installing $PACKAGES"
+      # Do not double-quote $SUDOINSTALL
+      $SUDOINSTALL "$PACKAGES"
+      log 0 "Installed $PACKAGES"
+      return 0
+    else
+      # Do not double-quote $ROOTUPDATE
+      $ROOTUPDATE &>/dev/null
+      log -1 "Installing $PACKAGES"
+      # Do not double-quote $ROOTINSTALL
+      $ROOTINSTALL "$PACKAGES"
+      log 0 "Installed $PACKAGES"
+      return 0
+    fi
+  fi
 }
 
 function is_docker() {
