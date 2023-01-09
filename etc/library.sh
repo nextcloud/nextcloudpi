@@ -93,55 +93,132 @@ function hasPKG() {
   fi
 }
 
-# Tests for nc-config.d directory before export and exits with code 1 if not found
-if [[ -d '/usr/local/etc/ncp-config.d' ]]
-then
-  export CFGDIR='/usr/local/etc/ncp-config.d'
-else
-  log 2 "Directory not found: ncp-config.d"
-  exit 1
-fi
-# Tests for ncp directory before export and exits with code 1 if not found
-if [[ -d '/usr/local/bin/ncp' ]]
-then
-  export BINDIR='/usr/local/bin/ncp'
-else
-  log 2 "Directory not found: ncp"
-  exit 1
-fi
-# Tests for nextcloud directory before export and exits with code 1 if not found
-if [[ -d '/var/www/nextcloud' ]]
-then
-  export NCDIR='/var/www/nextcloud'
-else
-  log 2 "Directory not found: nextcloud"
-  exit 1
-fi
-# Tests for ncc script file before export and exits with code 1 if not found 
-if [[ -f '/usr/local/bin/ncc' ]]
-then
-  export ncc='/usr/local/bin/ncc'
-else
-  log 2 "File not found: ncc"
-  exit 1
-fi
-# Tests for ncp.cfg file before export and exits with code 1 if not found
-if [[ -f 'etc/ncp.cfg' ]]
-then
-  export NCPCFG='etc/ncp.cfg'
-elif [[ -f '/usr/local/etc/ncp.cfg' ]]
-then
-  export NCPCFG='/usr/local/etc/ncp.cfg'
-else
-  log 2 "File not found: ncp.cfg"
-  exit 1
-fi
 
+# Gets an array's index length
+function getLength() {
+  if ! declare -a "$1" &>/dev/null
+  then
+    log 2 "Not an array: $1"
+    return 1
+  else
+    local -r ARR="$1"
+    printf '%s' "${#ARR[@]}"
+    return 0
+  fi
+}
+
+# Converts a String to lower case
+function lowerCase() {
+  if [[ "$#" -gt 0 && -n "$*" ]]
+  then
+    printf '%s' "${*,,}"
+  else
+    log 2 "Requires argument(s): [String(s) to make lowercase]"
+  fi
+}
+
+# Checks and adds all existing nextcloudpi's PATH environment variables in an array
+NCP_PATHS=()
+function addPATHS() {
+  for i in "$@"
+  do
+    if [[ -d "$i" || -f "$i" && -e "$i" ]]
+    then
+      NCP_PATHS+=("$i")
+    else
+      log 1 "No such path | $i"
+    fi
+  done
+}
+
+# Adds PATHS to check if they exist and store existing ones in NCP_PATHS array
+addPATHS '/var/www/nextcloud' \
+         '/usr/local/bin/ncp' \
+         '/usr/local/bin/ncc' \
+         '/usr/local/etc/ncp-config.d' \
+         '/usr/local/etc/ncp.cfg' \
+         'etc/ncp.cfg'
+
+# Fetches the stored directoris from the array variable
+function getPATHS() {
+  printf '%s\n' "${NCP_PATHS[@]}"
+}
+
+# Gets the name at the end of a path string after stripping the path 
+getPathName() {
+  if [[ ! "$#" -eq 1 ]]
+  then
+    log 2 "Requires 1 argument: [Path to get the name at the end of]"
+  elif [[ ! -e "$1" ]]
+  then
+    log 2 "No such path: $1"
+  else
+    local DPATH="$1"
+    printf '%s\n' "${DPATH##*/}"
+  fi
+}
+
+# Gets an NCP_PATH variables index in NCP_PATHS array
+function getPATHIndex() {
+  local -r NCP_PATH="$1"
+  local INDEX=0
+  for i in "${NCP_PATHS[@]}"
+  do
+    if [[ ! "$NCP_PATH" == "$i" ]]
+    then
+      INDEX=$(("INDEX" + 1))
+    else
+      printf '%d' "$INDEX"
+    fi
+  done  
+}
+
+# Locate & export the NCP PATH's environment variables
+# If 2 paths exist the last one added in addPATHS,
+# will be the final one that is exported 
+for i in "${NCP_PATHS[@]}"
+do
+  PATHNAME="$(getPathName "$i")"
+  LC_PATHNAME="$(lowerCase "$PATHNAME")"
+  case "$LC_PATHNAME" in
+    'ncp-config.d')
+      log -1 "CFGDIR: $i"
+      export CFGDIR="$i"
+      ;;
+    'ncp')
+      log -1 "BINDIR: $i"
+      export BINDIR="$i"
+      ;;
+    'nextcloud')
+      log -1 "NCDIR: $i"
+      export NCDIR="$i"
+      ;;
+    'ncc')
+      log -1 "ncc: $i"
+      export ncc="$i"
+      ;;
+    'ncp.cfg')
+      log -1 "NCPCFG: $i"
+      export NCPCFG="$i"
+      ;;
+  esac
+done
+
+# Tests for NCP_PATHS environment variables and exits with code 1 if not found
+[[ -z "$CFGDIR" ]] && log 2 "CFGDIR directory was not found"; exit 1;
+[[ -z "$BINDIR" ]] && log 2 "BINDIR directory was not found"; exit 1;
+[[ -z "$NCDIR" ]]  && log 2 "NCDIR directory was not found";  exit 1;
+[[ -z "$NCPCFG" ]] && log 2 "NCPCFG directory was not found"; exit 1;
+[[ -z "$ncc" ]]    && log 2 "ncc file was not found";         exit 1;
+
+# Checks what architecture the system has
+# Tests for which one it is & sets the value to match what NCP scripts are looking for
+# Then exports it as environment variable: ARCH
 ARCH="$(dpkg --print-architecture)"
-export ARCH
 [[ "$ARCH" =~ ^(armhf|arm)$ ]] && ARCH='armv7'
-[[ "$ARCH" == "arm64" ]] && ARCH='aarch64'
-[[ "$ARCH" == "amd64" ]] && ARCH='x86_64'
+[[ "$ARCH" == "arm64" ]]       && ARCH='aarch64'
+[[ "$ARCH" == "amd64" ]]       && ARCH='x86_64'
+export ARCH
 
 # Prevent systemd pager from blocking script execution
 export SYSTEMD_PAGER=
