@@ -99,24 +99,24 @@ function log() {
     then
       case "$LOGLEVEL" in
         -2)
-          local -r CYAN='\e[1;36m' PFX="DEBUG"
-          printf "${CYAN}%s${Z}: %s\n" "$PFX" "$TEXT"
+          local -r CYAN='\e[1;36m'
+          printf "${CYAN}DEBUG${Z}: %s\n" "$TEXT"
           ;;
         -1)
-          local -r BLUE='\e[1;34m' PFX="INFO"
-          printf "${BLUE}%s${Z}: %s\n" "$PFX" "$TEXT"
+          local -r BLUE='\e[1;34m'
+          printf "${BLUE}INFO${Z}: %s\n" "$TEXT"
           ;;
         0)
-          local -r GREEN='\e[1;32m' PFX="SUCCESS"
-          printf "${GREEN}%s${Z}: %s\n" "$PFX" "$TEXT"
+          local -r GREEN='\e[1;32m'
+          printf "${GREEN}SUCCESS${Z}: %s\n" "$TEXT"
           ;;
         1)
-          local -r YELLOW='\e[1;33m' PFX="WARNING"
-          printf "${YELLOW}%s${Z}: %s\n" "$PFX" "$TEXT"
+          local -r YELLOW='\e[1;33m'
+          printf "${YELLOW}WARNING${Z}: %s\n" "$TEXT"
           ;;
         2)
-          local -r RED='\e[1;31m' PFX="ERROR"
-          printf "${RED}%s${Z}: %s\n" "$PFX" "$TEXT"
+          local -r RED='\e[1;31m'
+          printf "${RED}ERROR${Z}: %s\n" "$TEXT"
           ;;
       esac
     else
@@ -169,13 +169,80 @@ function hasPKG() {
   fi
 }
 
+# Installs a single package using the package manager and pre-configured options
+# Return codes
+# 1: Missing package argument
+# 0: Install completed
+installPKG() {
+  if [[ ! "$#" -eq 1 ]]
+  then
+    log 2 "Requires 1 argument: [PKG to install]"
+    return 1
+  else
+    local -r PKG="$1" OPTIONS='--quiet --assume-yes --no-show-upgraded --auto-remove=true --no-install-recommends'
+    local -r SUDOUPDATE="sudo apt-get $OPTIONS update" SUDOINSTALL="sudo apt-get $OPTIONS install" \
+             ROOTUPDATE="apt-get $OPTIONS update" ROOTINSTALL="apt-get $OPTIONS install"
+    if [[ ! "$EUID" -eq 0 ]]
+    then
+      # Do not double-quote $SUDOUPDATE
+      $SUDOUPDATE &>/dev/null
+      log -1 "Installing $PKG"
+      # Do not double-quote $SUDOINSTALL
+      $SUDOINSTALL "$PKG"
+      log 0 "Installed $PKG"
+      return 0
+    else
+      # Do not double-quote $ROOTUPDATE
+      $ROOTUPDATE &>/dev/null
+      log -1 "Installing $PKG"
+      # Do not double-quote $ROOTINSTALL
+      $ROOTINSTALL "$PKG"
+      log 0 "Installed $PKG"
+      return 0
+    fi
+  fi
+}
+
+# Installs multiple packages using the package manager and pre-configured options
+# Return codes
+# 1: Missing package arguments
+# 0: Install completed
+installPackages() {
+  if [[ "$#" -eq 0 ]]
+  then
+    log 2 "Requires argument(s): [Package(s) to install]"
+    return 1
+  else
+  local -r PACKAGES="$*" OPTIONS='--quiet --assume-yes --no-show-upgraded --auto-remove=true --no-install-recommends'
+  local -r SUDOUPDATE="sudo apt-get $OPTIONS update" SUDOINSTALL="sudo apt-get $OPTIONS install" \
+           ROOTUPDATE="apt-get $OPTIONS update" ROOTINSTALL="apt-get $OPTIONS install"
+    if [[ ! "$EUID" -eq 0 ]]
+    then
+      # Do not double-quote $SUDOUPDATE
+      $SUDOUPDATE &>/dev/null
+      log -1 "Installing $PACKAGES"
+      # Do not double-quote $SUDOINSTALL
+      $SUDOINSTALL "$PACKAGES"
+      log 0 "Installed $PACKAGES"
+      return 0
+    else
+      # Do not double-quote $ROOTUPDATE
+      $ROOTUPDATE &>/dev/null
+      log -1 "Installing $PACKAGES"
+      # Do not double-quote $ROOTINSTALL
+      $ROOTINSTALL "$PACKAGES"
+      log 0 "Installed $PACKAGES"
+      return 0
+    fi
+  fi
+}
+
 # Checks if jq command is available
 # If not install it using function for single installs
 if ! hasCMD jq
 then
   installPKG jq
 fi
-
 
 NCLATESTVER=$(jq -r '.nextcloud_version' < "$NCPCFG")
 PHPVER=$(     jq -r '.php_version'       < "$NCPCFG")
@@ -191,41 +258,35 @@ then
 fi
 
 function configure_app() {
-  local ncp_app="$1"
+  local ncp_app="$1" backtitle="NextcloudPi installer configuration" \
+  ret=1 var val vars vals idx cfg len
   local cfg_file="${CFGDIR}/${ncp_app}.cfg"
-  local backtitle="NextcloudPi installer configuration"
-  local ret=1
-
   # Checks for dialog and installs it if not available
   type dialog &>/dev/null || installPKG dialog
   [[ -f "$cfg_file" ]]    || return 0;
-
-  local cfg len
+  
   cfg="$( cat "$cfg_file" )"
   len="$(jq  '.params | length' <<<"$cfg")"
   [[ "$len" -eq 0 ]] && return
 
   # read cfg parameters
   local parameters=()
-  for (( i = 0 ; i < len ; i++ )); do
-    local var val
+  for (( i = 0 ; i < len ; i++ ))
+  do
     var="$(jq -r ".params[$i].id"    <<<"$cfg")"
     val="$(jq -r ".params[$i].value" <<<"$cfg")"
-    local vars+=("$var")
-    local vals+=("$val")
-    local idx=$((i+1))
+    vars+=("$var")
+    vals+=("$val")
+    idx=$((i+1))
     parameters+=("$var" "$idx" 1 "$val" "$idx" 15 60 120)
   done
 
-  # dialog
-  local DIALOG_OK=0
-  local DIALOG_CANCEL=1
-  local DIALOG_ERROR=254
-  local DIALOG_ESC=255
-  local res=0
+  # Dialog selection options
+  local DIALOG_OK=0 DIALOG_CANCEL=1 DIALOG_ERROR=254 DIALOG_ESC=255
+  local res=0 value ret_vals
 
-  while [[ "$res" != 1 && "$res" != 250 ]]; do
-    local value
+  while [[ "$res" != 1 && "$res" != 250 ]]
+  do
     value="$( dialog --ok-label "Start" \
                      --no-lines --backtitle "$backtitle" \
                      --form "Enter configuration for $ncp_app" \
@@ -238,7 +299,7 @@ function configure_app() {
         break
         ;;
       "$DIALOG_OK")
-        while read -r val; do local ret_vals+=("$val"); done <<<"$value"
+        while read -r val; do ret_vals+=("$val"); done <<<"$value"
 
         for (( i = 0 ; i < len ; i++ )); do
           # check for invalid characters
@@ -322,9 +383,9 @@ function run_app() {
 }
 
 function find_app_param_num() {
-  local script="${1?}" param_id="${2?}" cfg_file ncp_app cfg len p_id
+  local script="${1?}" param_id="${2?}" ncp_app cfg len p_id
   ncp_app="$(basename "$script" .sh)"
-  cfg_file="${CFGDIR}/${ncp_app}.cfg"
+  local cfg_file="${CFGDIR}/${ncp_app}.cfg"
   if [[ -f "$cfg_file" ]]
   then
     cfg="$( cat "$cfg_file" )"
@@ -376,18 +437,16 @@ function find_app_param() {
 
 set_app_param()
 {
-  local script="${1?}"
-  local param_id="${2?}"
-  local param_value="${3?}"
-  local ncp_app="$(basename "$script" .sh)"
-  local cfg_file="$CFGDIR/$ncp_app.cfg"
+  local script="${1?}" param_id="${2?}" param_value="${3?}" ncp_app len param_found
+  ncp_app="$(basename "$script" .sh)"
+  local cfg_file="${CFGDIR}/${ncp_app}.cfg"
 
-  grep -q '[\\&#;'"'"'`|*?~<>^"()[{}$&[:space:]]' <<< "${param_value}" && { echo "Invalid characters in field ${vars[$i]}"; return 1; }
+  grep -q '[\\&#;'"'"'`|*?~<>^"()[{}$&[:space:]]' <<< "${param_value}" && { log 2 "Invalid characters in field ${vars[$i]}"; return 1; }
 
   cfg="$(cat "$cfg_file")"
 
-  local len="$(jq  '.params | length' <<<"$cfg")"
-  local param_found=false
+  len="$(jq  '.params | length' <<<"$cfg")"
+  param_found=false
 
   for (( i = 0 ; i < len ; i++ )); do
     # check for invalid characters
@@ -451,7 +510,7 @@ function run_app_unsafe() {
 }
 
 function is_active_app() {
-  local ncp_app="$1" bin_dir="${2:-.}" cfg script
+  local ncp_app="$1" bin_dir="${2:-.}" cfg
   local script="${bin_dir}/${ncp_app}.sh"
   local cfg_file="${CFGDIR}/${ncp_app}.cfg"
 
@@ -488,10 +547,9 @@ function is_active_app() {
 
 # show an info box for a script if the INFO variable is set in the script
 function info_app() {
-  local ncp_app="$1"
+  local ncp_app="$1" cfg info infotitle
   local cfg_file="${CFGDIR}/${ncp_app}.cfg"
 
-  local cfg info infotitle
   cfg="$( cat "$cfg_file" 2>/dev/null )"
   info="$( jq -r '.info' <<<"$cfg" )"
   infotitle="$( jq -r '.infotitle' <<<"$cfg" )"
@@ -508,7 +566,7 @@ function info_app() {
 }
 
 function install_app() {
-  local ncp_app="$1" script ncp_app script
+  local ncp_app="$1" script script
 
   # $1 can be either an installed app name or an app script
   if [[ -f "$ncp_app" ]]; then
@@ -643,74 +701,6 @@ function clear_password_fields() {
 function apt_install() {
   apt-get update --allow-releaseinfo-change
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends -o Dpkg::Options::=--force-confdef -o Dpkg::Options::="--force-confold" "$@"
-}
-
-# Installs a single package using the package manager and pre-configured options
-# Return codes
-# 1: Missing package argument
-# 0: Install completed
-installPKG() {
-  if [[ ! "$#" -eq 1 ]]
-  then
-    log 2 "Requires 1 argument: [PKG to install]"
-    return 1
-  else
-    local -r PKG="$1" OPTIONS='--quiet --assume-yes --no-show-upgraded --auto-remove=true --no-install-recommends'
-    local -r SUDOUPDATE="sudo apt-get $OPTIONS update" SUDOINSTALL="sudo apt-get $OPTIONS install" \
-             ROOTUPDATE="apt-get $OPTIONS update" ROOTINSTALL="apt-get $OPTIONS install"
-    if [[ ! "$EUID" -eq 0 ]]
-    then
-      # Do not double-quote $SUDOUPDATE
-      $SUDOUPDATE &>/dev/null
-      log -1 "Installing $PKG"
-      # Do not double-quote $SUDOINSTALL
-      $SUDOINSTALL "$PKG"
-      log 0 "Installed $PKG"
-      return 0
-    else
-      # Do not double-quote $ROOTUPDATE
-      $ROOTUPDATE &>/dev/null
-      log -1 "Installing $PKG"
-      # Do not double-quote $ROOTINSTALL
-      $ROOTINSTALL "$PKG"
-      log 0 "Installed $PKG"
-      return 0
-    fi
-  fi
-}
-
-# Installs multiple packages using the package manager and pre-configured options
-# Return codes
-# 1: Missing package arguments
-# 0: Install completed
-installPackages() {
-  if [[ "$#" -eq 0 ]]
-  then
-    log 2 "Requires argument(s): [Package(s) to install]"
-    return 1
-  else
-  local -r PACKAGES="$*" OPTIONS='--quiet --assume-yes --no-show-upgraded --auto-remove=true --no-install-recommends'
-  local -r SUDOUPDATE="sudo apt-get $OPTIONS update" SUDOINSTALL="sudo apt-get $OPTIONS install" \
-           ROOTUPDATE="apt-get $OPTIONS update" ROOTINSTALL="apt-get $OPTIONS install"
-    if [[ ! "$EUID" -eq 0 ]]
-    then
-      # Do not double-quote $SUDOUPDATE
-      $SUDOUPDATE &>/dev/null
-      log -1 "Installing $PACKAGES"
-      # Do not double-quote $SUDOINSTALL
-      $SUDOINSTALL "$PACKAGES"
-      log 0 "Installed $PACKAGES"
-      return 0
-    else
-      # Do not double-quote $ROOTUPDATE
-      $ROOTUPDATE &>/dev/null
-      log -1 "Installing $PACKAGES"
-      # Do not double-quote $ROOTINSTALL
-      $ROOTINSTALL "$PACKAGES"
-      log 0 "Installed $PACKAGES"
-      return 0
-    fi
-  fi
 }
 
 function is_docker() {
