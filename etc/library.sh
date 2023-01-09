@@ -637,8 +637,9 @@ function apt_install() {
 
 # Installs package(s) using the package manager and pre-configured options
 # Return codes
-# 1: Missing package argument
 # 0: Install completed
+# 1: Error during installation
+# 2: Missing package argument
 installPKG() {
   if [[ ! "$#" -eq 1 ]]
   then
@@ -657,16 +658,28 @@ installPKG() {
       log -1 "Installing $PKG"
       # Do not double-quote $SUDOINSTALL or $PKG
       DEBIAN_FRONTEND=noninteractive $SUDOINSTALL $PKG
-      log 0 "Completed"
-      return 0
+      if [[ "$?" -eq 0 ]]
+      then
+        log 0 "Completed"
+        return 0
+      else
+        log 2 "Something went wrong during installation"
+        return 1
+      fi
     else
       # Do not double-quote $ROOTUPDATE
       $ROOTUPDATE &>/dev/null
       log -1 "Installing $PKG"
       # Do not double-quote $ROOTINSTALL or $PKG
       DEBIAN_FRONTEND=noninteractive $ROOTINSTALL $PKG
-      log 0 "Completed"
-      return 0
+      if [[ "$?" -eq 0 ]]
+      then
+        log 0 "Completed"
+        return 0
+      else
+        log 2 "Something went wrong during installation"
+        return 1
+      fi
     fi
   fi
 }
