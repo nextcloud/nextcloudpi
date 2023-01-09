@@ -322,9 +322,9 @@ fi
 NCLATESTVER=$(jq -r '.nextcloud_version' < "$NCPCFG")
 PHPVER=$(     jq -r '.php_version'       < "$NCPCFG")
 RELEASE=$(    jq -r '.release'           < "$NCPCFG")
-export NCLATESTVER PHPVER RELEASE
 # the default repo in bullseye is bullseye-security
 grep -Eh '^deb ' /etc/apt/sources.list | grep "${RELEASE}-security" > /dev/null && RELEASE="${RELEASE}-security"
+export NCLATESTVER PHPVER RELEASE
 
 # Checks if the ncc command is available
 if hasCMD ncc
