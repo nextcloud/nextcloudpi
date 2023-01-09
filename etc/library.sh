@@ -125,8 +125,7 @@ export INIT_SYSTEM
   #[letsencrypt_2]=13 [hostname]=14 [trusted_domain_1]=20 [trusted_domain_2]=21 [trusted_domain_3]=22
 #)
 
-# Checks if jq command is available
-# If not install it using function for package(s) install
+# Checks if jq command is not available & installs it using function for package(s) install
 if ! hasCMD jq
 then
   installPKG jq
@@ -139,6 +138,7 @@ export NCLATESTVER PHPVER RELEASE
 # the default repo in bullseye is bullseye-security
 grep -Eh '^deb ' /etc/apt/sources.list | grep "${RELEASE}-security" > /dev/null && RELEASE="${RELEASE}-security"
 
+# Checks if the ncc command is available
 if hasCMD ncc
 then
   NCVER="$(ncc status 2>/dev/null | grep "version:" | awk '{ print $3 }')"
