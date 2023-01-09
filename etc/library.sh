@@ -126,7 +126,7 @@ export INIT_SYSTEM
 #)
 
 # Checks if jq command is available
-# If not install it using function package(s) install
+# If not install it using function for package(s) install
 if ! hasCMD jq
 then
   installPKG jq
