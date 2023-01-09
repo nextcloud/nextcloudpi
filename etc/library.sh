@@ -295,7 +295,12 @@ function set-nc-domain() {
     ncc config:system:set trusted_proxies 13 --value="$domain"
     ncc config:system:set trusted_proxies 14 --value="$(dig +short "$domain")"
     sleep 5 # this seems to be required in the VM for some reason. We get `http2 error: protocol error` after ncp-upgrade-nc
-    ncc notify_push:setup "${url}/push"
+    for try in {1..3}
+    do
+      echo "Setup notify_push (attempt ${try}/3)"
+      ncc notify_push:setup "${url}/push"
+      sleep 5
+    done
   fi
 }
 
@@ -367,6 +372,39 @@ function find_app_param() {
 
   p_num="$(find_app_param_num "$script" "$param_id")" || return 1
   jq -r ".params[$p_num].value" < "$cfg_file"
+}
+
+set_app_param()
+{
+  local script="${1?}"
+  local param_id="${2?}"
+  local param_value="${3?}"
+  local ncp_app="$(basename "$script" .sh)"
+  local cfg_file="$CFGDIR/$ncp_app.cfg"
+
+  grep -q '[\\&#;'"'"'`|*?~<>^"()[{}$&[:space:]]' <<< "${param_value}" && { echo "Invalid characters in field ${vars[$i]}"; return 1; }
+
+  cfg="$(cat "$cfg_file")"
+
+  local len="$(jq  '.params | length' <<<"$cfg")"
+  local param_found=false
+
+  for (( i = 0 ; i < len ; i++ )); do
+    # check for invalid characters
+    [[ "$(jq -r ".params[$i].id" <<<"$cfg")" == "$param_id" ]] && {
+      cfg="$(jq ".params[$i].value = \"${param_value}\"" <<<"$cfg")"
+      param_found=true
+    }
+
+  done
+
+  [[ "$param_found" == "true" ]] || {
+    echo "Did not find parameter '${param_id}' in configuration of app '$(basename "$script" .sh)'"
+    return 1
+  }
+
+  echo "$cfg" > "$cfg_file"
+
 }
 
 # receives a script file, no security checks
