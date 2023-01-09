@@ -49,6 +49,73 @@ function log() {
   fi
 }
 
+function apt_install() {
+  apt-get update --allow-releaseinfo-change
+  DEBIAN_FRONTEND=noninteractive apt-get install --assume-yes --no-install-recommends --option Dpkg::Options::='--force-confdef' --option Dpkg::Options::='--force-confold' "$@"
+}
+
+# Installs package(s) using the package manager and pre-configured options
+# Return codes
+# 0: Install completed
+# 1: Coudn't update apt list
+# 2: Error during installation
+# 3: Missing package argument
+installPKG() {
+  if [[ ! "$#" -eq 1 ]]
+  then
+    log 2 "Requires 1 argument: [PKG(s) to install]"
+    return 3
+  else
+    local -r PKG="$1" OPTIONS='--quiet --assume-yes --no-show-upgraded --auto-remove=true --no-install-recommends'
+    local -r SUDOUPDATE="sudo apt-get $OPTIONS update" \
+             SUDOINSTALL="sudo apt-get $OPTIONS install" \
+             ROOTUPDATE="apt-get $OPTIONS update" \
+             ROOTINSTALL="apt-get $OPTIONS install"
+    if [[ ! "$EUID" -eq 0 ]]
+    then
+      # Do not double-quote $SUDOUPDATE
+      if $SUDOUPDATE &>/dev/null
+      then
+        log 0 "Apt list updated"
+      else
+        log 2 "Couldn't update apt lists"
+        return 1
+      fi
+      log -1 "Installing $PKG"
+      # Do not double-quote $SUDOINSTALL or $PKG
+      # shellcheck disable=SC2086
+      if DEBIAN_FRONTEND=noninteractive $SUDOINSTALL $PKG
+      then
+        log 0 "Completed"
+        return 0
+      else
+        log 2 "Something went wrong during installation"
+        return 2
+      fi
+    else
+      # Do not double-quote $ROOTUPDATE
+      if $ROOTUPDATE &>/dev/null
+      then
+        log 0 "Apt list updated"
+      else
+        log 2 "Couldn't update apt lists"
+        return 1
+      fi
+      log -1 "Installing $PKG"
+      # Do not double-quote $ROOTINSTALL or $PKG
+      # shellcheck disable=SC2086
+      if DEBIAN_FRONTEND=noninteractive $ROOTINSTALL $PKG
+      then
+        log 0 "Completed"
+        return 0
+      else
+        log 2 "Something went wrong during installation"
+        return 1
+      fi
+    fi
+  fi
+}
+
 # Checks if a command exists on the system
 # Return status codes
 # 0: Command exists on the system
@@ -705,73 +772,6 @@ function clear_password_fields() {
     cfg="$(jq -r ".params[$i].value=\"$val\"" <<<"$cfg")"
   done
   echo "$cfg" > "$cfg_file"
-}
-
-function apt_install() {
-  apt-get update --allow-releaseinfo-change
-  DEBIAN_FRONTEND=noninteractive apt-get install --assume-yes --no-install-recommends --option Dpkg::Options::='--force-confdef' --option Dpkg::Options::='--force-confold' "$@"
-}
-
-# Installs package(s) using the package manager and pre-configured options
-# Return codes
-# 0: Install completed
-# 1: Coudn't update apt list
-# 2: Error during installation
-# 3: Missing package argument
-installPKG() {
-  if [[ ! "$#" -eq 1 ]]
-  then
-    log 2 "Requires 1 argument: [PKG(s) to install]"
-    return 3
-  else
-    local -r PKG="$1" OPTIONS='--quiet --assume-yes --no-show-upgraded --auto-remove=true --no-install-recommends'
-    local -r SUDOUPDATE="sudo apt-get $OPTIONS update" \
-             SUDOINSTALL="sudo apt-get $OPTIONS install" \
-             ROOTUPDATE="apt-get $OPTIONS update" \
-             ROOTINSTALL="apt-get $OPTIONS install"
-    if [[ ! "$EUID" -eq 0 ]]
-    then
-      # Do not double-quote $SUDOUPDATE
-      if $SUDOUPDATE &>/dev/null
-      then
-        log 0 "Apt list updated"
-      else
-        log 2 "Couldn't update apt lists"
-        return 1
-      fi
-      log -1 "Installing $PKG"
-      # Do not double-quote $SUDOINSTALL or $PKG
-      # shellcheck disable=SC2086
-      if DEBIAN_FRONTEND=noninteractive $SUDOINSTALL $PKG
-      then
-        log 0 "Completed"
-        return 0
-      else
-        log 2 "Something went wrong during installation"
-        return 2
-      fi
-    else
-      # Do not double-quote $ROOTUPDATE
-      if $ROOTUPDATE &>/dev/null
-      then
-        log 0 "Apt list updated"
-      else
-        log 2 "Couldn't update apt lists"
-        return 1
-      fi
-      log -1 "Installing $PKG"
-      # Do not double-quote $ROOTINSTALL or $PKG
-      # shellcheck disable=SC2086
-      if DEBIAN_FRONTEND=noninteractive $ROOTINSTALL $PKG
-      then
-        log 0 "Completed"
-        return 0
-      else
-        log 2 "Something went wrong during installation"
-        return 1
-      fi
-    fi
-  fi
 }
 
 function is_docker() {
