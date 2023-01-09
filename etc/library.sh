@@ -655,8 +655,7 @@ installPKG() {
     if [[ ! "$EUID" -eq 0 ]]
     then
       # Do not double-quote $SUDOUPDATE
-      $SUDOUPDATE &>/dev/null
-      if [[ "$?" -eq 0 ]]
+      if $SUDOUPDATE &>/dev/null
       then
         log 0 "Apt list updated"
       else
@@ -665,8 +664,7 @@ installPKG() {
       fi
       log -1 "Installing $PKG"
       # Do not double-quote $SUDOINSTALL or $PKG
-      DEBIAN_FRONTEND=noninteractive $SUDOINSTALL $PKG
-      if [[ "$?" -eq 0 ]]
+      if DEBIAN_FRONTEND=noninteractive $SUDOINSTALL $PKG
       then
         log 0 "Completed"
         return 0
@@ -676,8 +674,7 @@ installPKG() {
       fi
     else
       # Do not double-quote $ROOTUPDATE
-      $ROOTUPDATE &>/dev/null
-      if [[ "$?" -eq 0 ]]
+      if $ROOTUPDATE &>/dev/null
       then
         log 0 "Apt list updated"
       else
@@ -686,8 +683,7 @@ installPKG() {
       fi
       log -1 "Installing $PKG"
       # Do not double-quote $ROOTINSTALL or $PKG
-      DEBIAN_FRONTEND=noninteractive $ROOTINSTALL $PKG
-      if [[ "$?" -eq 0 ]]
+      if DEBIAN_FRONTEND=noninteractive $ROOTINSTALL $PKG
       then
         log 0 "Completed"
         return 0
