@@ -49,6 +49,50 @@ function log() {
   fi
 }
 
+# Checks if a command exists on the system
+# Return status codes
+# 0: Command exists on the system
+# 1: Command is unavailable on the system
+# 2: Missing command argument to check
+function hasCMD() {
+  if [[ "$#" -eq 1 ]]
+  then
+    local -r CHECK="$1"
+    if command -v "$CHECK" &>/dev/null
+    then
+      return 0
+    else
+      return 1
+    fi
+  else
+    return 2
+  fi
+}
+
+# Checks if a package exists on the system
+# Return status codes
+# 0: Package is installed
+# 1: Package is not installed but is available in apt
+# 2: Package is not installed and is not available in apt
+# 3: Missing package argument to check
+function hasPKG() {
+  if [[ "$#" -eq 1 ]]
+  then
+    local -r CHECK="$1"
+    if dpkg-query --status "$CHECK" &>/dev/null
+    then
+      return 0
+    elif apt-cache show "$CHECK" &>/dev/null
+    then
+      return 1
+    else
+      return 2
+    fi
+  else
+    return 3
+  fi
+}
+
 # Tests for nc-config.d directory before export and exits with code 1 if not found
 if [[ -d '/usr/local/etc/ncp-config.d' ]]
 then
@@ -239,8 +283,8 @@ function set-nc-domain() {
   ncc config:system:set overwrite.cli.url --value="${url}/"
   if is_ncp_activated && is_app_enabled notify_push
   then
-    ncc config:system:set trusted_proxies 11 --value="127.0.0.1"
-    ncc config:system:set trusted_proxies 12 --value="::1"
+    ncc config:system:set trusted_proxies 11 --value='127.0.0.1'
+    ncc config:system:set trusted_proxies 12 --value='::1'
     ncc config:system:set trusted_proxies 13 --value="$domain"
     ncc config:system:set trusted_proxies 14 --value="$(dig +short "$domain")"
     sleep 5 # this seems to be required in the VM for some reason. We get `http2 error: protocol error` after ncp-upgrade-nc
@@ -586,50 +630,6 @@ function clear_password_fields() {
   echo "$cfg" > "$cfg_file"
 }
 
-# Checks if a command exists on the system
-# Return status codes
-# 0: Command exists on the system
-# 1: Command is unavailable on the system
-# 2: Missing command argument to check
-function hasCMD() {
-  if [[ "$#" -eq 1 ]]
-  then
-    local -r CHECK="$1"
-    if command -v "$CHECK" &>/dev/null
-    then
-      return 0
-    else
-      return 1
-    fi
-  else
-    return 2
-  fi
-}
-
-# Checks if a package exists on the system
-# Return status codes
-# 0: Package is installed
-# 1: Package is not installed but is available in apt
-# 2: Package is not installed and is not available in apt
-# 3: Missing package argument to check
-function hasPKG() {
-  if [[ "$#" -eq 1 ]]
-  then
-    local -r CHECK="$1"
-    if dpkg-query --status "$CHECK" &>/dev/null
-    then
-      return 0
-    elif apt-cache show "$CHECK" &>/dev/null
-    then
-      return 1
-    else
-      return 2
-    fi
-  else
-    return 3
-  fi
-}
-
 function apt_install() {
   apt-get update --allow-releaseinfo-change
   DEBIAN_FRONTEND=noninteractive apt-get install --assume-yes --no-install-recommends --option Dpkg::Options::='--force-confdef' --option Dpkg::Options::='--force-confold' "$@"
@@ -708,7 +708,7 @@ function is_lxc() {
 function notify_admin() {
   local header="$1" msg="$2" admin
   admin=$(mysql -u root nextcloud -Nse "select uid from oc_group_user where gid='admin' limit 1;")
-  [[ "$admin" == "" ]] && { echo "admin user not found" >&2; return 0; }
+  [[ "$admin" == "" ]] && { log 2 "User not found: nextcloud admin" >&2; return 0; }
   ncc notification:generate "$admin" "$header" -l "$msg" || true
 }
 
