@@ -655,6 +655,13 @@ installPKG() {
     then
       # Do not double-quote $SUDOUPDATE
       $SUDOUPDATE &>/dev/null
+      if [[ "$?" -eq 0 ]]
+      then
+        log 0 "Apt list updated"
+      else
+        log 2 "Couldn't update apt lists"
+        return 1
+      fi
       log -1 "Installing $PKG"
       # Do not double-quote $SUDOINSTALL or $PKG
       DEBIAN_FRONTEND=noninteractive $SUDOINSTALL $PKG
@@ -669,6 +676,13 @@ installPKG() {
     else
       # Do not double-quote $ROOTUPDATE
       $ROOTUPDATE &>/dev/null
+      if [[ "$?" -eq 0 ]]
+      then
+        log 0 "Apt list updated"
+      else
+        log 2 "Couldn't update apt lists"
+        return 1
+      fi
       log -1 "Installing $PKG"
       # Do not double-quote $ROOTINSTALL or $PKG
       DEBIAN_FRONTEND=noninteractive $ROOTINSTALL $PKG
