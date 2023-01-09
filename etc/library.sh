@@ -664,6 +664,7 @@ installPKG() {
       fi
       log -1 "Installing $PKG"
       # Do not double-quote $SUDOINSTALL or $PKG
+      # shellcheck disable=SC2086
       if DEBIAN_FRONTEND=noninteractive $SUDOINSTALL $PKG
       then
         log 0 "Completed"
@@ -683,6 +684,7 @@ installPKG() {
       fi
       log -1 "Installing $PKG"
       # Do not double-quote $ROOTINSTALL or $PKG
+      # shellcheck disable=SC2086
       if DEBIAN_FRONTEND=noninteractive $ROOTINSTALL $PKG
       then
         log 0 "Completed"
