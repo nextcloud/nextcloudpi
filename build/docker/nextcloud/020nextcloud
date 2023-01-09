@@ -79,6 +79,6 @@ bash /usr/local/bin/nextcloud-domain.sh
 echo "Nextcloud version $(nc_version). NextCloudPi version $(cat /usr/local/etc/ncp-version)"
 
 # Display NC logs in the docker logs
-tail -f -n0 /data/nextcloud/data/nextcloud.log &
+tail -f -n0 "$(get_nc_config_value logfile)" &
 
 exit 0
