@@ -139,7 +139,7 @@ export NCLATESTVER PHPVER RELEASE
 # the default repo in bullseye is bullseye-security
 grep -Eh '^deb ' /etc/apt/sources.list | grep "${RELEASE}-security" > /dev/null && RELEASE="${RELEASE}-security"
 
-if command -v ncc &>/dev/null
+if hasCMD ncc
 then
   NCVER="$(ncc status 2>/dev/null | grep "version:" | awk '{ print $3 }')"
   export NCVER
