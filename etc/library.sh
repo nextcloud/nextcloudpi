@@ -575,7 +575,7 @@ function info_app() {
 }
 
 function install_app() {
-  local ncp_app="$1" script script
+  local ncp_app="$1" script
 
   # $1 can be either an installed app name or an app script
   if [[ -f "$ncp_app" ]]; then
