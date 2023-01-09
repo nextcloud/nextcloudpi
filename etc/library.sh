@@ -8,82 +8,6 @@
 # More at ownyourbits.com
 #
 
-# Tests for nc-config.d directory before export and exits with code 1 if not found
-if [[ -d '/usr/local/etc/ncp-config.d' ]]
-then
-  export CFGDIR='/usr/local/etc/ncp-config.d'
-else
-  echo "Directory not found: ncp-config.d"
-  exit 1
-fi
-# Tests for ncp directory before export and exits with code 1 if not found
-if [[ -d '/usr/local/bin/ncp' ]]
-then
-  export BINDIR='/usr/local/bin/ncp'
-else
-  echo "Directory not found: ncp"
-  exit 1
-fi
-# Tests for nextcloud directory before export and exits with code 1 if not found
-if [[ -d '/var/www/nextcloud' ]]
-then
-  export NCDIR='/var/www/nextcloud'
-else
-  echo "Directory not found: nextcloud"
-  exit 1
-fi
-# Tests for ncc script file before export and exits with code 1 if not found 
-if [[ -f '/usr/local/bin/ncc' ]]
-then
-  export ncc='/usr/local/bin/ncc'
-else
-  echo "File not found: ncc"
-  exit 1
-fi
-# Tests for ncp.cfg file before export and exits with code 1 if not found
-if [[ -f 'etc/ncp.cfg' ]]
-then
-  export NCPCFG='etc/ncp.cfg'
-elif [[ -f '/usr/local/etc/ncp.cfg' ]]
-then
-  export NCPCFG='/usr/local/etc/ncp.cfg'
-else
-  echo "File not found: ncp.cfg"
-  exit 1
-fi
-
-ARCH="$(dpkg --print-architecture)"
-export ARCH
-[[ "$ARCH" =~ ^(armhf|arm)$ ]] && ARCH='armv7'
-[[ "$ARCH" == "arm64" ]] && ARCH='aarch64'
-[[ "$ARCH" == "amd64" ]] && ARCH='x86_64'
-
-# Prevent systemd pager from blocking script execution
-export SYSTEMD_PAGER=
-
-if [[ "$(ps -p 1 --no-headers -o "%c")" == "systemd" ]] && ! [[ -d "/run/systemd/system" ]]
-then
-  INIT_SYSTEM="chroot"
-elif [[ -d "/run/systemd/system" ]]
-then
-  INIT_SYSTEM="systemd"
-elif [[ "$(ps -p 1 --no-headers -o "%c")" == "run-parts.sh" ]]
-then
-  INIT_SYSTEM="docker"
-else
-  INIT_SYSTEM="unknown"
-fi
-
-export INIT_SYSTEM
-
-#unset TRUSTED_DOMAINS
-#declare -A TRUSTED_DOMAINS
-#export TRUSTED_DOMAINS=(
-  #[ip]=1 [dnsmasq]=2 [nc_domain]=3 [nextcloudpi-local]=5 [docker_overwrite]=6
-  #[nextcloudpi]=7 [nextcloudpi-lan]=8 [public_ip]=11 [letsencrypt_1]=12
-  #[letsencrypt_2]=13 [hostname]=14 [trusted_domain_1]=20 [trusted_domain_2]=21 [trusted_domain_3]=22
-#)
-
 # A log function that uses log levels for logging different outputs
 # Log levels
 # -2: Debug
@@ -125,120 +49,84 @@ function log() {
   fi
 }
 
-# Checks if a command exists on the system
-# Return status codes
-# 0: Command exists on the system
-# 1: Command is unavailable on the system
-# 2: Missing command argument to check
-function hasCMD() {
-  if [[ "$#" -eq 1 ]]
-  then
-    local -r CHECK="$1"
-    if command -v "$CHECK" &>/dev/null
-    then
-      return 0
-    else
-      return 1
-    fi
-  else
-    return 2
-  fi
-}
+# Tests for nc-config.d directory before export and exits with code 1 if not found
+if [[ -d '/usr/local/etc/ncp-config.d' ]]
+then
+  export CFGDIR='/usr/local/etc/ncp-config.d'
+else
+  log 2 "Directory not found: ncp-config.d"
+  exit 1
+fi
+# Tests for ncp directory before export and exits with code 1 if not found
+if [[ -d '/usr/local/bin/ncp' ]]
+then
+  export BINDIR='/usr/local/bin/ncp'
+else
+  log 2 "Directory not found: ncp"
+  exit 1
+fi
+# Tests for nextcloud directory before export and exits with code 1 if not found
+if [[ -d '/var/www/nextcloud' ]]
+then
+  export NCDIR='/var/www/nextcloud'
+else
+  log 2 "Directory not found: nextcloud"
+  exit 1
+fi
+# Tests for ncc script file before export and exits with code 1 if not found 
+if [[ -f '/usr/local/bin/ncc' ]]
+then
+  export ncc='/usr/local/bin/ncc'
+else
+  log 2 "File not found: ncc"
+  exit 1
+fi
+# Tests for ncp.cfg file before export and exits with code 1 if not found
+if [[ -f 'etc/ncp.cfg' ]]
+then
+  export NCPCFG='etc/ncp.cfg'
+elif [[ -f '/usr/local/etc/ncp.cfg' ]]
+then
+  export NCPCFG='/usr/local/etc/ncp.cfg'
+else
+  log 2 "File not found: ncp.cfg"
+  exit 1
+fi
 
-# Checks if a package exists on the system
-# Return status codes
-# 0: Package is installed
-# 1: Package is not installed but is available in apt
-# 2: Package is not installed and is not available in apt
-# 3: Missing package argument to check
-function hasPKG() {
-  if [[ "$#" -eq 1 ]]
-  then
-    local -r CHECK="$1"
-    if dpkg-query --status "$CHECK" &>/dev/null
-    then
-      return 0
-    elif apt-cache show "$CHECK" &>/dev/null
-    then
-      return 1
-    else
-      return 2
-    fi
-  else
-    return 3
-  fi
-}
+ARCH="$(dpkg --print-architecture)"
+export ARCH
+[[ "$ARCH" =~ ^(armhf|arm)$ ]] && ARCH='armv7'
+[[ "$ARCH" == "arm64" ]] && ARCH='aarch64'
+[[ "$ARCH" == "amd64" ]] && ARCH='x86_64'
 
-# Installs a single package using the package manager and pre-configured options
-# Return codes
-# 1: Missing package argument
-# 0: Install completed
-installPKG() {
-  if [[ ! "$#" -eq 1 ]]
-  then
-    log 2 "Requires 1 argument: [PKG to install]"
-    return 1
-  else
-    local -r PKG="$1" OPTIONS='--quiet --assume-yes --no-show-upgraded --auto-remove=true --no-install-recommends'
-    local -r SUDOUPDATE="sudo apt-get $OPTIONS update" SUDOINSTALL="sudo apt-get $OPTIONS install" \
-             ROOTUPDATE="apt-get $OPTIONS update" ROOTINSTALL="apt-get $OPTIONS install"
-    if [[ ! "$EUID" -eq 0 ]]
-    then
-      # Do not double-quote $SUDOUPDATE
-      $SUDOUPDATE &>/dev/null
-      log -1 "Installing $PKG"
-      # Do not double-quote $SUDOINSTALL
-      $SUDOINSTALL "$PKG"
-      log 0 "Installed $PKG"
-      return 0
-    else
-      # Do not double-quote $ROOTUPDATE
-      $ROOTUPDATE &>/dev/null
-      log -1 "Installing $PKG"
-      # Do not double-quote $ROOTINSTALL
-      $ROOTINSTALL "$PKG"
-      log 0 "Installed $PKG"
-      return 0
-    fi
-  fi
-}
+# Prevent systemd pager from blocking script execution
+export SYSTEMD_PAGER=
 
-# Installs multiple packages using the package manager and pre-configured options
-# Return codes
-# 1: Missing package arguments
-# 0: Install completed
-installPackages() {
-  if [[ "$#" -eq 0 ]]
-  then
-    log 2 "Requires argument(s): [Package(s) to install]"
-    return 1
-  else
-  local -r PACKAGES="$*" OPTIONS='--quiet --assume-yes --no-show-upgraded --auto-remove=true --no-install-recommends'
-  local -r SUDOUPDATE="sudo apt-get $OPTIONS update" SUDOINSTALL="sudo apt-get $OPTIONS install" \
-           ROOTUPDATE="apt-get $OPTIONS update" ROOTINSTALL="apt-get $OPTIONS install"
-    if [[ ! "$EUID" -eq 0 ]]
-    then
-      # Do not double-quote $SUDOUPDATE
-      $SUDOUPDATE &>/dev/null
-      log -1 "Installing $PACKAGES"
-      # Do not double-quote $SUDOINSTALL
-      $SUDOINSTALL "$PACKAGES"
-      log 0 "Installed $PACKAGES"
-      return 0
-    else
-      # Do not double-quote $ROOTUPDATE
-      $ROOTUPDATE &>/dev/null
-      log -1 "Installing $PACKAGES"
-      # Do not double-quote $ROOTINSTALL
-      $ROOTINSTALL "$PACKAGES"
-      log 0 "Installed $PACKAGES"
-      return 0
-    fi
-  fi
-}
+if [[ "$(ps -p 1 --no-headers -o "%c")" == "systemd" ]] && ! [[ -d "/run/systemd/system" ]]
+then
+  INIT_SYSTEM="chroot"
+elif [[ -d "/run/systemd/system" ]]
+then
+  INIT_SYSTEM="systemd"
+elif [[ "$(ps -p 1 --no-headers -o "%c")" == "run-parts.sh" ]]
+then
+  INIT_SYSTEM="docker"
+else
+  INIT_SYSTEM="unknown"
+fi
+
+export INIT_SYSTEM
+
+#unset TRUSTED_DOMAINS
+#declare -A TRUSTED_DOMAINS
+#export TRUSTED_DOMAINS=(
+  #[ip]=1 [dnsmasq]=2 [nc_domain]=3 [nextcloudpi-local]=5 [docker_overwrite]=6
+  #[nextcloudpi]=7 [nextcloudpi-lan]=8 [public_ip]=11 [letsencrypt_1]=12
+  #[letsencrypt_2]=13 [hostname]=14 [trusted_domain_1]=20 [trusted_domain_2]=21 [trusted_domain_3]=22
+#)
 
 # Checks if jq command is available
-# If not install it using function for single installs
+# If not install it using function package(s) install
 if ! hasCMD jq
 then
   installPKG jq
@@ -698,9 +586,89 @@ function clear_password_fields() {
   echo "$cfg" > "$cfg_file"
 }
 
+# Checks if a command exists on the system
+# Return status codes
+# 0: Command exists on the system
+# 1: Command is unavailable on the system
+# 2: Missing command argument to check
+function hasCMD() {
+  if [[ "$#" -eq 1 ]]
+  then
+    local -r CHECK="$1"
+    if command -v "$CHECK" &>/dev/null
+    then
+      return 0
+    else
+      return 1
+    fi
+  else
+    return 2
+  fi
+}
+
+# Checks if a package exists on the system
+# Return status codes
+# 0: Package is installed
+# 1: Package is not installed but is available in apt
+# 2: Package is not installed and is not available in apt
+# 3: Missing package argument to check
+function hasPKG() {
+  if [[ "$#" -eq 1 ]]
+  then
+    local -r CHECK="$1"
+    if dpkg-query --status "$CHECK" &>/dev/null
+    then
+      return 0
+    elif apt-cache show "$CHECK" &>/dev/null
+    then
+      return 1
+    else
+      return 2
+    fi
+  else
+    return 3
+  fi
+}
+
 function apt_install() {
   apt-get update --allow-releaseinfo-change
-  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends -o Dpkg::Options::=--force-confdef -o Dpkg::Options::="--force-confold" "$@"
+  DEBIAN_FRONTEND=noninteractive apt-get install --assume-yes --no-install-recommends --option Dpkg::Options::='--force-confdef' --option Dpkg::Options::='--force-confold' "$@"
+}
+
+# Installs package(s) using the package manager and pre-configured options
+# Return codes
+# 1: Missing package argument
+# 0: Install completed
+installPKG() {
+  if [[ ! "$#" -eq 1 ]]
+  then
+    log 2 "Requires 1 argument: [PKG(s) to install]"
+    return 1
+  else
+    local -r PKG="$1" OPTIONS='--quiet --assume-yes --no-show-upgraded --auto-remove=true --no-install-recommends'
+    local -r SUDOUPDATE="sudo apt-get $OPTIONS update" \
+             SUDOINSTALL="sudo apt-get $OPTIONS install" \
+             ROOTUPDATE="apt-get $OPTIONS update" \
+             ROOTINSTALL="apt-get $OPTIONS install"
+    if [[ ! "$EUID" -eq 0 ]]
+    then
+      # Do not double-quote $SUDOUPDATE
+      $SUDOUPDATE &>/dev/null
+      log -1 "Installing $PKG"
+      # Do not double-quote $SUDOINSTALL or $PKG
+      DEBIAN_FRONTEND=noninteractive $SUDOINSTALL $PKG
+      log 0 "Completed"
+      return 0
+    else
+      # Do not double-quote $ROOTUPDATE
+      $ROOTUPDATE &>/dev/null
+      log -1 "Installing $PKG"
+      # Do not double-quote $ROOTINSTALL or $PKG
+      DEBIAN_FRONTEND=noninteractive $ROOTINSTALL $PKG
+      log 0 "Completed"
+      return 0
+    fi
+  fi
 }
 
 function is_docker() {
