@@ -88,16 +88,14 @@ jobs:
         shell: bash
         run: |
           set -ex
-          if [[ -n "${{ github.base_ref }}" ]]
-          then
-            version="${{ github.base_ref }}"
-          elif [[ "${{ env.VERSION }}" == "refs/heads/devel" ]]
+          if [[ "${{ env.VERSION }}" == "refs/heads/devel" ]]
           then
             version="latest"
           else
+            git checkout "${{ github.base_ref }}"
             if [[ "${{ github.ref_type }}" != "tag" ]] || ! git describe --tags > /dev/null
             then
-              git fetch -fu --tags origin ${{ env.VERSION }}:${{ env.VERSION }}
+              git fetch -fu --tags origin ${{ github.base_ref }}:${{ github.base_ref }}
             fi
             version="$(git describe --tags || true)"
             [[ "$version" =~ .*-.*-.* ]] || {
