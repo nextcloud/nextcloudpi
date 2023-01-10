@@ -38,8 +38,8 @@ echo "<--! Paste this in GitHub report -->"
 
 ##
 
-open_summary "NextCloudPi diagnostics"
-bash /usr/local/bin/ncp-diag | sed -r 's=(IP|certificates|gateway).*=\1|***REMOVED SENSITIVE VALUE***=g' | column  -t -s'|'
+open_summary "NextcloudPi diagnostics"
+bash /usr/local/bin/ncp-diag | sed -r 's=(IP|Certificates|Gateway|Public IPv4|Public IPv6).*=\1|***REMOVED SENSITIVE VALUE***=g' | column  -t -s'|'
 close_summary
 
 ##
