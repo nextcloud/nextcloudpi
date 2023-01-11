@@ -79,6 +79,8 @@ function is_port_open()
   # Checks both port 80 & 443 for IPv4/IPv6 and returns the result or [N/A] [N/A]
   if ! [[ "$TYPE" =~ ^(0|4|6)$ ]]
   then
+    # As this echo is redirected to STDERR it will not be
+    # asssigned in the arrays of the if-statement below this function
     echo "Invalid type: $TYPE" 1>&2
     return 1
   elif [[ "$TYPE" == 0 ]]
@@ -96,7 +98,11 @@ echo "Public IPv4|${publicIPv4:-"not found"}"
 publicIPv6=$(curl --silent --max-time 4 --ipv6 "https://ipv6.icanhazip.com" 2>/dev/null) || unset publicIPv6
 echo "Public IPv6|${publicIPv6:-"not found"}"
 
-# Reads each line as an array index element to input into IPv4PORTS array
+# Declares the array variables for mapfile to work
+declare -a IPv4PORTS
+declare -a IPv6PORTS
+
+# Mapfile reads lines from standard input into an indexed array variable
 if [[ -n "$publicIPv4" ]]
 then
   mapfile -t IPv4PORTS < <(is_port_open 4)
@@ -104,7 +110,6 @@ else
   mapfile -t IPv4PORTS < <(is_port_open 0)
 fi
 
-# Reads each line as an array index element to input into IPv6PORTS array
 if [[ -n "$publicIPv6" ]]
 then
   mapfile -t IPv6PORTS < <(is_port_open 6)
