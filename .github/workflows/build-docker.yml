@@ -58,7 +58,7 @@ jobs:
           ./build/build-docker.sh "${ARCH?}"
           docker tag "ownyourbits/nextcloudpi-${ARCH?}:latest" "thecalcaholic/ncp-internal-${ARCH?}:${{ github.run_id }}"
           testing_image="ownyourbits/nextcloudpi-${ARCH?}:latest"
-          [[ "${ARCH?}" == "arm64" ]] && testing_image="ownyourbits/ncp-qemu-fix-${ARCH?}:latest"
+          [[ "${ARCH?}" == "x86" ]] || testing_image="ownyourbits/ncp-qemu-fix-${ARCH?}:latest"
           docker tag "${testing_image}" "thecalcaholic/ncp-internal-${ARCH?}:${{ github.run_id }}-testing"
           docker push "thecalcaholic/ncp-internal-${ARCH?}:${{ github.run_id }}"
           docker push "thecalcaholic/ncp-internal-${ARCH?}:${{ github.run_id }}-testing"
@@ -186,7 +186,60 @@ jobs:
       - name: Start new container
         run: |
           docker stop nextcloudpi
-          docker run -d -v ncdata:/data --rm -p 8443:443 -p 4443:4443 --name nextcloudpi thecalcaholic/ncp-internal-${ARCH?}:${{ github.run_id }}-testing localhost
+          docker run -d -v ncdata:/data --rm -p 8443:443 -p 4443:4443 -e NOBACKUP=true --name nextcloudpi thecalcaholic/ncp-internal-${ARCH?}:${{ github.run_id }}-testing localhost
+      - name: Wait for container startup
+        run: |
+          set -e
+          docker logs nextcloudpi                                    |& awk "{ print \"${LOG_DCKR} \" \$0 }"
+          echo -e "${LOG_DCKR} =========="
+          docker logs -f nextcloudpi                                 |& awk "{ print \"${LOG_DCKR} \" \$0 }" &
+          
+          attempt=0
+          for attempt in {1..30}
+          do
+            echo -e "${LOG_CICD} Waiting for container startup (attempt $attempt/30)..."
+            redis_pw="$(docker exec nextcloudpi bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"password'")"
+            redis_socket="$(docker exec nextcloudpi bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"host'")"
+            if docker logs nextcloudpi 2> /dev/null | grep '^Init done' > /dev/null \
+              && [[ "$(docker exec nextcloudpi ncc maintenance:mode)" =~ .*disabled.* ]] \
+              && docker exec nextcloudpi ncc status \
+              && docker exec nextcloudpi redis-cli -s "$redis_socket" -a "$redis_pw" set redisready yes \
+              && docker exec nextcloudpi redis-cli -s "$redis_socket" -a "$redis_pw" get redisready
+            then
+              echo -e "${LOG_CICD} Startup successful"
+              break
+            elif [[ "$attempt" -ge 30 ]]
+            then
+              echo -e "${LOG_CICD} Timeout reached."
+              exit 1
+            fi
+
+            attempt=$((attempt + 1))
+            sleep 5
+          done
+      - name: Update Nextcloud
+        run: |
+          set -e
+          docker logs nextcloudpi                                    |& awk "{ print \"${LOG_DCKR} \" \$0 }"
+          echo -e "${LOG_DCKR} =========="
+          docker logs -f nextcloudpi                                 |& awk "{ print \"${LOG_DCKR} \" \$0 }" &
+          
+          current_nc_version="$(docker exec nextcloudpi ncc status | grep "version:" | awk '{ print $3 }')"
+          latest_nc_version="$(docker exec nextcloudpi cat /usr/local/etc/ncp.cfg | jq -r '.nextcloud_version')"
+          
+          if [[ "$current_nc_version" == "$latest_nc_version".* ]]
+          then
+            echo -e "${LOG_CICD} Nextcloud is up to date - skipping NC update test."
+          else
+            docker exec nextcloudpi bash -c "DBG=x ncp-update-nc ${latest_nc_version?}" |& awk "{ print \"${LOG_DCKR} \" \$0 }"
+            [[ ${PIPESTATUS[0]} -eq 0 ]] || {
+              echo -e "${LOG_CICD} Nextcloud Update failed"
+              echo -e "${LOG_CICD} Creating error report..."
+              docker exec nextcloudpi bash /usr/local/bin/ncp-report > error-report.txt
+              docker exec nextcloudpi bash /usr/local/bin/ncp-diag |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+              exit 1
+            }
+          fi
       - name: Integration Tests
         working-directory: ./tests
         run: |
@@ -213,6 +266,8 @@ jobs:
           done
           [[ "$success" == "true" ]] || {
             echo -e "${LOG_CICD} System test failed in all attempts!"
+            echo -e "${LOG_CICD} Creating error report..."
+            docker exec nextcloudpi bash /usr/local/bin/ncp-report > error-report.txt
             exit 1
           }
           echo -e "${LOG_CICD} System test successful"
@@ -284,7 +339,36 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Selenium
         run: pip install selenium
+      - name: Wait for container startup
+        run: |
+          set -e
+          docker logs nextcloudpi                                    |& awk "{ print \"${LOG_DCKR} \" \$0 }"
+          echo -e "${LOG_DCKR} =========="
+          docker logs -f nextcloudpi                                 |& awk "{ print \"${LOG_DCKR} \" \$0 }" &
 
+          attempt=0
+          for attempt in {1..30}
+          do
+            echo -e "${LOG_CICD} Waiting for container startup (attempt $attempt/30)..."
+            redis_pw="$(docker exec nextcloudpi bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"password'")"
+            redis_socket="$(docker exec nextcloudpi bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"host'")"
+            if docker logs nextcloudpi 2> /dev/null | grep '^Init done' > /dev/null \
+              && [[ "$(docker exec nextcloudpi ncc maintenance:mode)" =~ .*disabled.* ]] \
+              && docker exec nextcloudpi ncc status \
+              && docker exec nextcloudpi redis-cli -s "$redis_socket" -a "$redis_pw" set redisready yes \
+              && docker exec nextcloudpi redis-cli -s "$redis_socket" -a "$redis_pw" get redisready
+            then
+              echo -e "${LOG_CICD} Startup successful"
+              break
+            elif [[ "$attempt" -ge 30 ]]
+            then
+              echo -e "${LOG_CICD} Timeout reached."
+              exit 1
+            fi
+
+            attempt=$((attempt + 1))
+            sleep 5
+          done
       - name: Integration Tests
         working-directory: ./tests
         run: |

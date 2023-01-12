@@ -30,7 +30,7 @@ source /usr/local/etc/library.sh
 [[ -f /.docker-image ]] && BASEDIR=/data || BASEDIR=/var/www
 cd "$BASEDIR"
 DATADIR="$( get_nc_config_value datadirectory )"
-ncc status &>/dev/null          || { echo "Nextcloud is currently down"; exit 1; }
+ncc status &>/dev/null          || { [[ "$DBG" == x ]] && ncc status; echo "Nextcloud is currently down"; exit 1; }
 [[ -d /var/www/nextcloud-old ]] && { echo "Nextcloud backup directory found. Interrupted or already running installation?"; exit 1; }
 [[ -d /var/www/nextcloud     ]] || { echo "Nextcloud directory not found"      ; exit 1; }
 [[ -d "$DATADIR"             ]] || { echo "Nextcloud data directory not found" ; exit 1; }
