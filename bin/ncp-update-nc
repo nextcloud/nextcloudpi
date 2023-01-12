@@ -292,6 +292,10 @@ then
 
 fi
 
+# Clear PHP opcache
+service "php${PHPVER}-fpm" stop
+clear_opcache
+service "php${PHPVER}-fpm" start
 
 # refresh completions
 ncc _completion -g --shell-type bash -p ncc | sed 's|/var/www/nextcloud/occ|ncc|g' > /usr/share/bash-completion/completions/ncp
