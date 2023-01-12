@@ -62,7 +62,7 @@ for file in $( ls -1v /etc/services-enabled.d | grep -v ^000.* ); do
 done
 
 
-if [[ -z "$NOBACKUP" ]] || [[ "$NOBACKUP" != "true" ]] && ! a2query -s ncp-activation -q
+if [[ "$NOBACKUP" != "true" ]] && ! a2query -s ncp-activation -q
 then
   BKPDIR=/data/docker-startup-backups
   WITH_DATA=no
