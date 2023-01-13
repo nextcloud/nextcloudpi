@@ -279,7 +279,7 @@ function download_raspbian()
   local URL=$1
   local IMGFILE=$2
   local IMG_CACHE=cache/raspios_lite.img
-  local ZIP_CACHE=cache/raspios_lite.zip
+  local ZIP_CACHE=cache/raspios_lite.xz
 
   echo -e "\n\e[1m[ Download RaspiOS ]\e[0m"
   mkdir -p cache
@@ -294,8 +294,7 @@ function download_raspbian()
     wget "$URL" -nv -O "$ZIP_CACHE" || return 1
   }
 
-  unzip -o "$ZIP_CACHE" && \
-    mv *-raspios-*.img $IMG_CACHE && \
+  unxz -k -c "$ZIP_CACHE" > "$IMG_CACHE" && \
     cp -v --reflink=auto $IMG_CACHE "$IMGFILE"
 }
 
