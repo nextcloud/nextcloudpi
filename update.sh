@@ -22,7 +22,7 @@ then
   [[ "$ALLOW_UPDATE_SCRIPT" == "1" ]] || exit 1
 fi
 
-CONFDIR=/usr/local/etc/ncp-config.d/
+CONFDIR=/usr/local/etc/ncp-config.d
 UPDATESDIR=updates
 
 # don't make sense in a docker container

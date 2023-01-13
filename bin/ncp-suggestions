@@ -23,10 +23,10 @@ is_active_app dnsmasq && \
   grep -q "NAT loopback|no" <<<"$OUT" && \
     echo -e "\nYou should enable dnsmasq to use your domain inside home"
 
-grep -q "certificates|none" <<<"$OUT" && \
+grep -q "Certificates|none" <<<"$OUT" && \
   echo -e "\nYou should run Lets Encrypt for trusted encrypted access"
 
-grep -q "port check .*|closed" <<<"$OUT" && \
+grep -q "Port .*|closed" <<<"$OUT" && \
     echo -e "\nYou should open your ports for Lets Encrypt and external access"
 
 grep -q "USB devices|none" <<<"$OUT" || {

@@ -28,6 +28,6 @@ install_template "php/pool.d.www.conf.sh" "/etc/php/${PHPVER}/fpm/pool.d/www.con
 install_template "ncp-metrics.cfg.sh" "/usr/local/etc/ncp-metrics.cfg"
 
 touch /var/log/ncp.log
-tail -f -n0 "$(get_nc_config_value logfile)" &
+tail -f -n0 "/var/log/ncp.log" &
 
 exit 0

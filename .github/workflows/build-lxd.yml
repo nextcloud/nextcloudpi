@@ -15,8 +15,9 @@ on:
       - "**"
   pull_request:
     branches:
-      - "master"
-      - "devel"
+      - master
+      - devel
+      - release/*
 
 jobs:
   build-current:
