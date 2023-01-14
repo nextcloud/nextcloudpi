@@ -74,7 +74,6 @@ Find the full documentation at [docs.nextcloudpi.com](http://docs.nextcloudpi.co
  * Security audits with Lynis and Debsecan
  * ZRAM
  * SMART hard drive health monitoring
- * Prometheus metrics monitoring
 
 Extras can be activated and configured using the web interface at HTTPS port 4443
 
@@ -92,31 +91,51 @@ sudo ncp-config
 ## Run in docker
 
 ```
-docker run -d -p 4443:4443 -p 443:443 -p 80:80 -v ncdata:/data --name nextcloudpi ownyourbits/nextcloudpi $DOMAIN
+docker run --detach \
+           --publish 4443:4443 \
+           --publish 443:443 \
+           --publish 80:80 \
+           --volume ncdata:/data \
+           --name nextcloudpi \
+           ownyourbits/nextcloudpi $DOMAIN
 ```
+
+`$DOMAIN` can also be the IP-address of the host device.
 
 ## Run in LXD
 
 ```
-lxc import NextcloudPi_LXD_09-29-21.tar.bz
-lxc start ncp
+lxc image import "NextcloudPi_LXD_vX.XX.X.tar.gz" --alias "nextcloudpi" # Imports the image, replace the X's with version number
+lxc launch "nextcloudpi" ncp # Launches a container from the image
+lxc start ncp # Starts the container you've launched from the imported image
 ```
 
 ## How to build
 
-Install:
+Packages
 
-- `git`
-- `docker`
+- `apt-utils`
+- `apt-transport-https`
 - `build-essential`
-- `qemu`
-- `qemu-user-static`
+- `binfmt-support`
+- `binutils`
+- `bzip2`
+- `ca-certificates`
 - `chroot`
+- `cron`
+- `curl`
+- `dialog`
+- `lsb-release`
 - `jq`
+- `git`
 - `psmisc`
 - `procps`
-
-and all the usual building tools.
+- `wget`
+- `whiptail`
+- `qemu`
+- `qemu-user-static`
+- `docker` _(If you're building a Docker image)_
+- `lxd` _(If you're building an LXD/LXC container image)_
 
 ```
 git clone https://github.com/nextcloud/nextcloudpi.git
