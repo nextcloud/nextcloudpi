@@ -204,8 +204,8 @@ jobs:
             success=true
             break
           done
-          cat ./raspbian_root/var/log/ncp.log |& awk "{ print \"${LOG_NCP} \" \$0 }"
-          tail -n 0 -f ./raspbian_root/var/log/ncp.log |& awk "{ print \"${LOG_NCP} \" \$0 }" &
+          sudo cat ./raspbian_root/var/log/ncp.log |& awk "{ print \"${LOG_NCP} \" \$0 }"
+          sudo tail -n 0 -f ./raspbian_root/var/log/ncp.log |& awk "{ print \"${LOG_NCP} \" \$0 }" &
           
           [[ "$success" == "true" ]] || {
             echo -e "${LOG_CICD} Could not reach container. Aborting..."
