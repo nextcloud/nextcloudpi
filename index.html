@@ -393,11 +393,11 @@
 					<div class="dropdown-item">
 						<div class="content">
 						<ul>
-							<li>Debian 11 Bullseye</li>
-							<li>Latest Nextcloud</li>
-							<li>Apache 2.4.25, with HTTP2 enabled</li>
-							<li>PHP 7.3</li>
-							<li>MariaDB 10</li>
+							<li>Debian/Raspbian 11 Bullseye</li>
+							<li>Nextcloud</li>
+							<li>Apache, with HTTP2 enabled</li>
+							<li>PHP 8.1</li>
+							<li>MariaDB</li>
 							<li>Redis Memory Cache</li>
 							<li>Automatic redirection to HTTPS</li>
 							<li>ACPU PHP Cache</li>
@@ -580,6 +580,8 @@
 								Run NextcloudPi in any system that supports <a href="https://docker.com">Docker</a>, in one command.
 							</p>
 						</div>
+            <p class="content level-item"><a href="https://hub.docker.com/u/ownyourbits">Docker Hub</a></p>
+            <p class="content level-item"><a href="https://docs.docker.com/">Docker Docs</a></p>
 						<div class="container content level-item">
 							<pre>docker run -d -p 4443:4443 -p 443:443 -p 80:80 -v ncdata:/data --name nextcloudpi ownyourbits/nextcloudpi $DOMAIN</pre>
 						</div>
@@ -602,16 +604,21 @@
 							</p>
 						</div>
 						<div class="container content level-item">
-							<p class="subtitle has-text-centered">
+							<p class="subtitle ">
 								Run NextcloudPi in any system that supports LXC containers, such as Proxmox.
 							</p>
 						</div>
+            <p class="content level-item"><a href="https://linuxcontainers.org/lxd/docs/master/">LXD Documentation</a></p>
 						<div class="container level-item">
-							<pre>lxc import NextcloudPi_LXD_09-29-21.tar.bz</pre>
-						</div>
-						<div class="container level-item">
-							<pre>lxc start ncp</pre>
-						</div>
+							<pre>
+# Import the image, replace the X's with the version numbers
+lxc image import "NextcloudPi_LXD_vX.XX.X.tar.gz" --alias "nextcloudpi"
+
+# Launch a container from the image
+lxc launch "nextcloudpi" ncp
+
+# Starts the container you've launched from the imported image
+lxc start ncp</pre>
 					</div>
 				</div>
 			</section>
@@ -890,9 +897,11 @@
 
 	<div class="container content level-item">
 		<p>
-			You can use NextcloudPi in any system that supports docker
+			You can use NextcloudPi in any system that supports <a href="https://docker.com">Docker</a>
 		</p>
 	</div>
+  <p class="content level-item"><a href="https://hub.docker.com/u/ownyourbits">Docker Hub</a></p>
+  <p class="content level-item"><a href="https://docs.docker.com/">Docker Docs</a></p>
 
 	<div class="container content level-item">
 		<pre>docker run -d -p 4443:4443 -p 443:443 -p 80:80 -v ncdata:/data --name nextcloudpi ownyourbits/nextcloudpi $DOMAIN</pre>
