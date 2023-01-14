@@ -228,9 +228,9 @@ then
   export DEBIAN_FRONTEND=noninteractive
   PHPVER_OLD="$PHPVER"
   PHPVER_NEW="8.1"
-  PHP_PACKAGES_OLD=(php-{common,igbinary,redis} "php${PHPVER_OLD}" \
+  PHP_PACKAGES_OLD=(php-{common,igbinary,redis,json} "php${PHPVER_OLD}" \
     "php${PHPVER_OLD}"-{curl,gd,fpm,cli,opcache,mbstring,xml,zip,fileinfo,ldap,intl,bz2,json,common,readline,mysql,bcmath,gmp})
-  PHP_PACKAGES_NEW=("php${PHPVER_NEW}" php-json \
+  PHP_PACKAGES_NEW=("php${PHPVER_NEW}" \
     "php${PHPVER_NEW}"-{curl,gd,fpm,cli,opcache,mbstring,xml,zip,fileinfo,ldap,intl,bz2,mysql,bcmath,gmp,redis,common})
 
   php_restore() {
