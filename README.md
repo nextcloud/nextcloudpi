@@ -27,9 +27,17 @@ Please to reach out in the [Matrix][chat-matrix-wiki] or [Telegram][chat-telegra
 
 ---
 
+`master`
+
 [![VM Tests][vm-tests-badge]][vm-tests]
 
 [![Docker Tests][docker-tests-badge]][docker-tests]
+
+`devel`
+
+[![VM Tests][gh-vm-tests-badge-devel]][vm-tests]
+
+[![Docker Tests][gh-docker-tests-badge-devel]][docker-tests]
 
 ---
 
@@ -279,6 +287,14 @@ You can find us on the [Forum][nc-forum], [Telegram][chat-telegram] or [Matrix][
 [docker-tests]: https://github.com/nextcloud/nextcloudpi/actions/workflows/build-docker.yml
 
 <!-- BADGES -->
+
+[gh-vm-tests-badge]: https://github.com/nextcloud/nextcloudpi/actions/workflows/vm-tests.yml/badge.svg
+
+[gh-docker-tests-badge]: https://github.com/nextcloud/nextcloudpi/actions/workflows/build-docker.yml/badge.svg
+
+[gh-vm-tests-badge-devel]: https://github.com/nextcloud/nextcloudpi/actions/workflows/vm-tests.yml/badge.svg?branch=devel
+
+[gh-docker-tests-badge-devel]: https://github.com/nextcloud/nextcloudpi/actions/workflows/build-docker.yml/badge.svg?branch=devel
 
 [vm-tests-badge]: https://github.com/nextcloud/nextcloudpi/workflows/VM%20Integration%20Tests/badge.svg
 
