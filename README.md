@@ -285,9 +285,6 @@ You can find us on the [Forum][nc-forum], [Telegram][chat-telegram] or [Matrix][
 
 [gh-badge]: https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white
 
-
-[]: 
-
 -->
 
 [docker-badge]: https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white
