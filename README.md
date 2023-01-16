@@ -4,27 +4,32 @@ _(The translated README pages are not updated at this time)_
 
 # NextcloudPi
 
-[![telegram chatroom icon][telegram-badge]][chat-telegram] [![Matrix chatroom icon][matrix-badge]][chat-matrix] [![Docker icon][docker-badge]][ncp-docker-hub] [![Nextcloud icon][nc-badge]][nc-github]
+[![Telegram icon][telegram-badge]][chat-telegram] [![Matrix icon][matrix-badge]][chat-matrix] [![Docker icon][docker-badge]][ncp-docker-hub] [![Nextcloud icon][nc-badge]][nc-github]
 
 [![Forum icon][forum-badge]][nc-forum-support]
 
 <p align="center">
-  <img width="120" height="85" alt="NCP Logo" src="https://github.com/nextcloud/nextcloudpi/blob/master/ncp-app/img/app.svg">
+  <img src="https://github.com/nextcloud/nextcloudpi/blob/master/ncp-app/img/app.svg"
+       width="120"
+       height="85"
+       alt="NextcloudPi logo">
 </p>
 
-This is the build code for [NextcloudPi][ncp-website].
+This is the build code for the [NextcloudPi][ncp-website] open-source community project.
 
-NextcloudPi is a ready to use image for Virtual Machines, Raspberry Pi, Odroid HC1, rock64 and other boards [(⇒Downloads)][ncp-releases].
+NextcloudPi is a ready to use image for Virtual Machines, Raspberry Pi, Odroid HC1, Rock64 and other boards. ([⇒ Downloads][ncp-releases])
 
-This code also generates the NextcloudPi [docker image][ncp-docker-hub], LXD and VM, and includes an installer for any Debian based system.
+This code also generates the NextcloudPi [docker image][ncp-docker-hub], LXD container & VM, there is an install script for the latest stable Debian based system as well.
 
-Find the full documentation at [docs.nextcloudpi.com][ncp-docs-website]
+Find the documentation at [docs.nextcloudpi.com][ncp-docs-website], the documentation is all written by volunteers,
+
+Please to reach out in the [Matrix][chat-matrix-wiki] or [Telegram][chat-telegram-wiki] Wiki group chats if you want to help out to keep them up-to-date and we'll add you to the [Wiki Group][nc-forum-wiki-group] on the [forum][nc-forum].
 
 ---
 
-[![VM Integration Tests][vm-integration-tests-badge]][vm-tests]
+[![VM Tests][vm-tests-badge]][vm-tests]
 
-[![Docker Integration Tests][docker-integrations-tests-badge]][docker-tests]
+[![Docker Tests][docker-tests-badge]][docker-tests]
 
 ---
 
@@ -123,7 +128,7 @@ docker run --detach \
            ownyourbits/nextcloudpi $DOMAIN
 ```
 
-It takes a moment to start completely, check with `docker logs nextcloudpi` until it says `Init done`
+It takes a moment to start completely, you can check this with `docker logs nextcloudpi` until it says `Init done`.
 
 ## Run in LXD
 
@@ -181,7 +186,7 @@ Packages
 - `docker` _(If you're building a Docker image)_
 - `lxd` _(If you're building an LXD/LXC container image)_
 
-### Raspberry Pi img
+### Raspberry Pi IMG
 
 ```
 git clone https://github.com/nextcloud/nextcloudpi.git
@@ -195,7 +200,7 @@ cd nextcloudpi
 ./build-SD-armbian.sh odroidxu4   # supported board code name
 ```
 
-In order to build the Docker images, you'll also need to change the username, repo and tags in the script to match your credentials at Docker Hub.
+In order to build & push the Docker image to your repository, you'll also need to change the username, repo and tags in the script to match your credentials at Docker Hub.
 
 ```
 git clone https://github.com/nextcloud/nextcloudpi.git
@@ -255,11 +260,17 @@ You can find us on the [Forum][nc-forum], [Telegram][chat-telegram] or [Matrix][
 
 [nc-forum-support]: https://help.nextcloud.com/c/support/appliances-docker-snappy-vm
 
+[nc-forum-wiki-group]: https://help.nextcloud.com/g/NCP_Wiki_Team/members
+
 <!-- CHAT -->
 
 [chat-matrix]: https://matrix.to/#/#nextcloudpi:matrix.org
 
+[chat-matrix-wiki]: https://matrix.to/#/#NCP_Wiki_Team:matrix.org
+
 [chat-telegram]: https://t.me/NextcloudPi
+
+[chat-telegram-wiki]: https://t.me/NCP_Wiki_Team
 
 <!-- TESTS -->
 
@@ -269,23 +280,9 @@ You can find us on the [Forum][nc-forum], [Telegram][chat-telegram] or [Matrix][
 
 <!-- BADGES -->
 
-[vm-integration-tests-badge]: https://github.com/nextcloud/nextcloudpi/workflows/VM%20Integration%20Tests/badge.svg
+[vm-tests-badge]: https://github.com/nextcloud/nextcloudpi/workflows/VM%20Integration%20Tests/badge.svg
 
-[docker-integrations-tests-badge]: https://github.com/nextcloud/nextcloudpi/actions/workflows/build-docker.yml/badge.svg
-
-<!--
-
-[telegram-badge]: https://patrolavia.github.io/telegram-badge/chat.png
-
-[rpi-badge]: https://img.shields.io/badge/Raspberry%20Pi-A22846?style=for-the-badge&logo=Raspberry%20Pi&logoColor=white
-
-[linux-badge]: https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black
-
-[debian-badge]: https://img.shields.io/badge/Debian-A81D33?style=for-the-badge&logo=debian&logoColor=white
-
-[gh-badge]: https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white
-
--->
+[docker-tests-badge]: https://github.com/nextcloud/nextcloudpi/actions/workflows/build-docker.yml/badge.svg
 
 [docker-badge]: https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white
 
@@ -297,7 +294,7 @@ You can find us on the [Forum][nc-forum], [Telegram][chat-telegram] or [Matrix][
 
 [nc-badge]: https://img.shields.io/badge/Nextcloud-0082C9?style=for-the-badge&logo=Nextcloud&logoColor=white
 
-<!-- tteck -->
+<!-- TTECK -->
 
 [tteck-profile]: https://github.com/tteck
 
@@ -312,3 +309,17 @@ You can find us on the [Forum][nc-forum], [Telegram][chat-telegram] or [Matrix][
 [ncp-web-image]: https://user-images.githubusercontent.com/21343324/136853829-f4e99ec0-6307-431f-b4c7-21b2330cae7f.png
 
 [ncp-config-image]: https://help.nextcloud.com/uploads/default/original/3X/b/3/b3d157022a32296ab54428b14b5df02104a91f18.png
+
+<!-- EXTRAS & BACKUPS
+
+[telegram-badge]: https://patrolavia.github.io/telegram-badge/chat.png
+
+[rpi-badge]: https://img.shields.io/badge/Raspberry%20Pi-A22846?style=for-the-badge&logo=Raspberry%20Pi&logoColor=white
+
+[linux-badge]: https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black
+
+[debian-badge]: https://img.shields.io/badge/Debian-A81D33?style=for-the-badge&logo=debian&logoColor=white
+
+[gh-badge]: https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white
+
+-->
