@@ -230,13 +230,23 @@ _Note: this assumes a clean Debian install, and there is no rollback method_
 
 ### Curl install scripts
 
+This is executed as `root` as indicated by the `#`
+
 ```
 # curl -sSL https://raw.githubusercontent.com/nextcloud/nextcloudpi/master/install.sh | bash
 ```
 
-## Downloads & Links
+If you're not `root` you can run it with `sudo` like so
+
+```
+curl -sSL https://raw.githubusercontent.com/nextcloud/nextcloudpi/master/install.sh | sudo bash
+```
+
+## Links
 
 [Website][ncp-website]
+
+[Downloads][ncp-releases]
 
 [Docker Hub][ncp-docker-hub]
 
