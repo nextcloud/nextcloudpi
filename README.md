@@ -23,7 +23,7 @@ This code also generates the NextcloudPi [docker image][ncp-docker-hub], LXD con
 
 Find the documentation at [docs.nextcloudpi.com][ncp-docs-website], the documentation is all written by volunteers,
 
-Please to reach out in the [Matrix][chat-matrix-wiki] or [Telegram][chat-telegram-wiki] Wiki group chats if you want to help out to keep them up-to-date and we'll add you to the [Wiki Group][nc-forum-wiki-group] on the [forum][nc-forum].
+Please reach out in the [Matrix][chat-matrix-wiki] or [Telegram][chat-telegram-wiki] Wiki group chats if you want to help out to keep them up-to-date and we'll add you to the [Wiki Group][nc-forum-wiki-group] on the [forum][nc-forum].
 
 ---
 
