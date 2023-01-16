@@ -4,17 +4,17 @@
 	<meta charset='UTF-8'>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="keywords" content="nextcloudpi"> <!-- Comma separated,words,and,tags,used to,search for the website -->
+	<meta name="keywords" content="nextcloudpi, ncp"> <!-- Comma separated,words,and,tags,used to,search for the website -->
 	<meta name="description" content="NextcloudPi is an open-source Nextcloud self-hosting software for Raspberry Pi devices"> <!-- 150 words or less -->
 	<meta name="copyright" content=""> <!-- License -->
-	<meta name="summary" content="">
-	<title>Nextcloudpi</title>
+	<meta name="summary" content="Website for NextcloudPi open-source community project">
+	<title>NextcloudPi</title>
 	<meta name="subtitle" content="Keep your data close">
-	<meta name="revised" content=""> <!-- Wednesday, March 9th, 2022, 15:38, GMT+2 -->
-	<meta name="robots" content="noindex,nofollow"> <!-- TODO Change to 'index,follow' when website is ready + max-image-preview:large-->
-	<meta name="AdsBot-Google" content="noindex,nofollow">
-	<meta name="googlebot" content="noindex,nofollow">
-	<meta name="googlebot-news" content="noindex,nofollow">
+	<meta name="revised" content="Mon 16 Jan 15:25:30 CET 2023">
+	<meta name="robots" content="index,follow,max-image-preview:default">
+	<meta name="AdsBot-Google" content="index,follow">
+	<meta name="googlebot" content="index,follow">
+	<meta name="googlebot-news" content="index,follow">
 	<link rel="stylesheet"
 		  href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css"
 		  integrity="sha512-HqxHUkJM0SYcbvxUw5P60SzdOTy/QVwA1JJrvaXJv4q7lmbDZCmZaqz01UPOaQveoxfYRv1tHozWGPMcuTBuvQ=="
@@ -393,7 +393,7 @@
 					<div class="dropdown-item">
 						<div class="content">
 						<ul>
-							<li>Debian/Raspbian 11 Bullseye</li>
+							<li>Raspberry Pi OS/Debian 11 (Bullseye)</li>
 							<li>Nextcloud</li>
 							<li>Apache, with HTTP2 enabled</li>
 							<li>PHP 8.1</li>
@@ -495,7 +495,7 @@
 					<li class="tablinks"><a onclick="openTab(event, 'debian');">Debian</a></li>
 					<li class="tablinks"><a onclick="openTab(event, 'vm');">Virtual Machine</a></li>
 					<li class="tablinks"><a onclick="openTab(event, 'docker');">Docker</a></li>
-					<li class="tablinks"><a onclick="openTab(event, 'lxd');">LXD Container</a></li>
+					<li class="tablinks"><a onclick="openTab(event, 'lxd');">LXD/LXC</a></li>
 					<li class="tablinks"><a onclick="openTab(event, 'raspberry-pi');">Raspberry Pi</a></li>
 					<li class="tablinks"><a onclick="openTab(event, 'odroid-hc2');">Odroid HC2/HC1/XU4</a></li>
 					<li class="tablinks"><a onclick="openTab(event, 'odroid-hc4');">Odroid HC4</a></li>
@@ -600,12 +600,12 @@
 						</div>
 						<div class="container content level-item">
 							<p class="title">
-								LXD Container
+								LXD Container image
 							</p>
 						</div>
 						<div class="container content level-item">
-							<p class="subtitle ">
-								Run NextcloudPi in any system that supports LXC containers, such as Proxmox.
+							<p class="subtitle">
+								Run NextcloudPi in any system that supports LXC containers.
 							</p>
 						</div>
             <p class="content level-item"><a href="https://linuxcontainers.org/lxd/docs/master/">LXD Documentation</a></p>
@@ -620,6 +620,12 @@ lxc launch "nextcloudpi" ncp
 # Starts the container you've launched from the imported image
 lxc start ncp</pre>
 					</div>
+          <div class="block"></div>
+          <div class="container level-item"><p class="subtitle">For Proxmox installation please use the helper script made by <a href="https://tteck.github.io/Proxmox/">tteck</a></p></div>
+          <div class="block"></div>
+          <div class="container level-item">
+            <pre>bash -c "$(wget -qLO - https://github.com/tteck/Proxmox/raw/main/ct/nextcloudpi-v5.sh)"</pre>
+          </div>
 				</div>
 			</section>
 
