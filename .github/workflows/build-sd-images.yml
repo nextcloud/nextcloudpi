@@ -217,6 +217,7 @@ jobs:
           for attempt in {1..100}
           do
             echo -e "${LOG_CICD} Waiting for container startup (attempt $attempt/100)..."
+            set -x
             redis_pw="$("${CONTAINER_CMD[@]}" bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"password'")"
             redis_socket="$("${CONTAINER_CMD[@]}" bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"host'")"
             if [[ "$("${CONTAINER_CMD[@]}" ncc maintenance:mode)" =~ .*disabled.* ]] \
@@ -228,7 +229,7 @@ jobs:
               success=true
               break
             fi
-
+            set +x
             attempt=$((attempt + 1))
             sleep 5
           done
