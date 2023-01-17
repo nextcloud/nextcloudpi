@@ -314,30 +314,30 @@ function createJSONConfigFile() {
               "params": $in.params
             }' "$CFG" >> "$CONFIGS_TEMP_FILE"
     done
-    jq -s '.[0] as $ncp | {"ncp": $ncp, "configs": .[1:]}' "$NCP_CONFIGS_FILE" "$CONFIGS_TEMP_FILE" > "$TEMP_FILE"
+    jq -sjc '.[0] as $ncp | {"ncp": $ncp, "configs": .[1:]}' "$NCP_CONFIGS_FILE" "$CONFIGS_TEMP_FILE" > "$TEMP_FILE"
     mv "$TEMP_FILE" "$CONFIGS_JSON_FILE"
     rm "$CONFIGS_TEMP_FILE"
   fi
 }
 
-# getTotal
-# getLength
-# getConfigByID 12
-# getIDs
-# findIndexID 'nc-autoupdate-ncp'
-# ncpConfigs
-# getVersion 'ncp'
-# getVersion 'nc'
-# getVersion 'php'
-# getVersion 'os'
-# setVersion 'ncp' '2.0.0'
-# getVersion 'nextcloudpi'
-# setVersion 'nextcloud' '25.0.2'
-# getVersion 'nextcloud'
-# setVersion 'php' '8.1'
-# getVersion 'php'
-# setVersion 'os' 'bullseye'
-# getVersion 'release'
-# cleanupVariables
-# createConfigFiles
-# createJSONConfigFile
+#getTotal
+#getLength
+#getConfigByID 12
+#getIDs
+#findIndexID 'nc-autoupdate-ncp'
+#ncpConfigs
+#getVersion 'ncp'
+#getVersion 'nc'
+#getVersion 'php'
+#getVersion 'os'
+#setVersion 'ncp' '2.0.0'
+#getVersion 'nextcloudpi'
+#setVersion 'nextcloud' '25.0.2'
+#getVersion 'nextcloud'
+#setVersion 'php' '8.1'
+#getVersion 'php'
+#setVersion 'os' 'bullseye'
+#getVersion 'release'
+#cleanupVariables
+#createConfigFiles
+createJSONConfigFile
