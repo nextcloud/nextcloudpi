@@ -321,7 +321,7 @@ function createJSONConfigFile() {
 }
 
 # getTotal
-#getLength
+# getLength
 # getConfigByID 12
 # getIDs
 # findIndexID 'nc-autoupdate-ncp'
@@ -339,5 +339,5 @@ function createJSONConfigFile() {
 # setVersion 'os' 'bullseye'
 # getVersion 'release'
 # cleanupVariables
-#createConfigFiles
-#createJSONConfigFile
+# createConfigFiles
+# createJSONConfigFile
