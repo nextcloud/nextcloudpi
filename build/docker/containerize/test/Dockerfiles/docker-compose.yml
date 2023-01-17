@@ -1,21 +1,18 @@
+version: '3.3'
 services:
   nextcloudpi:
-    command: "$(ip addr | grep 192 | awk '{print $2}' | cut -b 1-14)"
-    container_name: nextcloudpi
+    command: "$(ip a | grep 'scope global' | awk '{print $2}' | head -1 | sed 's|/.*||g')"
+    container_name: ncp
     image: ownyourbits/nextcloudpi:latest
     ports:
     - published: 80
-      target: 80
     - published: 443
-      target: 443
     - published: 4443
-      target: 4443
     restart: unless-stopped
     volumes:
-    - ncdata:/data:ro
+    - ncdata:/data
     - /etc/localtime:/etc/localtime:ro
-version: '3.3'
 volumes:
   ncdata:
-    external: true
+    external: false
 

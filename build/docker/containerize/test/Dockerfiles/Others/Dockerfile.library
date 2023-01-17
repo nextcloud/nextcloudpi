@@ -1,0 +1,11 @@
+# syntax=docker.io/dockerfile:1
+ARG BRANCH master
+ARG FILEPATH etc/library.sh
+FROM bash:latest AS bash
+ARG BRANCH
+ARG FILEPATH
+COPY --from=bash / /
+ADD https://raw.githubusercontent.com/nextcloud/nextcloudpi/${BRANCH}/${FILEPATH} 
+SHELL ["/usr/local/bin/bash"]
+CMD ["/usr/local/bin/bash","-c"]
+ENTRYPOINT ["/usr/local/bin/bash","-c"]

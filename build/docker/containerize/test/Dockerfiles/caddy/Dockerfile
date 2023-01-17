@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM caddy:2.6.1-alpine AS builder
+FROM caddy:2.6.1-alpine AS Builder
 RUN xcaddy build \
 --with github.com/greenpau/caddy-security \
 --with github.com/caddyserver/transform-encoder \
@@ -22,5 +22,15 @@ RUN xcaddy build \
 --with github.com/firecow/caddy-forward-auth
 
 FROM caddy:2.6.1-alpine AS cad
-COPY --from=builder ["/usr/bin/caddy","/usr/local/bin/caddy"]
+COPY --from=Builder ["/usr/bin/caddy","/usr/local/bin/caddy"]
+COPY --from=Builder ["/etc/caddy/Caddyfile","/etc/caddy/Caddyfile"]
+USER caddy
+# VOLUME /usr/share/caddy
+VOLUME /etc/caddy/Caddyfile
+VOLUME /data
+EXPOSE 80
+EXPOSE 443
+EXPOSE 2019
+EXPOSE 8080
+EXPOSE 8443
 ENTRYPOINT ["/usr/local/bin/caddy"]
