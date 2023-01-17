@@ -158,13 +158,16 @@ jobs:
           docker logs -f nextcloudpi                                 |& awk "{ print \"${LOG_DCKR} \" \$0 }" &
           
           attempt=0
+          stage=0
           for attempt in {1..30}
           do
             echo -e "${LOG_CICD} Waiting for container startup (attempt $attempt/30)..."
             redis_pw="$(docker exec nextcloudpi bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"password'")"
             redis_socket="$(docker exec nextcloudpi bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"host'")"
-            if docker logs nextcloudpi 2> /dev/null | grep '^Init done' > /dev/null \
-              && [[ "$(docker exec nextcloudpi ncc maintenance:mode)" =~ .*disabled.* ]] \
+            if [[ "$stage" == "0" ]] && docker logs nextcloudpi 2> /dev/null | grep '^Init done' > /dev/null
+            then
+              stage=1
+            elif [[ "$(docker exec nextcloudpi ncc maintenance:mode)" =~ .*disabled.* ]] \
               && docker exec nextcloudpi ncc status \
               && docker exec nextcloudpi redis-cli -s "$redis_socket" -a "$redis_pw" set redisready yes \
               && docker exec nextcloudpi redis-cli -s "$redis_socket" -a "$redis_pw" get redisready
@@ -228,13 +231,16 @@ jobs:
           docker logs -f nextcloudpi                                 |& awk "{ print \"${LOG_DCKR} \" \$0 }" &
           
           attempt=0
+          stage=0
           for attempt in {1..30}
           do
             echo -e "${LOG_CICD} Waiting for container startup (attempt $attempt/30)..."
             redis_pw="$(docker exec nextcloudpi bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"password'")"
             redis_socket="$(docker exec nextcloudpi bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"host'")"
-            if docker logs nextcloudpi 2> /dev/null | grep '^Init done' > /dev/null \
-              && [[ "$(docker exec nextcloudpi ncc maintenance:mode)" =~ .*disabled.* ]] \
+            if [[ "$stage" == "0" ]] && docker logs nextcloudpi 2> /dev/null | grep '^Init done' > /dev/null
+            then
+              stage=1
+            elif [[ "$(docker exec nextcloudpi ncc maintenance:mode)" =~ .*disabled.* ]] \
               && docker exec nextcloudpi ncc status \
               && docker exec nextcloudpi redis-cli -s "$redis_socket" -a "$redis_pw" set redisready yes \
               && docker exec nextcloudpi redis-cli -s "$redis_socket" -a "$redis_pw" get redisready
@@ -380,13 +386,16 @@ jobs:
           docker logs -f nextcloudpi                                 |& awk "{ print \"${LOG_DCKR} \" \$0 }" &
 
           attempt=0
+          stage=0
           for attempt in {1..30}
           do
             echo -e "${LOG_CICD} Waiting for container startup (attempt $attempt/30)..."
             redis_pw="$(docker exec nextcloudpi bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"password'")"
             redis_socket="$(docker exec nextcloudpi bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"host'")"
-            if docker logs nextcloudpi 2> /dev/null | grep '^Init done' > /dev/null \
-              && [[ "$(docker exec nextcloudpi ncc maintenance:mode)" =~ .*disabled.* ]] \
+            if [[ "$stage" == "0" ]] && docker logs nextcloudpi 2> /dev/null | grep '^Init done' > /dev/null
+            then
+              stage=1
+            elif [[ "$(docker exec nextcloudpi ncc maintenance:mode)" =~ .*disabled.* ]] \
               && docker exec nextcloudpi ncc status \
               && docker exec nextcloudpi redis-cli -s "$redis_socket" -a "$redis_pw" set redisready yes \
               && docker exec nextcloudpi redis-cli -s "$redis_socket" -a "$redis_pw" get redisready
