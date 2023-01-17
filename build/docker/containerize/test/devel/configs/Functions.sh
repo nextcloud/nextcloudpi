@@ -1,62 +1,8 @@
 #!/usr/bin/env bash
 # Victor-ray, S <12261439+ZendaiOwl@users.noreply.github.com>
+
 declare -r CONFIGS_JSON_FILE='configs.json' NCP_CONFIGS_FILE='JSONData/ncp.json' CONFIGURATIONS='JSONData/Configurations'
 declare -i CONFIGS_NUMBER CONFIGS_LENGTH
-
-# Config structure
-# id
-# description
-# info
-# infotitle
-# name
-# params
-# title
-# 
-# [
-#   "description",
-#   "id",
-#   "info",
-#   "infotitle",
-#   "name",
-#   "params",
-#   "title"
-# ]
-
-# Params structure
-# id
-# name
-# type
-# value
-# suggest
-# default
-# 
-# [
-#   "id",
-#   "name",
-#   "type",
-#   "value"
-# ]
-# [
-#   "default",
-#   "id",
-#   "name",
-#   "suggest",
-#   "value"
-# ]
-# 
-# [
-#   "id",
-#   "name",
-#   "suggest",
-#   "value"
-# ]
-# [
-#   "id",
-#   "name",
-#   "suggest",
-#   "type",
-#   "value"
-# ]
 
 # Checks if a command exists on the system
 # Return status codes
@@ -102,14 +48,17 @@ function updateVariables() {
   fi
 }
 
+# Gets the index number of total app configurations
 function getTotal() {
   echo "$CONFIGS_NUMBER"
 }
 
+# Gets the total number of app configurations
 function getLength() {
   echo "$CONFIGS_LENGTH"
 }
 
+# Gets the ID for all app configurations 
 function getIDs() {
   if hasCMD jq
   then
@@ -120,6 +69,7 @@ function getIDs() {
   fi
 }
 
+# Gets app configuration by ID
 function getConfigByID() {
   if hasCMD jq
   then
@@ -130,6 +80,7 @@ function getConfigByID() {
   fi
 }
 
+# Finds the index number for an app configuration
 function findIndexID() {
   local -r ID="$1"
   if hasCMD jq
@@ -146,6 +97,7 @@ function findIndexID() {
   fi
 }
 
+# Gets nextcloudpi configuration values
 function ncpConfigs() {
   if hasCMD jq
   then
