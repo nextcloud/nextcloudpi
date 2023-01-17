@@ -1,0 +1,34 @@
+{
+  "id": "nc-backup",
+  "info": "This will always include the current Nextcloud directory and the Database.\nYou can choose to include or exclude NC-data.",
+  "infotitle": "",
+  "description": "Backup this NC instance to a file",
+  "name": "nc-backup",
+  "title": "nc-backup",
+  "params": [
+    {
+      "id": "DESTDIR",
+      "name": "Destination directory",
+      "value": "/media/USBdrive/ncp-backups",
+      "suggest": "/media/USBdrive/ncp-backups"
+    },
+    {
+      "id": "INCLUDEDATA",
+      "name": "Include data",
+      "value": "no",
+      "type": "bool"
+    },
+    {
+      "id": "COMPRESS",
+      "name": "Compress",
+      "value": "no",
+      "type": "bool"
+    },
+    {
+      "id": "BACKUPLIMIT",
+      "name": "Number of backups to keep",
+      "value": "4",
+      "suggest": "4"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "id": "nc-zram",
+  "info": "",
+  "infotitle": "",
+  "description": "Enable compressed RAM to improve swap performance",
+  "name": "Nc-zram",
+  "title": "nc-zram",
+  "params": [
+    {
+      "id": "ACTIVE",
+      "name": "Active",
+      "value": "no",
+      "type": "bool"
+    }
+  ]
+}

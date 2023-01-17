@@ -1,0 +1,34 @@
+{
+  "id": "dnsmasq",
+  "info": "Remember to point your PC and devices DNS or\nyour router DNS to your NCP IP",
+  "infotitle": "",
+  "description": "DNS server with cache",
+  "name": "Dnsmasq, to serve names of local machines which are not in the global DNS",
+  "title": "dnsmasq",
+  "params": [
+    {
+      "id": "ACTIVE",
+      "name": "Active",
+      "value": "no",
+      "type": "bool"
+    },
+    {
+      "id": "DOMAIN",
+      "name": "Domain",
+      "value": "mycloud.ownyourbits.com",
+      "suggest": "mycloud.ownyourbits.com"
+    },
+    {
+      "id": "DNSSERVER",
+      "name": "DNS server",
+      "value": "8.8.8.8",
+      "suggest": "8.8.8.8"
+    },
+    {
+      "id": "CACHESIZE",
+      "name": "Cache size",
+      "value": "150",
+      "suggest": "150"
+    }
+  ]
+}

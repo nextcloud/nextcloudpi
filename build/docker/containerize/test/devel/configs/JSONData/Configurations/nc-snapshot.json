@@ -1,0 +1,16 @@
+{
+  "id": "nc-snapshot",
+  "info": "Snapshots take up very little space because only the differences from one \nto the next are saved. This requires the datadir to be in a BTRFS filesystem",
+  "infotitle": "",
+  "description": "Create BTRFS snapshot of the datadir",
+  "name": "Nc-snapshot",
+  "title": "nc-snapshot",
+  "params": [
+    {
+      "id": "LIMIT",
+      "name": "Limit",
+      "value": "4",
+      "suggest": "4"
+    }
+  ]
+}

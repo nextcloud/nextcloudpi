@@ -1,0 +1,41 @@
+{
+  "id": "no-ip",
+  "info": "Need account from https://www.noip.com/",
+  "infotitle": "",
+  "description": "Dynamic DNS no-ip free provider",
+  "name": "DynamicDNS from no-ip",
+  "title": "no-ip",
+  "params": [
+    {
+      "id": "ACTIVE",
+      "name": "Active",
+      "value": "no",
+      "type": "bool"
+    },
+    {
+      "id": "USER",
+      "name": "User",
+      "value": "my-noip-user@email.com",
+      "suggest": "my-noip-user@email.com"
+    },
+    {
+      "id": "PASS",
+      "name": "Password",
+      "value": "no-ip password",
+      "type": "password"
+    },
+    {
+      "id": "DOMAIN",
+      "name": "Domain",
+      "value": "mycloud.ownyourbits.com",
+      "suggest": "mycloud.ownyourbits.com"
+    },
+    {
+      "id": "TIME",
+      "name": "Time",
+      "value": "30",
+      "default": "30",
+      "suggest": "30"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "id": "nc-rsync",
+  "info": "'user' needs SSH autologin from the NCP 'root' user at 'ip'\nfor remote sync",
+  "infotitle": "",
+  "description": "Sync Nextcloud data remotely or locally through rsync",
+  "name": "Nc-rsync",
+  "title": "nc-rsync",
+  "params": [
+    {
+      "id": "DESTINATION",
+      "name": "Destination",
+      "value": "user@ip:/path/to/sync",
+      "suggest": "user@ip:/path/to/sync"
+    },
+    {
+      "id": "PORTNUMBER",
+      "name": "SSH port number",
+      "value": "22",
+      "suggest": "22"
+    }
+  ]
+}

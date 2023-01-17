@@ -1,27 +1,27 @@
 {
   "ncp": {
-    "version": "2.0.1",
-    "nextcloud_version": "25.0.1",
-    "php_version": "8.0",
+    "version": "2.0.0",
+    "nextcloud_version": "25.0.2",
+    "php_version": "8.1",
     "os_release": "bullseye"
   },
   "configs": [
     {
       "id": "clear-php-opcache",
-      "name": "clear-php-opcache",
-      "title": "Clear PHP opcache",
-      "description": "Clears the PHP opcache directory. This can help with some crashes in PHP.",
       "info": "",
       "infotitle": "",
+      "description": "Clears the PHP opcache directory. This can help with some crashes in PHP.",
+      "name": "clear-php-opcache",
+      "title": "Clear PHP opcache",
       "params": []
     },
     {
       "id": "dnsmasq",
-      "name": "Dnsmasq, to serve names of local machines which are not in the global DNS",
-      "title": "dnsmasq",
-      "description": "DNS server with cache",
       "info": "Remember to point your PC and devices DNS or\nyour router DNS to your NCP IP",
       "infotitle": "",
+      "description": "DNS server with cache",
+      "name": "Dnsmasq, to serve names of local machines which are not in the global DNS",
+      "title": "dnsmasq",
       "params": [
         {
           "id": "ACTIVE",
@@ -51,11 +51,11 @@
     },
     {
       "id": "duckDNS",
-      "name": "DynamicDNS from duckDNS",
-      "title": "duckDNS",
-      "description": "Free Dynamic DNS provider",
       "info": "Need account from https://duckdns.org",
       "infotitle": "",
+      "description": "Free Dynamic DNS provider",
+      "name": "DynamicDNS from duckDNS",
+      "title": "duckDNS",
       "params": [
         {
           "id": "ACTIVE",
@@ -79,11 +79,11 @@
     },
     {
       "id": "fail2ban",
-      "name": "Fail2ban, limit brute force authentication attempts",
-      "title": "fail2ban",
-      "description": "Brute force protection for SSH and NextCloud",
       "info": "",
       "infotitle": "",
+      "description": "Brute force protection for SSH and NextCloud",
+      "name": "Fail2ban, limit brute force authentication attempts",
+      "title": "fail2ban",
       "params": [
         {
           "id": "ACTIVE",
@@ -128,11 +128,11 @@
     },
     {
       "id": "freeDNS",
-      "name": "Dynamic DNS from freeDNS",
-      "title": "freeDNS",
-      "description": "FreeDNS DynamicDNS service",
       "info": "Need account from https://freedns.afraid.org/",
       "infotitle": "",
+      "description": "FreeDNS DynamicDNS service",
+      "name": "Dynamic DNS from freeDNS",
+      "title": "freeDNS",
       "params": [
         {
           "id": "ACTIVE",
@@ -162,11 +162,11 @@
     },
     {
       "id": "letsencrypt",
-      "name": "Let's Encrypt, Automatic signed SSL certificates",
-      "title": "letsencrypt",
-      "description": "Automatic signed SSL certificates. Let’s Encrypt is a free, automated, and open Certificate Authority.",
       "info": "Internet access is required for this configuration to complete\nBoth ports 80 and 443 need to be accessible from the internet\n\nYour certificate will be automatically renewed every month",
       "infotitle": "Warning",
+      "description": "Automatic signed SSL certificates. Let’s Encrypt is a free, automated, and open Certificate Authority.",
+      "name": "Let's Encrypt, Automatic signed SSL certificates",
+      "title": "letsencrypt",
       "params": [
         {
           "id": "ACTIVE",
@@ -196,11 +196,11 @@
     },
     {
       "id": "metrics",
-      "name": "System Metrics, that can be collected by an external server",
-      "title": "System Metrics",
-      "description": "Prometheus metrics for things like, CPU/memory/disk usage etc.",
       "info": "In order to use these metrics, you will need to setup at least an external Prometheus instance. You can find a quick and easy way to start at https://github.com/theCalcaholic/ncp-monitoring-dashboard",
       "infotitle": "External service required",
+      "description": "Prometheus metrics for things like, CPU/memory/disk usage etc.",
+      "name": "System Metrics, that can be collected by an external server",
+      "title": "System Metrics",
       "params": [
         {
           "id": "ACTIVE",
@@ -224,11 +224,11 @@
     },
     {
       "id": "modsecurity",
-      "name": "modsecurity",
-      "title": "modsecurity",
-      "description": "Web Application Firewall for extra security (experimental)",
       "info": "This feature is highly experimental and has only been tested with\na basic NextCloud installation. If a new App does not work disable it",
       "infotitle": "Experimental feature warning",
+      "description": "Web Application Firewall for extra security (experimental)",
+      "name": "modsecurity",
+      "title": "modsecurity",
       "params": [
         {
           "id": "ACTIVE",
@@ -240,11 +240,11 @@
     },
     {
       "id": "namecheapDNS",
-      "name": "Dynamic DNS from Namecheap",
-      "title": "namecheapDNS",
-      "description": "Namecheap Dynamic DNS service (need domain from https://www.namecheap.com/)",
       "info": "First, complete these steps: https://www.namecheap.com/support/knowledgebase/article.aspx/595/11/how-do-i-enable-dynamic-dns-for-a-domain/ and https://www.namecheap.com/support/knowledgebase/article.aspx/43/11/how-do-i-set-up-a-host-for-dynamic-dns",
       "infotitle": "",
+      "description": "Namecheap Dynamic DNS service (need domain from https://www.namecheap.com/)",
+      "name": "Dynamic DNS from Namecheap",
+      "title": "namecheapDNS",
       "params": [
         {
           "id": "ACTIVE",
@@ -287,11 +287,11 @@
     },
     {
       "id": "nc-admin",
-      "name": "NC-admin, password utility",
-      "title": "nc-admin",
-      "description": "Change or view the current password for the Nextcloud admin user",
       "info": "",
       "infotitle": "",
+      "description": "Change or view the current password for the Nextcloud admin user",
+      "name": "NC-admin, password utility",
+      "title": "nc-admin",
       "params": [
         {
           "id": "USER",
@@ -317,20 +317,20 @@
     },
     {
       "id": "nc-audit",
-      "name": "NC-audit, security check utility",
-      "title": "nc-audit",
-      "description": "Perform a security audit with lynis and debsecan",
       "info": "",
       "infotitle": "",
+      "description": "Perform a security audit with lynis and debsecan",
+      "name": "NC-audit, security check utility",
+      "title": "nc-audit",
       "params": []
     },
     {
       "id": "nc-automount",
-      "name": "Nc-automount",
-      "title": "nc-automount",
-      "description": "Automount USB drives by plugging them in",
       "info": "Plugged in USB drives will be automounted under /media\non boot or at the moment of insertion.\n\nFormat your drive as ext4/btrfs in order to move NC datafolder or database. \n\nVFAT or NTFS is not recommended for this task, as it does not suport permissions \n\n WARNING If you want add a second drive later, make sure you have added a LABEL to the first and all other drives to be mounted when formating, as they will then be mounted at /media/LABEL instead of /media/USBdrive \n\nIMPORTANT: halt or umount the drive before removing",
       "infotitle": "Automount notes",
+      "description": "Automount USB drives by plugging them in",
+      "name": "Nc-automount",
+      "title": "nc-automount",
       "params": [
         {
           "id": "ACTIVE",
@@ -342,11 +342,11 @@
     },
     {
       "id": "nc-autoupdate-nc",
-      "name": "Nc-autoupdate-nc",
-      "title": "nc-autoupdate-nc",
-      "description": "Automatically apply Nextcloud updates",
       "info": "",
       "infotitle": "",
+      "description": "Automatically apply Nextcloud updates",
+      "name": "Nc-autoupdate-nc",
+      "title": "nc-autoupdate-nc",
       "params": [
         {
           "id": "ACTIVE",
@@ -358,11 +358,11 @@
     },
     {
       "id": "nc-autoupdate-ncp",
-      "name": "Nc-autoupdate-ncp",
-      "title": "nc-autoupdate-ncp",
-      "description": "Automatically apply NextCloudPi updates",
       "info": "",
       "infotitle": "",
+      "description": "Automatically apply NextCloudPi updates",
+      "name": "Nc-autoupdate-ncp",
+      "title": "nc-autoupdate-ncp",
       "params": [
         {
           "id": "ACTIVE",
@@ -374,11 +374,11 @@
     },
     {
       "id": "nc-backup-auto",
-      "name": "Nc-backup-auto",
-      "title": "nc-backup-auto",
-      "description": "Set periodic backups",
       "info": "",
       "infotitle": "",
+      "description": "Set periodic backups",
+      "name": "Nc-backup-auto",
+      "title": "nc-backup-auto",
       "params": [
         {
           "id": "ACTIVE",
@@ -421,11 +421,11 @@
     },
     {
       "id": "nc-backup",
-      "name": "nc-backup",
-      "title": "nc-backup",
-      "description": "Backup this NC instance to a file",
       "info": "This will always include the current Nextcloud directory and the Database.\nYou can choose to include or exclude NC-data.",
       "infotitle": "",
+      "description": "Backup this NC instance to a file",
+      "name": "nc-backup",
+      "title": "nc-backup",
       "params": [
         {
           "id": "DESTDIR",
@@ -455,11 +455,11 @@
     },
     {
       "id": "nc-database",
-      "name": "Nc-database",
-      "title": "nc-database",
-      "description": "Move your database to a new location, like a USB drive",
       "info": "Note that non Unix filesystems such as NTFS are not supported\nbecause they do not provide a compatible user/permissions system.\n\nYou need to use a USB drive that is permanently on and is responsive \nor the database will fail.\n\nPlease note that the default location, when first installed is /var/lib/mysql/. \nMove it to the desired location by editing the DBDIR= field, the one shown is an example.\n\n** If it ever fails with a white page, move the database back to the SD **",
       "infotitle": "",
+      "description": "Move your database to a new location, like a USB drive",
+      "name": "Nc-database",
+      "title": "nc-database",
       "params": [
         {
           "id": "DBDIR",
@@ -473,11 +473,11 @@
     },
     {
       "id": "nc-datadir",
-      "name": "Nc-datadir",
-      "title": "nc-datadir",
-      "description": "Change your data dir to a new location, like a USB or SATA drive",
       "info": "Note that non Unix filesystems such as NTFS are not supported\nbecause they do not provide a compatible user/permissions system.\nAlso please note that the default location, when first installed is /var/www/nextcloud/data. \nMove it to the desired location by editing the DATADIR= field, the PATH shown is an example.",
       "infotitle": "",
+      "description": "Change your data dir to a new location, like a USB or SATA drive",
+      "name": "Nc-datadir",
+      "title": "nc-datadir",
       "params": [
         {
           "id": "DATADIR",
@@ -491,11 +491,11 @@
     },
     {
       "id": "nc-encrypt",
-      "name": "Nc-encrypt",
-      "title": "nc-encrypt",
-      "description": "Data at rest encryption for NCP",
       "info": "The encryption password will be needed after every reboot.\nThis will increase CPU usage.",
       "infotitle": "",
+      "description": "Data at rest encryption for NCP",
+      "name": "Nc-encrypt",
+      "title": "nc-encrypt",
       "params": [
         {
           "id": "ACTIVE",
@@ -514,11 +514,11 @@
     },
     {
       "id": "nc-export-ncp",
-      "name": "Nc-export-ncp",
-      "title": "nc-export-ncp",
-      "description": "Export NextCloudPi configuration",
       "info": "",
       "infotitle": "",
+      "description": "Export NextCloudPi configuration",
+      "name": "Nc-export-ncp",
+      "title": "nc-export-ncp",
       "params": [
         {
           "id": "DIR",
@@ -531,20 +531,20 @@
     },
     {
       "id": "nc-fix-permissions",
-      "name": "Nc-fix-permissions",
-      "title": "nc-fix-permissions",
-      "description": "Fix permissions for NC data files, in case they were copied externally",
       "info": "",
       "infotitle": "",
+      "description": "Fix permissions for NC data files, in case they were copied externally",
+      "name": "Nc-fix-permissions",
+      "title": "nc-fix-permissions",
       "params": []
     },
     {
       "id": "nc-format-USB",
-      "name": "Nc-format-USB",
-      "title": "nc-format-USB",
-      "description": "Format an external USB drive as a BTRFS partition (dangerous)",
       "info": "Make sure that ONLY the USB drive that you want to format is plugged in.\ncareful, this will destroy any data in the USB drive\n\n** YOU WILL LOSE ALL YOUR USB DATA **",
       "infotitle": "Instructions for USB drive formatting",
+      "description": "Format an external USB drive as a BTRFS partition (dangerous)",
+      "name": "Nc-format-USB",
+      "title": "nc-format-USB",
       "params": [
         {
           "id": "LABEL",
@@ -563,11 +563,11 @@
     },
     {
       "id": "nc-forward-ports",
-      "name": "Nc-forward-ports",
-      "title": "nc-forward-ports",
-      "description": "Set port forwarding to access from outside",
       "info": "For NextCloudPi to be able to setup your ports, UPnP must be activated\nin your router. Activate it now on your router admin webpage.\n\n** UPnP is considered a security risk **\n\nDon't forget to disable it afterwards",
       "infotitle": "Instructions for UPnP Port Forwarding",
+      "description": "Set port forwarding to access from outside",
+      "name": "Nc-forward-ports",
+      "title": "nc-forward-ports",
       "params": [
         {
           "id": "HTTPSPORT",
@@ -585,11 +585,11 @@
     },
     {
       "id": "nc-hdd-monitor",
-      "name": "Nc-hdd-monitor",
-      "title": "nc-hdd-monitor",
-      "description": "Monitor HDD health automatically",
       "info": "",
       "infotitle": "",
+      "description": "Monitor HDD health automatically",
+      "name": "Nc-hdd-monitor",
+      "title": "nc-hdd-monitor",
       "params": [
         {
           "id": "ACTIVE",
@@ -607,11 +607,11 @@
     },
     {
       "id": "nc-hdd-test",
-      "name": "Nc-hdd-test",
-      "title": "nc-hdd-test",
-      "description": "Check HDD health",
       "info": "Running no test will display test results",
       "infotitle": "",
+      "description": "Check HDD health",
+      "name": "Nc-hdd-test",
+      "title": "nc-hdd-test",
       "params": [
         {
           "id": "SHORTTEST",
@@ -629,11 +629,11 @@
     },
     {
       "id": "nc-httpsonly",
-      "name": "Nc-httpsonly",
-      "title": "nc-httpsonly",
-      "description": "Force HTTPS",
       "info": "",
       "infotitle": "",
+      "description": "Force HTTPS",
+      "name": "Nc-httpsonly",
+      "title": "nc-httpsonly",
       "params": [
         {
           "id": "ACTIVE",
@@ -645,11 +645,11 @@
     },
     {
       "id": "nc-import-ncp",
-      "name": "Nc-import-ncp",
-      "title": "nc-import-ncp",
-      "description": "Import NextCloudPi configuration from file",
       "info": "",
       "infotitle": "",
+      "description": "Import NextCloudPi configuration from file",
+      "name": "Nc-import-ncp",
+      "title": "nc-import-ncp",
       "params": [
         {
           "id": "FILE",
@@ -662,20 +662,20 @@
     },
     {
       "id": "nc-info",
-      "name": "Nc-info",
-      "title": "nc-info",
-      "description": "Print NextCloudPi system info",
       "info": "",
       "infotitle": "",
+      "description": "Print NextCloudPi system info",
+      "name": "Nc-info",
+      "title": "nc-info",
       "params": []
     },
     {
       "id": "nc-init",
-      "name": "Nc-init",
-      "title": "nc-init",
-      "description": "(Re)initiate Nextcloud to a clean configuration",
       "info": "This action will configure NextCloud to NextCloudPi defaults.\n\n** YOUR CONFIGURATION WILL BE LOST **\n\n",
       "infotitle": "Clean NextCloud configuration",
+      "description": "(Re)initiate Nextcloud to a clean configuration",
+      "name": "Nc-init",
+      "title": "nc-init",
       "params": [
         {
           "id": "ADMINUSER",
@@ -693,11 +693,11 @@
     },
     {
       "id": "nc-limits",
-      "name": "Nc-limits",
-      "title": "nc-limits",
-      "description": "Configure system limits for NextCloudPi",
       "info": "Examples: 200M or 2G. Write 0 for autoconfig",
       "infotitle": "",
+      "description": "Configure system limits for NextCloudPi",
+      "name": "Nc-limits",
+      "title": "nc-limits",
       "params": [
         {
           "id": "MAXFILESIZE",
@@ -731,11 +731,11 @@
     },
     {
       "id": "nc-maintenance",
-      "name": "Nc-maintenanceMode",
-      "title": "nc-maintenance-mode",
-      "description": "Turn maintenance mode on or off",
       "info": "Open maintenance mode (ACTIVE=yes), or close maintenance mode (ACTIVE=no)",
       "infotitle": "",
+      "description": "Turn maintenance mode on or off",
+      "name": "Nc-maintenanceMode",
+      "title": "nc-maintenance-mode",
       "params": [
         {
           "id": "ACTIVE",
@@ -747,11 +747,11 @@
     },
     {
       "id": "nc-nextcloud",
-      "name": "Nc-nextcloud",
-      "title": "nc-nextcloud",
-      "description": "Install any NextCloud version",
       "info": "WARNING: this will completely wipe out your current instance",
       "infotitle": "",
+      "description": "Install any NextCloud version",
+      "name": "Nc-nextcloud",
+      "title": "nc-nextcloud",
       "params": [
         {
           "id": "VER",
@@ -780,11 +780,11 @@
     },
     {
       "id": "nc-notify-updates",
-      "name": "Nc-notify-updates",
-      "title": "nc-notify-updates",
-      "description": "Notify in Nextcloud when a NextCloudPi update is available",
       "info": "",
       "infotitle": "",
+      "description": "Notify in Nextcloud when a NextCloudPi update is available",
+      "name": "Nc-notify-updates",
+      "title": "nc-notify-updates",
       "params": [
         {
           "id": "ACTIVE",
@@ -796,11 +796,11 @@
     },
     {
       "id": "nc-passwd",
-      "name": "Nc-passwd",
-      "title": "nc-passwd",
-      "description": "Change password for the NextCloudPi Panel",
       "info": "Please note some special characters are not allowed here, avoid using ) } ; # in password",
       "infotitle": "",
+      "description": "Change password for the NextCloudPi Panel",
+      "name": "Nc-passwd",
+      "title": "nc-passwd",
       "params": [
         {
           "id": "PASSWORD",
@@ -819,11 +819,11 @@
     },
     {
       "id": "nc-prettyURL",
-      "name": "Nc-prettyURL",
-      "title": "nc-prettyURL",
-      "description": "Set pretty URLs (no index.php in URL)",
       "info": "",
       "infotitle": "PrettyURL notes",
+      "description": "Set pretty URLs (no index.php in URL)",
+      "name": "Nc-prettyURL",
+      "title": "nc-prettyURL",
       "params": [
         {
           "id": "ACTIVE",
@@ -835,11 +835,11 @@
     },
     {
       "id": "nc-previews-auto",
-      "name": "Nc-previews-auto",
-      "title": "nc-previews-auto",
-      "description": "Periodically generate previews for the gallery",
       "info": "This will make browsing the gallery much more smooth.\nWhen active, previews will be generated every night at 2am.\nFor big collections, this can take a LONG time depending on your hardware.\nYou can specify a maximum duration in minutes, or 0 for no limit.",
       "infotitle": "",
+      "description": "Periodically generate previews for the gallery",
+      "name": "Nc-previews-auto",
+      "title": "nc-previews-auto",
       "params": [
         {
           "id": "ACTIVE",
@@ -857,11 +857,11 @@
     },
     {
       "id": "nc-previews",
-      "name": "Nc-previews",
-      "title": "nc-previews",
-      "description": "Generate previews for the gallery",
       "info": "This will make browsing the gallery much more smooth.\nFor big collections, this can take a LONG time, depending on your hardware\nOptionally, include a path in the form '/_user_/files/_path_' (incremental only)",
       "infotitle": "",
+      "description": "Generate previews for the gallery",
+      "name": "Nc-previews",
+      "title": "nc-previews",
       "params": [
         {
           "id": "CLEAN",
@@ -885,11 +885,11 @@
     },
     {
       "id": "nc-ramlogs",
-      "name": "Nc-ramlogs",
-      "title": "nc-ramlogs",
-      "description": "mount logs in RAM to prevent SD degradation (faster, consumes more RAM)",
       "info": "You need to reboot for this change to take effect",
       "infotitle": "Warning",
+      "description": "mount logs in RAM to prevent SD degradation (faster, consumes more RAM)",
+      "name": "Nc-ramlogs",
+      "title": "nc-ramlogs",
       "params": [
         {
           "id": "ACTIVE",
@@ -901,11 +901,11 @@
     },
     {
       "id": "nc-restore",
-      "name": "Nc-restore",
-      "title": "nc-restore",
-      "description": "Restore a previously backuped NC instance",
       "info": "This new installation will cleanup current\nNextCloud instance, including files and database.\n\n** perform backup before proceding **\n\nYou can use 'nc-backup'",
       "infotitle": "Restore NextCloud backup",
+      "description": "Restore a previously backuped NC instance",
+      "name": "Nc-restore",
+      "title": "nc-restore",
       "params": [
         {
           "id": "BACKUPFILE",
@@ -918,11 +918,11 @@
     },
     {
       "id": "nc-restore-snapshot",
-      "name": "Nc-restore-snapshot",
-      "title": "nc-restore-snapshot",
-      "description": "Restore data from a BTRFS snapshot",
       "info": "A snapshot of the data will be restored",
       "infotitle": "Restore NextCloud data snapshot",
+      "description": "Restore data from a BTRFS snapshot",
+      "name": "Nc-restore-snapshot",
+      "title": "nc-restore-snapshot",
       "params": [
         {
           "id": "SNAPSHOT",
@@ -935,11 +935,11 @@
     },
     {
       "id": "nc-rsync-auto",
-      "name": "Nc-rsync-auto",
-      "title": "nc-rsync-auto",
-      "description": "Periodically sync Nextcloud data through rsync",
       "info": "DESTINATION can be a regular path for local sync\n'user' needs SSH autologin from the NCP 'root' user at 'ip'",
       "infotitle": "",
+      "description": "Periodically sync Nextcloud data through rsync",
+      "name": "Nc-rsync-auto",
+      "title": "nc-rsync-auto",
       "params": [
         {
           "id": "ACTIVE",
@@ -969,11 +969,11 @@
     },
     {
       "id": "nc-rsync",
-      "name": "Nc-rsync",
-      "title": "nc-rsync",
-      "description": "Sync Nextcloud data remotely or locally through rsync",
       "info": "'user' needs SSH autologin from the NCP 'root' user at 'ip'\nfor remote sync",
       "infotitle": "",
+      "description": "Sync Nextcloud data remotely or locally through rsync",
+      "name": "Nc-rsync",
+      "title": "nc-rsync",
       "params": [
         {
           "id": "DESTINATION",
@@ -991,11 +991,11 @@
     },
     {
       "id": "nc-scan-auto",
-      "name": "Nc-scan-auto",
-      "title": "nc-scan-auto",
-      "description": "Periodically scan NC for externally modified files",
       "info": "Set the time in minutes in Scan Interval. Optionally we can specify up to 3 paths in the form '_user_/files/_path_'\n\n>>> If there are too many files this can greatly affect performance. <<<",
       "infotitle": "Instructions for auto synchronization",
+      "description": "Periodically scan NC for externally modified files",
+      "name": "Nc-scan-auto",
+      "title": "nc-scan-auto",
       "params": [
         {
           "id": "ACTIVE",
@@ -1043,11 +1043,11 @@
     },
     {
       "id": "nc-scan",
-      "name": "Nc-scan",
-      "title": "nc-scan",
-      "description": "Scan NC for externally modified files",
       "info": "Optionally we can specify up to 3 paths in the form '_user_/files/_path_'",
       "infotitle": "",
+      "description": "Scan NC for externally modified files",
+      "name": "Nc-scan",
+      "title": "nc-scan",
       "params": [
         {
           "id": "RECURSIVE",
@@ -1083,11 +1083,11 @@
     },
     {
       "id": "nc-snapshot-auto",
-      "name": "Nc-snapshot-auto",
-      "title": "nc-snapshot-auto",
-      "description": "Scheduled datadir BTRFS snapshots",
       "info": "",
       "infotitle": "",
+      "description": "Scheduled datadir BTRFS snapshots",
+      "name": "Nc-snapshot-auto",
+      "title": "nc-snapshot-auto",
       "params": [
         {
           "id": "ACTIVE",
@@ -1099,11 +1099,11 @@
     },
     {
       "id": "nc-snapshot",
-      "name": "Nc-snapshot",
-      "title": "nc-snapshot",
-      "description": "Create BTRFS snapshot of the datadir",
       "info": "Snapshots take up very little space because only the differences from one \nto the next are saved. This requires the datadir to be in a BTRFS filesystem",
       "infotitle": "",
+      "description": "Create BTRFS snapshot of the datadir",
+      "name": "Nc-snapshot",
+      "title": "nc-snapshot",
       "params": [
         {
           "id": "LIMIT",
@@ -1115,11 +1115,11 @@
     },
     {
       "id": "nc-snapshot-sync",
-      "name": "Nc-snapshot-sync",
-      "title": "nc-snapshot-sync",
-      "description": "Sync BTRFS snapshots to USBdrive or remote machine",
       "info": "Use format user@ip:/path/to/snapshots for remote sync\n'user' needs permissions for the 'btrfs' command at 'ip'\n'user' needs SSH autologin from the NCP 'root' user at 'ip'\nOnly use compression for internet transfer, because it uses many resources",
       "infotitle": "",
+      "description": "Sync BTRFS snapshots to USBdrive or remote machine",
+      "name": "Nc-snapshot-sync",
+      "title": "nc-snapshot-sync",
       "params": [
         {
           "id": "ACTIVE",
@@ -1156,11 +1156,11 @@
     },
     {
       "id": "nc-static-IP",
-      "name": "Nc-static-IP",
-      "title": "nc-static-IP",
-      "description": "Set up a static IP address ",
       "info": "Static IP (ACTIVE=yes), or DHCP (ACTIVE=no)",
       "infotitle": "",
+      "description": "Set up a static IP address ",
+      "name": "Nc-static-IP",
+      "title": "nc-static-IP",
       "params": [
         {
           "id": "ACTIVE",
@@ -1178,11 +1178,11 @@
     },
     {
       "id": "nc-swapfile",
-      "name": "Nc-swapfile",
-      "title": "nc-swapfile",
-      "description": "Move and resize your swapfile. Recommended to move to a permanent USB drive",
       "info": "",
       "infotitle": "",
+      "description": "Move and resize your swapfile. Recommended to move to a permanent USB drive",
+      "name": "Nc-swapfile",
+      "title": "nc-swapfile",
       "params": [
         {
           "id": "SWAPFILE",
@@ -1200,11 +1200,11 @@
     },
     {
       "id": "nc-trusted-domains",
-      "name": "Nc-trusted-domains",
-      "title": "nc-trusted-domains",
-      "description": "Manually add trusted domains",
       "info": "Note that this is normally not needed, as NCP will do this automatically for you in most cases",
       "infotitle": "",
+      "description": "Manually add trusted domains",
+      "name": "Nc-trusted-domains",
+      "title": "nc-trusted-domains",
       "params": [
         {
           "id": "DOMAIN1",
@@ -1228,11 +1228,11 @@
     },
     {
       "id": "nc-trusted-proxies",
-      "name": "Nc-trusted-proxies",
-      "title": "nc-trusted-proxies",
-      "description": "Manually add trusted proxies",
       "info": "This operation is only needed if NCP is running behind a reverse proxy and the true client IP address is needed",
       "infotitle": "",
+      "description": "Manually add trusted proxies",
+      "name": "Nc-trusted-proxies",
+      "title": "nc-trusted-proxies",
       "params": [
         {
           "id": "PROXY1",
@@ -1256,20 +1256,20 @@
     },
     {
       "id": "nc-update",
-      "name": "Nc-update",
-      "title": "nc-update",
-      "description": "Update NextCloudPi",
       "info": "",
       "infotitle": "",
+      "description": "Update NextCloudPi",
+      "name": "Nc-update",
+      "title": "nc-update",
       "params": []
     },
     {
       "id": "nc-update-nc-apps-auto",
-      "name": "Nc-update-nc-apps-auto",
-      "title": "nc-update-nc-apps-auto",
-      "description": "Periodically update all installed Nextcloud Apps",
       "info": "",
       "infotitle": "",
+      "description": "Periodically update all installed Nextcloud Apps",
+      "name": "Nc-update-nc-apps-auto",
+      "title": "nc-update-nc-apps-auto",
       "params": [
         {
           "id": "ACTIVE",
@@ -1281,20 +1281,20 @@
     },
     {
       "id": "nc-update-nc-apps",
-      "name": "Nc-update-nc-apps",
-      "title": "nc-update-nc-apps",
-      "description": "Update all installed Nextcloud Apps",
       "info": "",
       "infotitle": "",
+      "description": "Update all installed Nextcloud Apps",
+      "name": "Nc-update-nc-apps",
+      "title": "nc-update-nc-apps",
       "params": []
     },
     {
       "id": "nc-update-nextcloud",
-      "name": "Nc-update-nextcloud",
-      "title": "nc-update-nextcloud",
-      "description": "Update current instance to a new Nextcloud version",
       "info": "Set to 0 to update to the latest available version",
       "infotitle": "",
+      "description": "Update current instance to a new Nextcloud version",
+      "name": "Nc-update-nextcloud",
+      "title": "nc-update-nextcloud",
       "params": [
         {
           "id": "VERSION",
@@ -1306,11 +1306,11 @@
     },
     {
       "id": "nc-webui",
-      "name": "Nc-webui",
-      "title": "nc-webui",
-      "description": "Enable or disable the NCP web interface",
       "info": "",
       "infotitle": "",
+      "description": "Enable or disable the NCP web interface",
+      "name": "Nc-webui",
+      "title": "nc-webui",
       "params": [
         {
           "id": "ACTIVE",
@@ -1322,11 +1322,11 @@
     },
     {
       "id": "nc-zram",
-      "name": "Nc-zram",
-      "title": "nc-zram",
-      "description": "Enable compressed RAM to improve swap performance",
       "info": "",
       "infotitle": "",
+      "description": "Enable compressed RAM to improve swap performance",
+      "name": "Nc-zram",
+      "title": "nc-zram",
       "params": [
         {
           "id": "ACTIVE",
@@ -1338,11 +1338,11 @@
     },
     {
       "id": "NFS",
-      "name": "NFS Linux Network File System",
-      "title": "NFS",
-      "description": "NFS network file system server (for Linux LAN)",
       "info": "If we intend to modify the data folder through NFS,\nthen we have to synchronize NextCloud to make it aware of the changes.\n\nThis can be done manually or automatically using 'nc-scan' and 'nc-scan-auto'",
       "infotitle": "Instructions for external synchronization",
+      "description": "NFS network file system server (for Linux LAN)",
+      "name": "NFS Linux Network File System",
+      "title": "NFS",
       "params": [
         {
           "id": "ACTIVE",
@@ -1379,11 +1379,11 @@
     },
     {
       "id": "no-ip",
-      "name": "DynamicDNS from no-ip",
-      "title": "no-ip",
-      "description": "Dynamic DNS no-ip free provider",
       "info": "Need account from https://www.noip.com/",
       "infotitle": "",
+      "description": "Dynamic DNS no-ip free provider",
+      "name": "DynamicDNS from no-ip",
+      "title": "no-ip",
       "params": [
         {
           "id": "ACTIVE",
@@ -1420,11 +1420,11 @@
     },
     {
       "id": "samba",
-      "name": "Samba",
-      "title": "samba",
-      "description": "SMB/CIFS file server (for Mac/Linux/Windows)\nIf a group filter is given, samba shares will only be set up for users of that group.",
       "info": "The username will be the Nextcloud username, and the password will be one we setup here.\nIf we intend to modify the data folder through SAMBA,\nthen we have to synchronize NextCloud to make it aware of the changes.\n\nThis can be done manually or automatically using 'nc-scan' and 'nc-scan-auto'",
       "infotitle": "Instructions for external synchronization",
+      "description": "SMB/CIFS file server (for Mac/Linux/Windows)\nIf a group filter is given, samba shares will only be set up for users of that group.",
+      "name": "Samba",
+      "title": "samba",
       "params": [
         {
           "id": "ACTIVE",
@@ -1449,11 +1449,11 @@
     },
     {
       "id": "spDYN",
-      "name": "Dynamic DNS from spDYN",
-      "title": "spDYN",
-      "description": "Free Dynamic DNS provider (need account from spdyn.de)",
       "info": "",
       "infotitle": "",
+      "description": "Free Dynamic DNS provider (need account from spdyn.de)",
+      "name": "Dynamic DNS from spDYN",
+      "title": "spDYN",
       "params": [
         {
           "id": "ACTIVE",
@@ -1477,11 +1477,11 @@
     },
     {
       "id": "SSH",
-      "name": "SSH OpenSSH is a remote login program",
-      "title": "SSH",
-      "description": "Activate or deactivate SSH - OpenSSH is a remote login program",
       "info": "In order to enable SSH, the password for user 'pi' can NOT remain set to the default 'raspberry'. \nYou HAVE to create a NEW password for 'pi' if you want this program to enable SSH, it will fail if you dont!\nThe same will happen with user 'root' and password '1234'\nNote: Use normal AlphaNumeric, the only special characters allowed are .,@-_/",
       "infotitle": "SSH notes",
+      "description": "Activate or deactivate SSH - OpenSSH is a remote login program",
+      "name": "SSH OpenSSH is a remote login program",
+      "title": "SSH",
       "params": [
         {
           "id": "ACTIVE",
@@ -1517,11 +1517,11 @@
     },
     {
       "id": "UFW",
-      "name": "UFW Uncomplicated Firewall, a netfilter firewall",
-      "title": "UFW",
-      "description": "Uncomplicated Firewall, program for managing a netfilter firewall",
       "info": "Beware of blocking the SSH port you are using! SSH uses port 22 by default, ports 80 and 443 are for the webserver",
       "infotitle": "",
+      "description": "Uncomplicated Firewall, program for managing a netfilter firewall",
+      "name": "UFW Uncomplicated Firewall, a netfilter firewall",
+      "title": "UFW",
       "params": [
         {
           "id": "ACTIVE",
@@ -1554,11 +1554,11 @@
     },
     {
       "id": "unattended-upgrades",
-      "name": "Unattended-upgrades",
-      "title": "unattended-upgrades",
-      "description": "Automatic installation of security updates. Keep your cloud safe",
       "info": "",
       "infotitle": "",
+      "description": "Automatic installation of security updates. Keep your cloud safe",
+      "name": "Unattended-upgrades",
+      "title": "unattended-upgrades",
       "params": [
         {
           "id": "ACTIVE",

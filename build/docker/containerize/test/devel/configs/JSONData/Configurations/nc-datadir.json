@@ -1,0 +1,18 @@
+{
+  "id": "nc-datadir",
+  "info": "Note that non Unix filesystems such as NTFS are not supported\nbecause they do not provide a compatible user/permissions system.\nAlso please note that the default location, when first installed is /var/www/nextcloud/data. \nMove it to the desired location by editing the DATADIR= field, the PATH shown is an example.",
+  "infotitle": "",
+  "description": "Change your data dir to a new location, like a USB or SATA drive",
+  "name": "Nc-datadir",
+  "title": "nc-datadir",
+  "params": [
+    {
+      "id": "DATADIR",
+      "name": "Data directory",
+      "value": "/opt/ncdata",
+      "suggest": "/media/USBdrive/ncdata",
+      "default": "/var/www/nextcloud/data",
+      "type": "directory"
+    }
+  ]
+}

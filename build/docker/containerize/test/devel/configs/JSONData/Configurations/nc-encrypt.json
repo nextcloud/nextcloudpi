@@ -1,0 +1,23 @@
+{
+  "id": "nc-encrypt",
+  "info": "The encryption password will be needed after every reboot.\nThis will increase CPU usage.",
+  "infotitle": "",
+  "description": "Data at rest encryption for NCP",
+  "name": "Nc-encrypt",
+  "title": "nc-encrypt",
+  "params": [
+    {
+      "id": "ACTIVE",
+      "name": "Active",
+      "value": "no",
+      "type": "bool"
+    },
+    {
+      "id": "PASSWORD",
+      "name": "Password",
+      "value": "",
+      "suggest": "password",
+      "type": "password"
+    }
+  ]
+}

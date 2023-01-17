@@ -1,0 +1,9 @@
+{
+  "id": "nc-update-nc-apps",
+  "info": "",
+  "infotitle": "",
+  "description": "Update all installed Nextcloud Apps",
+  "name": "Nc-update-nc-apps",
+  "title": "nc-update-nc-apps",
+  "params": []
+}

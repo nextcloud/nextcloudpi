@@ -1,0 +1,17 @@
+{
+  "id": "nc-import-ncp",
+  "info": "",
+  "infotitle": "",
+  "description": "Import NextCloudPi configuration from file",
+  "name": "Nc-import-ncp",
+  "title": "nc-import-ncp",
+  "params": [
+    {
+      "id": "FILE",
+      "name": "File",
+      "value": "/media/USBdrive/ncp-config_xxxxxx.cfg",
+      "suggest": "/media/USBdrive/ncp-config_xxxxxx.cfg",
+      "type": "file"
+    }
+  ]
+}

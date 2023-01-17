@@ -1,0 +1,37 @@
+{
+  "id": "UFW",
+  "info": "Beware of blocking the SSH port you are using! SSH uses port 22 by default, ports 80 and 443 are for the webserver",
+  "infotitle": "",
+  "description": "Uncomplicated Firewall, program for managing a netfilter firewall",
+  "name": "UFW Uncomplicated Firewall, a netfilter firewall",
+  "title": "UFW",
+  "params": [
+    {
+      "id": "ACTIVE",
+      "name": "Active",
+      "value": "no",
+      "type": "bool"
+    },
+    {
+      "id": "HTTP",
+      "name": "Http",
+      "value": "80",
+      "default": "80",
+      "suggest": "80"
+    },
+    {
+      "id": "HTTPS",
+      "name": "Https",
+      "value": "443",
+      "default": "443",
+      "suggest": "443"
+    },
+    {
+      "id": "SSH",
+      "name": "Ssh",
+      "value": "22",
+      "default": "22",
+      "suggest": "22"
+    }
+  ]
+}

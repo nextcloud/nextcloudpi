@@ -1,0 +1,28 @@
+{
+  "id": "duckDNS",
+  "info": "Need account from https://duckdns.org",
+  "infotitle": "",
+  "description": "Free Dynamic DNS provider",
+  "name": "DynamicDNS from duckDNS",
+  "title": "duckDNS",
+  "params": [
+    {
+      "id": "ACTIVE",
+      "name": "Active",
+      "value": "no",
+      "type": "bool"
+    },
+    {
+      "id": "DOMAIN",
+      "name": "Domain",
+      "value": "mycloud.duckdns.org",
+      "suggest": "mycloud.duckdns.org"
+    },
+    {
+      "id": "TOKEN",
+      "name": "Token",
+      "value": "your-duckdns-token",
+      "suggest": "your-duckdns-token"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "id": "nc-previews-auto",
+  "info": "This will make browsing the gallery much more smooth.\nWhen active, previews will be generated every night at 2am.\nFor big collections, this can take a LONG time depending on your hardware.\nYou can specify a maximum duration in minutes, or 0 for no limit.",
+  "infotitle": "",
+  "description": "Periodically generate previews for the gallery",
+  "name": "Nc-previews-auto",
+  "title": "nc-previews-auto",
+  "params": [
+    {
+      "id": "ACTIVE",
+      "name": "Active",
+      "value": "yes",
+      "type": "bool"
+    },
+    {
+      "id": "RUNTIME",
+      "name": "Max. runtime (in minutes)",
+      "value": "0",
+      "suggest": "0"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "id": "nc-webui",
+  "info": "",
+  "infotitle": "",
+  "description": "Enable or disable the NCP web interface",
+  "name": "Nc-webui",
+  "title": "nc-webui",
+  "params": [
+    {
+      "id": "ACTIVE",
+      "name": "Active",
+      "value": "no",
+      "type": "bool"
+    }
+  ]
+}

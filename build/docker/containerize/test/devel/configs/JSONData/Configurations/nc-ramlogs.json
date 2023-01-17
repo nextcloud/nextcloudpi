@@ -1,0 +1,16 @@
+{
+  "id": "nc-ramlogs",
+  "info": "You need to reboot for this change to take effect",
+  "infotitle": "Warning",
+  "description": "mount logs in RAM to prevent SD degradation (faster, consumes more RAM)",
+  "name": "Nc-ramlogs",
+  "title": "nc-ramlogs",
+  "params": [
+    {
+      "id": "ACTIVE",
+      "name": "Active",
+      "value": "no",
+      "type": "bool"
+    }
+  ]
+}

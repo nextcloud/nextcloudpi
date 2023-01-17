@@ -1,0 +1,22 @@
+{
+  "id": "nc-static-IP",
+  "info": "Static IP (ACTIVE=yes), or DHCP (ACTIVE=no)",
+  "infotitle": "",
+  "description": "Set up a static IP address ",
+  "name": "Nc-static-IP",
+  "title": "nc-static-IP",
+  "params": [
+    {
+      "id": "ACTIVE",
+      "name": "Active",
+      "value": "no",
+      "type": "bool"
+    },
+    {
+      "id": "IP",
+      "name": "IP",
+      "value": "192.168.1.130",
+      "suggest": "192.168.1.130"
+    }
+  ]
+}

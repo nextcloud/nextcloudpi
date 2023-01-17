@@ -1,0 +1,34 @@
+{
+  "id": "nc-rsync-auto",
+  "info": "DESTINATION can be a regular path for local sync\n'user' needs SSH autologin from the NCP 'root' user at 'ip'",
+  "infotitle": "",
+  "description": "Periodically sync Nextcloud data through rsync",
+  "name": "Nc-rsync-auto",
+  "title": "nc-rsync-auto",
+  "params": [
+    {
+      "id": "ACTIVE",
+      "name": "Active",
+      "value": "no",
+      "type": "bool"
+    },
+    {
+      "id": "DESTINATION",
+      "name": "Destination",
+      "value": "user@ip:/path/to/sync",
+      "suggest": "user@ip:/path/to/sync"
+    },
+    {
+      "id": "PORTNUMBER",
+      "name": "SSH port number",
+      "value": "22",
+      "suggest": "22"
+    },
+    {
+      "id": "SYNCDAYS",
+      "name": "Sync periodicity (in days)",
+      "value": "3",
+      "suggest": "3"
+    }
+  ]
+}

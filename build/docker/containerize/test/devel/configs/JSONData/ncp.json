@@ -1,0 +1,6 @@
+{
+  "version": "2.0.0",
+  "nextcloud_version": "25.0.2",
+  "php_version": "8.1",
+  "os_release": "bullseye"
+}

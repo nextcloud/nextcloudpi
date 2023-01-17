@@ -1,0 +1,40 @@
+{
+  "id": "nc-scan",
+  "info": "Optionally we can specify up to 3 paths in the form '_user_/files/_path_'",
+  "infotitle": "",
+  "description": "Scan NC for externally modified files",
+  "name": "Nc-scan",
+  "title": "nc-scan",
+  "params": [
+    {
+      "id": "RECURSIVE",
+      "name": "Recursive",
+      "value": "yes",
+      "type": "bool"
+    },
+    {
+      "id": "NONEXTERNAL",
+      "name": "Ignore external files",
+      "value": "no",
+      "type": "bool"
+    },
+    {
+      "id": "PATH1",
+      "name": "Path",
+      "value": "",
+      "suggest": "/ncp/files/Documents"
+    },
+    {
+      "id": "PATH2",
+      "name": "Path",
+      "value": "",
+      "suggest": "/family/files/Photos"
+    },
+    {
+      "id": "PATH3",
+      "name": "Path",
+      "value": "",
+      "suggest": "/family/files/Videos"
+    }
+  ]
+}

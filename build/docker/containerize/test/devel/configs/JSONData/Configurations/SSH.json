@@ -1,0 +1,40 @@
+{
+  "id": "SSH",
+  "info": "In order to enable SSH, the password for user 'pi' can NOT remain set to the default 'raspberry'. \nYou HAVE to create a NEW password for 'pi' if you want this program to enable SSH, it will fail if you dont!\nThe same will happen with user 'root' and password '1234'\nNote: Use normal AlphaNumeric, the only special characters allowed are .,@-_/",
+  "infotitle": "SSH notes",
+  "description": "Activate or deactivate SSH - OpenSSH is a remote login program",
+  "name": "SSH OpenSSH is a remote login program",
+  "title": "SSH",
+  "params": [
+    {
+      "id": "ACTIVE",
+      "name": "Active",
+      "value": "no",
+      "type": "bool"
+    },
+    {
+      "id": "USER",
+      "name": "User",
+      "value": "root",
+      "suggest": "root"
+    },
+    {
+      "id": "PASS",
+      "name": "Pass",
+      "value": "1234",
+      "type": "password"
+    },
+    {
+      "id": "CONFIRM",
+      "name": "Confirm",
+      "value": "1234",
+      "type": "password"
+    },
+    {
+      "id": "SUDO",
+      "name": "Enable sudo",
+      "value": "no",
+      "type": "bool"
+    }
+  ]
+}

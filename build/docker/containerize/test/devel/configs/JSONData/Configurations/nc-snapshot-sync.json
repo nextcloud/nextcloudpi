@@ -1,0 +1,41 @@
+{
+  "id": "nc-snapshot-sync",
+  "info": "Use format user@ip:/path/to/snapshots for remote sync\n'user' needs permissions for the 'btrfs' command at 'ip'\n'user' needs SSH autologin from the NCP 'root' user at 'ip'\nOnly use compression for internet transfer, because it uses many resources",
+  "infotitle": "",
+  "description": "Sync BTRFS snapshots to USBdrive or remote machine",
+  "name": "Nc-snapshot-sync",
+  "title": "nc-snapshot-sync",
+  "params": [
+    {
+      "id": "ACTIVE",
+      "name": "Active",
+      "value": "no",
+      "type": "bool"
+    },
+    {
+      "id": "SNAPDIR",
+      "name": "Snapshot directory",
+      "value": "/media/USBdrive/ncp-snapshots",
+      "suggest": "/media/USBdrive/ncp-snapshots",
+      "type": "directory"
+    },
+    {
+      "id": "DESTINATION",
+      "name": "Destination",
+      "value": "/media/myBackupDrive/ncp-snapshots",
+      "suggest": "/media/myBackupDrive/ncp-snapshots"
+    },
+    {
+      "id": "COMPRESSION",
+      "name": "Compression",
+      "value": "no",
+      "type": "bool"
+    },
+    {
+      "id": "SYNCDAYS",
+      "name": "Sync periodicity (in days)",
+      "value": "1",
+      "suggest": "1"
+    }
+  ]
+}

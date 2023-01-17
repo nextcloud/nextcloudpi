@@ -1,0 +1,23 @@
+{
+  "id": "nc-format-USB",
+  "info": "Make sure that ONLY the USB drive that you want to format is plugged in.\ncareful, this will destroy any data in the USB drive\n\n** YOU WILL LOSE ALL YOUR USB DATA **",
+  "infotitle": "Instructions for USB drive formatting",
+  "description": "Format an external USB drive as a BTRFS partition (dangerous)",
+  "name": "Nc-format-USB",
+  "title": "nc-format-USB",
+  "params": [
+    {
+      "id": "LABEL",
+      "name": "Label",
+      "value": "myCloudDrive",
+      "suggest": "myCloudDrive"
+    },
+    {
+      "id": "ALLOW_DATADIR_REMOVAL",
+      "name": "Remove data dir (MAY BREAK YOUR SYSTEM)",
+      "type": "bool",
+      "value": "no",
+      "suggest": "no"
+    }
+  ]
+}

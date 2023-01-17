@@ -1,0 +1,16 @@
+{
+  "id": "nc-update-nextcloud",
+  "info": "Set to 0 to update to the latest available version",
+  "infotitle": "",
+  "description": "Update current instance to a new Nextcloud version",
+  "name": "Nc-update-nextcloud",
+  "title": "nc-update-nextcloud",
+  "params": [
+    {
+      "id": "VERSION",
+      "name": "Version",
+      "value": "0",
+      "suggest": "0"
+    }
+  ]
+}

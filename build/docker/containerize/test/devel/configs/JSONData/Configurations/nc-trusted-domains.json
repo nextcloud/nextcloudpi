@@ -1,0 +1,28 @@
+{
+  "id": "nc-trusted-domains",
+  "info": "Note that this is normally not needed, as NCP will do this automatically for you in most cases",
+  "infotitle": "",
+  "description": "Manually add trusted domains",
+  "name": "Nc-trusted-domains",
+  "title": "nc-trusted-domains",
+  "params": [
+    {
+      "id": "DOMAIN1",
+      "name": "Trusted Domain #1",
+      "value": "",
+      "suggest": "example.ownyourbits.com"
+    },
+    {
+      "id": "DOMAIN2",
+      "name": "Trusted Domain #2",
+      "value": "",
+      "suggest": "example.ownyourbits.com"
+    },
+    {
+      "id": "DOMAIN3",
+      "name": "Trusted Domain #3",
+      "value": "",
+      "suggest": "192.168.1.15"
+    }
+  ]
+}

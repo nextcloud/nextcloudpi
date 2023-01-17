@@ -1,0 +1,47 @@
+{
+  "id": "namecheapDNS",
+  "info": "First, complete these steps: https://www.namecheap.com/support/knowledgebase/article.aspx/595/11/how-do-i-enable-dynamic-dns-for-a-domain/ and https://www.namecheap.com/support/knowledgebase/article.aspx/43/11/how-do-i-set-up-a-host-for-dynamic-dns",
+  "infotitle": "",
+  "description": "Namecheap Dynamic DNS service (need domain from https://www.namecheap.com/)",
+  "name": "Dynamic DNS from Namecheap",
+  "title": "namecheapDNS",
+  "params": [
+    {
+      "id": "ACTIVE",
+      "name": "Active",
+      "value": "no",
+      "type": "bool"
+    },
+    {
+      "id": "PASSWORD",
+      "name": "Password",
+      "value": "",
+      "suggest": "your_ddns_password",
+      "type": "password"
+    },
+    {
+      "id": "FULLDOMAIN",
+      "name": "Full domain name",
+      "value": "",
+      "suggest": "mynextcloud.example.com"
+    },
+    {
+      "id": "HOST",
+      "name": "Host name",
+      "value": "",
+      "suggest": "mynextcloud"
+    },
+    {
+      "id": "DOMAIN",
+      "name": "Domain name",
+      "value": "",
+      "suggest": "example.com"
+    },
+    {
+      "id": "UPDATEINTERVAL",
+      "name": "Update interval (minutes)",
+      "value": "30",
+      "suggest": "30"
+    }
+  ]
+}

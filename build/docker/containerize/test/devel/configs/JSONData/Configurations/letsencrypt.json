@@ -1,0 +1,34 @@
+{
+  "id": "letsencrypt",
+  "info": "Internet access is required for this configuration to complete\nBoth ports 80 and 443 need to be accessible from the internet\n\nYour certificate will be automatically renewed every month",
+  "infotitle": "Warning",
+  "description": "Automatic signed SSL certificates. Let’s Encrypt is a free, automated, and open Certificate Authority.",
+  "name": "Let's Encrypt, Automatic signed SSL certificates",
+  "title": "letsencrypt",
+  "params": [
+    {
+      "id": "ACTIVE",
+      "name": "Active",
+      "value": "no",
+      "type": "bool"
+    },
+    {
+      "id": "DOMAIN",
+      "name": "Domain",
+      "value": "",
+      "suggest": "mycloud.ownyourbits.com"
+    },
+    {
+      "id": "OTHER_DOMAIN",
+      "name": "Additional domain",
+      "value": "",
+      "suggest": "optional.cloud.ownyourbits.com"
+    },
+    {
+      "id": "EMAIL",
+      "name": "Email",
+      "value": "",
+      "suggest": "mycloud@ownyourbits.com"
+    }
+  ]
+}

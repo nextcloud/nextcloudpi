@@ -1,0 +1,16 @@
+{
+  "id": "nc-autoupdate-nc",
+  "info": "",
+  "infotitle": "",
+  "description": "Automatically apply Nextcloud updates",
+  "name": "Nc-autoupdate-nc",
+  "title": "nc-autoupdate-nc",
+  "params": [
+    {
+      "id": "ACTIVE",
+      "name": "Active",
+      "value": "no",
+      "type": "bool"
+    }
+  ]
+}

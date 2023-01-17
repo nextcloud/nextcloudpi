@@ -1,0 +1,22 @@
+{
+  "id": "nc-hdd-monitor",
+  "info": "",
+  "infotitle": "",
+  "description": "Monitor HDD health automatically",
+  "name": "Nc-hdd-monitor",
+  "title": "nc-hdd-monitor",
+  "params": [
+    {
+      "id": "ACTIVE",
+      "name": "Active",
+      "value": "no",
+      "type": "bool"
+    },
+    {
+      "id": "EMAIL",
+      "name": "Email",
+      "value": "",
+      "suggest": "optional@email.com"
+    }
+  ]
+}

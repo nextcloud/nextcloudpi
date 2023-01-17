@@ -1,0 +1,17 @@
+{
+  "id": "nc-export-ncp",
+  "info": "",
+  "infotitle": "",
+  "description": "Export NextCloudPi configuration",
+  "name": "Nc-export-ncp",
+  "title": "nc-export-ncp",
+  "params": [
+    {
+      "id": "DIR",
+      "name": "Directory",
+      "value": "/media/USBdrive/",
+      "suggest": "/media/USBdrive/",
+      "type": "directory"
+    }
+  ]
+}

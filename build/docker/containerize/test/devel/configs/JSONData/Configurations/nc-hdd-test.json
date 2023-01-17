@@ -1,0 +1,22 @@
+{
+  "id": "nc-hdd-test",
+  "info": "Running no test will display test results",
+  "infotitle": "",
+  "description": "Check HDD health",
+  "name": "Nc-hdd-test",
+  "title": "nc-hdd-test",
+  "params": [
+    {
+      "id": "SHORTTEST",
+      "name": "Short test",
+      "value": "yes",
+      "type": "bool"
+    },
+    {
+      "id": "LONGTEST",
+      "name": "Long test",
+      "value": "no",
+      "type": "bool"
+    }
+  ]
+}

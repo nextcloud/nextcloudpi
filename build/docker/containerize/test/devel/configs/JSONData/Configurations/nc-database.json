@@ -1,0 +1,18 @@
+{
+  "id": "nc-database",
+  "info": "Note that non Unix filesystems such as NTFS are not supported\nbecause they do not provide a compatible user/permissions system.\n\nYou need to use a USB drive that is permanently on and is responsive \nor the database will fail.\n\nPlease note that the default location, when first installed is /var/lib/mysql/. \nMove it to the desired location by editing the DBDIR= field, the one shown is an example.\n\n** If it ever fails with a white page, move the database back to the SD **",
+  "infotitle": "",
+  "description": "Move your database to a new location, like a USB drive",
+  "name": "Nc-database",
+  "title": "nc-database",
+  "params": [
+    {
+      "id": "DBDIR",
+      "name": "Database directory",
+      "value": "/media/USBdrive/ncdatabase",
+      "suggest": "/media/USBdrive/ncdatabase",
+      "default": "/var/lib/mysql",
+      "type": "directory"
+    }
+  ]
+}

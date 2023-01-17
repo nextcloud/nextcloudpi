@@ -1,0 +1,30 @@
+{
+  "id": "nc-admin",
+  "info": "",
+  "infotitle": "",
+  "description": "Change or view the current password for the Nextcloud admin user",
+  "name": "NC-admin, password utility",
+  "title": "nc-admin",
+  "params": [
+    {
+      "id": "USER",
+      "name": "User",
+      "value": "ncp",
+      "suggest": "ncp"
+    },
+    {
+      "id": "PASSWORD",
+      "name": "Password",
+      "value": "",
+      "suggest": "password",
+      "type": "password"
+    },
+    {
+      "id": "CONFIRM",
+      "name": "Confirm password",
+      "value": "",
+      "suggest": "same password",
+      "type": "password"
+    }
+  ]
+}

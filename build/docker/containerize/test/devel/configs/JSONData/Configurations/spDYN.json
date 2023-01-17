@@ -1,0 +1,28 @@
+{
+  "id": "spDYN",
+  "info": "",
+  "infotitle": "",
+  "description": "Free Dynamic DNS provider (need account from spdyn.de)",
+  "name": "Dynamic DNS from spDYN",
+  "title": "spDYN",
+  "params": [
+    {
+      "id": "ACTIVE",
+      "name": "Active",
+      "value": "no",
+      "type": "bool"
+    },
+    {
+      "id": "DOMAIN",
+      "name": "Domain",
+      "value": "mycloud.spdns.de",
+      "suggest": "mycloud.spdns.de"
+    },
+    {
+      "id": "TOKEN",
+      "name": "Token",
+      "value": "your-spdns-token",
+      "suggest": "your-spdns-token"
+    }
+  ]
+}

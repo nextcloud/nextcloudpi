@@ -1,0 +1,16 @@
+{
+  "id": "nc-update-nc-apps-auto",
+  "info": "",
+  "infotitle": "",
+  "description": "Periodically update all installed Nextcloud Apps",
+  "name": "Nc-update-nc-apps-auto",
+  "title": "nc-update-nc-apps-auto",
+  "params": [
+    {
+      "id": "ACTIVE",
+      "name": "Active",
+      "value": "no",
+      "type": "bool"
+    }
+  ]
+}

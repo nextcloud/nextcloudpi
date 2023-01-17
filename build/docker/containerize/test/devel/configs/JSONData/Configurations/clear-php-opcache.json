@@ -1,0 +1,9 @@
+{
+  "id": "clear-php-opcache",
+  "info": "",
+  "infotitle": "",
+  "description": "Clears the PHP opcache directory. This can help with some crashes in PHP.",
+  "name": "clear-php-opcache",
+  "title": "Clear PHP opcache",
+  "params": []
+}

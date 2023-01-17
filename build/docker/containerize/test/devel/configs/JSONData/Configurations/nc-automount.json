@@ -1,0 +1,16 @@
+{
+  "id": "nc-automount",
+  "info": "Plugged in USB drives will be automounted under /media\non boot or at the moment of insertion.\n\nFormat your drive as ext4/btrfs in order to move NC datafolder or database. \n\nVFAT or NTFS is not recommended for this task, as it does not suport permissions \n\n WARNING If you want add a second drive later, make sure you have added a LABEL to the first and all other drives to be mounted when formating, as they will then be mounted at /media/LABEL instead of /media/USBdrive \n\nIMPORTANT: halt or umount the drive before removing",
+  "infotitle": "Automount notes",
+  "description": "Automount USB drives by plugging them in",
+  "name": "Nc-automount",
+  "title": "nc-automount",
+  "params": [
+    {
+      "id": "ACTIVE",
+      "name": "Active",
+      "value": "no",
+      "type": "bool"
+    }
+  ]
+}

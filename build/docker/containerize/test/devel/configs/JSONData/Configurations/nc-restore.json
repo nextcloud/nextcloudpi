@@ -1,0 +1,17 @@
+{
+  "id": "nc-restore",
+  "info": "This new installation will cleanup current\nNextCloud instance, including files and database.\n\n** perform backup before proceding **\n\nYou can use 'nc-backup'",
+  "infotitle": "Restore NextCloud backup",
+  "description": "Restore a previously backuped NC instance",
+  "name": "Nc-restore",
+  "title": "nc-restore",
+  "params": [
+    {
+      "id": "BACKUPFILE",
+      "name": "Backup file",
+      "value": "/media/USBdrive/ncp-backups/nextcloud-bkp_xxxxxxxx.tar",
+      "suggest": "/media/USBdrive/ncp-backups/nextcloud-bkp_xxxxxxxx.tar",
+      "type": "file"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "id": "nc-passwd",
+  "info": "Please note some special characters are not allowed here, avoid using ) } ; # in password",
+  "infotitle": "",
+  "description": "Change password for the NextCloudPi Panel",
+  "name": "Nc-passwd",
+  "title": "nc-passwd",
+  "params": [
+    {
+      "id": "PASSWORD",
+      "name": "Password",
+      "value": "",
+      "type": "password"
+    },
+    {
+      "id": "CONFIRM",
+      "name": "Confirm password",
+      "value": "",
+      "suggest": "password",
+      "type": "password"
+    }
+  ]
+}

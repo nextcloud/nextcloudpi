@@ -1,0 +1,16 @@
+{
+  "id": "nc-notify-updates",
+  "info": "",
+  "infotitle": "",
+  "description": "Notify in Nextcloud when a NextCloudPi update is available",
+  "name": "Nc-notify-updates",
+  "title": "nc-notify-updates",
+  "params": [
+    {
+      "id": "ACTIVE",
+      "name": "Active",
+      "value": "yes",
+      "type": "bool"
+    }
+  ]
+}

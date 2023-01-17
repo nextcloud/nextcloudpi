@@ -1,0 +1,34 @@
+{
+  "id": "freeDNS",
+  "info": "Need account from https://freedns.afraid.org/",
+  "infotitle": "",
+  "description": "FreeDNS DynamicDNS service",
+  "name": "Dynamic DNS from freeDNS",
+  "title": "freeDNS",
+  "params": [
+    {
+      "id": "ACTIVE",
+      "name": "Active",
+      "value": "no",
+      "type": "bool"
+    },
+    {
+      "id": "UPDATEHASH",
+      "name": "Update Hash",
+      "value": "",
+      "suggest": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJK1234567"
+    },
+    {
+      "id": "DOMAIN",
+      "name": "Domain",
+      "value": "mynextcloud.example.com",
+      "suggest": "mynextcloud.example.com"
+    },
+    {
+      "id": "UPDATEINTERVAL",
+      "name": "Update periodicity (in minutes)",
+      "value": "30",
+      "suggest": "30"
+    }
+  ]
+}

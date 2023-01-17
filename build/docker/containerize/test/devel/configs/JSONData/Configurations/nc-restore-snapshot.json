@@ -1,0 +1,17 @@
+{
+  "id": "nc-restore-snapshot",
+  "info": "A snapshot of the data will be restored",
+  "infotitle": "Restore NextCloud data snapshot",
+  "description": "Restore data from a BTRFS snapshot",
+  "name": "Nc-restore-snapshot",
+  "title": "nc-restore-snapshot",
+  "params": [
+    {
+      "id": "SNAPSHOT",
+      "name": "Snapshot Path",
+      "value": "",
+      "suggest": "/media/USBdrive/ncp-snapshots/daily_XXXX-XX-XX_XXXXXX",
+      "type": "directory"
+    }
+  ]
+}

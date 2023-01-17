@@ -1,0 +1,16 @@
+{
+  "id": "nc-httpsonly",
+  "info": "",
+  "infotitle": "",
+  "description": "Force HTTPS",
+  "name": "Nc-httpsonly",
+  "title": "nc-httpsonly",
+  "params": [
+    {
+      "id": "ACTIVE",
+      "name": "Active",
+      "value": "yes",
+      "type": "bool"
+    }
+  ]
+}

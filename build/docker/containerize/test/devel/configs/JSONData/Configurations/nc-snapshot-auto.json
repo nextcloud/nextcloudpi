@@ -1,0 +1,16 @@
+{
+  "id": "nc-snapshot-auto",
+  "info": "",
+  "infotitle": "",
+  "description": "Scheduled datadir BTRFS snapshots",
+  "name": "Nc-snapshot-auto",
+  "title": "nc-snapshot-auto",
+  "params": [
+    {
+      "id": "ACTIVE",
+      "name": "Active",
+      "value": "no",
+      "type": "bool"
+    }
+  ]
+}

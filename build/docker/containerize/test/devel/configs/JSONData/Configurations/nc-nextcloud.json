@@ -1,0 +1,33 @@
+{
+  "id": "nc-nextcloud",
+  "info": "WARNING: this will completely wipe out your current instance",
+  "infotitle": "",
+  "description": "Install any NextCloud version",
+  "name": "Nc-nextcloud",
+  "title": "nc-nextcloud",
+  "params": [
+    {
+      "id": "VER",
+      "name": "Version",
+      "value": "25.0.2"
+    },
+    {
+      "id": "MAXFILESIZE",
+      "name": "Maximum file size",
+      "value": "10G",
+      "suggest": "10G"
+    },
+    {
+      "id": "MEMORYLIMIT",
+      "name": "Memory limit",
+      "value": "768M",
+      "suggest": "768M"
+    },
+    {
+      "id": "MAXTRANSFERTIME",
+      "name": "Maximum transfer time",
+      "value": "3600",
+      "suggest": "3600"
+    }
+  ]
+}

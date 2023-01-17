@@ -1,0 +1,22 @@
+{
+  "id": "nc-init",
+  "info": "This action will configure NextCloud to NextCloudPi defaults.\n\n** YOUR CONFIGURATION WILL BE LOST **\n\n",
+  "infotitle": "Clean NextCloud configuration",
+  "description": "(Re)initiate Nextcloud to a clean configuration",
+  "name": "Nc-init",
+  "title": "nc-init",
+  "params": [
+    {
+      "id": "ADMINUSER",
+      "name": "Admin user",
+      "value": "ncp",
+      "suggest": "ncp"
+    },
+    {
+      "id": "ADMINPASS",
+      "name": "Admin password",
+      "value": "ownyourbits",
+      "type": "password"
+    }
+  ]
+}

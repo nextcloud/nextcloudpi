@@ -1,0 +1,52 @@
+{
+  "id": "nc-scan-auto",
+  "info": "Set the time in minutes in Scan Interval. Optionally we can specify up to 3 paths in the form '_user_/files/_path_'\n\n>>> If there are too many files this can greatly affect performance. <<<",
+  "infotitle": "Instructions for auto synchronization",
+  "description": "Periodically scan NC for externally modified files",
+  "name": "Nc-scan-auto",
+  "title": "nc-scan-auto",
+  "params": [
+    {
+      "id": "ACTIVE",
+      "name": "Active",
+      "value": "no",
+      "type": "bool"
+    },
+    {
+      "id": "RECURSIVE",
+      "name": "Recursive",
+      "value": "yes",
+      "type": "bool"
+    },
+    {
+      "id": "NONEXTERNAL",
+      "name": "Ignore external files",
+      "value": "no",
+      "type": "bool"
+    },
+    {
+      "id": "SCANINTERVAL",
+      "name": "Scan periodicity (in minutes)",
+      "value": "60",
+      "suggest": "60"
+    },
+    {
+      "id": "PATH1",
+      "name": "Path",
+      "value": "",
+      "suggest": "/ncp/files/Documents"
+    },
+    {
+      "id": "PATH2",
+      "name": "Path",
+      "value": "",
+      "suggest": "/family/files/Photos"
+    },
+    {
+      "id": "PATH3",
+      "name": "Path",
+      "value": "",
+      "suggest": "/family/files/Videos"
+    }
+  ]
+}

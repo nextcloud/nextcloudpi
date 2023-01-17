@@ -1,0 +1,38 @@
+{
+  "id": "nc-limits",
+  "info": "Examples: 200M or 2G. Write 0 for autoconfig",
+  "infotitle": "",
+  "description": "Configure system limits for NextCloudPi",
+  "name": "Nc-limits",
+  "title": "nc-limits",
+  "params": [
+    {
+      "id": "MAXFILESIZE",
+      "name": "Maximum file size",
+      "value": "10G",
+      "default": "10G",
+      "suggest": "10G"
+    },
+    {
+      "id": "MEMORYLIMIT",
+      "name": "Memory limit",
+      "value": "0",
+      "default": "0",
+      "suggest": "0"
+    },
+    {
+      "id": "PHPTHREADS",
+      "name": "PHP threads",
+      "value": "0",
+      "default": "0",
+      "suggest": "0"
+    },
+    {
+      "id": "REDISMEM",
+      "name": "Redis memory",
+      "value": "0",
+      "default": "0",
+      "suggest": "0"
+    }
+  ]
+}

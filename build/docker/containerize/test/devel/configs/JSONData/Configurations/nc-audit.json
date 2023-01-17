@@ -1,0 +1,9 @@
+{
+  "id": "nc-audit",
+  "info": "",
+  "infotitle": "",
+  "description": "Perform a security audit with lynis and debsecan",
+  "name": "NC-audit, security check utility",
+  "title": "nc-audit",
+  "params": []
+}

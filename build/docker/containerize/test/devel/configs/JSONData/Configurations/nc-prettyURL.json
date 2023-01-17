@@ -1,0 +1,16 @@
+{
+  "id": "nc-prettyURL",
+  "info": "",
+  "infotitle": "PrettyURL notes",
+  "description": "Set pretty URLs (no index.php in URL)",
+  "name": "Nc-prettyURL",
+  "title": "nc-prettyURL",
+  "params": [
+    {
+      "id": "ACTIVE",
+      "name": "Active",
+      "value": "no",
+      "type": "bool"
+    }
+  ]
+}

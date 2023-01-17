@@ -1,0 +1,28 @@
+{
+  "id": "nc-previews",
+  "info": "This will make browsing the gallery much more smooth.\nFor big collections, this can take a LONG time, depending on your hardware\nOptionally, include a path in the form '/_user_/files/_path_' (incremental only)",
+  "infotitle": "",
+  "description": "Generate previews for the gallery",
+  "name": "Nc-previews",
+  "title": "nc-previews",
+  "params": [
+    {
+      "id": "CLEAN",
+      "name": "Clean first",
+      "value": "no",
+      "type": "bool"
+    },
+    {
+      "id": "INCREMENTAL",
+      "name": "Incremental",
+      "value": "yes",
+      "type": "bool"
+    },
+    {
+      "id": "PATH1",
+      "name": "Path",
+      "value": "",
+      "suggest": "/ncp/files/Documents"
+    }
+  ]
+}

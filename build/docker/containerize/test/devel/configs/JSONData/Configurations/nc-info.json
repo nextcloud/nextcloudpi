@@ -1,0 +1,9 @@
+{
+  "id": "nc-info",
+  "info": "",
+  "infotitle": "",
+  "description": "Print NextCloudPi system info",
+  "name": "Nc-info",
+  "title": "nc-info",
+  "params": []
+}

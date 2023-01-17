@@ -1,0 +1,22 @@
+{
+  "id": "nc-forward-ports",
+  "info": "For NextCloudPi to be able to setup your ports, UPnP must be activated\nin your router. Activate it now on your router admin webpage.\n\n** UPnP is considered a security risk **\n\nDon't forget to disable it afterwards",
+  "infotitle": "Instructions for UPnP Port Forwarding",
+  "description": "Set port forwarding to access from outside",
+  "name": "Nc-forward-ports",
+  "title": "nc-forward-ports",
+  "params": [
+    {
+      "id": "HTTPSPORT",
+      "name": "Https port",
+      "value": "443",
+      "suggest": "443"
+    },
+    {
+      "id": "HTTPPORT",
+      "name": "Http port",
+      "value": "80",
+      "suggest": "80"
+    }
+  ]
+}

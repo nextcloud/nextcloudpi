@@ -1,0 +1,16 @@
+{
+  "id": "modsecurity",
+  "info": "This feature is highly experimental and has only been tested with\na basic NextCloud installation. If a new App does not work disable it",
+  "infotitle": "Experimental feature warning",
+  "description": "Web Application Firewall for extra security (experimental)",
+  "name": "modsecurity",
+  "title": "modsecurity",
+  "params": [
+    {
+      "id": "ACTIVE",
+      "name": "Active",
+      "value": "no",
+      "type": "bool"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "id": "nc-autoupdate-ncp",
+  "info": "",
+  "infotitle": "",
+  "description": "Automatically apply NextCloudPi updates",
+  "name": "Nc-autoupdate-ncp",
+  "title": "nc-autoupdate-ncp",
+  "params": [
+    {
+      "id": "ACTIVE",
+      "name": "Active",
+      "value": "no",
+      "type": "bool"
+    }
+  ]
+}

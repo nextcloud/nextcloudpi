@@ -1,0 +1,47 @@
+{
+  "id": "nc-backup-auto",
+  "info": "",
+  "infotitle": "",
+  "description": "Set periodic backups",
+  "name": "Nc-backup-auto",
+  "title": "nc-backup-auto",
+  "params": [
+    {
+      "id": "ACTIVE",
+      "name": "Active",
+      "value": "no",
+      "type": "bool"
+    },
+    {
+      "id": "DESTDIR",
+      "name": "Destination Directory",
+      "value": "/media/USBdrive/ncp-backups",
+      "suggest": "/media/USBdrive/ncp-backups",
+      "type": "directory"
+    },
+    {
+      "id": "INCLUDEDATA",
+      "name": "Include data",
+      "value": "no",
+      "type": "bool"
+    },
+    {
+      "id": "COMPRESS",
+      "name": "Compress",
+      "value": "no",
+      "type": "bool"
+    },
+    {
+      "id": "BACKUPDAYS",
+      "name": "Backup periodicity (in days)",
+      "suggest": "7",
+      "value": "7"
+    },
+    {
+      "id": "BACKUPLIMIT",
+      "name": "Number of backups to keep",
+      "suggest": "4",
+      "value": "4"
+    }
+  ]
+}

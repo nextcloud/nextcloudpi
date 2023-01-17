@@ -1,0 +1,41 @@
+{
+  "id": "NFS",
+  "info": "If we intend to modify the data folder through NFS,\nthen we have to synchronize NextCloud to make it aware of the changes.\n\nThis can be done manually or automatically using 'nc-scan' and 'nc-scan-auto'",
+  "infotitle": "Instructions for external synchronization",
+  "description": "NFS network file system server (for Linux LAN)",
+  "name": "NFS Linux Network File System",
+  "title": "NFS",
+  "params": [
+    {
+      "id": "ACTIVE",
+      "name": "Active",
+      "value": "no",
+      "type": "bool"
+    },
+    {
+      "id": "DIR",
+      "name": "Dir",
+      "value": "/media/USBdrive/ncdata/admin/files",
+      "suggest": "/media/USBdrive/ncdata/admin/files",
+      "type": "directory"
+    },
+    {
+      "id": "SUBNET",
+      "name": "Subnet",
+      "value": "192.168.1.0/24",
+      "suggest": "192.168.1.0/24"
+    },
+    {
+      "id": "USER",
+      "name": "User",
+      "value": "www-data",
+      "suggest": "www-data"
+    },
+    {
+      "id": "GROUP",
+      "name": "Group",
+      "value": "www-data",
+      "suggest": "www-data"
+    }
+  ]
+}
