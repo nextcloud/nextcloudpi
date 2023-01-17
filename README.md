@@ -19,9 +19,9 @@ This is the build code for the [NextcloudPi][ncp-website] open-source community 
 
 NextcloudPi is a ready to use image for Virtual Machines, Raspberry Pi, Odroid HC1, Rock64 and other boards. ([⇒ Downloads][ncp-releases])
 
-This code also generates the NextcloudPi [docker image][ncp-docker-hub], LXD container & VM, there is an install script for the latest stable Debian based system as well.
+This code also generates the NextcloudPi [Docker image][ncp-docker-hub], LXD container & VM, there is an install script for the latest stable Debian based system as well.
 
-Find the documentation at [docs.nextcloudpi.com][ncp-docs-website], the documentation is all written by volunteers,
+Find the documentation at [docs.nextcloudpi.com][ncp-docs-website], the documentation is all written by volunteers.
 
 Please reach out in the [Matrix][chat-matrix-wiki] or [Telegram][chat-telegram-wiki] Wiki group chats if you want to help out to keep them up-to-date and we'll add you to the [Wiki Group][nc-forum-wiki-group] on the [forum][nc-forum].
 
