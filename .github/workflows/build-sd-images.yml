@@ -221,7 +221,7 @@ jobs:
 
           attempt=0
           success=false
-          for attempt in {1..100}
+          for attempt in {1..1000}
           do
             echo -e "${LOG_CICD} Waiting for container startup (attempt $attempt/100)..."
             redis_pw="$("${CONTAINER_CMD[@]}" bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"password'")" \
@@ -242,6 +242,11 @@ jobs:
           
           [[ "$success" == "true" ]] || {
               echo -e "${LOG_CICD} Timeout reached."
+              "${CONTAINER_CMD[@]}" systemctl status mysql |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+              "${CONTAINER_CMD[@]}" systemctl status redis |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+              "${CONTAINER_CMD[@]}" systemctl status 'php*-fpm' |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+              "${CONTAINER_CMD[@]}" systemctl status apache2 |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+              "${CONTAINER_CMD[@]}" ncp-diag |& awk "{ print \"${LOG_DIAG} \" \$0 }"
               exit 1
           }
           
