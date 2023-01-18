@@ -232,7 +232,7 @@ jobs:
           
           attempt=0
           stage=0
-          for attempt in {1..30}
+          for attempt in {1..200}
           do
             echo -e "${LOG_CICD} Waiting for container startup (attempt $attempt/30)..."
             redis_pw="$(docker exec nextcloudpi bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"password'")"
@@ -243,7 +243,8 @@ jobs:
             elif [[ "$(docker exec nextcloudpi ncc maintenance:mode)" =~ .*disabled.* ]] \
               && docker exec nextcloudpi ncc status \
               && docker exec nextcloudpi redis-cli -s "$redis_socket" -a "$redis_pw" set redisready yes \
-              && docker exec nextcloudpi redis-cli -s "$redis_socket" -a "$redis_pw" get redisready
+              && docker exec nextcloudpi redis-cli -s "$redis_socket" -a "$redis_pw" get redisready \
+              && curl -k https://localhost:8443/activate/
             then
               echo -e "${LOG_CICD} Startup successful"
               break
@@ -256,6 +257,9 @@ jobs:
             attempt=$((attempt + 1))
             sleep 5
           done
+          
+          echo "Wait one more minute..."
+          sleep 60
       - name: Update Nextcloud
         run: |
           set -e
@@ -417,7 +421,7 @@ jobs:
 
           attempt=0
           stage=0
-          for attempt in {1..30}
+          for attempt in {1..200}
           do
             echo -e "${LOG_CICD} Waiting for container startup (attempt $attempt/30)..."
             redis_pw="$(docker exec nextcloudpi bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"password'")"
@@ -428,7 +432,8 @@ jobs:
             elif [[ "$(docker exec nextcloudpi ncc maintenance:mode)" =~ .*disabled.* ]] \
               && docker exec nextcloudpi ncc status \
               && docker exec nextcloudpi redis-cli -s "$redis_socket" -a "$redis_pw" set redisready yes \
-              && docker exec nextcloudpi redis-cli -s "$redis_socket" -a "$redis_pw" get redisready
+              && docker exec nextcloudpi redis-cli -s "$redis_socket" -a "$redis_pw" get redisready \
+              && curl -k https://localhost:8443/activate/
             then
               echo -e "${LOG_CICD} Startup successful"
               break
