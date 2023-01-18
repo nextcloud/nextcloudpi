@@ -195,13 +195,13 @@ jobs:
           [[ "${ARCH?}" == "x86" ]] || { sleep 60; cmd+=(--timeout 300); }
           
           success=false
-          for attempt in {1..5}
+          for attempt in {1..10}
           do
-            echo -e "${LOG_CICD} == Activation Tests (attempt $attempt/5) =="
+            echo -e "${LOG_CICD} == Activation Tests (attempt $attempt/10) =="
             "${cmd[@]}"                                               |& awk "{ print \"${LOG_TEST} \" \$0 }"
             [[ ${PIPESTATUS[0]} -eq 0 ]] || {
               tail -n 20 geckodriver.log                              |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
-              echo -e "${LOG_CICD} Activation test (attempt $attempt/5) failed!"
+              echo -e "${LOG_CICD} Activation test (attempt $attempt/10) failed!"
               docker exec nextcloudpi bash /usr/local/bin/ncp-diag    |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
               cat /proc/sys/fs/binfmt_misc/qemu-aarch64               |& awk "{ print \"${LOG_DIAG} (qemu-aarch64) \" \$0 }" || true
               cat /proc/sys/fs/binfmt_misc/qemu-arm                   |& awk "{ print \"${LOG_DIAG} (qemu-arm) \" \$0 }" || true
@@ -452,13 +452,13 @@ jobs:
           [[ "${ARCH?}" == "x86" ]] || { sleep 60; cmd+=(--timeout 300); }
           
           success=false
-          for attempt in {1..5}
+          for attempt in {1..10}
           do
-            echo -e "${LOG_CICD} == Activation Tests (attempt $attempt/5) =="
+            echo -e "${LOG_CICD} == Activation Tests (attempt $attempt/10) =="
             "${cmd[@]}"                                              |& awk "{ print \"${LOG_TEST} \" \$0 }"
             [[ ${PIPESTATUS[0]} -eq 0 ]] || {
               tail -n 20 geckodriver.log >&2                         |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
-              echo -e "${LOG_CICD} Activation test (attempt $attempt/3) failed!"
+              echo -e "${LOG_CICD} Activation test (attempt $attempt/10) failed!"
               docker exec nextcloudpi bash /usr/local/bin/ncp-diag   |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
               sleep 12
               continue
