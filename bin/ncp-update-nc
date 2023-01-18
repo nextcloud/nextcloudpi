@@ -110,6 +110,7 @@ BKP_="$( ls -1t "$BKPDIR"/nextcloud-bkp_*.tar.gz 2>/dev/null | head -1 )"
 [[ -f "$BKP_"  ]] || {                set +eE; echo "Error backing up"; false || cleanup; }
 [[ $RET -ne 0  ]] && { rm -f "$BKP_"; set +eE; echo "Error backing up"; false || cleanup; }
 BKP="$( dirname "$BKP_" )/$( basename "$BKP_" .tar.gz )-${CURRENT}.tar.gz"
+echo "Storing backup at '$BKP'..."
 mv "$BKP_" "$BKP"
 
 # simple restore if anything fails from here
@@ -165,6 +166,7 @@ rollback() {
   rm -rf /var/www/nextcloud.tar.bz2 "$BASEDIR"/nextcloud-old
   echo "Rolling back to backup $BKP..."
   local TMPDATA
+  mkdir -p "$BASEDIR/recovery/"
   TMPDATA="$( mktemp -d "$BASEDIR/recovery/ncp-data.XXXXXX" )" || { echo "Failed to create temp dir" >&2; exit 1; }
   [[ "$DATADIR" == "$BASEDIR/nextcloud/data" ]] && mv -T "$DATADIR" "$TMPDATA"
   ncp-restore "$BKP" || { echo "Rollback failed! Data left at $TMPDATA"; exit 1; }
@@ -181,6 +183,11 @@ echo "Fix permissions..."
 chown -R www-data:www-data nextcloud
 find nextcloud/ -type d -exec chmod 750 {} \;
 find nextcloud/ -type f -exec chmod 640 {} \;
+
+# Clear PHP opcache
+service "php${PHPVER}-fpm" stop
+clear_opcache
+service "php${PHPVER}-fpm" start
 
 # upgrade
 ####################
@@ -291,11 +298,6 @@ then
   source /usr/local/etc/library.sh
 
 fi
-
-# Clear PHP opcache
-service "php${PHPVER}-fpm" stop
-clear_opcache
-service "php${PHPVER}-fpm" start
 
 # refresh completions
 ncc _completion -g --shell-type bash -p ncc | sed 's|/var/www/nextcloud/occ|ncc|g' > /usr/share/bash-completion/completions/ncp
