@@ -159,11 +159,11 @@ function set-nc-domain()
     ncc config:system:set trusted_proxies 13 --value="${domain}"
     ncc config:system:set trusted_proxies 14 --value="$(dig +short "${domain}")"
     sleep 5 # this seems to be required in the VM for some reason. We get `http2 error: protocol error` after ncp-upgrade-nc
-    for try in {1..3}
+    for try in {1..5}
     do
-      echo "Setup notify_push (attempt ${try}/3)"
+      echo "Setup notify_push (attempt ${try}/5)"
       ncc notify_push:setup "${url}/push"
-      sleep 5
+      sleep 10
     done
   fi
 }
