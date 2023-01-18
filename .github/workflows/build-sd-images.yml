@@ -186,7 +186,6 @@ jobs:
       - name: Test image
         id: test
         run: |
-          set -e
           
           log_err() {
             rc="${1?}"
