@@ -194,8 +194,6 @@ jobs:
             return $rc
           }
           
-          trap 'sudo machinectl terminate ncp' EXIT
-          
           sudo systemd-nspawn --boot -D ./raspbian_root/ -M ncp --hostname=nextcloudpi |& awk "{ print \"${LOG_GUEST} \" \$0 }" &
           sleep 60
           
@@ -262,7 +260,7 @@ jobs:
               tail -n 20 geckodriver.log >&2 |& awk "{ print \"${LOG_DIAG} \" \$0 }"
               echo "================"
               echo -e "${LOG_DIAG} mysql: "
-              sudo systemd-run --wait -P --machine=ncp bash /usr/local/bin/ncp-diag |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+              sudo systemd-run --wait -P --machine=ncp bash /usr/local/bin/ncp-diag |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
               sudo systemd-run --wait -P --machine=ncp systemctl status mysql |& awk "{ print \"${LOG_DIAG} \" \$0 }"
               sleep 12
               continue
@@ -311,6 +309,8 @@ jobs:
             success=true
             break
           done
+          
+          sudo machinectl terminate ncp
           
           [[ "$success" == "true" ]] || {
             echo -e "${LOG_CICD} Nextcloud test failed in all attempts!"
