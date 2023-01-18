@@ -289,7 +289,7 @@ jobs:
           attempt=0
           for attempt in {1..30}
           do
-            echo -e "${LOG_CICD} Waiting for container startup (attempt $attempt/30)..."
+            echo -e "${LOG_CICD} Waiting for update completion (attempt $attempt/30)..."
             redis_pw="$(docker exec nextcloudpi bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"password'")"
             redis_socket="$(docker exec nextcloudpi bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"host'")"
             if [[ "$(docker exec nextcloudpi ncc maintenance:mode)" =~ .*disabled.* ]] \
