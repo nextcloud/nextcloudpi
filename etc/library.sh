@@ -543,9 +543,12 @@ function notify_admin()
 {
   local header="$1"
   local msg="$2"
-  local admin=$(mysql -u root nextcloud -Nse "select uid from oc_group_user where gid='admin' limit 1;")
-  [[ "${admin}" == "" ]] && { echo "admin user not found" >&2; return 0; }
-  ncc notification:generate "${admin}" "${header}" -l "${msg}" || true
+  local admins=$(mysql -u root nextcloud -Nse "select uid from oc_group_user where gid='admin';")
+  [[ "${admins}" == "" ]] && { echo "admin user not found" >&2; return 0; }
+  while read -r admin
+  do
+    ncc notification:generate "${admin}" "${header}" -l "${msg}" || true
+  done <<<"$admins"
 }
 
 function save_maintenance_mode()
