@@ -10,12 +10,12 @@ on:
         type: boolean
         description: 'Build/test SD images?'
         required: false
-        default: false
+        default: true
       lxd:
         type: boolean
         description: 'Build/test LXD image?'
         required: false
-        default: false
+        default: true
       docker:
         type: boolean
         description: 'Build/test docker images?'
@@ -25,7 +25,7 @@ on:
         type: boolean
         description: 'Run curl-installer/upgrade tests?'
         required: false
-        default: false
+        default: true
       release:
         type: boolean
         description: 'Release images to GH and docker registry'
