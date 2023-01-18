@@ -159,30 +159,34 @@ jobs:
           
           attempt=0
           stage=0
+          success=false
           for attempt in {1..30}
           do
             echo -e "${LOG_CICD} Waiting for container startup (attempt $attempt/30)..."
             redis_pw="$(docker exec nextcloudpi bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"password'")"
             redis_socket="$(docker exec nextcloudpi bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"host'")"
-            if [[ "$stage" == "0" ]] && docker logs nextcloudpi 2> /dev/null | grep '^Init done' > /dev/null
+            if [[ "$stage" == "0" ]] && docker logs nextcloudpi 2> /dev/null | grep '^Init done'
             then
               stage=1
             elif [[ "$(docker exec nextcloudpi ncc maintenance:mode)" =~ .*disabled.* ]] \
               && docker exec nextcloudpi ncc status \
               && docker exec nextcloudpi redis-cli -s "$redis_socket" -a "$redis_pw" set redisready yes \
-              && docker exec nextcloudpi redis-cli -s "$redis_socket" -a "$redis_pw" get redisready
+              && docker exec nextcloudpi redis-cli -s "$redis_socket" -a "$redis_pw" get redisready \
+              && curl -k https://localhost:8443/activate/ > /dev/null
             then
+              success=true
               echo -e "${LOG_CICD} Startup successful"
               break
-            elif [[ "$attempt" -ge 30 ]]
-            then
-              echo -e "${LOG_CICD} Timeout reached."
-              exit 1
             fi
 
             attempt=$((attempt + 1))
             sleep 5
           done
+          
+          [[ "$success" == "true" ]] || {
+            echo -e "${LOG_CICD} Timeout reached."
+            exit 1
+          }
 
       - name: Activate container
         working-directory: ./tests

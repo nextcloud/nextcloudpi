@@ -218,9 +218,9 @@ jobs:
 
           attempt=0
           success=false
-          for attempt in {1..1000}
+          for attempt in {1..150}
           do
-            echo -e "${LOG_CICD} Waiting for container startup (attempt $attempt/1000)..."
+            echo -e "${LOG_CICD} Waiting for container startup (attempt $attempt/150)..."
             redis_pw="$("${CONTAINER_CMD[@]}" bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"password'")" \
             && redis_socket="$("${CONTAINER_CMD[@]}" bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"host'")" \
             || log_err $? "Error retrieving redis credentials" || true
@@ -239,11 +239,11 @@ jobs:
           
           [[ "$success" == "true" ]] || {
               echo -e "${LOG_CICD} Timeout reached."
-              "${CONTAINER_CMD[@]}" systemctl status mysql |& awk "{ print \"${LOG_DIAG} \" \$0 }"
-              "${CONTAINER_CMD[@]}" systemctl status redis |& awk "{ print \"${LOG_DIAG} \" \$0 }"
-              "${CONTAINER_CMD[@]}" systemctl status 'php*-fpm' |& awk "{ print \"${LOG_DIAG} \" \$0 }"
-              "${CONTAINER_CMD[@]}" systemctl status apache2 |& awk "{ print \"${LOG_DIAG} \" \$0 }"
-              "${CONTAINER_CMD[@]}" ncp-diag |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+              "${CONTAINER_CMD[@]}" -q systemctl status mysql |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+              "${CONTAINER_CMD[@]}" -q systemctl status redis |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+              "${CONTAINER_CMD[@]}" -q systemctl status 'php*-fpm' |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+              "${CONTAINER_CMD[@]}" -q systemctl status apache2 |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+              "${CONTAINER_CMD[@]}" -q ncp-diag |& awk "{ print \"${LOG_DIAG} \" \$0 }"
               exit 1
           }
           
@@ -260,8 +260,8 @@ jobs:
               tail -n 20 geckodriver.log >&2 |& awk "{ print \"${LOG_DIAG} \" \$0 }"
               echo "================"
               echo -e "${LOG_DIAG} mysql: "
-              sudo systemd-run --wait -P --machine=ncp bash /usr/local/bin/ncp-diag |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
-              sudo systemd-run --wait -P --machine=ncp systemctl status mysql |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+              "${CONTAINER_CMD[@]}" -q ncp-diag |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
+              "${CONTAINER_CMD[@]}" -q systemctl status mysql |& awk "{ print \"${LOG_DIAG} \" \$0 }"
               sleep 12
               continue
             }
@@ -302,7 +302,7 @@ jobs:
               tail -n 20 geckodriver.log >&2 |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
               echo -e "${LOG_CICD} ================"
               echo -e "${LOG_DIAG} ncp.log: "
-              sudo systemd-run --wait -P --machine=ncp ncp /bin/bash -c "tail -n20 /var/log/ncp.log" |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
+              "${CONTAINER_CMD[@]}" -q ncp /bin/bash -c "tail -n20 /var/log/ncp.log" |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
               sleep 12
               continue
             }
