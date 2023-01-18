@@ -75,6 +75,8 @@ jobs:
       LOG_CICD: "\\033[1;35mCICD::\\033[0m"
       LOG_TEST: "\\033[1;33mTEST::\\033[0m"
       LOG_DIAG: "\\033[1;31mDIAG::\\033[0m"
+      CHECK_OK: "\\033[1;32m✓\\033[0m"
+      CHECK_FAILED: "\\033[1;31m⨯\\033[0m"
     steps:
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -162,25 +164,56 @@ jobs:
           success=false
           for attempt in {1..30}
           do
+            sleep 5
             echo -e "${LOG_CICD} Waiting for container startup (attempt $attempt/30)..."
+            
             redis_pw="$(docker exec nextcloudpi bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"password'")"
             redis_socket="$(docker exec nextcloudpi bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"host'")"
-            if [[ "$stage" == "0" ]] && docker logs nextcloudpi 2> /dev/null | grep '^Init done'
+            
+            if [[ "$stage" == "0" ]] 
             then
-              stage=1
-            elif [[ "$(docker exec nextcloudpi ncc maintenance:mode)" =~ .*disabled.* ]] \
-              && docker exec nextcloudpi ncc status \
-              && docker exec nextcloudpi redis-cli -s "$redis_socket" -a "$redis_pw" set redisready yes \
-              && docker exec nextcloudpi redis-cli -s "$redis_socket" -a "$redis_pw" get redisready \
-              && curl -k https://localhost:8443/activate/
-            then
-              success=true
-              echo -e "${LOG_CICD} Startup successful"
-              break
+              echo -ne "${LOG_CICD} Looking for 'Init done' in container logs "
+              if docker logs nextcloudpi 2> /dev/null | grep '^Init done'
+              then
+                stage=1
+                echo -e "${CHECK_OK}"
+              else  
+                echo -e "${CHECK_FAILED}"
+              fi
+              continue
             fi
-
-            attempt=$((attempt + 1))
-            sleep 5
+          
+          
+            echo -ne "${LOG_CICD} Is maintenance mode disabled? "
+            [[ "$(docker exec nextcloudpi ncc maintenance:mode)" =~ .*disabled.* ]] || {
+              echo -e "${CHECK_FAILED}"
+              continue
+            }
+            echo -e "${CHECK_OK}"
+        
+            echo -ne "${LOG_CICD} Check NC status "
+            ncc_status="$(docker exec nextcloudpi ncc status)" || { echo -e "${CHECK_FAILED}"; echo "$ncc_status"; continue; }
+            echo -e "${CHECK_OK}"
+        
+            echo -ne "${LOG_CICD} Attempt writing and reading to redis db "
+            docker exec nextcloudpi redis-cli -s "$redis_socket" -a "$redis_pw" set redisready yes > /dev/null 2>&1 \
+            && docker exec nextcloudpi redis-cli -s "$redis_socket" -a "$redis_pw" get redisready > /dev/null 2>&1 || {
+              echo -e "${CHECK_FAILED}"
+              continue
+            }
+            echo -e "${CHECK_OK}"
+        
+            echo -ne "${LOG_CICD} Try to access activation page "
+            result="$(curl -k https://localhost:8443/activate/)" || {
+              echo -e "${CHECK_FAILED}"
+              echo "$result"
+              continue
+            }
+            echo -e "${CHECK_OK}"
+        
+            success=true
+            echo -e "${LOG_CICD} Startup successful"
+            break
           done
           
           [[ "$success" == "true" ]] || {
