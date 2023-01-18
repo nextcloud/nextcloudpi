@@ -35,7 +35,6 @@ on:
     tags: ["v*"]
     branches:
       - master
-      - "fix/cicd/*"
 
 permissions:
   contents: write
