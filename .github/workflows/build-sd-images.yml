@@ -188,6 +188,13 @@ jobs:
         run: |
           set -e
           
+          log_err() {
+            rc="${1?}"
+            msg="${2?}"
+            echo -e "${LOG_DIAG} $msg" >&2
+            return $rc
+          }
+          
           trap 'sudo machinectl terminate ncp' EXIT
           
           sudo systemd-nspawn --boot -D ./raspbian_root/ -M ncp --hostname=nextcloudpi |& awk "{ print \"${LOG_GUEST} \" \$0 }" &
@@ -200,7 +207,7 @@ jobs:
           do
             echo -e "${LOG_CICD} == Wait until container network is available (attempt $attempt/30) =="
             ip="$("${CONTAINER_CMD[@]}" bash -c '. /usr/local/etc/library.sh > /dev/null; get_ip')"
-            [[ -n "$ip" ]] && curl -k "https://$ip/activate" > /dev/null || { sleep 6; continue; }
+            [[ -n "$ip" ]] && curl -k "https://$ip/activate/" > /dev/null || { sleep 6; continue; }
             success=true
             break
           done
@@ -217,19 +224,18 @@ jobs:
           for attempt in {1..100}
           do
             echo -e "${LOG_CICD} Waiting for container startup (attempt $attempt/100)..."
-            set -x
-            redis_pw="$("${CONTAINER_CMD[@]}" bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"password'")"
-            redis_socket="$("${CONTAINER_CMD[@]}" bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"host'")"
-            if [[ "$("${CONTAINER_CMD[@]}" ncc maintenance:mode)" =~ .*disabled.* ]] \
-              && "${CONTAINER_CMD[@]}" ncc status \
-              && "${CONTAINER_CMD[@]}" redis-cli -s "$redis_socket" -a "$redis_pw" set redisready yes \
-              && "${CONTAINER_CMD[@]}" redis-cli -s "$redis_socket" -a "$redis_pw" get redisready
+            redis_pw="$("${CONTAINER_CMD[@]}" bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"password'")" \
+            && redis_socket="$("${CONTAINER_CMD[@]}" bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"host'")" \
+            || log_err $? "Error retrieving redis credentials"
+            if { [[ "$("${CONTAINER_CMD[@]}" ncc maintenance:mode)" =~ .*disabled.* ]] || log_err $? "Maintenance mode is enabled or could not be retrieved"; } \
+              && { "${CONTAINER_CMD[@]}" ncc status || log_err $? "ncc status check failed"; } \
+              && { "${CONTAINER_CMD[@]}" redis-cli -s "$redis_socket" -a "$redis_pw" set redisready yes || log_err $? "Failed to set redis variable"; } \
+              && { "${CONTAINER_CMD[@]}" redis-cli -s "$redis_socket" -a "$redis_pw" get redisready || log_err $? "Failed to read redis variable"; }
             then
               echo -e "${LOG_CICD} Startup successful"
               success=true
               break
             fi
-            set +x
             attempt=$((attempt + 1))
             sleep 5
           done
