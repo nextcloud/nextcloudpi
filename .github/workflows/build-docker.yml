@@ -172,7 +172,7 @@ jobs:
               && docker exec nextcloudpi ncc status \
               && docker exec nextcloudpi redis-cli -s "$redis_socket" -a "$redis_pw" set redisready yes \
               && docker exec nextcloudpi redis-cli -s "$redis_socket" -a "$redis_pw" get redisready \
-              && curl -k https://localhost:8443/activate/ > /dev/null
+              && curl -k https://localhost:8443/activate/
             then
               success=true
               echo -e "${LOG_CICD} Startup successful"
