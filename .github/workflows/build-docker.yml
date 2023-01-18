@@ -279,6 +279,36 @@ jobs:
               exit 1
             }
           fi
+      - name: Wait for update completion
+        run: |
+          set -e
+          docker logs nextcloudpi                                    |& awk "{ print \"${LOG_DCKR} \" \$0 }"
+          echo -e "${LOG_DCKR} =========="
+          docker logs -f nextcloudpi                                 |& awk "{ print \"${LOG_DCKR} \" \$0 }" &
+          
+          attempt=0
+          for attempt in {1..30}
+          do
+            echo -e "${LOG_CICD} Waiting for container startup (attempt $attempt/30)..."
+            redis_pw="$(docker exec nextcloudpi bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"password'")"
+            redis_socket="$(docker exec nextcloudpi bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"host'")"
+            if [[ "$(docker exec nextcloudpi ncc maintenance:mode)" =~ .*disabled.* ]] \
+              && docker exec nextcloudpi ncc status \
+              && docker exec nextcloudpi redis-cli -s "$redis_socket" -a "$redis_pw" set redisready yes \
+              && docker exec nextcloudpi redis-cli -s "$redis_socket" -a "$redis_pw" get redisready
+            then
+              echo -e "${LOG_CICD} Startup successful"
+              break
+            elif [[ "$attempt" -ge 30 ]]
+            then
+              echo -e "${LOG_CICD} Timeout reached."
+              exit 1
+            fi
+
+            attempt=$((attempt + 1))
+            sleep 5
+          done
+
       - name: Integration Tests
         working-directory: ./tests
         run: |
