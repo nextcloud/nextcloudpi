@@ -9,7 +9,7 @@ if [[ "$1" == "--defaults" ]] || ! [[ -f "${BINDIR}/CONFIG/nc-datadir.sh" ]] && 
 then
   echo "INFO: Restoring template to default settings" >&2
 
-  TMP_DIR="/tmp"
+  TMP_DIR="/tmp/.opcache"
 elif is_docker
 then
   DATADIR="/data-ro/ncdata/data"
@@ -18,6 +18,8 @@ then
 else
   TMP_DIR="$(source "${BINDIR}/CONFIG/nc-datadir.sh"; tmpl_opcache_dir)"
 fi
+
+mkdir -p "$TMP_DIR"
 
 cat <<EOF
 zend_extension=opcache.so
