@@ -223,10 +223,10 @@ jobs:
           success=false
           for attempt in {1..1000}
           do
-            echo -e "${LOG_CICD} Waiting for container startup (attempt $attempt/100)..."
+            echo -e "${LOG_CICD} Waiting for container startup (attempt $attempt/1000)..."
             redis_pw="$("${CONTAINER_CMD[@]}" bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"password'")" \
             && redis_socket="$("${CONTAINER_CMD[@]}" bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"host'")" \
-            || log_err $? "Error retrieving redis credentials"
+            || log_err $? "Error retrieving redis credentials" || true
             if { [[ "$("${CONTAINER_CMD[@]}" ncc maintenance:mode)" =~ .*disabled.* ]] || log_err $? "Maintenance mode is enabled or could not be retrieved"; } \
               && { "${CONTAINER_CMD[@]}" ncc status || log_err $? "ncc status check failed"; } \
               && { "${CONTAINER_CMD[@]}" redis-cli -s "$redis_socket" -a "$redis_pw" set redisready yes || log_err $? "Failed to set redis variable"; } \
