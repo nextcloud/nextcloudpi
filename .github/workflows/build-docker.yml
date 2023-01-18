@@ -172,8 +172,8 @@ jobs:
             
             if [[ "$stage" == "0" ]] 
             then
-              echo -ne "${LOG_CICD} Looking for 'Init done' in container logs "
-              if docker logs nextcloudpi 2> /dev/null | grep '^Init done'
+              echo -ne "${LOG_CICD} Looking for 'Init done' in container logs .. "
+              if docker logs nextcloudpi 2> /dev/null | grep '^Init done' > /dev/null
               then
                 stage=1
                 echo -e "${CHECK_OK}"
@@ -183,28 +183,27 @@ jobs:
               continue
             fi
           
-          
-            echo -ne "${LOG_CICD} Is maintenance mode disabled? "
+            echo -ne "${LOG_CICD} Is maintenance mode disabled? ............. "
             [[ "$(docker exec nextcloudpi ncc maintenance:mode)" =~ .*disabled.* ]] || {
               echo -e "${CHECK_FAILED}"
               continue
             }
             echo -e "${CHECK_OK}"
-        
-            echo -ne "${LOG_CICD} Check NC status "
+            
+            echo -ne "${LOG_CICD} Check NC status ........................... "
             ncc_status="$(docker exec nextcloudpi ncc status)" || { echo -e "${CHECK_FAILED}"; echo "$ncc_status"; continue; }
             echo -e "${CHECK_OK}"
-        
-            echo -ne "${LOG_CICD} Attempt writing and reading to redis db "
+            
+            echo -ne "${LOG_CICD} Attempt writing and reading to redis db ... "
             docker exec nextcloudpi redis-cli -s "$redis_socket" -a "$redis_pw" set redisready yes > /dev/null 2>&1 \
             && docker exec nextcloudpi redis-cli -s "$redis_socket" -a "$redis_pw" get redisready > /dev/null 2>&1 || {
               echo -e "${CHECK_FAILED}"
               continue
             }
             echo -e "${CHECK_OK}"
-        
-            echo -ne "${LOG_CICD} Try to access activation page "
-            result="$(curl -k https://localhost:8443/activate/)" || {
+            
+            echo -ne "${LOG_CICD} Try to access activation page ............. "
+            result="$(curl --no-progress-meter -k https://localhost:8443/activate/)" || {
               echo -e "${CHECK_FAILED}"
               echo "$result"
               continue
