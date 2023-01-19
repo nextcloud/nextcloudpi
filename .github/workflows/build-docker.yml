@@ -139,7 +139,7 @@ jobs:
           
           echo -e "${LOG_CICD} Timeout reached."
           echo -e "${LOG_CICD} Manually starting apache..."
-          docker exec nextcloudpi service apache2 stop
+          docker exec nextcloudpi apache2ctl -k stop
           sleep 60
           while true
           do
