@@ -90,7 +90,7 @@ jobs:
           mkdir -p /home/runner/work/data-exports/ncdata1
           mkdir -p /home/runner/work/data-exports/ncdata2
           docker run -d --rm -p 8443:443 -p 4443:4443 -v /home/runner/work/data-exports/ncdata1:/data-export -v "ncdata:/data" --name nextcloudpi thecalcaholic/ncp-internal-${ARCH?}:3962168407-testing localhost
-          docker run -d --rm -v /home/runner/work/data-exports/ncdata2:/data-export --name nextcloudpinovolume thecalcaholic/ncp-internal-${ARCH?}:3962168407-testing localhost
+          #docker run -d --rm -v /home/runner/work/data-exports/ncdata2:/data-export --name nextcloudpinovolume thecalcaholic/ncp-internal-${ARCH?}:3962168407-testing localhost
 
       - name: Checkout code
         uses: actions/checkout@v3
@@ -134,6 +134,9 @@ jobs:
             elif [[ "$attempt" -ge 30 ]]
             then
               echo -e "${LOG_CICD} Timeout reached."
+              echo -e "${LOG_CICD} Manually starting apache..."
+              docker exec nextcloudpi service apache2 stop
+              docker exec nextcloudpi apache2ctl -DFOREGROUND 
               success=false
             fi
 
@@ -143,8 +146,8 @@ jobs:
           
           docker exec nextcloudpi bash -c 'cp -ra /data/* /data-export/' 
           docker exec nextcloudpi bash -c 'cp -ra /data/.[!.]* /data-export' || true
-          docker exec nextcloudpinovolume bash -c 'cp -ra /data/* /data-export/' 
-          docker exec nextcloudpinovolume bash -c 'cp -ra /data/.[!.]* /data-export' || true
+          #docker exec nextcloudpinovolume bash -c 'cp -ra /data/* /data-export/' 
+          #docker exec nextcloudpinovolume bash -c 'cp -ra /data/.[!.]* /data-export' || true
           mkdir data-exports
           sudo tar caf ./data-exports/ncdata_exports.tar /home/runner/work/data-exports
           sudo chown runner: ./data-exports/ncdata_exports.tar
