@@ -64,8 +64,8 @@ jobs:
           docker push "thecalcaholic/ncp-internal-${ARCH?}:${{ github.run_id }}-testing"
 
   update-test:
-    needs: []
-#      - build
+    needs:
+      - build
     runs-on: ubuntu-latest
     env:
       VERSION: "${{ inputs.git_ref || github.ref }}"
@@ -126,7 +126,7 @@ jobs:
           docker volume create ncdata
           platform=linux/${ARCH?}
           [[ "$ARCH" == 'x86' ]] && platform=linux/amd64
-          docker run --platform "$platform" -v ncdata:/data -d --rm -p 8443:443 -p 4443:4443 --name nextcloudpi ownyourbits/nextcloudpi-${ARCH}:${{ steps.get_previous_version.outputs.previous_version }} localhost
+          docker run --platform "$platform" -v ncdata:/data -d --rm -p 8443:443 -p 4443:4443 --name nextcloudpi thecalcaholic/ncp-internal-${ARCH}:${{ github.run_id }} localhost
 
       - name: Checkout code
         uses: actions/checkout@v3

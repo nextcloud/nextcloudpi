@@ -28,6 +28,12 @@ LABEL maintainer="Ignacio Núñez Hernanz <nacho@ownyourbits.com>"
 SHELL ["/bin/bash", "-c"]
 
 ENV DOCKERBUILD 1
+ENV APACHE_RUN_USER=www-data
+ENV APACHE_RUN_GROUP=www-data
+ENV APACHE_LOG_DIR=/var/log/apache2
+ENV APACHE_LOCK_DIR=/var/lock/apache2
+ENV APACHE_PID_FILE=/var/run/apache2.pid
+ENV APACHE_RUN_DIR=/var/run/apache2
 
 COPY etc/ncp.cfg etc/library.sh lamp.sh /usr/local/etc/
 COPY etc/ncp-templates /usr/local/etc/ncp-templates
