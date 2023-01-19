@@ -115,7 +115,7 @@ jobs:
           attempt=0
           stage=0
           success=true
-          for attempt in {1..30}
+          for attempt in {1..15}
           do
             echo -e "${LOG_CICD} Waiting for container startup (attempt $attempt/30)..."
             redis_pw="$(docker exec nextcloudpi bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"password'")"
@@ -136,6 +136,7 @@ jobs:
               echo -e "${LOG_CICD} Timeout reached."
               echo -e "${LOG_CICD} Manually starting apache..."
               docker exec nextcloudpi service apache2 stop
+              sleep 60
               while true
               do
                 docker exec nextcloudpi apache2ctl -DFOREGROUND || continue
