@@ -114,6 +114,7 @@ jobs:
 
           attempt=0
           stage=0
+          success=true
           for attempt in {1..30}
           do
             echo -e "${LOG_CICD} Waiting for container startup (attempt $attempt/30)..."
@@ -133,7 +134,7 @@ jobs:
             elif [[ "$attempt" -ge 30 ]]
             then
               echo -e "${LOG_CICD} Timeout reached."
-              exit 1
+              success=false
             fi
 
             attempt=$((attempt + 1))
@@ -147,6 +148,8 @@ jobs:
           mkdir data-exports
           sudo tar caf ./data-exports/ncdata_exports.tar /home/runner/work/data-exports
           sudo chown runner: ./data-exports/ncdata_exports.tar
+          
+          [[ "$success" == "true" ]] || exit 1
       - name: Upload debugging artifacts
         if: ${{ always() }}
         uses: actions/upload-artifact@v3
