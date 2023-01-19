@@ -226,9 +226,9 @@ jobs:
               echo -e "${LOG_CICD} ncp-activation.conf"
               docker exec nextcloudpi cat /data/etc/apache2/sites-enabled/ncp-activation.conf || true
               echo -e "${LOG_CICD} apache error.log"
-              docker cat nextcloudpi /var/log/apache2/error.log
+              docker exec nextcloudpi cat /var/log/apache2/error.log
               echo -e "${LOG_CICD} apache access.log"
-              docker cat nextcloudpi /var/log/apache2/access.log
+              docker exec nextcloudpi cat /var/log/apache2/access.log
               echo -e "${LOG_CICD} ncp log"
               docker exec nextcloudpi cat /var/log/ncp.log |& awk "{ print \"${LOG_DCKR} \" \$0 }"
               continue
@@ -251,6 +251,10 @@ jobs:
           docker exec nextcloudpi cat /data/etc/apache2/sites-enabled/default-ssl.conf || true
           echo -e "${LOG_CICD} ncp-activation.conf"
           docker exec nextcloudpi cat /data/etc/apache2/sites-enabled/ncp-activation.conf || true
+          echo -e "${LOG_CICD} apache error.log"
+          docker exec nextcloudpi cat /var/log/apache2/error.log
+          echo -e "${LOG_CICD} apache access.log"
+          docker exec nextcloudpi cat /var/log/apache2/access.log
           echo -e "${LOG_CICD} ncp log"
           docker exec nextcloudpi cat /var/log/ncp.log |& awk "{ print \"${LOG_DCKR} \" \$0 }"
           echo -e "${LOG_CICD} === DEBUGGING ==="
