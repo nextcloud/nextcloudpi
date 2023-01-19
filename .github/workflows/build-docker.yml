@@ -87,8 +87,8 @@ jobs:
       - name: Start ncp container
         run: |
           docker volume create ncdata
-          mkdir /home/runner/work/data-exports/ncdata1
-          mkdir /home/runner/work/data-exports/ncdata2
+          mkdir -p /home/runner/work/data-exports/ncdata1
+          mkdir -p /home/runner/work/data-exports/ncdata2
           docker run -d --rm -p 8443:443 -p 4443:4443 -v /home/runner/work/data-exports/ncdata1:/data-export -v "ncdata:/data" --name nextcloudpi thecalcaholic/ncp-internal-${ARCH?}:3962168407-testing localhost
           docker run -d --rm -p 8443:443 -p 4443:4443 -v /home/runner/work/data-exports/ncdata2:/data-export --name nextcloudpinovolume thecalcaholic/ncp-internal-${ARCH?}:3962168407-testing localhost
 
