@@ -129,11 +129,14 @@ jobs:
           tmpdir=$(mktemp -d)
           pushd "$tmpdir" 
           cat <<EOF > ./Dockerfile
-          FROM --platform=$platform ownyourbits/nextcloudpi:${{ steps.get_previous_version.outputs.previous_version }}
+          FROM --platform=$platform ownyourbits/nextcloudpi-${ARCH}:${{ steps.get_previous_version.outputs.previous_version }}
   
           RUN echo 'Mutex posixsem' >> /etc/apache2/mods-available/ssl.conf
           EOF
           docker buildx build --platform "$platform" -t ncp-testing -f Dockerfile --load .
+          echo "${{ secrets.DOCKER_PASSWORD_INTERNAL }}" | docker login -u "${{ secrets.DOCKER_LOGIN_INTERNAL }}" --password-stdin
+          docker tag ncp-testing theCalcaholic/ncp-internal-${ARCH}:debug
+          docker push theCalcaholic/ncp-internal-${ARCH}:debug
           popd
           rm -r "$tmpdir"
           docker run --platform "$platform" -v ncdata:/data -d --rm -p 8443:443 -p 4443:4443 --name nextcloudpi ncp-testing localhost

@@ -147,7 +147,7 @@ COPY etc/ncp-config.d/nc-init.cfg /usr/local/etc/ncp-config.d/nc-init-copy.cfg
 COPY etc/ncp-config.d/nc-datadir.cfg /usr/local/etc/ncp-config.d/nc-datadir-copy.cfg
 
 RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt \
-set -e; \
+set -ex; \
 
 # make sure we don't accidentally disable first run wizard
 rm -f ncp-web/{wizard.cfg,ncp-web.cfg}; \
