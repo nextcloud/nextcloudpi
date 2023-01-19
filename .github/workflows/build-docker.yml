@@ -191,7 +191,11 @@ jobs:
             echo -e "${CHECK_OK}"
             
             echo -ne "${LOG_CICD} Check NC status ........................... "
-            ncc_status="$(docker exec nextcloudpi ncc status)" || { echo -e "${CHECK_FAILED}"; echo "$ncc_status"; continue; }
+            ncc_status="$(docker exec nextcloudpi ncc status)" || { 
+              echo -e "${CHECK_FAILED}"
+              echo "$ncc_status" |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+              continue
+            }
             echo -e "${CHECK_OK}"
             
             echo -ne "${LOG_CICD} Attempt writing and reading to redis db ... "
@@ -205,7 +209,9 @@ jobs:
             echo -ne "${LOG_CICD} Try to access activation page ............. "
             result="$(curl --no-progress-meter -k https://localhost:8443/activate/)" || {
               echo -e "${CHECK_FAILED}"
-              echo "$result"
+              echo "$result" |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+              echo "${LOG_CICD} curl http://localhost:8443/activate/"
+              curl http://localhost:8443/activate/ |& awk "{ print \"${LOG_DIAG} \" \$0 }"
               continue
             }
             echo -e "${CHECK_OK}"
