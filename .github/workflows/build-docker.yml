@@ -144,12 +144,15 @@ jobs:
           docker exec nextcloudpi bash -c 'cp -ra /data/.[!.]* /data-export' || true
           docker exec nextcloudpinovolume bash -c 'cp -ra /data/* /data-export/' 
           docker exec nextcloudpinovolume bash -c 'cp -ra /data/.[!.]* /data-export' || true
+          mkdir data-exports
+          sudo tar caf ./data-exports/ncdata_exports.tar /home/runner/work/data-exports
+          sudo chown runner: ./data-exports/ncdata_exports.tar
       - name: Upload debugging artifacts
         if: ${{ always() }}
         uses: actions/upload-artifact@v3
         with:
           name: ${{ github.run_id }}-docker-${{ env.ARCH }}-volume-troubleshooting
-          path: /home/runner/work/data-exports
+          path: data-exports
       - name: Integration Tests
         working-directory: ./tests
         run: |
