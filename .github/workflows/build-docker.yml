@@ -87,7 +87,7 @@ jobs:
       - name: Start ncp container
         run: |
           docker volume create ncdata
-          docker run -d --rm -p 8443:443 -v ncdata:/data -p 4443:4443 --name nextcloudpi thecalcaholic/ncp-internal-${ARCH?}:${{ github.run_id }}-testing localhost
+          docker run -d --rm -p 8443:443 -p 4443:4443 --name nextcloudpi thecalcaholic/ncp-internal-${ARCH?}:${{ github.run_id }}-testing localhost
 
       - name: Checkout code
         uses: actions/checkout@v3
