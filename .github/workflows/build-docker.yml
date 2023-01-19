@@ -165,7 +165,7 @@ jobs:
           attempt=0
           stage=0
           success=false
-          for attempt in {1..30}
+          for attempt in {1..100}
           do
             sleep 5
             echo -e "${LOG_CICD} Waiting for container startup (attempt $attempt/30)..."
@@ -216,6 +216,8 @@ jobs:
               echo -e "${LOG_CICD} curl http://localhost:8443"
               curl http://localhost:8443 |& awk "{ print \"${LOG_DIAG} \" \$0 }"
               docker exec nextcloudpi a2query -s |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+              docker exec nextcloudpi ls -l /etc/apache2/sites-{available,enabled} /data/etc/apache2/sites-{available,enabled} |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+              docker exec nextcloudpi cat /var/log/ncp.log |& awk "{ print \"${LOG_DCKR} \" \$0 }"
               continue
             }
             echo -e "${CHECK_OK}"
