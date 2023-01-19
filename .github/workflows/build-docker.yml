@@ -236,6 +236,21 @@ jobs:
             break
           done
           
+          echo -e "${LOG_CICD} === DEBUGGING ==="
+          echo -e "${LOG_CICD} a2query"
+          docker exec nextcloudpi a2query -s |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+          echo -e "${LOG_CICD apache2 config files"
+          docker exec nextcloudpi ls -l /etc/apache2/sites-{available,enabled} /data/etc/apache2/sites-{available,enabled} |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+          echo -e "${LOG_CICD} 000-default.conf"
+          docker exec nextcloudpi cat /data/etc/apache2/sites-enabled/000-default.conf || true
+          echo -e "${LOG_CICD} default-ssl.conf"
+          docker exec nextcloudpi cat /data/etc/apache2/sites-enabled/default-ssl.conf || true
+          echo -e "${LOG_CICD} ncp-activation.conf"
+          docker exec nextcloudpi cat /data/etc/apache2/sites-enabled/ncp-activation.conf || true
+          echo -e "${LOG_CICD} ncp log"
+          docker exec nextcloudpi cat /var/log/ncp.log |& awk "{ print \"${LOG_DCKR} \" \$0 }"
+          echo -e "${LOG_CICD} === DEBUGGING ==="
+          
           [[ "$success" == "true" ]] || {
             echo -e "${LOG_CICD} Timeout reached."
             exit 1
