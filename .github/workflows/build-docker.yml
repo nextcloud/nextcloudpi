@@ -143,7 +143,7 @@ jobs:
           sleep 60
           while true
           do
-            docker exec nextcloudpi apache2ctl -DFOREGROUND || continue
+            docker exec nextcloudpi apache2ctl -e debug -X -DFOREGROUND || continue
             break
           done
           
