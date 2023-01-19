@@ -78,8 +78,6 @@ jobs:
       CHECK_OK: "\\033[1;32m✓\\033[0m"
       CHECK_FAILED: "\\033[1;31m⨯\\033[0m"
     steps:
-      - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v2
       - name: Checkout code
         uses: actions/checkout@v3
         with:
@@ -118,15 +116,12 @@ jobs:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
 
-      - name: Enable qemu SUID
-        run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes --credential yes
-
       - name: Start ncp container
         run: |
           docker volume create ncdata
           platform=linux/${ARCH?}
           [[ "$ARCH" == 'x86' ]] && platform=linux/amd64
-          docker run --platform "$platform" -v ncdata:/data -d --rm -p 8443:443 -p 4443:4443 --name nextcloudpi thecalcaholic/ncp-internal-${ARCH}:${{ github.run_id }} localhost
+          docker run -v ncdata:/data -d --rm -p 8443:443 -p 4443:4443 --name nextcloudpi thecalcaholic/ncp-internal-${ARCH}:${{ github.run_id }} localhost
 
       - name: Checkout code
         uses: actions/checkout@v3
@@ -505,7 +500,7 @@ jobs:
 
           attempt=0
           stage=0
-          for attempt in {1..200}
+          for attempt in {1..30}
           do
             echo -e "${LOG_CICD} Waiting for container startup (attempt $attempt/30)..."
             redis_pw="$(docker exec nextcloudpi bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"password'")"
