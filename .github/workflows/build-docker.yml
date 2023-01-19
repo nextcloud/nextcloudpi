@@ -139,7 +139,7 @@ jobs:
           docker push thecalcaholic/ncp-internal-${ARCH}:debug
           popd
           rm -r "$tmpdir"
-          docker run --platform "$platform" -v ncdata:/data -d --rm -p 8443:443 -p 4443:4443 --name nextcloudpi ncp-testing localhost
+          docker run --platform "$platform" -v ncdata:/data -d --rm -p 8443:443 -p 4443:4443 --name nextcloudpi ownyourbits/nextcloudpi-${ARCH}:${{ steps.get_previous_version.outputs.previous_version }} localhost
 
       - name: Checkout code
         uses: actions/checkout@v3
