@@ -78,6 +78,8 @@ jobs:
       CHECK_OK: "\\033[1;32m✓\\033[0m"
       CHECK_FAILED: "\\033[1;31m⨯\\033[0m"
     steps:
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v2
       - name: Checkout code
         uses: actions/checkout@v3
         with:
@@ -113,11 +115,8 @@ jobs:
           echo "Previous version is '$version'"
           echo "PREVIOUS_VERSION=$version" >> "$GITHUB_ENV"
           echo "previous_version=${version}" >> $GITHUB_OUTPUT
-#      - name: Set up QEMU
-#        uses: docker/setup-qemu-action@v2
       - name: Set up QEMU
-        run: |
-          sudo apt-get install -y qemu-user-static binfmt-support
+        uses: docker/setup-qemu-action@v2
 
       - name: Enable qemu SUID
         run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes --credential yes
