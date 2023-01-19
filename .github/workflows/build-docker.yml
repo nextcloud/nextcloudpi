@@ -140,8 +140,10 @@ jobs:
             sleep 5
           done
           
-          docker exec nextcloudpi cp -ra /data/* /data/.[!.]* /data-export/
-          docker exec nextcloudpinovolume cp -ra /data/* /data/.[!.]* /data-export/
+          docker exec nextcloudpi 'cp -ra /data/* /data-export/' 
+          docker exec nextcloudpi 'cp -ra /data/.[!.]* /data-export' || true
+          docker exec nextcloudpinovolume 'cp -ra /data/* /data-export/' 
+          docker exec nextcloudpinovolume 'cp -ra /data/.[!.]* /data-export' || true
       - name: Upload debugging artifacts
         if: ${{ always() }}
         uses: actions/upload-artifact@v3
