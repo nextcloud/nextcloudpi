@@ -165,7 +165,7 @@ jobs:
           attempt=0
           stage=0
           success=false
-          for attempt in {1..100}
+          for attempt in {1..30}
           do
             sleep 5
             echo -e "${LOG_CICD} Waiting for container startup (attempt $attempt/30)..."
@@ -216,10 +216,12 @@ jobs:
               echo -e "${LOG_CICD} curl http://localhost:8443"
               curl http://localhost:8443 |& awk "{ print \"${LOG_DIAG} \" \$0 }"
               container_ip="$(docker inspect nextcloudpi --format '{{ .NetworkSettings.IPAddress }}')"
-              echo -e "${LOG_CICD} curl -k https://$container_ip/activate/"
-              curl -vk "https://$container_ip/activate/" 2>&1 |& awk "{ print \"${LOG_DIAG} \" \$0 }"
-              echo -e "${LOG_CICD} a2query"
+              echo -e "${LOG_CICD} curl -k https://${container_ip}/activate/"
+              curl -vk "https://${container_ip}/activate/" 2>&1 |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+              echo -e "${LOG_CICD} a2query -s"
               docker exec nextcloudpi a2query -s |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+              echo -e "${LOG_CICD} a2query -m"
+              docker exec nextcloudpi a2query -m |& awk "{ print \"${LOG_DIAG} \" \$0 }"
               echo -e "${LOG_CICD} apache2 config files"
               docker exec nextcloudpi ls -l /etc/apache2/sites-{available,enabled} /data/etc/apache2/sites-{available,enabled} |& awk "{ print \"${LOG_DIAG} \" \$0 }"
               echo -e "${LOG_CICD} 000-default.conf"
@@ -229,9 +231,9 @@ jobs:
               echo -e "${LOG_CICD} ncp-activation.conf"
               docker exec nextcloudpi cat /data/etc/apache2/sites-enabled/ncp-activation.conf || true
               echo -e "${LOG_CICD} apache error.log"
-              docker exec nextcloudpi cat /var/log/apache2/error.log
+              docker exec nextcloudpi cat /var/log/apache2/error.log || true
               echo -e "${LOG_CICD} apache access.log"
-              docker exec nextcloudpi cat /var/log/apache2/access.log
+              docker exec nextcloudpi cat /var/log/apache2/access.log || true
               echo -e "${LOG_CICD} ncp log"
               docker exec nextcloudpi cat /var/log/ncp.log |& awk "{ print \"${LOG_DCKR} \" \$0 }"
               continue
@@ -244,8 +246,10 @@ jobs:
           done
           
           echo -e "${LOG_CICD} === DEBUGGING ==="
-          echo -e "${LOG_CICD} a2query"
+          echo -e "${LOG_CICD} a2query -s"
           docker exec nextcloudpi a2query -s |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+          echo -e "${LOG_CICD} a2query -m"
+          docker exec nextcloudpi a2query -m |& awk "{ print \"${LOG_DIAG} \" \$0 }"
           echo -e "${LOG_CICD} apache2 config files"
           docker exec nextcloudpi ls -l /etc/apache2/sites-{available,enabled} /data/etc/apache2/sites-{available,enabled} |& awk "{ print \"${LOG_DIAG} \" \$0 }"
           echo -e "${LOG_CICD} 000-default.conf"
