@@ -64,8 +64,8 @@ jobs:
           docker push "thecalcaholic/ncp-internal-${ARCH?}:${{ github.run_id }}-testing"
 
   update-test:
-    needs:
-      - build
+    needs: []
+#      - build
     runs-on: ubuntu-latest
     env:
       VERSION: "${{ inputs.git_ref || github.ref }}"
@@ -215,8 +215,17 @@ jobs:
               echo "$result" |& awk "{ print \"${LOG_DIAG} \" \$0 }"
               echo -e "${LOG_CICD} curl http://localhost:8443"
               curl http://localhost:8443 |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+              echo -e "${LOG_CICD} a2query"
               docker exec nextcloudpi a2query -s |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+              echo -e "${LOG_CICD apache2 config files"
               docker exec nextcloudpi ls -l /etc/apache2/sites-{available,enabled} /data/etc/apache2/sites-{available,enabled} |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+              echo -e "${LOG_CICD} 000-default.conf"
+              docker exec nextcloudpi cat /data/etc/apache2/sites-enabled/000-default.conf || true
+              echo -e "${LOG_CICD} default-ssl.conf"
+              docker exec nextcloudpi cat /data/etc/apache2/sites-enabled/default-ssl.conf || true
+              echo -e "${LOG_CICD} ncp-activation.conf"
+              docker exec nextcloudpi cat /data/etc/apache2/sites-enabled/ncp-activation.conf || true
+              echo -e "${LOG_CICD} ncp log"
               docker exec nextcloudpi cat /var/log/ncp.log |& awk "{ print \"${LOG_DCKR} \" \$0 }"
               continue
             }
@@ -270,7 +279,7 @@ jobs:
       - name: Start new container
         run: |
           docker stop nextcloudpi
-          docker run -d -v ncdata:/data --rm -p 8443:443 -p 4443:4443 -e NOBACKUP=true --name nextcloudpi thecalcaholic/ncp-internal-${ARCH?}:${{ github.run_id }}-testing localhost
+          docker run -d -v ncdata:/data --rm -p 8443:443 -p 4443:4443 -e NOBACKUP=true --name nextcloudpi thecalcaholic/ncp-internal-${ARCH?}:3955102274-testing localhost
       - name: Wait for container startup
         run: |
           set -e
