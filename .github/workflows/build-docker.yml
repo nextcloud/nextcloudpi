@@ -126,19 +126,6 @@ jobs:
           docker volume create ncdata
           platform=linux/${ARCH?}
           [[ "$ARCH" == 'x86' ]] && platform=linux/amd64
-          tmpdir=$(mktemp -d)
-          pushd "$tmpdir" 
-          cat <<EOF > ./Dockerfile
-          FROM --platform=$platform ownyourbits/nextcloudpi-${ARCH}:${{ steps.get_previous_version.outputs.previous_version }}
-  
-          RUN echo 'Mutex posixsem' >> /etc/apache2/mods-available/ssl.conf
-          EOF
-          docker buildx build --platform "$platform" -t ncp-testing -f Dockerfile --load .
-          echo "${{ secrets.DOCKER_PASSWORD_INTERNAL }}" | docker login -u "${{ secrets.DOCKER_LOGIN_INTERNAL }}" --password-stdin
-          docker tag ncp-testing thecalcaholic/ncp-internal-${ARCH}:debug
-          docker push thecalcaholic/ncp-internal-${ARCH}:debug
-          popd
-          rm -r "$tmpdir"
           docker run --platform "$platform" -v ncdata:/data -d --rm -p 8443:443 -p 4443:4443 --name nextcloudpi ownyourbits/nextcloudpi-${ARCH}:${{ steps.get_previous_version.outputs.previous_version }} localhost
 
       - name: Checkout code
@@ -222,6 +209,8 @@ jobs:
               docker exec nextcloudpi a2query -s |& awk "{ print \"${LOG_DIAG} \" \$0 }"
               echo -e "${LOG_CICD} a2query -m"
               docker exec nextcloudpi a2query -m |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+              echo -e "${LOG_CICD} apache2 -S"
+              docker exec nextcloudpi apache -S |& awk "{ print \"${LOG_DIAG} \" \$0 }"
               echo -e "${LOG_CICD} apache2 config files"
               docker exec nextcloudpi ls -l /etc/apache2/sites-{available,enabled} /data/etc/apache2/sites-{available,enabled} |& awk "{ print \"${LOG_DIAG} \" \$0 }"
               echo -e "${LOG_CICD} 000-default.conf"
@@ -250,6 +239,8 @@ jobs:
           docker exec nextcloudpi a2query -s |& awk "{ print \"${LOG_DIAG} \" \$0 }"
           echo -e "${LOG_CICD} a2query -m"
           docker exec nextcloudpi a2query -m |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+          echo -e "${LOG_CICD} apache2 -S"
+          docker exec nextcloudpi apache -S |& awk "{ print \"${LOG_DIAG} \" \$0 }"
           echo -e "${LOG_CICD} apache2 config files"
           docker exec nextcloudpi ls -l /etc/apache2/sites-{available,enabled} /data/etc/apache2/sites-{available,enabled} |& awk "{ print \"${LOG_DIAG} \" \$0 }"
           echo -e "${LOG_CICD} 000-default.conf"
@@ -259,9 +250,9 @@ jobs:
           echo -e "${LOG_CICD} ncp-activation.conf"
           docker exec nextcloudpi cat /data/etc/apache2/sites-enabled/ncp-activation.conf || true
           echo -e "${LOG_CICD} apache error.log"
-          docker exec nextcloudpi cat /var/log/apache2/error.log
+          docker exec nextcloudpi cat /var/log/apache2/error.log || true
           echo -e "${LOG_CICD} apache access.log"
-          docker exec nextcloudpi cat /var/log/apache2/access.log
+          docker exec nextcloudpi cat /var/log/apache2/access.log || true
           echo -e "${LOG_CICD} ncp log"
           docker exec nextcloudpi cat /var/log/ncp.log |& awk "{ print \"${LOG_DCKR} \" \$0 }"
           echo -e "${LOG_CICD} === DEBUGGING ==="
