@@ -217,7 +217,7 @@ jobs:
               curl http://localhost:8443 |& awk "{ print \"${LOG_DIAG} \" \$0 }"
               container_ip="$(docker inspect nextcloudpi --format '{{ .NetworkSettings.IPAddress }}')"
               echo -e "${LOG_CICD} curl -k https://$container_ip/activate/"
-              curl -k "https://$container_ip/activate/" |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+              curl -vk "https://$container_ip/activate/" 2>&1 |& awk "{ print \"${LOG_DIAG} \" \$0 }"
               echo -e "${LOG_CICD} a2query"
               docker exec nextcloudpi a2query -s |& awk "{ print \"${LOG_DIAG} \" \$0 }"
               echo -e "${LOG_CICD} apache2 config files"
