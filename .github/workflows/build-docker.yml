@@ -129,10 +129,10 @@ jobs:
             tmpdir=$(mktemp -d)
             pushd "$tmpdir"
             cat <<EOF > ./Dockerfile
-            FROM --platform=$platform thecalcaholic/ncp-internal-${ARCH}:${{ github.run_id }}
-            
-            RUN echo 'Mutex posixsem' >> /etc/apache2/mods-available/ssl.conf
-            EOF
+          FROM --platform=$platform thecalcaholic/ncp-internal-${ARCH}:${{ github.run_id }}
+          
+          RUN echo 'Mutex posixsem' >> /etc/apache2/mods-available/ssl.conf
+          EOF
             docker buildx build --platform "$platform" -t ncp-testing -f Dockerfile --load .
             echo "${{ secrets.DOCKER_PASSWORD_INTERNAL }}" | docker login -u "${{ secrets.DOCKER_LOGIN_INTERNAL }}" --password-stdin
             docker tag ncp-testing thecalcaholic/ncp-internal-${ARCH}:debug
