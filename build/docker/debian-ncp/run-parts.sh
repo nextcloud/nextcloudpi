@@ -9,15 +9,6 @@ cleanup()
   exit
 }
 
-grep '/data-ro' /etc/mysql/mariadb.conf.d/90-ncp.cnf > /dev/null 2>&1 && {
-  echo "WARNING: Looks like you have been affected by a critical bug in NCP that can cause data loss. We're trying" \
-     "to fix this now, but if you encounter any issues, please check" \
-     "https://github.com/nextcloud/nextcloudpi/issues/1577#issuecomment-1260830341" \
-     "It is likely that you will have to restore a backup"
-  chown -R mysql:mysql /data/database || true
-}
-sed -i 's|/data-ro|/data|' "/etc/mysql/mariadb.conf.d/90-ncp.cnf" || true
-
 trap cleanup SIGTERM
 
 # if an empty volume is mounted to /data, pre-populate it
