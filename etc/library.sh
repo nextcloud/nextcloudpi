@@ -162,7 +162,7 @@ function set-nc-domain()
     for try in {1..5}
     do
       echo "Setup notify_push (attempt ${try}/5)"
-      ncc notify_push:setup "${url}/push"
+      ncc notify_push:setup "${url}/push" && break
       sleep 10
     done
   fi
