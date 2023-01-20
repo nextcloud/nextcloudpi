@@ -170,9 +170,7 @@ apt-get install --no-install-recommends -y wget ca-certificates; \
 # install nextcloudpiset_app_param nc-datadir.sh DATADIR '/data-ro/ncdata' \
 source /usr/local/etc/library.sh; \
 cd /tmp/ncp-build/; \
-branch=master; \
-[[ "$ncp_ver" == "v0.0.0" ]] || branch="$ncp_ver"; \
-BRANCH="$branch" install_app ncp.sh; \
+install_app ncp.sh; \
 
 mv /usr/local/etc/ncp-config.d/nc-init-copy.cfg /usr/local/etc/ncp-config.d/nc-init.cfg; \
 run_app_unsafe bin/ncp/CONFIG/nc-init.sh; \

@@ -29,14 +29,16 @@ fi
   }
 
   # shellcheck disable=SC2164
-  [[ -f /.ncp-image ]] || cd "$TMPDIR"         # update locally during build
+  [[ -f /.ncp-image ]] || {
+    cd "$TMPDIR"         # update locally during build
 
-  [[ -z "$2" ]] || {
-    git fetch origin "$2" || {
-      echo "Error: Could not fetch $2"
-      exit 1
+    [[ -z "$2" ]] || {
+      git fetch origin "$2" || {
+        echo "Error: Could not fetch $2"
+        exit 1
+      }
+      git checkout FETCH_HEAD
     }
-    git checkout FETCH_HEAD
   }
 
   echo -e "Performing updates"
@@ -61,4 +63,5 @@ fi
 
   echo -e "NextCloudPi updated to version $VER"
   exit 0
+
 } # force to read the whole thing into memory, as its contents might change in update.sh
