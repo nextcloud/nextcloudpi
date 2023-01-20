@@ -64,6 +64,10 @@ jobs:
           docker push "thecalcaholic/ncp-internal-${ARCH?}:${{ github.run_id }}-testing"
 
   update-test:
+    # TODO: Fix update-test for armhf
+    # The issues are originating in a seemingly bug in apache2 that only occurs in the GH action and only
+    # if a docker volume or directory is mounted to /data.
+    # In this configuration, apache will serve the default placeholder page instead of the sites configured in ncp.
     if: ${{ inputs.arch != 'armhf' }}
     needs:
       - build

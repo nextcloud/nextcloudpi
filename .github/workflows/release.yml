@@ -87,8 +87,10 @@ jobs:
       board_name: RaspberryPi
     secrets: inherit
 
+  # TODO: Fix 32bit armbian images
   odroidxu4:
-    if: ${{ inputs.sd-images || github.event_name != 'workflow_dispatch' }}
+    # if: ${{ inputs.sd-images || github.event_name != 'workflow_dispatch' }}
+    if: ${{ false }}
     uses: ./.github/workflows/build-sd-images.yml
     with:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
@@ -111,8 +113,10 @@ jobs:
       board_id: rock64
       board_name: Rock64
     secrets: inherit
+  # TODO: Fix 32bit armbian images
   bananapi:
-    if: ${{ inputs.sd-images || github.event_name != 'workflow_dispatch' }}
+    #if: ${{ inputs.sd-images || github.event_name != 'workflow_dispatch' }}
+    if: ${{ false }}
     uses: ./.github/workflows/build-sd-images.yml
     with:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
@@ -170,19 +174,18 @@ jobs:
       dry_run: ${{ (!inputs.release && github.event_name == 'workflow_dispatch') || github.ref_type != 'tag' || !(github.ref_protected || startsWith(github.ref, 'refs/tags/v'))  }}
     secrets: inherit
 
-# TODO: Fix 32bit armbian images
-#  odroidxu4-release:
-#    needs:
-#      - odroidxu4
-#      - github-release
-#    if: ${{ inputs.sd-images || github.event_name != 'workflow_dispatch' }}
-#    uses: ./.github/workflows/publish-image.yml
-#    with:
-#      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
-#      artifact_id: "${{ needs.odroidxu4.outputs.artifact_name }}"
-#      artifact_file: "${{ needs.odroidxu4.outputs.artifact_file }}"
-#      dry_run: ${{ (!inputs.release && github.event_name == 'workflow_dispatch') || github.ref_type != 'tag' || !(github.ref_protected || startsWith(github.ref, 'refs/tags/v'))  }}
-#    secrets: inherit
+  odroidxu4-release:
+    needs:
+      - odroidxu4
+      - github-release
+    if: ${{ inputs.sd-images || github.event_name != 'workflow_dispatch' }}
+    uses: ./.github/workflows/publish-image.yml
+    with:
+      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+      artifact_id: "${{ needs.odroidxu4.outputs.artifact_name }}"
+      artifact_file: "${{ needs.odroidxu4.outputs.artifact_file }}"
+      dry_run: ${{ (!inputs.release && github.event_name == 'workflow_dispatch') || github.ref_type != 'tag' || !(github.ref_protected || startsWith(github.ref, 'refs/tags/v'))  }}
+    secrets: inherit
   rockpro64-release:
     needs:
       - rockpro64
@@ -207,19 +210,18 @@ jobs:
       artifact_file: "${{ needs.rock64.outputs.artifact_file }}"
       dry_run: ${{ (!inputs.release && github.event_name == 'workflow_dispatch') || github.ref_type != 'tag' || !(github.ref_protected || startsWith(github.ref, 'refs/tags/v'))  }}
     secrets: inherit
-# TODO: Fix 32bit armbian images
-#  bananapi-release:
-#    needs:
-#      - bananapi
-#      - github-release
-#    if: ${{ inputs.sd-images || github.event_name != 'workflow_dispatch' }}
-#    uses: ./.github/workflows/publish-image.yml
-#    with:
-#      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
-#      artifact_id: "${{ needs.bananapi.outputs.artifact_name }}"
-#      artifact_file: "${{ needs.bananapi.outputs.artifact_file }}"
-#      dry_run: ${{ (!inputs.release && github.event_name == 'workflow_dispatch') || github.ref_type != 'tag' || !(github.ref_protected || startsWith(github.ref, 'refs/tags/v'))  }}
-#    secrets: inherit
+  bananapi-release:
+    needs:
+      - bananapi
+      - github-release
+    if: ${{ inputs.sd-images || github.event_name != 'workflow_dispatch' }}
+    uses: ./.github/workflows/publish-image.yml
+    with:
+      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+      artifact_id: "${{ needs.bananapi.outputs.artifact_name }}"
+      artifact_file: "${{ needs.bananapi.outputs.artifact_file }}"
+      dry_run: ${{ (!inputs.release && github.event_name == 'workflow_dispatch') || github.ref_type != 'tag' || !(github.ref_protected || startsWith(github.ref, 'refs/tags/v'))  }}
+    secrets: inherit
   odroidhc4-release:
     needs:
       - odroidhc4
