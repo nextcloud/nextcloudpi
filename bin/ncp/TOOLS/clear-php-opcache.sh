@@ -11,11 +11,8 @@
 
 configure()
 {
-  echo "Stopping php..."
-  service "php${PHPVER}-fpm" stop
+  echo "Clearing opcache..."
   clear_opcache
-  echo "Starting php..."
-  service "php${PHPVER}-fpm" start
 }
 
 install() { :; }

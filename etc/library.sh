@@ -604,6 +604,7 @@ function clear_opcache() {
     rm -rf "${data_dir:-/var/www/data}/.opcache"/*
     echo "Done."
   }
+  service php${PHPVER}-fpm reload
 }
 
 # License

@@ -185,9 +185,7 @@ find nextcloud/ -type d -exec chmod 750 {} \;
 find nextcloud/ -type f -exec chmod 640 {} \;
 
 # Clear PHP opcache
-service "php${PHPVER}-fpm" stop
 clear_opcache
-service "php${PHPVER}-fpm" start
 
 # upgrade
 ####################

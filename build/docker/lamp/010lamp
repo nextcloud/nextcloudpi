@@ -26,7 +26,6 @@ if [[ -f /usr/local/bin/ncp-docker-hook ]]; then
 fi
 
 echo "Starting PHP-fpm"
-clear_opcache
 php-fpm"${PHPVER}"
 
 echo "Starting Apache"

@@ -170,7 +170,9 @@ apt-get install --no-install-recommends -y wget ca-certificates; \
 # install nextcloudpiset_app_param nc-datadir.sh DATADIR '/data-ro/ncdata' \
 source /usr/local/etc/library.sh; \
 cd /tmp/ncp-build/; \
-install_app ncp.sh; \
+branch=master; \
+[[ "$ncp_ver" == "v0.0.0" ]] || branch="$ncp_ver"; \
+BRANCH="$branch" install_app ncp.sh; \
 
 mv /usr/local/etc/ncp-config.d/nc-init-copy.cfg /usr/local/etc/ncp-config.d/nc-init.cfg; \
 run_app_unsafe bin/ncp/CONFIG/nc-init.sh; \
@@ -185,12 +187,21 @@ rm /usr/local/etc/ncp-config.d/nc-datadir.cfg; \
 sed -i 's|data-ro|data|' /data-ro/nextcloud/config/config.php; \
 
 # fix default paths
+echo "Update data-ro"; \
 sed -i 's|/media/USBdrive|/data/backups|' /usr/local/etc/ncp-config.d/nc-backup.cfg; \
 sed -i 's|/media/USBdrive|/data/backups|' /usr/local/etc/ncp-config.d/nc-backup-auto.cfg; \
 sed -i 's|/data-ro|/data|' /etc/mysql/mariadb.conf.d/90-ncp.cnf; \
 
+echo "DEBUGGING:"; \
+cat /etc/mysql/mariadb.conf.d/90-ncp.cnf; \
+ls -l /usr/local/bin/; \
+
 # cleanup all NCP extras
 run_app_unsafe post-inst.sh; \
+
+echo "DEBUGGING:"; \
+cat /etc/mysql/mariadb.conf.d/90-ncp.cnf; \
+ls -l /usr/local/bin/; \
 
 # specific cleanup
 cd /; rm -r /tmp/ncp-build; \
