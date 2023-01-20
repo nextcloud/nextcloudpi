@@ -64,6 +64,7 @@ jobs:
           docker push "thecalcaholic/ncp-internal-${ARCH?}:${{ github.run_id }}-testing"
 
   update-test:
+    if: ${{ inputs.arch != 'armhf' }}
     needs:
       - build
     runs-on: ubuntu-latest
