@@ -6,5 +6,4 @@ source /usr/local/etc/library.sh
 
 install_template systemd/notify_push.service.sh /etc/systemd/system/notify_push.service
 
-clear_opcache
-bash -c "sleep 6; service php${PHPVER}-fpm restart" &>/dev/null &
+bash -c "sleep 6; source /usr/local/etc/library.sh; clear_opcache; service php${PHPVER}-fpm reload" &>/dev/null &
