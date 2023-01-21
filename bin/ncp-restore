@@ -38,7 +38,10 @@ free=$( df "$TMPDIR" | tail -1 | awk '{ print $4 }' )
 
 # EXTRACT FILES
 echo "extracting backup file $BACKUPFILE..."
-tar $compress_arg -xf "$BACKUPFILE" -C "$TMPDIR" || exit 1
+tar $compress_arg -xf "$BACKUPFILE" -C "$TMPDIR" || {
+  echo "An error occurred. Abort"
+  exit 1
+}
 
 ## SANITY CHECKS
 [[ -d "$TMPDIR"/nextcloud ]] && [[ -f "$( ls "$TMPDIR"/nextcloud-sqlbkp_*.bak 2>/dev/null )" ]] || {
@@ -184,4 +187,6 @@ ncc files:scan-app-data
 [[ "$NEED_RESTART" == "1" ]] && {
   clear_opcache
   bash -c "sleep 3; service php${PHPVER}-fpm restart" &>/dev/null &
+}
+
 }
