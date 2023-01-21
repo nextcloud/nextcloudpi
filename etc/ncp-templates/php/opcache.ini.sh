@@ -31,6 +31,6 @@ opcache.max_accelerated_files=10000
 opcache.memory_consumption=128
 opcache.save_comments=1
 opcache.revalidate_freq=1
-opcache.file_cache=${TMP_DIR};
-opcache.jit=function;
+opcache.file_cache=${TMP_DIR}
+opcache.jit=function
 EOF

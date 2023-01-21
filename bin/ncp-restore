@@ -106,8 +106,9 @@ fi
 
 cd "$NCDIR"
 
-### INCLUDEDATA=yes situation
+clear_opcache
 
+### INCLUDEDATA=yes situation
 NUMFILES=2
 if [[ $( ls "$TMPDIR" | wc -l ) -eq $NUMFILES ]]; then
 
