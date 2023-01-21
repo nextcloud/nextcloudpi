@@ -598,10 +598,10 @@ function get_nc_config_value() {
 function clear_opcache() {
   # shellcheck disable=SC2155
   local data_dir="$(get_nc_config_value datadirectory)"
-  ! [[ -d "${data_dir:-/var/www/data}/.opcache" ]] || {
+  ! [[ -d "${data_dir:-/var/www/nextcloud/data}/.opcache" ]] || {
     echo "Clearing opcache..."
     echo "This can take some time. Please don't interrupt the process/close your browser tab."
-    rm -rf "${data_dir:-/var/www/data}/.opcache"/*
+    rm -rf "${data_dir:-/var/www/nextcloud/data}/.opcache"/* "${data_dir:-/var/www/nextcloud/data}/.opcache"/.[!.]*
     echo "Done."
   }
   service php${PHPVER}-fpm reload
