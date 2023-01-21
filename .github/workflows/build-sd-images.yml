@@ -172,7 +172,7 @@ jobs:
           path: output
       - name: Prepare test
         run: |
-          set -ex
+          set -x
           mv output/${ARTIFACT_FILE?} ncp.img
           sudo apt-get install -y systemd-container
           sudo pip install selenium
@@ -224,10 +224,10 @@ jobs:
             redis_pw="$("${CONTAINER_CMD[@]}" bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"password'")" \
             && redis_socket="$("${CONTAINER_CMD[@]}" bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"host'")" \
             || log_err $? "Error retrieving redis credentials" || true
-            if { [[ "$("${CONTAINER_CMD[@]}" ncc maintenance:mode)" =~ .*disabled.* ]] || log_err $? "Maintenance mode is enabled or could not be retrieved"; } \
-              && { "${CONTAINER_CMD[@]}" ncc status || log_err $? "ncc status check failed"; } \
-              && { "${CONTAINER_CMD[@]}" redis-cli -s "$redis_socket" -a "$redis_pw" set redisready yes || log_err $? "Failed to set redis variable"; } \
-              && { "${CONTAINER_CMD[@]}" redis-cli -s "$redis_socket" -a "$redis_pw" get redisready || log_err $? "Failed to read redis variable"; }
+            if { "${CONTAINER_CMD[@]}" -q ncc status |& awk "{ print \"${LOG_DIAG} \" \$0 }" || log_err $? "ncc status check failed"; } \
+              && { [[ "$("${CONTAINER_CMD[@]}" ncc maintenance:mode)" =~ .*disabled.* ]] || log_err $? "Maintenance mode is enabled or could not be retrieved"; } \
+              && { "${CONTAINER_CMD[@]}" redis-cli -s "$redis_socket" -a "$redis_pw" set redisready yes |& awk "{ print \"${LOG_DIAG} \" \$0 }" || log_err $? "Failed to set redis variable"; } \
+              && { "${CONTAINER_CMD[@]}" redis-cli -s "$redis_socket" -a "$redis_pw" get redisready |& awk "{ print \"${LOG_DIAG} \" \$0 }" || log_err $? "Failed to read redis variable"; }
             then
               echo -e "${LOG_CICD} Startup successful"
               success=true
@@ -248,6 +248,7 @@ jobs:
           }
           
           set -x
+          set +e
           
           success=false
           for attempt in {1..5}
@@ -257,11 +258,11 @@ jobs:
             [[ ${PIPESTATUS[0]} -eq 0 ]] || {
               echo -e "${LOG_CICD} Activation test failed!"
               echo -e "${LOG_DIAG} Geckodriver logs:"
-              tail -n 20 geckodriver.log >&2 |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+              tail -n 20 geckodriver.log >&2 |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
               echo "================"
               echo -e "${LOG_DIAG} mysql: "
               "${CONTAINER_CMD[@]}" -q ncp-diag |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
-              "${CONTAINER_CMD[@]}" -q systemctl status mysql |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+              "${CONTAINER_CMD[@]}" -q systemctl status mysql |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
               sleep 12
               continue
             }
