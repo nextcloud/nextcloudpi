@@ -184,9 +184,6 @@ chown -R www-data:www-data nextcloud
 find nextcloud/ -type d -exec chmod 750 {} \;
 find nextcloud/ -type f -exec chmod 640 {} \;
 
-# Clear PHP opcache
-clear_opcache
-
 # upgrade
 ####################
 echo "Upgrade..."
@@ -250,7 +247,6 @@ then
     apt-get install -y --no-install-recommends -t "$RELEASE" "${PHP_PACKAGES_OLD[@]}"
     set_ncpcfg "php_version" "${PHPVER_OLD}"
     install_template "php/opcache.ini.sh" "/etc/php/${PHPVER_NEW}/mods-available/opcache.ini"
-    clear_opcache
     run_app nc-limits
     a2enconf "php${PHPVER_OLD}-fpm"
     service "php${PHPVER_OLD}-fpm" start
@@ -308,3 +304,5 @@ mv "$BKP" "$DATADIR"/ncp-update-backups
 chown -R www-data:www-data "$DATADIR"/ncp-update-backups
 BKP="$DATADIR"/ncp-update-backups/"$( basename "$BKP" )"
 echo "Backup stored at $BKP"
+
+bash -c "sleep 5; source /usr/local/etc/library.sh; clear_opcache;" &>/dev/null &

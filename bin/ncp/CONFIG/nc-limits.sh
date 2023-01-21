@@ -80,8 +80,7 @@ configure()
 
   # RESTART PHP
   [[ "$require_fpm_restart" == "true" ]] && {
-    clear_opcache
-    bash -c "sleep 3; service php${PHPVER}-fpm restart" &>/dev/null &
+    bash -c "sleep 3; source /usr/local/etc/library.sh; clear_opcache; service php${PHPVER}-fpm restart" &>/dev/null &
   }
 
   # redis max memory
