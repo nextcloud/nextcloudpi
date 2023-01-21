@@ -6,10 +6,14 @@ on:
         required: true
         type: string
     outputs:
-      artifact_name:
-        value: "${{ jobs.build-current.outputs.artifact_name }}"
-      artifact_file:
-        value: "${{ jobs.build-current.outputs.artifact_file }}"
+      lxd_artifact_name:
+        value: "${{ jobs.build-lxd-current.outputs.artifact_name }}"
+      lxd_artifact_file:
+        value: "${{ jobs.build-lxd-current.outputs.artifact_file }}"
+      lxc_artifact_name:
+        value: "${{ jobs.build-lxc-current.outputs.artifact_name }}"
+      lxc_artifact_file:
+        value: "${{ jobs.build-lxc-current.outputs.artifact_file }}"
   push:
     branches:
       - "**"
@@ -20,7 +24,44 @@ on:
       - release/*
 
 jobs:
-  build-current:
+
+  build-lxc-current:
+    runs-on: ubuntu-20.04
+    outputs:
+      artifact_name: "${{ env.ARTIFACT_NAME }}"
+      artifact_file: "${{ steps.pack-lxd.outputs.artifact_file }}"
+    env:
+      VERSION: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+      ARTIFACT_NAME: "${{ github.run_id }}-lxd-image"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: "${{ env.VERSION }}"
+      - name: Setup LXC
+        run: |
+          sudo apt update
+          sudo apt install lxc
+
+      - name: Build LXC image
+        run: |
+          export IMG="NextCloudPi_LXD_${VERSION//\//_}.img"
+          ./build/build-LXC.sh
+      - name: Pack LXC image
+        id: pack-lxc
+        run: |
+          . ./build/buildlib.sh
+          ARTIFACT_FILE="NextCloudPi_LXD_${VERSION//\//_}"
+          pack_image "tmp/${ARTIFACT_FILE}.img" output/${ARTIFACT_FILE}" 
+          echo "artifact_file=${ARTIFACT_FILE}.tar.gz" >> $GITHUB_OUTPUT
+      - name: upload LXD image to artifact store
+        uses: actions/upload-artifact@v3
+        with:
+          name: "${{ env.ARTIFACT_NAME }}"
+          path: "output/${{ steps.pack-lxc.outputs.artifact_file }}"
+          if-no-files-found: error
+
+  build-lxd-current:
     runs-on: ubuntu-20.04
     outputs:
       artifact_name: "${{ env.ARTIFACT_NAME }}"
@@ -37,27 +78,6 @@ jobs:
         with:
           lxd_version: latest/stable
 
-#      - name: Fix LXD
-#        run: |
-#          ip address
-#          ip route list
-#          lxc profile create network
-#          cat <<EOF | lxc profile edit network
-#          devices:
-#            eth0:
-#              name: eth0
-#              parent: lxdbr0
-#              nictype: bridged
-#              type: nic
-#          EOF
-#          ip route list
-#          ifconfig lxdbr0
-
-      - name: Debug LXD
-        run: |
-          lxc version
-          lxc network set lxdbr0 ipv4.nat true
-          lxc network list
       - name: Build LXD image
         run: |
           ./build/build-LXD.sh
@@ -239,14 +259,14 @@ jobs:
           path: "output/${{ steps.pack-lxd.outputs.artifact_file }}"
           if-no-files-found: error
 
-  test-fresh-install:
+  test-lxd-fresh-install:
     needs:
-      - build-current
+      - build-lxd-current
     runs-on: ubuntu-20.04
     env:
       VERSION: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
-      ARTIFACT_NAME: ${{ needs.build-current.outputs.artifact_name }}
-      ARTIFACT_FILE: ${{ needs.build-current.outputs.artifact_file }}
+      ARTIFACT_NAME: ${{ needs.build-lxd-current.outputs.artifact_name }}
+      ARTIFACT_FILE: ${{ needs.build-lxd-current.outputs.artifact_file }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3

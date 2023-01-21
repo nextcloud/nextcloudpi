@@ -38,7 +38,7 @@ umount_raspbian
 pack_image "$IMG" "$TAR"
 
 # upload
-create_torrent "$TAR"
+# create_torrent "$TAR"
 #upload_ftp "$( basename "$TAR" .tar.bz2 )"
 
 

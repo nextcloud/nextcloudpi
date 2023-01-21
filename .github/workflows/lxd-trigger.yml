@@ -9,6 +9,7 @@ on:
   push:
     branches:
       - devel
+      - feature/cicd/restore-unsupported-release-targets
 
 jobs:
   lxd:

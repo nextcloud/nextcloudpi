@@ -8,13 +8,13 @@
 # Usage:
 #
 
-set -e
+set -ex
 source build/buildlib.sh
 
 echo -e "\e[1m\n[ Build NCP LXC ]\e[0m"
 
 #CLEAN=0                    # Pass this envvar to skip cleaning download cache
-IMG="NextCloudPi_LXC_$( date  "+%m-%d-%y" ).img"
+IMG="${IMG:-"NextCloudPi_LXC_$( date  "+%m-%d-%y" ).img"}"
 IMG=tmp/"$IMG"
 
 TAR=output/"$( basename "$IMG" .img ).tar.bz2"
@@ -40,12 +40,14 @@ sudo lxc-attach -n ncp --clear-env -- bash -c 'while [ "$(systemctl is-system-ru
 sudo lxc-attach -n ncp --clear-env -- CODE_DIR="$(pwd)" bash /build/install.sh
 sudo lxc-attach -n ncp --clear-env -- bash -c 'source /build/etc/library.sh; run_app_unsafe /build/post-inst.sh'
 sudo lxc-attach -n ncp --clear-env -- bash -c "echo '$(basename "$IMG")' > /usr/local/etc/ncp-baseimage"
+sudo lxc-attach -n ncp --clear-env -- usermod -s /bin/bash ncp
+sudo lxc-attach -n ncp --clear-env -- usermod -a -G sudo ncp
 sudo lxc-attach -n ncp --clear-env -- poweroff
 
-exit 0 # TODO
-
 ## pack
-pack_image "$IMG" "$TAR"
+[[ " $* " =~ .*" --pack ".* ]] && pack_image "$IMG" "$TAR"
+
+exit 0
 
 ## test
 #set_static_IP "$IMG" "$IP"
