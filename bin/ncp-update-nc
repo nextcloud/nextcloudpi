@@ -30,7 +30,7 @@ source /usr/local/etc/library.sh
 [[ -f /.docker-image ]] && BASEDIR=/data || BASEDIR=/var/www
 cd "$BASEDIR"
 DATADIR="$( get_nc_config_value datadirectory )"
-ncc status &>/dev/null          || { echo "Nextcloud is currently down"; exit 1; }
+ncc status &>/dev/null          || { [[ "$DBG" == x ]] && ncc status; echo "Nextcloud is currently down"; exit 1; }
 [[ -d /var/www/nextcloud-old ]] && { echo "Nextcloud backup directory found. Interrupted or already running installation?"; exit 1; }
 [[ -d /var/www/nextcloud     ]] || { echo "Nextcloud directory not found"      ; exit 1; }
 [[ -d "$DATADIR"             ]] || { echo "Nextcloud data directory not found" ; exit 1; }
@@ -110,6 +110,7 @@ BKP_="$( ls -1t "$BKPDIR"/nextcloud-bkp_*.tar.gz 2>/dev/null | head -1 )"
 [[ -f "$BKP_"  ]] || {                set +eE; echo "Error backing up"; false || cleanup; }
 [[ $RET -ne 0  ]] && { rm -f "$BKP_"; set +eE; echo "Error backing up"; false || cleanup; }
 BKP="$( dirname "$BKP_" )/$( basename "$BKP_" .tar.gz )-${CURRENT}.tar.gz"
+echo "Storing backup at '$BKP'..."
 mv "$BKP_" "$BKP"
 
 # simple restore if anything fails from here
@@ -165,6 +166,7 @@ rollback() {
   rm -rf /var/www/nextcloud.tar.bz2 "$BASEDIR"/nextcloud-old
   echo "Rolling back to backup $BKP..."
   local TMPDATA
+  mkdir -p "$BASEDIR/recovery/"
   TMPDATA="$( mktemp -d "$BASEDIR/recovery/ncp-data.XXXXXX" )" || { echo "Failed to create temp dir" >&2; exit 1; }
   [[ "$DATADIR" == "$BASEDIR/nextcloud/data" ]] && mv -T "$DATADIR" "$TMPDATA"
   ncp-restore "$BKP" || { echo "Rollback failed! Data left at $TMPDATA"; exit 1; }
@@ -228,9 +230,9 @@ then
   export DEBIAN_FRONTEND=noninteractive
   PHPVER_OLD="$PHPVER"
   PHPVER_NEW="8.1"
-  PHP_PACKAGES_OLD=(php-{common,igbinary,redis} "php${PHPVER_OLD}" \
+  PHP_PACKAGES_OLD=(php-{common,igbinary,redis,json} "php${PHPVER_OLD}" \
     "php${PHPVER_OLD}"-{curl,gd,fpm,cli,opcache,mbstring,xml,zip,fileinfo,ldap,intl,bz2,json,common,readline,mysql,bcmath,gmp})
-  PHP_PACKAGES_NEW=("php${PHPVER_NEW}" php-json \
+  PHP_PACKAGES_NEW=("php${PHPVER_NEW}" \
     "php${PHPVER_NEW}"-{curl,gd,fpm,cli,opcache,mbstring,xml,zip,fileinfo,ldap,intl,bz2,mysql,bcmath,gmp,redis,common})
 
   php_restore() {
@@ -245,7 +247,6 @@ then
     apt-get install -y --no-install-recommends -t "$RELEASE" "${PHP_PACKAGES_OLD[@]}"
     set_ncpcfg "php_version" "${PHPVER_OLD}"
     install_template "php/opcache.ini.sh" "/etc/php/${PHPVER_NEW}/mods-available/opcache.ini"
-    clear_opcache
     run_app nc-limits
     a2enconf "php${PHPVER_OLD}-fpm"
     service "php${PHPVER_OLD}-fpm" start
@@ -292,7 +293,6 @@ then
 
 fi
 
-
 # refresh completions
 ncc _completion -g --shell-type bash -p ncc | sed 's|/var/www/nextcloud/occ|ncc|g' > /usr/share/bash-completion/completions/ncp
 
@@ -304,3 +304,5 @@ mv "$BKP" "$DATADIR"/ncp-update-backups
 chown -R www-data:www-data "$DATADIR"/ncp-update-backups
 BKP="$DATADIR"/ncp-update-backups/"$( basename "$BKP" )"
 echo "Backup stored at $BKP"
+
+bash -c "sleep 5; source /usr/local/etc/library.sh; clear_opcache;" &>/dev/null &

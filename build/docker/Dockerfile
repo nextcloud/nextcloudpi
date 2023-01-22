@@ -28,6 +28,12 @@ LABEL maintainer="Ignacio Núñez Hernanz <nacho@ownyourbits.com>"
 SHELL ["/bin/bash", "-c"]
 
 ENV DOCKERBUILD 1
+ENV APACHE_RUN_USER=www-data
+ENV APACHE_RUN_GROUP=www-data
+ENV APACHE_LOG_DIR=/var/log/apache2
+ENV APACHE_LOCK_DIR=/var/lock/apache2
+ENV APACHE_PID_FILE=/var/run/apache2.pid
+ENV APACHE_RUN_DIR=/var/run/apache2
 
 COPY etc/ncp.cfg etc/library.sh lamp.sh /usr/local/etc/
 COPY etc/ncp-templates /usr/local/etc/ncp-templates
@@ -147,7 +153,7 @@ COPY etc/ncp-config.d/nc-init.cfg /usr/local/etc/ncp-config.d/nc-init-copy.cfg
 COPY etc/ncp-config.d/nc-datadir.cfg /usr/local/etc/ncp-config.d/nc-datadir-copy.cfg
 
 RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt \
-set -e; \
+set -ex; \
 
 # make sure we don't accidentally disable first run wizard
 rm -f ncp-web/{wizard.cfg,ncp-web.cfg}; \
@@ -179,12 +185,21 @@ rm /usr/local/etc/ncp-config.d/nc-datadir.cfg; \
 sed -i 's|data-ro|data|' /data-ro/nextcloud/config/config.php; \
 
 # fix default paths
+echo "Update data-ro"; \
 sed -i 's|/media/USBdrive|/data/backups|' /usr/local/etc/ncp-config.d/nc-backup.cfg; \
 sed -i 's|/media/USBdrive|/data/backups|' /usr/local/etc/ncp-config.d/nc-backup-auto.cfg; \
 sed -i 's|/data-ro|/data|' /etc/mysql/mariadb.conf.d/90-ncp.cnf; \
 
+echo "DEBUGGING:"; \
+cat /etc/mysql/mariadb.conf.d/90-ncp.cnf; \
+ls -l /usr/local/bin/; \
+
 # cleanup all NCP extras
 run_app_unsafe post-inst.sh; \
+
+echo "DEBUGGING:"; \
+cat /etc/mysql/mariadb.conf.d/90-ncp.cnf; \
+ls -l /usr/local/bin/; \
 
 # specific cleanup
 cd /; rm -r /tmp/ncp-build; \

@@ -104,7 +104,6 @@ fi
 cd "$NCDIR"
 
 ### INCLUDEDATA=yes situation
-
 NUMFILES=2
 if [[ $( ls "$TMPDIR" | wc -l ) -eq $NUMFILES ]]; then
 
@@ -182,6 +181,5 @@ ncc files:scan-app-data
 
 # restart PHP if needed
 [[ "$NEED_RESTART" == "1" ]] && {
-  clear_opcache
-  bash -c "sleep 3; service php${PHPVER}-fpm restart" &>/dev/null &
+  bash -c "sleep 5; source /usr/local/etc/library.sh; clear_opcache; service php${PHPVER}-fpm restart" &>/dev/null &
 }

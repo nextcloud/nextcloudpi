@@ -22,6 +22,7 @@ on:
     branches:
       - master
       - devel
+      - release/*
 
 jobs:
   build:
@@ -57,12 +58,17 @@ jobs:
           ./build/build-docker.sh "${ARCH?}"
           docker tag "ownyourbits/nextcloudpi-${ARCH?}:latest" "thecalcaholic/ncp-internal-${ARCH?}:${{ github.run_id }}"
           testing_image="ownyourbits/nextcloudpi-${ARCH?}:latest"
-          [[ "${ARCH?}" == "arm64" ]] && testing_image="ownyourbits/ncp-qemu-fix-${ARCH?}:latest"
+          [[ "${ARCH?}" == "x86" ]] || testing_image="ownyourbits/ncp-qemu-fix-${ARCH?}:latest"
           docker tag "${testing_image}" "thecalcaholic/ncp-internal-${ARCH?}:${{ github.run_id }}-testing"
           docker push "thecalcaholic/ncp-internal-${ARCH?}:${{ github.run_id }}"
           docker push "thecalcaholic/ncp-internal-${ARCH?}:${{ github.run_id }}-testing"
 
   update-test:
+    # TODO: Fix update-test for armhf
+    # The issues are originating in a seemingly bug in apache2 that only occurs in the GH action and only
+    # if a docker volume or directory is mounted to /data.
+    # In this configuration, apache will serve the default placeholder page instead of the sites configured in ncp.
+    if: ${{ inputs.arch != 'armhf' }}
     needs:
       - build
     runs-on: ubuntu-latest
@@ -87,16 +93,16 @@ jobs:
         shell: bash
         run: |
           set -ex
-          if [[ -n "${{ github.base_ref }}" ]]
-          then
-            version="${{ github.base_ref }}"
-          elif [[ "${{ env.VERSION }}" == "refs/heads/devel" ]]
+          if [[ "${{ env.VERSION }}" == "refs/heads/devel" ]]
           then
             version="latest"
           else
+            ref="${{ github.base_ref }}"
+            [[ -n "$ref" ]] || ref="${{ github.ref }}"
+            git checkout "$ref"
             if [[ "${{ github.ref_type }}" != "tag" ]] || ! git describe --tags > /dev/null
             then
-              git fetch -fu --tags origin ${{ env.VERSION }}:${{ env.VERSION }}
+              git fetch -fu --tags origin "${ref}:${ref}"
             fi
             version="$(git describe --tags || true)"
             [[ "$version" =~ .*-.*-.* ]] || {
@@ -149,6 +155,44 @@ jobs:
       - name: Setup Selenium
         run: pip install selenium
 
+      - name: Wait for container startup
+        run: |
+          set -e
+          docker logs nextcloudpi                                    |& awk "{ print \"${LOG_DCKR} \" \$0 }"
+          echo -e "${LOG_DCKR} =========="
+          docker logs -f nextcloudpi                                 |& awk "{ print \"${LOG_DCKR} \" \$0 }" &
+          
+          attempt=0
+          stage=0
+          success=false
+          for attempt in {1..30}
+          do
+            echo -e "${LOG_CICD} Waiting for container startup (attempt $attempt/30)..."
+            redis_pw="$(docker exec nextcloudpi bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"password'")"
+            redis_socket="$(docker exec nextcloudpi bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"host'")"
+            if [[ "$stage" == "0" ]] && docker logs nextcloudpi 2> /dev/null | grep '^Init done'
+            then
+              stage=1
+            elif [[ "$(docker exec nextcloudpi ncc maintenance:mode)" =~ .*disabled.* ]] \
+              && docker exec nextcloudpi ncc status \
+              && docker exec nextcloudpi redis-cli -s "$redis_socket" -a "$redis_pw" set redisready yes \
+              && docker exec nextcloudpi redis-cli -s "$redis_socket" -a "$redis_pw" get redisready \
+              && curl -k https://localhost:8443/activate/ > /dev/null
+            then
+              success=true
+              echo -e "${LOG_CICD} Startup successful"
+              break
+            fi
+
+            attempt=$((attempt + 1))
+            sleep 5
+          done
+          
+          [[ "$success" == "true" ]] || {
+            echo -e "${LOG_CICD} Timeout reached."
+            exit 1
+          }
+
       - name: Activate container
         working-directory: ./tests
         run: |
@@ -160,13 +204,13 @@ jobs:
           [[ "${ARCH?}" == "x86" ]] || { sleep 60; cmd+=(--timeout 300); }
           
           success=false
-          for attempt in {1..5}
+          for attempt in {1..10}
           do
-            echo ":: Activation Tests (attempt $attempt/5) ::"
+            echo -e "${LOG_CICD} == Activation Tests (attempt $attempt/10) =="
             "${cmd[@]}"                                               |& awk "{ print \"${LOG_TEST} \" \$0 }"
             [[ ${PIPESTATUS[0]} -eq 0 ]] || {
               tail -n 20 geckodriver.log                              |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
-              echo -e "${LOG_CICD} Activation test (attempt $attempt/5) failed!"
+              echo -e "${LOG_CICD} Activation test (attempt $attempt/10) failed!"
               docker exec nextcloudpi bash /usr/local/bin/ncp-diag    |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
               cat /proc/sys/fs/binfmt_misc/qemu-aarch64               |& awk "{ print \"${LOG_DIAG} (qemu-aarch64) \" \$0 }" || true
               cat /proc/sys/fs/binfmt_misc/qemu-arm                   |& awk "{ print \"${LOG_DIAG} (qemu-arm) \" \$0 }" || true
@@ -187,7 +231,97 @@ jobs:
       - name: Start new container
         run: |
           docker stop nextcloudpi
-          docker run -d -v ncdata:/data --rm -p 8443:443 -p 4443:4443 --name nextcloudpi thecalcaholic/ncp-internal-${ARCH?}:${{ github.run_id }}-testing localhost
+          docker run -d -v ncdata:/data --rm -p 8443:443 -p 4443:4443 -e NOBACKUP=true --name nextcloudpi thecalcaholic/ncp-internal-${ARCH?}:${{ github.run_id }}-testing localhost
+      - name: Wait for container startup
+        run: |
+          set -e
+          docker logs nextcloudpi                                    |& awk "{ print \"${LOG_DCKR} \" \$0 }"
+          echo -e "${LOG_DCKR} =========="
+          docker logs -f nextcloudpi                                 |& awk "{ print \"${LOG_DCKR} \" \$0 }" &
+          
+          attempt=0
+          stage=0
+          for attempt in {1..200}
+          do
+            echo -e "${LOG_CICD} Waiting for container startup (attempt $attempt/30)..."
+            redis_pw="$(docker exec nextcloudpi bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"password'")"
+            redis_socket="$(docker exec nextcloudpi bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"host'")"
+            if [[ "$stage" == "0" ]] && docker logs nextcloudpi 2> /dev/null | grep '^Init done' > /dev/null
+            then
+              stage=1
+            elif [[ "$(docker exec nextcloudpi ncc maintenance:mode)" =~ .*disabled.* ]] \
+              && docker exec nextcloudpi ncc status \
+              && docker exec nextcloudpi redis-cli -s "$redis_socket" -a "$redis_pw" set redisready yes \
+              && docker exec nextcloudpi redis-cli -s "$redis_socket" -a "$redis_pw" get redisready \
+              && curl -k https://localhost:8443/activate/
+            then
+              echo -e "${LOG_CICD} Startup successful"
+              break
+            elif [[ "$attempt" -ge 30 ]]
+            then
+              echo -e "${LOG_CICD} Timeout reached."
+              exit 1
+            fi
+
+            attempt=$((attempt + 1))
+            sleep 5
+          done
+          
+          echo "Wait one more minute..."
+          sleep 60
+      - name: Update Nextcloud
+        run: |
+          set -e
+          docker logs nextcloudpi                                    |& awk "{ print \"${LOG_DCKR} \" \$0 }"
+          echo -e "${LOG_DCKR} =========="
+          docker logs -f nextcloudpi                                 |& awk "{ print \"${LOG_DCKR} \" \$0 }" &
+          
+          current_nc_version="$(docker exec nextcloudpi ncc status | grep "version:" | awk '{ print $3 }')"
+          latest_nc_version="$(docker exec nextcloudpi cat /usr/local/etc/ncp.cfg | jq -r '.nextcloud_version')"
+          
+          if [[ "$current_nc_version" == "$latest_nc_version".* ]]
+          then
+            echo -e "${LOG_CICD} Nextcloud is up to date - skipping NC update test."
+          else
+            docker exec nextcloudpi bash -c "DBG=x ncp-update-nc ${latest_nc_version?}" |& awk "{ print \"${LOG_DCKR} \" \$0 }"
+            [[ ${PIPESTATUS[0]} -eq 0 ]] || {
+              echo -e "${LOG_CICD} Nextcloud Update failed"
+              echo -e "${LOG_CICD} Creating error report..."
+              docker exec nextcloudpi bash /usr/local/bin/ncp-report > error-report.txt
+              docker exec nextcloudpi bash /usr/local/bin/ncp-diag |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+              exit 1
+            }
+          fi
+      - name: Wait for update completion
+        run: |
+          set -e
+          docker logs nextcloudpi                                    |& awk "{ print \"${LOG_DCKR} \" \$0 }"
+          echo -e "${LOG_DCKR} =========="
+          docker logs -f nextcloudpi                                 |& awk "{ print \"${LOG_DCKR} \" \$0 }" &
+          
+          attempt=0
+          for attempt in {1..30}
+          do
+            echo -e "${LOG_CICD} Waiting for update completion (attempt $attempt/30)..."
+            redis_pw="$(docker exec nextcloudpi bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"password'")"
+            redis_socket="$(docker exec nextcloudpi bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"host'")"
+            if [[ "$(docker exec nextcloudpi ncc maintenance:mode)" =~ .*disabled.* ]] \
+              && docker exec nextcloudpi ncc status \
+              && docker exec nextcloudpi redis-cli -s "$redis_socket" -a "$redis_pw" set redisready yes \
+              && docker exec nextcloudpi redis-cli -s "$redis_socket" -a "$redis_pw" get redisready
+            then
+              echo -e "${LOG_CICD} Startup successful"
+              break
+            elif [[ "$attempt" -ge 30 ]]
+            then
+              echo -e "${LOG_CICD} Timeout reached."
+              exit 1
+            fi
+
+            attempt=$((attempt + 1))
+            sleep 5
+          done
+
       - name: Integration Tests
         working-directory: ./tests
         run: |
@@ -202,7 +336,7 @@ jobs:
           success=false
           for attempt in {1..5}
           do
-            echo ":: System Tests (attempt $attempt/5) ::"
+            echo -e "${LOG_CICD} == System Tests (attempt $attempt/5) =="
             python system_tests.py --no-ping --non-interactive |& awk "{ print \"${LOG_TEST} \" \$0 }"
             [[ ${PIPESTATUS[0]} -eq 0 ]] || {
               echo -e "${LOG_CICD} System test (attempt $attempt) failed!"
@@ -214,6 +348,8 @@ jobs:
           done
           [[ "$success" == "true" ]] || {
             echo -e "${LOG_CICD} System test failed in all attempts!"
+            echo -e "${LOG_CICD} Creating error report..."
+            docker exec nextcloudpi bash /usr/local/bin/ncp-report > error-report.txt
             exit 1
           }
           echo -e "${LOG_CICD} System test successful"
@@ -221,7 +357,7 @@ jobs:
           success=false
           for attempt in {1..3}
           do
-            echo ":: Nextcloud Tests (attempt $attempt/5) ::"
+            echo -e "${LOG_CICD} == Nextcloud Tests (attempt $attempt/5) =="
             python nextcloud_tests.py --no-gui localhost 8443 4443   |& awk "{ print \"${LOG_TEST} \" \$0 }" 
             [[ ${PIPESTATUS[0]} -eq 0 ]] || {
               tail -n 20 geckodriver.log                             |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
@@ -285,7 +421,40 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Selenium
         run: pip install selenium
+      - name: Wait for container startup
+        run: |
+          set -e
+          docker logs nextcloudpi                                    |& awk "{ print \"${LOG_DCKR} \" \$0 }"
+          echo -e "${LOG_DCKR} =========="
+          docker logs -f nextcloudpi                                 |& awk "{ print \"${LOG_DCKR} \" \$0 }" &
 
+          attempt=0
+          stage=0
+          for attempt in {1..200}
+          do
+            echo -e "${LOG_CICD} Waiting for container startup (attempt $attempt/30)..."
+            redis_pw="$(docker exec nextcloudpi bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"password'")"
+            redis_socket="$(docker exec nextcloudpi bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"host'")"
+            if [[ "$stage" == "0" ]] && docker logs nextcloudpi 2> /dev/null | grep '^Init done' > /dev/null
+            then
+              stage=1
+            elif [[ "$(docker exec nextcloudpi ncc maintenance:mode)" =~ .*disabled.* ]] \
+              && docker exec nextcloudpi ncc status \
+              && docker exec nextcloudpi redis-cli -s "$redis_socket" -a "$redis_pw" set redisready yes \
+              && docker exec nextcloudpi redis-cli -s "$redis_socket" -a "$redis_pw" get redisready \
+              && curl -k https://localhost:8443/activate/
+            then
+              echo -e "${LOG_CICD} Startup successful"
+              break
+            elif [[ "$attempt" -ge 30 ]]
+            then
+              echo -e "${LOG_CICD} Timeout reached."
+              exit 1
+            fi
+
+            attempt=$((attempt + 1))
+            sleep 5
+          done
       - name: Integration Tests
         working-directory: ./tests
         run: |
@@ -297,13 +466,13 @@ jobs:
           [[ "${ARCH?}" == "x86" ]] || { sleep 60; cmd+=(--timeout 300); }
           
           success=false
-          for attempt in {1..5}
+          for attempt in {1..10}
           do
-            echo ":: Activation Tests (attempt $attempt/5) ::"
+            echo -e "${LOG_CICD} == Activation Tests (attempt $attempt/10) =="
             "${cmd[@]}"                                              |& awk "{ print \"${LOG_TEST} \" \$0 }"
             [[ ${PIPESTATUS[0]} -eq 0 ]] || {
               tail -n 20 geckodriver.log >&2                         |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
-              echo -e "${LOG_CICD} Activation test (attempt $attempt/3) failed!"
+              echo -e "${LOG_CICD} Activation test (attempt $attempt/10) failed!"
               docker exec nextcloudpi bash /usr/local/bin/ncp-diag   |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
               sleep 12
               continue
@@ -320,7 +489,7 @@ jobs:
           success=false
           for attempt in {1..5}
           do
-            echo ":: System Tests (attempt $attempt/5) ::"
+            echo -e "${LOG_CICD} == System Tests (attempt $attempt/5) =="
             python system_tests.py --no-ping --non-interactive       |& awk "{ print \"${LOG_TEST} \" \$0 }" 
             [[ ${PIPESTATUS[0]} -eq 0 ]] || {
               echo -e "${LOG_CICD} System test (attempt $attempt) failed!"
@@ -339,7 +508,7 @@ jobs:
           success=false
           for attempt in {1..5}
           do
-            echo ":: Nextcloud Tests (attempt $attempt/5) ::"
+            echo -e "${LOG_CICD} == Nextcloud Tests (attempt $attempt/5) =="
             python nextcloud_tests.py --no-gui localhost 8443 4443   |& awk "{ print \"${LOG_TEST} \" \$0 }" 
             [[ ${PIPESTATUS[0]} -eq 0 ]] || {
               tail -n 20 geckodriver.log >&2                         |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true

@@ -159,11 +159,11 @@ function set-nc-domain()
     ncc config:system:set trusted_proxies 13 --value="${domain}"
     ncc config:system:set trusted_proxies 14 --value="$(dig +short "${domain}")"
     sleep 5 # this seems to be required in the VM for some reason. We get `http2 error: protocol error` after ncp-upgrade-nc
-    for try in {1..3}
+    for try in {1..5}
     do
-      echo "Setup notify_push (attempt ${try}/3)"
-      ncc notify_push:setup "${url}/push"
-      sleep 5
+      echo "Setup notify_push (attempt ${try}/5)"
+      ncc notify_push:setup "${url}/push" && break
+      sleep 10
     done
   fi
 }
@@ -543,9 +543,12 @@ function notify_admin()
 {
   local header="$1"
   local msg="$2"
-  local admin=$(mysql -u root nextcloud -Nse "select uid from oc_group_user where gid='admin' limit 1;")
-  [[ "${admin}" == "" ]] && { echo "admin user not found" >&2; return 0; }
-  ncc notification:generate "${admin}" "${header}" -l "${msg}" || true
+  local admins=$(mysql -u root nextcloud -Nse "select uid from oc_group_user where gid='admin';")
+  [[ "${admins}" == "" ]] && { echo "admin user not found" >&2; return 0; }
+  while read -r admin
+  do
+    ncc notification:generate "${admin}" "${header}" -l "${msg}" || true
+  done <<<"$admins"
 }
 
 function save_maintenance_mode()
@@ -595,12 +598,13 @@ function get_nc_config_value() {
 function clear_opcache() {
   # shellcheck disable=SC2155
   local data_dir="$(get_nc_config_value datadirectory)"
-  ! [[ -d "${data_dir:-/var/www/data}/.opcache" ]] || {
+  ! [[ -d "${data_dir:-/var/www/nextcloud/data}/.opcache" ]] || {
     echo "Clearing opcache..."
     echo "This can take some time. Please don't interrupt the process/close your browser tab."
-    rm -rf "${data_dir:-/var/www/data}/.opcache"/*
+    rm -rf "${data_dir:-/var/www/nextcloud/data}/.opcache"/* "${data_dir:-/var/www/nextcloud/data}/.opcache"/.[!.]*
     echo "Done."
   }
+  service php${PHPVER}-fpm reload
 }
 
 # License

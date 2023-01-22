@@ -125,7 +125,7 @@ is_active_app unattended-upgrades && run_app unattended-upgrades || true
 # mark as successful
 mv "${new_cfg}" "${old_cfg}"
 install_template "php/opcache.ini.sh" "/etc/php/${php_ver_new}/mods-available/opcache.ini" --defaults
-service "php${php_ver_new}-fpm" restart
+clear_opcache
 
 source /usr/local/etc/library.sh # refresh NCPCFG RELEASE PHPVER
 run_app nc-limits
