@@ -25,16 +25,16 @@ configure()
   }
 
   # Check for bad ideas
-  [[ "$USER" == "pi" ]] && [[ "$PASS" == "raspberry" ]] && {
+  [[ "${USER,,}" == "pi" ]] && [[ "${PASS,,}" == "raspberry" ]] && {
     echo "Refusing to use the default Raspbian user and password. It's insecure"
     return 1
   }
-  [[ "$USER" == "root" ]] && {
+  [[ "${USER,,}" == "root" ]] && {
     echo "Refusing to use the root user for SSH. It's insecure"
     return 1
   }
   # Disallow the webadmin to be used for SSH
-  [[ "$USER" == "ncp" ]] && {
+  [[ "${USER,,}" == "ncp" ]] && {
     echo "The webadmin is not allowed to be used, pick another username"
     return 1
   }
