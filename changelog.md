@@ -5,7 +5,6 @@
 - Push latest supported version of Nextcloud to 25.0.3
 - Use new PortCheck backend (shoutout to [@ZendaiOwl](https://github.com/ZendaiOwl))
 - Add ncp app for manually clearing the PHP opcache (including file cache)
-- 
 
 ### Fixes
 
