@@ -243,7 +243,7 @@ then
     a2disconf php${PHPVER_NEW}-fpm
     rm /etc/apt/sources.list.d/php.list
     apt-get update
-    apt-get remove --purge -y "${PHP_PACKAGES_NEW[@]}" systemd
+    apt-get remove --purge -y "${PHP_PACKAGES_NEW[@]}"
     apt-get install -y --no-install-recommends -t "$RELEASE" "${PHP_PACKAGES_OLD[@]}"
     set_ncpcfg "php_version" "${PHPVER_OLD}"
     install_template "php/opcache.ini.sh" "/etc/php/${PHPVER_NEW}/mods-available/opcache.ini"
@@ -262,6 +262,8 @@ then
   echo "deb https://packages.sury.org/php/ ${RELEASE%-security} main" > /etc/apt/sources.list.d/php.list
   apt-get update
 
+  clear_opcache
+
   echo "Stopping apache and  php-fpm..."
   service "php${PHPVER_OLD}-fpm" stop
   service apache2 stop
@@ -278,7 +280,6 @@ then
   set_ncpcfg "php_version" "${PHPVER_NEW}"
   install_template "php/opcache.ini.sh" "/etc/php/${PHPVER_NEW}/mods-available/opcache.ini"
   ( set -e; export PHPVER="${PHPVER_NEW}"; run_app nc-limits )
-  clear_opcache
 
   a2enconf "php${PHPVER_NEW}-fpm"
 
