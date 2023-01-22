@@ -1,3 +1,28 @@
+## [v1.51.0](https://github.com/nextcloud/nextcloudpi/tree/v1.51.0) (2023-01-22) Update to Nextcloud 25.0.3 and new PortCheck Service
+
+### Changes
+
+- Push latest supported version of Nextcloud to 25.0.3
+- Use new PortCheck backend (shoutout to [@ZendaiOwl](https://github.com/ZendaiOwl))
+- Add ncp app for manually clearing the PHP opcache (including file cache)
+- 
+
+### Fixes
+
+- Remove deprecated apt package `php-json` and warn users if `php8.2-*` packages are detected on their instance
+- Whenever ncp sends a notification, all NC users in the admin group will now receive it (instead of the first admin user)
+- Fix bug in ncp-update-nc that would prevent the backup from being restored on error in some cases
+- Adjust PHP opcache config to hopefully avoid one source of opcache JIT segmentation fault errors
+- Disable PHP opcache for cli usage (so the segmentation faults don't affect ncp tools and ncc commands)
+- (docker) Fix display of nextcloud logs in container output in some cases
+- (docker) Config files of new ncp apps are now properly installed
+
+### Development related
+
+- (CI/CD) Include NC updates in update integration tests
+- (CI/CD) Improve output formatting and robustness for sd image tests
+- (CI/CD) Disable image builds and tests that are known to fail for reasons out of our influence
+
 ## [v1.50.5](https://github.com/nextcloud/nextcloudpi/tree/v1.50.5) (2023-01-08) Various fixes and update to NC 24.0.8
 
 ### Changes
