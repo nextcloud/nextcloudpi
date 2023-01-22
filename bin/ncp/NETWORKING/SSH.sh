@@ -17,7 +17,7 @@ is_active()
 
 configure()
 {
-  [[ $ACTIVE != "yes" ]]  && {
+  [[ "$ACTIVE" != "yes" ]]  && {
     systemctl stop    ssh
     systemctl disable ssh
     echo "SSH disabled"
@@ -33,54 +33,29 @@ configure()
     echo "Refusing to use the root user for SSH. It's insecure"
     return 1
   }
+  # Disallow the webadmin to be used for SSH
+  [[ "$USER" == "ncp" ]] && {
+    echo "The webadmin is not allowed to be used, pick another username"
+    return 1
+  }
 
-  # Change credentials
-  id "$USER" &>/dev/null || { echo "$USER doesn't exist"; return 1; }
-  echo -e "$PASS\n$CONFIRM" | passwd "$USER" || return 1
-
-  # Reenable pi user
-  chsh -s /bin/bash "$USER"
+  # Change or create credentials
+  if id "$USER" &>/dev/null
+  then
+    echo "$USER exists, setting password"
+    echo -e "$PASS\n$CONFIRM" | passwd "$USER" || return 1
+  else
+    echo "Creating $USER & setting password"
+    # The ,, ensures the users home directory is in lowercase letters
+    useradd --create-home --home-dir /home/"${USER,,}" --shell /bin/bash "$USER" || return 1
+    echo -e "$PASS\n$CONFIRM" | passwd "$USER" || return 1
+  fi
+  
 
   [[ "$SUDO" == "yes" ]] && {
     usermod -aG sudo "$USER"
     echo "Enabled sudo for $USER"
   }
-
-  # Check for insecure default pi password ( taken from old jessie method )
-  # TODO Due to Debian bug #1003151 with mkpasswd this feature is not working properly at the moment - https://www.mail-archive.com/debian-bugs-dist@lists.debian.org/msg1837456.html
-  #local SHADOW SALT HASH
-  #SHADOW="$( grep -E '^pi:' /etc/shadow )"
-  #test -n "${SHADOW}" && {
-    #SALT=$(awk -F[:$] '{print $5}' <<<"${SHADOW}")
-
-    #[[ "${SALT}" != "" ]] && {
-      #HASH=$(mkpasswd -myescrypt raspberry "${SALT}")
-      #grep -q "${HASH}" <<< "${SHADOW}" && {
-        #systemctl stop    ssh
-        #systemctl disable ssh
-        #echo "The user pi is using the default password. Refusing to activate SSH"
-        #echo "SSH disabled"
-        #return 1
-      #}
-    #}
-  #}
-
-  # Check for insecure default root password ( taken from old jessie method )
-  #SHADOW="$( grep -E '^root:' /etc/shadow )"
-  #test -n "${SHADOW}" && {
-    #SALT=$(awk -F[:$] '{print $5}' <<<"${SHADOW}")
-
-    #[[ "${SALT}" != "" ]] && {
-      #HASH=$(mkpasswd -myescrypt 1234 "${SALT}")
-      #grep -q "${HASH}" <<< "${SHADOW}" && {
-        #systemctl stop    ssh
-        #systemctl disable ssh
-        #echo "The user root is using the default password. Refusing to activate SSH"
-        #echo "SSH disabled"
-        #return 1
-      #}
-    #}
-  #}
 
   # Enable
   chage -d 0 "$USER"
