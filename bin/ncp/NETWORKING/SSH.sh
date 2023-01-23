@@ -39,26 +39,51 @@ configure()
     return 1
   }
 
+  # --force: exit successfully if the group already exists
+  groupadd --force ncp-ssh
+  
   # Change or create credentials
   if id "$USER" &>/dev/null
   then
-    echo "$USER exists, setting password"
+    usermod --append --groups ncp-ssh "$USER"
+    echo "$USER exists, changing password"
     echo -e "$PASS\n$CONFIRM" | passwd "$USER" || return 1
+    # Unlocks the user if previously locked
+    # This one needs to be after passwd becuase it will fail
+    # if the user didn't have a password set when the account was locked
+    usermod --unlock --expiredate -1 "$USER"
   else
     echo "Creating $USER & setting password"
-    # The ,, ensures the users home directory is in lowercase letters
-    useradd --create-home --home-dir /home/"${USER,,}" --shell /bin/bash "$USER" || return 1
+    useradd --create-home --home-dir /home/"$USER" --shell /bin/bash --groups ncp-ssh "$USER" || return 1
     echo -e "$PASS\n$CONFIRM" | passwd "$USER" || return 1
   fi
   
+  # Get the current users of the group to an array
+  mapfile -d ',' -t GROUP_USERS < <(awk -F':' '/ncp-ssh/{printf $4}' /etc/group)
+  
+  if [[ "${#GROUP_USERS[@]}" -gt 0 ]]
+  then
+    # Loop through each user in the group
+    for U in "${GROUP_USERS[@]}"
+    do
+      # Test if extra users exists in the group
+      if [[ "$U" != "$USER" ]]
+      then
+        # Locks any extra accounts
+        usermod --lock --expiredate 1 "$U"
+      fi
+    done
+  fi
 
+  # Unsets the group array variable (cleanup)
+  unset GROUP_USERS
+  
   [[ "$SUDO" == "yes" ]] && {
-    usermod -aG sudo "$USER"
+    usermod --append --groups sudo "$USER"
     echo "Enabled sudo for $USER"
   }
 
   # Enable
-  chage -d 0 "$USER"
   systemctl enable ssh
   systemctl start  ssh
   echo "SSH enabled"
