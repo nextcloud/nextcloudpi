@@ -13,6 +13,11 @@ LATEST="$NCLATESTVER"
 configure()
 {
   [[ "$VERSION" == "0" ]] && VERSION="$LATEST"
+  if ! is_docker && ! is_more_recent_than "24.0.0" "${VERSION}" && is_more_recent_than "8.1.0" "${PHPVER}.0" && [[ " ${BASH_SOURCE[*]} " =~ .*" /home/www/ncp-launcher.sh ".* ]]
+    then
+      echo "We need to upgrade PHP. This process cannot be performed from the web UI. Please use 'ncp-config' from the terminal (via SSH or direct access) to update Nextcloud instead. Future updates can again be run from the web UI"
+      exit 1
+    fi
   bash /usr/local/bin/ncp-update-nc "$VERSION"
 }
 
