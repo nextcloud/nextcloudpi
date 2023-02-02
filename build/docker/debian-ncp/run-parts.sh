@@ -18,6 +18,15 @@ then
   cp -raT /data-ro /data
 fi
 
+CURRENT_NC_VERSION="$(sudo -u www-data php -r "include(\"/var/www/nextcloud/config/config.php\"); echo(\$CONFIG[\"version\"]);")"
+CURRENT_NC_MAJ="${CURRENT_NC_VERSION%%.*}"
+[[ "$CURRENT_NC_MAJ" -ge "$MINIMUM_NC_VERSION" ]] || {
+  echo "This image of NCP requires at least Nextcloud version ${MINIMUM_NC_VERSION} but you have ${CURRENT_NC_VERSION} installed. " \
+    "Please upgrade your Nextcloud first (using the web UI), before upgrading to this NCP version."
+  exit 1
+}
+
+
 # wrapper to simulate update-rc.d
 cat > /usr/local/sbin/update-rc.d <<'EOF'
 #!/bin/bash
