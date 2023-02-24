@@ -32,10 +32,31 @@ prepare_dirs                   # tmp cache output
 ## BUILD NCP
 
 lxc delete -f ncp 2>/dev/null || true
-LXC_LAUNCH=(lxc launch -p default)
-[[ -n "$LXD_EXTRA_PROFILE" ]] && LXC_LAUNCH+=(-p "$LXD_EXTRA_PROFILE")
-LXC_LAUNCH+=(-q 'images:debian/bullseye' ncp)
-systemd-run --user --scope -p "Delegate=yes" "${LXC_LAUNCH[@]}"
+LXC_CREATE=(lxc init -p default)
+[[ -n "$LXD_EXTRA_PROFILE" ]] && LXC_CREATE+=(-p "$LXD_EXTRA_PROFILE")
+if [[ -n "$LXD_ARCH" ]] && [[ "$LXD_ARCH" != "x86" ]]
+then
+  echo "Building for architecture: $LXD_ARCH"
+  LXC_CREATE+=("images:debian/bullseye/$LXD_ARCH")
+else
+  LXC_CREATE+=('images:debian/bullseye')
+fi
+LXC_CREATE+=(ncp)
+"${LXC_CREATE[@]}"
+
+if [[ -n "$LXD_ARCH" ]] && [[ "$LXD_ARCH" != "x86" ]]
+then
+  if [[ -f "qemu-aarch64-static" ]]
+  then
+    lxc file push qemu-aarch64-static ncp/usr/bin/
+    lxc file push qemu-arm-static ncp/usr/bin/
+  else
+    lxc file push /usr/bin/qemu-aarch64-static ncp/usr/bin
+    lxc file push /usr/bin/qemu-arm-static ncp/usr/bin
+  fi
+fi
+
+systemd-run --user --scope -p "Delegate=yes" lxc start ncp -q
 lxc config device add ncp buildcode disk source="$(pwd)" path=/build
 lxc exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
 lxc exec ncp -- bash -c 'CODE_DIR=/build DBG=x bash /build/install.sh'

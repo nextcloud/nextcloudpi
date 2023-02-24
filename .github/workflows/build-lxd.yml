@@ -5,6 +5,10 @@ on:
       git_ref:
         required: true
         type: string
+      arch:
+        required: false
+        type: string
+        default: 'x86'
     outputs:
       artifact_name:
         value: "${{ jobs.build-current.outputs.artifact_name }}"
@@ -27,7 +31,8 @@ jobs:
       artifact_file: "${{ steps.pack-lxd.outputs.artifact_file }}"
     env:
       VERSION: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
-      ARTIFACT_NAME: "${{ github.run_id }}-lxd-image"
+      ARTIFACT_NAME: "${{ github.run_id }}-lxd-${{ inputs.arch || 'x86' }}-image"
+      LXD_ARCH: "${{ inputs.arch || 'x86' }}"
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -37,27 +42,16 @@ jobs:
         with:
           lxd_version: latest/stable
 
-#      - name: Fix LXD
-#        run: |
-#          ip address
-#          ip route list
-#          lxc profile create network
-#          cat <<EOF | lxc profile edit network
-#          devices:
-#            eth0:
-#              name: eth0
-#              parent: lxdbr0
-#              nictype: bridged
-#              type: nic
-#          EOF
-#          ip route list
-#          ifconfig lxdbr0
-
-      - name: Debug LXD
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Enable qemu SUID
+        run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes --credential yes
+      - name: Download qemu binaries
         run: |
-          lxc version
-          lxc network set lxdbr0 ipv4.nat true
-          lxc network list
+          wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-aarch64-static -O qemu-aarch64-static
+          wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-arm-static -O qemu-arm-static
+          chmod +x qemu-{arm,aarch64}-static
+
       - name: Build LXD image
         run: |
           ./build/build-LXD.sh
@@ -65,7 +59,7 @@ jobs:
         id: pack-lxd
         run: |
           . ./build/buildlib.sh
-          ARTIFACT_FILE="NextCloudPi_LXD_${VERSION//\//_}"
+          ARTIFACT_FILE="NextCloudPi_LXD_${LXD_ARCH:-x86}_${VERSION//\//_}"
           lxc image export -q ncp/"${version}" "output/${ARTIFACT_FILE}"
           echo "artifact_file=${ARTIFACT_FILE}.tar.gz" >> $GITHUB_OUTPUT
       - name: upload LXD image to artifact store
@@ -77,14 +71,16 @@ jobs:
 
   build-previous:
     runs-on: ubuntu-20.04
+    if: ${{ inputs.arch != 'x86' && inputs.arch != '' }}
     outputs:
       artifact_name: "${{ env.ARTIFACT_NAME }}"
       artifact_file: "${{ steps.pack-lxd.outputs.artifact_file }}"
       previous_version: "${{ steps.checkout_previous_version.outputs.previous_version }}"
     env:
       VERSION: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
-      ARTIFACT_NAME: "${{ github.run_id }}-lxd-image-previous"
+      ARTIFACT_NAME: "${{ github.run_id }}-lxd-${{ inputs.arch || 'x86' }}-image-previous"
       LXD_EXTRA_PROFILE: network
+      LXD_ARCH: "${{ inputs.arch || 'x86' }}"
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -132,6 +128,17 @@ jobs:
               nictype: bridged
               type: nic
           EOF
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Enable qemu SUID
+        run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes --credential yes
+      - name: Download qemu binaries
+        run: |
+          wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-aarch64-static -O qemu-aarch64-static
+          wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-arm-static -O qemu-arm-static
+          chmod +x qemu-{arm,aarch64}-static
+
       - name: Build LXD image
         run: |
           ./build/build-LXD.sh
@@ -139,7 +146,7 @@ jobs:
         id: pack-lxd
         run: |
           . ./build/buildlib.sh
-          ARTIFACT_FILE="NextCloudPi_LXD_${VERSION//\//_}"
+          ARTIFACT_FILE="NextCloudPi_LXD_${LXD_ARCH:-x86}_${VERSION//\//_}"
           lxc image export -q ncp/"${version}" "output/${ARTIFACT_FILE}"
           echo "artifact_file=${ARTIFACT_FILE}.tar.gz" >> $GITHUB_OUTPUT
       - name: upload LXD image to artifact store
@@ -158,7 +165,7 @@ jobs:
       artifact_file: "${{ steps.pack-lxd.outputs.artifact_file }}"
     env:
       VERSION: "${{ inputs.git_ref || github.ref }}"
-      ARTIFACT_NAME: "${{ github.run_id }}-lxd-image-updated"
+      ARTIFACT_NAME: "${{ needs.build-previous.outputs.artifact_name }}"
     steps:
       - uses: whywaita/setup-lxd@v1
         with:
@@ -227,7 +234,7 @@ jobs:
         run: |
           set -x
           . ./build/buildlib.sh
-          ARTIFACT_FILE="NextCloudPi_LXD_${VERSION//\//_}"
+          ARTIFACT_FILE="NextCloudPi_LXD_${LXD_ARCH:-x86}_${VERSION//\//_}"
           lxc publish -q ncp -f --alias "ncp/updated"
           mkdir -p output
           lxc image export -q "ncp/updated" "output/${ARTIFACT_FILE}"
