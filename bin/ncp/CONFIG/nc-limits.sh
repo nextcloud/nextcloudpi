@@ -42,10 +42,13 @@ tmpl_php_max_filesize() {
 }
 
 tmpl_php_threads() {
+  local TOTAL_MEM="$( get_total_mem )"
   local PHPTHREADS="$(find_app_param nc-limits PHPTHREADS)"
-  [[ $PHPTHREADS -eq 0 ]] && PHPTHREADS=$(nproc)
-  [[ $PHPTHREADS -lt 6 ]] && PHPTHREADS=6
-  echo -n "$PHPTHREADS"
+  # By default restricted by memory / 100MB
+  [[ $PHPTHREADS -eq 0 ]] && PHPTHREADS=$(( TOTAL_MEM / ( 100 * 1024 * 1024 ) ))
+  # Minimum 16
+  [[ $PHPTHREADS -lt 16 ]] && PHPTHREADS=16
+   echo -n "$PHPTHREADS"
 }
 
 configure()
