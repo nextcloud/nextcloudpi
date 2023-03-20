@@ -29,32 +29,31 @@ jobs:
       LXD_ARCH: "${{ inputs.arch || 'x86' }}"
     runs-on: ubuntu-20.04
     outputs:
-      runner_arch: ${{ steps.script.outputs.runner_arch }}
+      runner_label: ${{ steps.script.outputs.runner_label }}
     steps:
       - name: script
         id: script
         run: |
           if [[ "${LXD_ARCH}" == "arm64" ]]
           then
-            RUNNER_ARCH=ARM64
+            RUNNER_LABEL=ubuntu-20.04-arm64
           else
-            RUNNER_ARCH=x64
+            RUNNER_LABEL=ubuntu-20.04
           fi
-          echo "runner_arch=$RUNNER_ARCH" | tee -a $GITHUB_OUTPUT
+          echo "runner_label=$RUNNER_LABEL" | tee -a $GITHUB_OUTPUT
   debug-runner:
     needs:
       - determine-runner
     runs-on: ubuntu-20.04
     steps:
       - name: debug
-        run: echo "${{ needs.determine-runner.outputs.runner_arch }}"
+        run: echo "${{ needs.determine-runner.outputs.runner_label }}"
 
   build-current:
     needs:
       - determine-runner
     runs-on:
-      - ubuntu-20.04
-      - ${{ needs.determine-runner.outputs.runner_arch }}
+      - ${{ needs.determine-runner.outputs.runner_label }}
     outputs:
       artifact_name: "${{ env.ARTIFACT_NAME }}"
       artifact_file: "${{ steps.pack-lxd.outputs.artifact_file }}"
