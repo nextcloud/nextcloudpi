@@ -267,8 +267,9 @@ jobs:
 
   test-fresh-install:
     needs:
+      - determine-runner
       - build-current
-    runs-on: ubuntu-20.04
+    runs-on: ${{ needs.determine-runner.outputs.runner_label }}
     env:
       VERSION: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
       ARTIFACT_NAME: ${{ needs.build-current.outputs.artifact_name }}
@@ -308,7 +309,8 @@ jobs:
           set -x
           lxc delete -q -f ncp || true
           lxc image import -q "./${ARTIFACT_FILE?}" --alias "ncp/test"
-          systemd-run --user --scope -p "Delegate=yes" lxc launch -q "ncp/test" ncp
+          systemd-run --user --scope -p "Delegate=yes" lxc launch -q "ncp/test" ncp || \
+          systemd-run --scope -p "Delegate=yes" lxc launch -q "ncp/test" ncp 
           lxc exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
           sleep 30
           ip="$(lxc list -c n4 -f csv | grep '^ncp' | cut -d ',' -f2)"
