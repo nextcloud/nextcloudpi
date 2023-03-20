@@ -296,6 +296,7 @@ jobs:
           EOF
       - name: Setup Firefox
         uses: browser-actions/setup-firefox@latest
+        continue-on-error: true
       - name: Setup GeckoDriver
         uses: ChlodAlejandro/setup-geckodriver@latest
         with:
