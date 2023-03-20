@@ -35,10 +35,18 @@ jobs:
         run: |
           if [[ "${LXD_ARCH}" == "arm64" ]]
           then
-            echo "runner_arch=ARM64" >> $GITHUB_OUTPUT
+            RUNNER_ARCH=ARM64
           else
-            echo "runner_arch=x64" >> $GITHUB_OUTPUT
+            RUNNER_ARCH=x64
           fi
+          echo "runner_arch=$RUNNER_ARCH" | tee -a $GITHUB_OUTPUT
+  debug-runner:
+    needs:
+      - determine-runner
+    runs-on: ubuntu-20.04
+    steps:
+      debug:
+        run: echo "${{ needs.determine-runner.outputs.runner_arch }}"
 
   build-current:
     needs:
