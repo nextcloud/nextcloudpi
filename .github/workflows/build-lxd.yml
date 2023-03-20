@@ -285,6 +285,7 @@ jobs:
         with:
           lxd_version: latest/stable
       - name: Fix LXD
+        continue-on-error: true
         run: |
           lxc profile create network
           cat <<EOF | lxc profile edit network
