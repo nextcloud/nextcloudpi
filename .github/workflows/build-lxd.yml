@@ -309,13 +309,18 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ${{ env.ARTIFACT_NAME }}
+      - name: Remove old lxd images
+        if: ${{ inputs.arch == 'arm64' }}
+        run: |
+          for img in $(lxc image list -c f -f csv)
+          do
+            lxc image delete "$img"
+          done
       - name: Launch ncp container
         run: |
           set -x
           . ./build/buildlib.sh
           lxc delete -q -f ncp || true
-          lxc image delete ncp/test || true
-          lxc image delete "ncp/${version}" || true
           lxc image import -q "./${ARTIFACT_FILE?}" --alias "ncp/test" || true
           systemd-run --user --scope -p "Delegate=yes" lxc launch -q "ncp/test" ncp || \
           sudo systemd-run --scope -p "Delegate=yes" lxc launch -q "ncp/test" ncp 
