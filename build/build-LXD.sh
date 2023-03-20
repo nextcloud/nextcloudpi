@@ -56,7 +56,8 @@ LXC_CREATE+=(ncp)
 #  fi
 #fi
 
-systemd-run --user --scope -p "Delegate=yes" lxc start ncp -q
+systemd-run --user --scope -p "Delegate=yes" lxc start ncp -q || \
+sudo systemd-run --scope -p "Delegate=yes" lxc start ncp -q
 lxc config device add ncp buildcode disk source="$(pwd)" path=/build
 lxc exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
 lxc exec ncp -- bash -c 'CODE_DIR=/build DBG=x bash /build/install.sh'
