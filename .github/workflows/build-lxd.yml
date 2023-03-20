@@ -32,6 +32,7 @@ jobs:
       runner_arch: ${{ steps.script.outputs.runner_arch }}
     steps:
       - name: script
+        id: script
         run: |
           if [[ "${LXD_ARCH}" == "arm64" ]]
           then
