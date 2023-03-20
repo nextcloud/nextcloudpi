@@ -45,7 +45,7 @@ jobs:
       - determine-runner
     runs-on: ubuntu-20.04
     steps:
-      debug:
+      - name: debug
         run: echo "${{ needs.determine-runner.outputs.runner_arch }}"
 
   build-current:
