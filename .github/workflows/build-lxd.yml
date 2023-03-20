@@ -33,7 +33,7 @@ jobs:
     steps:
       - name: script
         run: |
-          if [[ "${LXD_ARCH}" == "arm64 ]]
+          if [[ "${LXD_ARCH}" == "arm64" ]]
           then
             echo "runner_arch=ARM64" >> $GITHUB_OUTPUT
           else
