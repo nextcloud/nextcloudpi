@@ -47,13 +47,6 @@ jobs:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
       arch: 'x86'
     secrets: inherit
-  lxd-armhf:
-    if: ${{ inputs.lxd || github.event_name != 'workflow_dispatch' }}
-    uses: ./.github/workflows/build-lxd.yml
-    with:
-      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
-      arch: 'armhf'
-    secrets: inherit
   lxd-arm64:
     if: ${{ inputs.lxd || github.event_name != 'workflow_dispatch' }}
     uses: ./.github/workflows/build-lxd.yml
