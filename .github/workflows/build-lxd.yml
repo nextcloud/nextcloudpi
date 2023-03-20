@@ -66,20 +66,11 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: "${{ env.VERSION }}"
+      - name: Cleanup lxd
+        run: test -z "$(lxc profile device show default | grep eth0)" || lxc profile device remove default eth0
       - uses: whywaita/setup-lxd@v1
         with:
           lxd_version: latest/stable
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-      - name: Enable qemu SUID
-        run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes --credential yes
-      - name: Download qemu binaries
-        run: |
-          wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-aarch64-static -O qemu-aarch64-static
-          wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-arm-static -O qemu-arm-static
-          chmod +x qemu-{arm,aarch64}-static
-
       - name: Build LXD image
         run: |
           ./build/build-LXD.sh

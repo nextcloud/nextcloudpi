@@ -44,17 +44,17 @@ fi
 LXC_CREATE+=(ncp)
 "${LXC_CREATE[@]}"
 
-if [[ -n "$LXD_ARCH" ]] && [[ "$LXD_ARCH" != "x86" ]]
-then
-  if [[ -f "qemu-aarch64-static" ]]
-  then
-    lxc file push qemu-aarch64-static ncp/usr/bin/
-    lxc file push qemu-arm-static ncp/usr/bin/
-  else
-    lxc file push /usr/bin/qemu-aarch64-static ncp/usr/bin
-    lxc file push /usr/bin/qemu-arm-static ncp/usr/bin
-  fi
-fi
+#if [[ -n "$LXD_ARCH" ]] && [[ "$LXD_ARCH" != "x86" ]]
+#then
+#  if [[ -f "qemu-aarch64-static" ]]
+#  then
+#    lxc file push qemu-aarch64-static ncp/usr/bin/
+#    lxc file push qemu-arm-static ncp/usr/bin/
+#  else
+#    lxc file push /usr/bin/qemu-aarch64-static ncp/usr/bin
+#    lxc file push /usr/bin/qemu-arm-static ncp/usr/bin
+#  fi
+#fi
 
 systemd-run --user --scope -p "Delegate=yes" lxc start ncp -q
 lxc config device add ncp buildcode disk source="$(pwd)" path=/build
