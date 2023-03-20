@@ -300,6 +300,7 @@ jobs:
         continue-on-error: true
       - name: Setup GeckoDriver
         uses: ChlodAlejandro/setup-geckodriver@latest
+        continue-on-error: true
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Selenium
