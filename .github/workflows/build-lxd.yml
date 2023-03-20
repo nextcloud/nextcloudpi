@@ -43,7 +43,9 @@ jobs:
   build-current:
     needs:
       - determine-runner
-    runs-on: [ ubuntu-20.04, ${{ needs.determine-runner.outputs.runner_arch }} ]
+    runs-on:
+      - ubuntu-20.04
+      - ${{ needs.determine-runner.outputs.runner_arch }}
     outputs:
       artifact_name: "${{ env.ARTIFACT_NAME }}"
       artifact_file: "${{ steps.pack-lxd.outputs.artifact_file }}"
