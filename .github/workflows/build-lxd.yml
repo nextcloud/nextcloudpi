@@ -41,13 +41,6 @@ jobs:
             RUNNER_LABEL=ubuntu-20.04
           fi
           echo "runner_label=$RUNNER_LABEL" | tee -a $GITHUB_OUTPUT
-  debug-runner:
-    needs:
-      - determine-runner
-    runs-on: ubuntu-20.04
-    steps:
-      - name: debug
-        run: echo "${{ needs.determine-runner.outputs.runner_label }}"
 
   build-current:
     needs:
