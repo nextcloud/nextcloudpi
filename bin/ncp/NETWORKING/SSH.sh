@@ -17,7 +17,7 @@ is_active()
 
 configure()
 {
-  [[ $ACTIVE != "yes" ]]  && {
+  [[ "$ACTIVE" != "yes" ]]  && {
     systemctl stop    ssh
     systemctl disable ssh
     echo "SSH disabled"
@@ -25,65 +25,65 @@ configure()
   }
 
   # Check for bad ideas
-  [[ "$USER" == "pi" ]] && [[ "$PASS" == "raspberry" ]] && {
+  [[ "${USER,,}" == "pi" ]] && [[ "${PASS,,}" == "raspberry" ]] && {
     echo "Refusing to use the default Raspbian user and password. It's insecure"
     return 1
   }
-  [[ "$USER" == "root" ]] && {
+  [[ "${USER,,}" == "root" ]] && {
     echo "Refusing to use the root user for SSH. It's insecure"
     return 1
   }
+  # Disallow the webadmin to be used for SSH
+  [[ "${USER,,}" == "ncp" ]] && {
+    echo "The webadmin is not allowed to be used, pick another username"
+    return 1
+  }
 
-  # Change credentials
-  id "$USER" &>/dev/null || { echo "$USER doesn't exist"; return 1; }
-  echo -e "$PASS\n$CONFIRM" | passwd "$USER" || return 1
+  # --force: exit successfully if the group already exists
+  groupadd --force ncp-ssh
+  
+  # Change or create credentials
+  if id "$USER" &>/dev/null
+  then
+    usermod --append --groups ncp-ssh "$USER"
+    echo "$USER exists, changing password"
+    echo -e "$PASS\n$CONFIRM" | passwd "$USER" || return 1
+    # Unlocks the user if previously locked
+    # This one needs to be after passwd becuase it will fail
+    # if the user didn't have a password set when the account was locked
+    usermod --unlock --expiredate -1 "$USER"
+  else
+    echo "Creating $USER & setting password"
+    useradd --create-home --home-dir /home/"$USER" --shell /bin/bash --groups ncp-ssh "$USER" || return 1
+    echo -e "$PASS\n$CONFIRM" | passwd "$USER" || return 1
+  fi
+  
+  # Get the current users of the group to an array
+  mapfile -d ',' -t GROUP_USERS < <(awk -F':' '/ncp-ssh/{printf $4}' /etc/group)
+  
+  if [[ "${#GROUP_USERS[@]}" -gt 0 ]]
+  then
+    # Loop through each user in the group
+    for U in "${GROUP_USERS[@]}"
+    do
+      # Test if extra users exists in the group
+      if [[ "$U" != "$USER" ]]
+      then
+        # Locks any extra accounts
+        usermod --lock --expiredate 1 "$U"
+      fi
+    done
+  fi
 
-  # Reenable pi user
-  chsh -s /bin/bash "$USER"
-
+  # Unsets the group array variable (cleanup)
+  unset GROUP_USERS
+  
   [[ "$SUDO" == "yes" ]] && {
-    usermod -aG sudo "$USER"
+    usermod --append --groups sudo "$USER"
     echo "Enabled sudo for $USER"
   }
 
-  # Check for insecure default pi password ( taken from old jessie method )
-  # TODO Due to Debian bug #1003151 with mkpasswd this feature is not working properly at the moment - https://www.mail-archive.com/debian-bugs-dist@lists.debian.org/msg1837456.html
-  #local SHADOW SALT HASH
-  #SHADOW="$( grep -E '^pi:' /etc/shadow )"
-  #test -n "${SHADOW}" && {
-    #SALT=$(awk -F[:$] '{print $5}' <<<"${SHADOW}")
-
-    #[[ "${SALT}" != "" ]] && {
-      #HASH=$(mkpasswd -myescrypt raspberry "${SALT}")
-      #grep -q "${HASH}" <<< "${SHADOW}" && {
-        #systemctl stop    ssh
-        #systemctl disable ssh
-        #echo "The user pi is using the default password. Refusing to activate SSH"
-        #echo "SSH disabled"
-        #return 1
-      #}
-    #}
-  #}
-
-  # Check for insecure default root password ( taken from old jessie method )
-  #SHADOW="$( grep -E '^root:' /etc/shadow )"
-  #test -n "${SHADOW}" && {
-    #SALT=$(awk -F[:$] '{print $5}' <<<"${SHADOW}")
-
-    #[[ "${SALT}" != "" ]] && {
-      #HASH=$(mkpasswd -myescrypt 1234 "${SALT}")
-      #grep -q "${HASH}" <<< "${SHADOW}" && {
-        #systemctl stop    ssh
-        #systemctl disable ssh
-        #echo "The user root is using the default password. Refusing to activate SSH"
-        #echo "SSH disabled"
-        #return 1
-      #}
-    #}
-  #}
-
   # Enable
-  chage -d 0 "$USER"
   systemctl enable ssh
   systemctl start  ssh
   echo "SSH enabled"
