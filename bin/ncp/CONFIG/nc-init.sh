@@ -114,15 +114,16 @@ EOF
   ncc config:system:set mail_from_address --value="admin"
   ncc config:system:set mail_domain       --value="ownyourbits.com"
 
-  # NCP theme
+  # Fix NCP theme
   [[ -e /usr/local/etc/logo ]] && {
     local ID=$( grep instanceid config/config.php | awk -F "=> " '{ print $2 }' | sed "s|[,']||g" )
     [[ "$ID" == "" ]] && { echo "failed to get ID"; return 1; }
-    mkdir -p data/appdata_${ID}/theming/images
-    cp /usr/local/etc/background data/appdata_${ID}/theming/images
-    cp /usr/local/etc/logo data/appdata_${ID}/theming/images/logo
-    cp /usr/local/etc/logo data/appdata_${ID}/theming/images/logoheader
-    chown -R www-data:www-data data/appdata_${ID}
+    local theming_base_path="data/appdata_${ID}/theming/global/images"
+    mkdir -p "${theming_base_path}"
+    cp /usr/local/etc/background "${theming_base_path}/"
+    cp /usr/local/etc/logo "${theming_base_path}/logo"
+    cp /usr/local/etc/logo "${theming_base_path}/logoheader"
+    chown -R www-data:www-data "data/appdata_${ID}"
   }
 
   mysql nextcloud <<EOF
