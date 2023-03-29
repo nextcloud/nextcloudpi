@@ -495,7 +495,6 @@
 				<ul>
 					<li class="tablinks"><a onclick="openTab(event, 'debian');">Debian</a></li>
 					<li class="tablinks"><a onclick="openTab(event, 'vm');">Virtual Machine</a></li>
-					<li class="tablinks"><a onclick="openTab(event, 'docker');">Docker</a></li>
 					<li class="tablinks"><a onclick="openTab(event, 'lxd');">LXD Container</a></li>
 					<li class="tablinks"><a onclick="openTab(event, 'raspberry-pi');">Raspberry Pi</a></li>
 					<li class="tablinks"><a onclick="openTab(event, 'odroid-hc2');">Odroid HC2/HC1/XU4</a></li>
@@ -563,32 +562,6 @@
 				</div>
 			</section>
 
-			<section class="section is-hidden tabcontent" id="docker">
-				<div class="container">
-					<div class="box">
-						<div class="container content level-item">
-							<figure class="image">
-								<img src="images/ncp-docker2-300x300.png">
-							</figure>
-						</div>
-						<div class="container content level-item">
-							<p class="title">
-								Docker (all architectures)
-							</p>
-						</div>
-						<div class="container content level-item">
-							<p class="subtitle has-text-centered">
-								Run NextcloudPi in any system that supports <a href="https://docker.com">Docker</a>, in one command.
-							</p>
-						</div>
-						<div class="container content level-item">
-							<pre>docker run -d -p 4443:4443 -p 443:443 -p 80:80 -v ncdata:/data --name nextcloudpi ownyourbits/nextcloudpi $DOMAIN</pre>
-						</div>
-						<div class="block"></div>
-					</div>
-				</div>
-			</section>
-
 			<section class="section is-hidden tabcontent" id="lxd">
 				<div class="container">
 					<div class="box">
@@ -608,7 +581,10 @@
 							</p>
 						</div>
 						<div class="container level-item">
-							<pre>lxc import NextcloudPi_LXD_09-29-21.tar.bz</pre>
+							<pre>wget -O - https://github.com/nextcloud/nextcloudpi/releases/download/v1.51.0/NextCloudPi_LXD_v1.51.0.tar.gz</pre>
+						</div>
+						<div class="container level-item">
+							<pre>lxc import NextCloudPi_LXD_v1.51.0.tar.gz</pre>
 						</div>
 						<div class="container level-item">
 							<pre>lxc start ncp</pre>
@@ -873,30 +849,6 @@
 			Instead of piping to bash, you can <a href="https://github.com/nextcloud/nextcloudpi/blob/master/install.sh">inspect the code</a> and launch it manually.
 		</p>
 	</div>
-	</div>
-</section>
-
-<section class="section" id="docker-installation">
-	<div class="container content level-item level-left">
-		<p id="docker-installation" class="title" style="font-size: 22.4px;">
-			Docker
-		</p>
-	</div>
-
-	<div class="container content level-item">
-		<figure class="image">
-			<img src="images/ncp-docker2-300x300.png">
-		</figure>
-	</div>
-
-	<div class="container content level-item">
-		<p>
-			You can use NextcloudPi in any system that supports docker
-		</p>
-	</div>
-
-	<div class="container content level-item">
-		<pre>docker run -d -p 4443:4443 -p 443:443 -p 80:80 -v ncdata:/data --name nextcloudpi ownyourbits/nextcloudpi $DOMAIN</pre>
 	</div>
 </section>
 
