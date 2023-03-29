@@ -495,7 +495,7 @@
 				<ul>
 					<li class="tablinks"><a onclick="openTab(event, 'debian');">Debian</a></li>
 					<li class="tablinks"><a onclick="openTab(event, 'vm');">Virtual Machine</a></li>
-					<li class="tablinks"><a onclick="openTab(event, 'lxd');">LXD Container</a></li>
+					<li class="tablinks"><a onclick="openTab(event, 'lxd');">LXD/LXC</a></li>
 					<li class="tablinks"><a onclick="openTab(event, 'raspberry-pi');">Raspberry Pi</a></li>
 					<li class="tablinks"><a onclick="openTab(event, 'odroid-hc2');">Odroid HC2/HC1/XU4</a></li>
 					<li class="tablinks"><a onclick="openTab(event, 'odroid-hc4');">Odroid HC4</a></li>
@@ -572,24 +572,33 @@
 						</div>
 						<div class="container content level-item">
 							<p class="title">
-								LXD Container
+								LXD Container image
 							</p>
 						</div>
 						<div class="container content level-item">
-							<p class="subtitle has-text-centered">
-								Run NextcloudPi in any system that supports LXC containers, such as Proxmox.
+							<p class="subtitle">
+								Run NextcloudPi in any system that supports LXC containers.
 							</p>
 						</div>
+            <p class="content level-item"><a href="https://linuxcontainers.org/lxd/docs/master/">LXD Documentation</a></p>
 						<div class="container level-item">
-							<pre>wget -O - https://github.com/nextcloud/nextcloudpi/releases/download/v1.51.0/NextCloudPi_LXD_v1.51.0.tar.gz</pre>
-						</div>
-						<div class="container level-item">
-							<pre>lxc import NextCloudPi_LXD_v1.51.0.tar.gz</pre>
-						</div>
-						<div class="container level-item">
-							<pre>lxc start ncp</pre>
-						</div>
+							<pre>
+# Download the image form https://github.com/nextcloud/nextcloudpi/releases e.g.:
+wget -O - https://github.com/nextcloud/nextcloudpi/releases/download/v1.51.0/NextCloudPi_LXD_v1.51.0.tar.gz
+
+# Import the image, replace the X's with the version numbers
+lxc image import "NextcloudPi_LXD_vX.XX.X.tar.gz" --alias "ncp/vX.XX.X"
+
+# Create and start a container from the image
+lxc launch "ncp/vX.XX.X" ncp
+</pre>
 					</div>
+          <div class="block"></div>
+          <div class="container level-item"><p class="subtitle">For Proxmox installation please use the helper script made by <a href="https://tteck.github.io/Proxmox/">tteck</a></p></div>
+          <div class="block"></div>
+          <div class="container level-item">
+            <pre>bash -c "$(wget -qLO - https://github.com/tteck/Proxmox/raw/main/ct/nextcloudpi-v5.sh)"</pre>
+          </div>
 				</div>
 			</section>
 
