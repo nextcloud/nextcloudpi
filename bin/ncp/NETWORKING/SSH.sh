@@ -41,7 +41,7 @@ configure()
 
   # --force: exit successfully if the group already exists
   groupadd --force ncp-ssh
-  
+
   # Change or create credentials
   if id "$USER" &>/dev/null
   then
@@ -57,10 +57,10 @@ configure()
     useradd --create-home --home-dir /home/"$USER" --shell /bin/bash --groups ncp-ssh "$USER" || return 1
     echo -e "$PASS\n$CONFIRM" | passwd "$USER" || return 1
   fi
-  
+
   # Get the current users of the group to an array
   mapfile -d ',' -t GROUP_USERS < <(awk -F':' '/ncp-ssh/{printf $4}' /etc/group)
-  
+
   if [[ "${#GROUP_USERS[@]}" -gt 0 ]]
   then
     # Loop through each user in the group
@@ -69,6 +69,7 @@ configure()
       # Test if extra users exists in the group
       if [[ "$U" != "$USER" ]]
       then
+        echo "Disabling user '$U'..."
         # Locks any extra accounts
         usermod --lock --expiredate 1 "$U"
       fi
@@ -77,7 +78,7 @@ configure()
 
   # Unsets the group array variable (cleanup)
   unset GROUP_USERS
-  
+
   [[ "$SUDO" == "yes" ]] && {
     usermod --append --groups sudo "$USER"
     echo "Enabled sudo for $USER"
