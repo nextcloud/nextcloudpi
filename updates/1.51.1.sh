@@ -2,8 +2,8 @@
 
 # Fix NCP theme
 [[ -e /usr/local/etc/logo ]] && {
-  ID=$( grep instanceid config/config.php | awk -F "=> " '{ print $2 }' | sed "s|[,']||g" )
-  [[ "$ID" == "" ]] && { echo "failed to get ID"; return 1; }
+  ID=$( grep instanceid /var/www/nextcloud/config/config.php | awk -F "=> " '{ print $2 }' | sed "s|[,']||g" )
+  [[ "$ID" == "" ]] && { echo "failed to get ID"; exit 1; }
   theming_base_path="data/appdata_${ID}/theming/global/images"
   mkdir -p "${theming_base_path}"
   [ -f "${theming_base_path}/background" ] || cp /usr/local/etc/background "${theming_base_path}/background"
