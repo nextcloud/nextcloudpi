@@ -297,6 +297,12 @@ fi
 # refresh completions
 ncc _completion -g --shell-type bash -p ncc | sed 's|/var/www/nextcloud/occ|ncc|g' > /usr/share/bash-completion/completions/ncp
 
+is_docker && {
+  killall notify_push
+  sleep 1
+  start_notify_push
+}
+
 echo "Update completed successfully."
 # done
 ####################
