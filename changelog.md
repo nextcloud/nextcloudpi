@@ -1,8 +1,8 @@
-## [v1.51.1](https://github.com/nextcloud/nextcloudpi/tree) (2023-03-??) Support for Nextcloud 25.0.4 and SSH/updater fixes
+## [v1.51.1](https://github.com/nextcloud/nextcloudpi/tree) (2023-03-??) Support for Nextcloud 25.0.5 and SSH/updater fixes
 
 ### Changes
 
-- Add support for Nextcloud 25.0.4
+- Add support for Nextcloud 25.0.5
 - Allow arbitrary users to be created during SSH activation from the web UI
 
 ### Fixes
