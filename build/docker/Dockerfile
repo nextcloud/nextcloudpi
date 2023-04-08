@@ -140,6 +140,7 @@ LABEL maintainer="Ignacio Núñez Hernanz <nacho@ownyourbits.com>"
 SHELL ["/bin/bash", "-c"]
 
 ENV DOCKERBUILD 1
+ENV MINIMUM_NC_VERSION=24
 
 RUN mkdir -p /tmp/ncp-build
 COPY bin/                          /tmp/ncp-build/bin/

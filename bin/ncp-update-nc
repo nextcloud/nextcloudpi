@@ -31,8 +31,8 @@ source /usr/local/etc/library.sh
 cd "$BASEDIR"
 DATADIR="$( get_nc_config_value datadirectory )"
 ncc status &>/dev/null          || { [[ "$DBG" == x ]] && ncc status; echo "Nextcloud is currently down"; exit 1; }
-[[ -d /var/www/nextcloud-old ]] && { echo "Nextcloud backup directory found. Interrupted or already running installation?"; exit 1; }
-[[ -d /var/www/nextcloud     ]] || { echo "Nextcloud directory not found"      ; exit 1; }
+[[ -d "${BASEDIR}/nextcloud-old" ]] && { echo "Nextcloud backup directory found. Interrupted or already running installation?"; exit 1; }
+[[ -d "${BASEDIR}/nextcloud"     ]] || { echo "Nextcloud directory not found"      ; exit 1; }
 [[ -d "$DATADIR"             ]] || { echo "Nextcloud data directory not found" ; exit 1; }
 
 # check version
@@ -296,6 +296,12 @@ fi
 
 # refresh completions
 ncc _completion -g --shell-type bash -p ncc | sed 's|/var/www/nextcloud/occ|ncc|g' > /usr/share/bash-completion/completions/ncp
+
+is_docker && {
+  killall notify_push
+  sleep 1
+  start_notify_push
+}
 
 echo "Update completed successfully."
 # done

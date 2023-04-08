@@ -5,6 +5,10 @@ on:
       git_ref:
         required: true
         type: string
+      arch:
+        required: false
+        type: string
+        default: 'x86'
     outputs:
       artifact_name:
         value: "${{ jobs.build-current.outputs.artifact_name }}"
@@ -20,44 +24,46 @@ on:
       - release/*
 
 jobs:
-  build-current:
+  determine-runner:
+    env:
+      LXD_ARCH: "${{ inputs.arch || 'x86' }}"
     runs-on: ubuntu-20.04
+    outputs:
+      runner_label: ${{ steps.script.outputs.runner_label }}
+    steps:
+      - name: script
+        id: script
+        run: |
+          if [[ "${LXD_ARCH}" == "arm64" ]]
+          then
+            RUNNER_LABEL=ubuntu-20.04-arm64
+          else
+            RUNNER_LABEL=ubuntu-20.04
+          fi
+          echo "runner_label=$RUNNER_LABEL" | tee -a $GITHUB_OUTPUT
+
+  build-current:
+    needs:
+      - determine-runner
+    runs-on:
+      - ${{ needs.determine-runner.outputs.runner_label }}
     outputs:
       artifact_name: "${{ env.ARTIFACT_NAME }}"
       artifact_file: "${{ steps.pack-lxd.outputs.artifact_file }}"
     env:
       VERSION: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
-      ARTIFACT_NAME: "${{ github.run_id }}-lxd-image"
+      ARTIFACT_NAME: "${{ github.run_id }}-lxd-${{ inputs.arch || 'x86' }}-image"
+      LXD_ARCH: "${{ inputs.arch || 'x86' }}"
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
           ref: "${{ env.VERSION }}"
+      - name: Cleanup lxd
+        run: test -z "$(lxc profile device show default | grep eth0)" || lxc profile device remove default eth0
       - uses: whywaita/setup-lxd@v1
         with:
           lxd_version: latest/stable
-
-#      - name: Fix LXD
-#        run: |
-#          ip address
-#          ip route list
-#          lxc profile create network
-#          cat <<EOF | lxc profile edit network
-#          devices:
-#            eth0:
-#              name: eth0
-#              parent: lxdbr0
-#              nictype: bridged
-#              type: nic
-#          EOF
-#          ip route list
-#          ifconfig lxdbr0
-
-      - name: Debug LXD
-        run: |
-          lxc version
-          lxc network set lxdbr0 ipv4.nat true
-          lxc network list
       - name: Build LXD image
         run: |
           ./build/build-LXD.sh
@@ -65,7 +71,7 @@ jobs:
         id: pack-lxd
         run: |
           . ./build/buildlib.sh
-          ARTIFACT_FILE="NextCloudPi_LXD_${VERSION//\//_}"
+          ARTIFACT_FILE="NextCloudPi_LXD_${LXD_ARCH:-x86}_${VERSION//\//_}"
           lxc image export -q ncp/"${version}" "output/${ARTIFACT_FILE}"
           echo "artifact_file=${ARTIFACT_FILE}.tar.gz" >> $GITHUB_OUTPUT
       - name: upload LXD image to artifact store
@@ -77,14 +83,16 @@ jobs:
 
   build-previous:
     runs-on: ubuntu-20.04
+    if: ${{ inputs.arch == 'x86' || inputs.arch == '' }}
     outputs:
       artifact_name: "${{ env.ARTIFACT_NAME }}"
       artifact_file: "${{ steps.pack-lxd.outputs.artifact_file }}"
       previous_version: "${{ steps.checkout_previous_version.outputs.previous_version }}"
     env:
       VERSION: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
-      ARTIFACT_NAME: "${{ github.run_id }}-lxd-image-previous"
+      ARTIFACT_NAME: "${{ github.run_id }}-lxd-${{ inputs.arch || 'x86' }}-image-previous"
       LXD_EXTRA_PROFILE: network
+      LXD_ARCH: "${{ inputs.arch || 'x86' }}"
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -132,6 +140,17 @@ jobs:
               nictype: bridged
               type: nic
           EOF
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Enable qemu SUID
+        run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes --credential yes
+      - name: Download qemu binaries
+        run: |
+          wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-aarch64-static -O qemu-aarch64-static
+          wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-arm-static -O qemu-arm-static
+          chmod +x qemu-{arm,aarch64}-static
+
       - name: Build LXD image
         run: |
           ./build/build-LXD.sh
@@ -139,7 +158,7 @@ jobs:
         id: pack-lxd
         run: |
           . ./build/buildlib.sh
-          ARTIFACT_FILE="NextCloudPi_LXD_${VERSION//\//_}"
+          ARTIFACT_FILE="NextCloudPi_LXD_${LXD_ARCH:-x86}_${VERSION//\//_}"
           lxc image export -q ncp/"${version}" "output/${ARTIFACT_FILE}"
           echo "artifact_file=${ARTIFACT_FILE}.tar.gz" >> $GITHUB_OUTPUT
       - name: upload LXD image to artifact store
@@ -158,7 +177,7 @@ jobs:
       artifact_file: "${{ steps.pack-lxd.outputs.artifact_file }}"
     env:
       VERSION: "${{ inputs.git_ref || github.ref }}"
-      ARTIFACT_NAME: "${{ github.run_id }}-lxd-image-updated"
+      ARTIFACT_NAME: "${{ needs.build-previous.outputs.artifact_name }}"
     steps:
       - uses: whywaita/setup-lxd@v1
         with:
@@ -227,7 +246,7 @@ jobs:
         run: |
           set -x
           . ./build/buildlib.sh
-          ARTIFACT_FILE="NextCloudPi_LXD_${VERSION//\//_}"
+          ARTIFACT_FILE="NextCloudPi_LXD_${LXD_ARCH:-x86}_${VERSION//\//_}"
           lxc publish -q ncp -f --alias "ncp/updated"
           mkdir -p output
           lxc image export -q "ncp/updated" "output/${ARTIFACT_FILE}"
@@ -241,8 +260,9 @@ jobs:
 
   test-fresh-install:
     needs:
+      - determine-runner
       - build-current
-    runs-on: ubuntu-20.04
+    runs-on: ${{ needs.determine-runner.outputs.runner_label }}
     env:
       VERSION: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
       ARTIFACT_NAME: ${{ needs.build-current.outputs.artifact_name }}
@@ -252,10 +272,13 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: "${{ env.VERSION }}"
+      - name: Cleanup lxd
+        run: test -z "$(lxc profile device show default | grep eth0)" || lxc profile device remove default eth0
       - uses: whywaita/setup-lxd@v1
         with:
           lxd_version: latest/stable
       - name: Fix LXD
+        continue-on-error: true
         run: |
           lxc profile create network
           cat <<EOF | lxc profile edit network
@@ -267,8 +290,10 @@ jobs:
           EOF
       - name: Setup Firefox
         uses: browser-actions/setup-firefox@latest
+        continue-on-error: true
       - name: Setup GeckoDriver
         uses: ChlodAlejandro/setup-geckodriver@latest
+        continue-on-error: true
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Selenium
@@ -277,12 +302,21 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ${{ env.ARTIFACT_NAME }}
+      - name: Remove old lxd images
+        if: ${{ inputs.arch == 'arm64' }}
+        run: |
+          for img in $(lxc image list -c f -f csv)
+          do
+            lxc image delete "$img"
+          done
       - name: Launch ncp container
         run: |
           set -x
+          . ./build/buildlib.sh
           lxc delete -q -f ncp || true
-          lxc image import -q "./${ARTIFACT_FILE?}" --alias "ncp/test"
-          systemd-run --user --scope -p "Delegate=yes" lxc launch -q "ncp/test" ncp
+          lxc image import -q "./${ARTIFACT_FILE?}" --alias "ncp/test" || true
+          systemd-run --user --scope -p "Delegate=yes" lxc launch -q "ncp/test" ncp || \
+          sudo systemd-run --scope -p "Delegate=yes" lxc launch -q "ncp/test" ncp 
           lxc exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
           sleep 30
           ip="$(lxc list -c n4 -f csv | grep '^ncp' | cut -d ',' -f2)"

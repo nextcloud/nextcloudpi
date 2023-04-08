@@ -182,6 +182,13 @@ function print_sidebar( $l /* translations l10n object */, $ticks /* wether to c
       $cfg_file = $cfg_dir . $ncp_app . ".cfg";
       $cfg      = json_decode(file_get_contents($cfg_file), true);
 
+      try {
+        sizeof($cfg['params']);
+      } catch (TypeError $e) {
+        error_log("Failed loading script '$script'!, Config file '$cfg_file' could not be found or failed to be parsed.\n");
+        continue;
+      }
+
       $active = "";
       if ( $ticks ) {
         exec("bash -c \"source /usr/local/etc/library.sh && is_active_app $ncp_app\"", $output, $retval);
