@@ -1,4 +1,4 @@
-## [v1.51.1](https://github.com/nextcloud/nextcloudpi/tree) (2023-03-??) Support for Nextcloud 25.0.5 and SSH/updater fixes
+## [v1.51.1](https://github.com/nextcloud/nextcloudpi/tree/v1.51.1) (2023-04-08) Support for Nextcloud 25.0.5 and SSH/updater fixes
 
 ### Changes
 
@@ -9,6 +9,7 @@
 
 - Prevent PHP upgrades from the web UI
 - Prevent docker container startup if the installed Nextcloud version is not compatible
+- Fix missing NCP logo on login page
 
 ## [v1.51.0](https://github.com/nextcloud/nextcloudpi/tree/v1.51.0) (2023-01-22) Update to Nextcloud 25.0.3 and new PortCheck Service
 
