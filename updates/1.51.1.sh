@@ -12,6 +12,6 @@ source /usr/local/etc/library.sh
   [ -f "${theming_base_path}/background" ] || cp /usr/local/etc/background "${theming_base_path}/background"
   [ -f "${theming_base_path}/logo" ] || cp /usr/local/etc/logo "${theming_base_path}/logo"
   [ -f "${theming_base_path}/logoheader" ] || cp /usr/local/etc/logo "${theming_base_path}/logoheader"
-  chown -R www-data:www-data "data/appdata_${ID}"
+  chown -R www-data:www-data "$( get_nc_config_value datadirectory )/appdata_${ID}"
   echo "Done."
 }
