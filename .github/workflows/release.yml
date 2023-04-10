@@ -316,7 +316,7 @@ jobs:
 
       - name: Create manifest and push as latest to docker hub
         run: |
-          [[ "${{ github.ref }}" =~ ^'ref/tags/v'[0-9]+'.'[0-9]+'.'[0-9]+$ ]] || {
+          [[ "${{ github.ref }}" =~ ^'refs/tags/v'[0-9]+'.'[0-9]+'.'[0-9]+$ ]] || {
             echo "not tagging latest - is a pre-/beta-release"
             exit 0
           }
