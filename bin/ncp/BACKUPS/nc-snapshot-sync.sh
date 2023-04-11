@@ -62,7 +62,7 @@ configure()
 
   [[ "$COMPRESSION" == "yes" ]] && ZIP="-z"
 
-  echo "30  4  */${SYNCDAYS}  *  *  root  /usr/local/bin/btrfs-sync -qd $ZIP \"$SNAPDIR\" \"$DESTINATION\"" > /etc/cron.d/ncp-snapsync-auto
+  echo "30  ${SYNCHOUR}  */${SYNCDAYS}  *  *  root  /usr/local/bin/btrfs-sync -qd $ZIP \"$SNAPDIR\" \"$DESTINATION\"" > /etc/cron.d/ncp-snapsync-auto
   chmod 644 /etc/cron.d/ncp-snapsync-auto
   service cron restart
 
