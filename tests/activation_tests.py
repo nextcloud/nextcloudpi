@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-Automatic testing for NextCloudPi
+Automatic testing for NextcloudPi
 
 Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 GPL licensed (see LICENSE file in repository root).
@@ -99,7 +99,7 @@ def test_activation(IP, nc_port, admin_port, options, wait_timeout=120):
     driver.implicitly_wait(5)
     test.new("activation opens")
     driver.get(f"https://{IP}:{nc_port}")
-    test.check("NextCloudPi Activation" in driver.title)
+    test.check("NextcloudPi Activation" in driver.title)
     try:
         ncp_pass = driver.find_element(By.ID, "ncp-pwd").get_attribute("value")
         nc_pass = driver.find_element(By.ID, "nc-pwd").get_attribute("value")
@@ -146,7 +146,7 @@ def test_activation(IP, nc_port, admin_port, options, wait_timeout=120):
     except Exception as e:
         print(f"WARN: Exception while attempting to get ncp-web: '{e}'")
         raise e
-    test.check("NextCloudPi Panel" in driver.title)
+    test.check("NextcloudPi Panel" in driver.title)
     test.report("first run wizard", is_element_present(driver, By.ID, "first-run-wizard"))
 
     driver.close()

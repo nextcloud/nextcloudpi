@@ -2,7 +2,7 @@
     "translations": {
         "BACKUPFILE": "檔案位置",
         "Restore a previously backuped NC instance": "恢復Nextcloud備份",
-        "This new installation will cleanup current\nNextCloud instance, including files and database.\n\n** perform backup before proceding **\n\nYou can use nc-backup": "這個動作將清除目前正使用的NextCloud，包括文件和數據庫。\n\n**您可以在開始動作之前使用nc-backup**",
+        "This new installation will cleanup current\nNextcloud instance, including files and database.\n\n** perform backup before proceding **\n\nYou can use nc-backup": "這個動作將清除目前正使用的Nextcloud，包括文件和數據庫。\n\n**您可以在開始動作之前使用nc-backup**",
         "nc-restore": "恢復NC備份"
     }
 }

@@ -65,7 +65,7 @@ jobs:
         run: |
           set -ex
           export LIB_TAG=master
-          export IMG="NextCloudPi_${{ inputs.board_name }}_${VERSION//\//_}.img"
+          export IMG="NextcloudPi_${{ inputs.board_name }}_${VERSION//\//_}.img"
           [[ "${{ github.ref_protected }}" == true ]] || export DBG=x
           
           ./build/build-SD-armbian.sh "${{ inputs.board_id }}" "${{ inputs.board_name }}"
@@ -84,7 +84,7 @@ jobs:
           sudo rm -rf armbian/ tmp/ output/
           
           export LIB_TAG=master
-          export IMG="NextCloudPi_${{ inputs.board_name }}_${VERSION//\//_}.img"
+          export IMG="NextcloudPi_${{ inputs.board_name }}_${VERSION//\//_}.img"
           [[ "${{ github.ref_protected }}" == true ]] || export DBG=x
 
           ./build/build-SD-armbian.sh "${{ inputs.board_id }}" "${{ inputs.board_name }}"
@@ -106,7 +106,7 @@ jobs:
         run: |
           set -ex
           echo -e "${LOG_CICD} Protected? ${{ github.ref_protected }}"
-          export IMG="NextCloudPi_${{ inputs.board_name }}_${VERSION//\//_}.img"
+          export IMG="NextcloudPi_${{ inputs.board_name }}_${VERSION//\//_}.img"
           [[ "${{ github.ref_protected }}" == true ]] || export DBG=x
           wget -q https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-aarch64-static -O ./qemu-aarch64-static
           ./build/build-SD-rpi.sh

@@ -76,7 +76,7 @@ bash /usr/local/bin/nextcloud-domain.sh
   ncc notify_push:self-test > /dev/null 2>&1 || ncc notify_push:setup "https://$2/push"
 }
 
-echo "Nextcloud version $(nc_version). NextCloudPi version $(cat /usr/local/etc/ncp-version)"
+echo "Nextcloud version $(nc_version). NextcloudPi version $(cat /usr/local/etc/ncp-version)"
 
 # Display NC logs in the docker logs
 LOG_FILE="$(get_nc_config_value logfile 2> /dev/null || true)"

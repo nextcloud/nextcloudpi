@@ -2,13 +2,13 @@
 <info xmlns:xsi= "http://www.w3.org/2001/XMLSchema-instance"
       xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
     <id>nextcloudpi</id>
-    <name>NextCloudPi</name>
+    <name>NextcloudPi</name>
     <summary>Nextcloud management tools</summary>
-    <description><![CDATA[NextCloudPi features a preconfigured Nextcloud instance and a complete set of tools around it for easy management.]]></description>
+    <description><![CDATA[NextcloudPi features a preconfigured Nextcloud instance and a complete set of tools around it for easy management.]]></description>
     <version>0.0.1</version>
     <licence>agpl</licence>
     <author mail="nachoparker@ownyourbits.com" homepage="https://ownyourbits.com">nachoparker</author>
-    <namespace>NextCloudPi</namespace>
+    <namespace>NextcloudPi</namespace>
     <category>tools</category>
     <bugs>https://github.com/nextcloud/nextcloudpi/issues</bugs>
     <dependencies>
@@ -16,7 +16,7 @@
     </dependencies>
     <navigations>
         <navigation>
-            <name>NextCloudPi</name>
+            <name>NextcloudPi</name>
             <route>nextcloudpi.page.index</route>
         </navigation>
     </navigations>

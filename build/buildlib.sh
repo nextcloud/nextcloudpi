@@ -322,7 +322,7 @@ function create_torrent()
   [[ -d "$DIR" ]] && { echo "dir $DIR already exists"; return 1; }
   mkdir -p torrent/"$IMGNAME" && cp -v --reflink=auto "$TAR" torrent/"$IMGNAME"
   md5sum "$DIR"/*.bz2 > "$DIR"/md5sum
-  createtorrent -a udp://tracker.opentrackr.org -p 1337 -c "NextCloudPi. Nextcloud ready to use image" "$DIR" "$DIR".torrent
+  createtorrent -a udp://tracker.opentrackr.org -p 1337 -c "NextcloudPi. Nextcloud ready to use image" "$DIR" "$DIR".torrent
   transmission-remote -w $(pwd)/torrent -a "$DIR".torrent
 }
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Data dir configuration script for NextCloudPi
+# Data dir configuration script for NextcloudPi
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -59,7 +59,7 @@ configure()
   ## CHECKS
   local SRCDIR BASEDIR ENCDIR
   SRCDIR=$( get_nc_config_value datadirectory ) || {
-    echo -e "Error reading data directory. Is NextCloud running and configured?";
+    echo -e "Error reading data directory. Is Nextcloud running and configured?";
     return 1;
   }
   [ -d "${SRCDIR?}" ] || { echo -e "data directory $SRCDIR not found"; return 1; }
@@ -126,7 +126,7 @@ configure()
   # datadir
   ncc config:system:set datadirectory  --value="${DATADIR}" \
   || sed -i "s|'datadirectory' =>.*|'datadirectory' => '${DATADIR}',|" "${NCDIR?}"/config/config.php
-  
+
   ncc config:system:set logfile --value="${DATADIR}/nextcloud.log" \
   || sed -i "s|'logfile' =>.*|'logfile' => '${DATADIR}/nextcloud.log',|" "${NCDIR?}"/config/config.php
   set_ncpcfg datadir "${DATADIR}"

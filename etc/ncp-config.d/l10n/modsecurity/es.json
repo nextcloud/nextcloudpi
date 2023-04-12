@@ -2,7 +2,7 @@
     "translations": {
         "ACTIVE": "Activado",
         "Experimental feature warning": "Aviso de característica experimental",
-        "This feature is highly experimental and has only been tested with\na basic NextCloud installation. If a new App does not work disable it": "Esta característica es altamente experimental y tan solo ha sido testeada contra\nuna instalación de Nextcloud básica. Si alguna App no funciona correctamente, deshabilítalo",
+        "This feature is highly experimental and has only been tested with\na basic Nextcloud installation. If a new App does not work disable it": "Esta característica es altamente experimental y tan solo ha sido testeada contra\nuna instalación de Nextcloud básica. Si alguna App no funciona correctamente, deshabilítalo",
         "Web Application Firewall for extra security (experimental)": "Web Application Firewall para una mayor seguridad (experimental)",
         "modsecurity": "modsecurity"
     }

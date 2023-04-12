@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Batch creation of NextCloudPi Armbian based images
+# Batch creation of NextcloudPi Armbian based images
 #
 # Copyleft 2018 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -18,7 +18,7 @@ NCPCFG=etc/ncp.cfg
 
 echo -e "\e[1m\n[ Build NCP ${BNAME} ]\e[0m"
 
-IMG="${IMG:-NextCloudPi_${BNAME}_$( date  "+%m-%d-%y" ).img}"
+IMG="${IMG:-NextcloudPi_${BNAME}_$( date  "+%m-%d-%y" ).img}"
 IMG=tmp/"$IMG"
 TAR=output/"$( basename "$IMG" .img ).tar.bz2"
 

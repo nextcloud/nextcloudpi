@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# NextCloudPi installation script
+# NextcloudPi installation script
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -41,7 +41,7 @@ fi
 cd "${CODE_DIR}"
 
 # install NCP
-echo -e "\nInstalling NextCloudPi..."
+echo -e "\nInstalling NextcloudPi..."
 source etc/library.sh
 
 # check distro

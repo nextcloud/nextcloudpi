@@ -21,7 +21,7 @@ configure()
 
   local DATADIR MOUNTPOINT
   DATADIR=$( get_nc_config_value datadirectory ) || {
-    echo -e "Error reading data directory. Is NextCloud running?";
+    echo -e "Error reading data directory. Is Nextcloud running?";
     return 1;
   }
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Export NextCloudPi configuration
+# Export NextcloudPi configuration
 #
 #
 # Copyleft 2017 by Courtney Hicks
@@ -9,7 +9,7 @@
 
 
 
-configure() 
+configure()
 {
   [[ -d "$DIR" ]] || { echo "directory $DIR does not exist"; return 1; }
 

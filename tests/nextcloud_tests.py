@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-Automatic testing for NextCloudPi
+Automatic testing for NextcloudPi
 
 Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 GPL licensed (see LICENSE file in repository root).
@@ -124,7 +124,7 @@ def test_nextcloud(IP: str, nc_port: str, driver: WebDriver):
         driver.get(f"https://{IP}:{nc_port}/index.php/settings/admin/overview")
     except Exception as e:
         test.check(e, msg=f"{tc.red}error:{tc.normal} unable to reach {tc.yellow + IP + tc.normal}")
-    test.check("NextCloudPi" in driver.title, msg="NextCloudPi not found in page title!")
+    test.check("NextcloudPi" in driver.title, msg="NextcloudPi not found in page title!")
     trusted_domain_str = "You are accessing the server from an untrusted domain"
     test.report("trusted domain", trusted_domain_str not in driver.page_source, f"Domain '{IP}' is not trusted")
     try:

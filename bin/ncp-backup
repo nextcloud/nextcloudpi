@@ -21,7 +21,7 @@ dbbackup=nextcloud-sqlbkp_$( date +"%Y%m%d" ).bak
 [[ "$compress" == "yes" ]] && destfile="$destfile".gz
 
 datadir=$( get_nc_config_value datadirectory ) || {
-  echo "Error reading data directory. Is NextCloud running and configured?";
+  echo "Error reading data directory. Is Nextcloud running and configured?";
   exit 1;
 }
 

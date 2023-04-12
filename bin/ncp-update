@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# update latest NextCloudPi code from github
+# update latest NextcloudPi code from github
 
 [[ -z "$DBG" ]] || set -$DBG
 
@@ -61,7 +61,7 @@ fi
     sed '/HEAD ->\|origin/s|\[.*\(tag: v[0-9]\+\.[0-9]\+\.[0-9]\+\).*\]|[\1]|' | \
     sed 's|* \[tag: |[|' > /usr/local/etc/ncp-changelog
 
-  echo -e "NextCloudPi updated to version $VER"
+  echo -e "NextcloudPi updated to version $VER"
   exit 0
 
 } # force to read the whole thing into memory, as its contents might change in update.sh

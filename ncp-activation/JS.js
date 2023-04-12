@@ -1,5 +1,5 @@
 ///
-// NextCloudPi Web Panel javascript library
+// NextcloudPi Web Panel javascript library
 //
 // Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 // GPL licensed (see end of file) * Use at your own risk!
@@ -52,7 +52,7 @@ function nc_admin_ok_cb( result )
   if ( ret.ret == '0' ) {
     launch_nc_passwd();
   } else {
-    $('#error-box').fill( "NextCloudPi not yet initialized, trying again in a few seconds ..." ); 
+    $('#error-box').fill( "NextcloudPi not yet initialized, trying again in a few seconds ..." ); 
     setTimeout( launch_activation, 10000 );
   }
 }
@@ -96,7 +96,7 @@ $(function()
       input.selectionStart = input.selectionEnd;
     } );
 
-  // activate NextCloudPi
+  // activate NextcloudPi
   $( '#activate-ncp' ).on( 'click', function(e)
   {
     $( '#activate-ncp' ).hide();

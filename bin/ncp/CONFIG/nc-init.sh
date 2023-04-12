@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Init NextCloud database and perform initial configuration
+# Init Nextcloud database and perform initial configuration
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -127,7 +127,7 @@ EOF
   }
 
   mysql nextcloud <<EOF
-replace into  oc_appconfig values ( 'theming', 'name'          , "NextCloudPi"             );
+replace into  oc_appconfig values ( 'theming', 'name'          , "NextcloudPi"             );
 replace into  oc_appconfig values ( 'theming', 'slogan'        , "keep your data close"    );
 replace into  oc_appconfig values ( 'theming', 'url'           , "https://ownyourbits.com" );
 replace into  oc_appconfig values ( 'theming', 'logoMime'      , "image/svg+xml"           );

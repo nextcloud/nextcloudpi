@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# NextCloudPi ZRAM settings
+# NextcloudPi ZRAM settings
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -63,7 +63,7 @@ chmod +x /usr/local/bin/ncp-zram
 
 configure()
 {
-  [[ $ACTIVE != "yes" ]] && { 
+  [[ $ACTIVE != "yes" ]] && {
     systemctl stop    zram
     systemctl disable zram
     echo "ZRAM disabled"

@@ -55,7 +55,7 @@ if is_more_recent_than "$latest_checkpoint_version" "$current_version" ; then
 
     mid_version=$( basename ${updates_list[$mid]} .sh )
 
-    if is_more_recent_than "$mid_version" "$current_version" ; then 
+    if is_more_recent_than "$mid_version" "$current_version" ; then
       # Mid's version update is applicable to the current version
       # Check if the previous checkpoint (mid-1) is applicable
 
@@ -108,7 +108,7 @@ if is_more_recent_than "$latest_checkpoint_version" "$current_version" ; then
       exit 1
     }
     echo "v$tag_update" > /usr/local/etc/ncp-version
-    [[ $i != $end_of_list ]] && echo -e "NextCloudPi updated to version v$tag_update" || true
+    [[ $i != $end_of_list ]] && echo -e "NextcloudPi updated to version v$tag_update" || true
   done
 fi
 

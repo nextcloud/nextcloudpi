@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Periodically synchronize NextCloud for externally modified files
+# Periodically synchronize Nextcloud for externally modified files
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!

@@ -1,9 +1,9 @@
 {
     "translations": {
         "BACKUPFILE": "Archivo de backup",
-        "Restore NextCloud backup": "Restaurar backup de Nextcloud",
+        "Restore Nextcloud backup": "Restaurar backup de Nextcloud",
         "Restore a previously backuped NC instance": "Restaurar una instancia previamente guardada",
-        "This new installation will cleanup current\nNextCloud instance, including files and database.\n\n** perform backup before proceding **\n\nYou can use nc-backup": "Esta nueva instalación borrará la actual\ninstancia de Nextcloud, incluyendo archivos y base de datos\n\n** Realiza una copia de seguridad antes de proceder **\n\nPuedes usar nc-backup",
+        "This new installation will cleanup current\nNextcloud instance, including files and database.\n\n** perform backup before proceding **\n\nYou can use nc-backup": "Esta nueva instalación borrará la actual\ninstancia de Nextcloud, incluyendo archivos y base de datos\n\n** Realiza una copia de seguridad antes de proceder **\n\nPuedes usar nc-backup",
         "nc-restore": "nc-restore"
     }
 }

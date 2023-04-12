@@ -990,7 +990,7 @@
 
 ## [v0.53.30](https://github.com/nextcloud/nextcloudpi/commit/9c600bd) (2018-04-20) ncp-report: fix root execution
 
-## [v0.53.29](https://github.com/nextcloud/nextcloudpi/commit/a9458f5) (2018-04-05) renamed to NextCloudPlus
+## [v0.53.29](https://github.com/nextcloud/nextcloudpi/commit/a9458f5) (2018-04-05) renamed to NextcloudPlus
 
 ## [v0.53.28](https://github.com/nextcloud/nextcloudpi/commit/0d6c780) (2018-04-18) ncp-web: added spanish translations
 

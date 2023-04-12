@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# System limits configuration for NextCloudPi
+# System limits configuration for NextcloudPi
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!

@@ -24,7 +24,7 @@ configure()
 
   local DATADIR
   DATADIR=$( get_nc_config_value datadirectory ) || {
-    echo -e "Error reading data directory. Is NextCloud running and configured?";
+    echo -e "Error reading data directory. Is Nextcloud running and configured?";
     return 1;
   }
 

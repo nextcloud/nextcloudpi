@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# NextCloudPi function library
+# NextcloudPi function library
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -62,7 +62,7 @@ function configure_app()
 {
   local ncp_app="$1"
   local cfg_file="$CFGDIR/$ncp_app.cfg"
-  local backtitle="NextCloudPi installer configuration"
+  local backtitle="NextcloudPi installer configuration"
   local ret=1
 
   # checks
@@ -375,7 +375,7 @@ function info_app()
   [[ "$infotitle" == "" ]] || [[ "$infotitle" == "null" ]] && infotitle="Info"
 
   whiptail --yesno \
-	  --backtitle "NextCloudPi configuration" \
+	  --backtitle "NextcloudPi configuration" \
 	  --title "$infotitle" \
 	  --yes-button "I understand" \
 	  --no-button "Go back" \

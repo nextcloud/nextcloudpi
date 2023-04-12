@@ -6,6 +6,6 @@ style('nextcloudpi', 'style');
 
 <div id="ncp-message-wrapper">
   <div id="ncp-message">
-    Opening NextCloudPi Web Panel ...
+    Opening NextcloudPi Web Panel ...
   </div>
 </div>

@@ -21,7 +21,7 @@ REDISPASS="$( grep "^requirepass" /etc/redis/redis.conf | cut -f2 -d' ' )"
 
 ### If there exists already a configuration adjust the password
 [[ -f "$CFG" ]] && {
-  echo "Updating NextCloud config with Redis password"
+  echo "Updating Nextcloud config with Redis password"
   sed -i "s|'password'.*|'password' => '$REDISPASS',|" "$CFG"
 }
 
@@ -46,7 +46,7 @@ EOF
 }
 
 [[ -f "$CFG" ]] && {
-  echo "Updating NextCloud config with MariaDB password"
+  echo "Updating Nextcloud config with MariaDB password"
   sed -i "s|'dbpassword' =>.*|'dbpassword' => '$DBPASSWD',|" "$CFG"
 }
 

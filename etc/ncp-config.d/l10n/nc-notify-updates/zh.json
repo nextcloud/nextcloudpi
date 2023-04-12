@@ -2,7 +2,7 @@
     "translations":{
         "ACTIVE":"開啟",
         "USER":"使用者",
-        "Notify in NC when a NextCloudPi update is available":"在NextcloudPi需要更新時在Nextcloud通知您",
+        "Notify in NC when a NextcloudPi update is available":"在NextcloudPi需要更新時在Nextcloud通知您",
         "nc-notify-updates":"NCP更新通知"
     }
 }
