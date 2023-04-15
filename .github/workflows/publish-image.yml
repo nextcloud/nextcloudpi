@@ -61,19 +61,40 @@ jobs:
             exit 0
           }
           
-          body="$(hub release show -f "%b" "${VERSION}")"
-          if ! [[ "$body" =~ .*'**Checksums:**'.* ]]
-          then
-          
-            body="${body}
+          success=false
+          for i in {1..5}
+          do
+            body="$(hub release show -f "%b" "${VERSION}")"
+            if ! [[ "$body" =~ .*'**Checksums:**'.* ]]
+            then
+            
+              body="${body}
           
           **Checksums:**
           \`\`\`
           \`\`\`"
-          fi
-          
-          body="${body%$'\n\`\`\`'*}
+            fi
+            
+            body="${body%$'\n\`\`\`'*}
           $checksum
           \`\`\`"
-          gh release upload "${VERSION?}" "${asset}"
-          gh release edit "${VERSION?}" -n "$body"
+          
+            gh release edit "${VERSION?}" -n "$body"
+            if hub release show -f "%b" "${VERSION}" | grep "$checksum"
+            then
+              success=true
+              break
+            else
+              WAIT_TIME="$((1 + $RANDOM % 20))"
+              echo "Checksum missing from release description. Retrying in $WAIT_TIME seconds..."
+              sleep "$WAIT_TIME"
+            fi
+          done
+          
+          [[ "$success" == "true" ]] || {
+            gh release upload "${VERSION?}" "${asset}"
+            echo "Updating release description failed."
+            exit 1
+          }
+          
+          echo "Image published successfully."

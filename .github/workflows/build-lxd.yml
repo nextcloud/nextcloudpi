@@ -407,7 +407,7 @@ jobs:
           cd repackage
           sudo tar xpf "../${LXD_ARTIFACT_FILE?}"
           sudo rm -rf ./rootfs/dev
-          LXC_ARTIFACT_FILE="${LXD_ARTIFACT_FILE//LXD/LXC_EXPERIMENTAL}"
+          LXC_ARTIFACT_FILE="${LXD_ARTIFACT_FILE//LXD/LXC}"
           sudo tar cpzf "../output/${LXC_ARTIFACT_FILE?}" -C rootfs/ .
           cd ..
           sudo chown "$(id -un):" "./output/${LXC_ARTIFACT_FILE}"
