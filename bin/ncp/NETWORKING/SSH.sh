@@ -11,8 +11,6 @@
 install() {
   apt-get update
   apt-get install -y --no-install-recommends openssh-server
-  systemctl stop    ssh
-  systemctl disable ssh
  }
 
 is_active()
