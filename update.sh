@@ -25,44 +25,40 @@ fi
 CONFDIR=/usr/local/etc/ncp-config.d
 UPDATESDIR=updates
 
-# don't make sense in a docker container
-EXCL_DOCKER="
-nc-autoupdate-ncp
-nc-update
+# don't make sense in containers
+EXCL_CONTAINER="
 nc-automount
 nc-format-USB
-nc-datadir
-nc-database
 nc-ramlogs
 nc-swapfile
 nc-static-IP
 nc-wifi
-UFW
 nc-snapshot
 nc-snapshot-auto
 nc-snapshot-sync
 nc-restore-snapshot
-nc-audit
 nc-hdd-monitor
 nc-hdd-test
 nc-zram
-SSH
-fail2ban
 NFS
 "
 
-if is_docker &>/dev/null; then
-# in docker, just remove the volume for this
-EXCL_DOCKER+="
+# don't make sense in a docker container
+EXCL_DOCKER="
+$EXCL_CONTAINER
+nc-autoupdate-ncp
+nc-update
+nc-datadir
+nc-database
+UFW
+nc-audit
+SSH
+fail2ban
 nc-nextcloud
 nc-init
-"
-
-# better use a designated container
-EXCL_DOCKER+="
 samba
 "
-fi
+
 
 # check running apt or apt-get
 pgrep -x "apt|apt-get" &>/dev/null && { echo "apt is currently running. Try again later";  exit 1; }
@@ -74,11 +70,14 @@ source /usr/local/etc/library.sh
 mkdir -p "$CONFDIR"
 
 # prevent installing some ncp-apps in the containerized versions
-if is_docker || is_lxc; then
-  for opt in $EXCL_DOCKER; do
-    touch $CONFDIR/$opt.cfg
-  done
-fi
+
+EXCL_APPS=""
+is_docker && EXCL_APPS="$EXCL_DOCKER"
+is_lxc && EXCL_APPS="$EXCL_CONTAINER"
+
+for opt in $EXCL_APPS; do
+  touch $CONFDIR/$opt.cfg
+done
 
 # copy all files in bin and etc
 cp -r bin/* /usr/local/bin/
@@ -166,7 +165,7 @@ chown -R www-data:     /var/www/nextcloud/apps/nextcloudpi
 
 # remove unwanted ncp-apps for containerized versions
 if is_docker || is_lxc; then
-  for opt in $EXCL_DOCKER; do
+  for opt in $EXCL_APPS; do
     rm $CONFDIR/$opt.cfg
     find /usr/local/bin/ncp -name "$opt.sh" -exec rm '{}' \;
   done
