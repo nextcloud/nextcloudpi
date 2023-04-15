@@ -26,6 +26,16 @@ CURRENT_NC_MAJ="${CURRENT_NC_VERSION%%.*}"
   exit 1
 }
 
+DOCKER_DISCONTINUATION_ALERT="ATTENTION: NextcloudPi docker is being discontinued after Nextcloud 25! Minor NC updates and security updates and fixes will be provided until 2023/11.
+Learn more in the official announcement: https://help.nextcloud.com/t/nextcloudpi-planning-to-discontinue-its-docker-version-with-nc-25"
+
+echo -e "
+\033[1;31m$DOCKER_DISCONTINUATION_ALERT\033[0m
+
+Continue in 5 seconds..."
+
+sleep 5
+
 
 # wrapper to simulate update-rc.d
 cat > /usr/local/sbin/update-rc.d <<'EOF'
@@ -75,6 +85,9 @@ fi
 
 # wait for trap from 'docker stop'
 echo "Init done"
+
+[[ -f /data/docker_discontinuation_alert_sent ]] || \
+  ( . /usr/local/etc/library.sh; notify_admin "$DOCKER_DISCONTINUATION_ALERT" && touch /data/docker_discontinuation_alert_sent )
 while true; do sleep 0.5; done
 
 

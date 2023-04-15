@@ -51,7 +51,7 @@ EOF
 EOF
 }
 
-is_docker || {
+is_docker || is_lxc || {
 
   DATADIR=$( get_nc_config_value datadirectory ) || {
     echo "ERROR: Could not get data directory. Is NextCloud running?" >&2
