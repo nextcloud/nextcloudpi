@@ -386,9 +386,8 @@ jobs:
 
   convert-to-lxc-image:
     needs:
-      - determine-runner
       - build-current
-    runs-on: ${{ needs.determine-runner.outputs.runner_label }}
+    runs-on: ubuntu-20.04
     outputs:
       artifact_name: "${{ steps.lxd-to-lxc.outputs.artifact_name }}"
       artifact_file: "${{ steps.lxd-to-lxc.outputs.artifact_file }}"
