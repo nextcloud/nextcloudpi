@@ -10,10 +10,14 @@ on:
         type: string
         default: 'x86'
     outputs:
-      artifact_name:
+      lxd_artifact_name:
         value: "${{ jobs.build-current.outputs.artifact_name }}"
-      artifact_file:
+      lxd_artifact_file:
         value: "${{ jobs.build-current.outputs.artifact_file }}"
+      lxc_artifact_name:
+        value: "${{ jobs.convert-to-lxc-image.outputs.artifact_name }}"
+      lxc_artifact_file:
+        value: "${{ jobs.convert-to-lxc-image.outputs.artifact_file }}"
   push:
     branches:
       - "**"
@@ -168,7 +172,7 @@ jobs:
           path: "output/${{ steps.pack-lxd.outputs.artifact_file }}"
           if-no-files-found: error
 
-  update-previous:
+  test-update:
     needs:
       - build-previous
     runs-on: ubuntu-20.04
@@ -193,6 +197,14 @@ jobs:
               nictype: bridged
               type: nic
           EOF
+      - name: Setup Firefox
+        uses: browser-actions/setup-firefox@latest
+      - name: Setup GeckoDriver
+        uses: ChlodAlejandro/setup-geckodriver@latest
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Setup Selenium
+        run: pip install selenium
       - name: Checkout code
         uses: actions/checkout@v3
         with:
@@ -241,22 +253,44 @@ jobs:
           fi
           
           lxc stop ncp
-      - name: Pack LXD image
-        id: pack-lxd
+          lxc publish -q ncp -f --alias "ncp/updated"
+      - name: Relaunch container
         run: |
           set -x
-          . ./build/buildlib.sh
-          ARTIFACT_FILE="NextCloudPi_LXD_${LXD_ARCH:-x86}_${VERSION//\//_}"
-          lxc publish -q ncp -f --alias "ncp/updated"
-          mkdir -p output
-          lxc image export -q "ncp/updated" "output/${ARTIFACT_FILE}"
-          echo "artifact_file=${ARTIFACT_FILE}.tar.gz" >> $GITHUB_OUTPUT
-      - name: upload LXD image to artifact store
-        uses: actions/upload-artifact@v3
-        with:
-          name: "${{ env.ARTIFACT_NAME }}"
-          path: "output/${{ steps.pack-lxd.outputs.artifact_file }}"
-          if-no-files-found: error
+          lxc delete -q -f ncp || true
+          systemd-run --user --scope -p "Delegate=yes" lxc launch -q "ncp/updated" ncp
+          lxc exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
+          sleep 30
+          ip="$(lxc list -c n4 -f csv | grep '^ncp' | cut -d ',' -f2)"
+          ip="${ip/% *}"
+          echo "${ip} nextcloudpi.local" | sudo tee /etc/hosts
+      - name: Test LXD Image
+        working-directory: ./tests
+        run: |
+          lxc exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
+          python activation_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
+            echo "Activation test failed!"
+            echo "Geckodriver logs:"
+            tail -n 20 geckodriver.log >&2 || true
+            echo "================"
+            echo "ncp.log: "
+            lxc exec ncp -- "tail -n20 /var/log/ncp.log"
+            exit 1
+          }
+          python system_tests.py --non-interactive || {
+            echo "System test failed!"
+            exit 1
+          }
+          python nextcloud_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
+            echo "Nextcloud test failed!"
+            echo "Geckodriver logs:"
+            tail -n 20 geckodriver.log >&2 || true
+            echo "================"
+            echo "ncp.log: "
+            lxc exec ncp -- "tail -n20 /var/log/ncp.log"
+            exit 1
+          }
+          lxc stop ncp
 
   test-fresh-install:
     needs:
@@ -350,79 +384,38 @@ jobs:
           }
           lxc stop ncp
 
-  test-update:
+  convert-to-lxc-image:
     needs:
-      - update-previous
+      - build-current
     runs-on: ubuntu-20.04
+    outputs:
+      artifact_name: "${{ steps.lxd-to-lxc.outputs.artifact_name }}"
+      artifact_file: "${{ steps.lxd-to-lxc.outputs.artifact_file }}"
     env:
       VERSION: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
-      ARTIFACT_NAME: ${{ needs.update-previous.outputs.artifact_name }}
-      ARTIFACT_FILE: ${{ needs.update-previous.outputs.artifact_file }}
+      LXD_ARTIFACT_NAME: ${{ needs.build-current.outputs.artifact_name }}
+      LXD_ARTIFACT_FILE: ${{ needs.build-current.outputs.artifact_file }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          ref: "${{ env.VERSION }}"
-      - uses: whywaita/setup-lxd@v1
-        with:
-          lxd_version: latest/stable
-      - name: Fix LXD
-        run: |
-          lxc profile create network
-          cat <<EOF | lxc profile edit network
-          devices:
-            eth0:
-              name: eth0
-              network: lxdbr0
-              type: nic
-          EOF
-      - name: Setup Firefox
-        uses: browser-actions/setup-firefox@latest
-      - name: Setup GeckoDriver
-        uses: ChlodAlejandro/setup-geckodriver@latest
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Setup Selenium
-        run: pip install selenium
       - name: download LXD image from artifact store
         uses: actions/download-artifact@v3
         with:
-          name: ${{ env.ARTIFACT_NAME }}
-      - name: Launch ncp container
+          name: ${{ env.LXD_ARTIFACT_NAME }}
+      - name: convert to LXC image
+        id: lxd-to-lxc
         run: |
-          set -x
-          lxc delete -q -f ncp || true
-          lxc image import -q "./${ARTIFACT_FILE?}" --alias "ncp/test"
-          systemd-run --user --scope -p "Delegate=yes" lxc launch -q "ncp/test" ncp
-          lxc exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
-          sleep 30
-          ip="$(lxc list -c n4 -f csv | grep '^ncp' | cut -d ',' -f2)"
-          ip="${ip/% *}"
-          echo "${ip} nextcloudpi.local" | sudo tee /etc/hosts
-      - name: Test LXD Image
-        working-directory: ./tests
-        run: |
-          lxc exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
-          python activation_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
-            echo "Activation test failed!"
-            echo "Geckodriver logs:"
-            tail -n 20 geckodriver.log >&2 || true
-            echo "================"
-            echo "ncp.log: "
-            lxc exec ncp -- "tail -n20 /var/log/ncp.log"
-            exit 1
-          }
-          python system_tests.py --non-interactive || {
-            echo "System test failed!"
-            exit 1
-          }
-          python nextcloud_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
-            echo "Nextcloud test failed!"
-            echo "Geckodriver logs:"
-            tail -n 20 geckodriver.log >&2 || true
-            echo "================"
-            echo "ncp.log: "
-            lxc exec ncp -- "tail -n20 /var/log/ncp.log"
-            exit 1
-          }
-          lxc stop ncp
+          mkdir repackage output
+          cd repackage
+          sudo tar xpf "../${LXD_ARTIFACT_FILE?}"
+          sudo rm -rf ./rootfs/dev
+          LXC_ARTIFACT_FILE="${LXD_ARTIFACT_FILE//LXD/LXC}"
+          sudo tar cpzf "../output/${LXC_ARTIFACT_FILE?}" -C rootfs/ .
+          cd ..
+          sudo chown "$(id -un):" "./output/${LXC_ARTIFACT_FILE}"
+          echo "artifact_file=${LXC_ARTIFACT_FILE?}" >> $GITHUB_OUTPUT
+          echo "artifact_name=${LXD_ARTIFACT_NAME//lxd/lxc}" >> $GITHUB_OUTPUT
+      - name: upload LXD image to artifact store
+        uses: actions/upload-artifact@v3
+        with:
+          name: "${{ steps.lxd-to-lxc.outputs.artifact_name }}"
+          path: "output/${{ steps.lxd-to-lxc.outputs.artifact_file }}"
+          if-no-files-found: error

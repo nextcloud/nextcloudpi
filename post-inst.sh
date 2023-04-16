@@ -9,7 +9,7 @@
 #
 
 configure()
-{ 
+{
 (
   set +e
 
@@ -21,6 +21,8 @@ configure()
   pkill -f notify_push
   killall postdrop
   killall sendmail
+
+  [[ -f /usr/local/etc/ncp-config.d/SSH.cfg ]] && systemctl disable ssh
 
   # cleanup all NCP extras
   find /usr/local/bin/ncp -name '*.sh' | \

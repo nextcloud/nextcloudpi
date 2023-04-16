@@ -1,3 +1,32 @@
+# NextcloudPi Changelog
+
+## [v1.51.2](https://github.com/nextcloud/nextcloudpi/tree/v1.51.2) (2023-04-16) Restore support for LXC images
+
+### Changes
+
+- LXC images are being provided again (generated from the LXD ones)
+- root/webui users are not disabled on container images anymore
+- Add a new utility (command line) script `nc-broadcast` to notify all Nextcloud users
+- Notify docker users about the discontinuation of NCP docker (more information [here](https://help.nextcloud.com/t/nextcloudpi-planning-to-discontinue-its-docker-version-with-nc-25))
+- LXD/LXC images receive support for the following ncp apps:
+  - nc-autoupdate-ncp
+  - nc-update
+  - nc-datadir
+  - nc-database
+  - UFW
+  - nc-audit
+  - SSH
+  - fail2ban
+  - nc-nextcloud
+  - nc-init
+  - samba
+
+### Fixes
+
+- Exclude btrfs snapshots from backup monitoring in `ncp-metrics` for all container variants
+- Use systemd backend for ssh jail in `fail2ban` (/var/log/auth.log may not be available)
+- Increase mysql max_allowed_packet (fixes [#1752](https://github.com/nextcloud/nextcloudpi/issues/1752))
+
 ## [v1.51.1](https://github.com/nextcloud/nextcloudpi/tree/v1.51.1) (2023-04-08) Support for Nextcloud 25.0.5 and SSH/updater fixes
 
 ### Changes

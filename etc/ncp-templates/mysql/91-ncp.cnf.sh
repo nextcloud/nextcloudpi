@@ -17,6 +17,7 @@ transaction_isolation = READ-COMMITTED
 innodb_large_prefix=true
 innodb_file_per_table=1
 innodb_file_format=barracuda
+max_allowed_packet=256M
 
 [server]
 # innodb settings

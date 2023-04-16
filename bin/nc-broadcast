@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+if [[ ${EUID} -ne 0 ]]; then
+  printf "Must be run as root. Try 'sudo %s'\n" "$( basename "$0" )"
+  exit 1
+fi
+
+if [[ " $* " =~ " "(--help|-h)" " ]]
+then
+  echo 'Description:
+  Generate notifications for all Nextcloud users
+
+Usage:
+  nc-broadcast <short-message> [options]
+
+Arguments:
+  short-message                    Short message to be sent to the user (max. 255 characters)
+
+Options:
+  -l, --long-message=LONG-MESSAGE  Long message to be sent to the users (max. 4000 characters) [default: ""]
+  -h, --help                       Display this help message
+  -q, --quiet                      Do not output any message
+  -V, --version                    Display ncc/occ version
+      --ansi|--no-ansi             Force (or disable --no-ansi) ANSI output
+  -n, --no-interaction             Do not ask any interactive question
+      --no-warnings                Skip global warnings, show command output only
+  -v|vv|vvv, --verbose             Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug'
+  exit 0
+fi
+
+ncc user:list --output=json | jq -r 'keys[]' | while read -r user
+do
+  echo "Sending notification to $user"
+  ncc notification:generate "${@:2}" "$user" "$1"
+done
+echo "All users have been notified."

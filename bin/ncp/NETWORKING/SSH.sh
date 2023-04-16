@@ -8,7 +8,10 @@
 #
 
 
-install() { :; }
+install() {
+  apt-get update
+  apt-get install -y --no-install-recommends openssh-server
+ }
 
 is_active()
 {
