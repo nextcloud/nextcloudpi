@@ -47,6 +47,16 @@ fi
 EOF
   chmod +x /usr/local/bin/ncp-backup-auto
 
+  [[ "$BACKUPHOUR" =~ ^([0-1]?[0-9]|2[0-4])$ ]] || {
+    echo "ERROR: 'BACKUPHOUR' must be a number between 0 and 24, was: '$BACKUPHOUR'"
+    return 1
+  }
+
+  [[ "$BACKUPDAYS" =~ ^[0-9]+$ ]] || {
+    echo "ERROR: 'BACKUPDAYS' must be a number, was: '$BACKUPDAYS'"
+    return 1
+  }
+
   echo "0  ${BACKUPHOUR}  */${BACKUPDAYS}  *  *  root  /usr/local/bin/ncp-backup-auto >> /var/log/ncp.log 2>&1" > /etc/cron.d/ncp-backup-auto
   chmod 644 /etc/cron.d/ncp-backup-auto
   service cron restart

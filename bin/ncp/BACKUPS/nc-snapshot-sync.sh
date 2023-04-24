@@ -46,6 +46,17 @@ configure()
   }
 
   # checks
+
+  [[ "$SYNCHOUR" =~ ^([0-1]?[0-9]|2[0-4])$ ]] || {
+    echo "ERROR: 'BACKUPHOUR' must be a number between 0 and 24, was: '$SYNCHOUR'"
+    return 1
+  }
+
+  [[ "$SYNCDAYS" =~ ^[0-9]+$ ]] || {
+    echo "ERROR: 'BACKUPDAYS' must be a number, was: '$SYNCDAYS'"
+    return 1
+  }
+
   [[ -d "$SNAPDIR" ]] || { echo "$SNAPDIR does not exist"; return 1; }
   if ! [[ -f /root/.ssh/id_rsa ]]; then ssh-keygen -N "" -f /root/.ssh/id_rsa; fi
 
