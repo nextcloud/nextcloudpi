@@ -1,5 +1,11 @@
 # NextcloudPi Changelog
 
+## [v1.51.3](https://github.com/nextcloud/nextcloudpi/tree/v1.51.3) (2023-04-24) Add support for Nextcloud 25.0.6
+
+### Changes
+
+- Add support for NC 25.0.6
+
 ## [v1.51.2](https://github.com/nextcloud/nextcloudpi/tree/v1.51.2) (2023-04-16) Restore support for LXC images
 
 ### Changes
