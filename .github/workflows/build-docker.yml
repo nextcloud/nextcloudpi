@@ -16,13 +16,13 @@ on:
         default: 'x86'
   push:
     branches:
-      - master
-      - devel
+      - docker-stable
+      - docker-devel
   pull_request:
     branches:
-      - master
-      - devel
-      - release/*
+      - docker-stable
+      - docker-devel
+      - release/docker/*
 
 jobs:
   build:
