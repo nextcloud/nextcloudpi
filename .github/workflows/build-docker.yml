@@ -105,10 +105,11 @@ jobs:
               git fetch -fu --tags origin "${ref}:${ref}"
             fi
             version="$(git describe --tags || true)"
-            [[ "$version" =~ .*-.*-.* ]] || {
+            [[ "$version" =~ ^(docker-)?v.*-.*-.* ]] || {
               git checkout HEAD~1
               version="$(git describe --tags || echo latest)"
             }
+            version="${version#docker-}"
             version="${version%-*-*}"
           fi
           curl "https://hub.docker.com/v2/repositories/ownyourbits/nextcloudpi-${ARCH}/tags/${version}" | grep 'errinfo' > /dev/null && {

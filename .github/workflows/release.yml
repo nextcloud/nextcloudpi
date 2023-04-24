@@ -311,7 +311,7 @@ jobs:
       - docker-armhf
       - docker-arm64
       - test-curl-installer
-    if: ${{ (inputs.release || github.event_name != 'workflow_dispatch') && github.ref_type == 'tag' && (github.ref_protected || startsWith(github.ref, 'refs/tags/v'))  }}
+    if: ${{ (inputs.release || github.event_name != 'workflow_dispatch') && github.ref_type == 'tag' && (github.ref_protected || startsWith(github.ref, 'refs/tags/docker-v'))  }}
     runs-on: ubuntu-latest
     steps:
       - name: Login to DockerHub
@@ -326,6 +326,7 @@ jobs:
       - name: Create manifest and push as tag to docker hub
         run: |
           . ./build/buildlib.sh
+          version="${version/#docker-}"
           
           for arch in x86 armhf arm64
           do
@@ -344,7 +345,7 @@ jobs:
 
       - name: Create manifest and push as latest to docker hub
         run: |
-          [[ "${{ github.ref }}" =~ ^'refs/tags/v'[0-9]+'.'[0-9]+'.'[0-9]+$ ]] || {
+          [[ "${{ github.ref }}" =~ ^'refs/tags/docker-v'[0-9]+'.'[0-9]+'.'[0-9]+$ ]] || {
             echo "not tagging latest - is a pre-/beta-release"
             exit 0
           }
