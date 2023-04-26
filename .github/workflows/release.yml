@@ -325,6 +325,7 @@ jobs:
       - name: Create manifest and push as tag to docker hub
         run: |
           . ./build/buildlib.sh
+          version="${version#docker-}"
           
           for arch in x86 armhf arm64
           do
