@@ -22,6 +22,16 @@ configure()
     return 0
   }
 
+  [[ "$SYNCHOUR" =~ ^([0-1]?[0-9]|2[0-4])$ ]] || {
+    echo "ERROR: 'BACKUPHOUR' must be a number between 0 and 24, was: '$SYNCHOUR'"
+    return 1
+  }
+
+  [[ "$SYNCDAYS" =~ ^[0-9]+$ ]] || {
+    echo "ERROR: 'BACKUPDAYS' must be a number, was: '$SYNCDAYS'"
+    return 1
+  }
+
   local DATADIR
   DATADIR=$( get_nc_config_value datadirectory ) || {
     echo -e "Error reading data directory. Is NextCloud running and configured?";
@@ -36,7 +46,7 @@ configure()
     ${SSH[@]} echo || { echo "SSH non-interactive not properly configured"; return 1; }
   }
 
-  echo "0  5  */${SYNCDAYS}  *  *  root  /usr/bin/rsync -ax -e \"ssh -p $PORTNUMBER\" --delete \"$DATADIR\" \"$DESTINATION\"" > /etc/cron.d/ncp-rsync-auto
+  echo "0  ${SYNCHOUR}  */${SYNCDAYS}  *  *  root  /usr/bin/rsync -ax -e \"ssh -p $PORTNUMBER\" --delete \"$DATADIR\" \"$DESTINATION\"" > /etc/cron.d/ncp-rsync-auto
   chmod 644 /etc/cron.d/ncp-rsync-auto
   service cron restart
 

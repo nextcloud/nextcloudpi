@@ -9,7 +9,7 @@ if [[ "$1" == "--defaults" ]] || ! [[ -f "${BINDIR}/CONFIG/nc-limits.sh" ]]
 then
   echo "INFO: Restoring template to default settings" >&2
 
-  PHPTHREADS=6
+  PHPTHREADS=16
 else
   PHPTHREADS="$(source "${BINDIR}/CONFIG/nc-limits.sh"; tmpl_php_threads)"
 fi

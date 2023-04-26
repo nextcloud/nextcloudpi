@@ -32,23 +32,26 @@ on:
         required: false
         default: false
   push:
-    tags: ["v*"]
+    tags:
+      - "v*"
+      - "docker-v*"
     branches:
       - master
+      - docker-stable
 
 permissions:
   contents: write
 
 jobs:
   lxd-x86:
-    if: ${{ inputs.lxd || github.event_name != 'workflow_dispatch' }}
+    if: ${{ inputs.lxd || ( github.event_name != 'workflow_dispatch' && !startsWith(github.ref_name, 'docker-') ) }}
     uses: ./.github/workflows/build-lxd.yml
     with:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
       arch: 'x86'
     secrets: inherit
   lxd-arm64:
-    if: ${{ inputs.lxd || github.event_name != 'workflow_dispatch' }}
+    if: ${{ inputs.lxd || ( github.event_name != 'workflow_dispatch' && !startsWith(github.ref_name, 'docker-') ) }}
     uses: ./.github/workflows/build-lxd.yml
     with:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
@@ -56,7 +59,7 @@ jobs:
     secrets: inherit
 
   docker-x86:
-    if: ${{ inputs.docker || github.event_name != 'workflow_dispatch' }}
+    if: ${{ inputs.docker || ( github.event_name != 'workflow_dispatch' && startsWith(github.ref_name, 'docker-') ) }}
     uses: ./.github/workflows/build-docker.yml
     with:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
@@ -64,7 +67,7 @@ jobs:
     secrets: inherit
 
   docker-armhf:
-    if: ${{ inputs.docker || github.event_name != 'workflow_dispatch' }}
+    if: ${{ inputs.docker || ( github.event_name != 'workflow_dispatch' && startsWith(github.ref_name, 'docker-') ) }}
     uses: ./.github/workflows/build-docker.yml
     with:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
@@ -72,7 +75,7 @@ jobs:
     secrets: inherit
 
   docker-arm64:
-    if: ${{ inputs.docker || github.event_name != 'workflow_dispatch' }}
+    if: ${{ inputs.docker || ( github.event_name != 'workflow_dispatch' && startsWith(github.ref_name, 'docker-') ) }}
     uses: ./.github/workflows/build-docker.yml
     with:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
@@ -80,14 +83,14 @@ jobs:
     secrets: inherit
 
   test-curl-installer:
-    if: ${{ inputs.installer || github.event_name != 'workflow_dispatch' }}
+    if: ${{ inputs.installer || ( github.event_name != 'workflow_dispatch' && !startsWith(github.ref_name, 'docker-') ) }}
     uses: ./.github/workflows/vm-tests.yml
     with:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
     secrets: inherit
 
   raspberrypi:
-    if: ${{ inputs.sd-images || github.event_name != 'workflow_dispatch' }}
+    if: ${{ inputs.sd-images || ( github.event_name != 'workflow_dispatch' && !startsWith(github.ref_name, 'docker-') ) }}
     uses: ./.github/workflows/build-sd-images.yml
     with:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
@@ -106,7 +109,7 @@ jobs:
       board_name: OdroidHC2
     secrets: inherit
   rockpro64:
-    if: ${{ inputs.sd-images || github.event_name != 'workflow_dispatch' }}
+    if: ${{ inputs.sd-images || ( github.event_name != 'workflow_dispatch' && !startsWith(github.ref_name, 'docker-') ) }}
     uses: ./.github/workflows/build-sd-images.yml
     with:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
@@ -114,7 +117,7 @@ jobs:
       board_name: RockPro64
     secrets: inherit
   rock64:
-    if: ${{ inputs.sd-images || github.event_name != 'workflow_dispatch' }}
+    if: ${{ inputs.sd-images || ( github.event_name != 'workflow_dispatch' && !startsWith(github.ref_name, 'docker-') ) }}
     uses: ./.github/workflows/build-sd-images.yml
     with:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
@@ -132,7 +135,7 @@ jobs:
       board_name: BananaPi
     secrets: inherit
   odroidhc4:
-    if: ${{ inputs.sd-images || github.event_name != 'workflow_dispatch' }}
+    if: ${{ inputs.sd-images || ( github.event_name != 'workflow_dispatch' && !startsWith(github.ref_name, 'docker-') ) }}
     uses: ./.github/workflows/build-sd-images.yml
     with:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
@@ -140,7 +143,7 @@ jobs:
       board_name: OdroidHC4
     secrets: inherit
   odroidc4:
-    if: ${{ inputs.sd-images || github.event_name != 'workflow_dispatch' }}
+    if: ${{ inputs.sd-images || ( github.event_name != 'workflow_dispatch' && !startsWith(github.ref_name, 'docker-') ) }}
     uses: ./.github/workflows/build-sd-images.yml
     with:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
@@ -148,7 +151,7 @@ jobs:
       board_name: OdroidC4
     secrets: inherit
   odroidc2:
-    if: ${{ inputs.sd-images || github.event_name != 'workflow_dispatch' }}
+    if: ${{ inputs.sd-images || ( github.event_name != 'workflow_dispatch' && !startsWith(github.ref_name, 'docker-') ) }}
     uses: ./.github/workflows/build-sd-images.yml
     with:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
@@ -307,8 +310,7 @@ jobs:
       - docker-x86
       - docker-armhf
       - docker-arm64
-      - test-curl-installer
-    if: ${{ (inputs.release || github.event_name != 'workflow_dispatch') && github.ref_type == 'tag' && (github.ref_protected || startsWith(github.ref, 'refs/tags/v'))  }}
+    if: ${{ (inputs.release || github.event_name != 'workflow_dispatch') && github.ref_type == 'tag' && (github.ref_protected || startsWith(github.ref, 'refs/tags/docker-v'))  }}
     runs-on: ubuntu-latest
     steps:
       - name: Login to DockerHub
@@ -352,6 +354,7 @@ jobs:
           docker manifest push ownyourbits/nextcloudpi:latest
 
   github-release:
+    if: ${{ github.event_name == 'workflow_dispatch' || !startsWith(github.ref_name, 'docker-') }}
     needs:
       - test-curl-installer
     runs-on: ubuntu-latest
