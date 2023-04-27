@@ -87,7 +87,7 @@ fi
 echo "Init done"
 
 [[ -f /data/docker_discontinuation_alert_sent ]] || \
-  ( . /usr/local/etc/library.sh; notify_admin "$DOCKER_DISCONTINUATION_ALERT" && touch /data/docker_discontinuation_alert_sent )
+  ( . /usr/local/etc/library.sh; notify_admin "ATTENTION: NCP docker support to be discontinued" "$DOCKER_DISCONTINUATION_ALERT" && touch /data/docker_discontinuation_alert_sent )
 while true; do sleep 0.5; done
 
 
