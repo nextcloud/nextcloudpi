@@ -19,12 +19,13 @@ build_arch() {
   local suffix="${5:-$arch}"
 
   echo -e "\e[1m\n[ Build NCP Docker ${arch} ]\e[0m"
+  version="${version?}"
   DOCKER_BUILDKIT=1 docker build --pull --progress=plain . -f build/docker/Dockerfile \
     --target "$target" -t "ownyourbits/$target-${suffix}:latest" \
     --cache-from "ownyourbits/nextcloudpi-${suffix}" --build-arg "release=$release" --build-arg "arch=${arch}" \
-    --build-arg "arch_qemu=$arch_qemu" --build-arg "ncp_ver=${version?}"
+    --build-arg "arch_qemu=$arch_qemu" --build-arg "ncp_ver=${version#docker-}"
 
-  docker tag "ownyourbits/${target}-${suffix}:latest" "ownyourbits/${target}-${suffix}:${version}"
+  docker tag "ownyourbits/${target}-${suffix}:latest" "ownyourbits/${target}-${suffix}:${version#docker-}"
 }
 
 get_arch_args() {
