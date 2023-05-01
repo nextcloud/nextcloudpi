@@ -1,5 +1,15 @@
 # NextcloudPi Changelog
 
+## [v1.52.0](https://github.com/nextcloud/nextcloudpi/tree/v1.51.3) (2023-05-01) Add support for Nextcloud 26.0.1
+
+### Changes
+
+- Add support for NC 26.0.1
+
+### Fixes
+
+- Fix possible folder name collision in ncp-restore
+
 ## [v1.51.3](https://github.com/nextcloud/nextcloudpi/tree/v1.51.3) (2023-04-26) Add support for Nextcloud 25.0.6
 
 ### Changes

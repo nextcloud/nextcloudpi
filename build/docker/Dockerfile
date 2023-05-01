@@ -213,7 +213,7 @@ rm -f /var/log/alternatives.log /var/log/apt/*; \
 rm /var/cache/debconf/*-old; \
 
 # set version
-echo "${ncp_ver}" > /usr/local/etc/ncp-version
+echo "${ncp_ver#docker-}" > /usr/local/etc/ncp-version
 
 COPY build/docker/nextcloudpi/000ncp /etc/services-enabled.d/
 
