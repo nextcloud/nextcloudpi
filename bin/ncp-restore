@@ -60,7 +60,7 @@ if [[ -n "$DATA_BKP_DIR" ]]
 then
   target="$NCDIR/data"
   [[ -d "$target" ]] && {
-    target="$NCDIR/.data_$(date -I)"
+    target="$NCDIR/.data_$(date '+%FT%s')"
     echo "DATA CONFLICT! Your old '$NCDIR/data' directory can be found in '$target' after the restore script is done. The new '$NCDIR/data' directory will be restored from the backup. You can manually merge these directories with this command (run nc-fix-permissions and nc-scan afterwards): cp -rn '$target/'* '$target/'.[!.]* '$NCDIR/data/'"
   }
   echo "Restoring old '$NCDIR/data' to '$target'..."
@@ -108,8 +108,9 @@ NUMFILES=2
 if [[ $( ls "$TMPDIR" | wc -l ) -eq $NUMFILES ]]; then
 
   [[ -e "$DATADIR" ]] && {
-    echo "backing up existing $DATADIR to $DATADIR-$( date -I )..."
-    mv "$DATADIR" "$DATADIR-$( date -I )" || exit 1
+    bk_target="$DATADIR-$( date '+%FT%s' )"
+    echo "backing up existing $DATADIR to ${bk_target}..."
+    mv "$DATADIR" "${bk_target}" || exit 1
   }
 
   echo "restore datadir to $DATADIR..."
