@@ -9,7 +9,6 @@
 #
 
 DBADMIN=ncadmin
-REDIS_MEM=3gb
 
 APTINSTALL="apt-get install -y --no-install-recommends"
 export DEBIAN_FRONTEND=noninteractive
@@ -48,35 +47,40 @@ install()
     mv /newaliases /usr/bin/newaliases
   }
 
-  $APTINSTALL redis-server
+  # $APTINSTALL redis-server
   $APTINSTALL -t $RELEASE php${PHPVER}-redis
 
   local REDIS_CONF=/etc/redis/redis.conf
-  local REDISPASS="default"
-  sed -i "s|# unixsocket .*|unixsocket /var/run/redis/redis.sock|" $REDIS_CONF
-  sed -i "s|# unixsocketperm .*|unixsocketperm 770|"               $REDIS_CONF
-  sed -i "s|# requirepass .*|requirepass $REDISPASS|"              $REDIS_CONF
-  sed -i 's|# maxmemory-policy .*|maxmemory-policy allkeys-lru|'   $REDIS_CONF
-  sed -i 's|# rename-command CONFIG ""|rename-command CONFIG ""|'  $REDIS_CONF
-  sed -i "s|^port.*|port 0|"                                       $REDIS_CONF
-  echo "maxmemory $REDIS_MEM" >> $REDIS_CONF
+  mkdir -p "$(dirname "$REDIS_CONF")"
+  install_template redis.conf.sh "$REDIS_CONF" --defaults
+  install_template systemd/redis.service.sh /etc/systemd/system/redis.service --defaults
+  #systemctl unmask redis.service
+#  sed -i "s|# unixsocket .*|unixsocket /var/run/redis/redis.sock|" $REDIS_CONF
+#  sed -i "s|# unixsocketperm .*|unixsocketperm 770|"               $REDIS_CONF
+#  sed -i "s|# requirepass .*|requirepass $REDISPASS|"              $REDIS_CONF
+#  sed -i 's|# maxmemory-policy .*|maxmemory-policy allkeys-lru|'   $REDIS_CONF
+#  sed -i 's|# rename-command CONFIG ""|rename-command CONFIG ""|'  $REDIS_CONF
+#  sed -i "s|^port.*|port 0|"                                       $REDIS_CONF
+#  echo "maxmemory $REDIS_MEM" >> $REDIS_CONF
+
   echo 'vm.overcommit_memory = 1' >> /etc/sysctl.conf
 
-  if is_lxc; then
-    # Otherwise it fails to start in Buster LXC container
-    mkdir -p /etc/systemd/system/redis-server.service.d
-    cat > /etc/systemd/system/redis-server.service.d/lxc_fix.conf <<'EOF'
-[Service]
-ReadOnlyDirectories=
-EOF
-    systemctl daemon-reload
-  fi
+#  if is_lxc; then
+#    # Otherwise it fails to start in Buster LXC container
+#    mkdir -p /etc/systemd/system/redis-server.service.d
+#    cat > /etc/systemd/system/redis-server.service.d/lxc_fix.conf <<'EOF'
+#[Service]
+#ReadOnlyDirectories=
+#EOF
+#    systemctl daemon-reload
+#  fi
 
-  chown redis: "$REDIS_CONF"
-  usermod -a -G redis www-data
+#  chown redis: "$REDIS_CONF"
+#  usermod -a -G redis www-data
 
-  service redis-server restart
-  update-rc.d redis-server enable
+  systemctl enable --now redis
+#  service redis-server restart
+#  update-rc.d redis-server enable
   clear_opcache
 
   # service to randomize passwords on first boot
@@ -266,6 +270,34 @@ EOF
   fi
   echo "Don't forget to run nc-init"
 }
+
+
+install_() {
+  apt-get update
+  $APTINSTALL lbzip2 iputils-ping jq wget
+  $APTINSTALL -t $RELEASE smbclient exfat-fuse exfat-utils                      # for external storage
+  $APTINSTALL -t $RELEASE exfat-fuse exfat-utils                                # for external storage
+
+  # Setup Nextcloud via docker
+  install_docker
+  install_template "svc/nextcloud/env.sh" "/usr/local/etc/svc/nextcloud/.env" --defaults
+  install_template "systemd/ncp-nextcloud.service.sh" "/etc/systemd/system/ncp-nextcloud.service" --defaults
+  systemctl daemon-reload
+
+  # TODO: Is this really required on the host?
+  # POSTFIX
+  $APTINSTALL postfix || {
+    # [armbian] workaround for bug - https://bugs.launchpad.net/ubuntu/+source/postfix/+bug/1531299
+    echo "[NCP] Please, ignore the previous postfix installation error ..."
+    mv /usr/bin/newaliases /
+    ln -s /bin/true /usr/bin/newaliases
+    $APTINSTALL postfix
+    rm /usr/bin/newaliases
+    mv /newaliases /usr/bin/newaliases
+  }
+
+}
+
 
 # License
 #
