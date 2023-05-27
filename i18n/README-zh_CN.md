@@ -23,7 +23,7 @@ NextCloudPi 是一款适用于 Raspberry Pi、Odroid HC1、rock64 等其他板�
  * Redis memory cache
  * 用于简单设置的 ncp-config 命令(RAM 日志，USB 驱动及其他)
  * 自动重定向到 HTTPS
- * ACPU PHP cache
+ * APCu PHP cache
  * PHP Zend OPcache enabled with file cache
  * HSTS
  * Cron jobs for Nextcloud
