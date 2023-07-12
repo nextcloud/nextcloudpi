@@ -116,6 +116,7 @@ jobs:
             echo "Image ownyourbits/nextcloudpi-${ARCH}:${version} does not exist - falling back to :latest"
             version="latest"
           }
+          version="${version#docker-}"
           echo "Previous version is '$version'"
           echo "PREVIOUS_VERSION=$version" >> "$GITHUB_ENV"
           echo "previous_version=${version}" >> $GITHUB_OUTPUT

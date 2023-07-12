@@ -1,6 +1,14 @@
 # NextcloudPi Changelog
 
-## [v1.51.3](https://github.com/nextcloud/nextcloudpi/tree/v1.51.3) (2023-04-24) Add support for Nextcloud 25.0.6
+## [v1.51.4](https://github.com/nextcloud/nextcloudpi/tree/v1.51.4) (2023-05-01) Minor fixes
+
+### Fixes
+
+- Remove tag prefix in the web UI
+- Fix possible folder name collision in ncp-restore
+- Fix NC notification about dropped NCP docker support 
+
+## [v1.51.3](https://github.com/nextcloud/nextcloudpi/tree/v1.51.3) (2023-04-26) Add support for Nextcloud 25.0.6
 
 ### Changes
 

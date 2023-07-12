@@ -92,9 +92,9 @@ jobs:
           done
           
           [[ "$success" == "true" ]] || {
-            gh release upload "${VERSION?}" "${asset}"
             echo "Updating release description failed."
             exit 1
           }
           
+          gh release upload "${VERSION?}" "${asset}"
           echo "Image published successfully."
