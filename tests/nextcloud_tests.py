@@ -21,10 +21,7 @@ import configparser
 import signal
 import re
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.service import Service
 from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.firefox.options import Options
@@ -233,7 +230,7 @@ if __name__ == "__main__":
     print("Nextcloud tests " + tc.yellow + IP + tc.normal)
     print("---------------------------")
 
-    driver = webdriver.Firefox(service_log_path='/dev/null', options=options)
+    driver = webdriver.Firefox(options=options)
     try:
         test_nextcloud(IP, nc_port, driver)
     except Exception as e:
