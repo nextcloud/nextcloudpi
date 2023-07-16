@@ -23,7 +23,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     env:
       VERSION: "${{ inputs.git_ref }}"
       LOG_GUEST: "\\033[1;34mGUEST::\\033[0m"
@@ -132,7 +132,7 @@ jobs:
 
   test:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     env:
       VERSION: "${{ inputs.git_ref }}"
       ARTIFACT_ID: ${{ needs.build.outputs.artifact_name }}
