@@ -75,15 +75,17 @@ tar $compress_arg -cf "$destfile" \
     "$dbbackup" \
 \
     --exclude "$data/.opcache" \
-    --exclude "$data/{access,error,nextcloud}.log" \
-    --exclude "$data/access.log" \
+    --exclude "nextcloud/data/access.log" \
+    --exclude "nextcloud/data/error.log" \
+    --exclude "nextcloud/data/nextcloud.log" \
     --exclude "$data/ncp-update-backups" \
     -C "$(dirname "$datadir"/)" $data \
 \
     --exclude "nextcloud/data/*/files/*" \
     --exclude "nextcloud/data/.opcache" \
-    --exclude "nextcloud/data/{access,error,nextcloud}.log" \
     --exclude "nextcloud/data/access.log" \
+    --exclude "nextcloud/data/error.log" \
+    --exclude "nextcloud/data/nextcloud.log" \
     --exclude "nextcloud/data/appdata_*/preview/*" \
     --exclude "nextcloud/data/*/uploads/*" \
     --exclude "nextcloud/data/*/cache/*" \
