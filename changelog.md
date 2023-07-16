@@ -1,5 +1,17 @@
 # NextcloudPi Changelog
 
+## [v1.51.5](https://github.com/nextcloud/nextcloudpi/tree/v1.51.5) (2023-07-16) Minor fixes and NC update
+
+### Changes
+
+Add support for Nextcloud 25.0.8
+
+### Fixes
+
+- Fix NCP version check checking against the wrong release version
+- Fix nc-backup-auto being broken on systems that have been updated to v1.51.3 from a previous version
+- Fix syntax error in ncp-backup
+
 ## [v1.51.4](https://github.com/nextcloud/nextcloudpi/tree/v1.51.4) (2023-05-01) Minor fixes
 
 ### Fixes
