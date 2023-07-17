@@ -27,7 +27,7 @@ on:
 jobs:
   build:
     if: ${{ github.repository == 'nextcloud/nextcloudpi' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     env:
       VERSION: "${{ inputs.git_ref || github.ref }}"
       ARCH: "${{ inputs.arch || 'x86' }}"
@@ -39,6 +39,10 @@ jobs:
     steps:
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v2
+#      - name: setup binfmt
+#        run: |
+#          sudo apt-get install binfmt-support qemu-user-static
+#
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -71,7 +75,7 @@ jobs:
     if: ${{ inputs.arch != 'armhf' }}
     needs:
       - build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     env:
       VERSION: "${{ inputs.git_ref || github.ref }}"
       ARCH: "${{ inputs.arch || 'x86' }}"
@@ -105,10 +109,11 @@ jobs:
               git fetch -fu --tags origin "${ref}:${ref}"
             fi
             version="$(git describe --tags || true)"
-            [[ "$version" =~ .*-.*-.* ]] || {
+            [[ "$version" =~ ^(docker-)?v.*-.*-.* ]] || {
               git checkout HEAD~1
               version="$(git describe --tags || echo latest)"
             }
+            version="${version#docker-}"
             version="${version%-*-*}"
           fi
           curl "https://hub.docker.com/v2/repositories/ownyourbits/nextcloudpi-${ARCH}/tags/${version}" | grep 'errinfo' > /dev/null && {
@@ -389,7 +394,7 @@ jobs:
   test:
     needs:
       - build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     env:
       VERSION: "${{ inputs.git_ref || github.ref }}"
       ARCH: "${{ inputs.arch || 'x86' }}"
