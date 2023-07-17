@@ -79,8 +79,8 @@ configure()
   ENCDIR="${BASEDIR}"/ncdata_enc
 
   # checks
-  [[ "$DISABLE_FS_CHECK" == 1 ]] || grep -q -e ext -e btrfs <( stat -fc%T "${BASEDIR}" ) || {
-    echo -e "Only ext/btrfs filesystems can hold the data directory (found '$(stat -fc%T "${BASEDIR}")')"
+  [[ "$DISABLE_FS_CHECK" == 1 ]] || [[ "$(stat -fc%T "${BASEDIR}")" =~ ext|btrfs|zfs ]] || {
+    echo -e "Only ext/btrfs/zfs filesystems can hold the data directory (found '$(stat -fc%T "${BASEDIR}")')"
     return 1
   }
 
@@ -126,7 +126,7 @@ configure()
   # datadir
   ncc config:system:set datadirectory  --value="${DATADIR}" \
   || sed -i "s|'datadirectory' =>.*|'datadirectory' => '${DATADIR}',|" "${NCDIR?}"/config/config.php
-  
+
   ncc config:system:set logfile --value="${DATADIR}/nextcloud.log" \
   || sed -i "s|'logfile' =>.*|'logfile' => '${DATADIR}/nextcloud.log',|" "${NCDIR?}"/config/config.php
   set_ncpcfg datadir "${DATADIR}"

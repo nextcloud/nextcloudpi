@@ -51,7 +51,7 @@ Please reach out in the [Matrix][chat-matrix-wiki] or [Telegram][chat-telegram-w
  * Redis memory cache
  * ncp-config TUI for easy setup ( RAM logs, USB drive and more )
  * Automatic redirection to HTTPS
- * ACPU PHP cache
+ * APCu PHP cache
  * PHP Zend OPcache enabled with file cache
  * HSTS
  * Cron jobs for Nextcloud

@@ -1,6 +1,18 @@
 # NextcloudPi Changelog
 
-## [v1.52.0](https://github.com/nextcloud/nextcloudpi/tree/v1.51.3) (2023-05-01) Add support for Nextcloud 26.0.1
+## [v1.52.1](https://github.com/nextcloud/nextcloudpi/tree/v1.52.1) (2023-07-17) Add support for Nextcloud 26.0.3
+
+### Changes
+
+- Adds support for NC 26.0.3
+- Add ZFS support for the data directory (#1767)
+
+### Fixes
+
+- Fix bug in ncp-backup (#1791)
+- Fix missing configuration field for nc-backup-auto (#1787)
+
+## [v1.52.0](https://github.com/nextcloud/nextcloudpi/tree/v1.52.0) (2023-05-01) Add support for Nextcloud 26.0.1
 
 ### Changes
 

@@ -28,7 +28,7 @@ NextCloudPi 是專門為 Raspberry Pi、Odroid HC1、rock64 以及其它單板�
  * 4.9 Linux Kernel ( NEW 03-13-2017 )
  * ncp-config for easy setup ( RAM logs, USB drive and more )
  * Automatic redirection to HTTPS
- * ACPU PHP cache
+ * APCu PHP cache
  * PHP Zend OPcache enabled with file cache
  * HSTS
  * Cron jobs for Nextcloud

@@ -394,7 +394,7 @@ jobs:
           hub release create --draft -F - "${{ env.VERSION }}" <<EOF
           ${subject:-No message found}
 
-          ${body:+${body}${separator}}[Docker images](https://hub.docker.com/r/ownyourbits/nextcloudpi)
+          ${body:+${body}${separator}}
 
           [Changelog](https://github.com/nextcloud/nextcloudpi/blob/${{ env.VERSION }}/changelog.md)
           EOF
