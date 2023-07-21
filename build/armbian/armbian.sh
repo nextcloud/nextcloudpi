@@ -12,6 +12,8 @@
 
 set -e
 
+echo 'Running user script...'
+
 ARMBIAN_RELEASE=$1
 LINUXFAMILY=$2
 BOARD=$3
