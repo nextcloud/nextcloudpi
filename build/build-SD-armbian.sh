@@ -30,12 +30,11 @@ source etc/library.sh # sets RELEASE
 prepare_dirs                   # tmp cache output
 
 # get latest armbian
-[[ -d armbian ]] || git clone --depth 1 --branch v23.02 https://github.com/armbian/build armbian
-( cd armbian && git checkout v23.02 )
-sed -i -e '/export rootfs_size=/s/du -sm/du --apparent-size -sm/' armbian/lib/functions/image/partitioning.sh
-sed -i -e '/export rootfs_size_mib=/s/du -sm/du --apparent-size -sm/' armbian/lib/functions/main/rootfs-image.sh
-sed -i -e 's/du /du --apparent-size /' armbian/lib/functions/image/rootfs-to-image.sh
-
+[[ -d armbian ]] || git clone https://github.com/armbian/build armbian
+#( cd armbian && git pull --ff-only --tags && git checkout v23.02 )
+#sed -i -e '/export rootfs_size=/s/du -sm/du --apparent-size -sm/' armbian/lib/functions/image/partitioning.sh
+#sed -i -e '/export rootfs_size_mib=/s/du -sm/du --apparent-size -sm/' armbian/lib/functions/main/rootfs-image.sh
+#sed -i -e 's/du /du --apparent-size /' armbian/lib/functions/image/rootfs-to-image.sh
 
 # add NCP modifications
 mkdir -p armbian/userpatches armbian/userpatches/overlay
@@ -52,7 +51,6 @@ cat > "$CONF" <<EOF
 BOARD="$BOARD"
 BRANCH=current
 RELEASE=${RELEASE%%-security}
-KERNEL_ONLY=no
 KERNEL_CONFIGURE=prebuilt
 BUILD_DESKTOP=no
 BUILD_MINIMAL=yes
@@ -72,10 +70,10 @@ EXTRA_CONF=build/armbian/"config-$BOARD".conf
 # build
 rm -rf armbian/output/images
 mkdir -p armbian/userpatches
-sed -e '/docker.*run/s/-it//' armbian/config/templates/config-docker.conf > armbian/userpatches/config-docker.conf
-docker pull "ghcr.io/armbian/build:$(cut -d"." -f1-2 < armbian/VERSION)-$(dpkg --print-architecture)" \
- || docker pull "ghcr.io/armbian/build:latest-$(dpkg --print-architecture)"
-sudo armbian/compile.sh docker ncp
+#sed -e '/docker.*run/s/-it//' armbian/config/templates/config-docker.conf > armbian/userpatches/config-docker.conf
+#docker pull "ghcr.io/armbian/build:$(cut -d"." -f1-2 < armbian/VERSION)-$(dpkg --print-architecture)" \
+# || docker pull "ghcr.io/armbian/build:latest-$(dpkg --print-architecture)"
+armbian/compile.sh ncp
 rm "$CONF"
 
 # pack image
