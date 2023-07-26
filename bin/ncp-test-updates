@@ -4,6 +4,8 @@
 
 NEED_UPDATE=false
 VERFILE=/var/run/.ncp-latest-version
+# Disable internal updater on docker
+{ [[ -f /.dockerenv ]] || [[ -f /.docker-image ]] || [[ "$DOCKERBUILD" == 1 ]]; } && exit 1
 
 [[ $( cat $VERFILE 2>/dev/null | wc -c ) -eq 0 ]] && ncp-check-version
 

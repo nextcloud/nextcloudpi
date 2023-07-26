@@ -6,7 +6,7 @@ TMPDIR="$( mktemp -d /tmp/ncp-check.XXXXXX || ( echo "Failed to create temp dir.
 trap "rm -rf \"${TMPDIR}\"; exit 0" 0 1 2 3 15
 
 BRANCH="master"
-is_docker && BRANCH="docker-stable"
+{ [[ -f /.dockerenv ]] || [[ -f /.docker-image ]] || [[ "$DOCKERBUILD" == 1 ]]; } && BRANCH="docker-stable"
 
 git clone -b "$BRANCH" --depth 20 -q --bare https://github.com/nextcloud/nextcloudpi.git "$TMPDIR" || {
   echo "The git clone command failed: No connectivity to https://github.com ?" >&2

@@ -1,5 +1,15 @@
 # NextcloudPi Changelog
 
+## [v1.51.6](https://github.com/nextcloud/nextcloudpi/tree/v1.51.6) (2023-07-26) Minor fixes and NC update
+
+### Changes
+
+Add support for Nextcloud 25.0.9
+
+### Fixes
+
+- Disable internal updater altogether for NCP docker
+
 ## [v1.51.5](https://github.com/nextcloud/nextcloudpi/tree/v1.51.5) (2023-07-16) Minor fixes and NC update
 
 ### Changes
