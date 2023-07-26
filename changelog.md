@@ -1,5 +1,17 @@
 # NextcloudPi Changelog
 
+## [v1.52.3](https://github.com/nextcloud/nextcloudpi/tree/v1.52.3) (2023-07-26) Add support for Nextcloud 27.0.1
+
+### Changes
+
+- Add support for Nextcloud 27.0.1
+
+## [v1.52.2](https://github.com/nextcloud/nextcloudpi/tree/v1.52.2) (2023-07-19) Hotfix: Fix crash in ncp-restore
+
+### Fixes
+
+- Fix crash in `ncp-restore`
+
 ## [v1.52.1](https://github.com/nextcloud/nextcloudpi/tree/v1.52.1) (2023-07-17) Add support for Nextcloud 26.0.3
 
 ### Changes
