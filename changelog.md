@@ -1,5 +1,11 @@
 # NextcloudPi Changelog
 
+## [v1.52.4](https://github.com/nextcloud/nextcloudpi/tree/v1.52.4) (2023-07-31) Fix error in NCP updater
+
+### Fixes
+
+- Fix missing command in NCP updater
+
 ## [v1.52.3](https://github.com/nextcloud/nextcloudpi/tree/v1.52.3) (2023-07-26) Add support for Nextcloud 27.0.1
 
 ### Changes
