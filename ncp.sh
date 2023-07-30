@@ -20,6 +20,7 @@ export DEBIAN_FRONTEND=noninteractive
 
 install()
 {
+  [[ "$DBG" == "x" ]] && set -x
   # NCP-CONFIG
   apt-get update
   $APTINSTALL git dialog whiptail jq file lsb-release
@@ -208,7 +209,7 @@ EOF
   chmod g+w           /var/run/.ncp-latest-version
 
   # Install all ncp-apps
-  ALLOW_UPDATE_SCRIPT=1 bin/ncp-update "$BRANCH" || exit $?
+  ALLOW_UPDATE_SCRIPT=1 DBG="${DBG:-}" bin/ncp-update "$BRANCH" || exit $?
 
   # LIMIT LOG SIZE
   grep -q maxsize /etc/logrotate.d/apache2 || sed -i /weekly/amaxsize2M /etc/logrotate.d/apache2
