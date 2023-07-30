@@ -30,6 +30,7 @@ processes_must_be_running = [
         'php-fpm',
         'postfix',
         'redis-server',
+        'dockerd'
         ]
 
 binaries_must_be_installed = [
@@ -155,7 +156,7 @@ def check_files_dont_exist(files):
 
 
 def check_notify_push():
-    "check that notify_push is installed and set up"
+    """check that notify_push is installed and set up"""
     result = run(pre_cmd + ['ncc', 'notify_push:self-test'], stdout=PIPE, stderr=PIPE)
 
     print("[push   ] " + tc.brown + "notify_push self-test" + tc.normal, end=' ')
@@ -164,6 +165,20 @@ def check_notify_push():
         return True
     else:
         print(tc.red + "error" + tc.normal)
+        print(result.stderr)
+        print(result.stdout)
+        return False
+
+
+def check_redis():
+    """check that redis is running via docker and working"""
+    result = run(pre_cmd + ['docker', 'exec', '-it', 'ncp-redis', 'redis-cli', '-a', '"${REDISPASS}"' 'ping'],
+                 stdout=PIPE, stderr=PIPE)
+    if result.returncode == 0 and b'PONG' in result.stdout:
+        print(f"{tc.green}ok{tc.normal}")
+        return True
+    else:
+        print(f"{tc.red}error{tc.normal}")
         print(result.stderr)
         print(result.stdout)
         return False
@@ -352,14 +367,18 @@ if __name__ == "__main__":
     # checks
     print("\nNextCloudPi system checks")
     print("-------------------------")
-    running_result = check_processes_running(processes_must_be_running)
-    install_result = check_binaries_installed(binaries_must_be_installed)
-    files1_result  = check_files_exist(files_must_exist)
-    files2_result  = check_files_dont_exist(files_must_not_exist)
-    notify_push_result = check_notify_push()
-    update_test_result = True if skip_update_test else test_autoupdates()
+    results = []
+    results.extend([
+        check_processes_running(processes_must_be_running),
+        check_binaries_installed(binaries_must_be_installed),
+        check_files_exist(files_must_exist),
+        check_files_dont_exist(files_must_not_exist),
+        check_notify_push(),
+        check_redis(),
+        True if skip_update_test else test_autoupdates()
+    ])
 
-    if running_result and install_result and files1_result and files2_result and notify_push_result and update_test_result:
+    if all(results):
         sys.exit(0)
     else:
         sys.exit(1)
