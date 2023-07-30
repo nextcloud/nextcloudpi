@@ -54,7 +54,18 @@ EOF
 
   # make sure redis is running first
   systemctl start redis
-  docker exec -it ncp-redis redis-cli -a "${REDISPASS}" ping | grep PONG
+  i=0
+  while ! { docker exec -it ncp-redis redis-cli -a "${REDISPASS}" ping | grep PONG; }
+  do
+    [[ $i -lt 12 ]] || {
+      echo "Failed to start redis"
+      systemctl status redis
+      journalctl -u ncp-redis
+      return 1
+    }
+    i=$((i+1))
+    sleep 5
+  done
 
 
   echo "Setting up Nextcloud..."
