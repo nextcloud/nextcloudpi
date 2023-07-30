@@ -46,6 +46,8 @@ install()
     rm /usr/bin/newaliases
     mv /newaliases /usr/bin/newaliases
   }
+  install_template "svc/nextcloud/env.sh" "/usr/local/etc/svc/nextcloud/.env" --defaults
+  chown 0600 /usr/local/etc/svc/nextcloud/.env
 
   # $APTINSTALL redis-server
   $APTINSTALL -t $RELEASE php${PHPVER}-redis
