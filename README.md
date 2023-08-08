@@ -1,6 +1,4 @@
-English | [Traditional Chinese 繁體中文](i18n/README-zh_TW.md) | [Simplified Chinese 简体中文](i18n/README-zh_CN.md)
 
-_(The translated README pages are not updated at this time)_
 
 # NextcloudPi
 
