@@ -172,7 +172,14 @@ def check_notify_push():
 
 def check_redis():
     """check that redis is running via docker and working"""
-    result = run(pre_cmd + ['docker', 'exec', '-it', 'ncp-redis', 'redis-cli', '-a', '"${REDISPASS}"' 'ping'],
+    print("[redis  ] " + tc.brown + "redis container self-test" + tc.normal, end=' ')
+    result = run(pre_cmd + ['grep', '^requirepass', '/etc/redis/redis.conf'], stdout=PIPE, stderr=PIPE)
+    if result.returncode != 0:
+        print(f"{tc.red}error{tc.normal} (failed to get redis password)")
+        return False
+    redis_pass = result.stdout.decode('utf-8').strip().split(' ')[1]
+
+    result = run(pre_cmd + ['docker', 'exec', 'ncp-redis', 'redis-cli', '-a', f'{redis_pass}', 'ping'],
                  stdout=PIPE, stderr=PIPE)
     if result.returncode == 0 and b'PONG' in result.stdout:
         print(f"{tc.green}ok{tc.normal}")
