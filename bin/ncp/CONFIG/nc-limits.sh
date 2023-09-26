@@ -53,6 +53,7 @@ tmpl_php_threads() {
 
 configure()
 {
+  set -x
   # Set auto memory limit to 75% of the total memory
   local TOTAL_MEM="$( get_total_mem )"
   # special case of 32bit emulation (e.g. 32bit-docker on 64bit hardware)
