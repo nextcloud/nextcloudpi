@@ -51,6 +51,10 @@ tmpl_php_threads() {
    echo -n "$PHPTHREADS"
 }
 
+tmpl_redis_mem() {
+  find_app_param nc-limits REDISMEM
+}
+
 configure()
 {
   set -x

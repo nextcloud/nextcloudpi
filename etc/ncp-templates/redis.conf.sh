@@ -1,3 +1,6 @@
+set -e
+source /usr/local/etc/library.sh
+
 REDIS_MEM=3gb
 
 if [[ "$1" == "--defaults" ]]
