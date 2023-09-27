@@ -33,6 +33,7 @@ systemctl enable --now redis
 
 clear_opcache
 
+echo 'Waiting for redis to start up...'
 count=1
 while ! { docker exec ncp-redis redis-cli -a "${REDIS_PASSWORD}" ping 2> /dev/null | grep PONG; }
 do
@@ -44,4 +45,6 @@ do
   count=$((count+1))
   sleep 1
 done
+echo 'Redis is started. Checking nextcloud connectivity...'
 ncc status
+echo 'Done.'
