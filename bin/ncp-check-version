@@ -15,6 +15,18 @@ git clone -b "$BRANCH" --depth 20 -q --bare https://github.com/nextcloud/nextclo
 
 cd "$TMPDIR" || exit 1
 VER=$( git describe --always --tags | grep -oP "v\d+\.\d+\.\d+" )
+
+[[ -f "/usr/local/etc/instance.cfg" ]] && {
+  cohorte_id="$(jq .cohorteId /usr/local/etc/instance.cfg)"
+  [[ -f "./staged_rollouts/${VER}.txt" ]] && {
+    grep "^${cohorte_id}$" "./staged_rollouts/${VER}.txt" || {
+      echo "Skipping version $VER - cohorte ${cohorte_id} not yet active"
+      cd / || exit 1
+      exit 0
+    }
+  }
+}
+
 grep -qP "v\d+\.\d+\.\d+" <<< "$VER" && {       # check format
   echo "$VER" > /var/run/.ncp-latest-version
 

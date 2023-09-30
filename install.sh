@@ -84,6 +84,14 @@ rm /.ncp-image
 cd -
 rm -rf "${TMPDIR}"
 
+cohorte_id=$((RANDOM % 100))
+cat <<EOF > /usr/local/etc/instance.cfg
+{
+  "cohorteId": ${cohorte_id},
+  "canary": false
+}
+EOF
+
 IP="$(get_ip)"
 
 echo "Done.

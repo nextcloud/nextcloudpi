@@ -154,7 +154,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Selenium
-        run: pip install selenium
+        run: pip install selenium==4.10.0
 
       - name: Wait for container startup
         run: |
@@ -421,7 +421,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Selenium
-        run: pip install selenium
+        run: pip install selenium==4.10.0
       - name: Wait for container startup
         run: |
           set -e
