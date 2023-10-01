@@ -18,7 +18,7 @@ ncc config:import <<EOF
   }
 }
 EOF
-systemctl stop redis-server
+systemctl is-active redis-server >/dev/null && systemctl stop redis-server
 rm "${REDIS_CONF}"
 rm -f /etc/systemd/system/redis-server.service.d/lxc_fix.conf
 apt-get remove --purge -y redis-server
@@ -37,7 +37,7 @@ echo 'Waiting for redis to start up...'
 count=1
 while ! { docker exec ncp-redis redis-cli -a "${REDIS_PASSWORD}" ping 2> /dev/null | grep PONG; }
 do
-  if [[ $count -ge 10 ]]
+  if [[ $count -ge 60 ]]
   then
     echo 'Failed to setup redis' >&2
     exit 1

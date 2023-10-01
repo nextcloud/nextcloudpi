@@ -53,11 +53,12 @@ EOF
   ## INITIALIZE NEXTCLOUD
 
   # make sure redis is running first
+  echo "Waiting for redis server to start up..."
   systemctl start redis
   i=0
-  while ! { docker exec ncp-redis redis-cli -a "${REDISPASS}" ping | grep PONG; }
+  while ! { docker exec ncp-redis redis-cli -a "${REDISPASS}" ping 2> /dev/null | grep PONG; }
   do
-    [[ $i -lt 12 ]] || {
+    [[ $i -lt 60 ]] || {
       echo "Failed to start redis"
       systemctl status redis
       journalctl -u ncp-redis
@@ -66,6 +67,7 @@ EOF
     i=$((i+1))
     sleep 5
   done
+echo 'Redis is started.'
 
 
   echo "Setting up Nextcloud..."
