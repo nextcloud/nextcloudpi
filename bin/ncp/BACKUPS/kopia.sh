@@ -27,6 +27,8 @@ configure() {
   mkdir -p /usr/local/etc/kopia
   mkdir -p /var/log/kopia
   hostname="$(ncc config:system:get overwrite.cli.url)"
+  hostname="${hostname##http*:\/\/}}"
+  hostname="${hostname%%/*}"
 
   kopia_flags=(--config-file=/usr/local/etc/kopia/repository.config --log-dir="/var/log/kopia" --no-persist-credentials)
   kopia "${kopia_flags[@]}" cache set --cache-directory="${DESTINATION?DESTINATION must not be empty}/.kopia_cache"
