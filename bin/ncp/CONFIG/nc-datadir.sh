@@ -20,6 +20,10 @@ install()
   apt_install btrfs-progs
 }
 
+tmpl_data_dir() {
+  get_nc_config_value datadirectory || find_app_param nc-datadir DATADIR
+}
+
 tmpl_opcache_dir() {
   DATADIR="$(get_nc_config_value datadirectory || find_app_param nc-datadir DATADIR)"
   echo -n "${DATADIR}/.opcache"
