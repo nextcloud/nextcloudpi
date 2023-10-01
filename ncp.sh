@@ -104,6 +104,10 @@ action="${1}"
 file="${2}"
 compressed="${3}"
 grep -q '[\\&#;`|*?~<>^()[{}$&]' <<< "$*" && exit 1
+[[ "${action}" == "listkopia" ]] && {
+  ncp-kopia snapshot list --json
+  exit
+}
 [[ "$file" =~ ".." ]] && exit 1
 [[ "${action}" == "chksnp" ]] && {
   btrfs subvolume show "$file" &>/dev/null || exit 1

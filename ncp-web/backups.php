@@ -19,6 +19,11 @@ $bkp_auto_dir = $bkp_auto_json['params'][1]['value'];
 
 $bkps = array();
 $bkps_auto = array();
+exec("sudo /home/www/ncp-backup-launcher.sh listkopia", $bkps_kopia_raw, $ret);
+if ( $ret !== 0 ) {
+    die('Error fetching kopia backups');
+}
+$bkps_kopia=json_decode(join("\n", $bkps_kopia_raw), true) or exit('invalid format:');
 
 function filesize_compat($file)
 {
@@ -171,7 +176,72 @@ HTML;
   echo "<div>No snapshots found.</div>";
 }
 ?>
+</br></br>
+<h2 class="text-title"><?php echo $l->__("Kopia DB Backups"); ?></h2>
+<div id="kopia-db-table">
+  <table class="dashtable backuptable">
+    <th>Date</th><th>Size</th><th></th>
+    <?php
+      foreach ($bkps_kopia as $bkp)
+      {
+          if ($bkp["source"]["path"] !== "/db") { continue; }
+          $bkp_id = $bkp["id"];
+          $bkp_time = $bkp["startTime"];
+          $bkp_time = str_replace("T", " @ ", explode(".", $bkp_time)[0]);
+          $bkp_size = $bkp["stats"]["totalSize"];
+          $bkp_size_unit = "B";
+          foreach (["KB", "MB", "GB", "TB"] as $unit) {
+              if ($bkp_size < 1000) {
+                  break;
+              }
+              $bkp_size = $bkp_size / 1000;
+              $bkp_size_unit = "$unit";
+          }
+          echo <<<HTML
+<tr id="$bkp_id">
+    <td class="text-align-left">$bkp_time</td>
+    <td class="text-align-left">$bkp_size $bkp_size_unit</td>
+    <td></td>
+</tr>
+HTML;
 
+      }
+    ?>
+  </table>
+</div>
+</br>
+<h2 class="text-title"><?php echo $l->__("Kopia Data Backups"); ?></h2>
+<div id="kopia-data-table">
+    <table class="dashtable backuptable">
+        <th>Date</th><th>Size</th><th></th>
+      <?php
+      foreach ($bkps_kopia as $bkp)
+      {
+        if ($bkp["source"]["path"] !== "/ncdata") { continue; }
+        $bkp_id = $bkp["id"];
+        $bkp_time = $bkp["startTime"];
+        $bkp_time = str_replace("T", " @ ", explode(".", $bkp_time)[0]);
+        $bkp_size = $bkp["stats"]["totalSize"];
+        $bkp_size_unit = "B";
+        foreach (["KB", "MB", "GB", "TB"] as $unit) {
+          if ($bkp_size < 1000) {
+            break;
+          }
+          $bkp_size = $bkp_size / 1000;
+          $bkp_size_unit = "$unit";
+        }
+        echo <<<HTML
+<tr id="$bkp_id">
+    <td class="text-align-left">$bkp_time</td>
+    <td class="text-align-left">$bkp_size $bkp_size_unit</td>
+    <td></td>
+</tr>
+HTML;
+
+      }
+      ?>
+    </table>
+</div>
 <!--
  License
 

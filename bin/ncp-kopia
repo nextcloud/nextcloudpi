@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+[[ "$(id -u)" == "0" ]] && export KOPIA_PASSWORD="$(cat /usr/local/etc/kopia/password)"
+
 source /usr/local/etc/library.sh
 
 [[ -n "$KOPIA_PASSWORD" ]] || read -rs KOPIA_PASSWORD "Please enter the kopia repository password (alternatively you can set the environment variable KOPIA_PASSWORD):"

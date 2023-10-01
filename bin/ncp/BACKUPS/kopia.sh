@@ -77,9 +77,13 @@ configure() {
       --add-ignore '/ncdata/*/uploads' \
       --add-ignore '/ncdata/.data_*'
 
+  touch /usr/local/etc/kopia/password
+  chmod 0640 /usr/local/etc/kopia/password
+  chown root:www-data /usr/local/etc/kopia/password
+  echo "${REPOSITORY_PASSWORD}" > /usr/local/etc/kopia/password
   cat > /etc/cron.hourly/ncp-kopia <<EOF
 #!/bin/bash
-KOPIA_PASSWORD="${REPOSITORY_PASSWORD}" /usr/local/bin/kopia-bkp.sh
+KOPIA_PASSWORD="$(cat /usr/local/etc/kopia/password)" /usr/local/bin/kopia-bkp.sh
 EOF
   chmod 0700 /etc/cron.hourly/ncp-kopia
   echo "Repository initialized successfully"
