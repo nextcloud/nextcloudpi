@@ -18,7 +18,7 @@ data_subvol="$data_dir"
 backup_dir="$(dirname "${data_subvol}")/kopia"
 mkdir -p "$backup_dir"
 
-db_backup_file="ncp-db-$( date -Iseconds -u )-bkp.sql"
+db_backup_file="nextcloud-sqlbkp_$( date -Iseconds -u ).sql"
 db_backup_file="${db_backup_file/+00:00/}"
 db_backup_file="${db_backup_file//:/-}"
 mysqldump -u root --single-transaction nextcloud > "${backup_dir}/${db_backup_file}"

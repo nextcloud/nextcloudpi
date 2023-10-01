@@ -1,0 +1,124 @@
+#!/usr/bin/env bash
+
+set -e
+
+source /usr/local/etc/library.sh
+
+REPOSITORY="${1?}"
+REPOSITORY_PASSWORD="${2?}"
+SNAPSHOT_ID="${3?}"
+
+data_dir="$(get_nc_config_value datadirectory)"
+docker_args=()
+kopia_args=()
+if [[ "$REPOSITORY" =~ .*'@'.*':'.* ]]
+then
+  repo_type="sftp"
+  sftp_user="${REPOSITORY%@*}"
+  sftp_host="${REPOSITORY#*@}"
+  sftp_host="${sftp_host%:*}"
+  repo_path="${REPOSITORY#*:}"
+  ssh -o "BatchMode=yes" "${sftp_user}@${sftp_host}" || { echo "SSH non-interactive not properly configured"; return 1; }
+  kopia_args=(--host "${sftp_host}" --user "${sftp_user}" --path "${repo_path}")
+else
+  repo_type="filesystem"
+  repo_path="${REPOSITORY}"
+  docker_args=(-v "${repo_path}:/repository")
+  kopia_args=(--path "/repository")
+fi
+[[ -z "${REPOSITORY_PASSWORD}" ]] && [[ -f /usr/local/etc/kopia/password ]] && \
+  REPOSITORY_PASSWORD="$(cat /usr/local/etc/kopia/password)"
+export KOPIA_PASSWORD="${REPOSITORY_PASSWORD}"
+
+echo "Connecting to kopia repository..."
+[[ -f /usr/local/etc/kopia/repository.config ]] && cp /usr/local/etc/kopia/repository.config /usr/local/etc/kopia/restore.config
+docker run --rm --pull always \
+  -v /usr/local/etc/kopia:/app/config \
+  -v /var/log/kopia:/app/logs \
+  -e KOPIA_PASSWORD \
+  "${docker_args[@]}" \
+  kopia/kopia:latest repository connect "${repo_type}" \
+    "${kopia_args[@]}" \
+    --config-file /app/config/restore.config \
+    --override-username ncp \
+    --override-hostname "restore"
+echo "Done."
+
+snapshot_json="$(ncp-kopia snapshot list --all --json | jq ".[] | select(.id | test(\"${SNAPSHOT_ID}\"))")"
+obj_id="$(echo "${snapshot_json}" | jq -r '.rootEntry.obj')"
+obj_name="$(echo "${snapshot_json}" | jq -r '.rootEntry.name')"
+
+trap restore_maintenance_mode EXIT
+
+save_maintenance_mode || true
+if [[ "${obj_name}" == "db" ]]
+then
+  echo "DB backup detected."
+  if [[ -z "$data_dir" ]]
+  then
+    RESTORE_DIR="$(dirname "${data_dir}")/kopia-restore.XXXXXX"
+  else
+    RESTORE_DIR="$(mktemp -d "/tmp/kopia-restore.XXXXXX")"
+  fi
+  docker run --rm --pull always \
+    -v /usr/local/etc/kopia:/app/config \
+    -v /var/log/kopia:/app/logs \
+    -v "${RESTORE_DIR}:/restore" \
+    -e KOPIA_PASSWORD \
+    "${docker_args[@]}" \
+    kopia/kopia:latest snapshot restore \
+      --config-file /app/config/restore.config \
+      "${obj_id}" "/restore"
+  cd "${RESTORE_DIR}"
+
+  cleanup() { local RET=$?; echo "Cleanup..."; rm -rf "${RESTORE_DIR}" || true; restore_maintenance_mode; trap "" EXIT; exit $RET; }
+  trap cleanup INT TERM HUP ERR EXIT
+
+  mysql -u root <<EOFMYSQL
+DROP DATABASE IF EXISTS nextcloud;
+CREATE DATABASE nextcloud;
+GRANT USAGE ON *.* TO '$DBADMIN'@'localhost' IDENTIFIED BY '$DBPASSWD';
+DROP USER '$DBADMIN'@'localhost';
+CREATE USER '$DBADMIN'@'localhost' IDENTIFIED BY '$DBPASSWD';
+GRANT ALL PRIVILEGES ON nextcloud.* TO $DBADMIN@localhost;
+EXIT
+EOFMYSQL
+  mysql -u root nextcloud <  "$RESTORE_DIR"/nextcloud-sqlbkp_*.bak || { echo "Error restoring nextcloud database"; return 1; }
+  echo "Successfully restored database from backup."
+  return
+elif [[ "${obj_name}" == "ncdata" ]]
+then
+  echo "Data backup detected"
+  [[ -e "$data_dir" ]] && {
+    bk_target="$data_dir-$( date '+%FT%s' )"
+    echo "backing up existing $data_dir to ${bk_target}..."
+    mv "$data_dir" "${bk_target}" || exit 1
+  }
+  echo "restore datadir to $data_dir"
+
+  mkdir -p "$data_dir"
+  grep -q "btrfs" <(stat -fc%T "$data_dir") && which btrfs &>/dev/null && {
+    rmdir "$data_dir"                  || exit 1
+    btrfs subvolume create "$data_dir" || exit 1
+  }
+  chown www-data: "$data_dir"
+
+  cleanup() { RET=$?; echo "Cleanup..."; restore_maintenance_mode; trap "" EXIT; exit $RET; }
+  trap cleanup INT TERM HUP ERR EXIT
+
+  echo "Restoring files..."
+  docker run --rm --pull always \
+    -v /usr/local/etc/kopia:/app/config \
+    -v /var/log/kopia:/app/logs \
+    -v "${data_dir}:/restore" \
+    -e KOPIA_PASSWORD \
+    "${docker_args[@]}" \
+    kopia/kopia:latest snapshot restore \
+      --config-file /app/config/restore.config \
+      "${obj_id}" "/restore"
+  echo "Snapshot restored sucessfully"
+  exit
+else
+  echo "Invalid snapshot (Expected snapshot of /ncdata or /db, was '${obj_name}')!"
+  exit 1
+fi

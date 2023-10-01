@@ -7,7 +7,7 @@ file="${2}"
 compressed="${3}"
 grep -q '[\\&#;`|*?~<>^()[{}$&]' <<< "$*" && exit 1
 [[ "${action}" == "listkopia" ]] && {
-  ncp-kopia snapshot list --json
+  ncp-kopia snapshot list --all --json
   exit
 }
 [[ "$file" =~ ".." ]] && exit 1
