@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+source /usr/local/etc/library.sh
+
+[[ -n "$KOPIA_PASSWORD" ]] || read -rs KOPIA_PASSWORD "Please enter the kopia repository password (alternatively you can set the environment variable KOPIA_PASSWORD):"
+
+kopia_flags=(--config-file=/usr/local/etc/kopia/repository.config --log-dir="/var/log/kopia" --no-persist-credentials)
+
+KOPIA_PASSWORD="$KOPIA_PASSWORD" kopia "${kopia_flags[@]}" "${@}"
