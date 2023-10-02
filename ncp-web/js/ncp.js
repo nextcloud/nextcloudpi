@@ -205,6 +205,27 @@ function restore_kopia(button)
   $('#kopia-restore-config-button').trigger('click');
 }
 
+function delete_kopia(button)
+{
+  var tr = button.up().up();
+  var snapshot_id = tr[0].dataset.snapshotId;
+  $.request('post', 'ncp-launcher.php', {
+    action: 'del-kopia',
+    value: snapshot_id,
+    csrf_token: $('#csrf-token').get('.value')
+  }).then((result) => {
+    var ret = $.parseJSON(result);
+    if ( ret.token ) {
+      $('#csrf-token').set( {value: ret.token} );
+    }
+    if (ret.ret === '0') {
+      tr.remove();
+    } else {
+      console.log(`failed removing kopia snapshot '${snapshot_id}'`)
+    }
+  })
+}
+
 function restore_upload(button)
 {
     var file = $$('#restore-upload').files[0];
@@ -302,6 +323,11 @@ function set_backup_handlers()
   $( '.restore-kopia-bkp' ).on('click', function(e) {
     $('#confirmation-dialog').show();
     clicked_dialog_action = restore_kopia;
+    clicked_dialog_button = this;
+  })
+  $('.delete-kopia-bkp').on('click', function(e) {
+    $('#confirmation-dialog').show();
+    clicked_dialog_action = delete_kopia;
     clicked_dialog_button = this;
   })
 }

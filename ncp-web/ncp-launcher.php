@@ -1,4 +1,4 @@
-<?php 
+<?php
 ///
 // NextCloudPi Web Panel backend
 //
@@ -246,6 +246,18 @@ else if ( $_POST['action'] == "del-snap" )
   // return JSON
   echo '{ "token": "' . getCSRFToken() . '",';               // Get new token
   echo ' "ret": "'    . $ret           . '" }';
+}
+
+//
+// del kopia snapshot
+//
+else if ( $_POST['action'] == 'del-kopia' )
+{
+  $snapshot_id = escapeshellarg($_POST['value']);
+  $ret = 1;
+  exec("sudo /home/www/ncp-backup-launcher.sh delkopia $snapshot_id", $out, $ret);
+
+  echo "{ \"token\": \"" . getCSRFToken() . "\", \"ret\": \"$ret\" }";
 }
 
 //

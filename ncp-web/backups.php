@@ -202,7 +202,7 @@ HTML;
     <td class="text-align-left">$bkp_time</td>
     <td class="text-align-left">$bkp_size $bkp_size_unit</td>
     <td>
-<!--        <img class="hidden-btn default-btn delete-kopia-bkp"   title="delete"   src="../img/delete.svg">-->
+        <img class="hidden-btn default-btn delete-kopia-bkp"   title="delete"   src="../img/delete.svg">
         <img class="hidden-btn default-btn restore-kopia-bkp"  title="restore"  src="../img/defaults.svg">
     </td>
 </tr>
@@ -238,7 +238,7 @@ HTML;
     <td class="text-align-left">$bkp_time</td>
     <td class="text-align-left">$bkp_size $bkp_size_unit</td>
     <td>
-<!--        <img class="hidden-btn default-btn delete-kopia-bkp"   title="delete"   src="../img/delete.svg">-->
+        <img class="hidden-btn default-btn delete-kopia-bkp"   title="delete"   src="../img/delete.svg">
         <img class="hidden-btn default-btn restore-kopia-bkp"  title="restore"  src="../img/defaults.svg">
     </td>
 </tr>
