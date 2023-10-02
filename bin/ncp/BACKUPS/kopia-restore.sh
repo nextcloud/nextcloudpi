@@ -8,5 +8,5 @@
 install() { :; }
 
 configure() {
-  kopia-restore "${REPOSITORY}" "${REPOSITORY_PASSWORD}" "${SNAPSHOT_ID}"
+  kopia-restore "${SNAPSHOT_ID}" "${REPOSITORY}" "${REPOSITORY_PASSWORD}"
 }

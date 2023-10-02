@@ -9,18 +9,14 @@ source /usr/local/etc/library.sh
 kopia_flags=(--config-file=/usr/local/etc/kopia/repository.config --log-dir="/var/log/kopia" --no-persist-credentials)
 data_dir="$(source "${BINDIR}/CONFIG/nc-data_dir.sh"; tmpl_data_dir)"
 cache_dir="${data_dir}/.kopia"
-is_nc_encrypt_active="$(source "${BINDIR}/SECURITY/nc-encrypt.sh"; is_active && echo 'true' || echo 'false')"
 mkdir -p "${cache_dir}"
 
-data_subvol="$data_dir"
-[[ "$is_nc_encrypt_active" == "true" ]] && data_subvol="$(dirname "$data_dir")"
+data_subvol="$(dirname "$data_dir")"
 
 backup_dir="$(dirname "${data_subvol}")/kopia"
 mkdir -p "$backup_dir"
 
-db_backup_file="nextcloud-sqlbkp_$( date -Iseconds -u ).sql"
-db_backup_file="${db_backup_file/+00:00/}"
-db_backup_file="${db_backup_file//:/-}"
+db_backup_file="nextcloud-sqlbkp.sql"
 mysqldump -u root --single-transaction nextcloud > "${backup_dir}/${db_backup_file}"
 
 cleanup_btrfs() {
