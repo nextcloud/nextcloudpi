@@ -175,7 +175,7 @@ jobs:
           set -x
           mv output/${ARTIFACT_FILE?} ncp.img
           sudo apt-get install -y systemd-container
-          sudo pip install selenium
+          sudo pip install selenium==4.10.0
           sudo rm -rf raspbian_root
           . ./build/buildlib.sh
           mount_raspbian "ncp.img"
