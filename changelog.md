@@ -1,5 +1,13 @@
 # NextcloudPi Changelog
 
+## [v1.52.5](https://github.com/nextcloud/nextcloudpi/tree/v1.52.5) (2023-10-10) Staged Rollouts and NC 27.1.2
+
+### Changes
+
+- Add support for Nextcloud 27.1.2
+- Add support for staged rollouts
+
+
 ## [v1.52.4](https://github.com/nextcloud/nextcloudpi/tree/v1.52.4) (2023-07-31) Fix error in NCP updater
 
 ### Fixes
