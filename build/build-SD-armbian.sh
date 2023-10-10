@@ -53,6 +53,7 @@ KERNEL_CONFIGURE=prebuilt
 BUILD_DESKTOP=no
 BUILD_MINIMAL=yes
 USE_CCACHE=yes
+FAST_CREATE_IMAGE=no
 EOF
 [[ "$CLEAN" == "0" ]] && {
   cat >> "$CONF" <<EOF
