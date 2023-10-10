@@ -30,8 +30,8 @@ source etc/library.sh # sets RELEASE
 prepare_dirs                   # tmp cache output
 
 # get latest armbian
-[[ -d armbian ]] || git clone https://github.com/armbian/build armbian
-( cd armbian && git pull --ff-only --tags && git checkout v23.02 )
+[[ -d armbian ]] || git clone --depth 1 --branch v23.02 https://github.com/armbian/build armbian
+( cd armbian && git checkout v23.02 )
 
 # add NCP modifications
 mkdir -p armbian/userpatches armbian/userpatches/overlay
