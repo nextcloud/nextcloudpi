@@ -100,7 +100,7 @@ jobs:
 
   # TODO: Fix 32bit armbian images
   odroidxu4:
-    # if: ${{ inputs.sd-images || github.event_name != 'workflow_dispatch' }}
+    # if: ${{ inputs.sd-images || ( github.event_name != 'workflow_dispatch' && !startsWith(github.ref_name, 'docker-') ) }}
     if: ${{ false }}
     uses: ./.github/workflows/build-sd-images.yml
     with:
@@ -126,7 +126,7 @@ jobs:
     secrets: inherit
   # TODO: Fix 32bit armbian images
   bananapi:
-    #if: ${{ inputs.sd-images || github.event_name != 'workflow_dispatch' }}
+    # if: ${{ inputs.sd-images || ( github.event_name != 'workflow_dispatch' && !startsWith(github.ref_name, 'docker-') ) }}
     if: ${{ false }}
     uses: ./.github/workflows/build-sd-images.yml
     with:
