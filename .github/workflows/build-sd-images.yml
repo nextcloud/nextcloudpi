@@ -64,7 +64,6 @@ jobs:
         continue-on-error: true
         run: |
           set -ex
-          export LIB_TAG=master
           export IMG="NextCloudPi_${{ inputs.board_name }}_${VERSION//\//_}.img"
           [[ "${{ github.ref_protected }}" == true ]] || export DBG=x
           
@@ -83,7 +82,6 @@ jobs:
           echo -e "${LOG_CICD} Cleanup armbian build leftovers..."
           sudo rm -rf armbian/ tmp/ output/
           
-          export LIB_TAG=master
           export IMG="NextCloudPi_${{ inputs.board_name }}_${VERSION//\//_}.img"
           [[ "${{ github.ref_protected }}" == true ]] || export DBG=x
 
@@ -179,6 +177,9 @@ jobs:
           sudo rm -rf raspbian_root
           . ./build/buildlib.sh
           mount_raspbian "ncp.img"
+          [[ -f raspbian_root/etc/machine-id ]] || sudo systemd-id128 new > ./raspbian_root/etc/machine-id
+          sudo cat raspbian_root/etc/machine-id
+          sudo systemd-id128 new | sudo tee ./raspbian_root/etc/machine-id
           sudo wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-aarch64-static -O raspbian_root/usr/bin/qemu-aarch64-static
           sudo wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-arm-static -O raspbian_root/usr/bin/qemu-arm-static
           sudo chmod +x raspbian_root/usr/bin/qemu-{arm,aarch64}-static

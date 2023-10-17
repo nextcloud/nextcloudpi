@@ -37,7 +37,7 @@ Vagrant.configure("2") do |config|
   # Provision the VM
   config.vm.provision "shell", inline: $script, env: {"BOARD_ID" => ENV['BOARD_ID'], "BOARD_NAME" => ENV['BOARD_NAME']}
   config.vm.synced_folder ".", "/vagrant", disabled: true
-  config.vm.synced_folder "../..", "/tmp/nextcloudpi", type: "rsync", rsync_exclude: ["armbian", ".git", ".venv", "cache", "raspbian_root", "output", "tmp", ".idea"]
-  config.vm.synced_folder "./output", "/tmp/ncp-out", type: "sshfs"
+  config.vm.synced_folder "../..", "/tmp/nextcloudpi", type: "rsync", rsync__exclude: ["/armbian/", ".venv/", "/cache/", "/raspbian_root/", "/output/", "/tmp/", "/.idea/"]
+  config.vm.synced_folder "../../output", "/tmp/ncp-out", type: "sshfs"
 
 end
