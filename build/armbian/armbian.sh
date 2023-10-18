@@ -12,6 +12,8 @@
 
 set -e
 
+echo 'Running user script...'
+
 ARMBIAN_RELEASE=$1
 LINUXFAMILY=$2
 BOARD=$3
@@ -29,7 +31,9 @@ echo -e "\nInstalling NextCloudPi"
 
 hostname -F /etc/hostname # fix 'sudo resolve host' errors
 
-CODE_DIR="$(pwd)" bash install.sh
+CODE_DIR="$(pwd)" DBG=x bash install.sh
+
+echo -e "\nPostinstall..."
 run_app_unsafe post-inst.sh
 
 # disable SSH by default, it can be enabled through ncp-web
