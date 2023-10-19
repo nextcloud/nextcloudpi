@@ -1,0 +1,38 @@
+{
+	"name": "nextcloud/nextcloudpi",
+	"description": "NextcloudPi App",
+	"type": "project",
+	"license": "AGPL-3.0-or-later",
+	"authors": [
+		{
+			"name": "Tobias Knöppler"
+		}
+	],
+	"require-dev": {
+		"phpunit/phpunit": "^9",
+		"sabre/dav": "^4.1",
+		"sabre/xml": "^2.2",
+		"symfony/event-dispatcher": "^5.3.11",
+		"christophwurst/nextcloud": "dev-master@dev",
+		"psalm/phar": "^4.10",
+		"nextcloud/coding-standard": "^1.0"
+	},
+	"scripts": {
+		"lint": "find nc-app/nextcloudpi -name \\\\*.php -not -path './vendor/*' -print0 | xargs -0 -n1 php -l",
+		"cs:check": "php-cs-fixer fix --dry-run --diff",
+		"cs:fix": "php-cs-fixer fix",
+		"psalm": "psalm.phar --threads=1",
+		"psalm:update-baseline": "psalm.phar --threads=1 --update-baseline",
+		"psalm:update-baseline:force": "psalm.phar --threads=1 --update-baseline --set-baseline=tests/psalm-baseline.xml",
+		"psalm:clear": "psalm.phar --clear-cache && psalm --clear-global-cache",
+		"psalm:fix": "psalm.phar --alter --issues=InvalidReturnType,InvalidNullableReturnType,MissingParamType,InvalidFalsableReturnType"
+	},
+	"config": {
+		"allow-plugins": {
+			"composer/package-versions-deprecated": true
+		},
+		"platform": {
+			"php": "7.4"
+		}
+	}
+}

@@ -77,7 +77,6 @@ fi
   cat > /usr/local/etc/instance.cfg <<EOF
 {
   "cohorteId": ${cohorte_id},
-  "canary": false
 }
 EOF
 }

@@ -1,0 +1,43 @@
+{
+  "name": "nextcloudpi",
+  "description": "NextcloudPi App",
+  "version": "0.0.1",
+  "author": "Tobias Knöppler <tobias@knoeppler.net>",
+  "contributors": [],
+  "bugs": {
+    "url": "https://github.com/nextcloud/nextcloudpi"
+  },
+  "license": "agpl",
+  "private": true,
+  "scripts": {
+    "build": "webpack --node-env production --progress",
+    "dev": "webpack --node-env development --progress",
+    "watch": "webpack --node-env development --progress --watch",
+    "serve": "webpack --node-env development serve --progress",
+    "lint": "eslint --ext .js,.vue src",
+    "lint:fix": "eslint --ext .js,.vue src --fix",
+    "stylelint": "stylelint css/*.css css/*.scss ../../src/**/*.scss src/**/*.vue",
+    "stylelint:fix": "stylelint css/*.css css/*.scss ../../src/**/*.scss src/**/*.vue --fix"
+  },
+  "dependencies": {
+    "@nextcloud/axios": "^1.10.0",
+    "@nextcloud/dialogs": "^3.1.4",
+    "@nextcloud/router": "^2.0.0",
+    "@nextcloud/vue": "^5.4.0",
+    "vue": "^2.7.0"
+  },
+  "browserslist": [
+    "extends @nextcloud/browserslist-config"
+  ],
+  "engines": {
+    "node": "^16.0.0",
+    "npm": "^7.0.0 || ^8.0.0"
+  },
+  "devDependencies": {
+    "@nextcloud/babel-config": "^1.0.0",
+    "@nextcloud/browserslist-config": "^2.2.0",
+    "@nextcloud/eslint-config": "^8.0.0",
+    "@nextcloud/stylelint-config": "^2.1.2",
+    "@nextcloud/webpack-vue-config": "^5.2.1"
+  }
+}

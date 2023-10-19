@@ -151,7 +151,8 @@ chmod 770                  /var/www/ncp-web
 
 # install NC app
 rm -rf /var/www/ncp-app
-cp -r ncp-app /var/www/
+mkdir -p /var/www/ncp-app
+cp -r ncp-app/{appinfo,css,img,js,lib,templates} /var/www/ncp-app/
 
 # install ncp-previewgenerator
 rm -rf /var/www/ncp-previewgenerator
