@@ -31,7 +31,7 @@ class AdminSettings implements ISettings {
 				"CANARY" => 'no',
 				"USAGE_SURVEYS" => 'no',
 				"ADMIN_NOTIFICATIONS" => 'no',
-				"NOtIFICATION_ACCOUNTS" => ""
+				"NOTIFICATION_ACCOUNTS" => ""
 			]);
 		$ncp_version = trim($this->service->getFileContent("ncp-version", "unknown"));
 

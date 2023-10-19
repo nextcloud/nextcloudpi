@@ -31,8 +31,6 @@ action="${1?}"
     . /usr/local/etc/library.sh
     [[ -z "${key}" ]] || {
       set_app_param ncp-community.sh "${key}" "${val}"
-      get_app_params ncp-community.sh
-      exit 0
     }
     get_app_params ncp-community.sh
     exit $?

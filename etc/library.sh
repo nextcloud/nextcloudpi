@@ -219,15 +219,16 @@ function get_app_params() {
     local cfg="$( cat "$cfg_file" )"
     local param_count="$(jq ".params | length" <<<"$cfg")"
     local i=0
-    local json="{"$'\n'
+    local json="{"
     while [[ $i -lt $param_count ]]
     do
       param_id="$(jq -r ".params[$i].id" <<<"$cfg")"
       param_val="$(jq -r ".params[$i].value" <<<"$cfg")"
-      json="${json}  \"${param_id}\": \"${param_val}\","$'\n'
+      json="${json}"$'\n'"  \"${param_id}\": \"${param_val}\""
       i=$((i+1))
+      [[ $i -lt $param_count ]] && json="${json},"
     done
-    json="${json}}"
+    json="${json}"$'\n'"}"
     echo "$json"
     return 0
   }

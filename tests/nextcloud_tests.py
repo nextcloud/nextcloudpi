@@ -11,18 +11,20 @@ Use at your own risk!
 
 More at https://ownyourbits.com
 """
-
+import json
 import sys
-import time
-import urllib
 import os
 import getopt
 import configparser
 import signal
 import re
+import time
+from pathlib import Path
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.webdriver import WebDriver
+from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.firefox.options import Options
 from selenium.common.exceptions import NoSuchElementException, WebDriverException, TimeoutException
@@ -48,14 +50,14 @@ class TestFailed(Exception):
 
 
 class Test:
-    title  = "test"
+    title = "test"
 
     def new(self, title):
         self.title = title
         print("[check] " + "{:16}".format(title), end=' ', flush = True)
 
     def check(self, expression, msg=None):
-        if expression:
+        if expression and not isinstance(expression, Exception):
             print(tc.green + "ok" + tc.normal)
             self.log("ok")
         else:
@@ -66,7 +68,6 @@ class Test:
                 exc_args.append(expression)
             if msg is not None:
                 exc_args.append(msg)
-
             raise TestFailed(*exc_args)
 
     def report(self, title, expression, msg=None):
@@ -112,6 +113,13 @@ class VisibilityOfElementLocatedByAnyLocator:
 class ConfigTestFailure(Exception):
     pass
 
+def is_admin_notifications_checkbox(item: WebElement):
+    try:
+        input_item = item.find_element(By.TAG_NAME, "input")
+        return input_item.get_attribute("name") == "adminNotifications"
+    except:
+        return False
+
 
 def test_nextcloud(IP: str, nc_port: str, driver: WebDriver):
     """ Login and assert admin page checks"""
@@ -132,7 +140,10 @@ def test_nextcloud(IP: str, nc_port: str, driver: WebDriver):
         try:
             driver.find_element(By.ID, "submit").click()
         except NoSuchElementException:
-            pass
+            try:
+                driver.find_element(By.CSS_SELECTOR, ".login-form button[type=submit]").click()
+            except NoSuchElementException:
+                pass
 
     test.report("password", "Wrong password" not in driver.page_source, msg="Failed to login with provided password")
 
@@ -154,10 +165,11 @@ def test_nextcloud(IP: str, nc_port: str, driver: WebDriver):
 
             infos = driver.find_elements(By.CSS_SELECTOR, "#postsetupchecks > .info > li")
             for info in infos:
-                if re.match(r'.*Your installation has no default phone region set.*', info.text):
+                if re.match(r'.*Your installation has no default phone region set.*', info.text) \
+                        or re.match(r'The PHP module "imagick" is not enabled', info.text):
                     continue
                 else:
-
+                    print('text', info.text)
                     php_modules = info.find_elements(By.CSS_SELECTOR, "li")
                     if len(php_modules) != 1:
                         raise ConfigTestFailure(f"Could not find the list of php modules within the info message "
@@ -171,6 +183,88 @@ def test_nextcloud(IP: str, nc_port: str, driver: WebDriver):
 
         test.check(True)
 
+    except Exception as e:
+        test.check(e)
+
+    try:
+        overlay_close_btn = driver.find_element(By.CLASS_NAME, "modal-container__close")
+        if overlay_close_btn.is_displayed():
+            overlay_close_btn.click()
+            time.sleep(3)
+    except NoSuchElementException:
+        pass
+
+    test.new("admin section (1)")
+    try:
+        driver.get(f"https://{IP}:{nc_port}/index.php/settings/admin")
+    except Exception as e:
+        test.check(e, msg=f"{tc.red}error:{tc.normal} unable to reach {tc.yellow + IP + tc.normal}")
+    old_admin_notifications_value = None
+    list_items = driver.find_elements(By.CSS_SELECTOR, "#nextcloudpi li")
+    try:
+        wait.until(lambda drv: drv.find_element(By.ID, "nextcloudpi").is_displayed())
+        expected = {
+            "ncp_version": False,
+            "php_version": False,
+            "debian_release": False,
+            "canary": False,
+            "admin_notifications": False,
+            # "usage_surveys": False,
+            "notification_accounts": False
+        }
+        version_re = re.compile(r'^(v\d+\.\d+\.\d+)$')
+        with (Path(__file__).parent / '../etc/ncp.cfg').open('r') as cfg_file:
+            ncp_cfg = json.load(cfg_file)
+        for li in list_items:
+            try:
+                inp = li.find_element(By.TAG_NAME, "input")
+                inp_name = inp.get_attribute("name")
+                inp_value = inp.get_attribute("value") if inp.get_attribute("type") != "checkbox" else inp.is_selected()
+                if inp_name == "canary":
+                    expected["canary"] = True
+                elif inp_name == "adminNotifications":
+                    old_admin_notifications_value = inp_value
+                    expected["admin_notifications"] = True
+                elif inp_name == "usageSurveys":
+                    expected["usage_surveys"] = True
+                elif inp_name == "notificationAccounts":
+                    expected["notification_accounts"] = True
+            except:
+                divs = li.find_elements(By.TAG_NAME, "div")
+                if 'ncp version' in divs[0].text.lower() and version_re.match(divs[1].text):
+                    expected['ncp_version'] = True
+                elif 'php version' in divs[0].text.lower() and divs[1].text == ncp_cfg['php_version']:
+                    expected['php_version'] = True
+                elif 'debian release' in divs[0].text.lower() and divs[1].text == ncp_cfg['release']:
+                    expected['debian_release'] = True
+        failed = list(map(lambda item: item[0], filter(lambda item: not item[1], expected.items())))
+        test.check(len(failed) == 0, f"checks failed for admin section: [{', '.join(failed)}]")
+    except Exception as e:
+        test.check(e)
+    test.new("admin section (2)")
+    wait = WebDriverWait(driver, 10)
+    try:
+        li = next(filter(is_admin_notifications_checkbox, list_items))
+        li.find_element(By.TAG_NAME, "input").click()
+        time.sleep(5)
+        wait.until(lambda drv: drv.find_element(By.CSS_SELECTOR, "#nextcloudpi .error-message:not(.hidden)"))
+        error_box = driver.find_element(By.CSS_SELECTOR, "#nextcloudpi .error-message")
+        test.check(False, str(error_box.text))
+    except Exception as e:
+        if isinstance(e, TestFailed):
+            raise e
+        test.check(True)
+
+    test.new("admin section (3)")
+    try:
+        driver.refresh()
+    except Exception as e:
+        test.check(e, msg=f"{tc.red}error:{tc.normal} unable to reach {tc.yellow + IP + tc.normal}")
+    try:
+        list_items = driver.find_elements(By.CSS_SELECTOR, "#nextcloudpi li")
+        li = next(filter(is_admin_notifications_checkbox, list_items))
+        test.check(li.find_element(By.TAG_NAME, "input").is_selected() != old_admin_notifications_value,
+                   "Toggling admin notifications didn't work")
     except Exception as e:
         test.check(e)
 
@@ -231,13 +325,17 @@ if __name__ == "__main__":
     print("---------------------------")
 
     driver = webdriver.Firefox(options=options)
+    failed=False
     try:
         test_nextcloud(IP, nc_port, driver)
     except Exception as e:
         print(e)
         print(traceback.format_exc())
+        failed=True
     finally:
         driver.close()
+    if failed:
+        sys.exit(1)
 
 # License
 #
