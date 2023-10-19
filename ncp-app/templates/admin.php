@@ -28,8 +28,8 @@ style('nextcloudpi', 'admin');
 			<label for="adminNotifications">Enable notifications about relevant changes in NCP</label>
 		</li>
 		<li>
-			<input name="adminNotifications" type="checkbox" <?php echo $_['community']['USAGE_SURVEYS'] === 'yes' ? ' checked="checked"' : ''; ?>"/>
-			<label for="adminNotifications">Enable notifications for surveys that help to improve NCP</label>
+			<input name="usageSurveys" type="checkbox" <?php echo $_['community']['USAGE_SURVEYS'] === 'yes' ? ' checked="checked"' : ''; ?>"/>
+			<label for="usageSurveys">Enable notifications for surveys that help to improve NCP</label>
 		</li>
 		<li>
 			<div>Accounts to notify:</div>

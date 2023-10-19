@@ -6,9 +6,14 @@ namespace OCA\NextcloudPi\Service;
 
 use OCA\NextcloudPi\Exceptions\InvalidSettingsException;
 use OCA\NextcloudPi\Exceptions\SaveSettingsException;
+use Psr\Log\LoggerInterface;
 
 class SettingsService {
+	private LoggerInterface $logger;
 
+	public function __construct(LoggerInterface $logger) {
+		$this->logger = $logger;
+	}
 
 	/**
 	 * @param $name string of the config
@@ -20,10 +25,14 @@ class SettingsService {
 		[$ret, $config_str, $stderr] = $this->runCommand( "bash -c \"sudo /home/www/ncp-app-bridge.sh config $name\"");
 		$config = null;
 		if ($ret == 0) {
-			$config = json_decode($config_str, true);
+			try {
+				$config = json_decode($config_str, true, 512, JSON_THROW_ON_ERROR);
+			} catch (\Exception $e) {
+				$this->logger->error($e);
+			}
 		}
 		if ($config == null) {
-			error_log("Failed to retrieve ncp config (exit code: $ret)");
+			$this->logger->error("Failed to retrieve ncp config (exit code: $ret)");
 			return $defaults;
 		}
 		return $config;
@@ -55,10 +64,10 @@ class SettingsService {
 		};
 
 		$settings_map = [
-			"CANARY" => ["ncp-community", "CANARY", $parseBool],
-			"ADMIN_NOTIFICATIONS" => ["ncp-community", "ADMIN_NOTIFICATIONS", $parseBool],
-			"USAGE_SURVEYS" => ["ncp-community", "USAGE_SURVEYS", $parseBool],
-			"NOTIFICATION_ACCOUNTS" => ["ncp-community", "NOTIFICATION_ACCOUNTS", $identityFn]
+			"canary" => ["ncp-community", "CANARY", $parseBool],
+			"adminNotifications" => ["ncp-community", "ADMIN_NOTIFICATIONS", $parseBool],
+			"usageSurveys" => ["ncp-community", "USAGE_SURVEYS", $parseBool],
+			"notificationAccounts" => ["ncp-community", "NOTIFICATION_ACCOUNTS", $identityFn]
 		];
 
 		foreach ($settings as $k => $value) {
