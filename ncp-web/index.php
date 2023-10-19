@@ -136,7 +136,7 @@ HTML;
     <div id="header-left">
       <a href="https://nextcloudpi.com" id="nextcloudpi" target="_blank" tabindex="1">
         <div class="logo-icon">
-           <h1 class="hidden-visually">NextCloudPi</h1>
+           <h1 class="hidden-visually">NextcloudPi</h1>
         </div>
       </a>
       <a id=versionlink target="_blank" href="https://github.com/nextcloud/nextcloudpi/blob/master/changelog.md">

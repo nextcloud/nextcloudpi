@@ -1,0 +1,38 @@
+#nextcloudpi li {
+	display: flex;
+	flex-direction: row;
+	justify-content: start;
+	margin-left: 2em;
+}
+
+#nextcloudpi li div:first-of-type {
+	width: 10em;
+	white-space: nowrap;
+}
+
+#nextcloudpi li * {
+	line-height: 36px;
+}
+
+#nextcloudpi hidden {
+	display: none;
+}
+
+#nextcloudpi .error-message {
+	padding: 1em;
+	color: red;
+	border-width: 1px;
+	border-color: red;
+	border-style: dashed;
+}
+
+#nextcloudpi input[name="notificationAccounts"] {
+	width: 27em;
+}
+
+.divider {
+	height: .5em;
+	border-top-width: 1px;
+	border-top-style: dotted;
+	border-top-color: var(--color-main-text);
+}

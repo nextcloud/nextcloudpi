@@ -16,7 +16,9 @@ git clone -b "$BRANCH" --depth 20 -q --bare https://github.com/nextcloud/nextclo
 cd "$TEMPDIR" || exit 1
 VER=$( git describe --always --tags | grep -oP "v\d+\.\d+\.\d+" )
 
-[[ -f "/usr/local/etc/instance.cfg" ]] && {
+canary="$(get_app_param ncp-community.sh CANARY)"
+
+[[ "$canary" != "yes" ]] && [[ -f "/usr/local/etc/instance.cfg" ]] && {
   cohorte_id="$(jq .cohorteId /usr/local/etc/instance.cfg)"
   [[ -f "./staged_rollouts/${VER}.txt" ]] && {
     grep "^${cohorte_id}$" "./staged_rollouts/${VER}.txt" || {
