@@ -391,7 +391,7 @@ jobs:
           
           "
 
-          hub release create --draft -F - "${{ env.VERSION }}" <<EOF
+          gh release create --draft -F - "${{ env.VERSION }}" <<EOF
           ${subject:-No message found}
 
           ${body:+${body}${separator}}
