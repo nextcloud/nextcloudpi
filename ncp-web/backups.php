@@ -132,7 +132,7 @@ HTML;
 
 include( '/var/www/nextcloud/config/config.php' );
 
-$snap_dir = realpath($CONFIG['datadirectory'] . '/../ncp-snapshots');
+$snap_dir = realpath($CONFIG['datadirectory'] . '/../../ncp-snapshots');
 $snaps = array();
 if (file_exists($snap_dir))
 {
