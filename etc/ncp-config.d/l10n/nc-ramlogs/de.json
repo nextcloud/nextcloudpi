@@ -1,3 +1,6 @@
-{"translations": {
-    "nc-ramlogs": "RAM-Logs"
-}}
+{
+    "translations": {
+        "nc-ramlogs": "RAM-Logs",
+        "ACTIVE": "Aktiv"
+    }
+}

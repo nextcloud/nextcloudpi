@@ -1,0 +1,10 @@
+{
+    "translations": {
+        "nc-rsync-auto": "NC-Daten automatisch synchronisieren",
+        "ACTIVE": "Aktiv",
+        "DESTINATION": "Ziel",
+        "PORTNUMBER": "SSH Port",
+        "SYNCDAYS": "Synchronisierungsintervall (in Tagen)",
+        "SYNCHOUR": "Synchronisierungszeit (in Stunden, 0-24h)"
+    }
+}

@@ -1,3 +1,6 @@
-{"translations": {
-    "nc-restore": "Wiederherstellung"
-}}
+{
+    "translations": {
+        "nc-restore": "Wiederherstellung",
+        "BACKUPFILE": "Wiederherstellungsdatei"
+    }
+}

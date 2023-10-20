@@ -1,7 +1,7 @@
 {
-    "translations":{
-      "ACTIVE":"Aktiviert",
-      "Enable or disable the NCP web interface":"Aktivieren oder deaktivieren von der NCP-Weboberfläche",
-      "nc-webui":"NCP-Weboberfläche"
-    }
+  "translations": {
+    "nc-webui": "NCP-Weboberfläche",
+    "ACTIVE": "Aktiv",
+    "Enable or disable the NCP web interface": "Aktivieren oder deaktivieren der NextcloudPi-Weboberfläche"
   }
+}

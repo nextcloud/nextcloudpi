@@ -1,3 +1,7 @@
-{"translations": {
-    "nc-static-IP": "Statische IP Adresse"
-}}
+{
+    "translations": {
+        "nc-static-IP": "Statische IP-Adresse",
+        "ACTIVE": "Aktiv",
+        "IP": "IP-Adresse"
+    }
+}

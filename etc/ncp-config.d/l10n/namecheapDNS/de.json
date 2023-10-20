@@ -1,0 +1,11 @@
+{
+    "translations": {
+        "namecheapDNS": "namecheapDNS",
+        "ACTIVE": "Aktiv",
+        "PASSWORD": "Passwort",
+        "FULLDOMAIN": "Vollständige Domain",
+        "HOST": "Host",
+        "DOMAIN": "Domain",
+        "UPDATEINTERVAL": "Updateintervall (in Minuten)"
+    }
+}

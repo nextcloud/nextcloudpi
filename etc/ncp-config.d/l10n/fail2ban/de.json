@@ -1,0 +1,10 @@
+{
+    "translations": {
+        "ACTIVE": "Aktiv",
+        "BANTIME": "Blockierdauer",
+        "FINDTIME": "Suchzeit",
+        "MAXRETRY": "Max. Anzahl an Fehlversuchen",
+        "EMAIL": "E-Mail",
+        "MAILALERTS": "Benachrichtigungen per E-Mail"
+    }
+}

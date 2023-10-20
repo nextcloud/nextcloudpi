@@ -1,3 +1,6 @@
-{"translations": {
-    "nc-database": "Datenbank"
-}}
+{
+    "translations": {
+        "nc-database": "Datenbank",
+        "DBDIR": "Datenbankverzeichnis"
+    }
+}

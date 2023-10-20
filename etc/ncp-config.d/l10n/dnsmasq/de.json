@@ -1,0 +1,8 @@
+{
+    "translations": {
+        "ACTIVE": "Aktiv",
+        "DOMAIN": "Domain",
+        "DNSSERVER": "DNS Server",
+        "CACHESIZE": "Cachegröße"
+    }
+}

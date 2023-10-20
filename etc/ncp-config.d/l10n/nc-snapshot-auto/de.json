@@ -1,3 +1,6 @@
-{"translations": {
-    "nc-snapshot-auto": "Automatische Snapshots"
-}}
+{
+    "translations": {
+        "nc-snapshot-auto": "Automatische Snapshots",
+        "ACTIVE": "Aktiv"
+    }
+}

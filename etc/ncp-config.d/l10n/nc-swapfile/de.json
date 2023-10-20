@@ -1,3 +1,7 @@
-{"translations": {
-    "nc-swapfile": "Swap Datei"
-}}
+{
+    "translations": {
+        "nc-swapfile": "Swap-Datei",
+        "SWAPFILE": "Swap-Datei",
+        "SWAPSIZE": "Dateigröße"
+    }
+}

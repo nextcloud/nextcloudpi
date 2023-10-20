@@ -1,3 +1,6 @@
-{"translations": {
-    "nc-autoupdate-ncp": "Automatische NCP-Updates"
-}}
+{
+    "translations": {
+        "nc-autoupdate-ncp": "Automatische NCP-Updates",
+        "ACTIVE": "Aktiv"
+    }
+}

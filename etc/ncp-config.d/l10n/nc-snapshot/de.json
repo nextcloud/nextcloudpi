@@ -1,3 +1,6 @@
-{"translations": {
-    "nc-snapshot": "Snapshot erstellen"
-}}
+{
+    "translations": {
+        "nc-snapshot": "Snapshot erstellen",
+        "LIMIT": "Limit"
+    }
+}
