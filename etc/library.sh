@@ -212,6 +212,30 @@ function find_app_param_num()
 
 }
 
+function get_app_params() {
+  local script="${1?}"
+  local cfg_file="${CFGDIR}/${script%.sh}.cfg"
+  [[ -f "$cfg_file" ]] && {
+    local cfg="$( cat "$cfg_file" )"
+    local param_count="$(jq ".params | length" <<<"$cfg")"
+    local i=0
+    local json="{"
+    while [[ $i -lt $param_count ]]
+    do
+      param_id="$(jq -r ".params[$i].id" <<<"$cfg")"
+      param_val="$(jq -r ".params[$i].value" <<<"$cfg")"
+      json="${json}"$'\n'"  \"${param_id}\": \"${param_val}\""
+      i=$((i+1))
+      [[ $i -lt $param_count ]] && json="${json},"
+    done
+    json="${json}"$'\n'"}"
+    echo "$json"
+    return 0
+  }
+
+  return 1
+}
+
 install_template() {
   local template="${1?}"
   local target="${2?}"
