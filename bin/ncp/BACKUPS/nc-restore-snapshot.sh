@@ -37,8 +37,8 @@ configure()
   btrfs-snp $mountpoint autobackup 0 0 ../ncp-snapshots || return 1
 
   save_maintenance_mode
-  btrfs subvolume delete   "$datadir" || return 1
-  btrfs subvolume snapshot "$SNAPSHOT" "$datadir"
+  btrfs subvolume delete   "$mountpoint" || return 1
+  btrfs subvolume snapshot "$SNAPSHOT" "$mountpoint"
   restore_maintenance_mode
   ncp-scan
 
