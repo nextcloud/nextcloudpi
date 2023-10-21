@@ -177,7 +177,6 @@ jobs:
           sudo rm -rf raspbian_root
           . ./build/buildlib.sh
           mount_raspbian "ncp.img"
-          [[ -f raspbian_root/etc/machine-id ]] || sudo systemd-id128 new > ./raspbian_root/etc/machine-id
           sudo cat raspbian_root/etc/machine-id
           sudo systemd-id128 new | sudo tee ./raspbian_root/etc/machine-id
           sudo wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-aarch64-static -O raspbian_root/usr/bin/qemu-aarch64-static
