@@ -246,7 +246,7 @@ def test_nextcloud(IP: str, nc_port: str, driver: WebDriver):
     try:
         li = next(filter(is_admin_notifications_checkbox, list_items))
         li.find_element(By.TAG_NAME, "input").click()
-        time.sleep(5)
+        time.sleep(15)
         wait.until(lambda drv: drv.find_element(By.CSS_SELECTOR, "#nextcloudpi .error-message:not(.hidden)"))
         error_box = driver.find_element(By.CSS_SELECTOR, "#nextcloudpi .error-message")
         test.check(False, str(error_box.text))
