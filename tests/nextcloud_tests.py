@@ -279,7 +279,7 @@ if __name__ == "__main__":
         usage()
         sys.exit(2)
 
-    options = Options()
+    options = webdriver.FirefoxOptions()
     for opt, arg in opts:
         if opt in ('-h', '--help'):
             usage()
@@ -288,7 +288,7 @@ if __name__ == "__main__":
             if os.path.exists(test_cfg):
                 os.unlink(test_cfg)
         elif opt == '--no-gui':
-            options.headless = True
+            options.add_argument("-headless")
         else:
             usage()
             sys.exit(2)
