@@ -64,7 +64,7 @@ jobs:
           success=false
           for i in {1..5}
           do
-            body="$(hub release show -f "%b" "${VERSION}")"
+            body="$(gh release view --json body "${VERSION}" | jq -r '.body')"
             if ! [[ "$body" =~ .*'**Checksums:**'.* ]]
             then
             
@@ -80,7 +80,7 @@ jobs:
           \`\`\`"
           
             gh release edit "${VERSION?}" -n "$body"
-            if hub release show -f "%b" "${VERSION}" | grep "$checksum"
+            if gh release view --json body "${VERSION}" | jq -r '.body' | grep "$checksum"
             then
               success=true
               break
