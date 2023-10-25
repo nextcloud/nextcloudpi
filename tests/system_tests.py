@@ -11,6 +11,7 @@ Use at your own risk!
 
 More at https://ownyourbits.com
 """
+import json
 
 pre_cmd = []
 
@@ -18,7 +19,8 @@ import sys
 import getopt
 import os
 import signal
-from subprocess import run, getstatusoutput, PIPE
+from subprocess import run, getstatusoutput, PIPE, CompletedProcess
+from typing import Optional
 
 processes_must_be_running = [
         'apache2',
@@ -174,6 +176,63 @@ def signal_handler(sig, frame):
         sys.exit(0)
 
 
+class ProcessExecutionException(Exception):
+    pass
+
+
+def test_autoupdates():
+    def handle_error(r: CompletedProcess) -> CompletedProcess:
+        if r.returncode != 0:
+            print(f"{tc.red}error{tc.normal}\n{r.stdout.decode('utf-8') if r.stdout else ''}\n{r.stderr.decode('utf-8') if r.stderr else ''}"
+                  f" -- command failed: '{' '.join(r.args)}'")
+            raise ProcessExecutionException()
+        return CompletedProcess(r.args,
+                                r.returncode,
+                                r.stdout.decode('utf-8') if r.stdout else '',
+                                r.stderr.decode('utf-8') if r.stderr else '')
+
+    def set_cohorte_id(cohorte_id: int) -> CompletedProcess:
+        r = handle_error(run(pre_cmd + ['cat', '/usr/local/etc/instance.cfg'], stdout=PIPE, stderr=PIPE))
+        instance_cfg = json.loads(r.stdout)
+        instance_cfg['cohorteId'] = cohorte_id
+        return handle_error(run(pre_cmd + ['bash', '-c', f'echo \'{json.dumps(instance_cfg)}\' > /usr/local/etc/instance.cfg'], stdout=PIPE, stderr=PIPE))
+
+    print(f"[updates] {tc.brown}staged rollouts{tc.normal}", end=' ')
+    try:
+        result = handle_error(run(pre_cmd + ['cat', '/usr/local/etc/ncp-version'], stdout=PIPE, stderr=PIPE))
+        if 'v99.99.99' in result.stdout:
+            print(f"{tc.yellow}skipped{tc.normal} (already updated to v99.99.99)")
+            return True
+        handle_error(run(pre_cmd + ['rm', '-f', '/var/run/.ncp-latest-version']))
+        result = handle_error(run(pre_cmd + ['sed', '-i', 's|BRANCH="master"|BRANCH="testing/staged-rollouts-1"|', '/usr/local/bin/ncp-check-version'], stdout=PIPE, stderr=PIPE))
+        set_cohorte_id(1)
+        result = run(pre_cmd + ['test', '-f', '/var/run/.ncp-latest-version'], stdout=PIPE, stderr=PIPE)
+        if result.returncode == 0:
+            result = handle_error(run(pre_cmd + ['cat', '/var/run/.ncp-latest-version'], stdout=PIPE, stderr=PIPE))
+            if 'v99.99.99' in result.stdout:
+                print(f"{tc.red}error{tc.normal} Auto update to v99.99.99 was unexpectedly not prevented by disabled cohorte id")
+                return False
+
+        set_cohorte_id(99)
+        handle_error(run(pre_cmd + ['/usr/local/bin/ncp-check-version'], stdout=PIPE, stderr=PIPE))
+        result = handle_error(run(pre_cmd + ['cat', '/var/run/.ncp-latest-version'], stdout=PIPE, stderr=PIPE))
+        if 'v99.99.99' not in result.stdout:
+            print(f"{tc.red}error{tc.normal} Expected latest detected version to be v99.99.99, was {result.stdout}")
+            return False
+
+        handle_error(run(pre_cmd + ['/usr/local/bin/ncp-test-updates']))
+        handle_error(run(pre_cmd + ['ncp-update', 'testing/staged-rollouts-1'], stdout=PIPE, stderr=PIPE))
+        result = handle_error(run(pre_cmd + ['cat', '/usr/local/etc/v99.99.99.success'], stdout=PIPE, stderr=PIPE))
+        if 'updated' not in result.stdout:
+            print(f"{tc.red}error{tc.normal} update to v99.99.99 did not succeed")
+            return False
+        print(f"{tc.green}ok{tc.normal}")
+
+    except ProcessExecutionException:
+        return False
+
+    return True
+
 if __name__ == "__main__":
 
     signal.signal(signal.SIGINT, signal_handler)
@@ -282,8 +341,9 @@ if __name__ == "__main__":
     files1_result  = check_files_exist(files_must_exist)
     files2_result  = check_files_dont_exist(files_must_not_exist)
     notify_push_result = check_notify_push()
+    update_test_result = test_autoupdates()
 
-    if running_result and install_result and files1_result and files2_result and notify_push_result:
+    if running_result and install_result and files1_result and files2_result and notify_push_result and update_test_result:
         sys.exit(0)
     else:
         sys.exit(1)
