@@ -73,10 +73,10 @@ if needs_decrypt; then
 fi
 
 [[ -f /usr/local/etc/instance.cfg ]] || {
-  cohorte_id=$((1 + RANDOM % 100))
+  cohorte_id=$((RANDOM % 100))
   cat > /usr/local/etc/instance.cfg <<EOF
 {
-  "cohorteId": ${cohorte_id},
+  "cohorteId": ${cohorte_id}
 }
 EOF
 }
