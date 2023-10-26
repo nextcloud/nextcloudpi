@@ -12,6 +12,7 @@ Use at your own risk!
 More at https://ownyourbits.com
 """
 import json
+import subprocess
 
 pre_cmd = []
 
@@ -192,11 +193,17 @@ def test_autoupdates():
                                 r.stderr.decode('utf-8') if r.stderr else '')
 
     def set_cohorte_id(cohorte_id: int) -> CompletedProcess:
-        r = handle_error(run(pre_cmd + ['cat', '/usr/local/etc/instance.cfg'], stdout=PIPE, stderr=PIPE))
+        proc = subprocess.Popen(pre_cmd + ['cat', '/usr/local/etc/instance.cfg'], stdout=subprocess.PIPE, shell=False)
+        #handle_error(run(pre_cmd + ['cat', '/usr/local/etc/instance.cfg'], stdout=subprocess.STDOUT, stderr=subprocess.STDOUT))
+        #r = handle_error(run(pre_cmd + ['cat', '/usr/local/etc/instance.cfg'], stdout=PIPE, stderr=PIPE))
+        (out, err) = proc.communicate()
+        if proc.returncode != 0:
+            raise ProcessExecutionException()
         try:
-            instance_cfg = json.loads(r.stdout)
+            instance_cfg = json.loads(out)
         except json.decoder.JSONDecodeError as e:
-            print(f"{tc.red}error{tc.normal} instance.cfg could not be parsed, was: {r.stdout}")
+            print(f"{tc.red}error{tc.normal} /usr/local/etc/instance.cfg could not be parsed, was: {out}\n{err}")
+            print(f"Command: '{' '.join(pre_cmd + ['cat', '/usr/local/etc/instance.cfg'])}'")
             raise e
 
         instance_cfg['cohorteId'] = cohorte_id
@@ -209,7 +216,7 @@ def test_autoupdates():
             print(f"{tc.yellow}skipped{tc.normal} (already updated to v99.99.99)")
             return True
         handle_error(run(pre_cmd + ['rm', '-f', '/var/run/.ncp-latest-version']))
-        result = handle_error(run(pre_cmd + ['sed', '-i', 's|BRANCH="master"|BRANCH="testing/staged-rollouts-1"|', '/usr/local/bin/ncp-check-version'], stdout=PIPE, stderr=PIPE))
+        handle_error(run(pre_cmd + ['sed', '-i', 's|BRANCH="master"|BRANCH="testing/staged-rollouts-1"|', '/usr/local/bin/ncp-check-version'], stdout=PIPE, stderr=PIPE))
         set_cohorte_id(1)
         result = run(pre_cmd + ['test', '-f', '/var/run/.ncp-latest-version'], stdout=PIPE, stderr=PIPE)
         if result.returncode == 0:
@@ -323,7 +330,7 @@ if __name__ == "__main__":
                tc.yellow + ssh_cmd + tc.normal + "...")
         binaries_must_be_installed = binaries_must_be_installed + binaries_no_docker
         pre_cmd = ['ssh', '-o UserKnownHostsFile=/dev/null' , '-o PasswordAuthentication=no',
-                '-o StrictHostKeyChecking=no', '-o ConnectTimeout=1', ssh_cmd[4:]]
+                   '-o StrictHostKeyChecking=no', '-o ConnectTimeout=10', ssh_cmd[4:]]
 
         if not skip_ping:
             at_char = ssh_cmd.index('@')
