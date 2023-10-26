@@ -3,7 +3,7 @@
 # this script runs at startup to provide an unique random passwords for each instance
 
 source /usr/local/etc/library.sh
-
+set -x
 ## redis provisioning
 
 CFG=/var/www/nextcloud/config/config.php
