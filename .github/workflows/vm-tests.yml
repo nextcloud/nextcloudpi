@@ -145,9 +145,7 @@ jobs:
           setup-ssh-port-forwarding "$SERVER_ADDRESS"
           
           echo "Run integration tests"
-          set -x
           ssh -o "StrictHostKeyChecking=no" -o "UserKnownHostsFile=/dev/null" "root@${SERVER_ADDRESS}" cat /usr/local/etc/instance.cfg
-          set +x
           test-ncp-instance -a -f "$SNAPSHOT_ID" -b "${VERSION}" --systemtest-args "--skip-update-test" "root@${SERVER_ADDRESS}" "localhost" "8443" "9443" || {
     
             echo "Integration tests failed"
