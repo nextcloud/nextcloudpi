@@ -264,6 +264,7 @@ if __name__ == "__main__":
             usage()
             sys.exit(2)
         elif opt == '--skip-update-test':
+            print("Skipping update test")
             skip_update_test = True
         elif opt == '--no-ping':
             skip_ping = True
