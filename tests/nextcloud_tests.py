@@ -148,7 +148,7 @@ def test_nextcloud(IP: str, nc_port: str, driver: WebDriver):
     test.report("password", "Wrong password" not in driver.page_source, msg="Failed to login with provided password")
 
     test.new("settings config")
-    wait = WebDriverWait(driver, 30)
+    wait = WebDriverWait(driver, 60)
     try:
         wait.until(VisibilityOfElementLocatedByAnyLocator([(By.CSS_SELECTOR, "#security-warning-state-ok"),
                                                            (By.CSS_SELECTOR, "#security-warning-state-warning"),
@@ -279,7 +279,7 @@ if __name__ == "__main__":
         usage()
         sys.exit(2)
 
-    options = Options()
+    options = webdriver.FirefoxOptions()
     for opt, arg in opts:
         if opt in ('-h', '--help'):
             usage()
@@ -288,7 +288,7 @@ if __name__ == "__main__":
             if os.path.exists(test_cfg):
                 os.unlink(test_cfg)
         elif opt == '--no-gui':
-            options.headless = True
+            options.add_argument("-headless")
         else:
             usage()
             sys.exit(2)

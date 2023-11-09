@@ -208,7 +208,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Selenium
-        run: pip install selenium==4.10.0
+        run: pip install selenium
       - name: download LXD image from artifact store
         uses: actions/download-artifact@v3
         with:
@@ -331,7 +331,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Selenium
-        run: pip install selenium==4.10.0
+        run: pip install selenium
       - name: download LXD image from artifact store
         uses: actions/download-artifact@v3
         with:

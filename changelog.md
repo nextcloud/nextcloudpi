@@ -1,10 +1,10 @@
 # NextcloudPi Changelog
 
-## [v1.52.5](https://github.com/nextcloud/nextcloudpi/tree/v1.52.5) (2023-10-10) Staged Rollouts and NC 27.1.2
+## [v1.52.5](https://github.com/nextcloud/nextcloudpi/tree/v1.52.5) (2023-10-10) Staged Rollouts and NC 27.1.3
 
 ### Changes
 
-- Add support for Nextcloud 27.1.2
+- Add support for Nextcloud 27.1.3
 - Add support for staged rollouts
 
 
