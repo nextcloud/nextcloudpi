@@ -1,5 +1,19 @@
 # NextcloudPi Changelog
 
+## [v1.53.0](https://github.com/nextcloud/nextcloudpi/tree/v1.53.0) (2023-11-15) Staged Rollouts and NC 27.1.3
+
+### Changes
+
+- Add support for Nextcloud 27.1.3
+- Add support for staged rollouts
+- Add admin notification and community participation options
+- Add NCP section in Nextcloud settings 
+
+### Development related
+
+- Use latest armbian build stack (armbian next)
+- Support latest Selenium version in integration tests
+
 ## [v1.52.4](https://github.com/nextcloud/nextcloudpi/tree/v1.52.4) (2023-07-31) Fix error in NCP updater
 
 ### Fixes

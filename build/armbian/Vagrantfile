@@ -1,0 +1,43 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+#
+# Vagrantfile for the NCP Debian VM
+#
+# Instructions: vagrant up; vagrant ssh
+#
+# Notes: User/Pass is ubnt/ubnt.
+# $HOME is accessible as /external. CWD is accessible as /cwd
+#
+
+Vagrant.configure("2") do |config|
+
+  vmname = "NCP Ubuntu VM"
+  config.vm.box = "generic/ubuntu2204"
+  config.vm.box_check_update = true
+  config.vm.hostname = "ncp-vm"
+  config.vm.define "ncp-vm"
+  config.vm.provider :libvirt do |libvirt|
+    libvirt.default_prefix = ""
+    libvirt.cpus = 6
+    libvirt.memory = 4096
+  end
+
+  config.vm.synced_folder '.', '/vagrant', disabled: true
+
+  $script = <<-SHELL
+    sudo su
+    set -ex
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends git ca-certificates
+    cd /tmp/nextcloudpi
+    ./build/build-SD-armbian.sh "${BOARD_ID?}" "${BOARD_NAME?}"
+    mv /tmp/nextcloudpi/armbian/output/*.img /tmp/ncp-out/
+  SHELL
+
+  # Provision the VM
+  config.vm.provision "shell", inline: $script, env: {"BOARD_ID" => ENV['BOARD_ID'], "BOARD_NAME" => ENV['BOARD_NAME']}
+  config.vm.synced_folder ".", "/vagrant", disabled: true
+  config.vm.synced_folder "../..", "/tmp/nextcloudpi", type: "rsync", rsync__exclude: ["/armbian/", ".venv/", "/cache/", "/raspbian_root/", "/output/", "/tmp/", "/.idea/"]
+  config.vm.synced_folder "../../output", "/tmp/ncp-out", type: "sshfs"
+
+end

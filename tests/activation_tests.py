@@ -163,13 +163,13 @@ if __name__ == "__main__":
         sys.exit(2)
 
     arg_timeout = 120
-    options = Options()
+    options = webdriver.FirefoxOptions()
     for opt, arg in opts:
         if opt in ('-h', '--help'):
             usage()
             sys.exit(2)
         elif opt == '--no-gui':
-            options.headless = True
+            options.add_argument("-headless")
         elif opt in ('-t', '--timeout'):
             arg_timeout = int(arg)
         else:

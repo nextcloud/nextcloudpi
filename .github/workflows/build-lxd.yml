@@ -197,6 +197,10 @@ jobs:
               nictype: bridged
               type: nic
           EOF
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: "${{ env.VERSION }}"
       - name: Setup Firefox
         uses: browser-actions/setup-firefox@latest
       - name: Setup GeckoDriver
@@ -205,10 +209,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Selenium
         run: pip install selenium
-      - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          ref: "${{ env.VERSION }}"
       - name: download LXD image from artifact store
         uses: actions/download-artifact@v3
         with:

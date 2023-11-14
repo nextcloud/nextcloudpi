@@ -11,6 +11,8 @@ Use at your own risk!
 
 More at https://ownyourbits.com
 """
+import json
+import subprocess
 
 pre_cmd = []
 
@@ -18,7 +20,8 @@ import sys
 import getopt
 import os
 import signal
-from subprocess import run, getstatusoutput, PIPE
+from subprocess import run, getstatusoutput, PIPE, CompletedProcess
+from typing import Optional
 
 processes_must_be_running = [
         'apache2',
@@ -174,23 +177,95 @@ def signal_handler(sig, frame):
         sys.exit(0)
 
 
+class ProcessExecutionException(Exception):
+    pass
+
+
+def test_autoupdates():
+    def handle_error(r: CompletedProcess) -> CompletedProcess:
+        if r.returncode != 0:
+            print(f"{tc.red}error{tc.normal}\n{r.stdout.decode('utf-8') if r.stdout else ''}\n{r.stderr.decode('utf-8') if r.stderr else ''}"
+                  f" -- command failed: '{' '.join(r.args)}'")
+            raise ProcessExecutionException()
+        return CompletedProcess(r.args,
+                                r.returncode,
+                                r.stdout.decode('utf-8') if r.stdout else '',
+                                r.stderr.decode('utf-8') if r.stderr else '')
+
+    def set_cohorte_id(cohorte_id: int) -> CompletedProcess:
+        proc = subprocess.Popen(pre_cmd + ['cat', '/usr/local/etc/instance.cfg'], stdout=subprocess.PIPE, shell=False)
+        #handle_error(run(pre_cmd + ['cat', '/usr/local/etc/instance.cfg'], stdout=subprocess.STDOUT, stderr=subprocess.STDOUT))
+        #r = handle_error(run(pre_cmd + ['cat', '/usr/local/etc/instance.cfg'], stdout=PIPE, stderr=PIPE))
+        (out, err) = proc.communicate()
+        if proc.returncode != 0:
+            raise ProcessExecutionException()
+        try:
+            instance_cfg = json.loads(out)
+        except json.decoder.JSONDecodeError as e:
+            print(f"{tc.red}error{tc.normal} /usr/local/etc/instance.cfg could not be parsed, was: {out}\n{err}")
+            print(f"Command: '{' '.join(pre_cmd + ['cat', '/usr/local/etc/instance.cfg'])}'")
+            raise e
+
+        instance_cfg['cohorteId'] = cohorte_id
+        return handle_error(run(pre_cmd + ['bash', '-c', f'echo \'{json.dumps(instance_cfg)}\' > /usr/local/etc/instance.cfg'], stdout=PIPE, stderr=PIPE))
+
+    print(f"[updates] {tc.brown}staged rollouts{tc.normal}", end=' ')
+    try:
+        result = handle_error(run(pre_cmd + ['cat', '/usr/local/etc/ncp-version'], stdout=PIPE, stderr=PIPE))
+        if 'v99.99.99' in result.stdout:
+            print(f"{tc.yellow}skipped{tc.normal} (already updated to v99.99.99)")
+            return True
+        handle_error(run(pre_cmd + ['rm', '-f', '/var/run/.ncp-latest-version']))
+        handle_error(run(pre_cmd + ['sed', '-i', 's|BRANCH="master"|BRANCH="testing/staged-rollouts-1"|', '/usr/local/bin/ncp-check-version'], stdout=PIPE, stderr=PIPE))
+        set_cohorte_id(1)
+        result = run(pre_cmd + ['test', '-f', '/var/run/.ncp-latest-version'], stdout=PIPE, stderr=PIPE)
+        if result.returncode == 0:
+            result = handle_error(run(pre_cmd + ['cat', '/var/run/.ncp-latest-version'], stdout=PIPE, stderr=PIPE))
+            if 'v99.99.99' in result.stdout:
+                print(f"{tc.red}error{tc.normal} Auto update to v99.99.99 was unexpectedly not prevented by disabled cohorte id")
+                return False
+
+        set_cohorte_id(99)
+        handle_error(run(pre_cmd + ['/usr/local/bin/ncp-check-version'], stdout=PIPE, stderr=PIPE))
+        result = handle_error(run(pre_cmd + ['cat', '/var/run/.ncp-latest-version'], stdout=PIPE, stderr=PIPE))
+        if 'v99.99.99' not in result.stdout:
+            print(f"{tc.red}error{tc.normal} Expected latest detected version to be v99.99.99, was {result.stdout}")
+            return False
+
+        handle_error(run(pre_cmd + ['/usr/local/bin/ncp-test-updates']))
+        handle_error(run(pre_cmd + ['ncp-update', 'testing/staged-rollouts-1'], stdout=PIPE, stderr=PIPE))
+        result = handle_error(run(pre_cmd + ['cat', '/usr/local/etc/v99.99.99.success'], stdout=PIPE, stderr=PIPE))
+        if 'updated' not in result.stdout:
+            print(f"{tc.red}error{tc.normal} update to v99.99.99 did not succeed")
+            return False
+        print(f"{tc.green}ok{tc.normal}")
+
+    except ProcessExecutionException:
+        return False
+
+    return True
+
 if __name__ == "__main__":
 
     signal.signal(signal.SIGINT, signal_handler)
 
     # parse options
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'h', ['help', 'no-ping', 'non-interactive'])
+        opts, args = getopt.getopt(sys.argv[1:], 'h', ['help', 'no-ping', 'non-interactive', 'skip-update-test'])
     except getopt.GetoptError:
         usage()
         sys.exit(2)
 
     skip_ping = False
     interactive = True
+    skip_update_test = False
     for opt, arg in opts:
         if opt in ('-h', '--help'):
             usage()
             sys.exit(2)
+        elif opt == '--skip-update-test':
+            print("Skipping update test")
+            skip_update_test = True
         elif opt == '--no-ping':
             skip_ping = True
         elif opt == '--non-interactive':
@@ -256,7 +331,7 @@ if __name__ == "__main__":
                tc.yellow + ssh_cmd + tc.normal + "...")
         binaries_must_be_installed = binaries_must_be_installed + binaries_no_docker
         pre_cmd = ['ssh', '-o UserKnownHostsFile=/dev/null' , '-o PasswordAuthentication=no',
-                '-o StrictHostKeyChecking=no', '-o ConnectTimeout=1', ssh_cmd[4:]]
+                   '-o StrictHostKeyChecking=no', '-o ConnectTimeout=10', ssh_cmd[4:]]
 
         if not skip_ping:
             at_char = ssh_cmd.index('@')
@@ -282,8 +357,9 @@ if __name__ == "__main__":
     files1_result  = check_files_exist(files_must_exist)
     files2_result  = check_files_dont_exist(files_must_not_exist)
     notify_push_result = check_notify_push()
+    update_test_result = True if skip_update_test else test_autoupdates()
 
-    if running_result and install_result and files1_result and files2_result and notify_push_result:
+    if running_result and install_result and files1_result and files2_result and notify_push_result and update_test_result:
         sys.exit(0)
     else:
         sys.exit(1)

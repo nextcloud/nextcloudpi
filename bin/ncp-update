@@ -19,18 +19,18 @@ fi
   BRANCH="${1:-master}"
   [[ "$BRANCH" != "master" ]] && echo "INFO: updating to development branch '$BRANCH'"
 
-  TMPDIR="$( mktemp -d /tmp/ncp-update.XXXXXX || ( echo "Failed to create temp dir. Exiting" >&2; exit 1 ) )"
-  trap 'cd /; rm -rf "${TMPDIR}"' EXIT
+  TEMPDIR="$( mktemp -d /tmp/ncp-update.XXXXXX || ( echo "Failed to create temp dir. Exiting" >&2; exit 1 ) )"
+  trap 'cd /; rm -rf "${TEMPDIR}"' EXIT
 
   echo -e "Downloading updates"
-  git clone --depth 20 -b "$BRANCH" -q https://github.com/nextcloud/nextcloudpi.git "$TMPDIR" || {
+  git clone --depth 20 -b "$BRANCH" -q https://github.com/nextcloud/nextcloudpi.git "$TEMPDIR" || {
     echo "No internet connectivity"
     exit 1
   }
 
   # shellcheck disable=SC2164
   [[ -f /.ncp-image ]] || {
-    cd "$TMPDIR"         # update locally during build
+    cd "$TEMPDIR"         # update locally during build
 
     [[ -z "$2" ]] || {
       git fetch origin "$2" || {
@@ -44,7 +44,7 @@ fi
   echo -e "Performing updates"
   ./update.sh || exit $?
 
-  cd "$TMPDIR" || exit 1
+  cd "$TEMPDIR" || exit 1
   git describe --always --tags --abbrev=0 2>/dev/null | grep -qoP "v\d+\.\d+\.\d+" || git fetch --unshallow --tags -q
   VER=$( git describe --always --tags --abbrev=0 | grep -oP "v\d+\.\d+\.\d+" )
 

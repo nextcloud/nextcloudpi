@@ -14,8 +14,8 @@ BRANCH="${BRANCH:-master}"
 
 set -e$DBG
 
-TMPDIR="$(mktemp -d /tmp/nextcloudpi.XXXXXX || (echo "Failed to create temp dir. Exiting" >&2 ; exit 1) )"
-trap "rm -rf \"${TMPDIR}\"" 0 1 2 3 15
+TEMPDIR="$(mktemp -d /tmp/nextcloudpi.XXXXXX || (echo "Failed to create temp dir. Exiting" >&2 ; exit 1) )"
+trap "rm -rf \"${TEMPDIR}\"" 0 1 2 3 15
 
 [[ ${EUID} -ne 0 ]] && {
   printf "Must be run as root. Try 'sudo $0'\n"
@@ -35,10 +35,12 @@ apt-get install --no-install-recommends -y git ca-certificates sudo lsb-release 
 # get install code
 if [[ "${CODE_DIR}" == "" ]]; then
   echo "Getting build code..."
-  CODE_DIR="${TMPDIR}"/nextcloudpi
-  git clone -b "${BRANCH}" https://github.com/nextcloud/nextcloudpi.git "${CODE_DIR}"
+  CODE_DIR_TMP="${TEMPDIR}"/nextcloudpi
+  git clone -b "${BRANCH}" https://github.com/nextcloud/nextcloudpi.git "${CODE_DIR_TMP}"
+  cd "$CODE_DIR_TMP"
+else
+  cd "${CODE_DIR}"
 fi
-cd "${CODE_DIR}"
 
 # install NCP
 echo -e "\nInstalling NextCloudPi..."
@@ -82,7 +84,7 @@ rm /.ncp-image
 [[ "${CODE_DIR}" != "" ]] || bash /usr/local/bin/ncp-provisioning.sh
 
 cd -
-rm -rf "${TMPDIR}"
+rm -rf "${TEMPDIR}"
 
 IP="$(get_ip)"
 
