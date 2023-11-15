@@ -30,7 +30,10 @@ source etc/library.sh # sets RELEASE
 prepare_dirs                   # tmp cache output
 
 # get latest armbian
-[[ -d armbian ]] || git clone --depth 1 https://github.com/armbian/build armbian
+[[ -d armbian ]] || {
+  git clone --depth 100 https://github.com/armbian/build armbian
+  (cd armbian; git checkout 8f262c6ccf81040ac26f90e612102b4e726c9878)
+}
 #( cd armbian && git pull --ff-only --tags && git checkout v23.02 )
 #sed -i -e '/export rootfs_size=/s/du -sm/du --apparent-size -sm/' armbian/lib/functions/image/partitioning.sh
 #sed -i -e '/export rootfs_size_mib=/s/du -sm/du --apparent-size -sm/' armbian/lib/functions/main/rootfs-image.sh
