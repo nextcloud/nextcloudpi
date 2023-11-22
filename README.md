@@ -108,6 +108,10 @@ sudo ncp-config
 
 ![NCP-config][ncp-config-image]
 
+## Docker has been discontinued
+
+Docker has been discontinued for the time being, please read the announcement here: https://help.nextcloud.com/t/nextcloudpi-planning-to-discontinue-its-docker-version-with-nc-25/158895
+
 ## Run in LXD
 
 ```
