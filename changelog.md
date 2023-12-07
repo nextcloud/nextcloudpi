@@ -1,5 +1,11 @@
 # NextcloudPi Changelog
 
+## [v1.51.7](https://github.com/nextcloud/nextcloudpi/tree/v1.51.7) (2023-12-07) Support NC 25.0.13
+
+### Changes
+
+Add support for Nextcloud 25.0.13
+
 ## [v1.51.6](https://github.com/nextcloud/nextcloudpi/tree/v1.51.6) (2023-07-26) Minor fixes and NC update
 
 ### Changes
