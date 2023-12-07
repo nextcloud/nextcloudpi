@@ -403,9 +403,15 @@ jobs:
       LOG_CICD: "\\033[1;35mCICD::\\033[0m"
       LOG_TEST: "\\033[1;33mTEST::\\033[0m"
       LOG_DIAG: "\\033[1;31mDIAG::\\033[0m"
+    defaults:
+      run:
+        shell: bash
     steps:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
+      - name: Apt update
+        run: |
+          sudo apt-get update
 
       - name: Login to docker
         run: |
