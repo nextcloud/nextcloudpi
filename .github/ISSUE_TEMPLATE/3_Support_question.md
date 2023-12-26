@@ -16,11 +16,11 @@ NCP and its extras are explained in the wiki, also make sure to read the article
 
 We use GitHub issues only to discuss about NextCloudPi bugs and new features.
 
-NCP and its extras are explained in the [wiki](https://github.com/nextcloud/nextcloudpi/wiki), also make sure to read the [articles in ownyourbits](https://ownyourbits.com/category/nextcloudpi/) explaining NextCloudPi extras before asking.
+NCP and its extras are explained in the [wiki](https://docs.nextcloudpi.com).
 
 For any other question or comment, please use the [forums](https://help.nextcloud.com/c/support/appliances-docker-snappy-vm), and make sure to tag
 the thread as `ncp`.
 
-Note that quite probably your question has an answer in the [FAQ](https://github.com/nextcloud/nextcloudpi/wiki/FAQ).
+Note that quite probably your question has an answer in the [FAQ](https://help.nextcloud.com/t/frequently-asked-questions-faq-ncp).
 
 Thank you!
