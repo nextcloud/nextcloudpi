@@ -221,8 +221,7 @@ jobs:
           systemd-run --user --scope -p "Delegate=yes" lxc launch -q -c security.nesting=true "ncp/update" ncp
           lxc exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
           sleep 30
-          ip="$(lxc list -c n4 -f csv | grep '^ncp' | cut -d ',' -f2)"
-          ip="${ip/% *}"
+          ip="$(lxc list -f json | jq -r '[.[] | select(.name=="ncp")][0].state.network.eth0.addresses | [.[] | select(.family=="inet")][0].address')"
           echo "${ip} nextcloudpi.local" | sudo tee /etc/hosts
 
       - name: Update ncp
@@ -261,8 +260,7 @@ jobs:
           systemd-run --user --scope -p "Delegate=yes" lxc launch -q -c security.nesting=true "ncp/updated" ncp
           lxc exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
           sleep 30
-          ip="$(lxc list -c n4 -f csv | grep '^ncp' | cut -d ',' -f2)"
-          ip="${ip/% *}"
+          ip="$(lxc list -f json | jq -r '[.[] | select(.name=="ncp")][0].state.network.eth0.addresses | [.[] | select(.family=="inet")][0].address')"
           echo "${ip} nextcloudpi.local" | sudo tee /etc/hosts
       - name: Test LXD Image
         working-directory: ./tests
@@ -353,8 +351,7 @@ jobs:
           sudo systemd-run --scope -p "Delegate=yes" lxc launch -q -c security.nesting=true "ncp/test" ncp 
           lxc exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
           sleep 30
-          ip="$(lxc list -c n4 -f csv | grep '^ncp' | cut -d ',' -f2)"
-          ip="${ip/% *}"
+          ip="$(lxc list -f json | jq -r '[.[] | select(.name=="ncp")][0].state.network.eth0.addresses | [.[] | select(.family=="inet")][0].address')"
           echo "${ip} nextcloudpi.local" | sudo tee /etc/hosts
       - name: Test LXD Image
         working-directory: ./tests
