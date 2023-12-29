@@ -26,6 +26,20 @@ Keep in mind that many problems come from faulty power sources and corrupted SD 
 If you are running into problems, make sure to include the output of `sudo ncp-report`
 -->
 
+### Expected Behaviour
+
+<!-- How did you expect the system to behave? -->
+
+### Actual Behaviour
+
+<!-- What did actually happen? How does it differ from your expectation? -->
+
+### System modifications
+
+<!-- Have you configured anything about your system by other means than the NCP admin interface or ncp-config? If so, what did you do? -->
+
+I have not customized my NCP instance.
+
 **System information**
 
 <!-- Paste the output of `sudo ncp-report` -->
