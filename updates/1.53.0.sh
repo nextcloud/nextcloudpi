@@ -1,50 +1,65 @@
 #!/usr/bin/env bash
 
-set -e
-
-source /usr/local/etc/library.sh
-
-REDIS_CONF="/etc/redis/redis.conf"
-export REDIS_PASSWORD="$( grep "^requirepass" "${REDIS_CONF}" | cut -f2 -d' ' )"
-ncc config:import <<EOF
+[[ -f /usr/local/etc/instance.cfg ]] || {
+  cohorte_id=$((RANDOM % 100))
+  cat > /usr/local/etc/instance.cfg <<EOF
 {
-  "system": {
-    "redis": {
-      "host": "127.0.0.1",
-      "port": 6379,
-      "timeout": 5.0,
-      "password": "$REDIS_PASSWORD"
-    }
-  }
+  "cohorteId": ${cohorte_id}
 }
 EOF
-systemctl is-active redis-server >/dev/null && systemctl stop redis-server
-rm "${REDIS_CONF}"
-rm -f /etc/systemd/system/redis-server.service.d/lxc_fix.conf
-apt-get remove --purge -y redis-server
+}
 
-command -v docker || install_app docker.sh
+cat > /home/www/ncp-app-bridge.sh <<'EOF'
+#!/bin/bash
+set -e
+grep -q '[\\&#;`|*?~<>^()[{}$&]' <<< "$*" && exit 1
+action="${1?}"
+[[ "$action" == "config" ]] && {
+  config_type="${2?}"
+  arg="${3}"
 
-mkdir -p "$(dirname "$REDIS_CONF")"
-install_template redis.conf.sh "$REDIS_CONF"
-install_template systemd/redis.service.sh /etc/systemd/system/redis.service --defaults
-echo 'vm.overcommit_memory = 1' >> /etc/sysctl.conf
-systemctl enable --now redis
+  [[ -z "$arg" ]] || {
+    key="${arg%=*}"
+    val="${arg#*=}"
+  }
 
-clear_opcache
-
-echo 'Waiting for redis to start up...'
-count=1
-while ! { docker exec ncp-redis redis-cli -a "${REDIS_PASSWORD}" ping 2> /dev/null | grep PONG; }
-do
-  if [[ $count -ge 60 ]]
+  if [[ "$config_type" == "ncp" ]]
   then
-    echo 'Failed to setup redis' >&2
+    config_path="/usr/local/etc/ncp.cfg"
+  elif [[ "$config_type" == "ncp-community" ]]
+  then
+    . /usr/local/etc/library.sh
+    [[ -z "${key}" ]] || {
+      set_app_param ncp-community.sh "${key}" "${val}"
+    }
+    get_app_params ncp-community.sh
+    exit $?
+  else
+    echo "ERROR: Invalid config name '${config_type}'" >&2
     exit 1
   fi
-  count=$((count+1))
-  sleep 1
-done
-echo 'Redis is started. Checking nextcloud connectivity...'
-ncc status
-echo 'Done.'
+
+  [[ -z "${key}" ]] || {
+    cfg="$(jq ".${key} = \"${val}\"" <"$config_path")"
+    echo "$cfg" > "$config_path"
+  }
+  cat "$config_path"
+  exit 0
+}
+
+[[ "$action" == "file" ]] && {
+  file="${2?}"
+  if [[ "$file" == "ncp-version" ]]
+  then
+    cat /usr/local/etc/ncp-version
+  else
+    echo "ERROR: Invalid file '${file}'" >&2
+    exit 1
+  fi
+  exit 0
+}
+EOF
+chmod 700 /home/www/ncp-app-bridge.sh
+sed -i 's|www-data ALL = NOPASSWD: .*|www-data ALL = NOPASSWD: /home/www/ncp-launcher.sh , /home/www/ncp-backup-launcher.sh, /home/www/ncp-app-bridge.sh, /sbin/halt, /sbin/reboot|' /etc/sudoers
+
+ncc upgrade
