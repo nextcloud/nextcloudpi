@@ -13,9 +13,15 @@ if grep -qa container=lxc /proc/1/environ \
   && grep 'error mounting "proc" to rootfs at "/proc"' <(docker run --rm hello-world 2>&1 1>/dev/null || true)
 then
   echo "Failed to update to v1.53.1: Please enable container nesting for the NCP container (see https://docs.nextcloudpi.com)"
-  notify_admin "NCP UPDATE FAILD" "Failed to update to v1.53.1: Please enable container nesting for the NCP container (see https://docs.nextcloudpi.com)"
+  notify_admin "NCP UPDATE FAILED" "Failed to update to v1.53.1: Please enable container nesting for the NCP container (see https://docs.nextcloudpi.com)"
   exit 1
 fi
+
+docker run --rm hello-world > /dev/null || {
+  echo "Failed to update to v1.53.1: Please check if the docker daemon is installed correctly and try again."
+  notify_admin "NCP UPDATE FAILED" "Failed to update to v1.53.1: Please check if the docker daemon is installed correctly and try again."
+  exit 1
+}
 
 # Migrate redis to docker
 

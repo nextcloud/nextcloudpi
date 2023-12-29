@@ -4,6 +4,14 @@
 
 source /usr/local/etc/library.sh
 set -x
+# Check nested container support if running on lxc
+if grep -qa container=lxc /proc/1/environ \
+  && grep 'error mounting "proc" to rootfs at "/proc"' <(docker run --rm hello-world 2>&1 1>/dev/null || true)
+then
+  echo "LXC/LXD misconfiguration detected! Please enable container nesting for the NCP container (see https://docs.nextcloudpi.com)"
+  exit 1
+fi
+
 ## redis provisioning
 
 CFG=/var/www/nextcloud/config/config.php
