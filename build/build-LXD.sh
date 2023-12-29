@@ -32,7 +32,7 @@ prepare_dirs                   # tmp cache output
 ## BUILD NCP
 
 lxc delete -f ncp 2>/dev/null || true
-LXC_CREATE=(lxc init -p default)
+LXC_CREATE=(lxc init -p default -c security.nesting=true)
 [[ -n "$LXD_EXTRA_PROFILE" ]] && LXC_CREATE+=(-p "$LXD_EXTRA_PROFILE")
 if [[ -n "$LXD_ARCH" ]] && [[ "$LXD_ARCH" != "x86" ]]
 then

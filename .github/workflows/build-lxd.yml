@@ -218,7 +218,7 @@ jobs:
           set -x
           lxc delete -q -f ncp || true
           lxc image import -q "./${{ needs.build-previous.outputs.artifact_file }}" --alias "ncp/update"
-          systemd-run --user --scope -p "Delegate=yes" lxc launch -q "ncp/update" ncp
+          systemd-run --user --scope -p "Delegate=yes" lxc launch -q -c security.nesting=true "ncp/update" ncp
           lxc exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
           sleep 30
           ip="$(lxc list -c n4 -f csv | grep '^ncp' | cut -d ',' -f2)"
@@ -258,7 +258,7 @@ jobs:
         run: |
           set -x
           lxc delete -q -f ncp || true
-          systemd-run --user --scope -p "Delegate=yes" lxc launch -q "ncp/updated" ncp
+          systemd-run --user --scope -p "Delegate=yes" lxc launch -q -c security.nesting=true "ncp/updated" ncp
           lxc exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
           sleep 30
           ip="$(lxc list -c n4 -f csv | grep '^ncp' | cut -d ',' -f2)"
@@ -349,8 +349,8 @@ jobs:
           . ./build/buildlib.sh
           lxc delete -q -f ncp || true
           lxc image import -q "./${ARTIFACT_FILE?}" --alias "ncp/test" || true
-          systemd-run --user --scope -p "Delegate=yes" lxc launch -q "ncp/test" ncp || \
-          sudo systemd-run --scope -p "Delegate=yes" lxc launch -q "ncp/test" ncp 
+          systemd-run --user --scope -p "Delegate=yes" lxc launch -q -c security.nesting=true "ncp/test" ncp || \
+          sudo systemd-run --scope -p "Delegate=yes" lxc launch -q -c security.nesting=true "ncp/test" ncp 
           lxc exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
           sleep 30
           ip="$(lxc list -c n4 -f csv | grep '^ncp' | cut -d ',' -f2)"
