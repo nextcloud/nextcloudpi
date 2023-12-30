@@ -32,7 +32,6 @@ prepare_dirs                   # tmp cache output
 # get latest armbian
 [[ -d armbian ]] || {
   git clone --depth 100 https://github.com/armbian/build armbian
-  (cd armbian; git checkout 8f262c6ccf81040ac26f90e612102b4e726c9878)
 }
 #( cd armbian && git pull --ff-only --tags && git checkout v23.02 )
 #sed -i -e '/export rootfs_size=/s/du -sm/du --apparent-size -sm/' armbian/lib/functions/image/partitioning.sh
@@ -76,6 +75,7 @@ mkdir -p armbian/userpatches
 #sed -e '/docker.*run/s/-it//' armbian/config/templates/config-docker.conf > armbian/userpatches/config-docker.conf
 #docker pull "ghcr.io/armbian/build:$(cut -d"." -f1-2 < armbian/VERSION)-$(dpkg --print-architecture)" \
 # || docker pull "ghcr.io/armbian/build:latest-$(dpkg --print-architecture)"
+export INCLUDE_HOME_DIR=yes
 armbian/compile.sh ncp
 rm "$CONF"
 
