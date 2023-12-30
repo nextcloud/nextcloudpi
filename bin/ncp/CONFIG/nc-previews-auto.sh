@@ -8,13 +8,13 @@
 
 isactive()
 {
-  [[ -f "/etc/cron.d/nc-previews-auto" ]]
+  [[ -f "/etc/cron.d/ncp-previews-auto" ]]
 }
 
 configure()
 {
   [[ "$ACTIVE" != "yes" ]] && {
-    rm -f /etc/cron.d/nc-previews-auto
+    rm -f /etc/cron.d/ncp-previews-auto
     service cron restart
     echo "Automatic preview generation disabled"
     return 0
