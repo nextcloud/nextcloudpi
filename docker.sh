@@ -9,7 +9,6 @@ install() {
   command -v gpg || pre_reqs+=(gnupg)
   $APTINSTALL "${pre_reqs[@]}"
   local lsb_dist=debian
-  test -f /usr/bin/raspi-config && lsb_dist=raspbian
   local dist_version=bullseye
   mkdir -p /etc/apt/keyrings && chmod -R 0755 /etc/apt/keyrings
   curl -fsSL "https://download.docker.com/linux/$lsb_dist/gpg" | gpg --dearmor --yes -o /etc/apt/keyrings/docker.gpg
