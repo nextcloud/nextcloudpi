@@ -54,7 +54,7 @@ EOF
 
   # make sure redis is running first
   echo "Waiting for redis server to start up..."
-  systemctl start redis
+  start_redis
   i=0
   while ! { docker exec ncp-redis redis-cli -a "${REDISPASS}" ping 2> /dev/null | grep PONG; }
   do

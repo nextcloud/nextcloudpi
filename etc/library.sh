@@ -32,7 +32,13 @@ then
 elif [[ "$(ps -p 1 --no-headers -o "%c")" == "run-parts.sh" ]]
 then
   INIT_SYSTEM="docker"
+elif [[ "$(ps -p 1 --no-headers -o "%c")" == "bash" ]]
+then
+  INIT_SYSTEM="armbian-build"
 else
+  echo "INIT_SYSTEM is unknown"
+  exit 1
+
   INIT_SYSTEM="unknown"
 fi
 
@@ -177,6 +183,15 @@ function start_notify_push()
       systemctl enable --now notify_push
     fi
     sleep 5 # apparently we need to make sure we wait until the database is written or something
+}
+
+function start_redis() {
+  if [[ "$INIT_SYSTEM" == "chroot" ]] || [[ "$INIT_SYSTEM" == "armbian-build" ]]
+  then
+    docker ps | grep 'ncp-redis' || docker run --rm -d -v /etc/redis:/usr/local/etc/redis:Z -p 127.0.0.1:6379:6379 --name ncp-redis docker.io/redis:alpine /usr/local/etc/redis/redis.conf
+  else
+    systemctl start redis
+  fi
 }
 
 function run_app()

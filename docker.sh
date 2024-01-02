@@ -15,7 +15,14 @@ install() {
   chmod a+r /etc/apt/keyrings/docker.gpg
   echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/$lsb_dist $dist_version stable" > /etc/apt/sources.list.d/docker.list
   apt-get update
-  $APTINSTALL docker-ce docker-ce-cli containerd.io docker-compose-plugin docker-ce-rootless-extras docker-buildx-plugin
+  $APTINSTALL docker-ce docker-ce-cli containerd.io docker-compose-plugin docker-ce-rootless-extras docker-buildx-plugin cgroupfs-mount
+
+  if [[ "$INIT_SYSTEM" == "chroot" ]] || [[ "$INIT_SYSTEM" == "armbian-build" ]]
+  then
+    dockerd &
+    sleep 5
+  fi
+
 }
 
 configure() { :; }

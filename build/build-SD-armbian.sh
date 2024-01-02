@@ -57,6 +57,7 @@ KERNEL_CONFIGURE=prebuilt
 BUILD_DESKTOP=no
 BUILD_MINIMAL=yes
 USE_CCACHE=yes
+DOCKER_FLAGS+=(--privileged)
 EOF
 [[ "$CLEAN" == "0" ]] && {
   cat >> "$CONF" <<EOF

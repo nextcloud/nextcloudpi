@@ -81,12 +81,7 @@ install()
 #  usermod -a -G redis www-data
 
   systemctl enable redis
-  if [[ "$INIT_SYSTEM" == "chroot" ]]
-  then
-    /usr/bin/docker run --rm -d -v /etc/redis:/usr/local/etc/redis:Z -p 127.0.0.1:6379:6379 --name ncp-redis docker.io/redis:alpine /usr/local/etc/redis/redis.conf
-  else
-    systemctl start redis
-  fi
+  start_redis
 #  service redis-server restart
 #  update-rc.d redis-server enable
   clear_opcache

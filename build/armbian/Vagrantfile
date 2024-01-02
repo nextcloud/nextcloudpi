@@ -28,7 +28,10 @@ Vagrant.configure("2") do |config|
   $script = <<-SHELL
     sudo su
     set -ex
-    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends git ca-certificates
+    systemctl stop apparmor
+    #mount -t cgroup cgroup /sys/fs/cgroup
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends git ca-certificates cgroupfs-mount
+    mount -t cgroup cgroup /sys/fs/cgroup
     cd /tmp/nextcloudpi
     ./build/build-SD-armbian.sh "${BOARD_ID?}" "${BOARD_NAME?}"
     mv /tmp/nextcloudpi/armbian/output/*.img /tmp/ncp-out/
