@@ -27,7 +27,7 @@ install() {
     sleep 5
   fi
 
-  docker run --rm hello-world >/dev/null 2>&1 || {
+  docker run --rm hello-world || {
     echo "Docker failed to start"
     exit 1
   }
