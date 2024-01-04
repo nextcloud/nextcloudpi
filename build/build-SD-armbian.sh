@@ -42,6 +42,7 @@ prepare_dirs                   # tmp cache output
 mkdir -p armbian/userpatches armbian/userpatches/overlay
 rm -f ncp-web/{wizard.cfg,ncp-web.cfg}
 cp build/armbian/armbian.sh armbian/userpatches/customize-image.sh
+cp build/armbian/chroot-helpers.sh armbian/lib/functions/general/chroot-helpers.sh
 rsync -Aax --delete --exclude-from .gitignore --exclude *.img --exclude *.bz2 . armbian/userpatches/overlay/
 
 # GENERATE IMAGE
