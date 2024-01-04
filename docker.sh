@@ -25,13 +25,21 @@ install() {
   then
     containerd &
     dockerd &
-    sleep 5
   fi
 
-  docker run --rm hello-world || {
-    echo "Docker failed to start"
-    exit 1
-  }
+
+  success=false
+  for i in {1..10}
+  do
+    sleep 5
+    if docker run --rm hello-world
+    then
+      success=true
+    else
+      echo "Docker failed to start (attempt ${i}/10)"
+    fi
+  done
+  [[ "$success" == "true" ]] || exit 1
 }
 
 configure() { :; }
