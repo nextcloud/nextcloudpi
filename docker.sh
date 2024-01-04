@@ -24,7 +24,7 @@ install() {
   if [[ "$INIT_SYSTEM" == "chroot" ]] || [[ "$INIT_SYSTEM" == "armbian-build" ]]
   then
     containerd &
-    dockerd &
+    dockerd --iptables=false &
   fi
 
 
