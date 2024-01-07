@@ -40,6 +40,8 @@ install() {
     fi
   done
   [[ "$success" == "true" ]] || exit 1
+
+  docker rmi hello-world:latest
 }
 
 configure() { :; }

@@ -31,7 +31,16 @@ echo -e "\nInstalling NextCloudPi"
 
 hostname -F /etc/hostname # fix 'sudo resolve host' errors
 
+teardown_docker() {
+  pkill containerd dockerd
+}
+
+trap teardown_docker EXIT 1 2 3 15
+
 CODE_DIR="$(pwd)" DBG=x bash install.sh
+
+teardown_docker
+trap '' EXIT 1 2 3 15
 
 echo -e "\nPostinstall..."
 run_app_unsafe post-inst.sh
