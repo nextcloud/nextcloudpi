@@ -31,7 +31,7 @@ echo -e "\nInstalling NextCloudPi"
 
 hostname -F /etc/hostname # fix 'sudo resolve host' errors
 
-CODE_DIR="$(pwd)" DBG=x bash install.sh
+XDG_RUNTIME_DIR=/run/user/0 CODE_DIR="$(pwd)" DBG=x bash install.sh
 
 echo -e "\nPostinstall..."
 run_app_unsafe post-inst.sh
