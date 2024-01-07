@@ -56,7 +56,7 @@ EOF
   echo "Waiting for redis server to start up..."
   start_redis
   i=0
-  while ! { docker exec ncp-redis redis-cli -a "${REDISPASS}" ping 2> /dev/null | grep PONG; }
+  while ! { podman exec ncp-redis redis-cli -a "${REDISPASS}" ping 2> /dev/null | grep PONG; }
   do
     [[ $i -lt 60 ]] || {
       echo "Failed to start redis"
