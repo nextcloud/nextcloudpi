@@ -29,9 +29,9 @@ install()
   # NOTE: php-smbclient in sury but not in Debian sources, we'll use the binary version
   # https://docs.nextcloud.com/server/latest/admin_manual/configuration_files/external_storage/smb.html
   $APTINSTALL -t $RELEASE smbclient exfat-fuse exfat-utils                      # for external storage \
-    php${PHPVER}-exif                                                           # for gallery \
-    php${PHPVER}-bcmath                                                         # for LDAP \
-    php${PHPVER}-gmp                                                            # for bookmarks
+  $APTINSTALL -t $RELEASE php${PHPVER}-exif                                                           # for gallery \
+  $APTINSTALL -t $RELEASE php${PHPVER}-bcmath                                                         # for LDAP \
+  $APTINSTALL -t $RELEASE php${PHPVER}-gmp                                                            # for bookmarks
   #$APTINSTALL -t imagemagick php${PHPVER}-imagick ghostscript   # for gallery
 
 

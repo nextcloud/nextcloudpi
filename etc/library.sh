@@ -32,7 +32,7 @@ then
 elif [[ "$(ps -p 1 --no-headers -o "%c")" == "run-parts.sh" ]]
 then
   INIT_SYSTEM="docker"
-elif [[ "$(ps -p 1 --no-headers -o "%c")" == "bash" ]]
+elif [[ "$ARMBIAN_RUNNING_IN_CONTAINER" == "yes" ]]
 then
   INIT_SYSTEM="armbian-build"
 else
@@ -188,7 +188,7 @@ function start_notify_push()
 function start_redis() {
   if [[ "$INIT_SYSTEM" == "chroot" ]] || [[ "$INIT_SYSTEM" == "armbian-build" ]]
   then
-    docker ps | grep 'ncp-redis' || docker run --rm -d -v /etc/redis:/usr/local/etc/redis:Z -p 127.0.0.1:6379:6379 --name ncp-redis docker.io/redis:alpine /usr/local/etc/redis/redis.conf
+    podman ps | grep 'ncp-redis' || podman run --rm -d -v /etc/redis:/usr/local/etc/redis:Z -p 127.0.0.1:6379:6379 --name ncp-redis docker.io/redis:alpine /usr/local/etc/redis/redis.conf
   else
     systemctl start redis
   fi
