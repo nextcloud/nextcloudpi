@@ -53,16 +53,21 @@ EOF
   ## INITIALIZE NEXTCLOUD
 
   # make sure redis is running first
-  if ! pgrep -c redis-server &>/dev/null; then
-    mkdir -p /var/run/redis
-    chown redis /var/run/redis
-    sudo -u redis redis-server /etc/redis/redis.conf &
-  fi
-
-  while :; do
-    [[ -S /run/redis/redis.sock ]] && break
-    sleep 0.5
+  echo "Waiting for redis server to start up..."
+  start_redis
+  i=0
+  while ! { docker exec ncp-redis redis-cli -a "${REDISPASS}" ping 2> /dev/null | grep PONG; }
+  do
+    [[ $i -lt 60 ]] || {
+      echo "Failed to start redis"
+      systemctl status redis
+      journalctl -u ncp-redis
+      return 1
+    }
+    i=$((i+1))
+    sleep 5
   done
+echo 'Redis is started.'
 
 
   echo "Setting up Nextcloud..."
@@ -83,9 +88,9 @@ EOF
   'memcache.locking' => '\\OC\\Memcache\\Redis',
   'redis' =>
   array (
-    'host' => '/var/run/redis/redis.sock',
-    'port' => 0,
-    'timeout' => 0.0,
+    'host' => '127.0.0.1',
+    'port' => 6379,
+    'timeout' => 5.0,
     'password' => '$REDISPASS',
   ),
 );

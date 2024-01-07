@@ -14,7 +14,7 @@ configure()
   set +e
 
   # stop services
-  pkill -x redis-server
+  systemctl stop redis
   [[ -f /run/mysqld/mysqld.pid ]] && mysqladmin -u root shutdown
   [[ -f /run/crond.pid ]]     && kill "$(cat /run/crond.pid)"
   pkill -f php-fpm

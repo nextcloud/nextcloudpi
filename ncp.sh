@@ -20,6 +20,7 @@ export DEBIAN_FRONTEND=noninteractive
 
 install()
 {
+  [[ "$DBG" == "x" ]] && set -x
   # NCP-CONFIG
   apt-get update
   $APTINSTALL git dialog whiptail jq file lsb-release
@@ -70,59 +71,7 @@ EOF
 </Directory>
 EOF
 
-  cat > /etc/apache2/sites-available/ncp.conf <<EOF
-Listen 4443
-<VirtualHost _default_:4443>
-  DocumentRoot /var/www/ncp-web
-  SSLEngine on
-  SSLCertificateFile      /etc/ssl/certs/ssl-cert-snakeoil.pem
-  SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
-  <IfModule mod_headers.c>
-    Header always set Strict-Transport-Security "max-age=15768000; includeSubDomains"
-  </IfModule>
-
-  # 2 days to avoid very big backups requests to timeout
-  TimeOut 172800
-
-  <IfModule mod_authnz_external.c>
-    DefineExternalAuth pwauth pipe /usr/sbin/pwauth
-  </IfModule>
-
-</VirtualHost>
-<Directory /var/www/ncp-web/>
-
-  AuthType Basic
-  AuthName "ncp-web login"
-  AuthBasicProvider external
-  AuthExternal pwauth
-
-  SetEnvIf Request_URI "^" noauth
-  SetEnvIf Request_URI "^index\.php$" !noauth
-  SetEnvIf Request_URI "^/$" !noauth
-  SetEnvIf Request_URI "^/wizard/index.php$" !noauth
-  SetEnvIf Request_URI "^/wizard/$" !noauth
-
-  <RequireAll>
-
-   <RequireAny>
-      Require host localhost
-      Require local
-      Require ip 192.168
-      Require ip 172
-      Require ip 10
-      Require ip fe80::/10
-      Require ip fd00::/8
-   </RequireAny>
-
-   <RequireAny>
-      Require env noauth
-      Require user $WEBADMIN
-   </RequireAny>
-
-  </RequireAll>
-
-</Directory>
-EOF
+  install_template apache2/ncp.conf.sh /etc/apache2/sites-available/ncp.conf --defaults
 
   $APTINSTALL libapache2-mod-authnz-external pwauth
   a2enmod authnz_external authn_core auth_basic
@@ -260,7 +209,7 @@ EOF
   chmod g+w           /var/run/.ncp-latest-version
 
   # Install all ncp-apps
-  ALLOW_UPDATE_SCRIPT=1 bin/ncp-update "$BRANCH" || exit $?
+  ALLOW_UPDATE_SCRIPT=1 DBG="${DBG:-}" bin/ncp-update "$BRANCH" || exit $?
 
   # LIMIT LOG SIZE
   grep -q maxsize /etc/logrotate.d/apache2 || sed -i /weekly/amaxsize2M /etc/logrotate.d/apache2

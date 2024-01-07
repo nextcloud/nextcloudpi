@@ -51,8 +51,13 @@ tmpl_php_threads() {
    echo -n "$PHPTHREADS"
 }
 
+tmpl_redis_mem() {
+  find_app_param nc-limits REDISMEM
+}
+
 configure()
 {
+  set -x
   # Set auto memory limit to 75% of the total memory
   local TOTAL_MEM="$( get_total_mem )"
   # special case of 32bit emulation (e.g. 32bit-docker on 64bit hardware)
@@ -91,8 +96,8 @@ configure()
   local CURRENT_REDIS_MEM="$( grep "^maxmemory" "$CONF" | awk '{ print $2 }' )"
   [[ "$REDISMEM" != "$CURRENT_REDIS_MEM" ]] && {
     sed -i "s|^maxmemory .*|maxmemory $REDISMEM|" "$CONF"
-    chown redis:redis "$CONF"
-    service redis-server restart
+#    chown redis:redis "$CONF"
+    systemctl restart redis
   }
 }
 

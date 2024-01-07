@@ -23,7 +23,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     env:
       VERSION: "${{ inputs.git_ref }}"
       LOG_GUEST: "\\033[1;34mGUEST::\\033[0m"
@@ -67,7 +67,7 @@ jobs:
           export IMG="NextCloudPi_${{ inputs.board_name }}_${VERSION//\//_}.img"
           [[ "${{ github.ref_protected }}" == true ]] || export DBG=x
           
-          ./build/build-SD-armbian.sh "${{ inputs.board_id }}" "${{ inputs.board_name }}"
+          sudo ./build/build-SD-armbian.sh "${{ inputs.board_id }}" "${{ inputs.board_name }}"
           
           artifacts=("armbian/output/images/Armbian"*.img)
           mkdir -p output
