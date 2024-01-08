@@ -56,17 +56,22 @@ EOF
   echo "Waiting for redis server to start up..."
   start_redis
   i=0
-  while ! { podman exec ncp-redis redis-cli -a "${REDISPASS}" ping 2> /dev/null | grep PONG; }
-  do
-    [[ $i -lt 60 ]] || {
-      echo "Failed to start redis"
-      systemctl status redis
-      journalctl -u ncp-redis
-      return 1
-    }
-    i=$((i+1))
-    sleep 5
-  done
+  if [[ "$INIT_SYSTEM" == 'armbian-build' ]]
+  then
+    sleep 60
+  else
+    while ! { podman exec ncp-redis redis-cli -a "${REDISPASS}" ping 2> /dev/null | grep PONG; }
+    do
+      [[ $i -lt 60 ]] || {
+        echo "Failed to start redis"
+        systemctl status redis
+        journalctl -u ncp-redis
+        return 1
+      }
+      i=$((i+1))
+      sleep 5
+    done
+  fi
 echo 'Redis is started.'
 
 
