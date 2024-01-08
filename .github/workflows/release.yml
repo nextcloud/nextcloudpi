@@ -89,14 +89,14 @@ jobs:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
     secrets: inherit
 
-  raspberrypi:
-    if: ${{ inputs.sd-images || ( github.event_name != 'workflow_dispatch' && !startsWith(github.ref_name, 'docker-') ) }}
-    uses: ./.github/workflows/build-sd-images.yml
-    with:
-      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
-      board_id: raspberrypi
-      board_name: RaspberryPi
-    secrets: inherit
+#  raspberrypi:
+#    if: ${{ inputs.sd-images || ( github.event_name != 'workflow_dispatch' && !startsWith(github.ref_name, 'docker-') ) }}
+#    uses: ./.github/workflows/build-sd-images.yml
+#    with:
+#      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+#      board_id: raspberrypi
+#      board_name: RaspberryPi
+#    secrets: inherit
 
   # TODO: Fix 32bit armbian images
   odroidxu4:
