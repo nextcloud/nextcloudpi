@@ -23,7 +23,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-22.04,arm64,ncp
     env:
       VERSION: "${{ inputs.git_ref }}"
       LOG_GUEST: "\\033[1;34mGUEST::\\033[0m"
@@ -130,7 +130,7 @@ jobs:
 
   test:
     needs: build
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04,arm64,ncp
     env:
       VERSION: "${{ inputs.git_ref }}"
       ARTIFACT_ID: ${{ needs.build.outputs.artifact_name }}
@@ -183,6 +183,14 @@ jobs:
           sudo wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-arm-static -O raspbian_root/usr/bin/qemu-arm-static
           sudo chmod +x raspbian_root/usr/bin/qemu-{arm,aarch64}-static
           echo 'Mutex posixsem' | sudo tee -a raspbian_root/etc/apache2/mods-available/ssl.conf
+          cat <<EOF > raspbian_root/etc/containers/containers.conf
+          [containers]
+          keyring=false
+          default_sysctls = []
+          netns="host"
+          userns="host"
+          ipcns="host"
+          EOF
       - name: Test image
         id: test
         run: |
@@ -194,7 +202,7 @@ jobs:
             return $rc
           }
           
-          sudo systemd-nspawn --boot -D ./raspbian_root/ -M ncp --hostname=nextcloudpi |& awk "{ print \"${LOG_GUEST} \" \$0 }" &
+          sudo systemd-nspawn --boot --capability=CAP_NET_ADMIN,CAP_MKNOD -D ./raspbian_root/ -M ncp --hostname=nextcloudpi |& awk "{ print \"${LOG_GUEST} \" \$0 }" &
           sleep 60
           
           CONTAINER_CMD=(sudo systemd-run --machine=ncp -P --wait)
