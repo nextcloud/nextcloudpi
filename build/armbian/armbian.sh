@@ -31,6 +31,23 @@ echo -e "\nInstalling NextCloudPi"
 
 hostname -F /etc/hostname # fix 'sudo resolve host' errors
 
+mkdir -p /etc/containers
+cat <<EOF > /etc/containers/containers.conf
+[containers]
+netns="host"
+userns="host"
+ipcns="host"
+utsns="host"
+cgroupns="host"
+cgroups="disabled"
+log_driver = "k8s-file"
+[engine]
+cgroup_manager = "cgroupfs"
+events_logger="file"
+runtime="crun"
+EOF
+
+trap 'rm -rf /etc/containers/containers.conf; podman stop -a' EXIT 1 2 3 15
 XDG_RUNTIME_DIR=/run/user/0 CODE_DIR="$(pwd)" DBG=x bash install.sh
 
 echo -e "\nPostinstall..."
