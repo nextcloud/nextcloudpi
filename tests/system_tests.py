@@ -29,8 +29,7 @@ processes_must_be_running = [
         'mariadb',
         'php-fpm',
         'postfix',
-        'redis-server',
-        'dockerd'
+        'redis-server'
         ]
 
 binaries_must_be_installed = [
@@ -179,7 +178,7 @@ def check_redis():
         return False
     redis_pass = result.stdout.decode('utf-8').strip().split(' ')[1]
 
-    result = run(pre_cmd + ['docker', 'exec', 'ncp-redis', 'redis-cli', '-a', f'{redis_pass}', 'ping'],
+    result = run(pre_cmd + ['podman', 'exec', 'ncp-redis', 'redis-cli', '-a', f'{redis_pass}', 'ping'],
                  stdout=PIPE, stderr=PIPE)
     if result.returncode == 0 and b'PONG' in result.stdout:
         print(f"{tc.green}ok{tc.normal}")

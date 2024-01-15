@@ -6,6 +6,23 @@ export DEBIAN_FRONTEND=noninteractive
 install() {
   apt-get update
   $APTINSTALL podman
+#  mkdir -p raspbian_root/etc/containers
+#  cat <<EOF > raspbian_root/etc/containers/policy.json
+#{
+#  "default": [
+#    {
+#      "type": "insecureAcceptAnything"
+#    }
+#  ],
+#  "transports":
+#  {
+#    "docker-daemon":
+#      {
+#        "": [{"type":"insecureAcceptAnything"}]
+#      }
+#  }
+#}
+#EOF
 
   success=false
   for i in {1..10}
