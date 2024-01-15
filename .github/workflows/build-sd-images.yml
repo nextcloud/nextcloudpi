@@ -202,7 +202,9 @@ jobs:
             return $rc
           }
           
-          sudo systemd-nspawn --boot --capability=CAP_NET_ADMIN,CAP_MKNOD -D ./raspbian_root/ -M ncp --hostname=nextcloudpi |& awk "{ print \"${LOG_GUEST} \" \$0 }" &
+          trap 'sudo ufw enable' EXIT 1 2 3 15
+          sudo ufw disable
+          sudo systemd-nspawn --boot --capability=CAP_NET_ADMIN,CAP_MKNOD --network-veth -D ./raspbian_root/ -M ncp --hostname=nextcloudpi |& awk "{ print \"${LOG_GUEST} \" \$0 }" &
           sleep 60
           
           CONTAINER_CMD=(sudo systemd-run --machine=ncp -P --wait)
