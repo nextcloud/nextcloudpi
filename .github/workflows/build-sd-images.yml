@@ -38,11 +38,11 @@ jobs:
       artifact_file: ${{ env.ARTIFACT_FILE }}
       artifact_name: ${{ github.run_id }}-${{ inputs.board_id }}-image
     steps:
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-      - name: Setup qemu-user-static
-        run: |
-          sudo apt-get update
+#      - name: Set up QEMU
+#        uses: docker/setup-qemu-action@v2
+#      - name: Setup qemu-user-static
+#        run: |
+#          sudo apt-get update
 #          docker run --rm --privileged multiarch/qemu-user-static:register --reset --credential yes
 #          sudo mkdir -p /etc/binfmt
 #          for conf in qemu-{aarch64,arm}-static.conf
