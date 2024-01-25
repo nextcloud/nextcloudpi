@@ -40,9 +40,9 @@ jobs:
         run: |
           if [[ "${LXD_ARCH}" == "arm64" ]]
           then
-            RUNNER_LABEL=ubuntu-20.04-arm64
+            RUNNER_LABEL=ubuntu-22.04,ARM64
           else
-            RUNNER_LABEL=ubuntu-20.04
+            RUNNER_LABEL=ubuntu-22.04
           fi
           echo "runner_label=$RUNNER_LABEL" | tee -a $GITHUB_OUTPUT
 
