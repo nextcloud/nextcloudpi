@@ -67,7 +67,7 @@ BKP="$( ls -1t /var/www/nextcloud-bkp_*.tar.gz 2>/dev/null | head -1 )"
 ## Check for encrypted data and ask for password
 if needs_decrypt; then
   echo "Detected encrypted instance"
-  a2dissite ncp nextcloud
+  a2dissite ncp 001-nextcloud
   a2ensite ncp-activation
   apache2ctl -k graceful
 fi

@@ -31,7 +31,7 @@ jobs:
   determine-runner:
     env:
       LXD_ARCH: "${{ inputs.arch || 'x86' }}"
-    runs-on: ubuntu-20.04
+    runs-on: [ubuntu-latest, x64]
     outputs:
       runner_label: ${{ steps.script.outputs.runner_label }}
     steps:
@@ -65,6 +65,10 @@ jobs:
           ref: "${{ env.VERSION }}"
       - name: Cleanup lxd
         run: test -z "$(lxc profile device show default | grep eth0)" || lxc profile device remove default eth0
+      - name: Fix LXD
+        run: |
+          sudo iptables -I DOCKER-USER -i lxdbr0 -j ACCEPT
+          sudo iptables -I DOCKER-USER -o lxdbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
       - uses: whywaita/setup-lxd@v1
         with:
           lxd_version: latest/stable
@@ -86,7 +90,7 @@ jobs:
           if-no-files-found: error
 
   build-previous:
-    runs-on: ubuntu-20.04
+    runs-on: [ubuntu-latest, x64]
     if: ${{ inputs.arch == 'x86' || inputs.arch == '' }}
     outputs:
       artifact_name: "${{ env.ARTIFACT_NAME }}"
@@ -95,7 +99,6 @@ jobs:
     env:
       VERSION: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
       ARTIFACT_NAME: "${{ github.run_id }}-lxd-${{ inputs.arch || 'x86' }}-image-previous"
-      LXD_EXTRA_PROFILE: network
       LXD_ARCH: "${{ inputs.arch || 'x86' }}"
     steps:
       - name: Checkout code
@@ -135,20 +138,8 @@ jobs:
           lxd_version: latest/stable
       - name: Fix LXD
         run: |
-          lxc profile create network
-          cat <<EOF | lxc profile edit network
-          devices:
-            eth0:
-              name: eth0
-              parent: lxdbr0
-              nictype: bridged
-              type: nic
-          EOF
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-      - name: Enable qemu SUID
-        run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes --credential yes
+          sudo iptables -I DOCKER-USER -i lxdbr0 -j ACCEPT
+          sudo iptables -I DOCKER-USER -o lxdbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
       - name: Download qemu binaries
         run: |
           wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-aarch64-static -O qemu-aarch64-static
@@ -175,7 +166,7 @@ jobs:
   test-update:
     needs:
       - build-previous
-    runs-on: ubuntu-20.04
+    runs-on: [ubuntu-latest, x64]
     outputs:
       artifact_name: "${{ env.ARTIFACT_NAME }}"
       artifact_file: "${{ steps.pack-lxd.outputs.artifact_file }}"
@@ -188,15 +179,8 @@ jobs:
           lxd_version: latest/stable
       - name: Fix LXD
         run: |
-          lxc profile create network
-          cat <<EOF | lxc profile edit network
-          devices:
-            eth0:
-              name: eth0
-              parent: lxdbr0
-              nictype: bridged
-              type: nic
-          EOF
+          sudo iptables -I DOCKER-USER -i lxdbr0 -j ACCEPT
+          sudo iptables -I DOCKER-USER -o lxdbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
       - name: Checkout code
         uses: actions/checkout@v3
         with:
@@ -314,14 +298,8 @@ jobs:
       - name: Fix LXD
         continue-on-error: true
         run: |
-          lxc profile create network
-          cat <<EOF | lxc profile edit network
-          devices:
-            eth0:
-              name: eth0
-              network: lxdbr0
-              type: nic
-          EOF
+          sudo iptables -I DOCKER-USER -i lxdbr0 -j ACCEPT
+          sudo iptables -I DOCKER-USER -o lxdbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
       - name: Setup Firefox
         uses: browser-actions/setup-firefox@latest
         continue-on-error: true
@@ -387,7 +365,7 @@ jobs:
   convert-to-lxc-image:
     needs:
       - build-current
-    runs-on: ubuntu-20.04
+    runs-on: [ubuntu-latest, x64]
     outputs:
       artifact_name: "${{ steps.lxd-to-lxc.outputs.artifact_name }}"
       artifact_file: "${{ steps.lxd-to-lxc.outputs.artifact_file }}"

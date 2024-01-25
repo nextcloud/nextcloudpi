@@ -60,7 +60,7 @@ configure()
     echo "${PASSWORD?}" | gocryptfs -allow_other -q "${encdir}" "${datadir}" 2>&1 | sed /^Switch/d
 
     # switch to the regular virtual hosts after we decrypt, so we can access NC and ncp-web
-    a2ensite ncp nextcloud
+    a2ensite ncp 001-nextcloud
     a2dissite ncp-activation
     apache2ctl -k graceful
 

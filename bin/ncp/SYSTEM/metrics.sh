@@ -196,8 +196,8 @@ configure() {
   if [[ "$ACTIVE" != yes ]]
   then
 
-    install_template nextcloud.conf.sh /etc/apache2/sites-available/nextcloud.conf || {
-      install_template nextcloud.conf.sh /etc/apache2/sites-available/nextcloud.conf --allow-fallback
+    install_template nextcloud.conf.sh /etc/apache2/sites-available/001-nextcloud.conf || {
+      install_template nextcloud.conf.sh /etc/apache2/sites-available/001-nextcloud.conf --allow-fallback
       echo -e "ERROR while generating nextcloud.conf! Exiting..."
       return 1
     }
@@ -248,8 +248,8 @@ configure() {
     echo "done."
 
 
-    install_template nextcloud.conf.sh /etc/apache2/sites-available/nextcloud.conf || {
-      install_template nextcloud.conf.sh /etc/apache2/sites-available/nextcloud.conf --allow-fallback
+    install_template nextcloud.conf.sh /etc/apache2/sites-available/001-nextcloud.conf || {
+      install_template nextcloud.conf.sh /etc/apache2/sites-available/001-nextcloud.conf --allow-fallback
       echo -e "ERROR while generating nextcloud.conf! Exiting..."
       return 1
     }
