@@ -57,6 +57,7 @@ KERNEL_CONFIGURE=prebuilt
 BUILD_DESKTOP=no
 BUILD_MINIMAL=yes
 USE_CCACHE=yes
+INCLUDE_HOME_DIR=yes
 EOF
 [[ "$CLEAN" == "0" ]] && {
   cat >> "$CONF" <<EOF
