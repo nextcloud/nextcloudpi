@@ -48,5 +48,3 @@ Listen 4443
 
 </Directory>
 EOF
-
-systemctl reload apache2
