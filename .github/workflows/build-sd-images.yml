@@ -38,8 +38,8 @@ jobs:
       artifact_file: ${{ env.ARTIFACT_FILE }}
       artifact_name: ${{ github.run_id }}-${{ inputs.board_id }}-image
     steps:
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+#      - name: Set up QEMU
+#        uses: docker/setup-qemu-action@v3
       - name: Setup qemu-user-static
         run: |
           sudo apt-get update
@@ -144,8 +144,8 @@ jobs:
       run:
         shell: bash
     steps:
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+#      - name: Set up QEMU
+#        uses: docker/setup-qemu-action@v3
       - name: Apt update
         run: |
           sudo apt-get update

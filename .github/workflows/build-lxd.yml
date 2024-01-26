@@ -31,7 +31,7 @@ jobs:
   determine-runner:
     env:
       LXD_ARCH: "${{ inputs.arch || 'x86' }}"
-    runs-on: [ubuntu-latest, x64]
+    runs-on: ubuntu-latest
     outputs:
       runner_label: ${{ steps.script.outputs.runner_label }}
     steps:
@@ -40,17 +40,16 @@ jobs:
         run: |
           if [[ "${LXD_ARCH}" == "arm64" ]]
           then
-            RUNNER_LABEL=ubuntu-22.04,ARM64
+            RUNNER_LABEL='["ubuntu-20.04", "ARM64"]'
           else
-            RUNNER_LABEL=ubuntu-22.04
+            RUNNER_LABEL='["ubuntu-20.04", "x64"]'
           fi
           echo "runner_label=$RUNNER_LABEL" | tee -a $GITHUB_OUTPUT
 
   build-current:
     needs:
       - determine-runner
-    runs-on:
-      - ${{ needs.determine-runner.outputs.runner_label }}
+    runs-on: ${{ fromJSON(needs.determine-runner.outputs.runner_label) }}
     outputs:
       artifact_name: "${{ env.ARTIFACT_NAME }}"
       artifact_file: "${{ steps.pack-lxd.outputs.artifact_file }}"
@@ -72,10 +71,6 @@ jobs:
         run: |
           sudo iptables -I DOCKER-USER -i lxdbr0 -j ACCEPT
           sudo iptables -I DOCKER-USER -o lxdbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-      - name: Enable qemu SUID
-        run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes --credential yes
       - name: Build LXD image
         run: |
           ./build/build-LXD.sh
@@ -94,7 +89,7 @@ jobs:
           if-no-files-found: error
 
   build-previous:
-    runs-on: [ubuntu-latest, x64]
+    runs-on: [ ubuntu-20.04, x64 ]
     if: ${{ inputs.arch == 'x86' || inputs.arch == '' }}
     outputs:
       artifact_name: "${{ env.ARTIFACT_NAME }}"
@@ -144,15 +139,6 @@ jobs:
         run: |
           sudo iptables -I DOCKER-USER -i lxdbr0 -j ACCEPT
           sudo iptables -I DOCKER-USER -o lxdbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-      - name: Enable qemu SUID
-        run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes --credential yes
-      - name: Download qemu binaries
-        run: |
-          wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-aarch64-static -O qemu-aarch64-static
-          wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-arm-static -O qemu-arm-static
-          chmod +x qemu-{arm,aarch64}-static
 
       - name: Build LXD image
         run: |
@@ -174,7 +160,7 @@ jobs:
   test-update:
     needs:
       - build-previous
-    runs-on: [ubuntu-latest, x64]
+    runs-on: [ubuntu-20.04, x64]
     outputs:
       artifact_name: "${{ env.ARTIFACT_NAME }}"
       artifact_file: "${{ steps.pack-lxd.outputs.artifact_file }}"
@@ -189,10 +175,6 @@ jobs:
         run: |
           sudo iptables -I DOCKER-USER -i lxdbr0 -j ACCEPT
           sudo iptables -I DOCKER-USER -o lxdbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-      - name: Enable qemu SUID
-        run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes --credential yes
       - name: Checkout code
         uses: actions/checkout@v3
         with:
@@ -292,7 +274,7 @@ jobs:
     needs:
       - determine-runner
       - build-current
-    runs-on: ${{ needs.determine-runner.outputs.runner_label }}
+    runs-on: ${{ fromJSON(needs.determine-runner.outputs.runner_label) }}
     env:
       VERSION: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
       ARTIFACT_NAME: ${{ needs.build-current.outputs.artifact_name }}
@@ -312,10 +294,6 @@ jobs:
         run: |
           sudo iptables -I DOCKER-USER -i lxdbr0 -j ACCEPT
           sudo iptables -I DOCKER-USER -o lxdbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-      - name: Enable qemu SUID
-        run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes --credential yes
       - name: Setup Firefox
         uses: browser-actions/setup-firefox@latest
         continue-on-error: true
@@ -381,7 +359,7 @@ jobs:
   convert-to-lxc-image:
     needs:
       - build-current
-    runs-on: [ubuntu-latest, x64]
+    runs-on: ubuntu-latest
     outputs:
       artifact_name: "${{ steps.lxd-to-lxc.outputs.artifact_name }}"
       artifact_file: "${{ steps.lxd-to-lxc.outputs.artifact_file }}"
