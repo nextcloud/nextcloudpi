@@ -65,13 +65,17 @@ jobs:
           ref: "${{ env.VERSION }}"
       - name: Cleanup lxd
         run: test -z "$(lxc profile device show default | grep eth0)" || lxc profile device remove default eth0
+      - uses: whywaita/setup-lxd@v1
+        with:
+          lxd_version: latest/stable
       - name: Fix LXD
         run: |
           sudo iptables -I DOCKER-USER -i lxdbr0 -j ACCEPT
           sudo iptables -I DOCKER-USER -o lxdbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-      - uses: whywaita/setup-lxd@v1
-        with:
-          lxd_version: latest/stable
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Enable qemu SUID
+        run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes --credential yes
       - name: Build LXD image
         run: |
           ./build/build-LXD.sh
@@ -140,6 +144,10 @@ jobs:
         run: |
           sudo iptables -I DOCKER-USER -i lxdbr0 -j ACCEPT
           sudo iptables -I DOCKER-USER -o lxdbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Enable qemu SUID
+        run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes --credential yes
       - name: Download qemu binaries
         run: |
           wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-aarch64-static -O qemu-aarch64-static
@@ -181,6 +189,10 @@ jobs:
         run: |
           sudo iptables -I DOCKER-USER -i lxdbr0 -j ACCEPT
           sudo iptables -I DOCKER-USER -o lxdbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Enable qemu SUID
+        run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes --credential yes
       - name: Checkout code
         uses: actions/checkout@v3
         with:
@@ -300,6 +312,10 @@ jobs:
         run: |
           sudo iptables -I DOCKER-USER -i lxdbr0 -j ACCEPT
           sudo iptables -I DOCKER-USER -o lxdbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Enable qemu SUID
+        run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes --credential yes
       - name: Setup Firefox
         uses: browser-actions/setup-firefox@latest
         continue-on-error: true
