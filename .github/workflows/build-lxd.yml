@@ -42,7 +42,7 @@ jobs:
           then
             RUNNER_LABEL='["ubuntu-20.04", "ARM64"]'
           else
-            RUNNER_LABEL='["ubuntu-20.04", "x64"]'
+            RUNNER_LABEL='["ubuntu-20.04"]'
           fi
           echo "runner_label=$RUNNER_LABEL" | tee -a $GITHUB_OUTPUT
 
@@ -65,6 +65,7 @@ jobs:
       - name: Cleanup lxd
         run: test -z "$(lxc profile device show default | grep eth0)" || lxc profile device remove default eth0
       - uses: whywaita/setup-lxd@v1
+        continue-on-error: true
         with:
           lxd_version: latest/stable
       - name: Fix LXD
@@ -89,7 +90,7 @@ jobs:
           if-no-files-found: error
 
   build-previous:
-    runs-on: [ ubuntu-20.04, x64 ]
+    runs-on: [ ubuntu-20.04 ]
     if: ${{ inputs.arch == 'x86' || inputs.arch == '' }}
     outputs:
       artifact_name: "${{ env.ARTIFACT_NAME }}"
@@ -133,6 +134,7 @@ jobs:
           echo "VERSION=$version" >> "$GITHUB_ENV"
           echo "previous_version=${version}" >> $GITHUB_OUTPUT
       - uses: whywaita/setup-lxd@v1
+        continue-on-error: true
         with:
           lxd_version: latest/stable
       - name: Fix LXD
@@ -160,7 +162,7 @@ jobs:
   test-update:
     needs:
       - build-previous
-    runs-on: [ubuntu-20.04, x64]
+    runs-on: [ubuntu-20.04]
     outputs:
       artifact_name: "${{ env.ARTIFACT_NAME }}"
       artifact_file: "${{ steps.pack-lxd.outputs.artifact_file }}"
@@ -169,6 +171,7 @@ jobs:
       ARTIFACT_NAME: "${{ needs.build-previous.outputs.artifact_name }}"
     steps:
       - uses: whywaita/setup-lxd@v1
+        continue-on-error: true
         with:
           lxd_version: latest/stable
       - name: Fix LXD
@@ -287,6 +290,7 @@ jobs:
       - name: Cleanup lxd
         run: test -z "$(lxc profile device show default | grep eth0)" || lxc profile device remove default eth0
       - uses: whywaita/setup-lxd@v1
+        continue-on-error: true
         with:
           lxd_version: latest/stable
       - name: Fix LXD

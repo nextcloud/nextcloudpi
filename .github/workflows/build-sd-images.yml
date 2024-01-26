@@ -23,7 +23,7 @@ on:
 
 jobs:
   build:
-    runs-on: [ubuntu-latest, x64]
+    runs-on: ubuntu-20.04
     env:
       VERSION: "${{ inputs.git_ref }}"
       LOG_GUEST: "\\033[1;34mGUEST::\\033[0m"
@@ -38,11 +38,16 @@ jobs:
       artifact_file: ${{ env.ARTIFACT_FILE }}
       artifact_name: ${{ github.run_id }}-${{ inputs.board_id }}-image
     steps:
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
 #      - name: Set up QEMU
-#        uses: docker/setup-qemu-action@v3
-      - name: Setup qemu-user-static
-        run: |
-          sudo apt-get update
+#        run: |
+#          sudo apt-get update
+#          sudo apt-get install -y binfmt-support
+#          curl -L -o /tmp/qemu.sh 'https://raw.githubusercontent.com/qemu/qemu/master/scripts/qemu-binfmt-conf.sh'
+#          bash /tmp/qemu.sh --debian
+#          sudo systemctl disable apparmor
+#          docker run --rm --privileged tonistiigi/binfmt:latest --install all
 #          docker run --rm --privileged multiarch/qemu-user-static:register --reset --credential yes
 #          sudo mkdir -p /etc/binfmt
 #          for conf in qemu-{aarch64,arm}-static.conf
@@ -64,7 +69,7 @@ jobs:
         continue-on-error: true
         run: |
           set -ex
-          export IMG="NextCloudPi_${{ inputs.board_name }}_${VERSION//\//_}.img"
+          export IMG="NextcloudPi_${{ inputs.board_name }}_${VERSION//\//_}.img"
           [[ "${{ github.ref_protected }}" == true ]] || export DBG=x
           
           ./build/build-SD-armbian.sh "${{ inputs.board_id }}" "${{ inputs.board_name }}"
@@ -82,7 +87,7 @@ jobs:
           echo -e "${LOG_CICD} Cleanup armbian build leftovers..."
           sudo rm -rf armbian/ tmp/ output/
           
-          export IMG="NextCloudPi_${{ inputs.board_name }}_${VERSION//\//_}.img"
+          export IMG="NextcloudPi_${{ inputs.board_name }}_${VERSION//\//_}.img"
           [[ "${{ github.ref_protected }}" == true ]] || export DBG=x
 
           ./build/build-SD-armbian.sh "${{ inputs.board_id }}" "${{ inputs.board_name }}"
@@ -104,7 +109,7 @@ jobs:
         run: |
           set -ex
           echo -e "${LOG_CICD} Protected? ${{ github.ref_protected }}"
-          export IMG="NextCloudPi_${{ inputs.board_name }}_${VERSION//\//_}.img"
+          export IMG="NextcloudPi_${{ inputs.board_name }}_${VERSION//\//_}.img"
           [[ "${{ github.ref_protected }}" == true ]] || export DBG=x
           wget -q https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-aarch64-static -O ./qemu-aarch64-static
           ./build/build-SD-rpi.sh
@@ -130,7 +135,7 @@ jobs:
 
   test:
     needs: build
-    runs-on: [ubuntu-latest, x64]
+    runs-on: ubuntu-20.04
     env:
       VERSION: "${{ inputs.git_ref }}"
       ARTIFACT_ID: ${{ needs.build.outputs.artifact_name }}
@@ -144,22 +149,20 @@ jobs:
       run:
         shell: bash
     steps:
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
 #      - name: Set up QEMU
-#        uses: docker/setup-qemu-action@v3
-      - name: Apt update
-        run: |
-          sudo apt-get update
-#          sudo apt-get -y --no-install-recommends install qemu-user-static
-#      - name: Apply workaround for sudo bug (https://github.com/multiarch/qemu-user-static/issues/17)
 #        run: |
 #          sudo apt-get update
-#          sudo apt-get -y --no-install-recommends install binfmt-support qemu-user-static
+#          sudo apt-get install -y binfmt-support
+#          docker run --rm --privileged tonistiigi/binfmt:latest --install all
 #          docker run --rm --privileged multiarch/qemu-user-static:register --reset --credential yes
-#          sudo mkdir -p /etc/binfmt
-#          for conf in qemu-{aarch64,arm}-static.conf
-#          do
-#            sed 's/:F$/:OC/' /usr/lib/binfmt.d/$conf | sudo tee /etc/binfmt/$conf
-#          done
+#          sudo systemctl disable apparmor
+      #          sudo mkdir -p /etc/binfmt
+      #          for conf in qemu-{aarch64,arm}-static.conf
+      #          do
+      #            sed 's/:F$/:OC/' /usr/lib/binfmt.d/$conf | sudo tee /etc/binfmt/$conf
+      #          done
       - name: Checkout code
         uses: actions/checkout@v3
         with:
