@@ -211,6 +211,32 @@ jobs:
           ip="$(lxc list -c n4 -f csv | grep '^ncp' | cut -d ',' -f2)"
           ip="${ip/% *}"
           echo "${ip} nextcloudpi.local" | sudo tee /etc/hosts
+      - name: Activate and Test LXD Image
+        working-directory: ./tests
+        run: |
+          lxc exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
+          python activation_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
+            echo "Activation test failed!"
+            echo "Geckodriver logs:"
+            tail -n 20 geckodriver.log >&2 || true
+            echo "================"
+            echo "ncp.log: "
+            lxc exec ncp -- "tail -n20 /var/log/ncp.log"
+            exit 1
+          }
+          python system_tests.py --non-interactive || {
+            echo "System test failed!"
+            exit 1
+          }
+          python nextcloud_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
+            echo "Nextcloud test failed!"
+            echo "Geckodriver logs:"
+            tail -n 20 geckodriver.log >&2 || true
+            echo "================"
+            echo "ncp.log: "
+            lxc exec ncp -- "tail -n20 /var/log/ncp.log"
+            exit 1
+          }
 
       - name: Update ncp
         run: |
@@ -240,12 +266,10 @@ jobs:
           fi
           
           lxc stop ncp
-          lxc publish -q ncp -f --alias "ncp/updated"
       - name: Relaunch container
         run: |
           set -x
-          lxc delete -q -f ncp || true
-          systemd-run --user --scope -p "Delegate=yes" lxc launch -q "ncp/updated" ncp
+          systemd-run --user --scope -p "Delegate=yes" lxc start ncp
           lxc exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
           sleep 30
           ip="$(lxc list -c n4 -f csv | grep '^ncp' | cut -d ',' -f2)"
