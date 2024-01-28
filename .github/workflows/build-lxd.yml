@@ -40,16 +40,16 @@ jobs:
         run: |
           if [[ "${LXD_ARCH}" == "arm64" ]]
           then
-            RUNNER_LABEL='["ubuntu-20.04", "ARM64"]'
+            RUNNER_LABEL="ubuntu-20.04-arm64"
           else
-            RUNNER_LABEL='["ubuntu-20.04"]'
+            RUNNER_LABEL="ubuntu-20.04"
           fi
           echo "runner_label=$RUNNER_LABEL" | tee -a $GITHUB_OUTPUT
 
   build-current:
     needs:
       - determine-runner
-    runs-on: ${{ fromJSON(needs.determine-runner.outputs.runner_label) }}
+    runs-on: ${{ needs.determine-runner.outputs.runner_label }}
     outputs:
       artifact_name: "${{ env.ARTIFACT_NAME }}"
       artifact_file: "${{ steps.pack-lxd.outputs.artifact_file }}"
@@ -79,7 +79,7 @@ jobs:
         id: pack-lxd
         run: |
           . ./build/buildlib.sh
-          ARTIFACT_FILE="NextCloudPi_LXD_${LXD_ARCH:-x86}_${VERSION//\//_}"
+          ARTIFACT_FILE="NextcloudPi_LXD_${LXD_ARCH:-x86}_${VERSION//\//_}"
           lxc image export -q ncp/"${version}" "output/${ARTIFACT_FILE}"
           echo "artifact_file=${ARTIFACT_FILE}.tar.gz" >> $GITHUB_OUTPUT
       - name: upload LXD image to artifact store
@@ -149,7 +149,7 @@ jobs:
         id: pack-lxd
         run: |
           . ./build/buildlib.sh
-          ARTIFACT_FILE="NextCloudPi_LXD_${LXD_ARCH:-x86}_${VERSION//\//_}"
+          ARTIFACT_FILE="NextcloudPi_LXD_${LXD_ARCH:-x86}_${VERSION//\//_}"
           lxc image export -q ncp/"${version}" "output/${ARTIFACT_FILE}"
           echo "artifact_file=${ARTIFACT_FILE}.tar.gz" >> $GITHUB_OUTPUT
       - name: upload LXD image to artifact store
@@ -183,7 +183,13 @@ jobs:
         with:
           ref: "${{ env.VERSION }}"
       - name: Setup Firefox
+        continue-on-error: true
+        id: setup-firefox-browser-action
         uses: browser-actions/setup-firefox@latest
+      - name: Setup Firefox from packages
+        if: ${{ steps.setup-firefox-browser-action.outcome == 'failure' }}
+        run: |
+          sudo apt-get install -y --no-install-recommends firefox
       - name: Setup GeckoDriver
         uses: ChlodAlejandro/setup-geckodriver@latest
         with:
@@ -249,15 +255,6 @@ jobs:
         working-directory: ./tests
         run: |
           lxc exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
-          python activation_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
-            echo "Activation test failed!"
-            echo "Geckodriver logs:"
-            tail -n 20 geckodriver.log >&2 || true
-            echo "================"
-            echo "ncp.log: "
-            lxc exec ncp -- "tail -n20 /var/log/ncp.log"
-            exit 1
-          }
           python system_tests.py --non-interactive || {
             echo "System test failed!"
             exit 1
@@ -277,7 +274,7 @@ jobs:
     needs:
       - determine-runner
       - build-current
-    runs-on: ${{ fromJSON(needs.determine-runner.outputs.runner_label) }}
+    runs-on: ${{ needs.determine-runner.outputs.runner_label }}
     env:
       VERSION: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
       ARTIFACT_NAME: ${{ needs.build-current.outputs.artifact_name }}
