@@ -14,7 +14,7 @@ source build/buildlib.sh
 echo -e "\e[1m\n[ Build NCP LXC ]\e[0m"
 
 #CLEAN=0                    # Pass this envvar to skip cleaning download cache
-IMG="NextCloudPi_LXC_$( date  "+%m-%d-%y" ).img"
+IMG="NextcloudPi_LXC_$( date  "+%m-%d-%y" ).img"
 IMG=tmp/"$IMG"
 
 TAR=output/"$( basename "$IMG" .img ).tar.bz2"

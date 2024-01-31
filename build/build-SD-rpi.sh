@@ -16,7 +16,7 @@ echo -e "\e[1m\n[ Build NCP Raspberry Pi ]\e[0m"
 URL="https://downloads.raspberrypi.org/raspios_lite_arm64/images/raspios_lite_arm64-2022-09-26/2022-09-22-raspios-bullseye-arm64-lite.img.xz"
 SIZE=4G                     # Raspbian image size
 #CLEAN=0                    # Pass this envvar to skip cleaning download cache
-IMG="${IMG:-NextCloudPi_RPi_$( date  "+%m-%d-%y" ).img}"
+IMG="${IMG:-NextcloudPi_RPi_$( date  "+%m-%d-%y" ).img}"
 TAR=output/"$( basename "$IMG" .img ).tar.bz2"
 
 ##############################################################################
