@@ -9,4 +9,5 @@ mv /etc/apache2/sites-available/nextcloud.conf /etc/apache2/sites-available/001-
 a2ensite 001-nextcloud
 install_template systemd/notify_push.service.sh /etc/systemd/system/notify_push.service
 systemctl daemon-reload
-bash -c "sleep 2 && systemctl reload apache2 && systemctl restart notify_push"
+systemctl restart notify_push
+bash -c "sleep 2 && systemctl reload apache2"
