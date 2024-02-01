@@ -31,7 +31,7 @@ jobs:
   determine-runner:
     env:
       LXD_ARCH: "${{ inputs.arch || 'x86' }}"
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     outputs:
       runner_label: ${{ steps.script.outputs.runner_label }}
     steps:
@@ -40,17 +40,16 @@ jobs:
         run: |
           if [[ "${LXD_ARCH}" == "arm64" ]]
           then
-            RUNNER_LABEL=ubuntu-20.04-arm64
+            RUNNER_LABEL="ubuntu-20.04-arm64"
           else
-            RUNNER_LABEL=ubuntu-20.04
+            RUNNER_LABEL="ubuntu-20.04"
           fi
           echo "runner_label=$RUNNER_LABEL" | tee -a $GITHUB_OUTPUT
 
   build-current:
     needs:
       - determine-runner
-    runs-on:
-      - ${{ needs.determine-runner.outputs.runner_label }}
+    runs-on: ${{ needs.determine-runner.outputs.runner_label }}
     outputs:
       artifact_name: "${{ env.ARTIFACT_NAME }}"
       artifact_file: "${{ steps.pack-lxd.outputs.artifact_file }}"
@@ -66,8 +65,13 @@ jobs:
       - name: Cleanup lxd
         run: test -z "$(lxc profile device show default | grep eth0)" || lxc profile device remove default eth0
       - uses: whywaita/setup-lxd@v1
+        continue-on-error: true
         with:
           lxd_version: latest/stable
+      - name: Fix LXD
+        run: |
+          sudo iptables -I DOCKER-USER -i lxdbr0 -j ACCEPT
+          sudo iptables -I DOCKER-USER -o lxdbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
       - name: Build LXD image
         run: |
           ./build/build-LXD.sh
@@ -75,7 +79,7 @@ jobs:
         id: pack-lxd
         run: |
           . ./build/buildlib.sh
-          ARTIFACT_FILE="NextCloudPi_LXD_${LXD_ARCH:-x86}_${VERSION//\//_}"
+          ARTIFACT_FILE="NextcloudPi_LXD_${LXD_ARCH:-x86}_${VERSION//\//_}"
           lxc image export -q ncp/"${version}" "output/${ARTIFACT_FILE}"
           echo "artifact_file=${ARTIFACT_FILE}.tar.gz" >> $GITHUB_OUTPUT
       - name: upload LXD image to artifact store
@@ -86,7 +90,7 @@ jobs:
           if-no-files-found: error
 
   build-previous:
-    runs-on: ubuntu-20.04
+    runs-on: [ ubuntu-20.04 ]
     if: ${{ inputs.arch == 'x86' || inputs.arch == '' }}
     outputs:
       artifact_name: "${{ env.ARTIFACT_NAME }}"
@@ -95,7 +99,6 @@ jobs:
     env:
       VERSION: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
       ARTIFACT_NAME: "${{ github.run_id }}-lxd-${{ inputs.arch || 'x86' }}-image-previous"
-      LXD_EXTRA_PROFILE: network
       LXD_ARCH: "${{ inputs.arch || 'x86' }}"
     steps:
       - name: Checkout code
@@ -131,29 +134,13 @@ jobs:
           echo "VERSION=$version" >> "$GITHUB_ENV"
           echo "previous_version=${version}" >> $GITHUB_OUTPUT
       - uses: whywaita/setup-lxd@v1
+        continue-on-error: true
         with:
           lxd_version: latest/stable
       - name: Fix LXD
         run: |
-          lxc profile create network
-          cat <<EOF | lxc profile edit network
-          devices:
-            eth0:
-              name: eth0
-              parent: lxdbr0
-              nictype: bridged
-              type: nic
-          EOF
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-      - name: Enable qemu SUID
-        run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes --credential yes
-      - name: Download qemu binaries
-        run: |
-          wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-aarch64-static -O qemu-aarch64-static
-          wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-arm-static -O qemu-arm-static
-          chmod +x qemu-{arm,aarch64}-static
+          sudo iptables -I DOCKER-USER -i lxdbr0 -j ACCEPT
+          sudo iptables -I DOCKER-USER -o lxdbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 
       - name: Build LXD image
         run: |
@@ -162,7 +149,7 @@ jobs:
         id: pack-lxd
         run: |
           . ./build/buildlib.sh
-          ARTIFACT_FILE="NextCloudPi_LXD_${LXD_ARCH:-x86}_${VERSION//\//_}"
+          ARTIFACT_FILE="NextcloudPi_LXD_${LXD_ARCH:-x86}_${VERSION//\//_}"
           lxc image export -q ncp/"${version}" "output/${ARTIFACT_FILE}"
           echo "artifact_file=${ARTIFACT_FILE}.tar.gz" >> $GITHUB_OUTPUT
       - name: upload LXD image to artifact store
@@ -175,7 +162,7 @@ jobs:
   test-update:
     needs:
       - build-previous
-    runs-on: ubuntu-20.04
+    runs-on: [ubuntu-20.04]
     outputs:
       artifact_name: "${{ env.ARTIFACT_NAME }}"
       artifact_file: "${{ steps.pack-lxd.outputs.artifact_file }}"
@@ -184,25 +171,25 @@ jobs:
       ARTIFACT_NAME: "${{ needs.build-previous.outputs.artifact_name }}"
     steps:
       - uses: whywaita/setup-lxd@v1
+        continue-on-error: true
         with:
           lxd_version: latest/stable
       - name: Fix LXD
         run: |
-          lxc profile create network
-          cat <<EOF | lxc profile edit network
-          devices:
-            eth0:
-              name: eth0
-              parent: lxdbr0
-              nictype: bridged
-              type: nic
-          EOF
+          sudo iptables -I DOCKER-USER -i lxdbr0 -j ACCEPT
+          sudo iptables -I DOCKER-USER -o lxdbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
       - name: Checkout code
         uses: actions/checkout@v3
         with:
           ref: "${{ env.VERSION }}"
       - name: Setup Firefox
+        continue-on-error: true
+        id: setup-firefox-browser-action
         uses: browser-actions/setup-firefox@latest
+      - name: Setup Firefox from packages
+        if: ${{ steps.setup-firefox-browser-action.outcome == 'failure' }}
+        run: |
+          sudo apt-get install -y --no-install-recommends firefox
       - name: Setup GeckoDriver
         uses: ChlodAlejandro/setup-geckodriver@latest
         with:
@@ -224,6 +211,32 @@ jobs:
           ip="$(lxc list -c n4 -f csv | grep '^ncp' | cut -d ',' -f2)"
           ip="${ip/% *}"
           echo "${ip} nextcloudpi.local" | sudo tee /etc/hosts
+      - name: Activate and Test LXD Image
+        working-directory: ./tests
+        run: |
+          lxc exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
+          python activation_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
+            echo "Activation test failed!"
+            echo "Geckodriver logs:"
+            tail -n 20 geckodriver.log >&2 || true
+            echo "================"
+            echo "ncp.log: "
+            lxc exec ncp -- "tail -n20 /var/log/ncp.log"
+            exit 1
+          }
+          python system_tests.py --non-interactive || {
+            echo "System test failed!"
+            exit 1
+          }
+          python nextcloud_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
+            echo "Nextcloud test failed!"
+            echo "Geckodriver logs:"
+            tail -n 20 geckodriver.log >&2 || true
+            echo "================"
+            echo "ncp.log: "
+            lxc exec ncp -- "tail -n20 /var/log/ncp.log"
+            exit 1
+          }
 
       - name: Update ncp
         run: |
@@ -253,12 +266,10 @@ jobs:
           fi
           
           lxc stop ncp
-          lxc publish -q ncp -f --alias "ncp/updated"
       - name: Relaunch container
         run: |
           set -x
-          lxc delete -q -f ncp || true
-          systemd-run --user --scope -p "Delegate=yes" lxc launch -q "ncp/updated" ncp
+          systemd-run --user --scope -p "Delegate=yes" lxc start ncp
           lxc exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
           sleep 30
           ip="$(lxc list -c n4 -f csv | grep '^ncp' | cut -d ',' -f2)"
@@ -268,15 +279,6 @@ jobs:
         working-directory: ./tests
         run: |
           lxc exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
-          python activation_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
-            echo "Activation test failed!"
-            echo "Geckodriver logs:"
-            tail -n 20 geckodriver.log >&2 || true
-            echo "================"
-            echo "ncp.log: "
-            lxc exec ncp -- "tail -n20 /var/log/ncp.log"
-            exit 1
-          }
           python system_tests.py --non-interactive || {
             echo "System test failed!"
             exit 1
@@ -309,19 +311,14 @@ jobs:
       - name: Cleanup lxd
         run: test -z "$(lxc profile device show default | grep eth0)" || lxc profile device remove default eth0
       - uses: whywaita/setup-lxd@v1
+        continue-on-error: true
         with:
           lxd_version: latest/stable
       - name: Fix LXD
         continue-on-error: true
         run: |
-          lxc profile create network
-          cat <<EOF | lxc profile edit network
-          devices:
-            eth0:
-              name: eth0
-              network: lxdbr0
-              type: nic
-          EOF
+          sudo iptables -I DOCKER-USER -i lxdbr0 -j ACCEPT
+          sudo iptables -I DOCKER-USER -o lxdbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
       - name: Setup Firefox
         uses: browser-actions/setup-firefox@latest
         continue-on-error: true
@@ -387,7 +384,7 @@ jobs:
   convert-to-lxc-image:
     needs:
       - build-current
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     outputs:
       artifact_name: "${{ steps.lxd-to-lxc.outputs.artifact_name }}"
       artifact_file: "${{ steps.lxd-to-lxc.outputs.artifact_file }}"

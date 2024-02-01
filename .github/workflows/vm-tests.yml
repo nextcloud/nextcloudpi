@@ -188,6 +188,36 @@ jobs:
         with:
           name: ${{ github.run_id }}-update-ssh-privkey
           path: .ssh
+      - name: Activate and Test postinstall VM
+        run: |
+          set -e
+          echo "Setup ssh"
+          chmod 0600 ./.ssh/automation_ssh_key
+          eval "$(ssh-agent)"
+          ssh-add ./.ssh/automation_ssh_key
+          
+          cd bin
+          source ./library.sh
+          
+          trap 'terminate-ssh-port-forwarding "${SERVER_ADDRESS}"' EXIT 1 2
+          
+          setup-ssh-port-forwarding "$SERVER_ADDRESS"
+          
+          echo "Run integration tests"
+          ssh -o "StrictHostKeyChecking=no" -o "UserKnownHostsFile=/dev/null" "root@${SERVER_ADDRESS}" cat /usr/local/etc/instance.cfg
+          test-ncp-instance -a -f "$SNAPSHOT_ID" -b "${VERSION}" --systemtest-args "--skip-update-test" "root@${SERVER_ADDRESS}" "localhost" "8443" "9443" || {
+          
+            echo "Integration tests failed"
+            echo "Here are the last lines of ncp-install.log:"
+            echo "==========================================="
+            ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" tail /var/log/ncp-install.log;
+            echo "==========================================="
+            echo "and ncp.log:"
+            echo "==========================================="
+            ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" tail /var/log/ncp.log;
+            echo "==========================================="
+            exit 1
+          }
       - name: perform update
         run: |
           set -e
@@ -218,7 +248,7 @@ jobs:
           echo "Run integration tests"
           setup-ssh-port-forwarding "$SERVER_ADDRESS"
           
-          test-ncp-instance -a -f "$SNAPSHOT_ID" -b "${VERSION}" --systemtest-args "--skip-update-test" "root@${SERVER_ADDRESS}" "localhost" "8443" "9443" || {
+          test-ncp-instance -f "$SNAPSHOT_ID" -b "${VERSION}" --systemtest-args "--skip-update-test" "root@${SERVER_ADDRESS}" "localhost" "8443" "9443" || {
           
             echo "Integration tests failed"
             echo "Here are the last lines of ncp-install.log:"

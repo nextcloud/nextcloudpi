@@ -18,7 +18,7 @@ NCPCFG=etc/ncp.cfg
 
 echo -e "\e[1m\n[ Build NCP ${BNAME} ]\e[0m"
 
-IMG="${IMG:-NextCloudPi_${BNAME}_$( date  "+%m-%d-%y" ).img}"
+IMG="${IMG:-NextcloudPi_${BNAME}_$( date  "+%m-%d-%y" ).img}"
 IMG=tmp/"$IMG"
 TAR=output/"$( basename "$IMG" .img ).tar.bz2"
 
@@ -32,7 +32,7 @@ prepare_dirs                   # tmp cache output
 # get latest armbian
 [[ -d armbian ]] || {
   git clone --depth 100 https://github.com/armbian/build armbian
-  (cd armbian; git checkout 8f262c6ccf81040ac26f90e612102b4e726c9878)
+  ( cd armbian && git checkout c47c9372bf6970d6ca8c32bc5f7ec2a1416ab5bd; )
 }
 #( cd armbian && git pull --ff-only --tags && git checkout v23.02 )
 #sed -i -e '/export rootfs_size=/s/du -sm/du --apparent-size -sm/' armbian/lib/functions/image/partitioning.sh
@@ -58,6 +58,7 @@ KERNEL_CONFIGURE=prebuilt
 BUILD_DESKTOP=no
 BUILD_MINIMAL=yes
 USE_CCACHE=yes
+INCLUDE_HOME_DIR=yes
 EOF
 [[ "$CLEAN" == "0" ]] && {
   cat >> "$CONF" <<EOF
@@ -76,6 +77,7 @@ mkdir -p armbian/userpatches
 #sed -e '/docker.*run/s/-it//' armbian/config/templates/config-docker.conf > armbian/userpatches/config-docker.conf
 #docker pull "ghcr.io/armbian/build:$(cut -d"." -f1-2 < armbian/VERSION)-$(dpkg --print-architecture)" \
 # || docker pull "ghcr.io/armbian/build:latest-$(dpkg --print-architecture)"
+export INCLUDE_HOME_DIR=yes
 armbian/compile.sh ncp
 rm "$CONF"
 

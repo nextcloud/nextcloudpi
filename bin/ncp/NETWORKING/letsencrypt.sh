@@ -9,7 +9,7 @@
 
 
 ncdir=/var/www/nextcloud
-nc_vhostcfg=/etc/apache2/sites-available/nextcloud.conf
+nc_vhostcfg=/etc/apache2/sites-available/001-nextcloud.conf
 ncp_vhostcfg=/etc/apache2/sites-available/ncp.conf
 letsencrypt=/usr/bin/letsencrypt
 

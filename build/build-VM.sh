@@ -16,7 +16,7 @@ echo -e "\e[1m\n[ Build NCP VM ]\e[0m"
 IP=${1:-192.168.0.145}      # For QEMU automated testing (optional)
 SIZE=3G                     # Raspbian image size
 #CLEAN=0                    # Pass this envvar to skip cleaning download cache
-IMG="${IMG:-NextCloudPi_VM_$( date  "+%m-%d-%y" ).img}"
+IMG="${IMG:-NextcloudPi_VM_$( date  "+%m-%d-%y" ).img}"
 IMG=tmp/"$IMG"
 VM="/var/lib/libvirt/images/ncp-vm.img"
 
