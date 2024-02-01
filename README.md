@@ -4,7 +4,7 @@ _(The translated README pages are not updated at this time)_
 
 # NextcloudPi
 
-[![Telegram icon][telegram-badge]][chat-telegram] [![Matrix icon][matrix-badge]][chat-matrix] [![Docker icon][docker-badge]][ncp-docker-hub] [![Nextcloud icon][nc-badge]][nc-github]
+[![Telegram icon][telegram-badge]][chat-telegram] [![Matrix icon][matrix-badge]][chat-matrix]  [![Nextcloud icon][nc-badge]][nc-github]
 
 [![Forum icon][forum-badge]][nc-forum-support]
 
@@ -19,7 +19,7 @@ This is the build code for the [NextcloudPi][ncp-website] open-source community 
 
 NextcloudPi is a ready to use image for Virtual Machines, Raspberry Pi, Odroid HC1, Rock64 and other boards. ([⇒ Downloads][ncp-releases])
 
-This code also generates the NextcloudPi [Docker image][ncp-docker-hub], LXD container & VM, there is an install script for the latest stable Debian based system as well.
+This code also generates the NextcloudPi LXD and LXC containers and there is an install script for the latest supported Debian based system as well.
 
 Find the documentation at [docs.nextcloudpi.com][ncp-docs-website], the documentation is all written by volunteers.
 
@@ -108,35 +108,9 @@ sudo ncp-config
 
 ![NCP-config][ncp-config-image]
 
+## Docker has been discontinued
 
-## Run in docker
-
-```
-docker run --detach \
-           --publish 4443:4443 \
-           --publish 443:443 \
-           --publish 80:80 \
-           --volume ncdata:/data \
-           --name nextcloudpi \
-           ownyourbits/nextcloudpi $DOMAIN
-```
-
-`$DOMAIN` can also be the IP-address of the host device if you're accessing it via IP-address in your local home network.
-
-Can also be run with the `--init` flag for zombie process reaping
-
-```
-docker run --detach \
-           --init \
-           --publish 4443:4443 \
-           --publish 443:443 \
-           --publish 80:80 \
-           --volume ncdata:/data \
-           --name nextcloudpi \
-           ownyourbits/nextcloudpi $DOMAIN
-```
-
-It takes a moment to start completely, you can check this with `docker logs nextcloudpi` until it says `Init done`.
+Docker has been discontinued for the time being, please read the announcement here: https://help.nextcloud.com/t/nextcloudpi-planning-to-discontinue-its-docker-version-with-nc-25/158895
 
 ## Run in LXD
 
@@ -191,8 +165,6 @@ Packages
 - `whiptail`
 - `qemu`
 - `qemu-user-static`
-- `docker` _(If you're building a Docker image)_
-- `lxd` _(If you're building an LXD/LXC container image)_
 
 ### Raspberry Pi IMG
 
@@ -206,16 +178,6 @@ cd nextcloudpi
 
 ```
 ./build-SD-armbian.sh odroidxu4   # supported board code name
-```
-
-In order to build & push the Docker image to your repository, you'll also need to change the username, repo and tags in the script to match your credentials at Docker Hub.
-
-```
-git clone https://github.com/nextcloud/nextcloudpi.git
-cd nextcloudpi
-build/build-docker.sh x86
-build/build-docker.sh armhf
-build/build-docker.sh arm64
 ```
 
 ### LXD
@@ -248,7 +210,7 @@ curl -sSL https://raw.githubusercontent.com/nextcloud/nextcloudpi/master/install
 
 [Downloads][ncp-releases]
 
-[Docker Hub][ncp-docker-hub]
+<!-- [Docker Hub][ncp-docker-hub] -->
 
 [Nextcloud Forum][nc-forum]
 
@@ -309,8 +271,6 @@ You can find us on the [Forum][nc-forum], [Telegram][chat-telegram] or [Matrix][
 [vm-tests-badge]: https://github.com/nextcloud/nextcloudpi/workflows/VM%20Integration%20Tests/badge.svg
 
 [docker-tests-badge]: https://github.com/nextcloud/nextcloudpi/actions/workflows/build-docker.yml/badge.svg
-
-[docker-badge]: https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white
 
 [telegram-badge]: https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white
 
