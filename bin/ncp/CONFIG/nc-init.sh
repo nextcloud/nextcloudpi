@@ -152,12 +152,6 @@ EOF
   # we handle this ourselves
   ncc app:disable updatenotification
 
-  # News dropped support for 32-bit -> https://github.com/nextcloud/news/issues/1423
-  if ! [[ "$ARCH" =~ armv7 ]]; then
-    ncc app:install news
-    ncc app:enable  news
-  fi
-
   # ncp-previewgenerator
   local ncver
   ncver="$(ncc status 2>/dev/null | grep "version:" | awk '{ print $3 }')"

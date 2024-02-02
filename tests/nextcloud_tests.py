@@ -159,9 +159,17 @@ def test_nextcloud(IP: str, nc_port: str, driver: WebDriver):
 
         if element_warn.is_displayed():
 
+            try:
+                first_error = driver.find_element(By.CSS_SELECTOR, "#postsetupchecks > .errors > li")
+            except NoSuchElementException:
+                first_error = None
+            try:
+                first_warning = driver.find_element(By.CSS_SELECTOR, "#postsetupchecks > .warnings > li")
+            except NoSuchElementException:
+                first_warning = None
             if driver.find_element(By.CSS_SELECTOR, "#postsetupchecks > .errors").is_displayed() \
                     or driver.find_element(By.CSS_SELECTOR, "#postsetupchecks > .warnings").is_displayed():
-                raise ConfigTestFailure("There have been errors or warnings")
+                raise ConfigTestFailure("There have been errors or warnings" + f"({first_error.text if first_error is not None else (first_warning.text if first_warning is not None else 'None')})")
 
             infos = driver.find_elements(By.CSS_SELECTOR, "#postsetupchecks > .info > li")
             for info in infos:
