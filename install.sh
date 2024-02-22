@@ -79,6 +79,7 @@ mkdir -p /opt/ncdata
 DISABLE_FS_CHECK=1 NCPCFG="/usr/local/etc/ncp.cfg" run_app_unsafe bin/ncp/CONFIG/nc-datadir.sh
 [[ -z "$should_rm_datadir_cfg" ]] || rm /usr/local/etc/ncp-config.d/nc-datadir.cfg
 rm /.ncp-image
+rm -f /opt/ncdata/data/nextcloud.log
 
 # skip on Armbian / Vagrant / LXD ...
 [[ "${CODE_DIR}" != "" ]] || bash /usr/local/bin/ncp-provisioning.sh
