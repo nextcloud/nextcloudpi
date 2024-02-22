@@ -5,6 +5,7 @@ namespace OCA\NextcloudPi\Controller;
 use OCA\NextcloudPi\Exceptions\InvalidSettingsException;
 use OCA\NextcloudPi\Exceptions\SaveSettingsException;
 use OCA\NextcloudPi\Service\SettingsService;
+use OCP\HintException;
 use OCP\IRequest;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
@@ -26,18 +27,33 @@ class SettingsController extends Controller {
 
 
 	/**
-	 * @NoCSRFRequired
 	 * @CORS
 	 *
 	 * @param array $settings
 	 */
-	public function save(array $settings): JSONResponse {
+	public function saveNcpSettings(array $settings): JSONResponse {
 		try {
-			$this->service->saveSettings($settings);
+			$this->service->saveNcpSettings($settings);
 			return new JSONResponse([]);
 		} catch(InvalidSettingsException $e)  {
 			return new JSONResponse(["error" => $e->getMessage()], Http::STATUS_BAD_REQUEST);
 		} catch(SaveSettingsException $e) {
+			return new JSONResponse(["error" => $e->getMessage()], Http::STATUS_INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	/**
+	 * @CORS
+	 *
+	 * @param array $settings
+	 */
+	public function saveNcSettings(array $settings): JSONResponse {
+		try {
+			$this->service->saveNcSettings($settings);
+			return new JSONResponse([]);
+		} catch(InvalidSettingsException $e)  {
+			return new JSONResponse(["error" => $e->getMessage()], Http::STATUS_BAD_REQUEST);
+		} catch(SaveSettingsException|HintException $e) {
 			return new JSONResponse(["error" => $e->getMessage()], Http::STATUS_INTERNAL_SERVER_ERROR);
 		}
 	}
