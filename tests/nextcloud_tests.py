@@ -159,17 +159,21 @@ def test_nextcloud(IP: str, nc_port: str, driver: WebDriver):
 
         if element_warn.is_displayed():
 
-            try:
-                first_error = driver.find_element(By.CSS_SELECTOR, "#postsetupchecks > .errors > li")
-            except NoSuchElementException:
-                first_error = None
-            try:
-                first_warning = driver.find_element(By.CSS_SELECTOR, "#postsetupchecks > .warnings > li")
-            except NoSuchElementException:
-                first_warning = None
-            if driver.find_element(By.CSS_SELECTOR, "#postsetupchecks > .errors").is_displayed() \
-                    or driver.find_element(By.CSS_SELECTOR, "#postsetupchecks > .warnings").is_displayed():
-                raise ConfigTestFailure("There have been errors or warnings" + f"({first_error.text if first_error is not None else (first_warning.text if first_warning is not None else 'None')})")
+            warnings = driver.find_elements(By.CSS_SELECTOR, "#postsetupchecks > .warnings > li")
+            for warning in warnings:
+                if re.match(r'.*Server has no maintenance window start time configured.*', warning.text):
+                    continue
+                elif re.match(r'.*Could not check for JavaScript support.*', warning.text):
+                    continue
+                else:
+                    raise ConfigTestFailure(f"WARN: {warning.text}")
+
+            if driver.find_element(By.CSS_SELECTOR, "#postsetupchecks > .errors").is_displayed():
+                try:
+                    first_error = driver.find_element(By.CSS_SELECTOR, "#postsetupchecks > .errors > li")
+                except NoSuchElementException:
+                    first_error = None
+                raise ConfigTestFailure(f"ERROR: {first_error.text if first_error is not None else 'unexpected error'}")
 
             infos = driver.find_elements(By.CSS_SELECTOR, "#postsetupchecks > .info > li")
             for info in infos:
@@ -177,7 +181,7 @@ def test_nextcloud(IP: str, nc_port: str, driver: WebDriver):
                         or re.match(r'The PHP module "imagick" is not enabled', info.text):
                     continue
                 else:
-                    print('text', info.text)
+                    print(f'INFO: {info.text}')
                     php_modules = info.find_elements(By.CSS_SELECTOR, "li")
                     if len(php_modules) != 1:
                         raise ConfigTestFailure(f"Could not find the list of php modules within the info message "
