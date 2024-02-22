@@ -207,6 +207,7 @@ jobs:
           lxc image import -q "./${{ needs.build-previous.outputs.artifact_file }}" --alias "ncp/update"
           systemd-run --user --scope -p "Delegate=yes" lxc launch -q "ncp/update" ncp
           lxc exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
+          lxc exec ncp -- rm -f /opt/ncdata/data/nextcloud.log
           sleep 30
           ip="$(lxc list -c n4 -f csv | grep '^ncp' | cut -d ',' -f2)"
           ip="${ip/% *}"
