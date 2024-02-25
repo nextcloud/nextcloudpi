@@ -32,7 +32,7 @@ prepare_dirs                   # tmp cache output
 # get latest armbian
 [[ -d armbian ]] || {
   git clone --depth 100 https://github.com/armbian/build armbian
-  ( cd armbian && git checkout c47c9372bf6970d6ca8c32bc5f7ec2a1416ab5bd; )
+#  ( cd armbian && git checkout c47c9372bf6970d6ca8c32bc5f7ec2a1416ab5bd; )
 }
 #( cd armbian && git pull --ff-only --tags && git checkout v23.02 )
 #sed -i -e '/export rootfs_size=/s/du -sm/du --apparent-size -sm/' armbian/lib/functions/image/partitioning.sh
