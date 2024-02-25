@@ -265,6 +265,8 @@ jobs:
           else
             lxc exec ncp -- bash -c "DBG=x ncp-update-nc ${latest_nc_version?}"
           fi
+
+          lxc exec ncp -- rm -f /opt/ncdata/data/nextcloud.log
           
           lxc stop ncp
       - name: Relaunch container

@@ -11,3 +11,4 @@
 /ncp-web/ncp-web.cfg
 /docker-armhf/qemu-arm-static
 .vagrant/
+/.idea/
