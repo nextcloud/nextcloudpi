@@ -121,6 +121,25 @@ def is_admin_notifications_checkbox(item: WebElement):
         return False
 
 
+def close_first_run_wizard(driver: WebDriver):
+    wait = WebDriverWait(driver, 60)
+    first_run_wizard = None
+    try:
+        first_run_wizard = driver.find_element(By.CSS_SELECTOR, "#firstrunwizard")
+    except NoSuchElementException:
+        pass
+    if first_run_wizard is not None and first_run_wizard.is_displayed():
+        wait.until(VisibilityOfElementLocatedByAnyLocator([(By.CLASS_NAME, "modal-container__close"),
+                                                           (By.CLASS_NAME, "first-run-wizard__close-button")]))
+        try:
+            overlay_close_btn = driver.find_element(By.CLASS_NAME, "first-run-wizard__close-button")
+            overlay_close_btn.click()
+        except NoSuchElementException:
+            overlay_close_btn = driver.find_element(By.CLASS_NAME, "modal-container__close")
+            overlay_close_btn.click()
+        time.sleep(3)
+
+
 def test_nextcloud(IP: str, nc_port: str, driver: WebDriver):
     """ Login and assert admin page checks"""
     test = Test()
@@ -198,13 +217,7 @@ def test_nextcloud(IP: str, nc_port: str, driver: WebDriver):
     except Exception as e:
         test.check(e)
 
-    try:
-        overlay_close_btn = driver.find_element(By.CLASS_NAME, "modal-container__close")
-        if overlay_close_btn.is_displayed():
-            overlay_close_btn.click()
-            time.sleep(3)
-    except NoSuchElementException:
-        pass
+    close_first_run_wizard(driver)
 
     test.new("admin section (1)")
     try:
