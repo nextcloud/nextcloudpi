@@ -236,6 +236,9 @@ jobs:
             echo "================"
             echo "ncp.log: "
             lxc exec ncp -- "tail -n20 /var/log/ncp.log"
+            echo "================"
+            echo "Nextcloud log: "
+            lxc exec ncp -- cat /opt/ncdata/data/nextcloud.log
             exit 1
           }
 
