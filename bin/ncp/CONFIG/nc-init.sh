@@ -127,11 +127,11 @@ EOF
   }
 
   mysql nextcloud <<EOF
-replace into  oc_appconfig values ( 'theming', 'name'          , "NextCloudPi"             );
-replace into  oc_appconfig values ( 'theming', 'slogan'        , "keep your data close"    );
-replace into  oc_appconfig values ( 'theming', 'url'           , "https://ownyourbits.com" );
-replace into  oc_appconfig values ( 'theming', 'logoMime'      , "image/svg+xml"           );
-replace into  oc_appconfig values ( 'theming', 'backgroundMime', "image/png"               );
+replace into  oc_appconfig values ( 'theming', 'name'          , "NextCloudPi"             , 2, null);
+replace into  oc_appconfig values ( 'theming', 'slogan'        , "keep your data close"    , 2, null);
+replace into  oc_appconfig values ( 'theming', 'url'           , "https://ownyourbits.com" , 2, null);
+replace into  oc_appconfig values ( 'theming', 'logoMime'      , "image/svg+xml"           , 2, null);
+replace into  oc_appconfig values ( 'theming', 'backgroundMime', "image/png"               , 2, null);
 EOF
 
   # NCP app
@@ -151,12 +151,6 @@ EOF
 
   # we handle this ourselves
   ncc app:disable updatenotification
-
-  # News dropped support for 32-bit -> https://github.com/nextcloud/news/issues/1423
-  if ! [[ "$ARCH" =~ armv7 ]]; then
-    ncc app:install news
-    ncc app:enable  news
-  fi
 
   # ncp-previewgenerator
   local ncver

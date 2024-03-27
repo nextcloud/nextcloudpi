@@ -10,6 +10,7 @@
 return [
 	'routes' => [
 		['name' => 'page#index', 'url' => '/', 'verb' => 'GET'],
-		['name' => 'settings#save', 'url' => '/api/settings', 'verb' => 'POST']
+		['name' => 'settings#saveNcpSettings', 'url' => '/api/settings/ncp', 'verb' => 'POST'],
+		['name' => 'settings#saveNcSettings', 'url' => '/api/settings/nextcloud', 'verb' => 'POST']
 	]
 ];

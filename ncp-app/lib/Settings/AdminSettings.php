@@ -8,8 +8,7 @@ use OCP\Settings\ISettings;
 
 class AdminSettings implements ISettings {
 
-	/** @var SettingsService */
-	private $service;
+	private SettingsService $service;
 
 
 	/**
@@ -23,7 +22,8 @@ class AdminSettings implements ISettings {
 	/**
 	 * @return TemplateResponse
 	 */
-	public function getForm() {
+	public function getForm(): TemplateResponse
+	{
 		$ncp_config = $this->service->getConfig("ncp",
 			["nextcloud_version" => "unknown", "php_version" => "unknown", "release" =>  "unknown"]);
 		$community_config = $this->service->getConfig("ncp-community",
@@ -31,14 +31,19 @@ class AdminSettings implements ISettings {
 				"CANARY" => 'no',
 				"USAGE_SURVEYS" => 'no',
 				"ADMIN_NOTIFICATIONS" => 'no',
-				"NOTIFICATION_ACCOUNTS" => ""
+				"NOTIFICATION_ACCOUNTS" => ''
 			]);
 		$ncp_version = trim($this->service->getFileContent("ncp-version", "unknown"));
+
+		$default_phone_region = $this->service->getSystemConfigValueString("default_phone_region");
+		$maintenance_window_start = $this->service->getSystemConfigValueString("maintenance_window_start");
 
 		return new TemplateResponse('nextcloudpi', 'admin', [
 			'community' => $community_config,
 			'ncp' => $ncp_config,
-			'ncp_version' => $ncp_version
+			'ncp_version' => $ncp_version,
+			'default_phone_region' => $default_phone_region,
+			'maintenance_window_start' => $maintenance_window_start
 		]);
 	}
 

@@ -307,6 +307,9 @@ jobs:
               echo -e "${LOG_CICD} ================"
               echo -e "${LOG_DIAG} ncp.log: "
               "${CONTAINER_CMD[@]}" -q ncp /bin/bash -c "tail -n20 /var/log/ncp.log" |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
+              echo "================"
+              echo "Nextcloud log: "
+              "${CONTAINER_CMD[@]}" -q ncp cat /opt/ncdata/data/nextcloud.log
               sleep 12
               continue
             }

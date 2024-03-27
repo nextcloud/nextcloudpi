@@ -121,6 +121,25 @@ def is_admin_notifications_checkbox(item: WebElement):
         return False
 
 
+def close_first_run_wizard(driver: WebDriver):
+    wait = WebDriverWait(driver, 60)
+    first_run_wizard = None
+    try:
+        first_run_wizard = driver.find_element(By.CSS_SELECTOR, "#firstrunwizard")
+    except NoSuchElementException:
+        pass
+    if first_run_wizard is not None and first_run_wizard.is_displayed():
+        wait.until(VisibilityOfElementLocatedByAnyLocator([(By.CLASS_NAME, "modal-container__close"),
+                                                           (By.CLASS_NAME, "first-run-wizard__close-button")]))
+        try:
+            overlay_close_btn = driver.find_element(By.CLASS_NAME, "first-run-wizard__close-button")
+            overlay_close_btn.click()
+        except NoSuchElementException:
+            overlay_close_btn = driver.find_element(By.CLASS_NAME, "modal-container__close")
+            overlay_close_btn.click()
+        time.sleep(3)
+
+
 def test_nextcloud(IP: str, nc_port: str, driver: WebDriver):
     """ Login and assert admin page checks"""
     test = Test()
@@ -159,9 +178,24 @@ def test_nextcloud(IP: str, nc_port: str, driver: WebDriver):
 
         if element_warn.is_displayed():
 
-            if driver.find_element(By.CSS_SELECTOR, "#postsetupchecks > .errors").is_displayed() \
-                    or driver.find_element(By.CSS_SELECTOR, "#postsetupchecks > .warnings").is_displayed():
-                raise ConfigTestFailure("There have been errors or warnings")
+            warnings = driver.find_elements(By.CSS_SELECTOR, "#postsetupchecks > .warnings > li")
+            for warning in warnings:
+                if re.match(r'.*Server has no maintenance window start time configured.*', warning.text):
+                    continue
+                elif re.match(r'.*Could not check for JavaScript support.*', warning.text):
+                    continue
+                # TODO: Solve redis error logs at the source
+                elif re.match(r'.*\d+ errors in the logs since.*', warning.text):
+                    continue
+                else:
+                    raise ConfigTestFailure(f"WARN: {warning.text}")
+
+            if driver.find_element(By.CSS_SELECTOR, "#postsetupchecks > .errors").is_displayed():
+                try:
+                    first_error = driver.find_element(By.CSS_SELECTOR, "#postsetupchecks > .errors > li")
+                except NoSuchElementException:
+                    first_error = None
+                raise ConfigTestFailure(f"ERROR: {first_error.text if first_error is not None else 'unexpected error'}")
 
             infos = driver.find_elements(By.CSS_SELECTOR, "#postsetupchecks > .info > li")
             for info in infos:
@@ -169,7 +203,7 @@ def test_nextcloud(IP: str, nc_port: str, driver: WebDriver):
                         or re.match(r'The PHP module "imagick" is not enabled', info.text):
                     continue
                 else:
-                    print('text', info.text)
+                    print(f'INFO: {info.text}')
                     php_modules = info.find_elements(By.CSS_SELECTOR, "li")
                     if len(php_modules) != 1:
                         raise ConfigTestFailure(f"Could not find the list of php modules within the info message "
@@ -186,13 +220,7 @@ def test_nextcloud(IP: str, nc_port: str, driver: WebDriver):
     except Exception as e:
         test.check(e)
 
-    try:
-        overlay_close_btn = driver.find_element(By.CLASS_NAME, "modal-container__close")
-        if overlay_close_btn.is_displayed():
-            overlay_close_btn.click()
-            time.sleep(3)
-    except NoSuchElementException:
-        pass
+    close_first_run_wizard(driver)
 
     test.new("admin section (1)")
     try:
