@@ -41,6 +41,25 @@ if ( $_POST['action'] == "launch" && $_POST['config'] )
 
   $ncp_app = $_POST['ref'];
 
+  $needs_decryption = false;
+  $cfg_str = file_get_contents($cfg_dir . "nc-encrypt.cfg") or exit('{"output": "nc-encrypt read error"}');
+  $cfg = json_decode($cfg_str, true) or exit('{"output": "nc-encrypt config parse error"}');
+  $nc_encrypt_active = current(array_filter($cfg['params'], function($param) {
+    return $param['id'] === 'ACTIVE';
+  }));
+  if( $nc_encrypt_active['value'] === 'yes' ) {
+    $rc = -1;
+    $cmd_out = "";
+    exec('bash -c ". /usr/local/bin/ncp/SECURITY/nc-encrypt.sh && is_active"', $cmd_out, $rc);
+    if($rc !== 0) {
+      $needs_decryption = true;
+    }
+  }
+
+  if($needs_decryption && $ncp_app !== "nc-encrypt") {
+    exit('{ "output": "Instance is encrypted - only decryption can be performed"}');
+  }
+
   preg_match( '/^[0-9A-Za-z_-]+$/' , $_POST['ref'] , $matches )
     or exit( '{ "output": "Invalid input" , "token": "' . getCSRFToken() . '" }' );
 
