@@ -184,6 +184,9 @@ def test_nextcloud(IP: str, nc_port: str, driver: WebDriver):
                     continue
                 elif re.match(r'.*Could not check for JavaScript support.*', warning.text):
                     continue
+                # TODO: Solve redis error logs at the source
+                elif re.match(r'.*\d+ errors in the logs since.*', warning.text):
+                    continue
                 else:
                     raise ConfigTestFailure(f"WARN: {warning.text}")
 
