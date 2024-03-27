@@ -222,7 +222,7 @@ jobs:
             tail -n 20 geckodriver.log >&2 || true
             echo "================"
             echo "ncp.log: "
-            lxc exec ncp -- "tail -n20 /var/log/ncp.log"
+            lxc exec ncp -- "tail -n20 /var/log/ncp.log" || true
             exit 1
           }
           python system_tests.py --non-interactive || {
@@ -235,10 +235,11 @@ jobs:
             tail -n 20 geckodriver.log >&2 || true
             echo "================"
             echo "ncp.log: "
-            lxc exec ncp -- "tail -n20 /var/log/ncp.log"
+            lxc exec ncp -- "tail -n20 /var/log/ncp.log" || true
             echo "================"
-            echo "Nextcloud log: "
-            lxc exec ncp -- cat /opt/ncdata/data/nextcloud.log
+            echo "nextcloud log: "
+            datadir="$(lxc exec ncp -- ncc config:system:get datadirectory)"
+            lxc exec ncp -- cat "$datadir/nextcloud.log" || true
             exit 1
           }
 
@@ -295,7 +296,11 @@ jobs:
             tail -n 20 geckodriver.log >&2 || true
             echo "================"
             echo "ncp.log: "
-            lxc exec ncp -- "tail -n20 /var/log/ncp.log"
+            lxc exec ncp -- "tail -n20 /var/log/ncp.log" || true
+            echo "================"
+            echo "nextcloud log: "
+            datadir="$(lxc exec ncp -- ncc config:system:get datadirectory)"
+            lxc exec ncp -- cat "$datadir/nextcloud.log" || true
             exit 1
           }
           lxc stop ncp
@@ -369,7 +374,11 @@ jobs:
             tail -n 20 geckodriver.log >&2 || true
             echo "================"
             echo "ncp.log: "
-            lxc exec ncp -- "tail -n20 /var/log/ncp.log"
+            lxc exec ncp -- "tail -n20 /var/log/ncp.log" || true
+            echo "================"
+            echo "nextcloud log: "
+            datadir="$(lxc exec ncp -- ncc config:system:get datadirectory)"
+            lxc exec ncp -- cat "$datadir/nextcloud.log" || true
             exit 1
           }
           python system_tests.py --non-interactive || {
