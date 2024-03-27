@@ -1,0 +1,8 @@
+{
+    "translations": {
+        "metrics": "Prometheus Metrics",
+        "ACTIVE": "Aktiv",
+        "USER": "Benutzer",
+        "PASSWORD": "Passwort"
+    }
+}

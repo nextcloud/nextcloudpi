@@ -1,0 +1,8 @@
+{
+    "translations": {
+        "nc-admin": "Nextcloud Administrator",
+        "USER": "Benutzer",
+        "PASSWORD": "Passwort",
+        "CONFIRM": "Passwort bestätigen"
+    }
+}

@@ -1,0 +1,9 @@
+{
+    "translations": {
+        "ACTIVE": "Aktiv",
+        "USER": "Benutzer",
+        "PASS": "Passwort",
+        "CONFIRM": "Passwort bestätigen",
+        "SUDO": "Sudo aktivieren"
+    }
+}

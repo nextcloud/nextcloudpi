@@ -1,3 +1,7 @@
-{"translations": {
-    "nc-init": "Initialisierung"
-}}
+{
+    "translations": {
+        "nc-init": "Initialisierung",
+        "ADMINUSER": "Administrator",
+        "ADMINPASS": "Passwort"
+    }
+}

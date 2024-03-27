@@ -1,0 +1,7 @@
+{
+    "translations": {
+        "nc-rsync": "NC-Daten synchronisieren",
+        "DESTINATION": "Ziel",
+        "PORTNUMBER": "SSH Port"
+    }
+}

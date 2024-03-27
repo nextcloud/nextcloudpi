@@ -1,3 +1,7 @@
-{"translations": {
-    "nc-forward-ports": "Portweiterleitungen"
-}}
+{
+    "translations": {
+        "nc-forward-ports": "Portweiterleitungen",
+        "HTTPSPORT": "HTTPS Port",
+        "HTTPPORT": "HTTP Port"
+    }
+}

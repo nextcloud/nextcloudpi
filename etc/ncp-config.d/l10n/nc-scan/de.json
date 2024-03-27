@@ -1,3 +1,10 @@
-{"translations": {
-    "nc-scan": "Datei-Scan"
-}}
+{
+    "translations": {
+        "nc-scan": "Datei-Scan",
+        "RECURSIVE": "Rekursiver Scan",
+        "NONEXTERNAL": "Externe Dateien ignorieren",
+        "PATH1": "Verzeichnis",
+        "PATH2": "Verzeichnis",
+        "PATH3": "Verzeichnis"
+    }
+}

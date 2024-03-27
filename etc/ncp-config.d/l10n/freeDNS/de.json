@@ -1,0 +1,8 @@
+{
+    "translations": {
+        "ACTIVE": "Aktiv",
+        "UPDATEHASH": "Update Hash",
+        "DOMAIN": "Domain",
+        "UPDATEINTERVAL": "Update Intervall (in Minuten)"
+    }
+}

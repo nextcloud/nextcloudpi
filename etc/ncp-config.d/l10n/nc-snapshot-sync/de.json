@@ -1,0 +1,11 @@
+{
+    "translations": {
+        "nc-snapshot-sync": "Snapshots synchronisieren",
+        "ACTIVE": "Aktiv",
+        "SNAPDIR": "Snapshot Verzeichnis",
+        "DESTINATION": "Ziel",
+        "COMPRESSION": "Komprimieren",
+        "SYNCDAYS": "Synchronisierungsintervall (in Tagen)",
+        "SYNCHOUR": "Synchronisierungszeit (in Stunden, 0-24h)"
+    }
+}

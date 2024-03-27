@@ -1,0 +1,10 @@
+{
+    "translations": {
+        "NFS": "NFS Linux Network File System",
+        "ACTIVE": "Aktiv",
+        "DIR": "Verzeichnis",
+        "SUBNET": "Subnet",
+        "USER": "Benutzer",
+        "GROUP": "Gruppe"
+    }
+}

@@ -1,3 +1,7 @@
-{"translations": {
-    "nc-format-USB": "USB-Laufwerke formatieren"
-}}
+{
+    "translations": {
+        "nc-format-USB": "USB-Laufwerke formatieren",
+        "LABEL": "Bezeichnung",
+        "ALLOW_DATADIR_REMOVAL": "Daten löschen"
+    }
+}

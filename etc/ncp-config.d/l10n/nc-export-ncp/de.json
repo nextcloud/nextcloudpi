@@ -1,3 +1,6 @@
-{"translations": {
-    "nc-export-ncp": "NCP-Export"
-}}
+{
+    "translations": {
+        "nc-export-ncp": "NCP-Konfiguration exportieren",
+        "DIR": "Zielverzeichnis"
+    }
+}
