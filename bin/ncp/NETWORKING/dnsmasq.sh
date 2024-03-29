@@ -13,10 +13,15 @@ install()
 {
   set -x
   apt-get update
+  cat <<EOF > /etc/systemd/resolved.conf.d/nostublistener.conf
+[Resolve]
+DNSStubListener=no
+EOF
+  [[ "$INIT_SYSTEM" != "systemd" ]] || systemctl restart systemd-resolved
   apt-get install --no-install-recommends -y dnsmasq
   rc=0
   service dnsmasq status > /dev/null 2>&1 || rc=$?
-  ! is_docker && [[ $rc -eq 3 ]] && ! [[ "$INIT_SYSTEM" =~ ^("chroot"|"unknown")$ ]] && {
+  [[ $rc -eq 3 ]] && ! [[ "$INIT_SYSTEM" =~ ^("chroot"|"unknown")$ ]] && {
     echo "Applying workaround for dnsmasq bug (compare issue #1446)"
     service systemd-resolved stop || true
     service dnsmasq start
@@ -24,30 +29,9 @@ install()
   }
 
   service dnsmasq stop
-  [[ "$INIT_SYSTEM" == "systemd" ]] && service systemd-resolved start || true
+  [[ "$INIT_SYSTEM" != "systemd" ]] || service systemd-resolved start
   update-rc.d dnsmasq disable || rm /etc/systemd/system/multi-user.target.wants/dnsmasq.service
 
-  [[ "$DOCKERBUILD" == 1 ]] && {
-    cat > /etc/services-available.d/100dnsmasq <<EOF
-#!/bin/bash
-
-source /usr/local/etc/library.sh
-
-[[ "\$1" == "stop" ]] && {
-  echo "stopping dnsmasq..."
-  service dnsmasq stop
-  exit 0
-}
-
-persistent_cfg /etc/dnsmasq.conf
-
-echo "Starting dnsmasq..."
-service dnsmasq start
-
-exit 0
-EOF
-    chmod +x /etc/services-available.d/100dnsmasq
-  }
   return 0
 }
 
