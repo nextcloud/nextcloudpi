@@ -13,6 +13,7 @@ install()
 {
   set -x
   apt-get update
+  mkdir -p /etc/systemd/resolved.conf.d
   cat <<EOF > /etc/systemd/resolved.conf.d/nostublistener.conf
 [Resolve]
 DNSStubListener=no
