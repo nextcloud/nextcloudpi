@@ -20,10 +20,10 @@
     "stylelint:fix": "stylelint css/*.css css/*.scss ../../src/**/*.scss src/**/*.vue --fix"
   },
   "dependencies": {
-    "@nextcloud/axios": "^1.10.0",
+    "@nextcloud/axios": "^2.4.0",
     "@nextcloud/dialogs": "^3.1.4",
     "@nextcloud/router": "^2.0.0",
-    "@nextcloud/vue": "^5.4.0",
+    "@nextcloud/vue": "^8.11.1",
     "vue": "^2.7.0"
   },
   "browserslist": [
