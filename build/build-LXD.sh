@@ -37,9 +37,9 @@ LXC_CREATE=(lxc init -p default)
 if [[ -n "$LXD_ARCH" ]] && [[ "$LXD_ARCH" != "x86" ]]
 then
   echo "Building for architecture: $LXD_ARCH"
-  LXC_CREATE+=("images:debian/bullseye/$LXD_ARCH")
+  LXC_CREATE+=("images:debian/bookworm/$LXD_ARCH")
 else
-  LXC_CREATE+=('images:debian/bullseye')
+  LXC_CREATE+=('images:debian/bookworm')
 fi
 LXC_CREATE+=(ncp)
 "${LXC_CREATE[@]}"
