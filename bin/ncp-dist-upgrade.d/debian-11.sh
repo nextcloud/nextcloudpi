@@ -44,6 +44,9 @@ apt-get install -y --no-install-recommends systemd-resolved && systemctl enable 
 apt-get full-upgrade -y
 
 restore_maintenance_mode
+cfg="$(jq "." "$NCPCFG")"
+cfg="$(jq ".release = \"bookworm\"" <<<"$cfg")"
+echo "$cfg" > "$NCPCFG"
 echo "Update to Debian 12 (bookworm) successful."
 
 is_active_app unattended-upgrades && {
