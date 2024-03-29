@@ -303,6 +303,38 @@ jobs:
             lxc exec ncp -- cat "$datadir/nextcloud.log" || true
             exit 1
           }
+      - name: NCP distupgrade
+        id: distupgrade
+        run: |
+          lxc exec ncp -- cat /etc/os-release | grep VERSION_ID=11 || {
+            echo "Skipping dist-upgrade - can't upgrade from Debian $(lxc exec ncp -- cat /etc/os-release | grep VERSION_ID=)"
+            echo "skipped=yes" | tee -a $GITHUB_OUTPUT
+            exit 0
+          }
+          lxc exec ncp -- bash -c 'ncp-dist-upgrade'
+          echo "skipped=no" | tee -a $GITHUB_OUTPUT
+      - name: Test LXD Image
+        if: ${{ steps.distupgrade.output.skipped == 'no' }}
+        working-directory: ./tests
+        run: |
+          lxc exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
+          python system_tests.py --non-interactive || {
+            echo "System test failed!"
+            exit 1
+          }
+          python nextcloud_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
+            echo "Nextcloud test failed!"
+            echo "Geckodriver logs:"
+            tail -n 20 geckodriver.log >&2 || true
+            echo "================"
+            echo "ncp.log: "
+            lxc exec ncp -- "tail -n20 /var/log/ncp.log" || true
+            echo "================"
+            echo "nextcloud log: "
+            datadir="$(lxc exec ncp -- ncc config:system:get datadirectory)"
+            lxc exec ncp -- cat "$datadir/nextcloud.log" || true
+            exit 1
+          }
           lxc stop ncp
 
   test-fresh-install:
@@ -398,7 +430,6 @@ jobs:
             lxc exec ncp -- cat "$datadir/nextcloud.log" || true
             exit 1
           }
-          lxc stop ncp
 
   convert-to-lxc-image:
     needs:
