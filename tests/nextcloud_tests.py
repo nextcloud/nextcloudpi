@@ -263,8 +263,11 @@ def test_nextcloud(IP: str, nc_port: str, driver: WebDriver):
                     expected['ncp_version'] = True
                 elif 'php version' in divs[0].text.lower() and divs[1].text == ncp_cfg['php_version']:
                     expected['php_version'] = True
-                elif 'debian release' in divs[0].text.lower() and divs[1].text == ncp_cfg['release']:
-                    expected['debian_release'] = True
+                elif 'debian release' in divs[0].text.lower():
+                    if divs[1].text == ncp_cfg['release']:
+                        expected['debian_release'] = True
+                    else:
+                        print(f"{tc.yellow}{divs[1].text} != {ncp_cfg['release']}")
         failed = list(map(lambda item: item[0], filter(lambda item: not item[1], expected.items())))
         test.check(len(failed) == 0, f"checks failed for admin section: [{', '.join(failed)}]")
     except Exception as e:
