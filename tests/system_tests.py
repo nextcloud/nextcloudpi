@@ -59,6 +59,10 @@ files_must_not_exist = [
         '/.ncp-image',
         ]
 
+lxc_command = 'lxc'
+if 'USE_INCUS' in os.environ and os.environ['USE_INCUS'] == 'yes':
+    lxc_command = 'incus'
+
 
 class tc:
     "terminal colors"
@@ -291,7 +295,7 @@ if __name__ == "__main__":
 
     # detect if we are running this in a LXC instance
     try:
-        lxc_running = run(['lxc', 'info', 'ncp'], stdout=PIPE, check = True)
+        lxc_running = run([lxc_command, 'info', 'ncp'], stdout=PIPE, check = True)
     except:
         lxc_running = False
 
@@ -319,7 +323,7 @@ if __name__ == "__main__":
     # LXC method
     elif lxc_running:
         print( tc.brown + "* local LXC instance detected" + tc.normal)
-        pre_cmd = ['lxc', 'exec', 'ncp', '--']
+        pre_cmd = [lxc_command, 'exec', 'ncp', '--']
 
     elif systemd_container_running:
         pre_cmd = ['systemd-run', '--wait', '-P', '--machine=ncp']
