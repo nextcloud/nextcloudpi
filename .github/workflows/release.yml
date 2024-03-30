@@ -88,14 +88,32 @@ jobs:
     with:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
     secrets: inherit
+#
+#  raspberrypi:
+#    if: ${{ inputs.sd-images || ( github.event_name != 'workflow_dispatch' && !startsWith(github.ref_name, 'docker-') ) }}
+#    uses: ./.github/workflows/build-sd-images.yml
+#    with:
+#      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+#      board_id: raspberrypi
+#      board_name: RaspberryPi
+#    secrets: inherit
 
-  raspberrypi:
+  raspberrypi-4:
     if: ${{ inputs.sd-images || ( github.event_name != 'workflow_dispatch' && !startsWith(github.ref_name, 'docker-') ) }}
     uses: ./.github/workflows/build-sd-images.yml
     with:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
-      board_id: raspberrypi
-      board_name: RaspberryPi
+      board_id: rpi4b
+      board_name: RaspberryPi4
+    secrets: inherit
+
+  raspberrypi-5:
+    if: ${{ inputs.sd-images || ( github.event_name != 'workflow_dispatch' && !startsWith(github.ref_name, 'docker-') ) }}
+    uses: ./.github/workflows/build-sd-images.yml
+    with:
+      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+      board_id: rpi5b
+      board_name: RaspberryPi5
     secrets: inherit
 
   # TODO: Fix 32bit armbian images
@@ -207,19 +225,31 @@ jobs:
       artifact_file: "${{ needs.lxd-arm64.outputs.lxc_artifact_file }}"
       dry_run: ${{ (!inputs.release && github.event_name == 'workflow_dispatch') || github.ref_type != 'tag' || !(github.ref_protected || startsWith(github.ref, 'refs/tags/v'))  }}
 
-  raspberrypi-release:
+  raspberrypi-4-release:
     needs:
-      - raspberrypi
+      - raspberrypi-4
       - github-release
     if: ${{ inputs.sd-images || github.event_name != 'workflow_dispatch' }}
     uses: ./.github/workflows/publish-image.yml
     with:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
-      artifact_id: "${{ needs.raspberrypi.outputs.artifact_name }}"
-      artifact_file: "${{ needs.raspberrypi.outputs.artifact_file }}"
+      artifact_id: "${{ needs.raspberrypi-4.outputs.artifact_name }}"
+      artifact_file: "${{ needs.raspberrypi-4.outputs.artifact_file }}"
       dry_run: ${{ (!inputs.release && github.event_name == 'workflow_dispatch') || github.ref_type != 'tag' || !(github.ref_protected || startsWith(github.ref, 'refs/tags/v'))  }}
     secrets: inherit
 
+  raspberrypi-5-release:
+    needs:
+      - raspberrypi-5
+      - github-release
+    if: ${{ inputs.sd-images || github.event_name != 'workflow_dispatch' }}
+    uses: ./.github/workflows/publish-image.yml
+    with:
+      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+      artifact_id: "${{ needs.raspberrypi5.outputs.artifact_name }}"
+      artifact_file: "${{ needs.raspberrypi5.outputs.artifact_file }}"
+      dry_run: ${{ (!inputs.release && github.event_name == 'workflow_dispatch') || github.ref_type != 'tag' || !(github.ref_protected || startsWith(github.ref, 'refs/tags/v'))  }}
+    secrets: inherit
   odroidxu4-release:
     needs:
       - odroidxu4
