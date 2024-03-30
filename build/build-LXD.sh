@@ -31,7 +31,7 @@ prepare_dirs                   # tmp cache output
 
 ## BUILD NCP
 
-debian_version="$(. etc/library.sh; echo "${RELEASE%%-security}")"
+debian_version="$(. etc/library.sh > /dev/null 2>&1; echo "${RELEASE%%-security}")"
 
 LXC_CMD=lxc
 [[ "$USE_INCUS" == "yes" ]] && LXC_CMD=incus
