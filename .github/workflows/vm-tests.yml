@@ -95,7 +95,7 @@ jobs:
           path: .ssh
           if-no-files-found: error
       - id: create-test-instance
-        uses: ./.github/actions/create-test-instance
+        uses: ./.github/actions/create-test-instance-bullseye
         with:
           version: "${{ steps.find-version.outputs.previous_version }}"
           uid: "${{ github.run_id }}-update"
@@ -108,7 +108,7 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: thecalcaholic/ncp-test-automation:latest
+      image: thecalcaholic/ncp-test-automation:bookworm
       env:
         HCLOUD_TOKEN: "${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}"
         UID: "${{ github.run_id }}-install"
@@ -166,7 +166,7 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: thecalcaholic/ncp-test-automation:latest
+      image: thecalcaholic/ncp-test-automation:bullseye
       env:
         HCLOUD_TOKEN: "${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}"
         UID: "${{ github.run_id }}-update"
@@ -232,6 +232,47 @@ jobs:
           echo "Updating from $PREVIOUS_VERSION to $VERSION"
           ssh-keygen -f "$HOME/.ssh/known_hosts" -R "${SERVER_ADDRESS}" 2> /dev/null || true
           ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" "ncp-update '$VERSION'"
+      - name: Run integration tests
+        run: |
+          set -e
+          
+          echo "Setup ssh"
+          eval "$(ssh-agent)"
+          ssh-add ./.ssh/automation_ssh_key
+          
+          cd bin
+          source ./library.sh
+          
+          trap 'terminate-ssh-port-forwarding "${SERVER_ADDRESS}"' EXIT 1 2
+          
+          echo "Run integration tests"
+          setup-ssh-port-forwarding "$SERVER_ADDRESS"
+          
+          test-ncp-instance -f "$SNAPSHOT_ID" -b "${VERSION}" --systemtest-args "--skip-update-test" "root@${SERVER_ADDRESS}" "localhost" "8443" "9443" || {
+          
+            echo "Integration tests failed"
+            echo "Here are the last lines of ncp-install.log:"
+            echo "==========================================="
+            ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" tail /var/log/ncp-install.log;
+            echo "==========================================="
+            echo "and ncp.log:"
+            echo "==========================================="
+            ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" tail /var/log/ncp.log;
+            echo "==========================================="
+            exit 1
+          }
+
+      - name: NCP distupgrade
+        id: distupgrade
+        run: |
+          ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" cat /etc/os-release | grep VERSION_ID=11 || {
+            echo "Skipping dist-upgrade - can't upgrade from Debian $(lxc exec ncp -- cat /etc/os-release | grep VERSION_ID=)"
+            echo "skipped=yes" | tee -a $GITHUB_OUTPUT
+            exit 0
+          }
+          ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" bash -c 'ncp-dist-upgrade'
+          echo "skipped=no" | tee -a $GITHUB_OUTPUT
+
       - name: Run integration tests
         run: |
           set -e

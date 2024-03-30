@@ -1,0 +1,35 @@
+name: Create Test VM
+description: Create NCP instance for testing in the Hetzner cloud
+inputs:
+  version:
+    description: version (git rev / tag / branch) to install
+    required: true
+  uid:
+    description: A unique ID for labeling/naming generated resources
+    required: true
+  hcloud_token:
+    description: A auth token for Hetzner cloud
+    required: true
+  server_type:
+    description: Server type to use for hetzner servers
+    required: true
+    default: "cx11"
+
+outputs:
+  server_address:
+    description: Adress of the test instance
+  snapshot_id:
+    description: ID of the generated postinstall snapshot
+  test_server_id:
+    description: ID of the created test server
+runs:
+  using: docker
+  image: docker://thecalcaholic/ncp-test-automation:bullseye
+
+  env:
+    HCLOUD_TOKEN: ${{ inputs.hcloud_token }}
+    UID: ${{ inputs.uid }}
+    SERVER_TYPE: ${{ inputs.server_type }}
+  args:
+    - /ncp-test-automation/bin/actions/create-test-instance.sh
+    - ${{ inputs.version }}

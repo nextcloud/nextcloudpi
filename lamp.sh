@@ -97,7 +97,7 @@ install()
   # launch mariadb if not already running
   if ! [[ -f /run/mysqld/mysqld.pid ]]; then
     echo "Starting mariaDB"
-    mysqld &
+    sudo -u mysql mysqld &
   fi
 
   # wait for mariadb
