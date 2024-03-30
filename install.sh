@@ -28,19 +28,22 @@ export PATH="/usr/local/sbin:/usr/sbin:/sbin:${PATH}"
 type mysqld &>/dev/null && echo ">>> WARNING: existing mysqld configuration will be changed <<<"
 type mysqld &>/dev/null && mysql -e 'use nextcloud' &>/dev/null && { echo "The 'nextcloud' database already exists. Aborting"; exit 1; }
 
-if ! is_lxc && [[ -d "/run/systemd/system" ]] && ! type systemd-resolve &>/dev/null
-then
-  echo "systemd-resolved not found! Please install first with apt-get install systemd-resolve"
-  exit 1
-fi
+#if ! is_lxc && [[ -d "/run/systemd/system" ]] && ! type systemd-resolve &>/dev/null
+#then
+#  echo "systemd-resolved not found! You should probably install it yourself (with apt-get install systemd-resolved) and make sure it's working. Alternatively, NextcloudPi can try to install it for you (EXPERIMENTAL, THIS CAN BREAK YOUR NETWORK CONNECTIVITY!)"
+#  if [[ "$DEBIAN_FRONTEND" == "noninteractive" ]]
+#  then
+#    echo "Would you like NCP to attempt installing systemd-resolved? [y/N] y"
+#    echo "(Automatic choice because of DEBIAN_FRONTEND=noninteractive)"
+#  else
+#    read -r choice "Would you like NCP to attempt installing systemd-resolved? [y/N] "
+#    [[ "${choice,,}" == "y" ]] || exit 0
+#  fi
+#fi
 
 # get dependencies
 apt-get update
-apt-get install --no-install-recommends -y git ca-certificates sudo lsb-release wget systemd-resolved
-if [[ -d "/run/systemd/system" ]]
-then
-  systemctl enable --now systemd-resolved
-fi
+DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y git ca-certificates sudo lsb-release wget jq
 
 # get install code
 if [[ "${CODE_DIR}" == "" ]]; then
@@ -73,6 +76,22 @@ cp etc/ncp.cfg /usr/local/etc/
 
 cp -r etc/ncp-templates /usr/local/etc/
 install_app    lamp.sh
+if [[ -d "/run/systemd/system" ]] && is_lxc
+then
+  DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y systemd-resolved
+  systemctl enable systemd-resolved
+#  host nextcloudpi.com 2>/dev/null || {
+#    echo "Attempt to temporarily fix DNS after installation of systemd-resolved (You will need to fix it permanently after reboot!)..."
+#    sleep 5
+#    echo "nameserver 9.9.9.9" >> /etc/resolv.conf.head
+#    systemctl restart systemd-resolved
+#    while read -r line
+#    do
+#      if="${line%%)*}"; if="${if##.*\(}"
+#      resolvectl dns "$if" 9.9.9.9;
+#    done <<<"$(resolvectl dns | grep '^Link')"
+#  }
+fi
 install_app    bin/ncp/CONFIG/nc-nextcloud.sh
 run_app_unsafe bin/ncp/CONFIG/nc-nextcloud.sh
 rm /usr/local/etc/ncp-config.d/nc-nextcloud.cfg    # armbian overlay is ro

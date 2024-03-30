@@ -13,17 +13,17 @@ install()
 {
   set -x
   apt-get update
-  mkdir -p /etc/systemd/resolved.conf.d
-  cat <<EOF > /etc/systemd/resolved.conf.d/nostublistener.conf
-[Resolve]
-DNSStubListener=no
-EOF
-  [[ "$INIT_SYSTEM" != "systemd" ]] || systemctl restart systemd-resolved
   apt-get install --no-install-recommends -y dnsmasq
   rc=0
   service dnsmasq status > /dev/null 2>&1 || rc=$?
   [[ $rc -eq 3 ]] && ! [[ "$INIT_SYSTEM" =~ ^("chroot"|"unknown")$ ]] && {
     echo "Applying workaround for dnsmasq bug (compare issue #1446)"
+    mkdir -p /etc/systemd/resolved.conf.d
+    cat <<EOF > /etc/systemd/resolved.conf.d/nostublistener.conf
+[Resolve]
+DNSStubListener=no
+EOF
+    [[ "$INIT_SYSTEM" != "systemd" ]] || systemctl restart systemd-resolved
     service systemd-resolved stop || true
     service dnsmasq start
     service dnsmasq status

@@ -37,13 +37,13 @@ install()
     apache2ctl -V || true
 
     # Create systemd users to keep uids persistent between containers
-    id -u systemd-resolve || {
-      addgroup --quiet --system systemd-journal
-      adduser --quiet -u 180 --system --group --no-create-home --home /run/systemd \
-        --gecos "systemd Network Management" systemd-network
-      adduser --quiet -u 181 --system --group --no-create-home --home /run/systemd \
-        --gecos "systemd Resolver" systemd-resolve
-    }
+#    id -u systemd-resolve || {
+#      addgroup --quiet --system systemd-journal
+#      adduser --quiet -u 180 --system --group --no-create-home --home /run/systemd \
+#        --gecos "systemd Network Management" systemd-network
+#      adduser --quiet -u 181 --system --group --no-create-home --home /run/systemd \
+#        --gecos "systemd Resolver" systemd-resolve
+#    }
     install_with_shadow_workaround --no-install-recommends systemd
     $APTINSTALL -t $RELEASE php${PHPVER} php${PHPVER}-curl php${PHPVER}-gd php${PHPVER}-fpm php${PHPVER}-cli php${PHPVER}-opcache \
                             php${PHPVER}-mbstring php${PHPVER}-xml php${PHPVER}-zip php${PHPVER}-fileinfo php${PHPVER}-ldap \
