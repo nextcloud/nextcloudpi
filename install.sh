@@ -31,7 +31,10 @@ type mysqld &>/dev/null && mysql -e 'use nextcloud' &>/dev/null && { echo "The '
 # get dependencies
 apt-get update
 apt-get install --no-install-recommends -y git ca-certificates sudo lsb-release wget systemd-resolved
-[[ "$INIT_SYSTEM" != "systemd" ]] || systemctl enable --now systemd-resolved
+if [[ -d "/run/systemd/system" ]]
+then
+  systemctl enable --now systemd-resolved
+fi
 
 # get install code
 if [[ "${CODE_DIR}" == "" ]]; then
