@@ -28,6 +28,12 @@ export PATH="/usr/local/sbin:/usr/sbin:/sbin:${PATH}"
 type mysqld &>/dev/null && echo ">>> WARNING: existing mysqld configuration will be changed <<<"
 type mysqld &>/dev/null && mysql -e 'use nextcloud' &>/dev/null && { echo "The 'nextcloud' database already exists. Aborting"; exit 1; }
 
+if ! is_lxc && [[ -d "/run/systemd/system" ]] && ! type systemd-resolve &>/dev/null
+then
+  echo "systemd-resolved not found! Please install first with apt-get install systemd-resolve"
+  exit 1
+fi
+
 # get dependencies
 apt-get update
 apt-get install --no-install-recommends -y git ca-certificates sudo lsb-release wget systemd-resolved
