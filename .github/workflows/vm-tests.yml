@@ -183,6 +183,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           repository: 'theCalcaholic/ncp-test-automation'
+          ref: "bullseye"
       - name: download ssh private key from artifact store
         uses: actions/download-artifact@v3
         with:
@@ -247,8 +248,9 @@ jobs:
           
           echo "Run integration tests"
           setup-ssh-port-forwarding "$SERVER_ADDRESS"
-          
-          test-ncp-instance -f "$SNAPSHOT_ID" -b "${VERSION}" --systemtest-args "--skip-update-test" "root@${SERVER_ADDRESS}" "localhost" "8443" "9443" || {
+          NC_TEST_ARGS=()
+          ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" cat /etc/os-release | grep VERSION_ID=12 || NC_TEST_ARGS+=("--skip-release-check")
+          test-ncp-instance -f "$SNAPSHOT_ID" -b "${VERSION}" --nc-test-args "$NC_TEST_ARGS" --systemtest-args "--skip-update-test" "root@${SERVER_ADDRESS}" "localhost" "8443" "9443" || {
           
             echo "Integration tests failed"
             echo "Here are the last lines of ncp-install.log:"
