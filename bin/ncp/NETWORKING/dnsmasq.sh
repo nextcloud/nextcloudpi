@@ -24,7 +24,7 @@ install()
 DNSStubListener=no
 EOF
     [[ "$INIT_SYSTEM" != "systemd" ]] || systemctl restart systemd-resolved
-    service systemd-resolved stop || true
+#    service systemd-resolved stop || true
     service dnsmasq start
     service dnsmasq status
   }
