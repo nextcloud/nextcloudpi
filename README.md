@@ -178,7 +178,7 @@ cd nextcloudpi
 
 ```
 cd nextcloudpi
-./build/build-SD-armbian.sh odroidxu4   # supported board code name
+./build/build-SD-armbian.sh example   # supported board code name
 ```
 
 ### LXD
