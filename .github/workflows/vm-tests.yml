@@ -121,15 +121,16 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@v3
-        with:
-          repository: 'theCalcaholic/ncp-test-automation'
+#      - uses: actions/checkout@v3
+#        with:
+#          repository: 'theCalcaholic/ncp-test-automation'
       - name: download ssh private key from artifact store
         uses: actions/download-artifact@v3
         with:
           name: ${{ github.run_id }}-install-ssh-privkey
           path: .ssh
       - name: Test postinstall VM
+        working-directory: /ncp-test-automation/bin
         run: |
           set -e
           echo "Setup ssh"
@@ -137,7 +138,6 @@ jobs:
           eval "$(ssh-agent)"
           ssh-add ./.ssh/automation_ssh_key
           
-          cd bin
           source ./library.sh
           
           trap 'terminate-ssh-port-forwarding "${SERVER_ADDRESS}"' EXIT 1 2
@@ -191,6 +191,7 @@ jobs:
           name: ${{ github.run_id }}-update-ssh-privkey
           path: .ssh
       - name: Activate and Test postinstall VM
+        working-directory: /ncp-test-automation/bin
         run: |
           set -e
           echo "Setup ssh"
@@ -198,7 +199,6 @@ jobs:
           eval "$(ssh-agent)"
           ssh-add ./.ssh/automation_ssh_key
           
-          cd bin
           source ./library.sh
           
           trap 'terminate-ssh-port-forwarding "${SERVER_ADDRESS}"' EXIT 1 2
@@ -221,6 +221,7 @@ jobs:
             exit 1
           }
       - name: perform update
+        working-directory: /ncp-test-automation/bin
         run: |
           set -e
           
@@ -229,12 +230,13 @@ jobs:
           eval "$(ssh-agent)"
           ssh-add ./.ssh/automation_ssh_key
           
-          . ./bin/library.sh
+          source ./library.sh
 
           echo "Updating from $PREVIOUS_VERSION to $VERSION"
           ssh-keygen -f "$HOME/.ssh/known_hosts" -R "${SERVER_ADDRESS}" 2> /dev/null || true
           ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" "ncp-update '$VERSION'"
       - name: Run integration tests
+        working-directory: /ncp-test-automation/bin
         run: |
           set -e
           
@@ -242,7 +244,6 @@ jobs:
           eval "$(ssh-agent)"
           ssh-add ./.ssh/automation_ssh_key
           
-          cd bin
           source ./library.sh
           
           trap 'terminate-ssh-port-forwarding "${SERVER_ADDRESS}"' EXIT 1 2
@@ -278,6 +279,7 @@ jobs:
           echo "skipped=no" | tee -a $GITHUB_OUTPUT
 
       - name: Run integration tests
+        working-directory: /ncp-test-automation/bin
         run: |
           set -e
           
@@ -285,7 +287,6 @@ jobs:
           eval "$(ssh-agent)"
           ssh-add ./.ssh/automation_ssh_key
           
-          cd bin
           source ./library.sh
           
           trap 'terminate-ssh-port-forwarding "${SERVER_ADDRESS}"' EXIT 1 2
@@ -349,11 +350,11 @@ jobs:
       - name: Create Snapshot
         if: ${{ contains('success|failure', env.TEST_RESULT) }}
         shell: bash
+        working-directory: /ncp-test-automation/bin
         run: |
           set -x
           echo "${{ needs.setup-installation-test-instance.outputs.test_server_id }}"
           echo "${TEST_SERVER_ID?}"
-          cd /ncp-test-automation/bin
           
           . ./library.sh
           
@@ -403,11 +404,11 @@ jobs:
       - name: Create Snapshot
         if: ${{ contains('success|failure', env.TEST_RESULT) }}
         shell: bash
+        working-directory: /ncp-test-automation/bin
         run: |
           set -x
           echo "${{ needs.setup-update-test-instance.outputs.test_server_id }}"
           echo "${TEST_SERVER_ID?}"
-          cd /ncp-test-automation/bin
           
           . ./library.sh
           
