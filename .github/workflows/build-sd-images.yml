@@ -224,6 +224,8 @@ jobs:
           for attempt in {1..150}
           do
             echo -e "${LOG_CICD} Waiting for container startup (attempt $attempt/150)..."
+            systemctl status redis.service || true
+            systemctl status php8.1-fpm.service || true
             redis_pw="$("${CONTAINER_CMD[@]}" bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"password'")" \
             && redis_socket="$("${CONTAINER_CMD[@]}" bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"host'")" \
             || log_err $? "Error retrieving redis credentials" || true

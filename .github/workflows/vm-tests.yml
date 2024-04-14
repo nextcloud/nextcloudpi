@@ -146,6 +146,7 @@ jobs:
           
           echo "Run integration tests"
           ssh -o "StrictHostKeyChecking=no" -o "UserKnownHostsFile=/dev/null" "root@${SERVER_ADDRESS}" cat /usr/local/etc/instance.cfg
+          set -x
           test-ncp-instance -a -f "$SNAPSHOT_ID" -b "${VERSION}" --systemtest-args "--skip-update-test" "root@${SERVER_ADDRESS}" "localhost" "8443" "9443" || {
     
             echo "Integration tests failed"
@@ -250,6 +251,7 @@ jobs:
           setup-ssh-port-forwarding "$SERVER_ADDRESS"
           NC_TEST_ARGS=()
           ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" cat /etc/os-release | grep VERSION_ID=12 || NC_TEST_ARGS+=("--skip-release-check")
+          set -x
           test-ncp-instance -f "$SNAPSHOT_ID" -b "${VERSION}" --nc-test-args "$NC_TEST_ARGS" --systemtest-args "--skip-update-test" "root@${SERVER_ADDRESS}" "localhost" "8443" "9443" || {
           
             echo "Integration tests failed"
