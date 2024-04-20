@@ -190,9 +190,6 @@ jobs:
           sudo mkdir -p raspbian_root/etc/systemd/system/redis-server.service.d
           echo '[Service]' | sudo tee raspbian_root/etc/systemd/system/redis-server.service.d/ncp.conf
           echo 'PrivateUsers=false' | sudo tee -a raspbian_root/etc/systemd/system/redis-server.service.d/ncp.conf
-          sudo mkdir -p raspbian_root/etc/systemd/system/php8.1-fpm.service.d
-          echo '[Service]' | sudo tee raspbian_root/etc/systemd/system/php8.1-fpm.service.d/ncp.conf
-          echo 'ExecStartPre=mkdir -p /var/run/php' | sudo tee -a raspbian_root/etc/systemd/system/php8.1-fpm.service.d/ncp.conf
       - name: Test image
         id: test
         run: |
