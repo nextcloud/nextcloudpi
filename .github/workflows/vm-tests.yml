@@ -81,6 +81,8 @@ jobs:
             }
             version="${version%-*-*}"
           fi
+          # TODO: REMOVE FOR FUTURE RELEASES
+          version="v1.53.3"
           echo "Previous version is '$version'"
           echo "previous_version=${version}" >> $GITHUB_OUTPUT
       - name: Generate ssh key
