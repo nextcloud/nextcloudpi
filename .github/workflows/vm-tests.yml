@@ -271,13 +271,22 @@ jobs:
 
       - name: NCP distupgrade
         id: distupgrade
+        working-directory: /ncp-test-automation/bin
         run: |
-          ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" cat /etc/os-release | grep VERSION_ID=11 || {
-            echo "Skipping dist-upgrade - can't upgrade from Debian $(lxc exec ncp -- cat /etc/os-release | grep VERSION_ID=)"
+          set -e
+          
+          echo "Setup ssh"
+          eval "$(ssh-agent)"
+          ssh-add /github/workspace/.ssh/automation_ssh_key
+          
+          source ./library.sh
+          
+          ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" cat /etc/os-release | grep 'VERSION_ID="11"' || {
+            echo "Skipping dist-upgrade - can't upgrade from Debian $(ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" grep 'VERSION_ID=' /etc/os-release)"
             echo "skipped=yes" | tee -a $GITHUB_OUTPUT
             exit 0
           }
-          ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" bash -c 'ncp-dist-upgrade'
+          ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" DEBIAN_FRONTEND=noninteractive ncp-dist-upgrade
           echo "skipped=no" | tee -a $GITHUB_OUTPUT
 
       - name: Run integration tests
@@ -307,6 +316,8 @@ jobs:
             echo "==========================================="
             ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" tail /var/log/ncp.log;
             echo "==========================================="
+            echo "and nextcloud.log:"
+            ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" tail /opt/ncdata/data/nextcloud.log;
             exit 1
           }
 

@@ -1,12 +1,10 @@
 #!/bin/bash
 
-set -eu -o pipefail
+set -eux -o pipefail
 
 
 new_cfg=/usr/local/etc/ncp-recommended.cfg
 [[ -f "${new_cfg}" ]] || { echo "Already on the lastest recommended distribution. Abort." >&2; exit 1; }
-
-export DEBIAN_FRONTEND=noninteractive
 
 echo "
 >>> ATTENTION <<<
@@ -19,8 +17,16 @@ The current distribution will keep receiving updates for some time.
 
 Do you want to continue? [y/N]"
 
-read -n1 -r key
-[[ "${key,,}" == y ]] || exit 0
+if [[ "$DEBIAN_FRONTEND" == "noninteractive" ]]
+then
+  echo "Noninteractive environment detected. Automatically proceeding in 30 seconds..."
+  sleep 30
+else
+  read -n1 -r key
+  [[ "${key,,}" == y ]] || exit 0
+fi
+
+export DEBIAN_FRONTEND=noninteractive
 
 source /usr/local/etc/library.sh
 save_maintenance_mode
@@ -40,7 +46,7 @@ do
 done
 apt-get update && apt-get upgrade -y --without-new-pkgs
 # Required to avoid breakage of /etc/resolv.conf
-apt-get install -y --no-install-recommends systemd-resolved && systemctl enable --now systemd-resolved
+#apt-get install -y --no-install-recommends systemd-resolved && systemctl enable --now systemd-resolved
 apt-get full-upgrade -y
 
 restore_maintenance_mode
