@@ -31,7 +31,7 @@ jobs:
       - uses: actions/checkout@v3
       - run: |
           set -e
-          mkdir -p ./.ssh
+          mkdir -p .ssh
           ssh-keygen -t ed25519 -f ".ssh/automation_ssh_key"
       - name: upload ssh private key to artifact store
         uses: actions/upload-artifact@v3
@@ -87,12 +87,12 @@ jobs:
         run: |
           set -x
           mkdir -p ./.ssh
-          ssh-keygen -t ed25519 -f ".ssh/automation_ssh_key"
+          ssh-keygen -t ed25519 -f "./.ssh/automation_ssh_key"
       - name: upload ssh private key to artifact store
         uses: actions/upload-artifact@v3
         with:
           name: ${{ github.run_id }}-update-ssh-privkey
-          path: .ssh
+          path: ./.ssh
           if-no-files-found: error
       - id: create-test-instance
         uses: ./.github/actions/create-test-instance-bullseye
@@ -121,22 +121,22 @@ jobs:
       run:
         shell: bash
     steps:
-#      - uses: actions/checkout@v3
-#        with:
-#          repository: 'theCalcaholic/ncp-test-automation'
+      #      - uses: actions/checkout@v3
+      #        with:
+      #          repository: 'theCalcaholic/ncp-test-automation'
       - name: download ssh private key from artifact store
         uses: actions/download-artifact@v3
         with:
           name: ${{ github.run_id }}-install-ssh-privkey
-          path: .ssh
+          path: /github/workspace/.ssh
       - name: Test postinstall VM
         working-directory: /ncp-test-automation/bin
         run: |
           set -e
           echo "Setup ssh"
-          chmod 0600 ./.ssh/automation_ssh_key
+          chmod 0600 /github/workspace/.ssh/automation_ssh_key
           eval "$(ssh-agent)"
-          ssh-add ./.ssh/automation_ssh_key
+          ssh-add /github/workspace/.ssh/automation_ssh_key
           
           source ./library.sh
           
@@ -148,7 +148,7 @@ jobs:
           ssh -o "StrictHostKeyChecking=no" -o "UserKnownHostsFile=/dev/null" "root@${SERVER_ADDRESS}" cat /usr/local/etc/instance.cfg
           set -x
           test-ncp-instance -a -f "$SNAPSHOT_ID" -b "${VERSION}" --systemtest-args "--skip-update-test" "root@${SERVER_ADDRESS}" "localhost" "8443" "9443" || {
-    
+          
             echo "Integration tests failed"
             echo "Here are the last lines of ncp-install.log:"
             echo "==========================================="
@@ -189,15 +189,15 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ${{ github.run_id }}-update-ssh-privkey
-          path: .ssh
+          path: /github/workspace/.ssh
       - name: Activate and Test postinstall VM
         working-directory: /ncp-test-automation/bin
         run: |
           set -e
           echo "Setup ssh"
-          chmod 0600 ./.ssh/automation_ssh_key
+          chmod 0600 /github/workspace/.ssh/automation_ssh_key
           eval "$(ssh-agent)"
-          ssh-add ./.ssh/automation_ssh_key
+          ssh-add /github/workspace/.ssh/automation_ssh_key
           
           source ./library.sh
           
@@ -226,9 +226,9 @@ jobs:
           set -e
           
           echo "Setup ssh"
-          chmod 0600 ./.ssh/automation_ssh_key
+          chmod 0600 /github/workspace/.ssh/automation_ssh_key
           eval "$(ssh-agent)"
-          ssh-add ./.ssh/automation_ssh_key
+          ssh-add /github/workspace/.ssh/automation_ssh_key
           
           source ./library.sh
 
@@ -242,7 +242,7 @@ jobs:
           
           echo "Setup ssh"
           eval "$(ssh-agent)"
-          ssh-add ./.ssh/automation_ssh_key
+          ssh-add /github/workspace/.ssh/automation_ssh_key
           
           source ./library.sh
           
@@ -285,7 +285,7 @@ jobs:
           
           echo "Setup ssh"
           eval "$(ssh-agent)"
-          ssh-add ./.ssh/automation_ssh_key
+          ssh-add /github/workspace/.ssh/automation_ssh_key
           
           source ./library.sh
           
@@ -342,7 +342,7 @@ jobs:
           bash /ncp-test-automation/bin/entrypoint.sh
           eval "$(ssh-agent)"
           ssh-add /github/workspace/.ssh/automation_ssh_key
-  
+          
           ssh -o "StrictHostKeyChecking=no" -o "UserKnownHostsFile=/dev/null" "root@${SERVER_ADDRESS?}" <<EOF
           systemctl stop mariadb
           systemctl poweroff
