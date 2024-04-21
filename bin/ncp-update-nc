@@ -74,7 +74,7 @@ fi
 # https://github.com/nextcloud/server/issues/10949
 pgrep -cf cron.php &>/dev/null && { pkill -f cron.php; sleep 3; }
 pgrep -cf cron.php &>/dev/null && { echo "cron.php running. Abort"; exit 1; }
-mysql nextcloud <<<"UPDATE "$DB_FREFIX"jobs SET reserved_at=0;"
+mysql nextcloud <<<"UPDATE ${DB_PREFIX}jobs SET reserved_at=0;"
 
 # cleanup
 ####################
