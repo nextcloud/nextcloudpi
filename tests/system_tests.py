@@ -230,8 +230,13 @@ def test_autoupdates():
                 return False
 
         set_cohorte_id(99)
-        handle_error(run(pre_cmd + ['/usr/local/bin/ncp-check-version'], stdout=PIPE, stderr=PIPE))
-        result = handle_error(run(pre_cmd + ['cat', '/var/run/.ncp-latest-version'], stdout=PIPE, stderr=PIPE))
+        chk_version = handle_error(run(pre_cmd + ['/usr/local/bin/ncp-check-version'], stdout=PIPE, stderr=PIPE))
+        try:
+            result = handle_error(run(pre_cmd + ['cat', '/var/run/.ncp-latest-version'], stdout=PIPE, stderr=PIPE))
+        except ProcessExecutionException as e:
+            print("stderr:", chk_version.stderr)
+            print("stdout:", chk_version.stdout)
+            raise e
         if 'v99.99.99' not in result.stdout:
             print(f"{tc.red}error{tc.normal} Expected latest detected version to be v99.99.99, was {result.stdout}")
             return False

@@ -2,6 +2,8 @@
 
 set -eux -o pipefail
 
+echo "ENV:"
+env
 
 new_cfg=/usr/local/etc/ncp-recommended.cfg
 [[ -f "${new_cfg}" ]] || { echo "Already on the lastest recommended distribution. Abort." >&2; exit 1; }
@@ -17,7 +19,7 @@ The current distribution will keep receiving updates for some time.
 
 Do you want to continue? [y/N]"
 
-if [[ "$DEBIAN_FRONTEND" == "noninteractive" ]]
+if [[ "$DEBIAN_FRONTEND" == "noninteractive" ]] || ! [[ -t 0 ]]
 then
   echo "Noninteractive environment detected. Automatically proceeding in 30 seconds..."
   sleep 30
@@ -45,8 +47,11 @@ do
     sed -i -e "s/deb/#deb/g" "$aptlist"
 done
 apt-get update && apt-get upgrade -y --without-new-pkgs
-# Required to avoid breakage of /etc/resolv.conf
-#apt-get install -y --no-install-recommends systemd-resolved && systemctl enable --now systemd-resolved
+if is_lxc
+then
+  # Required to avoid breakage of /etc/resolv.conf
+  apt-get install -y --no-install-recommends systemd-resolved && systemctl enable --now systemd-resolved
+fi
 apt-get full-upgrade -y
 
 restore_maintenance_mode

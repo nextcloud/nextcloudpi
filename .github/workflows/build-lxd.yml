@@ -267,7 +267,7 @@ jobs:
           BRANCH="${BRANCH/refs\/tags\//}"
           if [[ "$BRANCH" =~ "refs/pull/"* ]]
           then
-            UPDATE_ARGS=("${{ github.base_ref }}" "$VERSION") 
+            UPDATE_ARGS=("${{ github.head_ref }}" "$VERSION") 
           else
             UPDATE_ARGS=("$BRANCH")
           fi
@@ -320,18 +320,173 @@ jobs:
             "$LXC" exec ncp -- cat "$datadir/nextcloud.log" || true
             exit 1
           }
+
+  test-dist-upgrade:
+    needs:
+      - determine-runner
+    runs-on: [ubuntu-20.04]
+    env:
+      VERSION: "${{ inputs.git_ref || github.ref }}"
+      ARTIFACT_NAME: "${{ needs.build-previous.outputs.artifact_name }}"
+      LXC: "${{ needs.determine-runner.outputs.lxc_cmd }}"
+      PREVIOUS_IMAGE_URL: "https://github.com/nextcloud/nextcloudpi/releases/download/v1.53.2/NextcloudPi_LXD_x86_v1.53.2.tar.gz"
+    steps:
+      - uses: whywaita/setup-lxd@v1
+        if: ${{ needs.determine-runner.outputs.lxc_cmd == 'lxc' }}
+        continue-on-error: true
+        with:
+          lxd_version: latest/stable
+      - name: Fix LXD
+        run: |
+          sudo iptables -I DOCKER-USER -i lxdbr0 -j ACCEPT
+          sudo iptables -I DOCKER-USER -o lxdbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: "${{ env.VERSION }}"
+      - name: Setup Firefox
+        continue-on-error: true
+        id: setup-firefox-browser-action
+        uses: browser-actions/setup-firefox@latest
+      - name: Setup Firefox from packages
+        if: ${{ steps.setup-firefox-browser-action.outcome == 'failure' }}
+        run: |
+          sudo apt-get install -y --no-install-recommends firefox
+      - name: Setup GeckoDriver
+        uses: ChlodAlejandro/setup-geckodriver@latest
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Setup Selenium
+        run: pip install selenium
+      - name: download LXD image
+        run: |
+          wget -qO ./ncp.tar.gz "${PREVIOUS_IMAGE_URL?}"
+      - name: Launch ncp container
+        run: |
+          set -x
+          "$LXC" delete -q -f ncp || true
+          "$LXC" image import -q "./ncp.tar.gz" --alias "ncp/update"
+          systemd-run --user --scope -p "Delegate=yes" "$LXC" launch -q "ncp/update" ncp
+          "$LXC" exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
+          "$LXC" exec ncp -- rm -f /opt/ncdata/data/nextcloud.log
+          sleep 30
+          ip="$("$LXC" list -c n4 -f csv | grep '^ncp' | cut -d ',' -f2)"
+          ip="${ip/% *}"
+          echo "${ip} nextcloudpi.local" | sudo tee /etc/hosts
+      - name: Activate and Test LXD Image
+        working-directory: ./tests
+        run: |
+          "$LXC" exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
+          python activation_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
+            echo "Activation test failed!"
+            echo "Geckodriver logs:"
+            tail -n 20 geckodriver.log >&2 || true
+            echo "================"
+            echo "ncp.log: "
+            "$LXC" exec ncp -- "tail -n20 /var/log/ncp.log" || true
+            exit 1
+          }
+          python system_tests.py --non-interactive --skip-update-test || {
+            echo "System test failed!"
+            exit 1
+          }
+          python nextcloud_tests.py --no-gui --skip-release-check "nextcloudpi.local" 443 4443 || {
+            echo "Nextcloud test failed!"
+            echo "Geckodriver logs:"
+            tail -n 20 geckodriver.log >&2 || true
+            echo "================"
+            echo "ncp.log: "
+            "$LXC" exec ncp -- "tail -n20 /var/log/ncp.log" || true
+            echo "================"
+            echo "nextcloud log: "
+            datadir="$("$LXC" exec ncp -- ncc config:system:get datadirectory)"
+            "$LXC" exec ncp -- cat "$datadir/nextcloud.log" || true
+            exit 1
+          }
+
+      - name: Update ncp
+        run: |
+          set -ex
+          BRANCH="${VERSION/refs\/heads\//}"
+          BRANCH="${BRANCH/refs\/tags\//}"
+          if [[ "$BRANCH" =~ "refs/pull/"* ]]
+          then
+            UPDATE_ARGS=("${{ github.head_ref }}" "$VERSION") 
+          else
+            UPDATE_ARGS=("$BRANCH")
+          fi
+          echo "VERSION=${VERSION}" >> "$GITHUB_ENV"
+          echo "Running update to ${VERSION}"
+          
+          current_nc_version="$("$LXC" exec ncp -- ncc status | grep "version:" | awk '{ print $3 }')"
+          latest_nc_version="$(cat etc/ncp.cfg | jq -r '.nextcloud_version')"
+          
+          "$LXC" exec ncp -- bash -c "DBG=x ncp-update ${UPDATE_ARGS[*]}"
+          "$LXC" exec ncp -- /usr/local/bin/ncc status
+          
+          if [[ "$current_nc_version" =~ "$latest_nc_version".* ]]
+          then
+            echo "Nextcloud is up to date - skipping NC update test."
+          else
+            "$LXC" exec ncp -- bash -c "DBG=x ncp-update-nc ${latest_nc_version?}"
+          fi
+  
+          "$LXC" exec ncp -- rm -f /opt/ncdata/data/nextcloud.log
+          
+          "$LXC" stop ncp
+      - name: Relaunch container
+        run: |
+          set -x
+          systemd-run --user --scope -p "Delegate=yes" "$LXC" start ncp
+          "$LXC" exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
+          sleep 30
+          ip="$("$LXC" list -c n4 -f csv | grep '^ncp' | cut -d ',' -f2)"
+          ip="${ip/% *}"
+          echo "${ip} nextcloudpi.local" | sudo tee /etc/hosts
+      - name: Test LXD Image
+        working-directory: ./tests
+        run: |
+          "$LXC" exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
+          python system_tests.py --non-interactive --skip-update-test || {
+            echo "System test failed!"
+            exit 1
+          }
+          python nextcloud_tests.py --no-gui --skip-release-check "nextcloudpi.local" 443 4443 || {
+            echo "Nextcloud test failed!"
+            echo "Geckodriver logs:"
+            tail -n 20 geckodriver.log >&2 || true
+            echo "================"
+            echo "ncp.log: "
+            "$LXC" exec ncp -- "tail -n20 /var/log/ncp.log" || true
+            echo "================"
+            echo "nextcloud log: "
+            datadir="$("$LXC" exec ncp -- ncc config:system:get datadirectory)"
+            "$LXC" exec ncp -- cat "$datadir/nextcloud.log" || true
+            exit 1
+          }
       - name: NCP distupgrade
         id: distupgrade
         run: |
-          "$LXC" exec ncp -- cat /etc/os-release | grep VERSION_ID=11 || {
-            echo "Skipping dist-upgrade - can't upgrade from Debian $("$LXC" exec ncp -- cat /etc/os-release | grep VERSION_ID=)"
-            echo "skipped=yes" | tee -a $GITHUB_OUTPUT
-            exit 0
+          set -x
+          "$LXC" exec ncp -- cat /etc/os-release | grep 'VERSION_ID="11"' || {
+            echo "can't upgrade from Debian $("$LXC" exec ncp -- cat /etc/os-release | grep VERSION_ID=)"
+            exit 1
           }
-          "$LXC" exec ncp -- bash -c 'ncp-dist-upgrade'
-          echo "skipped=no" | tee -a $GITHUB_OUTPUT
+          "$LXC" exec ncp -- bash -c "DEBIAN_FRONTEND=noninteractive ncp-dist-upgrade"
+          
+          "$LXC" exec ncp -- rm -f /opt/ncdata/data/nextcloud.log
+          
+          "$LXC" stop ncp
+      - name: Relaunch container
+        run: |
+          set -x
+          systemd-run --user --scope -p "Delegate=yes" "$LXC" start ncp
+          "$LXC" exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
+          sleep 30
+          ip="$("$LXC" list -c n4 -f csv | grep '^ncp' | cut -d ',' -f2)"
+          ip="${ip/% *}"
+          echo "${ip} nextcloudpi.local" | sudo tee /etc/hosts
       - name: Test LXD Image
-        if: ${{ steps.distupgrade.output.skipped == 'no' }}
         working-directory: ./tests
         run: |
           "$LXC" exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &

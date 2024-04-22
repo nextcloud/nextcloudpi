@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+set -e
 . /etc/os-release
 
 if [[ "$VERSION_ID" -eq 10 ]]
