@@ -312,11 +312,11 @@ jobs:
             echo "==========================================="
             ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" tail /var/log/ncp-install.log;
             echo "==========================================="
-            echo "and ncp.log:"
+            echo "ncp.log:"
             echo "==========================================="
             ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" tail /var/log/ncp.log;
             echo "==========================================="
-            echo "and nextcloud.log:"
+            echo "nextcloud.log:"
             ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" tail /opt/ncdata/data/nextcloud.log;
             exit 1
           }

@@ -70,6 +70,7 @@ jobs:
       - name: Cleanup lxd
         run: test -z "$("$LXC" profile device show default | grep eth0)" || "$LXC" profile device remove default eth0
       - uses: whywaita/setup-lxd@v1
+        if: ${{ needs.determine-runner.outputs.lxc_cmd == 'lxc' }}
         continue-on-error: true
         with:
           lxd_version: latest/stable
@@ -144,6 +145,7 @@ jobs:
           echo "VERSION=$version" >> "$GITHUB_ENV"
           echo "previous_version=${version}" >> $GITHUB_OUTPUT
       - uses: whywaita/setup-lxd@v1
+        if: ${{ needs.determine-runner.outputs.lxc_cmd == 'lxc' }}
         continue-on-error: true
         with:
           lxd_version: latest/stable
@@ -185,6 +187,7 @@ jobs:
       LXC: "${{ needs.determine-runner.outputs.lxc_cmd }}"
     steps:
       - uses: whywaita/setup-lxd@v1
+        if: ${{ needs.determine-runner.outputs.lxc_cmd == 'lxc' }}
         continue-on-error: true
         with:
           lxd_version: latest/stable
@@ -369,6 +372,7 @@ jobs:
       - name: Cleanup lxd
         run: test -z "$("$LXC" profile device show default | grep eth0)" || "$LXC" profile device remove default eth0
       - uses: whywaita/setup-lxd@v1
+        if: ${{ needs.determine-runner.outputs.lxc_cmd == 'lxc' }}
         continue-on-error: true
         with:
           lxd_version: latest/stable
