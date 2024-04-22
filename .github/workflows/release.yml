@@ -246,8 +246,8 @@ jobs:
     uses: ./.github/workflows/publish-image.yml
     with:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
-      artifact_id: "${{ needs.raspberrypi5.outputs.artifact_name }}"
-      artifact_file: "${{ needs.raspberrypi5.outputs.artifact_file }}"
+      artifact_id: "${{ needs.raspberrypi-5.outputs.artifact_name }}"
+      artifact_file: "${{ needs.raspberrypi-5.outputs.artifact_file }}"
       dry_run: ${{ (!inputs.release && github.event_name == 'workflow_dispatch') || github.ref_type != 'tag' || !(github.ref_protected || startsWith(github.ref, 'refs/tags/v'))  }}
     secrets: inherit
   odroidxu4-release:
