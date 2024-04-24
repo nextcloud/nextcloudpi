@@ -1,9 +1,6 @@
 #!/bin/bash
 
-set -eux -o pipefail
-
-echo "ENV:"
-env
+set -eu -o pipefail
 
 new_cfg=/usr/local/etc/ncp-recommended.cfg
 [[ -f "${new_cfg}" ]] || { echo "Already on the lastest recommended distribution. Abort." >&2; exit 1; }
@@ -19,7 +16,7 @@ The current distribution will keep receiving updates for some time.
 
 Do you want to continue? [y/N]"
 
-if [[ "$DEBIAN_FRONTEND" == "noninteractive" ]] || ! [[ -t 0 ]]
+if [[ "${DEBIAN_FRONTEND:-}" == "noninteractive" ]] || ! [[ -t 0 ]]
 then
   echo "Noninteractive environment detected. Automatically proceeding in 30 seconds..."
   sleep 30
@@ -31,6 +28,11 @@ fi
 export DEBIAN_FRONTEND=noninteractive
 
 source /usr/local/etc/library.sh
+is_more_recent_than "${PHPVER}.0" "8.0.0" || {
+  echo "You still have PHP version ${PHPVER} installed. Please update to the latest supported version of nextcloud (which will also update your PHP version) before proceeding with the distribution upgrade."
+  echo "Exiting."
+  exit 1
+}
 save_maintenance_mode
 
 # Perform dist-upgrade
