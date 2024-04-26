@@ -16,7 +16,7 @@ install()
   apt-get install --no-install-recommends -y dnsmasq
   rc=0
   service dnsmasq status > /dev/null 2>&1 || rc=$?
-  [[ $rc -eq 3 ]] && ! [[ "$INIT_SYSTEM" =~ ^("chroot"|"unknown")$ ]] && {
+  [[ $rc -eq 3 ]] && ! [[ "$INIT_SYSTEM" =~ ^("chroot"|"unknown")$ ]] && command -v systemd-resolve > /dev/null || {
     echo "Applying workaround for dnsmasq bug (compare issue #1446)"
     mkdir -p /etc/systemd/resolved.conf.d
     if systemctl status systemd-resolved
