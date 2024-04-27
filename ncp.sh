@@ -246,7 +246,8 @@ EOF
 EOF
 
     echo '
-NCP is not activated yet. Please enter this instances local IP address in your webbrowser to complete activation.' >> /etc/issue
+NCP is not activated yet. Please enter https://nextcloudpi.local or this instance'"'"'s local IP address in your webbrowser to complete activation.
+' >> /etc/issue
     chmod a+x /etc/update-motd.d/*
 
     ## HOSTNAME AND mDNS

@@ -56,6 +56,7 @@ then
 fi
 apt-get full-upgrade -y
 
+apt-get install -y --no-install-recommends exfatprogs
 restore_maintenance_mode
 cfg="$(jq "." "$NCPCFG")"
 cfg="$(jq ".release = \"bookworm\"" <<<"$cfg")"

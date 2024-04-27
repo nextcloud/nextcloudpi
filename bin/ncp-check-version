@@ -1,6 +1,5 @@
 #!/bin/bash
 
-set -x
 # update latest available version in /var/run/.ncp-latest-version
 
 TEMPDIR="$( mktemp -d /tmp/ncp-check.XXXXXX || ( echo "Failed to create temp dir. Exiting" >&2; exit 1 ) )"
