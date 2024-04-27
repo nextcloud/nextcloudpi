@@ -82,7 +82,7 @@ EOF
   echo -e "$WEBPASSWD\n$WEBPASSWD" | passwd "$WEBADMIN"
   is_docker || is_lxc || {
     chsh -s /usr/sbin/nologin "$WEBADMIN"
-    chsh -s /usr/sbin/nologin root
+    sed -i 's/root:x:/root::/' /etc/passwd
   }
 
   ## NCP LAUNCHER
