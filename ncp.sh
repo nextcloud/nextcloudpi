@@ -244,6 +244,9 @@ EOF
 #!/bin/bash
 /usr/local/bin/ncp-check-updates
 EOF
+
+    echo '
+NCP is not activated yet. Please enter this instances local IP address in your webbrowser to complete activation.' >> /etc/issue
     chmod a+x /etc/update-motd.d/*
 
     ## HOSTNAME AND mDNS
