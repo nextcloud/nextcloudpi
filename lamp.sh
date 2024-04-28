@@ -70,10 +70,10 @@ install()
     # CONFIGURE PHP
     ##########################################
 
-    mkdir -p /etc/systemd/system/php8.1-fpm.service.d
-    echo '[Service]' > /etc/systemd/system/php8.1-fpm.service.d/ncp.conf
-    echo 'ExecStartPre=mkdir -p /var/run/php' >> /etc/systemd/system/php8.1-fpm.service.d/ncp.conf
-    [[ "$INIT_SYSTEM" != "systemd" ]] || { systemctl daemon-reload && systemctl restart php8.1-fpm; }
+#    mkdir -p /etc/systemd/system/php8.1-fpm.service.d
+#    echo '[Service]' > /etc/systemd/system/php8.1-fpm.service.d/ncp.conf
+#    echo 'ExecStartPre=mkdir -p /var/run/php' >> /etc/systemd/system/php8.1-fpm.service.d/ncp.conf
+#    [[ "$INIT_SYSTEM" != "systemd" ]] || { systemctl daemon-reload && systemctl restart php8.1-fpm; }
 
 
     install_template "php/opcache.ini.sh" "/etc/php/${PHPVER}/mods-available/opcache.ini" --defaults

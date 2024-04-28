@@ -58,6 +58,12 @@ apt-get full-upgrade -y
 sudo apt-get --purge  autoremove -y
 
 apt-get install -y --no-install-recommends exfatprogs
+
+#mkdir -p /etc/systemd/system/php8.1-fpm.service.d
+#echo '[Service]' > /etc/systemd/system/php8.1-fpm.service.d/ncp.conf
+#echo 'ExecStartPre=mkdir -p /var/run/php' >> /etc/systemd/system/php8.1-fpm.service.d/ncp.conf
+#[[ "$INIT_SYSTEM" != "systemd" ]] || { systemctl daemon-reload && systemctl restart php8.1-fpm; }
+
 restore_maintenance_mode
 cfg="$(jq "." "$NCPCFG")"
 cfg="$(jq ".release = \"bookworm\"" <<<"$cfg")"
