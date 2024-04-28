@@ -327,7 +327,6 @@ jobs:
     runs-on: [ubuntu-20.04]
     env:
       VERSION: "${{ inputs.git_ref || github.ref }}"
-      ARTIFACT_NAME: "${{ needs.build-previous.outputs.artifact_name }}"
       LXC: "${{ needs.determine-runner.outputs.lxc_cmd }}"
       PREVIOUS_IMAGE_URL: "https://github.com/nextcloud/nextcloudpi/releases/download/v1.53.2/NextcloudPi_LXD_x86_v1.53.2.tar.gz"
     steps:
