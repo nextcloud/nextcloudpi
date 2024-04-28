@@ -153,7 +153,9 @@ jobs:
             version="${version%-*-*}"
           fi
           echo "Previous version is '$version'"
-          echo "PREVIOUS_VERSION=${version}" >> "$GITHUB_ENV"
+          #TODO: Revert to dynamically found version
+          #echo "PREVIOUS_VERSION=${version}" >> "$GITHUB_ENV"
+          echo "PREVIOUS_VERSION=v1.53.3" >> "$GITHUB_ENV"
       - name: Generate ssh key
         run: |
           set -x
@@ -167,7 +169,7 @@ jobs:
           path: /__w/nextcloudpi/nextcloudpi/.ssh
           if-no-files-found: error
       - id: create-test-instance
-        uses: ./.github/actions/create-test-instance
+        uses: ./.github/actions/create-test-instance-bullseye
         with:
           version: "${{ env.PREVIOUS_VERSION }}"
           uid: "${{ env.UID }}"
