@@ -29,6 +29,7 @@ configure()
     a2dissite ncp-activation
     a2ensite  ncp 001-nextcloud
     apachectl -k graceful
+    sed -i -e 's/^NCP is not activated yet.*$//' /etc/issue
 
     # Trusted Domain (local/public IP), also configures notify_push
     bash /usr/local/bin/nextcloud-domain.sh
