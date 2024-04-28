@@ -186,6 +186,14 @@ jobs:
           sudo wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-arm-static -O raspbian_root/usr/bin/qemu-arm-static
           sudo chmod +x raspbian_root/usr/bin/qemu-{arm,aarch64}-static
           echo 'Mutex posixsem' | sudo tee -a raspbian_root/etc/apache2/mods-available/ssl.conf
+          echo 'ignore-warnings ARM64-COW-BUG' | sudo tee -a raspbian_root/etc/redis/redis.conf
+          sudo mkdir -p raspbian_root/etc/systemd/system/redis-server.service.d
+          echo '[Service]' | sudo tee raspbian_root/etc/systemd/system/redis-server.service.d/ncp.conf
+          echo 'PrivateUsers=false' | sudo tee -a raspbian_root/etc/systemd/system/redis-server.service.d/ncp.conf
+          
+          sudo mkdir -p raspbian_root/etc/systemd/system/php8.1-fpm.service.d
+          echo '[Service]' | sudo tee raspbian_root/etc/systemd/system/php8.1-fpm.service.d/ncp.conf
+          echo 'ExecStartPre=mkdir -p /var/run/php' | sudo tee -a raspbian_root/etc/systemd/system/php8.1-fpm.service.d/ncp.conf
       - name: Test image
         id: test
         run: |
@@ -308,8 +316,9 @@ jobs:
               echo -e "${LOG_DIAG} ncp.log: "
               "${CONTAINER_CMD[@]}" -q ncp /bin/bash -c "tail -n20 /var/log/ncp.log" |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
               echo "================"
-              echo "Nextcloud log: "
-              "${CONTAINER_CMD[@]}" -q ncp cat /opt/ncdata/data/nextcloud.log
+              echo "${LOG_DIAG} Nextcloud log: "
+              "${CONTAINER_CMD[@]}" -q ncp /bin/bash -c 'ls -l /opt/ncdata/data/nextcloud.log' |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
+              "${CONTAINER_CMD[@]}" -q ncp /bin/bash -c 'cat /opt/ncdata/data/nextcloud.log' |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
               sleep 12
               continue
             }
@@ -323,3 +332,515 @@ jobs:
             echo -e "${LOG_CICD} Nextcloud test failed in all attempts!"
             exit 1
           }
+
+#  test-distupgrade:
+#    runs-on: ubuntu-20.04
+#    env:
+#      VERSION: "${{ inputs.git_ref || github.ref }}"
+#      LOG_GUEST: "\\033[1;34mGUEST::\\033[0m"
+#      LOG_NCP: "\\033[1;36m~NCP::\\033[0m"
+#      LOG_CICD: "\\033[1;35mCICD::\\033[0m"
+#      LOG_TEST: "\\033[1;33mTEST::\\033[0m"
+#      LOG_DIAG: "\\033[1;31mDIAG::\\033[0m"
+#      PREVIOUS_VERSION: "v1.53.2"
+#    defaults:
+#      run:
+#        shell: bash
+#    steps:
+#      - name: Set up QEMU
+#        uses: docker/setup-qemu-action@v3
+#      - name: Checkout code
+#        uses: actions/checkout@v3
+#        with:
+#          ref: "${{ env.VERSION }}"
+#      - name: Download previous image
+#        id: download-previous-image
+#        run: |
+#          set -x
+#          mkdir -p output
+#          cd output
+#          wgetrc=0
+#          wgeterr="$(wget -O ./ncp.zip "https://github.com/nextcloud/nextcloudpi/releases/download/${PREVIOUS_VERSION?}/NextcloudPi_${{ inputs.board_name }}_${PREVIOUS_VERSION}.zip" 2>&1)" || wgetrc=$?
+#          if [[ $wgetrc -ne 0 ]]
+#          then
+#            if echo "$wgeterr" | grep '404 Not Found'
+#            then
+#              echo "Board not found in previous release - skipping."
+#              echo "skipped=true" >> "$GITHUB_OUTPUT"
+#              exit 0
+#            else
+#              echo "$wgeterr"
+#              exit $wgetrc
+#            fi
+#          fi
+#          echo "skipped=false" >> "$GITHUB_OUTPUT"
+#          unzip ncp.zip
+#          rm ncp.zip
+#          mv NextcloudPi_${{ inputs.board_name }}_${PREVIOUS_VERSION}.img ./ncp.img
+#          echo "ARTIFACT_FILE=ncp.img" >> "$GITHUB_ENV"
+#      - name: Prepare test
+#        if:  ${{ steps.download-previous-image.outputs.skipped == 'false' }}
+#        run: |
+#          set -x
+#          mv output/${ARTIFACT_FILE?} ncp.img
+#          sudo apt-get install -y systemd-container
+#          sudo pip install selenium
+#          sudo rm -rf raspbian_root
+#          . ./build/buildlib.sh
+#          mount_raspbian "ncp.img"
+#          sudo cat raspbian_root/etc/machine-id
+#          sudo systemd-id128 new | sudo tee ./raspbian_root/etc/machine-id
+#          sudo wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-aarch64-static -O raspbian_root/usr/bin/qemu-aarch64-static
+#          sudo wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-arm-static -O raspbian_root/usr/bin/qemu-arm-static
+#          sudo chmod +x raspbian_root/usr/bin/qemu-{arm,aarch64}-static
+#          echo 'Mutex posixsem' | sudo tee -a raspbian_root/etc/apache2/mods-available/ssl.conf
+#          echo 'ignore-warnings ARM64-COW-BUG' | sudo tee -a raspbian_root/etc/redis/redis.conf
+#          sudo mkdir -p raspbian_root/etc/systemd/system/redis-server.service.d
+#          echo '[Service]' | sudo tee raspbian_root/etc/systemd/system/redis-server.service.d/ncp.conf
+#          echo 'PrivateUsers=false' | sudo tee -a raspbian_root/etc/systemd/system/redis-server.service.d/ncp.conf
+#      - name: Test and activate image
+#        if:  ${{ steps.download-previous-image.outputs.skipped == 'false' }}
+#        id: test
+#        run: |
+#
+#          log_err() {
+#            rc="${1?}"
+#            msg="${2?}"
+#            echo -e "${LOG_DIAG} $msg" >&2
+#            return $rc
+#          }
+#
+#          sudo systemd-nspawn --boot -D ./raspbian_root/ -M ncp --hostname=nextcloudpi |& awk "{ print \"${LOG_GUEST} \" \$0 }" &
+#          sleep 60
+#
+#          CONTAINER_CMD=(sudo systemd-run --machine=ncp -P --wait)
+#
+#          success=false
+#          for attempt in {1..30}
+#          do
+#            echo -e "${LOG_CICD} == Wait until container network is available (attempt $attempt/30) =="
+#            ip="$("${CONTAINER_CMD[@]}" bash -c '. /usr/local/etc/library.sh > /dev/null; get_ip')"
+#            [[ -n "$ip" ]] && curl -k "https://$ip/activate/" > /dev/null || { sleep 6; continue; }
+#            success=true
+#            break
+#          done
+#          sudo cat ./raspbian_root/var/log/ncp.log |& awk "{ print \"${LOG_NCP} \" \$0 }"
+#          sudo tail -n 0 -f ./raspbian_root/var/log/ncp.log |& awk "{ print \"${LOG_NCP} \" \$0 }" &
+#
+#          [[ "$success" == "true" ]] || {
+#            echo -e "${LOG_CICD} Could not reach container. Aborting..."
+#            exit 1
+#          }
+#
+#          attempt=0
+#          success=false
+#          for attempt in {1..150}
+#          do
+#            echo -e "${LOG_CICD} Waiting for container startup (attempt $attempt/150)..."
+#            "${CONTAINER_CMD[@]}" journalctl -eu redis.service || true
+#            "${CONTAINER_CMD[@]}" systemctl status php8.1-fpm.service || true
+#            redis_pw="$("${CONTAINER_CMD[@]}" bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"password'")" \
+#            && redis_socket="$("${CONTAINER_CMD[@]}" bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"host'")" \
+#            || log_err $? "Error retrieving redis credentials" || true
+#            if { "${CONTAINER_CMD[@]}" -q ncc status |& awk "{ print \"${LOG_DIAG} \" \$0 }" || log_err $? "ncc status check failed"; } \
+#              && { [[ "$("${CONTAINER_CMD[@]}" ncc maintenance:mode)" =~ .*disabled.* ]] || log_err $? "Maintenance mode is enabled or could not be retrieved"; } \
+#              && { "${CONTAINER_CMD[@]}" redis-cli -s "$redis_socket" -a "$redis_pw" set redisready yes |& awk "{ print \"${LOG_DIAG} \" \$0 }" || log_err $? "Failed to set redis variable"; } \
+#              && { "${CONTAINER_CMD[@]}" redis-cli -s "$redis_socket" -a "$redis_pw" get redisready |& awk "{ print \"${LOG_DIAG} \" \$0 }" || log_err $? "Failed to read redis variable"; }
+#            then
+#              echo -e "${LOG_CICD} Startup successful"
+#              success=true
+#              break
+#            fi
+#            attempt=$((attempt + 1))
+#            sleep 5
+#          done
+#
+#          [[ "$success" == "true" ]] || {
+#              echo -e "${LOG_CICD} Timeout reached."
+#              "${CONTAINER_CMD[@]}" -q systemctl status mysql |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+#              "${CONTAINER_CMD[@]}" -q systemctl status redis |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+#              "${CONTAINER_CMD[@]}" -q systemctl status 'php*-fpm' |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+#              "${CONTAINER_CMD[@]}" -q systemctl status apache2 |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+#              "${CONTAINER_CMD[@]}" -q ncp-diag |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+#              exit 1
+#          }
+#
+#          set -x
+#          set +e
+#
+#          success=false
+#          for attempt in {1..5}
+#          do
+#            echo -e "${LOG_CICD} == Activation Tests (attempt $attempt/5) =="
+#            python tests/activation_tests.py -t 300 --no-gui "$ip" 443 4443 |& awk "{ print \"${LOG_TEST} \" \$0 }"
+#            [[ ${PIPESTATUS[0]} -eq 0 ]] || {
+#              echo -e "${LOG_CICD} Activation test failed!"
+#              echo -e "${LOG_DIAG} Geckodriver logs:"
+#              tail -n 20 geckodriver.log >&2 |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
+#              echo "================"
+#              echo -e "${LOG_DIAG} mysql: "
+#              "${CONTAINER_CMD[@]}" -q ncp-diag |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
+#              "${CONTAINER_CMD[@]}" -q systemctl status mysql |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
+#              sleep 12
+#              continue
+#            }
+#            success=true
+#            break
+#          done
+#          [[ "$success" == "true" ]] || {
+#            echo -e "${LOG_CICD} Activation test failed in all attempts!"
+#            exit 1
+#          }
+#
+#          success=false
+#          for attempt in {1..5}
+#          do
+#            echo -e "${LOG_CICD} == System Tests (attempt $attempt/5) =="
+#            sudo python tests/system_tests.py --non-interactive --skip-update-test |& awk "{ print \"${LOG_TEST} \" \$0 }"
+#            [[ ${PIPESTATUS[0]} -eq 0 ]] || {
+#              echo -e "${LOG_CICD} System test failed!"
+#              sleep 12
+#              continue
+#            }
+#            success=true
+#            break
+#          done
+#          [[ "$success" == "true" ]] || {
+#            echo -e "${LOG_CICD} System test failed in all attempts!"
+#            exit 1
+#          }
+#
+#          success=false
+#          for attempt in {1..5}
+#          do
+#            echo -e "${LOG_CICD} == Nextcloud Tests (attempt $attempt/5) =="
+#            python tests/nextcloud_tests.py --no-gui --skip-release-check "$ip" 443 4443 |& awk "{ print \"${LOG_TEST} \" \$0 }"
+#            [[ ${PIPESTATUS[0]} -eq 0 ]] || {
+#              echo -e "${LOG_CICD} Nextcloud test failed!"
+#              echo -e "{$LOG_DIAG} Geckodriver logs:"
+#              tail -n 20 geckodriver.log >&2 |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
+#              echo -e "${LOG_CICD} ================"
+#              echo -e "${LOG_DIAG} ncp.log: "
+#              "${CONTAINER_CMD[@]}" -q ncp /bin/bash -c "tail -n20 /var/log/ncp.log" |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
+#              echo "================"
+#              echo "${LOG_DIAG} Nextcloud log: "
+#              "${CONTAINER_CMD[@]}" -q ncp /bin/bash -c 'ls -l /opt/ncdata/data/nextcloud.log' |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
+#              "${CONTAINER_CMD[@]}" -q ncp /bin/bash -c 'cat /opt/ncdata/data/nextcloud.log' |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
+#              sleep 12
+#              continue
+#            }
+#            success=true
+#            break
+#          done
+#
+#          [[ "$success" == "true" ]] || {
+#            echo -e "${LOG_CICD} Nextcloud test failed in all attempts!"
+#            exit 1
+#          }
+#      - name: Update NCP
+#        if:  ${{ steps.download-previous-image.outputs.skipped == 'false' }}
+#        run: |
+#          set -ex
+#
+#          CONTAINER_CMD=(sudo systemd-run --machine=ncp -P --wait)
+#
+#          BRANCH="${VERSION/refs\/heads\//}"
+#          BRANCH="${BRANCH/refs\/tags\//}"
+#          if [[ "$BRANCH" =~ "refs/pull/"* ]]
+#          then
+#            UPDATE_ARGS=("${{ github.head_ref }}" "$VERSION")
+#          else
+#            UPDATE_ARGS=("$BRANCH")
+#          fi
+#          current_nc_version="$("${CONTAINER_CMD[@]}" ncc status | grep "version:" | awk '{ print $3 }')"
+#          latest_nc_version="$(cat etc/ncp.cfg | jq -r '.nextcloud_version')"
+#
+#          echo "Updating from $PREVIOUS_VERSION to $VERSION"
+#
+#          "${CONTAINER_CMD[@]}" bash -c "DBG=x ncp-update ${UPDATE_ARGS[*]}"
+#          "${CONTAINER_CMD[@]}" /usr/local/bin/ncc status
+#          # "${CONTAINER_CMD[@]}" bash -c 'curl https://download.nextcloud.com/server/releases/nextcloud-28.0.4.tar.bz2 > /var/www/nextcloud-28.0.4.tar.bz2'
+#          k0nKat1Nation
+#
+#          # if [[ "$current_nc_version" =~ "$latest_nc_version".* ]]
+#          # then
+#          #   echo "Nextcloud is up to date - skipping NC update test."
+#          # else
+#          #   "${CONTAINER_CMD[@]}" bash -c "DBG=x ncp-update-nc ${latest_nc_version?}"
+#          # fi
+#
+#          sudo machinectl terminate ncp
+#          sudo rm -f ./raspbian_root/opt/ncdata/data/nextcloud.log
+#      - name: Test image after update
+#        if:  ${{ steps.download-previous-image.outputs.skipped == 'false' }}
+#        run: |
+#
+#          log_err() {
+#            rc="${1?}"
+#            msg="${2?}"
+#            echo -e "${LOG_DIAG} $msg" >&2
+#            return $rc
+#          }
+#
+#          sudo systemd-nspawn --boot -D ./raspbian_root/ -M ncp --hostname=nextcloudpi |& awk "{ print \"${LOG_GUEST} \" \$0 }" &
+#          sleep 60
+#
+#          CONTAINER_CMD=(sudo systemd-run --machine=ncp -P --wait)
+#
+#          success=false
+#          for attempt in {1..30}
+#          do
+#            echo -e "${LOG_CICD} == Wait until container network is available (attempt $attempt/30) =="
+#            ip="$("${CONTAINER_CMD[@]}" bash -c '. /usr/local/etc/library.sh > /dev/null; get_ip')"
+#            [[ -n "$ip" ]] && curl -k "https://$ip/activate/" > /dev/null || { sleep 6; continue; }
+#            success=true
+#            break
+#          done
+#          sudo cat ./raspbian_root/var/log/ncp.log |& awk "{ print \"${LOG_NCP} \" \$0 }"
+#          sudo tail -n 0 -f ./raspbian_root/var/log/ncp.log |& awk "{ print \"${LOG_NCP} \" \$0 }" &
+#
+#          [[ "$success" == "true" ]] || {
+#            echo -e "${LOG_CICD} Could not reach container. Aborting..."
+#            exit 1
+#          }
+#
+#          attempt=0
+#          success=false
+#          for attempt in {1..150}
+#          do
+#            echo -e "${LOG_CICD} Waiting for container startup (attempt $attempt/150)..."
+#            "${CONTAINER_CMD[@]}" journalctl -eu redis.service || true
+#            "${CONTAINER_CMD[@]}" systemctl status php8.1-fpm.service || true
+#            redis_pw="$("${CONTAINER_CMD[@]}" bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"password'")" \
+#            && redis_socket="$("${CONTAINER_CMD[@]}" bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"host'")" \
+#            || log_err $? "Error retrieving redis credentials" || true
+#            if { "${CONTAINER_CMD[@]}" -q ncc status |& awk "{ print \"${LOG_DIAG} \" \$0 }" || log_err $? "ncc status check failed"; } \
+#              && { [[ "$("${CONTAINER_CMD[@]}" ncc maintenance:mode)" =~ .*disabled.* ]] || log_err $? "Maintenance mode is enabled or could not be retrieved"; } \
+#              && { "${CONTAINER_CMD[@]}" redis-cli -s "$redis_socket" -a "$redis_pw" set redisready yes |& awk "{ print \"${LOG_DIAG} \" \$0 }" || log_err $? "Failed to set redis variable"; } \
+#              && { "${CONTAINER_CMD[@]}" redis-cli -s "$redis_socket" -a "$redis_pw" get redisready |& awk "{ print \"${LOG_DIAG} \" \$0 }" || log_err $? "Failed to read redis variable"; }
+#            then
+#              echo -e "${LOG_CICD} Startup successful"
+#              success=true
+#              break
+#            fi
+#            attempt=$((attempt + 1))
+#            sleep 5
+#          done
+#
+#          [[ "$success" == "true" ]] || {
+#              echo -e "${LOG_CICD} Timeout reached."
+#              "${CONTAINER_CMD[@]}" -q systemctl status mysql |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+#              "${CONTAINER_CMD[@]}" -q systemctl status redis |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+#              "${CONTAINER_CMD[@]}" -q systemctl status 'php*-fpm' |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+#              "${CONTAINER_CMD[@]}" -q systemctl status apache2 |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+#              "${CONTAINER_CMD[@]}" -q ncp-diag |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+#              exit 1
+#          }
+#
+#          set -x
+#          set +e
+#
+#          success=false
+#          for attempt in {1..5}
+#          do
+#            echo -e "${LOG_CICD} == System Tests (attempt $attempt/5) =="
+#            sudo python tests/system_tests.py --non-interactive --skip-update-test |& awk "{ print \"${LOG_TEST} \" \$0 }"
+#            [[ ${PIPESTATUS[0]} -eq 0 ]] || {
+#              echo -e "${LOG_CICD} System test failed!"
+#              sleep 12
+#              continue
+#            }
+#            success=true
+#            break
+#          done
+#          [[ "$success" == "true" ]] || {
+#            echo -e "${LOG_CICD} System test failed in all attempts!"
+#            exit 1
+#          }
+#
+#          success=false
+#          for attempt in {1..5}
+#          do
+#            echo -e "${LOG_CICD} == Nextcloud Tests (attempt $attempt/5) =="
+#            python tests/nextcloud_tests.py --no-gui --skip-release-check "$ip" 443 4443 |& awk "{ print \"${LOG_TEST} \" \$0 }"
+#            [[ ${PIPESTATUS[0]} -eq 0 ]] || {
+#              echo -e "${LOG_CICD} Nextcloud test failed!"
+#              echo -e "{$LOG_DIAG} Geckodriver logs:"
+#              tail -n 20 geckodriver.log >&2 |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
+#              echo -e "${LOG_CICD} ================"
+#              echo -e "${LOG_DIAG} ncp.log: "
+#              "${CONTAINER_CMD[@]}" -q ncp /bin/bash -c "tail -n20 /var/log/ncp.log" |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
+#              echo "================"
+#              echo "${LOG_DIAG} Nextcloud log: "
+#              "${CONTAINER_CMD[@]}" -q ncp /bin/bash -c 'ls -l /opt/ncdata/data/nextcloud.log' |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
+#              "${CONTAINER_CMD[@]}" -q ncp /bin/bash -c 'cat /opt/ncdata/data/nextcloud.log' |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
+#              sleep 12
+#              continue
+#            }
+#            success=true
+#            break
+#          done
+#
+#          [[ "$success" == "true" ]] || {
+#            echo -e "${LOG_CICD} Nextcloud test failed in all attempts!"
+#            exit 1
+#          }
+#
+#      - name: Run dist-upgrade
+#        if:  ${{ steps.download-previous-image.outputs.skipped == 'false' }}
+#        run: |
+#          set -ex
+#
+#          source ./library.sh
+#
+#          echo "Updating from $PREVIOUS_VERSION to $VERSION
+#
+#          CONTAINER_CMD=(sudo systemd-run --machine=ncp -P --wait)
+#
+#          sudo grep 'VERSION="11"' ./raspbian_root/etc/os-release || {
+#            echo "Can't dist-upgrade from debian version $(sudo grep 'Version=' ./raspbian_root/etc/os-release)"
+#            exit 1
+#          }
+#          "${CONTAINER_CMD[@]}" DBG=x ncp-dist-upgrade "$VERSION"
+#
+#          sudo machinectl terminate ncp
+#          sudo rm -f ./raspbian_root/opt/ncdata/data/nextcloud.log
+#
+#      - name: Test image after dist-upgrade
+#        if:  ${{ steps.download-previous-image.outputs.skipped == 'false' }}
+#        run: |
+#
+#          log_err() {
+#            rc="${1?}"
+#            msg="${2?}"
+#            echo -e "${LOG_DIAG} $msg" >&2
+#            return $rc
+#          }
+#
+#          sudo systemd-nspawn --boot -D ./raspbian_root/ -M ncp --hostname=nextcloudpi |& awk "{ print \"${LOG_GUEST} \" \$0 }" &
+#          sleep 60
+#
+#          CONTAINER_CMD=(sudo systemd-run --machine=ncp -P --wait)
+#
+#          success=false
+#          for attempt in {1..30}
+#          do
+#            echo -e "${LOG_CICD} == Wait until container network is available (attempt $attempt/30) =="
+#            ip="$("${CONTAINER_CMD[@]}" bash -c '. /usr/local/etc/library.sh > /dev/null; get_ip')"
+#            [[ -n "$ip" ]] && curl -k "https://$ip/activate/" > /dev/null || { sleep 6; continue; }
+#            success=true
+#            break
+#          done
+#          sudo cat ./raspbian_root/var/log/ncp.log |& awk "{ print \"${LOG_NCP} \" \$0 }"
+#          sudo tail -n 0 -f ./raspbian_root/var/log/ncp.log |& awk "{ print \"${LOG_NCP} \" \$0 }" &
+#
+#          [[ "$success" == "true" ]] || {
+#            echo -e "${LOG_CICD} Could not reach container. Aborting..."
+#            exit 1
+#          }
+#
+#          attempt=0
+#          success=false
+#          for attempt in {1..150}
+#          do
+#            echo -e "${LOG_CICD} Waiting for container startup (attempt $attempt/150)..."
+#            "${CONTAINER_CMD[@]}" journalctl -eu redis.service || true
+#            "${CONTAINER_CMD[@]}" systemctl status php8.1-fpm.service || true
+#            redis_pw="$("${CONTAINER_CMD[@]}" bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"password'")" \
+#            && redis_socket="$("${CONTAINER_CMD[@]}" bash -c ". /usr/local/etc/library.sh; get_nc_config_value 'redis\"][\"host'")" \
+#            || log_err $? "Error retrieving redis credentials" || true
+#            if { "${CONTAINER_CMD[@]}" -q ncc status |& awk "{ print \"${LOG_DIAG} \" \$0 }" || log_err $? "ncc status check failed"; } \
+#              && { [[ "$("${CONTAINER_CMD[@]}" ncc maintenance:mode)" =~ .*disabled.* ]] || log_err $? "Maintenance mode is enabled or could not be retrieved"; } \
+#              && { "${CONTAINER_CMD[@]}" redis-cli -s "$redis_socket" -a "$redis_pw" set redisready yes |& awk "{ print \"${LOG_DIAG} \" \$0 }" || log_err $? "Failed to set redis variable"; } \
+#              && { "${CONTAINER_CMD[@]}" redis-cli -s "$redis_socket" -a "$redis_pw" get redisready |& awk "{ print \"${LOG_DIAG} \" \$0 }" || log_err $? "Failed to read redis variable"; }
+#            then
+#              echo -e "${LOG_CICD} Startup successful"
+#              success=true
+#              break
+#            fi
+#            attempt=$((attempt + 1))
+#            sleep 5
+#          done
+#
+#          [[ "$success" == "true" ]] || {
+#              echo -e "${LOG_CICD} Timeout reached."
+#              "${CONTAINER_CMD[@]}" -q systemctl status mysql |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+#              "${CONTAINER_CMD[@]}" -q systemctl status redis |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+#              "${CONTAINER_CMD[@]}" -q systemctl status 'php*-fpm' |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+#              "${CONTAINER_CMD[@]}" -q systemctl status apache2 |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+#              "${CONTAINER_CMD[@]}" -q ncp-diag |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+#              exit 1
+#          }
+#
+#          set -x
+#          set +e
+#
+#          success=false
+#          for attempt in {1..5}
+#          do
+#            echo -e "${LOG_CICD} == Activation Tests (attempt $attempt/5) =="
+#            python tests/activation_tests.py -t 300 --no-gui "$ip" 443 4443 |& awk "{ print \"${LOG_TEST} \" \$0 }"
+#            [[ ${PIPESTATUS[0]} -eq 0 ]] || {
+#              echo -e "${LOG_CICD} Activation test failed!"
+#              echo -e "${LOG_DIAG} Geckodriver logs:"
+#              tail -n 20 geckodriver.log >&2 |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
+#              echo "================"
+#              echo -e "${LOG_DIAG} mysql: "
+#              "${CONTAINER_CMD[@]}" -q ncp-diag |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
+#              "${CONTAINER_CMD[@]}" -q systemctl status mysql |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
+#              sleep 12
+#              continue
+#            }
+#            success=true
+#            break
+#          done
+#          [[ "$success" == "true" ]] || {
+#            echo -e "${LOG_CICD} Activation test failed in all attempts!"
+#            exit 1
+#          }
+#
+#          success=false
+#          for attempt in {1..5}
+#          do
+#            echo -e "${LOG_CICD} == System Tests (attempt $attempt/5) =="
+#            sudo python tests/system_tests.py --non-interactive |& awk "{ print \"${LOG_TEST} \" \$0 }"
+#            [[ ${PIPESTATUS[0]} -eq 0 ]] || {
+#              echo -e "${LOG_CICD} System test failed!"
+#              sleep 12
+#              continue
+#            }
+#            success=true
+#            break
+#          done
+#          [[ "$success" == "true" ]] || {
+#            echo -e "${LOG_CICD} System test failed in all attempts!"
+#            exit 1
+#          }
+#
+#          success=false
+#          for attempt in {1..5}
+#          do
+#            echo -e "${LOG_CICD} == Nextcloud Tests (attempt $attempt/5) =="
+#            python tests/nextcloud_tests.py --no-gui "$ip" 443 4443 |& awk "{ print \"${LOG_TEST} \" \$0 }"
+#            [[ ${PIPESTATUS[0]} -eq 0 ]] || {
+#              echo -e "${LOG_CICD} Nextcloud test failed!"
+#              echo -e "{$LOG_DIAG} Geckodriver logs:"
+#              tail -n 20 geckodriver.log >&2 |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
+#              echo -e "${LOG_CICD} ================"
+#              echo -e "${LOG_DIAG} ncp.log: "
+#              "${CONTAINER_CMD[@]}" -q ncp /bin/bash -c "tail -n20 /var/log/ncp.log" |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
+#              echo "================"
+#              echo "${LOG_DIAG} Nextcloud log: "
+#              "${CONTAINER_CMD[@]}" -q ncp /bin/bash -c 'ls -l /opt/ncdata/data/nextcloud.log' |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
+#              "${CONTAINER_CMD[@]}" -q ncp /bin/bash -c 'cat /opt/ncdata/data/nextcloud.log' |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
+#              sleep 12
+#              continue
+#            }
+#            success=true
+#            break
+#          done
+#
+#          [[ "$success" == "true" ]] || {
+#            echo -e "${LOG_CICD} Nextcloud test failed in all attempts!"
+#            exit 1
+#          }

@@ -37,13 +37,6 @@ install()
     apache2ctl -V || true
 
     # Create systemd users to keep uids persistent between containers
-    id -u systemd-resolve || {
-      addgroup --quiet --system systemd-journal
-      adduser --quiet -u 180 --system --group --no-create-home --home /run/systemd \
-        --gecos "systemd Network Management" systemd-network
-      adduser --quiet -u 181 --system --group --no-create-home --home /run/systemd \
-        --gecos "systemd Resolver" systemd-resolve
-    }
     install_with_shadow_workaround --no-install-recommends systemd
     $APTINSTALL -t $RELEASE php${PHPVER} php${PHPVER}-curl php${PHPVER}-gd php${PHPVER}-fpm php${PHPVER}-cli php${PHPVER}-opcache \
                             php${PHPVER}-mbstring php${PHPVER}-xml php${PHPVER}-zip php${PHPVER}-fileinfo php${PHPVER}-ldap \
@@ -67,7 +60,7 @@ install()
 
     install_template apache2/http2.conf.sh /etc/apache2/conf-available/http2.conf --defaults
 
-    # CONFIGURE PHP7
+    # CONFIGURE PHP
     ##########################################
 
     install_template "php/opcache.ini.sh" "/etc/php/${PHPVER}/mods-available/opcache.ini" --defaults
@@ -97,7 +90,7 @@ install()
   # launch mariadb if not already running
   if ! [[ -f /run/mysqld/mysqld.pid ]]; then
     echo "Starting mariaDB"
-    mysqld &
+    sudo -u mysql mysqld &
   fi
 
   # wait for mariadb

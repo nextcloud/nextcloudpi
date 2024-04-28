@@ -201,9 +201,7 @@ check_distro "$NCPCFG" && check_distro etc/ncp.cfg || {
   cfg="$(jq '.release       = "'$release_new'"' <<<"$cfg")"
   echo "$cfg" > /usr/local/etc/ncp-recommended.cfg
 
-  [[ -f /.dockerenv ]] && \
-    msg="Update to $release_new available. Get the latest container to upgrade" || \
-    msg="Update to $release_new available. Type 'sudo ncp-dist-upgrade' to upgrade"
+  msg="Update to $release_new available. Type 'sudo ncp-dist-upgrade' to upgrade"
   echo "${msg}"
   notify_admin "New distribution available" "${msg}"
   wall "${msg}"
