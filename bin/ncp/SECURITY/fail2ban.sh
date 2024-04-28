@@ -114,7 +114,7 @@ protocol   = tcp
 chain      = INPUT
 action_    = %(banaction)s[name=%(__name__)s, port="%(port)s", protocol="%(protocol)s", chain="%(chain)s"]
 action_mwl = %(banaction)s[name=%(__name__)s, port="%(port)s", protocol="%(protocol)s", chain="%(chain)s"]
-           sendmail-whois-lines[name=%(__name__)s, dest=$EMAIL, sender=ncp-fail2ban@ownyourbits.com]
+           sendmail-whois-lines[name=%(__name__)s, dest=$EMAIL, sender=ncp-fail2ban@nextcloudpi.com]
 action = %($ACTION)s
 
 #
