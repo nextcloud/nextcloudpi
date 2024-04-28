@@ -39,6 +39,12 @@ run_app_unsafe post-inst.sh
 # disable SSH by default, it can be enabled through ncp-web
 systemctl disable ssh
 
+# disable armbian autologin
+rm -f /etc/systemd/system/getty@.service.d/override.conf
+rm -f /etc/systemd/system/serial-getty@.service.d/override.conf
+rm -f /root/.not_logged_in_yet
+sed -i 's|^root::|root:x:|' /etc/passwd
+
 basename "$IMG" | tee /usr/local/etc/ncp-baseimage
 
 cd -

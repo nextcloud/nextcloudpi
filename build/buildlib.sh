@@ -335,43 +335,6 @@ function generate_changelog()
     sed 's|* \[tag: |\n[|' > changelog.md
 }
 
-function upload_ftp()
-{
-  local IMGNAME="$1"
-  echo -e "\n\e[1m[ Upload FTP ]\e[0m"
-  echo "* $IMGNAME..."
-  [[ -f torrent/"$IMGNAME"/"$IMGNAME".tar.bz2 ]] || { echo "No image file found, abort"; return 1; }
-  [[ "$FTPPASS" == "" ]] && { echo "No FTPPASS variable found, skip upload"; return 0; }
-
-  cd torrent
-
-  ftp -np ftp.ownyourbits.com <<EOF
-user root@ownyourbits.com $FTPPASS
-mkdir testing
-mkdir testing/$IMGNAME
-cd testing/$IMGNAME
-binary
-rm  $IMGNAME.torrent
-put $IMGNAME.torrent
-bye
-EOF
-  cd -
-  cd torrent/$IMGNAME
-
-  ftp -np ftp.ownyourbits.com <<EOF
-user root@ownyourbits.com $FTPPASS
-cd testing/$IMGNAME
-binary
-rm  $IMGNAME.tar.bz2
-put $IMGNAME.tar.bz2
-rm  md5sum
-put md5sum
-bye
-EOF
-  ret=$?
-  cd -
-  return $ret
-}
 
 upload_images()
 {
