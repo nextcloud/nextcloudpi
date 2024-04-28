@@ -2,7 +2,7 @@
 
 set -e
 
-[[ "$UID" -eq 0 ]] || {
+[[ "${EUID}" -eq 0 ]] || {
   echo "ERROR: Must be run as root (try sudo ncp-dist-upgrade)"
   exit 1
 }
