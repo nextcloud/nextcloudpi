@@ -83,6 +83,7 @@ EOF
   is_docker || is_lxc || {
     chsh -s /usr/sbin/nologin "$WEBADMIN"
     passwd -l root
+    sed -i -e 's/^PermitRootLogin.*$/PermitRootLogin No/' /etc/ssh/sshd_config
   }
 
   ## NCP LAUNCHER

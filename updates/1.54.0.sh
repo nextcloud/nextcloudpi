@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 
-if getent passwd "$LOGNAME" | grep -e 'root' | grep -e '/usr/sbin/nologin'
+if getent passwd "root" | grep -e '/usr/sbin/nologin'
 then
   chsh -s /bin/bash root
   passwd -l root
+  sed -i -e 's/^PermitRootLogin.*$/PermitRootLogin No/' /etc/ssh/sshd_config
 fi
 
 apt-get update
