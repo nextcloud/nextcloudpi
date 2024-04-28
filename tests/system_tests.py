@@ -59,6 +59,10 @@ files_must_not_exist = [
         '/.ncp-image',
         ]
 
+lxc_command = 'lxc'
+if 'USE_INCUS' in os.environ and os.environ['USE_INCUS'] == 'yes':
+    lxc_command = 'incus'
+
 
 class tc:
     "terminal colors"
@@ -226,8 +230,13 @@ def test_autoupdates():
                 return False
 
         set_cohorte_id(99)
-        handle_error(run(pre_cmd + ['/usr/local/bin/ncp-check-version'], stdout=PIPE, stderr=PIPE))
-        result = handle_error(run(pre_cmd + ['cat', '/var/run/.ncp-latest-version'], stdout=PIPE, stderr=PIPE))
+        chk_version = handle_error(run(pre_cmd + ['/usr/local/bin/ncp-check-version'], stdout=PIPE, stderr=PIPE))
+        try:
+            result = handle_error(run(pre_cmd + ['cat', '/var/run/.ncp-latest-version'], stdout=PIPE, stderr=PIPE))
+        except ProcessExecutionException as e:
+            print("stderr:", chk_version.stderr)
+            print("stdout:", chk_version.stdout)
+            raise e
         if 'v99.99.99' not in result.stdout:
             print(f"{tc.red}error{tc.normal} Expected latest detected version to be v99.99.99, was {result.stdout}")
             return False
@@ -291,7 +300,7 @@ if __name__ == "__main__":
 
     # detect if we are running this in a LXC instance
     try:
-        lxc_running = run(['lxc', 'info', 'ncp'], stdout=PIPE, check = True)
+        lxc_running = run([lxc_command, 'info', 'ncp'], stdout=PIPE, check = True)
     except:
         lxc_running = False
 
@@ -319,7 +328,7 @@ if __name__ == "__main__":
     # LXC method
     elif lxc_running:
         print( tc.brown + "* local LXC instance detected" + tc.normal)
-        pre_cmd = ['lxc', 'exec', 'ncp', '--']
+        pre_cmd = [lxc_command, 'exec', 'ncp', '--']
 
     elif systemd_container_running:
         pre_cmd = ['systemd-run', '--wait', '-P', '--machine=ncp']
