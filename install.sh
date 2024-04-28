@@ -30,7 +30,7 @@ type mysqld &>/dev/null && mysql -e 'use nextcloud' &>/dev/null && { echo "The '
 
 # get dependencies
 apt-get update
-apt-get install --no-install-recommends -y git ca-certificates sudo lsb-release wget
+DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y git ca-certificates sudo lsb-release wget jq
 
 # get install code
 if [[ "${CODE_DIR}" == "" ]]; then
@@ -63,6 +63,11 @@ cp etc/ncp.cfg /usr/local/etc/
 
 cp -r etc/ncp-templates /usr/local/etc/
 install_app    lamp.sh
+if [[ -d "/run/systemd/system" ]] && is_lxc
+then
+  DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y systemd-resolved
+  systemctl enable systemd-resolved
+fi
 install_app    bin/ncp/CONFIG/nc-nextcloud.sh
 run_app_unsafe bin/ncp/CONFIG/nc-nextcloud.sh
 rm /usr/local/etc/ncp-config.d/nc-nextcloud.cfg    # armbian overlay is ro
