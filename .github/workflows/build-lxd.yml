@@ -302,7 +302,6 @@ jobs:
       - name: Test LXD Image
         working-directory: ./tests
         run: |
-          lxc exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
           "$LXC" exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
           python system_tests.py --non-interactive || {
             echo "System test failed!"
