@@ -38,13 +38,13 @@ save_maintenance_mode
 # Perform dist-upgrade
 
 apt-get update && apt-get upgrade -y
-for aptlist in /etc/apt/sources.list /etc/apt/sources.list.d/php.list
+for aptlist in /etc/apt/sources.list /etc/apt/sources.list.d/php.list /etc/apt/sources.list.d/armbian.list
 do
-	sed -i -e "s/bullseye/bookworm/g" "$aptlist"
+  [ -f "$aptlist" ] && sed -i -e "s/bullseye/bookworm/g" "$aptlist"
 done
 for aptlist in /etc/apt/sources.list.d/*.list
 do
-	[[ "$aptlist" != "/etc/apt/sources.list.d/php.list" ]] || continue
+	[[ "$aptlist" =~ "/etc/apt/sources.list.d/"(php|armbian)".list" ]] || continue
     echo "Disabling repositories from \"$aptlist\""
     sed -i -e "s/deb/#deb/g" "$aptlist"
 done
@@ -55,12 +55,15 @@ then
   apt-get install -y --no-install-recommends systemd-resolved && systemctl enable --now systemd-resolved
 fi
 apt-get full-upgrade -y
+Add sudo apt-get --purge  autoremove -y
 
 apt-get install -y --no-install-recommends exfatprogs
 restore_maintenance_mode
 cfg="$(jq "." "$NCPCFG")"
 cfg="$(jq ".release = \"bookworm\"" <<<"$cfg")"
 echo "$cfg" > "$NCPCFG"
+rm -f /etc/update-motd.d/30ncp-dist-upgrade
+
 echo "Update to Debian 12 (bookworm) successful."
 
 is_active_app unattended-upgrades && {
