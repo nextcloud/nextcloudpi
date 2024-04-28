@@ -1,15 +1,35 @@
 #!/usr/bin/env bash
 
 set -e
+
+[[ "$UID" -eq 0 ]] || {
+  echo "ERROR: Must be run as root (try sudo ncp-dist-upgrade)"
+  exit 1
+}
+
 . /etc/os-release
 
 if [[ "$VERSION_ID" -eq 10 ]]
 then
-  bash /usr/local/bin/ncp-dist-upgrade.d/debian-10.sh
+  UPGRADE_CMD=(bash /usr/local/bin/ncp-dist-upgrade.d/debian-10.sh)
 elif [[ "$VERSION_ID" -eq 11 ]]
 then
-  bash /usr/local/bin/ncp-dist-upgrade.d/debian-11.sh
+  UPGRADE_CMD=(bash /usr/local/bin/ncp-dist-upgrade.d/debian-11.sh)
 else
   echo "No dist-upgrade available for OS version: Debian ${VERSION}."
   exit 0
 fi
+
+if { [ "$TERM" = "screen" ] && [ -n "$TMUX" ]; } || [[ "${DEBIAN_FRONTEND:-}" == "noninteractive" ]] || ! [[ -t 0 ]]
+then
+  "${UPGRADE_CMD[@]}"
+else
+  tmux list-sessions | grep ncp-distupgrade && {
+    echo "Existing distupgrade process detected. Connecting..."
+    sleep 5
+    tmux attach -t ncp-distupgrade
+    exit 0
+  }
+  tmux new-session -s ncp-distupgrade bash -c "${UPGRADE_CMD[*]}; bash"
+fi
+

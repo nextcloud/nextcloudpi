@@ -5,3 +5,6 @@ then
   chsh -s /bin/bash root
   passwd -l root
 fi
+
+apt-get update
+apt-get install --no-install-recommends -y tmux

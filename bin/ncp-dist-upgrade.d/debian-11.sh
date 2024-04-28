@@ -55,7 +55,7 @@ then
   apt-get install -y --no-install-recommends systemd-resolved && systemctl enable --now systemd-resolved
 fi
 apt-get full-upgrade -y
-Add sudo apt-get --purge  autoremove -y
+sudo apt-get --purge  autoremove -y
 
 apt-get install -y --no-install-recommends exfatprogs
 restore_maintenance_mode
