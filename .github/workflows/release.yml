@@ -16,11 +16,6 @@ on:
         description: 'Build/test LXD image?'
         required: false
         default: true
-      docker:
-        type: boolean
-        description: 'Build/test docker images?'
-        required: false
-        default: true
       installer:
         type: boolean
         description: 'Run curl-installer/upgrade tests?'
@@ -28,16 +23,14 @@ on:
         default: true
       release:
         type: boolean
-        description: 'Release images to GH and docker registry'
+        description: 'Release images to GH'
         required: false
         default: false
   push:
     tags:
       - "v*"
-      - "docker-v*"
     branches:
       - master
-      - docker-stable
 
 permissions:
   contents: write
@@ -58,30 +51,6 @@ jobs:
       arch: 'arm64'
     secrets: inherit
 
-  docker-x86:
-    if: ${{ inputs.docker || ( github.event_name != 'workflow_dispatch' && startsWith(github.ref_name, 'docker-') ) }}
-    uses: ./.github/workflows/build-docker.yml
-    with:
-      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
-      arch: "x86"
-    secrets: inherit
-
-  docker-armhf:
-    if: ${{ inputs.docker || ( github.event_name != 'workflow_dispatch' && startsWith(github.ref_name, 'docker-') ) }}
-    uses: ./.github/workflows/build-docker.yml
-    with:
-      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
-      arch: "armhf"
-    secrets: inherit
-
-  docker-arm64:
-    if: ${{ inputs.docker || ( github.event_name != 'workflow_dispatch' && startsWith(github.ref_name, 'docker-') ) }}
-    uses: ./.github/workflows/build-docker.yml
-    with:
-      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
-      arch: "arm64"
-    secrets: inherit
-
   test-curl-installer:
     if: ${{ inputs.installer || ( github.event_name != 'workflow_dispatch' && !startsWith(github.ref_name, 'docker-') ) }}
     uses: ./.github/workflows/vm-tests.yml
@@ -89,13 +58,22 @@ jobs:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
     secrets: inherit
 
-  raspberrypi:
+  raspberrypi-4:
     if: ${{ inputs.sd-images || ( github.event_name != 'workflow_dispatch' && !startsWith(github.ref_name, 'docker-') ) }}
     uses: ./.github/workflows/build-sd-images.yml
     with:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
-      board_id: raspberrypi
-      board_name: RaspberryPi
+      board_id: rpi4b
+      board_name: RaspberryPi4
+    secrets: inherit
+
+  raspberrypi-5:
+    if: ${{ inputs.sd-images || ( github.event_name != 'workflow_dispatch' && !startsWith(github.ref_name, 'docker-') ) }}
+    uses: ./.github/workflows/build-sd-images.yml
+    with:
+      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+      board_id: rpi5b
+      board_name: RaspberryPi5
     secrets: inherit
 
   # TODO: Fix 32bit armbian images
@@ -207,19 +185,31 @@ jobs:
       artifact_file: "${{ needs.lxd-arm64.outputs.lxc_artifact_file }}"
       dry_run: ${{ (!inputs.release && github.event_name == 'workflow_dispatch') || github.ref_type != 'tag' || !(github.ref_protected || startsWith(github.ref, 'refs/tags/v'))  }}
 
-  raspberrypi-release:
+  raspberrypi-4-release:
     needs:
-      - raspberrypi
+      - raspberrypi-4
       - github-release
     if: ${{ inputs.sd-images || github.event_name != 'workflow_dispatch' }}
     uses: ./.github/workflows/publish-image.yml
     with:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
-      artifact_id: "${{ needs.raspberrypi.outputs.artifact_name }}"
-      artifact_file: "${{ needs.raspberrypi.outputs.artifact_file }}"
+      artifact_id: "${{ needs.raspberrypi-4.outputs.artifact_name }}"
+      artifact_file: "${{ needs.raspberrypi-4.outputs.artifact_file }}"
       dry_run: ${{ (!inputs.release && github.event_name == 'workflow_dispatch') || github.ref_type != 'tag' || !(github.ref_protected || startsWith(github.ref, 'refs/tags/v'))  }}
     secrets: inherit
 
+  raspberrypi-5-release:
+    needs:
+      - raspberrypi-5
+      - github-release
+    if: ${{ inputs.sd-images || github.event_name != 'workflow_dispatch' }}
+    uses: ./.github/workflows/publish-image.yml
+    with:
+      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+      artifact_id: "${{ needs.raspberrypi-5.outputs.artifact_name }}"
+      artifact_file: "${{ needs.raspberrypi-5.outputs.artifact_file }}"
+      dry_run: ${{ (!inputs.release && github.event_name == 'workflow_dispatch') || github.ref_type != 'tag' || !(github.ref_protected || startsWith(github.ref, 'refs/tags/v'))  }}
+    secrets: inherit
   odroidxu4-release:
     needs:
       - odroidxu4
@@ -304,55 +294,6 @@ jobs:
       artifact_file: "${{ needs.odroidc2.outputs.artifact_file }}"
       dry_run: ${{ (!inputs.release && github.event_name == 'workflow_dispatch') || github.ref_type != 'tag' || !(github.ref_protected || startsWith(github.ref, 'refs/tags/v'))  }}
     secrets: inherit
-
-  docker-release:
-    needs:
-      - docker-x86
-      - docker-armhf
-      - docker-arm64
-    if: ${{ (inputs.release || github.event_name != 'workflow_dispatch') && github.ref_type == 'tag' && (github.ref_protected || startsWith(github.ref, 'refs/tags/docker-v'))  }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Create manifest and push as tag to docker hub
-        run: |
-          . ./build/buildlib.sh
-          version="${version#docker-}"
-          
-          for arch in x86 armhf arm64
-          do
-            docker pull "thecalcaholic/ncp-internal-${arch}:${{ github.run_id }}"
-            docker tag "thecalcaholic/ncp-internal-${arch}:${{ github.run_id }}" "ownyourbits/nextcloudpi-${arch}:${version?}"
-            docker tag "ownyourbits/nextcloudpi-${arch}:${version?}" "ownyourbits/nextcloudpi-${arch}:latest"
-            docker push "ownyourbits/nextcloudpi-${arch}:${version?}"
-            [[ "$version" =~ ^(docker-)?v[0-9]+'.'[0-9]+'.'[0-9]+$ ]] && docker push "ownyourbits/nextcloudpi-${arch}:latest"
-          done
-
-          docker manifest create ownyourbits/nextcloudpi:${version?} \
-            ownyourbits/nextcloudpi-armhf:${version?} \
-            ownyourbits/nextcloudpi-x86:${version?} \
-            ownyourbits/nextcloudpi-arm64:${version?}
-          docker manifest push ownyourbits/nextcloudpi:${version?}
-
-      - name: Create manifest and push as latest to docker hub
-        run: |
-          [[ "${{ github.ref }}" =~ ^'refs/tags/'(docker-)?'v'[0-9]+'.'[0-9]+'.'[0-9]+$ ]] || {
-            echo "not tagging latest - is a pre-/beta-release"
-            exit 0
-          }
-          docker manifest create ownyourbits/nextcloudpi:latest \
-          ownyourbits/nextcloudpi-armhf:latest \
-          ownyourbits/nextcloudpi-x86:latest \
-          ownyourbits/nextcloudpi-arm64:latest
-          docker manifest push ownyourbits/nextcloudpi:latest
 
   github-release:
     if: ${{ github.event_name == 'workflow_dispatch' || !startsWith(github.ref_name, 'docker-') }}

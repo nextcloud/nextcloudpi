@@ -24,7 +24,7 @@ outputs:
     description: ID of the created test server
 runs:
   using: docker
-  image: docker://thecalcaholic/ncp-test-automation:bookworm
+  image: docker://thecalcaholic/ncp-test-automation:bullseye
 
   env:
     HCLOUD_TOKEN: ${{ inputs.hcloud_token }}

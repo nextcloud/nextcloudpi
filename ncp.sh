@@ -22,7 +22,7 @@ install()
 {
   # NCP-CONFIG
   apt-get update
-  $APTINSTALL git dialog whiptail jq file lsb-release
+  $APTINSTALL git dialog whiptail jq file lsb-release tmux
   mkdir -p "$CONFDIR" "$BINDIR"
 
   # This has changed, pi user no longer exists by default, the user needs to create it with Raspberry Pi imager
@@ -82,7 +82,8 @@ EOF
   echo -e "$WEBPASSWD\n$WEBPASSWD" | passwd "$WEBADMIN"
   is_docker || is_lxc || {
     chsh -s /usr/sbin/nologin "$WEBADMIN"
-    chsh -s /usr/sbin/nologin root
+    passwd -l root
+    sed -i -e 's/^PermitRootLogin.*$/PermitRootLogin No/' /etc/ssh/sshd_config
   }
 
   ## NCP LAUNCHER
@@ -244,6 +245,10 @@ EOF
 #!/bin/bash
 /usr/local/bin/ncp-check-updates
 EOF
+
+    echo '
+NCP is not activated yet. Please enter https://nextcloudpi.local or this instance'"'"'s local IP address in your webbrowser to complete activation. You can find detailed instructions at https://nextcloudpi.com/activate
+' >> /etc/issue
     chmod a+x /etc/update-motd.d/*
 
     ## HOSTNAME AND mDNS
