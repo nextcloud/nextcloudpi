@@ -43,7 +43,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          path: /home/runner/actions-runner/_work/nextcloudpi/nextcloudpi
+          path: /__w/nextcloudpi/nextcloudpi
       - name: Generate ssh keypair
         working-directory: /__w/nextcloudpi/nextcloudpi
         run: |
