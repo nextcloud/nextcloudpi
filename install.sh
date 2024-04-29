@@ -28,9 +28,20 @@ export PATH="/usr/local/sbin:/usr/sbin:/sbin:${PATH}"
 type mysqld &>/dev/null && echo ">>> WARNING: existing mysqld configuration will be changed <<<"
 type mysqld &>/dev/null && mysql -e 'use nextcloud' &>/dev/null && { echo "The 'nextcloud' database already exists. Aborting"; exit 1; }
 
+[[ "$DEBIAN_FRONTEND" == "noninteractive" ]] || {
+  echo "WARNING: This installer will disable SSH login for the root user and reset its password.
+If you need to login with root, you should make sure, you have a root session open that you can use,
+to revert these changes afterwards (set PermitRootLogin to 'yes' in /etc/ssh/sshd_config and run passwd as root)."
+  for i in {1..10}
+  do
+    echo "Continuing in $((30-(3*i)))s (press Ctrl+C to abort)..."
+    sleep 3
+  done
+}
+
 # get dependencies
 apt-get update
-apt-get install --no-install-recommends -y git ca-certificates sudo lsb-release wget
+DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y git ca-certificates sudo lsb-release wget jq
 
 # get install code
 if [[ "${CODE_DIR}" == "" ]]; then
@@ -63,6 +74,11 @@ cp etc/ncp.cfg /usr/local/etc/
 
 cp -r etc/ncp-templates /usr/local/etc/
 install_app    lamp.sh
+if [[ -d "/run/systemd/system" ]] && is_lxc
+then
+  DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y systemd-resolved
+  systemctl enable systemd-resolved
+fi
 install_app    bin/ncp/CONFIG/nc-nextcloud.sh
 run_app_unsafe bin/ncp/CONFIG/nc-nextcloud.sh
 rm /usr/local/etc/ncp-config.d/nc-nextcloud.cfg    # armbian overlay is ro

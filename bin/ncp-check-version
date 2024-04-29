@@ -17,8 +17,6 @@ cd "$TEMPDIR" || exit 1
 VER=$( git describe --always --tags | grep -oP "v\d+\.\d+\.\d+" )
 
 canary="$(. /usr/local/etc/library.sh; find_app_param ncp-community.sh CANARY)"
-# TODO: Remove temporary canary override after staged rollouts test
-canary="no"
 
 [[ "$canary" != "yes" ]] && [[ -f "/usr/local/etc/instance.cfg" ]] && {
   cohorte_id="$(jq .cohorteId /usr/local/etc/instance.cfg)"
