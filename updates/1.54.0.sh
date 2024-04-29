@@ -9,8 +9,8 @@ fi
 
 for i in {10..15}
 do
-  proxy="$(ncc config:system:get trusted_proxies "$i")"
-  [[ -z "$proxy" ]] || python3 -c "import ipaddress; ipaddress.ip_address('${proxy}')" || ncc config:system:delete trusted_proxies "$i"
+  proxy="$(ncc config:system:get trusted_proxies "$i" || echo 'NONE')"
+  [[ "$proxy" != 'NONE' ]] || python3 -c "import ipaddress; ipaddress.ip_address('${proxy}')" || ncc config:system:delete trusted_proxies "$i"
 done
 
 apt-key adv --fetch-keys https://packages.sury.org/php/apt.gpg
