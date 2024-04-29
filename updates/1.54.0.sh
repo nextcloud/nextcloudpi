@@ -13,5 +13,7 @@ do
   [[ -z "$proxy" ]] || python3 -c "import ipaddress; ipaddress.ip_address('${proxy}')" || ncc config:system:delete trusted_proxies "$i"
 done
 
+apt-key adv --fetch-keys https://packages.sury.org/php/apt.gpg
+
 apt-get update
 apt-get install --no-install-recommends -y tmux
