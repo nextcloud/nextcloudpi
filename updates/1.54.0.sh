@@ -17,3 +17,8 @@ apt-key adv --fetch-keys https://packages.sury.org/php/apt.gpg
 
 apt-get update
 apt-get install --no-install-recommends -y tmux
+
+if [[ "$(ncc config:app:get theming url)" == "https://ownyourbits.com" ]]
+then
+   ncc config:app:set theming url --value="https://nextcloudpi.com"
+fi
