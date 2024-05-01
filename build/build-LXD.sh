@@ -66,7 +66,7 @@ systemd-run --user --scope -p "Delegate=yes" $LXC_CMD start ncp -q || \
 sudo systemd-run --scope -p "Delegate=yes" $LXC_CMD start ncp -q
 $LXC_CMD config device add ncp buildcode disk source="$(pwd)" path=/build
 $LXC_CMD exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
-$LXC_CMD exec ncp -- bash -c 'CODE_DIR=/build DBG=x bash /build/install.sh'
+$LXC_CMD exec ncp -- bash -c 'CODE_DIR=/build DBG=x IS_LXC_BUILD=true bash /build/install.sh'
 $LXC_CMD exec ncp -- bash -c 'source /build/etc/library.sh; run_app_unsafe /build/post-inst.sh'
 $LXC_CMD exec ncp -- bash -c "echo '$(basename "$IMG")' > /usr/local/etc/ncp-baseimage"
 $LXC_CMD stop ncp

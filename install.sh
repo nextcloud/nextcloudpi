@@ -74,7 +74,7 @@ cp etc/ncp.cfg /usr/local/etc/
 
 cp -r etc/ncp-templates /usr/local/etc/
 install_app    lamp.sh
-if [[ -d "/run/systemd/system" ]] && is_lxc
+if [[ "$IS_LXD_BUILD" == "true" ]]
 then
   DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y systemd-resolved
   systemctl enable systemd-resolved
