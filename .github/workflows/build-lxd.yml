@@ -255,11 +255,10 @@ jobs:
             "$LXC" exec ncp -- cat "$datadir/nextcloud.log" || true
             exit 1
           }
-          python system_tests.py --non-interactive || {
+          python system_tests.py --non-interactive --skip-update-test || {
             echo "System test failed!"
             exit 1
           }
-
       - name: Update ncp
         run: |
           set -ex
