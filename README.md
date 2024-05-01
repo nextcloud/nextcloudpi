@@ -137,7 +137,7 @@ Default Settings: `2GB RAM - 8GB Storage - 2vCPU`
 
 _(Check his [website][website-helper-scripts] if this has changed and we haven't had the time to update it here yet, it's located under: Media - Photo > NextcloudPi LXC)_
 
-Thenk you [tteck][tteck-profile] :heart: for making the helper script & letting us use this for Proxmox installations :pray:
+Thank you [tteck][tteck-profile] :heart: for making the helper script & letting us use this for Proxmox installations :pray:
 
 You can find his GitHub repository with his helper scripts [here][gh-helper-scripts-repo].
 
