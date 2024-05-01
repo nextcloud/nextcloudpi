@@ -140,7 +140,7 @@ def close_first_run_wizard(driver: WebDriver):
         time.sleep(3)
 
 
-def test_nextcloud(IP: str, nc_port: str, driver: WebDriver):
+def test_nextcloud(IP: str, nc_port: str, driver: WebDriver, skip_release_check: bool):
     """ Login and assert admin page checks"""
     test = Test()
     test.new("nextcloud page")
@@ -171,7 +171,8 @@ def test_nextcloud(IP: str, nc_port: str, driver: WebDriver):
     try:
         wait.until(VisibilityOfElementLocatedByAnyLocator([(By.CSS_SELECTOR, "#security-warning-state-ok"),
                                                            (By.CSS_SELECTOR, "#security-warning-state-warning"),
-                                                           (By.CSS_SELECTOR, "#security-warning-state-error")]))
+                                                           (By.CSS_SELECTOR, "#security-warning-state-error"),
+                                                           (By.CSS_SELECTOR, "#security-warning-state-failure")]))
 
         element_ok = driver.find_element(By.ID, "security-warning-state-ok")
         element_warn = driver.find_element(By.ID, "security-warning-state-warning")
@@ -212,6 +213,9 @@ def test_nextcloud(IP: str, nc_port: str, driver: WebDriver):
                         raise ConfigTestFailure("The list of php_modules does not equal [imagick]")
 
         elif not element_ok.is_displayed():
+            errors = driver.find_elements(By.CSS_SELECTOR, "#postsetupchecks > .errors > li")
+            for error in errors:
+                print(f'ERROR: {error.text}')
             raise ConfigTestFailure("Neither the warnings nor the ok status is displayed "
                                     "(so there are probably errors or the page is broken)")
 
@@ -263,8 +267,11 @@ def test_nextcloud(IP: str, nc_port: str, driver: WebDriver):
                     expected['ncp_version'] = True
                 elif 'php version' in divs[0].text.lower() and divs[1].text == ncp_cfg['php_version']:
                     expected['php_version'] = True
-                elif 'debian release' in divs[0].text.lower() and divs[1].text == ncp_cfg['release']:
-                    expected['debian_release'] = True
+                elif 'debian release' in divs[0].text.lower():
+                    if divs[1].text == ncp_cfg['release'] or skip_release_check:
+                        expected['debian_release'] = True
+                    else:
+                        print(f"{tc.yellow}{divs[1].text} != {ncp_cfg['release']}")
         failed = list(map(lambda item: item[0], filter(lambda item: not item[1], expected.items())))
         test.check(len(failed) == 0, f"checks failed for admin section: [{', '.join(failed)}]")
     except Exception as e:
@@ -302,11 +309,12 @@ if __name__ == "__main__":
 
     # parse options
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'hn', ['help', 'new', 'no-gui'])
+        opts, args = getopt.getopt(sys.argv[1:], 'hn', ['help', 'new', 'no-gui', 'skip-release-check'])
     except getopt.GetoptError:
         usage()
         sys.exit(2)
 
+    skip_release_check = False
     options = webdriver.FirefoxOptions()
     for opt, arg in opts:
         if opt in ('-h', '--help'):
@@ -317,6 +325,8 @@ if __name__ == "__main__":
                 os.unlink(test_cfg)
         elif opt == '--no-gui':
             options.add_argument("-headless")
+        elif opt == '--skip-release-check':
+            skip_release_check = True
         else:
             usage()
             sys.exit(2)
@@ -355,7 +365,7 @@ if __name__ == "__main__":
     driver = webdriver.Firefox(options=options)
     failed=False
     try:
-        test_nextcloud(IP, nc_port, driver)
+        test_nextcloud(IP, nc_port, driver, skip_release_check)
     except Exception as e:
         print(e)
         print(traceback.format_exc())

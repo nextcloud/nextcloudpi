@@ -156,8 +156,9 @@ function set-nc-domain()
   if is_ncp_activated && is_app_enabled notify_push; then
     ncc config:system:set trusted_proxies 11 --value="127.0.0.1"
     ncc config:system:set trusted_proxies 12 --value="::1"
-    ncc config:system:set trusted_proxies 13 --value="${domain}"
-    ncc config:system:set trusted_proxies 14 --value="$(dig +short "${domain}")"
+#    ncc config:system:set trusted_proxies 13 --value="${domain}"
+    local domain_ip="$(dig +short "${domain}")"
+    [[ -z "$domain_ip" ]] || ncc config:system:set trusted_proxies 14 --value="$(dig +short "${domain}")"
     sleep 5 # this seems to be required in the VM for some reason. We get `http2 error: protocol error` after ncp-upgrade-nc
     for try in {1..5}
     do

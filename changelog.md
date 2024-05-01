@@ -1,5 +1,20 @@
 # NextcloudPi Changelog
 
+## [v1.54.0](https://github.com/nextcloud/nextcloudpi/tree/v1.54.0) (2024-05-01) Support Debian 12 and Nextcloud 28.0.5
+
+### Changes
+
+- Add support for Nextcloud 28.0.5
+- Add ncp-dist-upgrade script to upgrade to Debian 12 (bookworm)
+- Change mechanism to prevent root login by default
+- Add support for Raspberry Pi 5
+- Use Armbian instead of Raspbian as base for Raspberry Pi images
+
+### Development related
+
+- (CICD) Add integration tests for dist-upgrade
+- Add support for building with incus
+
 ## [v1.53.3](https://github.com/nextcloud/nextcloudpi/tree/v1.53.3) (2024-04-24) Support Nextcloud 28.0.4
 
 ### Changes
