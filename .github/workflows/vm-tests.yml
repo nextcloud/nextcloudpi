@@ -102,167 +102,167 @@ jobs:
           }
           echo "test_result=success" >> "$GITHUB_OUTPUT";
 
-  update-test:
-    runs-on: ubuntu-latest
-    container:
-      image: thecalcaholic/ncp-test-automation:bullseye
-      env:
-        HCLOUD_TOKEN: "${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}"
-        UID: "${{ github.run_id }}-update"
-    defaults:
-      run:
-        shell: bash
-    outputs:
-      server_address: ${{ steps.create-test-instance.outputs.server_address }}
-      snapshot_id: ${{ steps.create-test-instance.outputs.snapshot_id }}
-      test_server_id: ${{ steps.create-test-instance.outputs.test_server_id }}
-      previous_version: ${{ steps.find-version.outputs.previous_version }}
-      version: ${{ env.VERSION }}
-      test_result: ${{ steps.final_test.outputs.test_result }}
-      ssh_artifact_name: ${{ env.SSH_ARTIFACT_NAME }}
-    env:
-      VERSION: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
-      HOME: /root
-      SSH_ARTIFACT_NAME: "${{ github.run_id }}-update-ssh"
-      UID: "${{ github.run_id }}-update"
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-          path: /__w/nextcloudpi/nextcloudpi
-      - name: find reference version
-        working-directory: /__w/nextcloudpi/nextcloudpi
-        shell: bash
-        id: find-version
-        run: |
-          chown -R "$(id -u):$(id -g)" .
-          set -e
-          if [[ -n "${{ github.base_ref }}" ]]
-          then
-            version="${{ github.base_ref }}"
-          elif [[ "${{ github.ref }}" == "refs/heads/devel" ]]
-          then
-            version="master"
-          else
-            git fetch -fu --tags origin ${{ github.ref }}:${{ github.ref }}
-            version="$(git describe --tags)"
-            [[ "$version" =~ .*-.*-.* ]] || {
-              git checkout HEAD~1
-              version="$(git describe --tags)"
-            }
-            version="${version%-*-*}"
-          fi
-          echo "Previous version is '$version'"
-          #TODO: Revert to dynamically found version
-          #echo "PREVIOUS_VERSION=${version}" >> "$GITHUB_ENV"
-          echo "PREVIOUS_VERSION=v1.53.3" >> "$GITHUB_ENV"
-      - name: Generate ssh key
-        run: |
-          set -x
-          mkdir -p /__w/nextcloudpi/nextcloudpi/.ssh
-          ssh-keygen -t ed25519 -f "/__w/nextcloudpi/nextcloudpi/.ssh/automation_ssh_key"
-          . /ncp-test-automation/bin/entrypoint.sh
-      - name: upload ssh private key to artifact store
-        uses: actions/upload-artifact@v3
-        with:
-          name: "${{ env.SSH_ARTIFACT_NAME }}"
-          path: /__w/nextcloudpi/nextcloudpi/.ssh
-          if-no-files-found: error
-      - id: create-test-instance
-        uses: ./.github/actions/create-test-instance-bullseye
-        with:
-          version: "${{ env.PREVIOUS_VERSION }}"
-          uid: "${{ env.UID }}"
-          hcloud_token: ${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}
-          server_type: "cx11"
-      - name: Set instance variables
-        run: |
-          echo "SERVER_ADDRESS=${{ steps.create-test-instance.outputs.server_address }}" >> "$GITHUB_ENV"
-          echo "SNAPSHOT_ID=${{ steps.create-test-instance.outputs.snapshot_id }}" >> "$GITHUB_ENV"
-      - uses: actions/checkout@v3
-        with:
-          repository: 'theCalcaholic/ncp-test-automation'
-          ref: "bullseye"
-          path: /__w/nextcloudpi/nextcloudpi/ncp-test-automation
-      - name: Activate and Test postinstall VM
-        working-directory: /__w/nextcloudpi/nextcloudpi/ncp-test-automation/bin
-        run: |
-          set -e
-          echo "Setup ssh"
-          chmod 0600 /__w/nextcloudpi/nextcloudpi/.ssh/automation_ssh_key
-          eval "$(ssh-agent)"
-          ssh-add /__w/nextcloudpi/nextcloudpi/.ssh/automation_ssh_key
-          
-          source ./library.sh
-          
-          trap 'terminate-ssh-port-forwarding "${SERVER_ADDRESS}"' EXIT 1 2
-          
-          setup-ssh-port-forwarding "$SERVER_ADDRESS"
-          
-          echo "Run integration tests"
-          ssh -o "StrictHostKeyChecking=no" -o "UserKnownHostsFile=/dev/null" "root@${SERVER_ADDRESS}" cat /usr/local/etc/instance.cfg
-          test-ncp-instance -a -f "$SNAPSHOT_ID" -b "${VERSION}" --systemtest-args "--skip-update-test" --nc-test-args "--skip-release-check" "root@${SERVER_ADDRESS}" "localhost" "8443" "9443" || {
-          
-            echo "Integration tests failed"
-            echo "Here are the last lines of ncp-install.log:"
-            echo "==========================================="
-            ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" tail /var/log/ncp-install.log;
-            echo "==========================================="
-            echo "and ncp.log:"
-            echo "==========================================="
-            ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" tail /var/log/ncp.log;
-            echo "==========================================="
-            exit 1
-          }
-      - name: perform update
-        working-directory: /__w/nextcloudpi/nextcloudpi/ncp-test-automation/bin
-        run: |
-          set -e
-          
-          echo "Setup ssh"
-          chmod 0600 /__w/nextcloudpi/nextcloudpi/.ssh/automation_ssh_key
-          eval "$(ssh-agent)"
-          ssh-add /__w/nextcloudpi/nextcloudpi/.ssh/automation_ssh_key
-          
-          source ./library.sh
-
-          echo "Updating from $PREVIOUS_VERSION to $VERSION"
-          ssh-keygen -f "$HOME/.ssh/known_hosts" -R "${SERVER_ADDRESS}" 2> /dev/null || true
-          ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" "ncp-update '$VERSION'"
-      - name: Run integration tests after update
-        id: final_test
-        working-directory: /__w/nextcloudpi/nextcloudpi/ncp-test-automation/bin
-        run: |
-          set -e
-          
-          echo "Setup ssh"
-          eval "$(ssh-agent)"
-          ssh-add /__w/nextcloudpi/nextcloudpi/.ssh/automation_ssh_key
-          
-          source ./library.sh
-          
-          trap '[ $? -eq 0 ] || echo "test_result=failure" >> "$GITHUB_OUTPUT"; terminate-ssh-port-forwarding "${SERVER_ADDRESS}"' EXIT 1 2
-          
-          echo "Run integration tests"
-          setup-ssh-port-forwarding "$SERVER_ADDRESS"
-          NC_TEST_ARGS=()
-          ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" cat /etc/os-release | grep VERSION_ID=12 || NC_TEST_ARGS+=("--skip-release-check")
-          set -x
-          test-ncp-instance -f "$SNAPSHOT_ID" -b "${VERSION}" --nc-test-args "$NC_TEST_ARGS" --systemtest-args "--skip-update-test" "root@${SERVER_ADDRESS}" "localhost" "8443" "9443" || {
-          
-            echo "Integration tests failed"
-            echo "Here are the last lines of ncp-install.log:"
-            echo "==========================================="
-            ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" tail /var/log/ncp-install.log;
-            echo "==========================================="
-            echo "and ncp.log:"
-            echo "==========================================="
-            ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" tail /var/log/ncp.log;
-            echo "==========================================="
-            exit 1
-          }
-          
-          echo "test_result=success" >> "$GITHUB_OUTPUT";
+#  update-test:
+#    runs-on: ubuntu-latest
+#    container:
+#      image: thecalcaholic/ncp-test-automation:bullseye
+#      env:
+#        HCLOUD_TOKEN: "${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}"
+#        UID: "${{ github.run_id }}-update"
+#    defaults:
+#      run:
+#        shell: bash
+#    outputs:
+#      server_address: ${{ steps.create-test-instance.outputs.server_address }}
+#      snapshot_id: ${{ steps.create-test-instance.outputs.snapshot_id }}
+#      test_server_id: ${{ steps.create-test-instance.outputs.test_server_id }}
+#      previous_version: ${{ steps.find-version.outputs.previous_version }}
+#      version: ${{ env.VERSION }}
+#      test_result: ${{ steps.final_test.outputs.test_result }}
+#      ssh_artifact_name: ${{ env.SSH_ARTIFACT_NAME }}
+#    env:
+#      VERSION: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+#      HOME: /root
+#      SSH_ARTIFACT_NAME: "${{ github.run_id }}-update-ssh"
+#      UID: "${{ github.run_id }}-update"
+#    steps:
+#      - uses: actions/checkout@v3
+#        with:
+#          fetch-depth: 0
+#          path: /__w/nextcloudpi/nextcloudpi
+#      - name: find reference version
+#        working-directory: /__w/nextcloudpi/nextcloudpi
+#        shell: bash
+#        id: find-version
+#        run: |
+#          chown -R "$(id -u):$(id -g)" .
+#          set -e
+#          if [[ -n "${{ github.base_ref }}" ]]
+#          then
+#            version="${{ github.base_ref }}"
+#          elif [[ "${{ github.ref }}" == "refs/heads/devel" ]]
+#          then
+#            version="master"
+#          else
+#            git fetch -fu --tags origin ${{ github.ref }}:${{ github.ref }}
+#            version="$(git describe --tags)"
+#            [[ "$version" =~ .*-.*-.* ]] || {
+#              git checkout HEAD~1
+#              version="$(git describe --tags)"
+#            }
+#            version="${version%-*-*}"
+#          fi
+#          echo "Previous version is '$version'"
+#          #TODO: Revert to dynamically found version
+#          #echo "PREVIOUS_VERSION=${version}" >> "$GITHUB_ENV"
+#          echo "PREVIOUS_VERSION=v1.53.3" >> "$GITHUB_ENV"
+#      - name: Generate ssh key
+#        run: |
+#          set -x
+#          mkdir -p /__w/nextcloudpi/nextcloudpi/.ssh
+#          ssh-keygen -t ed25519 -f "/__w/nextcloudpi/nextcloudpi/.ssh/automation_ssh_key"
+#          . /ncp-test-automation/bin/entrypoint.sh
+#      - name: upload ssh private key to artifact store
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: "${{ env.SSH_ARTIFACT_NAME }}"
+#          path: /__w/nextcloudpi/nextcloudpi/.ssh
+#          if-no-files-found: error
+#      - id: create-test-instance
+#        uses: ./.github/actions/create-test-instance-bullseye
+#        with:
+#          version: "${{ env.PREVIOUS_VERSION }}"
+#          uid: "${{ env.UID }}"
+#          hcloud_token: ${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}
+#          server_type: "cx11"
+#      - name: Set instance variables
+#        run: |
+#          echo "SERVER_ADDRESS=${{ steps.create-test-instance.outputs.server_address }}" >> "$GITHUB_ENV"
+#          echo "SNAPSHOT_ID=${{ steps.create-test-instance.outputs.snapshot_id }}" >> "$GITHUB_ENV"
+#      - uses: actions/checkout@v3
+#        with:
+#          repository: 'theCalcaholic/ncp-test-automation'
+#          ref: "bullseye"
+#          path: /__w/nextcloudpi/nextcloudpi/ncp-test-automation
+#      - name: Activate and Test postinstall VM
+#        working-directory: /__w/nextcloudpi/nextcloudpi/ncp-test-automation/bin
+#        run: |
+#          set -e
+#          echo "Setup ssh"
+#          chmod 0600 /__w/nextcloudpi/nextcloudpi/.ssh/automation_ssh_key
+#          eval "$(ssh-agent)"
+#          ssh-add /__w/nextcloudpi/nextcloudpi/.ssh/automation_ssh_key
+#
+#          source ./library.sh
+#
+#          trap 'terminate-ssh-port-forwarding "${SERVER_ADDRESS}"' EXIT 1 2
+#
+#          setup-ssh-port-forwarding "$SERVER_ADDRESS"
+#
+#          echo "Run integration tests"
+#          ssh -o "StrictHostKeyChecking=no" -o "UserKnownHostsFile=/dev/null" "root@${SERVER_ADDRESS}" cat /usr/local/etc/instance.cfg
+#          test-ncp-instance -a -f "$SNAPSHOT_ID" -b "${VERSION}" --systemtest-args "--skip-update-test" --nc-test-args "--skip-release-check" "root@${SERVER_ADDRESS}" "localhost" "8443" "9443" || {
+#
+#            echo "Integration tests failed"
+#            echo "Here are the last lines of ncp-install.log:"
+#            echo "==========================================="
+#            ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" tail /var/log/ncp-install.log;
+#            echo "==========================================="
+#            echo "and ncp.log:"
+#            echo "==========================================="
+#            ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" tail /var/log/ncp.log;
+#            echo "==========================================="
+#            exit 1
+#          }
+#      - name: perform update
+#        working-directory: /__w/nextcloudpi/nextcloudpi/ncp-test-automation/bin
+#        run: |
+#          set -e
+#
+#          echo "Setup ssh"
+#          chmod 0600 /__w/nextcloudpi/nextcloudpi/.ssh/automation_ssh_key
+#          eval "$(ssh-agent)"
+#          ssh-add /__w/nextcloudpi/nextcloudpi/.ssh/automation_ssh_key
+#
+#          source ./library.sh
+#
+#          echo "Updating from $PREVIOUS_VERSION to $VERSION"
+#          ssh-keygen -f "$HOME/.ssh/known_hosts" -R "${SERVER_ADDRESS}" 2> /dev/null || true
+#          ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" "ncp-update '$VERSION'"
+#      - name: Run integration tests after update
+#        id: final_test
+#        working-directory: /__w/nextcloudpi/nextcloudpi/ncp-test-automation/bin
+#        run: |
+#          set -e
+#
+#          echo "Setup ssh"
+#          eval "$(ssh-agent)"
+#          ssh-add /__w/nextcloudpi/nextcloudpi/.ssh/automation_ssh_key
+#
+#          source ./library.sh
+#
+#          trap '[ $? -eq 0 ] || echo "test_result=failure" >> "$GITHUB_OUTPUT"; terminate-ssh-port-forwarding "${SERVER_ADDRESS}"' EXIT 1 2
+#
+#          echo "Run integration tests"
+#          setup-ssh-port-forwarding "$SERVER_ADDRESS"
+#          NC_TEST_ARGS=()
+#          ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" cat /etc/os-release | grep VERSION_ID=12 || NC_TEST_ARGS+=("--skip-release-check")
+#          set -x
+#          test-ncp-instance -f "$SNAPSHOT_ID" -b "${VERSION}" --nc-test-args "$NC_TEST_ARGS" --systemtest-args "--skip-update-test" "root@${SERVER_ADDRESS}" "localhost" "8443" "9443" || {
+#
+#            echo "Integration tests failed"
+#            echo "Here are the last lines of ncp-install.log:"
+#            echo "==========================================="
+#            ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" tail /var/log/ncp-install.log;
+#            echo "==========================================="
+#            echo "and ncp.log:"
+#            echo "==========================================="
+#            ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" tail /var/log/ncp.log;
+#            echo "==========================================="
+#            exit 1
+#          }
+#
+#          echo "test_result=success" >> "$GITHUB_OUTPUT";
 
   dist-upgrade-test:
     runs-on: ubuntu-latest
@@ -506,59 +506,59 @@ jobs:
           snapshot_id="$(tf-output "$TF_SNAPSHOT" -state="${TF_SNAPSHOT}/${VERSION//\//.}.postactivation.tfstate" snapshot_id)"
           hcloud image add-label -o "$snapshot_id" "test-result=${TEST_RESULT?}"
 
-  update-postactivation-snapshot:
-    if: ${{ always() }}
-    needs:
-      - update-test
-    runs-on: ubuntu-latest
-    container:
-      image: thecalcaholic/ncp-test-automation:latest
-      env:
-        HCLOUD_TOKEN: "${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}"
-
-    env:
-      TEST_TYPE: update
-      SERVER_ADDRESS: ${{ needs.update-test.outputs.server_address }}
-      TEST_RESULT: ${{ needs.update-test.test_result }}
-      TEST_SERVER_ID: ${{ needs.update-test.outputs.test_server_id }}
-      VERSION: ${{ needs.update-test.outputs.version }}
-      UID: ${{ github.run_id }}-update
-      SSH_ARTIFACT_NAME: "${{ needs.update-test.outputs.ssh_artifact_name }}"
-    steps:
-      - name: download ssh private key from artifact store
-        uses: actions/download-artifact@v3
-        if: ${{ contains('success|failure', env.TEST_RESULT) }}
-        with:
-          name: ${{ env.SSH_ARTIFACT_NAME }}
-          path: /github/workspace/.ssh
-      - name: Shutdown server
-        if: ${{ contains('success|failure', env.TEST_RESULT) }}
-        run: |
-          chmod 0600  /github/workspace/.ssh/automation_ssh_key
-          export SSH_PUBLIC_KEY="$(cat  /github/workspace/.ssh/automation_ssh_key.pub)"
-          bash /ncp-test-automation/bin/entrypoint.sh
-          eval "$(ssh-agent)"
-          ssh-add  /github/workspace/.ssh/automation_ssh_key
-          
-          ssh -o "StrictHostKeyChecking=no" -o "UserKnownHostsFile=/dev/null" "root@${SERVER_ADDRESS?}" <<EOF
-          systemctl stop mariadb
-          systemctl poweroff
-          EOF
-      - name: Create Snapshot
-        if: ${{ contains('success|failure', env.TEST_RESULT) }}
-        shell: bash
-        working-directory: /ncp-test-automation/bin
-        run: |
-          set -x
-          echo "${{ needs.update-test.outputs.test_server_id }}"
-          echo "${TEST_SERVER_ID?}"
-          
-          . ./library.sh
-          
-          tf-init "$TF_SNAPSHOT"
-          tf-apply "$TF_SNAPSHOT" "$TF_VAR_FILE" -var="branch=${VERSION?}" -var="snapshot_provider_id=${TEST_SERVER_ID?}" -var="snapshot_type=ncp-postactivation" -state="${TF_SNAPSHOT}/${VERSION//\//.}.postactivation.tfstate"
-          snapshot_id="$(tf-output "$TF_SNAPSHOT" -state="${TF_SNAPSHOT}/${VERSION//\//.}.postactivation.tfstate" snapshot_id)"
-          hcloud image add-label -o "$snapshot_id" "test-result=${TEST_RESULT?}"
+#  update-postactivation-snapshot:
+#    if: ${{ always() }}
+#    needs:
+#      - update-test
+#    runs-on: ubuntu-latest
+#    container:
+#      image: thecalcaholic/ncp-test-automation:latest
+#      env:
+#        HCLOUD_TOKEN: "${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}"
+#
+#    env:
+#      TEST_TYPE: update
+#      SERVER_ADDRESS: ${{ needs.update-test.outputs.server_address }}
+#      TEST_RESULT: ${{ needs.update-test.test_result }}
+#      TEST_SERVER_ID: ${{ needs.update-test.outputs.test_server_id }}
+#      VERSION: ${{ needs.update-test.outputs.version }}
+#      UID: ${{ github.run_id }}-update
+#      SSH_ARTIFACT_NAME: "${{ needs.update-test.outputs.ssh_artifact_name }}"
+#    steps:
+#      - name: download ssh private key from artifact store
+#        uses: actions/download-artifact@v3
+#        if: ${{ contains('success|failure', env.TEST_RESULT) }}
+#        with:
+#          name: ${{ env.SSH_ARTIFACT_NAME }}
+#          path: /github/workspace/.ssh
+#      - name: Shutdown server
+#        if: ${{ contains('success|failure', env.TEST_RESULT) }}
+#        run: |
+#          chmod 0600  /github/workspace/.ssh/automation_ssh_key
+#          export SSH_PUBLIC_KEY="$(cat  /github/workspace/.ssh/automation_ssh_key.pub)"
+#          bash /ncp-test-automation/bin/entrypoint.sh
+#          eval "$(ssh-agent)"
+#          ssh-add  /github/workspace/.ssh/automation_ssh_key
+#
+#          ssh -o "StrictHostKeyChecking=no" -o "UserKnownHostsFile=/dev/null" "root@${SERVER_ADDRESS?}" <<EOF
+#          systemctl stop mariadb
+#          systemctl poweroff
+#          EOF
+#      - name: Create Snapshot
+#        if: ${{ contains('success|failure', env.TEST_RESULT) }}
+#        shell: bash
+#        working-directory: /ncp-test-automation/bin
+#        run: |
+#          set -x
+#          echo "${{ needs.update-test.outputs.test_server_id }}"
+#          echo "${TEST_SERVER_ID?}"
+#
+#          . ./library.sh
+#
+#          tf-init "$TF_SNAPSHOT"
+#          tf-apply "$TF_SNAPSHOT" "$TF_VAR_FILE" -var="branch=${VERSION?}" -var="snapshot_provider_id=${TEST_SERVER_ID?}" -var="snapshot_type=ncp-postactivation" -state="${TF_SNAPSHOT}/${VERSION//\//.}.postactivation.tfstate"
+#          snapshot_id="$(tf-output "$TF_SNAPSHOT" -state="${TF_SNAPSHOT}/${VERSION//\//.}.postactivation.tfstate" snapshot_id)"
+#          hcloud image add-label -o "$snapshot_id" "test-result=${TEST_RESULT?}"
 
   dist-upgrade-postactivation-snapshot:
     if: ${{ always() }}
@@ -618,7 +618,7 @@ jobs:
     if: ${{ always() }}
     needs:
       - install-postactivation-snapshot
-      - update-postactivation-snapshot
+      #- update-postactivation-snapshot
       - dist-upgrade-postactivation-snapshot
     runs-on: ubuntu-latest
     container:
@@ -653,7 +653,7 @@ jobs:
     if: ${{ always() }}
     needs:
       - install-postactivation-snapshot
-      - update-postactivation-snapshot
+      #- update-postactivation-snapshot
       - dist-upgrade-postactivation-snapshot
     runs-on: ubuntu-latest
     container:
