@@ -82,7 +82,7 @@ jobs:
         env:
           USE_INCUS: "${{ needs.determine-runner.outputs.lxc_cmd == 'incus' && 'yes' || 'no' }}"
         run: |
-          ./build/build-LXD.sh
+          BRANCH="$VERSION" ./build/build-LXD.sh
       - name: Pack LXD image
         id: pack-lxd
         run: |
@@ -158,7 +158,7 @@ jobs:
         env:
           USE_INCUS: "${{ needs.determine-runner.outputs.lxc_cmd == 'incus' && 'yes' || 'no' }}"
         run: |
-          ./build/build-LXD.sh
+          BRANCH="$VERSION" ./build/build-LXD.sh
       - name: Pack LXD image
         id: pack-lxd
         run: |
