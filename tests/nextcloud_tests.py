@@ -171,7 +171,8 @@ def test_nextcloud(IP: str, nc_port: str, driver: WebDriver, skip_release_check:
     try:
         wait.until(VisibilityOfElementLocatedByAnyLocator([(By.CSS_SELECTOR, "#security-warning-state-ok"),
                                                            (By.CSS_SELECTOR, "#security-warning-state-warning"),
-                                                           (By.CSS_SELECTOR, "#security-warning-state-error")]))
+                                                           (By.CSS_SELECTOR, "#security-warning-state-error"),
+                                                           (By.CSS_SELECTOR, "#security-warning-state-failure")]))
 
         element_ok = driver.find_element(By.ID, "security-warning-state-ok")
         element_warn = driver.find_element(By.ID, "security-warning-state-warning")
@@ -212,6 +213,9 @@ def test_nextcloud(IP: str, nc_port: str, driver: WebDriver, skip_release_check:
                         raise ConfigTestFailure("The list of php_modules does not equal [imagick]")
 
         elif not element_ok.is_displayed():
+            errors = driver.find_elements(By.CSS_SELECTOR, "#postsetupchecks > .errors > li")
+            for error in errors:
+                print(f'ERROR: {error.text}')
             raise ConfigTestFailure("Neither the warnings nor the ok status is displayed "
                                     "(so there are probably errors or the page is broken)")
 
