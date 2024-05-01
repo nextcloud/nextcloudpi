@@ -131,8 +131,10 @@ Use the install script from [tteck][tteck-profile] to install the LXC container 
 
 He has multiple helper scripts available for Proxmox on his [website][website-helper-scripts], do go have a look if you're using Proxmox. :+1:
 
-Installation: `bash -c "$(wget -qLO - https://github.com/tteck/Proxmox/raw/main/ct/nextcloudpi.sh)"`
-
+Execute within the Proxmox Shell:
+```
+bash -c "$(wget -qLO - https://github.com/tteck/Proxmox/raw/main/ct/nextcloudpi.sh)"
+```
 Default Settings: `2GB RAM - 8GB Storage - 2vCPU`
 
 _(Check his [website][website-helper-scripts] if this has changed and we haven't had the time to update it here yet, it's located under: Media - Photo > NextcloudPi LXC)_
