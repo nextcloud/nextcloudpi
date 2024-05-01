@@ -97,228 +97,228 @@ jobs:
           path: "output/${{ steps.pack-lxd.outputs.artifact_file }}"
           if-no-files-found: error
 
-  build-previous:
-    needs:
-      - determine-runner
-    runs-on: [ ubuntu-20.04 ]
-    if: ${{ inputs.arch == 'x86' || inputs.arch == '' }}
-    outputs:
-      artifact_name: "${{ env.ARTIFACT_NAME }}"
-      artifact_file: "${{ steps.pack-lxd.outputs.artifact_file }}"
-      previous_version: "${{ steps.checkout_previous_version.outputs.previous_version }}"
-    env:
-      VERSION: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
-      ARTIFACT_NAME: "${{ github.run_id }}-lxd-${{ inputs.arch || 'x86' }}-image-previous"
-      LXD_ARCH: "${{ inputs.arch || 'x86' }}"
-      LXC: "${{ needs.determine-runner.outputs.lxc_cmd }}"
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          ref: "${{ env.VERSION }}"
-          fetch-depth: 0
-      - name: Checkout previous release
-        id: checkout_previous_version
-        shell: bash
-        run: |
-          set -e
-          if [[ -n "${{ github.base_ref }}" ]]
-          then
-            version="${{ github.base_ref }}"
-          elif [[ "${{ env.VERSION }}" == "refs/heads/devel" ]]
-          then
-            version="master"
-          else
-            if [[ "${{ github.ref_type }}" != "tag" ]] || ! git describe --tags > /dev/null
-            then
-              git fetch -fu --tags origin ${{ env.VERSION }}:${{ env.VERSION }}
-            fi
-            version="$(git describe --tags)"
-            [[ "$version" =~ .*-.*-.* ]] || {
-              git checkout HEAD~1
-              version="$(git describe --tags)"
-            }
-            version="${version%-*-*}"
-          fi
-          echo "Previous version is '$version'"
-          git checkout "$version"
-          echo "VERSION=$version" >> "$GITHUB_ENV"
-          echo "previous_version=${version}" >> $GITHUB_OUTPUT
-      - uses: whywaita/setup-lxd@v1
-        if: ${{ needs.determine-runner.outputs.lxc_cmd == 'lxc' }}
-        continue-on-error: true
-        with:
-          lxd_version: latest/stable
-      - name: Fix LXD
-        run: |
-          sudo iptables -I DOCKER-USER -i lxdbr0 -j ACCEPT
-          sudo iptables -I DOCKER-USER -o lxdbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-
-      - name: Build LXD image
-        env:
-          USE_INCUS: "${{ needs.determine-runner.outputs.lxc_cmd == 'incus' && 'yes' || 'no' }}"
-        run: |
-          BRANCH="$VERSION" ./build/build-LXD.sh
-      - name: Pack LXD image
-        id: pack-lxd
-        run: |
-          . ./build/buildlib.sh
-          ARTIFACT_FILE="NextcloudPi_LXD_${LXD_ARCH:-x86}_${VERSION//\//_}"
-          "${LXC}" image export -q ncp/"${version}" "output/${ARTIFACT_FILE}"
-          echo "artifact_file=${ARTIFACT_FILE}.tar.gz" >> $GITHUB_OUTPUT
-      - name: upload LXD image to artifact store
-        uses: actions/upload-artifact@v3
-        with:
-          name: "${{ env.ARTIFACT_NAME }}"
-          path: "output/${{ steps.pack-lxd.outputs.artifact_file }}"
-          if-no-files-found: error
-
-  test-update:
-    needs:
-      - determine-runner
-      - build-previous
-    runs-on: [ubuntu-20.04]
-    outputs:
-      artifact_name: "${{ env.ARTIFACT_NAME }}"
-      artifact_file: "${{ steps.pack-lxd.outputs.artifact_file }}"
-    env:
-      VERSION: "${{ inputs.git_ref || github.ref }}"
-      ARTIFACT_NAME: "${{ needs.build-previous.outputs.artifact_name }}"
-      LXC: "${{ needs.determine-runner.outputs.lxc_cmd }}"
-    steps:
-      - uses: whywaita/setup-lxd@v1
-        if: ${{ needs.determine-runner.outputs.lxc_cmd == 'lxc' }}
-        continue-on-error: true
-        with:
-          lxd_version: latest/stable
-      - name: Fix LXD
-        run: |
-          sudo iptables -I DOCKER-USER -i lxdbr0 -j ACCEPT
-          sudo iptables -I DOCKER-USER -o lxdbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-      - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          ref: "${{ env.VERSION }}"
-      - name: Setup Firefox
-        continue-on-error: true
-        id: setup-firefox-browser-action
-        uses: browser-actions/setup-firefox@latest
-      - name: Setup Firefox from packages
-        if: ${{ steps.setup-firefox-browser-action.outcome == 'failure' }}
-        run: |
-          sudo apt-get install -y --no-install-recommends firefox
-      - name: Setup GeckoDriver
-        uses: ChlodAlejandro/setup-geckodriver@latest
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Setup Selenium
-        run: pip install selenium
-      - name: download LXD image from artifact store
-        uses: actions/download-artifact@v3
-        with:
-          name: ${{ needs.build-previous.outputs.artifact_name }}
-      - name: Launch ncp container
-        run: |
-          set -x
-          "$LXC" delete -q -f ncp || true
-          "$LXC" image import -q "./${{ needs.build-previous.outputs.artifact_file }}" --alias "ncp/update"
-          systemd-run --user --scope -p "Delegate=yes" "$LXC" launch -q "ncp/update" ncp
-          "$LXC" exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
-          "$LXC" exec ncp -- rm -f /opt/ncdata/data/nextcloud.log
-          sleep 30
-          ip="$("$LXC" list -c n4 -f csv | grep '^ncp' | cut -d ',' -f2)"
-          ip="${ip/% *}"
-          echo "${ip} nextcloudpi.local" | sudo tee /etc/hosts
-      - name: Activate and Test LXD Image
-        working-directory: ./tests
-        run: |
-          "$LXC" exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
-          python activation_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
-            echo "Activation test failed!"
-            echo "Geckodriver logs:"
-            tail -n 20 geckodriver.log >&2 || true
-            echo "================"
-            echo "ncp.log: "
-            "$LXC" exec ncp -- "tail -n20 /var/log/ncp.log" || true
-            exit 1
-          }
-          python nextcloud_tests.py --no-gui --skip-release-check "nextcloudpi.local" 443 4443 || {
-            echo "Nextcloud test failed!"
-            echo "Geckodriver logs:"
-            tail -n 20 geckodriver.log >&2 || true
-            echo "================"
-            echo "ncp.log: "
-            "$LXC" exec ncp -- "tail -n20 /var/log/ncp.log" || true
-            echo "================"
-            echo "nextcloud log: "
-            datadir="$("$LXC" exec ncp -- ncc config:system:get datadirectory)"
-            "$LXC" exec ncp -- cat "$datadir/nextcloud.log" || true
-            exit 1
-          }
-          python system_tests.py --non-interactive --skip-update-test || {
-            echo "System test failed!"
-            exit 1
-          }
-      - name: Update ncp
-        run: |
-          set -ex
-          BRANCH="${VERSION/refs\/heads\//}"
-          BRANCH="${BRANCH/refs\/tags\//}"
-          if [[ "$BRANCH" =~ "refs/pull/"* ]]
-          then
-            UPDATE_ARGS=("${{ github.head_ref }}" "$VERSION") 
-          else
-            UPDATE_ARGS=("$BRANCH")
-          fi
-          echo "VERSION=${VERSION}" >> "$GITHUB_ENV"
-          echo "Running update ${{ needs.build-previous.outputs.previous_version }} -> ${VERSION}"
-          
-          current_nc_version="$("$LXC" exec ncp -- ncc status | grep "version:" | awk '{ print $3 }')"
-          latest_nc_version="$(cat etc/ncp.cfg | jq -r '.nextcloud_version')"
-          
-          "$LXC" exec ncp -- bash -c "DBG=x ncp-update ${UPDATE_ARGS[*]}"
-          "$LXC" exec ncp -- /usr/local/bin/ncc status
-          
-          if [[ "$current_nc_version" =~ "$latest_nc_version".* ]]
-          then
-            echo "Nextcloud is up to date - skipping NC update test."
-          else
-            "$LXC" exec ncp -- bash -c "DBG=x ncp-update-nc ${latest_nc_version?}"
-          fi
-
-          "$LXC" exec ncp -- rm -f /opt/ncdata/data/nextcloud.log
-          
-          "$LXC" stop ncp
-      - name: Relaunch container
-        run: |
-          set -x
-          systemd-run --user --scope -p "Delegate=yes" "$LXC" start ncp
-          "$LXC" exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
-          sleep 30
-          ip="$("$LXC" list -c n4 -f csv | grep '^ncp' | cut -d ',' -f2)"
-          ip="${ip/% *}"
-          echo "${ip} nextcloudpi.local" | sudo tee /etc/hosts
-      - name: Test LXD Image
-        working-directory: ./tests
-        run: |
-          "$LXC" exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
-          python nextcloud_tests.py --no-gui --skip-release-check "nextcloudpi.local" 443 4443 || {
-            echo "Nextcloud test failed!"
-            echo "Geckodriver logs:"
-            tail -n 20 geckodriver.log >&2 || true
-            echo "================"
-            echo "ncp.log: "
-            "$LXC" exec ncp -- "tail -n20 /var/log/ncp.log" || true
-            echo "================"
-            echo "nextcloud log: "
-            datadir="$("$LXC" exec ncp -- ncc config:system:get datadirectory)"
-            "$LXC" exec ncp -- cat "$datadir/nextcloud.log" || true
-            exit 1
-          }
-          python system_tests.py --non-interactive || {
-            echo "System test failed!"
-            exit 1
-          }
+#  build-previous:
+#    needs:
+#      - determine-runner
+#    runs-on: [ ubuntu-20.04 ]
+#    if: ${{ inputs.arch == 'x86' || inputs.arch == '' }}
+#    outputs:
+#      artifact_name: "${{ env.ARTIFACT_NAME }}"
+#      artifact_file: "${{ steps.pack-lxd.outputs.artifact_file }}"
+#      previous_version: "${{ steps.checkout_previous_version.outputs.previous_version }}"
+#    env:
+#      VERSION: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+#      ARTIFACT_NAME: "${{ github.run_id }}-lxd-${{ inputs.arch || 'x86' }}-image-previous"
+#      LXD_ARCH: "${{ inputs.arch || 'x86' }}"
+#      LXC: "${{ needs.determine-runner.outputs.lxc_cmd }}"
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v3
+#        with:
+#          ref: "${{ env.VERSION }}"
+#          fetch-depth: 0
+#      - name: Checkout previous release
+#        id: checkout_previous_version
+#        shell: bash
+#        run: |
+#          set -e
+#          if [[ -n "${{ github.base_ref }}" ]]
+#          then
+#            version="${{ github.base_ref }}"
+#          elif [[ "${{ env.VERSION }}" == "refs/heads/devel" ]]
+#          then
+#            version="master"
+#          else
+#            if [[ "${{ github.ref_type }}" != "tag" ]] || ! git describe --tags > /dev/null
+#            then
+#              git fetch -fu --tags origin ${{ env.VERSION }}:${{ env.VERSION }}
+#            fi
+#            version="$(git describe --tags)"
+#            [[ "$version" =~ .*-.*-.* ]] || {
+#              git checkout HEAD~1
+#              version="$(git describe --tags)"
+#            }
+#            version="${version%-*-*}"
+#          fi
+#          echo "Previous version is '$version'"
+#          git checkout "$version"
+#          echo "VERSION=$version" >> "$GITHUB_ENV"
+#          echo "previous_version=${version}" >> $GITHUB_OUTPUT
+#      - uses: whywaita/setup-lxd@v1
+#        if: ${{ needs.determine-runner.outputs.lxc_cmd == 'lxc' }}
+#        continue-on-error: true
+#        with:
+#          lxd_version: latest/stable
+#      - name: Fix LXD
+#        run: |
+#          sudo iptables -I DOCKER-USER -i lxdbr0 -j ACCEPT
+#          sudo iptables -I DOCKER-USER -o lxdbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+#
+#      - name: Build LXD image
+#        env:
+#          USE_INCUS: "${{ needs.determine-runner.outputs.lxc_cmd == 'incus' && 'yes' || 'no' }}"
+#        run: |
+#          BRANCH="$VERSION" ./build/build-LXD.sh
+#      - name: Pack LXD image
+#        id: pack-lxd
+#        run: |
+#          . ./build/buildlib.sh
+#          ARTIFACT_FILE="NextcloudPi_LXD_${LXD_ARCH:-x86}_${VERSION//\//_}"
+#          "${LXC}" image export -q ncp/"${version}" "output/${ARTIFACT_FILE}"
+#          echo "artifact_file=${ARTIFACT_FILE}.tar.gz" >> $GITHUB_OUTPUT
+#      - name: upload LXD image to artifact store
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: "${{ env.ARTIFACT_NAME }}"
+#          path: "output/${{ steps.pack-lxd.outputs.artifact_file }}"
+#          if-no-files-found: error
+#
+#  test-update:
+#    needs:
+#      - determine-runner
+#      - build-previous
+#    runs-on: [ubuntu-20.04]
+#    outputs:
+#      artifact_name: "${{ env.ARTIFACT_NAME }}"
+#      artifact_file: "${{ steps.pack-lxd.outputs.artifact_file }}"
+#    env:
+#      VERSION: "${{ inputs.git_ref || github.ref }}"
+#      ARTIFACT_NAME: "${{ needs.build-previous.outputs.artifact_name }}"
+#      LXC: "${{ needs.determine-runner.outputs.lxc_cmd }}"
+#    steps:
+#      - uses: whywaita/setup-lxd@v1
+#        if: ${{ needs.determine-runner.outputs.lxc_cmd == 'lxc' }}
+#        continue-on-error: true
+#        with:
+#          lxd_version: latest/stable
+#      - name: Fix LXD
+#        run: |
+#          sudo iptables -I DOCKER-USER -i lxdbr0 -j ACCEPT
+#          sudo iptables -I DOCKER-USER -o lxdbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+#      - name: Checkout code
+#        uses: actions/checkout@v3
+#        with:
+#          ref: "${{ env.VERSION }}"
+#      - name: Setup Firefox
+#        continue-on-error: true
+#        id: setup-firefox-browser-action
+#        uses: browser-actions/setup-firefox@latest
+#      - name: Setup Firefox from packages
+#        if: ${{ steps.setup-firefox-browser-action.outcome == 'failure' }}
+#        run: |
+#          sudo apt-get install -y --no-install-recommends firefox
+#      - name: Setup GeckoDriver
+#        uses: ChlodAlejandro/setup-geckodriver@latest
+#        with:
+#          token: ${{ secrets.GITHUB_TOKEN }}
+#      - name: Setup Selenium
+#        run: pip install selenium
+#      - name: download LXD image from artifact store
+#        uses: actions/download-artifact@v3
+#        with:
+#          name: ${{ needs.build-previous.outputs.artifact_name }}
+#      - name: Launch ncp container
+#        run: |
+#          set -x
+#          "$LXC" delete -q -f ncp || true
+#          "$LXC" image import -q "./${{ needs.build-previous.outputs.artifact_file }}" --alias "ncp/update"
+#          systemd-run --user --scope -p "Delegate=yes" "$LXC" launch -q "ncp/update" ncp
+#          "$LXC" exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
+#          "$LXC" exec ncp -- rm -f /opt/ncdata/data/nextcloud.log
+#          sleep 30
+#          ip="$("$LXC" list -c n4 -f csv | grep '^ncp' | cut -d ',' -f2)"
+#          ip="${ip/% *}"
+#          echo "${ip} nextcloudpi.local" | sudo tee /etc/hosts
+#      - name: Activate and Test LXD Image
+#        working-directory: ./tests
+#        run: |
+#          "$LXC" exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
+#          python activation_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
+#            echo "Activation test failed!"
+#            echo "Geckodriver logs:"
+#            tail -n 20 geckodriver.log >&2 || true
+#            echo "================"
+#            echo "ncp.log: "
+#            "$LXC" exec ncp -- "tail -n20 /var/log/ncp.log" || true
+#            exit 1
+#          }
+#          python nextcloud_tests.py --no-gui --skip-release-check "nextcloudpi.local" 443 4443 || {
+#            echo "Nextcloud test failed!"
+#            echo "Geckodriver logs:"
+#            tail -n 20 geckodriver.log >&2 || true
+#            echo "================"
+#            echo "ncp.log: "
+#            "$LXC" exec ncp -- "tail -n20 /var/log/ncp.log" || true
+#            echo "================"
+#            echo "nextcloud log: "
+#            datadir="$("$LXC" exec ncp -- ncc config:system:get datadirectory)"
+#            "$LXC" exec ncp -- cat "$datadir/nextcloud.log" || true
+#            exit 1
+#          }
+#          python system_tests.py --non-interactive --skip-update-test || {
+#            echo "System test failed!"
+#            exit 1
+#          }
+#      - name: Update ncp
+#        run: |
+#          set -ex
+#          BRANCH="${VERSION/refs\/heads\//}"
+#          BRANCH="${BRANCH/refs\/tags\//}"
+#          if [[ "$BRANCH" =~ "refs/pull/"* ]]
+#          then
+#            UPDATE_ARGS=("${{ github.head_ref }}" "$VERSION")
+#          else
+#            UPDATE_ARGS=("$BRANCH")
+#          fi
+#          echo "VERSION=${VERSION}" >> "$GITHUB_ENV"
+#          echo "Running update ${{ needs.build-previous.outputs.previous_version }} -> ${VERSION}"
+#
+#          current_nc_version="$("$LXC" exec ncp -- ncc status | grep "version:" | awk '{ print $3 }')"
+#          latest_nc_version="$(cat etc/ncp.cfg | jq -r '.nextcloud_version')"
+#
+#          "$LXC" exec ncp -- bash -c "DBG=x ncp-update ${UPDATE_ARGS[*]}"
+#          "$LXC" exec ncp -- /usr/local/bin/ncc status
+#
+#          if [[ "$current_nc_version" =~ "$latest_nc_version".* ]]
+#          then
+#            echo "Nextcloud is up to date - skipping NC update test."
+#          else
+#            "$LXC" exec ncp -- bash -c "DBG=x ncp-update-nc ${latest_nc_version?}"
+#          fi
+#
+#          "$LXC" exec ncp -- rm -f /opt/ncdata/data/nextcloud.log
+#
+#          "$LXC" stop ncp
+#      - name: Relaunch container
+#        run: |
+#          set -x
+#          systemd-run --user --scope -p "Delegate=yes" "$LXC" start ncp
+#          "$LXC" exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
+#          sleep 30
+#          ip="$("$LXC" list -c n4 -f csv | grep '^ncp' | cut -d ',' -f2)"
+#          ip="${ip/% *}"
+#          echo "${ip} nextcloudpi.local" | sudo tee /etc/hosts
+#      - name: Test LXD Image
+#        working-directory: ./tests
+#        run: |
+#          "$LXC" exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
+#          python nextcloud_tests.py --no-gui --skip-release-check "nextcloudpi.local" 443 4443 || {
+#            echo "Nextcloud test failed!"
+#            echo "Geckodriver logs:"
+#            tail -n 20 geckodriver.log >&2 || true
+#            echo "================"
+#            echo "ncp.log: "
+#            "$LXC" exec ncp -- "tail -n20 /var/log/ncp.log" || true
+#            echo "================"
+#            echo "nextcloud log: "
+#            datadir="$("$LXC" exec ncp -- ncc config:system:get datadirectory)"
+#            "$LXC" exec ncp -- cat "$datadir/nextcloud.log" || true
+#            exit 1
+#          }
+#          python system_tests.py --non-interactive || {
+#            echo "System test failed!"
+#            exit 1
+#          }
 
   test-dist-upgrade:
     needs:
