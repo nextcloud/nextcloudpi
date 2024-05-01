@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -ex
+set -e
 
 echo "Update root login prevention method..."
 if getent passwd "root" | grep -e '/usr/sbin/nologin'
