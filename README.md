@@ -127,11 +127,11 @@ lxc start ncp
 
 ## Run in Proxmox
 
-Use the [install script][ncp-proxmox-install-script-v5] from [tteck][tteck-profile] to install the LXC container on your Proxmox instance
+Use the install script from [tteck][tteck-profile] to install the LXC container on your Proxmox instance
 
 He has multiple helper scripts available for Proxmox on his [website][website-helper-scripts], do go have a look if you're using Proxmox. :+1:
 
-Installation: `bash -c "$(wget -qLO - https://github.com/tteck/Proxmox/raw/main/ct/nextcloudpi-v5.sh)"`
+Installation: `bash -c "$(wget -qLO - https://github.com/tteck/Proxmox/raw/main/ct/nextcloudpi.sh)"`
 
 Default Settings: `2GB RAM - 8GB Storage - 2vCPU`
 
