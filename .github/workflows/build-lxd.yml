@@ -242,10 +242,6 @@ jobs:
             "$LXC" exec ncp -- "tail -n20 /var/log/ncp.log" || true
             exit 1
           }
-          python system_tests.py --non-interactive || {
-            echo "System test failed!"
-            exit 1
-          }
           python nextcloud_tests.py --no-gui --skip-release-check "nextcloudpi.local" 443 4443 || {
             echo "Nextcloud test failed!"
             echo "Geckodriver logs:"
@@ -257,6 +253,10 @@ jobs:
             echo "nextcloud log: "
             datadir="$("$LXC" exec ncp -- ncc config:system:get datadirectory)"
             "$LXC" exec ncp -- cat "$datadir/nextcloud.log" || true
+            exit 1
+          }
+          python system_tests.py --non-interactive || {
+            echo "System test failed!"
             exit 1
           }
 
@@ -303,10 +303,6 @@ jobs:
         working-directory: ./tests
         run: |
           "$LXC" exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
-          python system_tests.py --non-interactive || {
-            echo "System test failed!"
-            exit 1
-          }
           python nextcloud_tests.py --no-gui --skip-release-check "nextcloudpi.local" 443 4443 || {
             echo "Nextcloud test failed!"
             echo "Geckodriver logs:"
@@ -318,6 +314,10 @@ jobs:
             echo "nextcloud log: "
             datadir="$("$LXC" exec ncp -- ncc config:system:get datadirectory)"
             "$LXC" exec ncp -- cat "$datadir/nextcloud.log" || true
+            exit 1
+          }
+          python system_tests.py --non-interactive || {
+            echo "System test failed!"
             exit 1
           }
 
@@ -385,10 +385,6 @@ jobs:
             "$LXC" exec ncp -- "tail -n20 /var/log/ncp.log" || true
             exit 1
           }
-          python system_tests.py --non-interactive --skip-update-test || {
-            echo "System test failed!"
-            exit 1
-          }
           python nextcloud_tests.py --no-gui --skip-release-check "nextcloudpi.local" 443 4443 || {
             echo "Nextcloud test failed!"
             echo "Geckodriver logs:"
@@ -400,6 +396,10 @@ jobs:
             echo "nextcloud log: "
             datadir="$("$LXC" exec ncp -- ncc config:system:get datadirectory)"
             "$LXC" exec ncp -- cat "$datadir/nextcloud.log" || true
+            exit 1
+          }
+          python system_tests.py --non-interactive --skip-update-test || {
+            echo "System test failed!"
             exit 1
           }
 
@@ -445,11 +445,6 @@ jobs:
       - name: Test LXD Image
         working-directory: ./tests
         run: |
-          "$LXC" exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
-          python system_tests.py --non-interactive --skip-update-test || {
-            echo "System test failed!"
-            exit 1
-          }
           python nextcloud_tests.py --no-gui --skip-release-check "nextcloudpi.local" 443 4443 || {
             echo "Nextcloud test failed!"
             echo "Geckodriver logs:"
@@ -461,6 +456,11 @@ jobs:
             echo "nextcloud log: "
             datadir="$("$LXC" exec ncp -- ncc config:system:get datadirectory)"
             "$LXC" exec ncp -- cat "$datadir/nextcloud.log" || true
+            exit 1
+          }
+          "$LXC" exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
+          python system_tests.py --non-interactive --skip-update-test || {
+            echo "System test failed!"
             exit 1
           }
       - name: NCP distupgrade
@@ -489,10 +489,6 @@ jobs:
         working-directory: ./tests
         run: |
           "$LXC" exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
-          python system_tests.py --non-interactive || {
-            echo "System test failed!"
-            exit 1
-          }
           python nextcloud_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
             echo "Nextcloud test failed!"
             echo "Geckodriver logs:"
@@ -504,6 +500,10 @@ jobs:
             echo "nextcloud log: "
             datadir="$("$LXC" exec ncp -- ncc config:system:get datadirectory)"
             "$LXC" exec ncp -- cat "$datadir/nextcloud.log" || true
+            exit 1
+          }
+          python system_tests.py --non-interactive || {
+            echo "System test failed!"
             exit 1
           }
           "$LXC" stop ncp
@@ -586,10 +586,6 @@ jobs:
             "$LXC" exec ncp -- cat "$datadir/nextcloud.log" || true
             exit 1
           }
-          python system_tests.py --non-interactive || {
-            echo "System test failed!"
-            exit 1
-          }
           python nextcloud_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
             echo "Nextcloud test failed!"
             echo "Geckodriver logs:"
@@ -601,6 +597,10 @@ jobs:
             echo "nextcloud log: "
             datadir="$("$LXC" exec ncp -- ncc config:system:get datadirectory)"
             "$LXC" exec ncp -- cat "$datadir/nextcloud.log" || true
+            exit 1
+          }
+          python system_tests.py --non-interactive || {
+            echo "System test failed!"
             exit 1
           }
           lxc stop ncp
