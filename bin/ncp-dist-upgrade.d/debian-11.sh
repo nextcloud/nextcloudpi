@@ -2,16 +2,6 @@
 
 set -eu -o pipefail
 
-if [[ "${ALLOW_RASPBIAN_UPGRADE:-}" != "yes" ]] && grep -R 'raspberrypi.com' /etc/apt/sources.list* > /dev/null
-then
-  echo "WARN: Raspbian system detected!
-There have been errors reported when upgrading from Raspbian which are still being worked on.
-Please try this command again in some time.
-
-UPDATE: Those issues *MAY* have been fixed now. If you feel confident to try (and have reliable backups), run 'sudo bash -c \"ALLOW_RASPBIAN_UPGRADE=yes ncp-dist-upgrade\"'"
-exit 0
-fi
-
 new_cfg=/usr/local/etc/ncp-recommended.cfg
 [[ -f "${new_cfg}" ]] || { echo "Already on the lastest recommended distribution. Abort." >&2; exit 1; }
 
