@@ -2,6 +2,14 @@
 
 set -eu -o pipefail
 
+if grep -R 'raspberrypi.com' /etc/apt/sources.list* > /dev/null
+then
+  echo "WARN: Raspbian system detected!
+There have been errors reported when upgrading from Raspbian which are still being worked on.
+Please try this command again in some time."
+exit 0
+fi
+
 new_cfg=/usr/local/etc/ncp-recommended.cfg
 [[ -f "${new_cfg}" ]] || { echo "Already on the lastest recommended distribution. Abort." >&2; exit 1; }
 
