@@ -11,6 +11,13 @@
 install() {
   apt-get update
   apt-get install -y --no-install-recommends openssh-server
+  if grep '^PermitRootLogin' /etc/ssh/sshd_config
+  then
+    sed -i -e 's/^PermitRootLogin.*$/PermitRootLogin prohibit-password/' /etc/ssh/sshd_config
+  else
+    echo 'PermitRootLogin prohibit-password' >> /etc/ssh/sshd_config
+  fi
+  systemctl reload ssh
  }
 
 is_active()

@@ -7,7 +7,13 @@ if getent passwd "root" | grep -e '/usr/sbin/nologin'
 then
   chsh -s /bin/bash root
   passwd -l root
-  sed -i -e 's/^PermitRootLogin.*$/PermitRootLogin No/' /etc/ssh/sshd_config
+  if grep '^PermitRootLogin' /etc/ssh/sshd_config
+  then
+    sed -i -e 's/^PermitRootLogin.*$/PermitRootLogin prohibit-password/' /etc/ssh/sshd_config
+  else
+    echo 'PermitRootLogin prohibit-password' >> /etc/ssh/sshd_config
+  fi
+  systemctl reload ssh
 fi
 echo "done."
 
