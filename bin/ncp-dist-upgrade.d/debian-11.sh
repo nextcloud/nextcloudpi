@@ -2,11 +2,13 @@
 
 set -eu -o pipefail
 
-if grep -R 'raspberrypi.com' /etc/apt/sources.list* > /dev/null
+if [[ "${ALLOW_RASPBIAN_UPGRADE:-}" != "yes" ]] && grep -R 'raspberrypi.com' /etc/apt/sources.list* > /dev/null
 then
   echo "WARN: Raspbian system detected!
 There have been errors reported when upgrading from Raspbian which are still being worked on.
-Please try this command again in some time."
+Please try this command again in some time.
+
+UPDATE: Those issues *MAY* have been fixed now. If you feel confident to try (and have reliable backups), run 'sudo bash -c \"ALLOW_RASPBIAN_UPGRADE=yes ncp-dist-upgrade\"'"
 exit 0
 fi
 
@@ -46,15 +48,16 @@ save_maintenance_mode
 # Perform dist-upgrade
 
 apt-get update && apt-get upgrade -y
-for aptlist in /etc/apt/sources.list /etc/apt/sources.list.d/php.list /etc/apt/sources.list.d/armbian.list
+for aptlist in /etc/apt/sources.list /etc/apt/sources.list.d/{php.list,armbian.list,raspi.list}
 do
   [ -f "$aptlist" ] && sed -i -e "s/bullseye/bookworm/g" "$aptlist"
 done
 for aptlist in /etc/apt/sources.list.d/*.list
 do
-	[[ "$aptlist" =~ "/etc/apt/sources.list.d/"(php|armbian)".list" ]] || continue
+	[[ "$aptlist" =~ "/etc/apt/sources.list.d/"(php|armbian|raspi)".list" ]] || {
     echo "Disabling repositories from \"$aptlist\""
     sed -i -e "s/deb/#deb/g" "$aptlist"
+  }
 done
 apt-get update && apt-get upgrade -y --without-new-pkgs
 if is_lxc
