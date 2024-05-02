@@ -5,7 +5,7 @@ set -e
 echo "Update root login prevention method..."
 if getent passwd "root" | grep -e '/usr/sbin/nologin'
 then
-  chsh -s /bin/bash root
+  sed -i '/^root/s|/usr/sbin/nologin|/bin/bash|' /etc/passwd
   passwd -l root
   if grep '^PermitRootLogin' /etc/ssh/sshd_config
   then
