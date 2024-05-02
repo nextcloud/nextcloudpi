@@ -22,7 +22,7 @@ fi
 
 if { [ "$TERM" = "screen" ] && [ -n "$TMUX" ]; } || [[ "${DEBIAN_FRONTEND:-}" == "noninteractive" ]] || ! [[ -t 0 ]]
 then
-  "${UPGRADE_CMD[@]}"
+  "${UPGRADE_CMD[@]}" |& tee /var/log/ncp-dist-upgrade.log
 else
   tmux list-sessions | grep ncp-distupgrade && {
     echo "Existing distupgrade process detected. Connecting..."
@@ -30,6 +30,6 @@ else
     tmux attach -t ncp-distupgrade
     exit 0
   }
-  tmux new-session -s ncp-distupgrade bash -c "${UPGRADE_CMD[*]}; bash"
+  tmux new-session -s ncp-distupgrade bash -c "${UPGRADE_CMD[*]} |& tee /var/log/ncp-dist-upgrade.log; bash"
 fi
 
