@@ -13,7 +13,7 @@ install()
 {
   set -x
   apt-get update
-  apt-get install --no-install-recommends -y dnsmasq
+  apt-get install --no-install-recommends -y dnsmasq resolvconf
   rc=0
   service dnsmasq status > /dev/null 2>&1 || rc=$?
   [[ $rc -eq 3 ]] && ! [[ "$INIT_SYSTEM" =~ ^("chroot"|"unknown")$ ]] && command -v systemd-resolve > /dev/null || {
