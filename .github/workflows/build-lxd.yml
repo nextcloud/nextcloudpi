@@ -44,7 +44,7 @@ jobs:
             LXC_CMD="incus"
             RUNNER_LABEL="ubuntu-20.04-arm64"
           else
-            LXC_CMD="lxc"
+            LXC_CMD="incus"
             RUNNER_LABEL="ubuntu-20.04"
           fi
 
@@ -69,8 +69,7 @@ jobs:
           ref: "${{ env.VERSION }}"
       - name: Cleanup lxd
         run: test -z "$("$LXC" profile device show default | grep eth0)" || "$LXC" profile device remove default eth0
-      - uses: whywaita/setup-lxd@v1
-        if: ${{ needs.determine-runner.outputs.lxc_cmd == 'lxc' }}
+      - uses: bdx0/action-incus@v1
         continue-on-error: true
         with:
           lxd_version: latest/stable
@@ -78,6 +77,8 @@ jobs:
         run: |
           sudo iptables -I DOCKER-USER -i lxdbr0 -j ACCEPT
           sudo iptables -I DOCKER-USER -o lxdbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+          sudo iptables -I DOCKER-USER -i incusbr0 -j ACCEPT
+          sudo iptables -I DOCKER-USER -o incusbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
       - name: Build LXD image
         env:
           USE_INCUS: "${{ needs.determine-runner.outputs.lxc_cmd == 'incus' && 'yes' || 'no' }}"
