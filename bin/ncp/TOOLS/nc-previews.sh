@@ -24,7 +24,7 @@ configure()
     }
 
     rm -r "$datadir"/appdata_*/preview/* &>/dev/null
-    mysql nextcloud <<<"delete from oc_filecache where path like \"appdata_%/preview/%\""
+    mysql nextcloud <<<"delete from ${DB_PREFIX?}filecache where path like \"appdata_%/preview/%\""
     ncc files:scan-app-data -n
   }
 

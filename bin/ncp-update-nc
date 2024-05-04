@@ -21,8 +21,6 @@ set -eE${DBG}
 
 VER="$1"
 BIN="${0##*/}"
-DB_PREFIX=`php -r 'include("/var/www/nextcloud/config/config.php"); print ( $CONFIG['"'dbtableprefix'"'] );'`
-echo DB_PREFIX = $DB_PREFIX
 
 source /usr/local/etc/library.sh
 
