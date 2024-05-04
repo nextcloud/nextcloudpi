@@ -70,6 +70,7 @@ cfg="$(jq "." "$NCPCFG")"
 cfg="$(jq ".release = \"bookworm\"" <<<"$cfg")"
 echo "$cfg" > "$NCPCFG"
 rm -f /etc/update-motd.d/30ncp-dist-upgrade
+rm -f /usr/local/etc/ncp-recommended.cfg
 
 echo "Update to Debian 12 (bookworm) successful."
 

@@ -7,4 +7,10 @@ do
   [ -f "$aptlist" ] && sed -i -e "s/#deb /deb /g" "$aptlist"
 done
 echo "done"
-sudo apt-get update && sudo apt-get upgrade -y
+sudo apt-get update && sudo bash -c 'DEBIAN_FRONTEND=noninteractive apt-get upgrade -y'
+. /etc/os-release
+
+if [[ "$VERSION_ID" -eq 12 ]]
+then
+  rm -f /usr/local/etc/ncp-recommended.cfg
+fi
