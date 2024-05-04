@@ -33,11 +33,13 @@ prepare_dirs                   # tmp cache output
 
 debian_version="$(. etc/library.sh > /dev/null 2>&1; echo "${RELEASE%%-security}")"
 
-LXC_CMD=lxc
-[[ "$USE_INCUS" == "yes" ]] && LXC_CMD=incus
+LXC_CMD=(lxc)
+[[ "$USE_INCUS" == "yes" ]] && LXC_CMD=(incus)
 
-$LXC_CMD delete -f ncp 2>/dev/null || true
-LXC_CREATE=($LXC_CMD init -p default)
+"${LXC_CMD[@]}" info || LXC_CMD=(sudo "${LXC_CMD[0]}")
+
+"${LXC_CMD[@]}" delete -f ncp 2>/dev/null || true
+LXC_CREATE=("${LXC_CMD[@]}" init -p default)
 [[ -n "$LXD_EXTRA_PROFILE" ]] && LXC_CREATE+=(-p "$LXD_EXTRA_PROFILE")
 if [[ -n "$LXD_ARCH" ]] && [[ "$LXD_ARCH" != "x86" ]]
 then
@@ -64,19 +66,23 @@ LXC_CREATE+=(ncp)
 set -x
 EXEC_ARGS=()
 [[ -z "$BRANCH" ]] || EXEC_ARGS+=(--env "BRANCH=${BRANCH}")
-systemd-run --user --scope -p "Delegate=yes" $LXC_CMD start ncp -q || \
-sudo systemd-run --scope -p "Delegate=yes" $LXC_CMD start ncp -q
-$LXC_CMD config device add ncp buildcode disk source="$(pwd)" path=/build
-$LXC_CMD exec ncp "${EXEC_ARGS[@]}" -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
-$LXC_CMD exec ncp "${EXEC_ARGS[@]}" -- bash -c 'CODE_DIR=/build DBG=x bash /build/install.sh'
-$LXC_CMD exec ncp "${EXEC_ARGS[@]}" -- bash -c 'source /build/etc/library.sh; run_app_unsafe /build/post-inst.sh'
-$LXC_CMD exec ncp "${EXEC_ARGS[@]}" -- bash -c "echo '$(basename "$IMG")' > /usr/local/etc/ncp-baseimage"
-$LXC_CMD stop ncp
-$LXC_CMD config device remove ncp buildcode
-$LXC_CMD publish -q ncp -f --alias ncp/"${version}"
+systemd-run --user --scope -p "Delegate=yes" "${LXC_CMD[@]}" start ncp -q || \
+sudo systemd-run --scope -p "Delegate=yes" "${LXC_CMD[@]}" start ncp -q || {
+  rc=$?
+  "${LXC_CMD[@]}" info --show-log ncp
+  exit $rc
+}
+"${LXC_CMD[@]}" config device add ncp buildcode disk source="$(pwd)" path=/build
+"${LXC_CMD[@]}" exec ncp "${EXEC_ARGS[@]}" -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
+"${LXC_CMD[@]}" exec ncp "${EXEC_ARGS[@]}" -- bash -c 'CODE_DIR=/build DBG=x bash /build/install.sh'
+"${LXC_CMD[@]}" exec ncp "${EXEC_ARGS[@]}" -- bash -c 'source /build/etc/library.sh; run_app_unsafe /build/post-inst.sh'
+"${LXC_CMD[@]}" exec ncp "${EXEC_ARGS[@]}" -- bash -c "echo '$(basename "$IMG")' > /usr/local/etc/ncp-baseimage"
+"${LXC_CMD[@]}" stop ncp
+"${LXC_CMD[@]}" config device remove ncp buildcode
+"${LXC_CMD[@]}" publish -q ncp -f --alias ncp/"${version}"
 
 ## pack
-[[ " $* " =~ .*" --pack ".* ]] && $LXC_CMD image export -q ncp/"${version}" "$TAR"
+[[ " $* " =~ .*" --pack ".* ]] && "${LXC_CMD[@]}" image export -q ncp/"${version}" "$TAR"
 
 exit 0
 
