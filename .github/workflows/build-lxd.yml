@@ -81,7 +81,8 @@ jobs:
         env:
           USE_INCUS: "${{ needs.determine-runner.outputs.lxc_cmd == 'incus' && 'yes' || 'no' }}"
         run: |
-          LXD_EXTRA_PROFILE="$LXD_EXTRA_PROFILE" BRANCH="${VERSION##refs/heads/}" CI="$CI" ./build/build-LXD.sh
+          export CI
+          LXD_EXTRA_PROFILE="$LXD_EXTRA_PROFILE" BRANCH="${VERSION##refs/heads/}" ./build/build-LXD.sh
       - name: Pack LXD image
         id: pack-lxd
         run: |
@@ -156,7 +157,8 @@ jobs:
 #        env:
 #          USE_INCUS: "${{ needs.determine-runner.outputs.lxc_cmd == 'incus' && 'yes' || 'no' }}"
 #        run: |
-#          LXD_EXTRA_PROFILE="$LXD_EXTRA_PROFILE" BRANCH="${VERSION##refs/heads/}" CI="$CI" ./build/build-LXD.sh
+#          export CI
+#          LXD_EXTRA_PROFILE="$LXD_EXTRA_PROFILE" BRANCH="${VERSION##refs/heads/}" ./build/build-LXD.sh
 #      - name: Pack LXD image
 #        id: pack-lxd
 #        run: |
