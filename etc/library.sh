@@ -14,6 +14,7 @@ export NCDIR=/var/www/nextcloud
 export ncc=/usr/local/bin/ncc
 export NCPCFG=${NCPCFG:-etc/ncp.cfg}
 export ARCH="$(dpkg --print-architecture)"
+export DB_PREFIX="$(php -r 'include("/var/www/nextcloud/config/config.php"); echo $CONFIG['"'dbtableprefix'"'];' || echo 'oc_')"
 [[ "${ARCH}" =~ ^(armhf|arm)$ ]] && ARCH="armv7"
 [[ "${ARCH}" == "arm64" ]] && ARCH=aarch64
 [[ "${ARCH}" == "amd64" ]] && ARCH=x86_64
@@ -568,7 +569,7 @@ function notify_admin()
 {
   local header="$1"
   local msg="$2"
-  local admins=$(mysql -u root nextcloud -Nse "select uid from oc_group_user where gid='admin';")
+  local admins=$(mysql -u root nextcloud -Nse "select uid from ${DB_PREFIX}group_user where gid='admin';")
   [[ "${admins}" == "" ]] && { echo "admin user not found" >&2; return 0; }
   while read -r admin
   do
