@@ -35,6 +35,7 @@ jobs:
     outputs:
       runner_label: ${{ steps.script.outputs.runner_label }}
       lxc_cmd: ${{ steps.script.outputs.lxc_cmd }}
+      lxd_extra_profile: ${{ steps.script.outputs.lxd_extra_profile }}
     steps:
       - name: script
         id: script
@@ -43,6 +44,7 @@ jobs:
           then
             LXC_CMD="incus"
             RUNNER_LABEL="ubuntu-20.04-arm64"
+            echo "lxd_extra_profile=network" | tee -a "$GITHUB_OUTPUT"
           else
             LXC_CMD="incus"
             RUNNER_LABEL="ubuntu-20.04"
@@ -62,6 +64,7 @@ jobs:
       ARTIFACT_NAME: "${{ github.run_id }}-lxd-${{ inputs.arch || 'x86' }}-image"
       LXD_ARCH: "${{ inputs.arch || 'x86' }}"
       LXC: "${{ needs.determine-runner.outputs.lxc_cmd }}"
+      LXD_EXTRA_PROFILE: "${{ needs.determine-runner.outputs.lxd_extra_profile }}"
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -78,7 +81,7 @@ jobs:
         env:
           USE_INCUS: "${{ needs.determine-runner.outputs.lxc_cmd == 'incus' && 'yes' || 'no' }}"
         run: |
-          BRANCH="${VERSION##refs/heads/}" ./build/build-LXD.sh
+          LXD_EXTRA_PROFILE="$LXD_EXTRA_PROFILE" BRANCH="${VERSION##refs/heads/}" ./build/build-LXD.sh
       - name: Pack LXD image
         id: pack-lxd
         run: |
@@ -107,6 +110,7 @@ jobs:
 #      ARTIFACT_NAME: "${{ github.run_id }}-lxd-${{ inputs.arch || 'x86' }}-image-previous"
 #      LXD_ARCH: "${{ inputs.arch || 'x86' }}"
 #      LXC: "${{ needs.determine-runner.outputs.lxc_cmd }}"
+#      LXD_EXTRA_PROFILE: "${{ needs.determine-runner.outputs.lxd_extra_profile }}"
 #    steps:
 #      - name: Checkout code
 #        uses: actions/checkout@v3
@@ -325,10 +329,11 @@ jobs:
   test-dist-upgrade:
     needs:
       - determine-runner
-    runs-on: [ubuntu-20.04]
+    runs-on: ${{ needs.determine-runner.outputs.runner_label }}
     env:
       VERSION: "${{ inputs.git_ref || github.ref }}"
       LXC: "${{ needs.determine-runner.outputs.lxc_cmd }}"
+      LXD_EXTRA_PROFILE: "${{ needs.determine-runner.outputs.lxd_extra_profile }}"
       PREVIOUS_IMAGE_URL: "https://github.com/nextcloud/nextcloudpi/releases/download/v1.53.2/NextcloudPi_LXD_x86_v1.53.2.tar.gz"
       USE_INCUS: "${{ needs.determine-runner.outputs.lxc_cmd == 'incus' && 'yes' || 'no' }}"
     steps:
@@ -365,7 +370,9 @@ jobs:
           set -x
           sudo "$LXC" delete -q -f ncp || true
           sudo "$LXC" image import -q "./ncp.tar.gz" --alias "ncp/update"
-          systemd-run --user --scope -p "Delegate=yes" sudo "$LXC" launch -q "ncp/update" ncp
+          LXC_ARGS=()
+          [[ -z "$LXD_EXTRA_PROFILE" ]] || LXC_ARGS+=(-p "$LXD_EXTRA_PROFILE")
+          systemd-run --user --scope -p "Delegate=yes" sudo "$LXC" launch "${LXC_ARGS[@]}" -q "ncp/update" ncp
           sudo "$LXC" exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
           sudo "$LXC" exec ncp -- rm -f /opt/ncdata/data/nextcloud.log
           sleep 30
@@ -436,7 +443,9 @@ jobs:
       - name: Relaunch container
         run: |
           set -x
-          systemd-run --user --scope -p "Delegate=yes" sudo "$LXC" start ncp
+          LXC_ARGS=()
+          [[ -z "$LXD_EXTRA_PROFILE" ]] || LXC_ARGS+=(-p "$LXD_EXTRA_PROFILE")
+          systemd-run --user --scope -p "Delegate=yes" sudo "$LXC" "${LXD_ARGS[@]}" start ncp
           sudo "$LXC" exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
           sleep 30
           ip="$(sudo "$LXC" list -c n4 -f csv | grep '^ncp' | cut -d ',' -f2)"
@@ -479,7 +488,9 @@ jobs:
       - name: Relaunch container
         run: |
           set -x
-          systemd-run --user --scope -p "Delegate=yes" sudo "$LXC" start ncp
+          LXC_ARGS=()
+          [[ -z "$LXD_EXTRA_PROFILE" ]] || LXC_ARGS+=(-p "$LXD_EXTRA_PROFILE")
+          systemd-run --user --scope -p "Delegate=yes" sudo "$LXC" "${LXC_ARGS[@]}" start ncp
           sudo "$LXC" exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
           sleep 30
           ip="$(sudo "$LXC" list -c n4 -f csv | grep '^ncp' | cut -d ',' -f2)"
@@ -563,8 +574,10 @@ jobs:
           . ./build/buildlib.sh
           sudo "$LXC" delete -q -f ncp || true
           sudo "$LXC" image import -q "./${ARTIFACT_FILE?}" --alias "ncp/test" || true
-          systemd-run --user --scope -p "Delegate=yes" "$LXC" launch -q "ncp/test" ncp || \
-          sudo systemd-run --scope -p "Delegate=yes" "$LXC" launch -q "ncp/test" ncp 
+          LXC_ARGS=()
+          [[ -z "$LXD_EXTRA_PROFILE" ]] || LXC_ARGS+=(-p "$LXD_EXTRA_PROFILE")
+          systemd-run --user --scope -p "Delegate=yes" "$LXC" launch -q "${LXC_ARGS[@]}" "ncp/test" ncp || \
+          sudo systemd-run --scope -p "Delegate=yes" "$LXC" launch -q "${LXC_ARGS[@]}" "ncp/test" ncp 
           sudo "$LXC" exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
           sleep 30
           ip="$(sudo "$LXC" list -c n4 -f csv | grep '^ncp' | cut -d ',' -f2)"
