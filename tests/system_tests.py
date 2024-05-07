@@ -301,14 +301,19 @@ if __name__ == "__main__":
         if lxc_test.returncode != 0:
             raise Exception(f"failed to execute {lxc_command} info")
     except:
-        lxc_test = run(['sudo'] + lxc_command + ['info'], stdout=PIPE, check='True')
-        lxc_command = ['sudo'] + lxc_command
+        try:
+            lxc_test = run(['sudo'] + lxc_command + ['info'], stdout=PIPE, check='True')
+            lxc_command = ['sudo'] + lxc_command
+        except:
+            lxc_command = None
+            lxc_running = False
 
     # detect if we are running this in a LXC instance
-    try:
-        lxc_running = run(lxc_command + ['info', 'ncp'], stdout=PIPE, check = True)
-    except:
-        lxc_running = False
+    if lxc_command is not None:
+        try:
+            lxc_running = run(lxc_command + ['info', 'ncp'], stdout=PIPE, check = True)
+        except:
+            lxc_running = False
 
     try:
         systemd_container_running = run(['machinectl', 'show', 'ncp'], stdout=PIPE, check = True)
