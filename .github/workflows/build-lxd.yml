@@ -35,6 +35,7 @@ jobs:
     outputs:
       runner_label: ${{ steps.script.outputs.runner_label }}
       lxc_cmd: ${{ steps.script.outputs.lxc_cmd }}
+      lxd_extra_profile: ${{ steps.script.outputs.lxd_extra_profile }}
     steps:
       - name: script
         id: script
@@ -43,6 +44,7 @@ jobs:
           then
             LXC_CMD="incus"
             RUNNER_LABEL="ubuntu-20.04-arm64"
+            echo "lxd_extra_profile=network" | tee -a "$GITHUB_OUTPUT"
           else
             LXC_CMD="incus"
             RUNNER_LABEL="ubuntu-20.04"
@@ -62,6 +64,7 @@ jobs:
       ARTIFACT_NAME: "${{ github.run_id }}-lxd-${{ inputs.arch || 'x86' }}-image"
       LXD_ARCH: "${{ inputs.arch || 'x86' }}"
       LXC: "${{ needs.determine-runner.outputs.lxc_cmd }}"
+      LXD_EXTRA_PROFILE: "${{ needs.determine-runner.outputs.lxd_extra_profile }}"
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -78,7 +81,8 @@ jobs:
         env:
           USE_INCUS: "${{ needs.determine-runner.outputs.lxc_cmd == 'incus' && 'yes' || 'no' }}"
         run: |
-          BRANCH="${VERSION##refs/heads/}" ./build/build-LXD.sh
+          export CI
+          LXD_EXTRA_PROFILE="$LXD_EXTRA_PROFILE" BRANCH="${VERSION##refs/heads/}" ./build/build-LXD.sh
       - name: Pack LXD image
         id: pack-lxd
         run: |
@@ -107,6 +111,7 @@ jobs:
 #      ARTIFACT_NAME: "${{ github.run_id }}-lxd-${{ inputs.arch || 'x86' }}-image-previous"
 #      LXD_ARCH: "${{ inputs.arch || 'x86' }}"
 #      LXC: "${{ needs.determine-runner.outputs.lxc_cmd }}"
+#      LXD_EXTRA_PROFILE: "${{ needs.determine-runner.outputs.lxd_extra_profile }}"
 #    steps:
 #      - name: Checkout code
 #        uses: actions/checkout@v3
@@ -152,7 +157,8 @@ jobs:
 #        env:
 #          USE_INCUS: "${{ needs.determine-runner.outputs.lxc_cmd == 'incus' && 'yes' || 'no' }}"
 #        run: |
-#          BRANCH="${VERSION##refs/heads/}" ./build/build-LXD.sh
+#          export CI
+#          LXD_EXTRA_PROFILE="$LXD_EXTRA_PROFILE" BRANCH="${VERSION##refs/heads/}" ./build/build-LXD.sh
 #      - name: Pack LXD image
 #        id: pack-lxd
 #        run: |
@@ -201,9 +207,17 @@ jobs:
 #        run: |
 #          sudo apt-get install -y --no-install-recommends firefox
 #      - name: Setup GeckoDriver
-#        uses: ChlodAlejandro/setup-geckodriver@latest
-#        with:
-#          token: ${{ secrets.GITHUB_TOKEN }}
+#        env:
+#          GH_TOKEN: ${{ github.token }}
+#        run: |
+#          arch=linux64
+#          if [[ "$RUNNER_ARCH" == "ARM64" ]]
+#          then
+#            arch="linux-aarch64"
+#          fi
+#          gh release download -R mozilla/geckodriver -p 'geckodriver-*-'"$arch.tar.gz"
+#          tar xf "geckodriver-"*"-$arch.tar.gz"
+#          sudo mv geckodriver /usr/local/bin/
 #      - name: Setup Selenium
 #        run: pip install selenium
 #      - name: download LXD image from artifact store
@@ -229,7 +243,8 @@ jobs:
 #          sleep 30
 #          ip="$(sudo "$LXC" list -c n4 -f csv | grep '^ncp' | cut -d ',' -f2)"
 #          ip="${ip/% *}"
-#          echo "${ip} nextcloudpi.local" | sudo tee /etc/hosts
+#          sudo sed -i 's/^.*nextcloudpi.local.*$//g' /etc/hosts
+#          echo "${ip} nextcloudpi.local" | sudo tee -a /etc/hosts
 #      - name: Activate and Test LXD Image
 #        working-directory: ./tests
 #        run: |
@@ -293,13 +308,14 @@ jobs:
 #      - name: Relaunch container
 #        run: |
 #          set -x
-#          systemd-run --user --scope -p "Delegate=yes" "$LXC" start -q "ncp/test" ncp || \
-#          sudo systemd-run --scope -p "Delegate=yes" "$LXC" start -q "ncp/test" ncp
+#          systemd-run --user --scope -p "Delegate=yes" "$LXC" start -q ncp || \
+#          sudo systemd-run --scope -p "Delegate=yes" "$LXC" start -q ncp
 #          sudo "$LXC" exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
 #          sleep 30
 #          ip="$(sudo "$LXC" list -c n4 -f csv | grep '^ncp' | cut -d ',' -f2)"
 #          ip="${ip/% *}"
-#          echo "${ip} nextcloudpi.local" | sudo tee /etc/hosts
+#          sudo sed -i 's/^.*nextcloudpi.local.*$//g' /etc/hosts
+#          echo "${ip} nextcloudpi.local" | sudo tee -a /etc/hosts
 #      - name: Test LXD Image
 #        working-directory: ./tests
 #        run: |
@@ -325,11 +341,13 @@ jobs:
   test-dist-upgrade:
     needs:
       - determine-runner
-    runs-on: [ubuntu-20.04]
+    runs-on: ${{ needs.determine-runner.outputs.runner_label }}
     env:
       VERSION: "${{ inputs.git_ref || github.ref }}"
       LXC: "${{ needs.determine-runner.outputs.lxc_cmd }}"
-      PREVIOUS_IMAGE_URL: "https://github.com/nextcloud/nextcloudpi/releases/download/v1.53.2/NextcloudPi_LXD_x86_v1.53.2.tar.gz"
+      LXD_EXTRA_PROFILE: "${{ needs.determine-runner.outputs.lxd_extra_profile }}"
+      PREVIOUS_IMAGE_URL_ARM64: "https://github.com/nextcloud/nextcloudpi/releases/download/v1.53.2/NextcloudPi_LXD_arm64_v1.53.2.tar.gz"
+      PREVIOUS_IMAGE_URL_AMD64: "https://github.com/nextcloud/nextcloudpi/releases/download/v1.53.2/NextcloudPi_LXD_x86_v1.53.2.tar.gz"
       USE_INCUS: "${{ needs.determine-runner.outputs.lxc_cmd == 'incus' && 'yes' || 'no' }}"
     steps:
       - name: Setup incus
@@ -352,26 +370,43 @@ jobs:
         run: |
           sudo apt-get install -y --no-install-recommends firefox
       - name: Setup GeckoDriver
-        uses: ChlodAlejandro/setup-geckodriver@latest
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          arch=linux64
+          if [[ "$RUNNER_ARCH" == "ARM64" ]]
+          then
+            arch="linux-aarch64"
+          fi
+          gh release download -R mozilla/geckodriver -p 'geckodriver-*-'"$arch.tar.gz"
+          tar xf "geckodriver-"*"-$arch.tar.gz"
+          sudo mv geckodriver /usr/local/bin/
       - name: Setup Selenium
         run: pip install selenium
       - name: download LXD image
         run: |
-          wget -qO ./ncp.tar.gz "${PREVIOUS_IMAGE_URL?}"
+          image_url="${PREVIOUS_IMAGE_URL_AMD64?}"
+          if [[ "$RUNNER_ARCH" == "ARM64" ]]
+          then
+            image_url="${PREVIOUS_IMAGE_URL_ARM64?}"
+          fi
+          wget -qO ./ncp.tar.gz "${image_url?}"
       - name: Launch ncp container
         run: |
           set -x
           sudo "$LXC" delete -q -f ncp || true
           sudo "$LXC" image import -q "./ncp.tar.gz" --alias "ncp/update"
-          systemd-run --user --scope -p "Delegate=yes" sudo "$LXC" launch -q "ncp/update" ncp
+          LXC_ARGS=(-p default)
+          [[ -z "$LXD_EXTRA_PROFILE" ]] || LXC_ARGS+=(-p "$LXD_EXTRA_PROFILE")
+          systemd-run --user --scope -p "Delegate=yes" "$LXC" launch -q "${LXC_ARGS[@]}" "ncp/update" ncp || \
+          sudo systemd-run --scope -p "Delegate=yes" "$LXC" launch -q "${LXC_ARGS[@]}" "ncp/update" ncp
           sudo "$LXC" exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
           sudo "$LXC" exec ncp -- rm -f /opt/ncdata/data/nextcloud.log
           sleep 30
           ip="$(sudo "$LXC" list -c n4 -f csv | grep '^ncp' | cut -d ',' -f2)"
           ip="${ip/% *}"
-          echo "${ip} nextcloudpi.local" | sudo tee /etc/hosts
+          sudo sed -i 's/^.*nextcloudpi.local.*$//g' /etc/hosts
+          echo "${ip} nextcloudpi.local" | sudo tee -a /etc/hosts
       - name: Activate and Test LXD Image
         working-directory: ./tests
         run: |
@@ -436,12 +471,16 @@ jobs:
       - name: Relaunch container
         run: |
           set -x
-          systemd-run --user --scope -p "Delegate=yes" sudo "$LXC" start ncp
+          LXC_ARGS=()
+          [[ -z "$LXD_EXTRA_PROFILE" ]] || LXC_ARGS+=(-p "$LXD_EXTRA_PROFILE")
+          systemd-run --user --scope -p "Delegate=yes" "$LXC" start ncp || \
+          sudo systemd-run --scope -p "Delegate=yes" "$LXC" start ncp
           sudo "$LXC" exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
           sleep 30
           ip="$(sudo "$LXC" list -c n4 -f csv | grep '^ncp' | cut -d ',' -f2)"
           ip="${ip/% *}"
-          echo "${ip} nextcloudpi.local" | sudo tee /etc/hosts
+          sudo sed -i 's/^.*nextcloudpi.local.*$//g' /etc/hosts
+          echo "${ip} nextcloudpi.local" | sudo tee -a /etc/hosts
       - name: Test LXD Image
         working-directory: ./tests
         run: |
@@ -479,12 +518,16 @@ jobs:
       - name: Relaunch container
         run: |
           set -x
-          systemd-run --user --scope -p "Delegate=yes" sudo "$LXC" start ncp
+          LXC_ARGS=()
+          [[ -z "$LXD_EXTRA_PROFILE" ]] || LXC_ARGS+=(-p "$LXD_EXTRA_PROFILE")
+          systemd-run --user --scope -p "Delegate=yes" "$LXC" start ncp || \
+          sudo systemd-run --scope -p "Delegate=yes" "$LXC" start ncp
           sudo "$LXC" exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
           sleep 30
           ip="$(sudo "$LXC" list -c n4 -f csv | grep '^ncp' | cut -d ',' -f2)"
           ip="${ip/% *}"
-          echo "${ip} nextcloudpi.local" | sudo tee /etc/hosts
+          sudo sed -i 's/^.*nextcloudpi.local.*$//g' /etc/hosts
+          echo "${ip} nextcloudpi.local" | sudo tee -a /etc/hosts
       - name: Test LXD Image
         working-directory: ./tests
         run: |
@@ -519,6 +562,7 @@ jobs:
       ARTIFACT_FILE: ${{ needs.build-current.outputs.artifact_file }}
       LXC: "${{ needs.determine-runner.outputs.lxc_cmd }}"
       USE_INCUS: "${{ needs.determine-runner.outputs.lxc_cmd == 'incus' && 'yes' || 'no' }}"
+      LXD_EXTRA_PROFILE: "${{ needs.determine-runner.outputs.lxd_extra_profile }}"
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -540,10 +584,17 @@ jobs:
         run: |
           sudo apt-get install -y --no-install-recommends firefox
       - name: Setup GeckoDriver
-        uses: ChlodAlejandro/setup-geckodriver@latest
-        continue-on-error: true
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          arch=linux64
+          if [[ "$RUNNER_ARCH" == "ARM64" ]]
+          then
+            arch="linux-aarch64"
+          fi
+          gh release download -R mozilla/geckodriver -p 'geckodriver-*-'"$arch.tar.gz"
+          tar xf "geckodriver-"*"-$arch.tar.gz"
+          sudo mv geckodriver /usr/local/bin/
       - name: Setup Selenium
         run: pip install selenium
       - name: download LXD image from artifact store
@@ -563,13 +614,16 @@ jobs:
           . ./build/buildlib.sh
           sudo "$LXC" delete -q -f ncp || true
           sudo "$LXC" image import -q "./${ARTIFACT_FILE?}" --alias "ncp/test" || true
-          systemd-run --user --scope -p "Delegate=yes" "$LXC" launch -q "ncp/test" ncp || \
-          sudo systemd-run --scope -p "Delegate=yes" "$LXC" launch -q "ncp/test" ncp 
+          LXC_ARGS=(-p default)
+          [[ -z "$LXD_EXTRA_PROFILE" ]] || LXC_ARGS+=(-p "$LXD_EXTRA_PROFILE")
+          systemd-run --user --scope -p "Delegate=yes" "$LXC" launch -q "${LXC_ARGS[@]}" "ncp/test" ncp || \
+          sudo systemd-run --scope -p "Delegate=yes" "$LXC" launch -q "${LXC_ARGS[@]}" "ncp/test" ncp
           sudo "$LXC" exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
           sleep 30
           ip="$(sudo "$LXC" list -c n4 -f csv | grep '^ncp' | cut -d ',' -f2)"
           ip="${ip/% *}"
-          echo "${ip} nextcloudpi.local" | sudo tee /etc/hosts
+          sudo sed -i 's/^.*nextcloudpi.local.*$//g' /etc/hosts
+          echo "${ip} nextcloudpi.local" | sudo tee -a /etc/hosts
       - name: Test LXD Image
         working-directory: ./tests
         run: |
