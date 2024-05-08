@@ -1,5 +1,19 @@
 # NextcloudPi Changelog
 
+## [v1.54.2](https://github.com/nextcloud/nextcloudpi/tree/v1.54.2) (2024-05-08) Fixes for ncp-dist-upgrade (bookworm)
+
+### Fixes
+
+- Make sure zstd is installed [#1921](https://github.com/nextcloud/nextcloudpi/issues/1921)
+- Dynamically determine DB prefix [#1818](https://github.com/nextcloud/nextcloudpi/issues/1818)
+
+## [v1.54.1](https://github.com/nextcloud/nextcloudpi/tree/v1.54.1) (2024-05-08) Fixes for ncp-dist-upgrade (bookworm)
+
+### Fixes
+
+- Reenable erroneously disabled apt package sources
+- Remove login message about available dist-upgrade if already on Debian 12
+
 ## [v1.54.0](https://github.com/nextcloud/nextcloudpi/tree/v1.54.0) (2024-05-01) Support Debian 12 and Nextcloud 28.0.5
 
 ### Changes
