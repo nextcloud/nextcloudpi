@@ -276,13 +276,15 @@ jobs:
 #            exit 1
 #          }
 #      - name: Update ncp
+#        env:
+#          HEAD_REF: "${{ github.head_ref }}"
 #        run: |
 #          set -ex
 #          BRANCH="${VERSION/refs\/heads\//}"
 #          BRANCH="${BRANCH/refs\/tags\//}"
 #          if [[ "$BRANCH" =~ "refs/pull/"* ]]
 #          then
-#            UPDATE_ARGS=("${{ github.head_ref }}" "$VERSION")
+#            UPDATE_ARGS=("${HEAD_REF}" "$VERSION")
 #          else
 #            UPDATE_ARGS=("$BRANCH")
 #          fi
@@ -439,13 +441,15 @@ jobs:
           }
 
       - name: Update ncp
+        env:
+          HEAD_REF: "${{ github.head_ref }}"
         run: |
           set -ex
           BRANCH="${VERSION/refs\/heads\//}"
           BRANCH="${BRANCH/refs\/tags\//}"
           if [[ "$BRANCH" =~ "refs/pull/"* ]]
           then
-            UPDATE_ARGS=("${{ github.head_ref }}" "$VERSION") 
+            UPDATE_ARGS=("${HEAD_REF}" "$VERSION") 
           else
             UPDATE_ARGS=("$BRANCH")
           fi
