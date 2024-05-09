@@ -49,7 +49,9 @@ do
     sed -i -e "s/deb/#deb/g" "$aptlist"
   }
 done
-apt-get update && apt-get upgrade -y --without-new-pkgs
+apt-get update
+apt-get upgrade -y dpkg
+apt-get upgrade -y --without-new-pkgs
 if is_lxc
 then
   # Required to avoid breakage of /etc/resolv.conf
