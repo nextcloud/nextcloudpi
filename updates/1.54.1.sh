@@ -7,10 +7,14 @@ do
   [ -f "$aptlist" ] && sed -i -e "s/#deb /deb /g" "$aptlist"
 done
 echo "done"
-sudo apt-get update && sudo bash -c 'DEBIAN_FRONTEND=noninteractive apt-get upgrade -y'
+
+apt-get update
+DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends zstd
+
 . /etc/os-release
 
 if [[ "$VERSION_ID" -eq 12 ]]
 then
+  DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
   rm -f /usr/local/etc/ncp-recommended.cfg
 fi
