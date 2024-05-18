@@ -5,12 +5,58 @@
 # GPL licensed (see end of file) * Use at your own risk!
 #
 
-tmpl_destination() {
-  find_app_param kopia DESTINATION
+tmpl_repository_local_path() {
+  repo="$(find_app_param kopia REPOSITORY)"
+  if [[ "${repo}" =~ ^"file://" ]] || ! [[ "${repo}" =~ ^.*"://" ]]
+  then
+    echo "${repo#file://}"
+    return
+  fi
+
+  echo ''
 }
 
 tmpl_repository_type() {
-  [[ "$DESTINATION" =~ .*'@'.*':'.* ]] && echo "sftp" || echo "filesystem"
+  repo="$(find_app_param kopia REPOSITORY)"
+  get_repository_type "$repo"
+}
+
+tmpl_repository_password() {
+  get_repository_password
+}
+
+get_repository_password() {
+  pw_param="${1:-$(find_app_param kopia REPOSITORY_PASSWORD)}"
+  pw_file="$([[ -f /usr/local/etc/kopia/password ]] && cat /usr/local/etc/kopia/password || echo '')"
+  echo "${pw_param:-${pw_file}}"
+}
+
+get_repository_type() {
+  local repo="${1?}"
+  [[ -z "${repo}" ]] && {
+    [[ -f /usr/local/etc/kopia/repository.config ]] && {
+      repo_type="$(jq -er '.storage.type' /usr/local/etc/kopia/repository.config)"
+      if [[ -n "$repo_type" ]] && [[ "$repo_type" != "null" ]]
+      then
+        echo "$repo_type"
+        return
+      fi
+    }
+    echo ''
+    return
+  }
+  if [[ "${repo}" =~ ^"file://" ]] || ! [[ "${repo}" =~ ^.*"://" ]]; then
+    echo 'filesystem'
+  elif [[ "${repo}" =~ ^"sftp://" ]]; then
+    echo 'sftp'
+  elif [[ "${repo}" =~ ^"s3://" ]]; then
+    echo 's3'
+  elif [[ "${repo}" =~ ^"b2://" ]]; then
+    echo 'b2'
+  else
+    echo "unsupported repository type: '${repo}'" >&2
+    return 1
+  fi
 }
 
 is_active() {
@@ -106,25 +152,56 @@ configure() {
   hostname="${hostname##http*:\/\/}}"
   hostname="${hostname%%/*}"
 
+  repo_type="$(get_repository_type "${REPOSITORY}")"
+  repo="${REPOSITORY#*://}"
+  STORAGE_KEY="$(echo -n "${STORAGE_KEY}" | base64 -d)"
+
   kopia_flags=(--config-file=/usr/local/etc/kopia/repository.config --log-dir="/var/log/kopia" --no-persist-credentials)
   kopia "${kopia_flags[@]}" cache set --cache-directory="${DESTINATION?DESTINATION must not be empty}/.kopia_cache"
   kopia_repo_args=()
-  if [[ "$DESTINATION" =~ .*'@'.*':'.* ]]
-  then
-    repo_type="sftp"
-    sftp_user="${DESTINATION%@*}"
-    sftp_host="${DESTINATION#*@}"
-    sftp_host="${sftp_host%:*}"
-    repo_path="${DESTINATION#*:}"
-    ssh -o "BatchMode=yes" "${sftp_user}@${sftp_host}" || { echo "SSH non-interactive not properly configured"; return 1; }
-    kopia_repo_args=(--host "${sftp_host}" --user "${sftp_user}" --path "${repo_path}")
-  else
-    repo_type="filesystem"
-    repo_path="${DESTINATION}/ncp-kopia"
+  if [[ "${repo_type}" == "filesystem" ]]; then
+    repo_path="${REPOSITORY}/ncp-kopia"
     kopia_repo_args=(--path "${repo_path}")
+  elif [[ "${repo_type}" == "sftp" ]];then
+    sftp_user="${repo%@*}"
+    sftp_host="${repo#*@}"
+    sftp_host="${sftp_host%:*}"
+    repo_path="${repo#*:}"
+    if [[ -n "${STORAGE_KEY}" ]]
+    then
+      echo "Installing STORAGE_KEY as ssh private key..."
+      mkdir -p ~root/.ssh
+      touch ~root/.ssh/kopia_key
+      chmod 0600 ~root/.ssh/kopia_key
+      echo "${STORAGE_KEY}" > ~root/.ssh/kopia_key
+      eval "$(ssh-agent)"
+      ssh-add ~root/.ssh/kopia_key
+      kopia_args+=("--key-data=$(cat ~root/.ssh/kopia_key)")
+      echo "Done."
+    fi
+    ssh -o "BatchMode=yes" -o "StrictHostKeyChecking=no" "${sftp_user}@${sftp_host}" || { echo "SSH non-interactive not properly configured"; return 1; }
+    kopia_repo_args=(--host="${sftp_host}" --username="${sftp_user}" --path="${repo_path}" --known-hosts-data="$(cat ~root/.ssh/known_hosts)")
+  elif [[ "${repo_type}" == "b2" ]]; then
+    if [[ -z "$STORAGE_KEY" ]]; then
+      echo "Key is required for b2 backend, but was not provided"
+      return 1
+    fi
+    key_id="${STORAGE_KEY%:*}"
+    key_value="${STORAGE_KEY#*:}"
+    kopia_repo_args+=(--bucket="${repo}" --key-id="${key_id}" --key="${key_value}")
+  elif [[ "${repo_type}" == "s3" ]]; then
+        echo "Key is required for s3 backend, but was not provided"
+        return 1
+      fi
+      key_id="${STORAGE_KEY%:*}"
+      key_value="${STORAGE_KEY#*:}"
+      kopia_repo_args+=(--bucket="${repo}" --access-key="${key_id}" --secret-access-key="${key_value}")
+  else
+    echo "Invalid (unsupported) repository type '${repo_type}'"
+    return 1
   fi
 
-  export KOPIA_PASSWORD="${REPOSITORY_PASSWORD?}"
+  export KOPIA_PASSWORD="$(get_repository_password "${REPOSITORY_PASSWORD}")"
 
   echo "Attempting to connect to existing repository first..."
   kopia "${kopia_flags[@]}" \

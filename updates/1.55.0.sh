@@ -9,8 +9,8 @@ file="${2}"
 compressed="${3}"
 grep -q '[\\&#;`|*?~<>^()[{}$&]' <<< "$*" && exit 1
 [[ "${action}" == "listkopia" ]] && {
-  ncp-kopia snapshot list --all --json
-  exit $?
+  ncp-kopia snapshot list --all --json || echo '[]'
+  exit 0
 }
 [[ "${action}" == "delkopia" ]] && {
   echo "[ ncp-backup-launcher ]" | tee -a /var/log/ncp.log

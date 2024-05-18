@@ -503,13 +503,18 @@ $(function()
 
     // create configuration object
     var cfg = {};
-    $( 'input' , '#' + selectedID + '-config-box' ).each( function(item){
-      if( item.getAttribute('type') == 'checkbox' )
+    $( 'input', '#' + selectedID + '-config-box' ).each( function(item){
+      console.log(`Fetching field ${item.id}...`);
+      var shortId = item.id.replace(`${selectedID}-`, '');
+      if( item.getAttribute('type') == 'checkbox' ) {
         item.value = item.checked ? 'yes' : 'no';
-
-      var shortID = item.id.replace(selectedID + '-', '');
-      cfg[shortID] = item.value;
+      }
+      cfg[shortId] = item.value;
     } );
+    $('textarea', '#' + selectedID + '-config-box').each( function(item) {
+      var shortId = item.id.replace(`${selectedID}-`, '');
+      cfg[shortId] = item.value;
+    })
 
     // reset box
     $('.details-box').fill();

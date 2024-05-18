@@ -102,6 +102,17 @@ HTML;
       $ret .= "&nbsp;<img class=\"pwd-btn\" title=\"show password\" src=\"../img/toggle.svg\">";
       $ret .= "</td>";
     }
+    else if ($param['type'] == 'multiline')
+    {
+      $suggest = '';
+      if (array_key_exists('suggest', $param))
+        $suggest = $param['suggest'];
+      $ret .= "<td>";
+      $ret .= "<textarea name=\"$param[name]\" id=\"$ncp_app-$param[id]\" placeholder=\"$suggest\" style=\"width: 20em;\">$value</textarea>";
+      if (array_key_exists('default', $param))
+        $ret .= "&nbsp;<img class=\"default-btn\" title=\"restore defaults\" src=\"../img/defaults.svg\">";
+      $ret .= "</td>";
+    }
 
     $ret .= "</tr>";
   }

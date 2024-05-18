@@ -545,7 +545,11 @@ function clear_password_fields()
   for (( i = 0 ; i < len ; i++ )); do
     local type="$(jq -r ".params[$i].type"  <<<"$cfg")"
     local val="$( jq -r ".params[$i].value" <<<"$cfg")"
-    [[ "$type" == "password" ]] && val=""
+    local sensitive="$(jq -r ".params[$i].sensitive" <<<"$cfg")"
+    if [[ "$type" == "password" ]] || [[ "$sensitive" == "true" ]]
+    then
+      val=""
+    fi
     cfg="$(jq -r ".params[$i].value=\"$val\"" <<<"$cfg")"
   done
   echo "$cfg" > "$cfg_file"

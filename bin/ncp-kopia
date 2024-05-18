@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
 
-[[ "$(id -u)" == "0" ]] && export KOPIA_PASSWORD="$(cat /usr/local/etc/kopia/password)"
+[[ "$(id -u)" == "0" ]] && export KOPIA_PASSWORD="$(cat /usr/local/etc/kopia/password 2>/dev/null || echo '')"
+[[ -z "$KOPIA_PASSWORD" ]] && exit 5
 
 source /usr/local/etc/library.sh
+repo_type="$(source "${BINDIR}/BACKUPS/kopia.sh"; tmpl_repository_type)"
+[[ -z "$repo_type" ]] && exit 5
 
-[[ -n "$KOPIA_PASSWORD" ]] || read -rs KOPIA_PASSWORD "Please enter the kopia repository password (alternatively you can set the environment variable KOPIA_PASSWORD):"
+#[[ -n "$KOPIA_PASSWORD" ]] || read -rs KOPIA_PASSWORD "Please enter the kopia repository password (alternatively you can set the environment variable KOPIA_PASSWORD):"
 
 kopia_flags=(--config-file=/usr/local/etc/kopia/repository.config --log-dir="/var/log/kopia" --no-persist-credentials)
 

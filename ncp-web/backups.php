@@ -23,7 +23,10 @@ exec("sudo /home/www/ncp-backup-launcher.sh listkopia", $bkps_kopia_raw, $ret);
 if ( $ret !== 0 ) {
     die('Error fetching kopia backups');
 }
-$bkps_kopia=json_decode(join("\n", $bkps_kopia_raw), true) or exit('invalid format:');
+$bkps_kopia=json_decode(join("\n", $bkps_kopia_raw), true);
+if (is_null($bkps_kopia)) {
+    exit('invalid format: ' . join("\n", $bkps_kopia_raw));
+}
 
 function filesize_compat($file)
 {

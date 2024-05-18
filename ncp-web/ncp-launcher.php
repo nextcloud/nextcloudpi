@@ -84,9 +84,13 @@ if ( $_POST['action'] == "launch" && $_POST['config'] )
       if (!array_key_exists($id, $new_params)) continue;
 
       // sanitize
-      $val = trim(escapeshellarg($new_params[$id]),"'");
-      preg_match( '/[\&#;\'`|*?~<>^"()[{}$& ]/' , $val , $matches )
-        and exit( '{ "output": "Invalid characters in input" , "token": "' . getCSRFToken() . '" }' );
+      if ($cfg['params'][$index]['unsafe'] == "true") {
+        $val = base64_encode($new_params[$id]);
+      } else {
+        $val = trim(escapeshellarg($new_params[$id]),"'");
+        preg_match( '/[\&#;\'`|*?~<>^"()[{}$& ]/' , $val , $matches )
+          and exit( '{ "output": "Invalid characters in input" , "token": "' . getCSRFToken() . '" }' );
+      }
 
       // save
       $cfg['params'][$index]['value'] = $val;
