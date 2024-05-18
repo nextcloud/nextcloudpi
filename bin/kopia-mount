@@ -1,0 +1,114 @@
+#!/usr/bin/env bash
+
+set -e
+
+source /usr/local/etc/library.sh
+
+SNAPSHOT_ID="${1?}"
+REPOSITORY="${2}"
+REPOSITORY_PASSWORD="${3}"
+
+docker inspect kopia-snapshot-mount 2> /dev/null > /dev/null && {
+  docker stop kopia-snapshot-mount || {
+    echo 'Failed to remove existing mount.'
+    exit 1
+  }
+}
+for mountpoint in /var/www/kopia-mount/*/*;
+do
+  [[ -d "$mountpoint" ]] || continue
+  echo "Unmounting $mountpoint..."
+  fusermount -u "$mountpoint" || {
+    echo "Failed to remove existing mount '$mountpoint'."
+    exit 1
+  }
+  rm -rf "$mountpoint"
+done
+
+if [[ " $* " =~ " --unmount " ]]
+then
+  echo 'All snapshot mounts have been removed'
+  exit 0
+fi
+
+data_dir="$(get_nc_config_value datadirectory)"
+docker_args=()
+kopia_args=()
+[[ -z "$REPOSITORY" ]] && ! [[ -f /usr/local/etc/kopia/repository.config ]] && {
+  echo "REPOSITORY not set and no repository config found!"
+  exit 1
+}
+if [[ -z "$REPOSITORY" ]]
+then
+  config_path="/usr/local/etc/kopia/repository.config"
+  repo_type="$(jq -er '.storage.type' "${config_path}")"
+  if [[ "$repo_type" == "filesystem" ]]
+  then
+    echo "REPOSITORY not set. Attempting to read value from kopia ncp app"
+    REPOSITORY="$(find_app_param kopia DESTINATION)"
+  elif [[ "$repo_type" == "sftp" ]]
+  then
+    sftp_user="$(jq -er '.storage.config.user' "${config_path}")"
+    sftp_host="$(jq -er '.storage.config.host' "${config_path}")"
+    sftp_path="$(jq -er '.storage.config.path' "${config_path}")"
+    REPOSITORY="${sftp_user}@${sftp_host}:${sftp_path}"
+  else
+    echo "Unsupported storage type '${repo_type}!"
+    exit 1
+  fi
+fi
+if [[ "$REPOSITORY" =~ .*'@'.*':'.* ]]
+then
+  repo_type="sftp"
+  sftp_user="${REPOSITORY%@*}"
+  sftp_host="${REPOSITORY#*@}"
+  sftp_host="${sftp_host%:*}"
+  repo_path="${REPOSITORY#*:}"
+  ssh -o "BatchMode=yes" "${sftp_user}@${sftp_host}" || { echo "SSH non-interactive not properly configured"; return 1; }
+  kopia_args=(--host "${sftp_host}" --user "${sftp_user}" --path "${repo_path}")
+else
+  repo_type="filesystem"
+  repo_path="${REPOSITORY}"
+  docker_args=(-v "${repo_path}:/repository")
+  kopia_args=(--path "/repository")
+fi
+
+[[ -z "${REPOSITORY_PASSWORD}" ]] && [[ -f /usr/local/etc/kopia/password ]] && \
+  REPOSITORY_PASSWORD="$(cat /usr/local/etc/kopia/password)"
+export KOPIA_PASSWORD="${REPOSITORY_PASSWORD}"
+
+echo "Connecting to kopia repository..."
+
+docker run --rm --pull always \
+  -v /usr/local/etc/kopia:/app/config \
+  -v /var/log/kopia:/app/logs \
+  -e KOPIA_PASSWORD \
+  "${docker_args[@]}" \
+  kopia/kopia:latest repository connect "${repo_type}" \
+    "${kopia_args[@]}"
+echo "Done."
+
+snapshot_json="$(ncp-kopia snapshot list --all --json | jq ".[] | select(.id | test(\"${SNAPSHOT_ID}\"))")"
+obj_id="$(echo "${snapshot_json}" | jq -r '.rootEntry.obj')"
+obj_name="$(echo "${snapshot_json}" | jq -r '.rootEntry.name')"
+
+mkdir -p /var/www/kopia-mount/
+rm -rf /var/www/kopia-mount/*
+mkdir -p "/var/www/kopia-mount/${obj_name}/${obj_id}"
+chown -R www-data: /var/www/kopia-mount
+
+docker run --rm --pull always \
+  --name kopia-snapshot-mount \
+  -d \
+  --cap-add SYS_ADMIN \
+  --device /dev/fuse \
+  -v /usr/local/etc/kopia:/app/config \
+  -v /var/log/kopia:/app/logs \
+  -v /var/www/kopia-mount:/tmp:shared \
+  -e KOPIA_PASSWORD \
+  "${docker_args[@]}" \
+  kopia/kopia:latest mount --fuse-allow-other \
+    "${obj_id}" "/tmp/${obj_name}/${obj_id}"
+
+sleep 5
+docker inspect kopia-snapshot-mount 2>/dev/null >/dev/null

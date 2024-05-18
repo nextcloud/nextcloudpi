@@ -2,7 +2,12 @@
 
 set -e
 
-export KOPIA_PASSWORD="${KOPIA_PASSWORD?}"
+[[ "$(id -u)" == "0" ]] && KOPIA_PASSWORD="$(cat /usr/local/etc/kopia/password)"
+[[ -z "${KOPIA_PASSWORD}" ]] && {
+  echo 'Error: KOPIA_PASSWORD not set'
+  exit 1
+}
+export KOPIA_PASSWORD
 
 source /usr/local/etc/library.sh
 

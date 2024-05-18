@@ -72,6 +72,57 @@ EOF
 
   install_template apache2/ncp.conf.sh /etc/apache2/sites-available/ncp.conf --defaults
 
+  cat > /etc/apache2/sites-available/kopia.conf <<EOF
+Listen 51000
+<VirtualHost _default_:51000>
+  DocumentRoot /dev/null
+  SSLEngine on
+  SSLCertificateFile      /etc/ssl/certs/ssl-cert-snakeoil.pem
+  SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
+  <IfModule mod_headers.c>
+    Header always set Strict-Transport-Security "max-age=15768000; includeSubDomains"
+  </IfModule>
+
+  # 2 days to avoid very big backups requests to timeout
+  TimeOut 172800
+
+  <IfModule mod_authnz_external.c>
+    DefineExternalAuth pwauth pipe /usr/sbin/pwauth
+  </IfModule>
+
+
+  ProxyPass / http://127.0.0.1:51515/
+  ProxyPassReverse / http://127.0.0.1:51515/
+
+  <Location />
+    AuthType Basic
+    AuthName "ncp-web login"
+    AuthBasicProvider external
+    AuthExternal pwauth
+    <RequireAll>
+
+     <RequireAny>
+        Require host localhost
+        Require local
+        Require ip 192.168
+        Require ip 172
+        Require ip 10
+        Require ip fe80::/10
+        Require ip fd00::/8
+     </RequireAny>
+
+     <RequireAny>
+        Require env noauth
+        Require user $WEBADMIN
+     </RequireAny>
+
+    </RequireAll>
+    RequestHeader set Authorization "null"
+  </Location>
+
+</VirtualHost>
+EOF
+
   $APTINSTALL libapache2-mod-authnz-external pwauth
   a2enmod authnz_external authn_core auth_basic
   a2dissite 001-nextcloud

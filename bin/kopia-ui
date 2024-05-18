@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+set -e
+
+docker inspect kopia-server >/dev/null 2>/dev/null && docker stop kopia-server
+[[ " $* " =~ " --stop " ]] && {
+    a2dissite "kopia.conf"
+    systemctl reload apache2
+    exit 0
+}
+
+[[ "$(id -u)" == "0" ]] && export KOPIA_PASSWORD="$(cat /usr/local/etc/kopia/password)"
+
+source /usr/local/etc/library.sh
+docker_args=()
+[[ $- == *i* ]] && docker_args+=(-it)
+
+config_path="/usr/local/etc/kopia/repository.config"
+repo_type="$(jq -er '.storage.type' "${config_path}")"
+[[ "$repo_type" == "filesystem" ]] && {
+  repo_path="$(find_app_param kopia DESTINATION)"
+  docker_args=(-v "${repo_path}:/repository")
+}
+data_dir="$(get_nc_config_value datadirectory)"
+cache_dir="${data_dir}/.kopia"
+[[ -z "$KOPIA_PASSWORD" ]] || docker_args+=(-e KOPIA_PASSWORD)
+
+SERVER_PASSWORD="$(openssl rand -hex 32)"
+
+mkdir -p /tmp/kopia
+
+docker run --rm \
+  --name kopia-server \
+  -d \
+  -v /usr/local/etc/kopia:/app/config \
+  -v "${cache_dir}:/app/cache" \
+  -v "/tmp/kopia:/tmp:shared" \
+  -p 127.0.0.1:51515:51515 \
+  "${docker_args[@]}" \
+  kopia/kopia:latest server start \
+    --readonly --server-password="${SERVER_PASSWORD}" --server-username=ncp \
+    --insecure --address="http://0.0.0.0:51515"
+
+sleep 5
+docker inspect kopia-server >/dev/null || exit $?
+
+a2ensite kopia.conf
+sed -i -e "\|RequestHeader set Authorization|s|\".*\"|\"Basic $(echo -n "ncp:${SERVER_PASSWORD}" | base64 -w 0)\"|" /etc/apache2/sites-available/kopia.conf
+systemctl reload apache2
+
+rc=$?
+if [[ " $* " =~ " --attach " ]]
+then
+  docker attach kopia-server
+else
+  exit $rc
+fi

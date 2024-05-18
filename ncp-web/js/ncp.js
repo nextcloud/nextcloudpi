@@ -330,6 +330,37 @@ function set_backup_handlers()
     clicked_dialog_action = delete_kopia;
     clicked_dialog_button = this;
   })
+  // $('.open-kopia-ui').on('click', function (e) {
+  //   e.target.src = "../img/loading-small.gif";
+  //   $.request('post', 'ncp-launcher.php', {
+  //     action: 'kopia-ui',
+  //     csrf_token: $('#csrf-token-ui').get('.value')
+  //   }).then((result) => {
+  //     var ret = $.parseJSON(result);
+  //     if (ret.token)
+  //       $('#csrf-token-ui').set({ value: ret.token });
+  //     if (ret.ret === '0') {
+  //       $('#open-page-box-title').text("Kopia UI is ready");
+  //       console.log($('#open-page-box-link'));
+  //       const kopiaUri = `${window.location.protocol}//ncp:${encodeURIComponent(ret.serverPassword)}@${window.location.hostname}:51000/snapshots`;
+  //       console.log("Kopia URI: ", kopiaUri);
+  //       $('#open-page-box-link').set({
+  //         "href": kopiaUri
+  //       });
+  //       $('#open-page-box-link').text("Open Kopia UI");
+  //       $('#open-page-dialog').show();
+  //       $('#open-page-box-link').on('click', function(e) {
+  //         $('#open-page-dialog').hide();
+  //         window.open(
+  //             kopiaUri,
+  //             '_blank'
+  //         );
+  //       })
+  //     }
+  //     e.target.src = "../img/files.svg";
+  //
+  //   })
+  // })
 }
 
 function print_backups()
