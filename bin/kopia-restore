@@ -8,62 +8,21 @@ SNAPSHOT_ID="${1?}"
 REPOSITORY="${2}"
 REPOSITORY_PASSWORD="${3}"
 
-data_dir="$(get_nc_config_value datadirectory || echo '/opt/ncdata/data')"
+data_dir="$(get_nc_config_value datadirectory)"
 kopia_flags=(--config-file=/usr/local/etc/kopia/restore.config --log-dir="/var/log/kopia" --no-persist-credentials)
 kopia_repo_args=()
-[[ -z "$REPOSITORY" ]] && ! [[ -f /usr/local/etc/kopia/repository.config ]] && {
-  echo "REPOSITORY not set and no repository config found!"
-  exit 1
-}
-if [[ -z "$REPOSITORY" ]]
-then
-  config_path="/usr/local/etc/kopia/repository.config"
-  repo_type="$(jq -er '.storage.type' "${config_path}")"
-  if [[ "$repo_type" == "filesystem" ]]
-  then
-    echo "REPOSITORY not set. Attempting to read value from kopia ncp app"
-    REPOSITORY="$(find_app_param kopia DESTINATION)"
-  elif [[ "$repo_type" == "sftp" ]]
-  then
-    sftp_user="$(jq -er '.storage.config.user' "${config_path}")"
-    sftp_host="$(jq -er '.storage.config.host' "${config_path}")"
-    sftp_path="$(jq -er '.storage.config.path' "${config_path}")"
-    REPOSITORY="${sftp_user}@${sftp_host}:${sftp_path}"
-  else
-    echo "Unsupported storage type '${repo_type}!"
-    exit 1
-  fi
-fi
-if [[ "$REPOSITORY" =~ .*'@'.*':'.* ]]
-then
-  repo_type="sftp"
-  sftp_user="${REPOSITORY%@*}"
-  sftp_host="${REPOSITORY#*@}"
-  sftp_host="${sftp_host%:*}"
-  repo_path="${REPOSITORY#*:}"
-  ssh -o "BatchMode=yes" "${sftp_user}@${sftp_host}" || { echo "SSH non-interactive not properly configured"; return 1; }
-  kopia_repo_args=(--host "${sftp_host}" --user "${sftp_user}" --path "${repo_path}")
-else
-  repo_type="filesystem"
-  repo_path="${REPOSITORY}"
-  docker_args=(-v "${repo_path}:/repository")
-  kopia_repo_args=(--path "/repository")
-fi
+hostname=restore
+config_dir="/usr/local/etc/kopia"
+[[ -f "${config_dir}/repository.config" ]] && hostname=$(jq '.hostname' "${config_dir}/repository.config")
+(
+  source "${BINDIR}/BACKUPS/kopia.sh";
+  [[ -f "${config_dir}/repository.config" ]] && cp "${config_dir}/repository.config" "${config_dir}/repository-bkp.config"
+  setup_repository "${REPOSITORY}" "${STORAGE_KEY}" "${REPOSITORY_PASSWORD}" "$hostname"
+  mv /usr/local/etc/kopia/repository.config /usr/local/etc/kopia/restore.config
+  [[ -f "${config_dir}/repository-bkp.config" ]] && mv "${config_dir}/repository-bkp.config" "${config_dir}/repository.config"
+)
 
-[[ -z "${REPOSITORY_PASSWORD}" ]] && [[ -f /usr/local/etc/kopia/password ]] && \
-  REPOSITORY_PASSWORD="$(cat /usr/local/etc/kopia/password)"
-export KOPIA_PASSWORD="${REPOSITORY_PASSWORD?REPOSITORY_PASSWORD is not set}"
-
-echo "Connecting to kopia repository..."
-[[ -f /usr/local/etc/kopia/repository.config ]] && cp /usr/local/etc/kopia/repository.config /usr/local/etc/kopia/restore.config
-
-kopia "${kopia_flags[@]}" \
-  repository connect "${repo_type}" \
-    "${kopia_repo_args[@]}" \
-    --config-file /app/config/restore.config \
-    --override-username ncp \
-    --override-hostname "restore"
-echo "Done."
+export KOPIA_PASSWORD="$(source "${BINDIR}/BACKUPS/kopia.sh"; get_repository_password "${REPOSITORY_PASSWORD}")"
 
 snapshot_json="$(ncp-kopia snapshot list --all --json | jq ".[] | select(.id | test(\"${SNAPSHOT_ID}\"))")"
 obj_id="$(echo "${snapshot_json}" | jq -r '.rootEntry.obj')"
