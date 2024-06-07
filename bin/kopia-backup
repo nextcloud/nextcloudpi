@@ -2,13 +2,14 @@
 
 set -e
 
-[[ "$(id -u)" == "0" ]] && KOPIA_PASSWORD="$(cat /usr/local/etc/kopia/password)"
+if [[ -z "$KOPIA_PASSWORD" ]] && [[ "$EUID" == "0" ]]
+then
+  KOPIA_PASSWORD="$(cat /usr/local/etc/kopia/password)"
+fi
 [[ -z "${KOPIA_PASSWORD}" ]] && {
   echo 'Error: KOPIA_PASSWORD not set'
   exit 1
 }
-export KOPIA_PASSWORD
-
 source /usr/local/etc/library.sh
 
 kopia_flags=(--config-file=/usr/local/etc/kopia/repository.config --log-dir="/var/log/kopia" --no-persist-credentials)

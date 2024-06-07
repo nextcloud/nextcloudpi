@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-export WEBADMIN="ncp"
-
 cat > /home/www/ncp-backup-launcher.sh <<'EOF'
 #!/bin/bash
 action="${1}"
