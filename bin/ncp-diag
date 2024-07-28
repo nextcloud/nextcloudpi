@@ -151,7 +151,7 @@ echo "Gateway|$GW"
 echo "Interface|$IFACE"
 
 # Certificates
-CERTS="$( grep "SSLCertificateFile */etc/letsencrypt/live/" /etc/apache2/sites-available/nextcloud.conf \
+CERTS="$( grep "SSLCertificateFile */etc/letsencrypt/live/" /etc/apache2/sites-available/001-nextcloud.conf \
         | sed 's|.*SSLCertificateFile */etc/letsencrypt/live/||;s|/fullchain.pem||' )"
 [[ "$CERTS" == "" ]] && CERTS=none
 echo "Certificates|$CERTS"
