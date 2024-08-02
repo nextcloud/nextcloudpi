@@ -1,3 +1,6 @@
-{"translations": {
-    "nc-httpsonly": "HTTPS-Zwang"
-}}
+{
+    "translations": {
+        "nc-httpsonly": "HTTPS-Zwang",
+        "ACTIVE": "Aktiv"
+    }
+}

@@ -1,4 +1,6 @@
-{"translations": {
-    "nc-automount": "Automatische Datenträgereinbindung",
-    "ACTIVE":"Aktiviert"
-}}
+{
+    "translations": {
+        "nc-automount": "Automatische Datenträgereinbindung",
+        "ACTIVE": "Aktiv"
+    }
+}

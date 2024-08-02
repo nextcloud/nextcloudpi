@@ -1,3 +1,6 @@
-{"translations": {
-    "nc-notify-updates": "Update-Benachrichtigungen"
-}}
+{
+    "translations": {
+        "nc-notify-updates": "Update-Benachrichtigungen",
+        "ACTIVE": "Aktiv"
+    }
+}

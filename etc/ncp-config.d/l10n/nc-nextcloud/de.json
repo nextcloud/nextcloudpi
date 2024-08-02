@@ -1,3 +1,9 @@
-{"translations": {
-    "nc-nextcloud": "Nextcloud Einstellungen"
-}}
+{
+    "translations": {
+        "nc-nextcloud": "Nextcloud Einstellungen",
+        "VER": "Version",
+        "MAXFILESIZE": "Max. Dateigröße",
+        "MEMORYLIMIT": "Speicherlimit",
+        "MAXTRANSFERTIME": "Max. Transferdauer"
+    }
+}

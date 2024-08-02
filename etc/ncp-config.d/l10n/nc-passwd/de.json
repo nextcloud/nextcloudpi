@@ -1,3 +1,7 @@
-{"translations": {
-    "nc-passwd": "NCP-Passwort"
-}}
+{
+    "translations": {
+        "nc-passwd": "NCP-Passwort",
+        "PASSWORD": "Passwort",
+        "CONFIRM": "Passwort bestätigen"
+    }
+}

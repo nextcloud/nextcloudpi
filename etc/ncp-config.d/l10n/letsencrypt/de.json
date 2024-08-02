@@ -1,0 +1,9 @@
+{
+    "translations": {
+        "letsencrypt": "Let's Encrypt",
+        "ACTIVE": "Aktiv",
+        "DOMAIN": "Domain",
+        "OTHER_DOMAIN": "Weitere Domain",
+        "EMAIL": "E-Mail"
+    }
+}

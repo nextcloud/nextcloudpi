@@ -1,3 +1,6 @@
-{"translations": {
-    "nc-import-ncp": "NCP-Import"
-}}
+{
+    "translations": {
+        "nc-import-ncp": "NCP-Konfiguration importieren",
+        "FILE": "Datei"
+    }
+}
