@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# NextCloudPi software configuration
+# NextcloudPi software configuration
 #
 # Copyleft 2017 by Ignacio Nunez Hernanz <nacho _a_t_ ownyourbits _d_o_t_ com>
 # GPL licensed (see end of file) * Use at your own risk!
@@ -23,7 +23,7 @@ source /usr/local/etc/library.sh
 
     latest_ver="$(cat /var/run/.ncp-latest-version 2>/dev/null)"
     whiptail --backtitle "$backtitle $ncpversion" \
-             --title "NextCloudPi update available" \
+             --title "NextcloudPi update available" \
              --clear --yesno "Update to $latest_ver?\n\n$changelog" \
              15 70
 
@@ -59,7 +59,7 @@ function generate_list()
 function config_menu()
 {
   local dir="$1"
-  local backtitle="NextCloudPi configuration ver. "
+  local backtitle="NextcloudPi configuration ver. "
   local ncpversion="$(cat /usr/local/etc/ncp-version  )"
   local cfgdir=/usr/local/etc/ncp-config.d
   local dialog_ok=0
@@ -73,7 +73,7 @@ function config_menu()
     # launch the selection menu
     [[ "$dir" == "$BINDIR" ]] && local cancel_btn="Finish" || local cancel_btn="Back"
     ncp_app=$( whiptail --backtitle "$backtitle $ncpversion" \
-                       --title "NextCloudPi Configuration Tool (ncp-config)" \
+                       --title "NextcloudPi Configuration Tool (ncp-config)" \
                        --cancel-button $cancel_btn --ok-button Select \
                        --menu "Select ncp-app to configure or activate:" 20 105 10 \
                        "${list[@]}" \

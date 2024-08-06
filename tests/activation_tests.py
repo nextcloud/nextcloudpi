@@ -146,7 +146,7 @@ def test_activation(IP, nc_port, admin_port, options, wait_timeout=120):
     except Exception as e:
         print(f"WARN: Exception while attempting to get ncp-web: '{e}'")
         raise e
-    test.check("NextCloudPi Panel" in driver.title)
+    test.check("NextcloudPi Panel" in driver.title)
     test.report("first run wizard", is_element_present(driver, By.ID, "first-run-wizard"))
 
     driver.close()
