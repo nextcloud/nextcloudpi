@@ -39,14 +39,14 @@ ncc status &>/dev/null          || { [[ "$DBG" == x ]] && ncc status; echo "Next
 ####################
 
 [[ ${EUID} -eq 0 ]] && SUDO="sudo -u www-data"
-CURRENT="$( $SUDO php /var/www/nextcloud/occ status | grep "version:" | awk '{ print $3 }' )"
-
-MAJOR_CUR=$( cut -d. -f1 <<<"${CURRENT}" )
-MAJOR_NEW=$( cut -d. -f1 <<<"${VER}" )
-if [[ $((MAJOR_NEW - MAJOR_CUR)) -gt 1 ]]; then
-  echo "Upgrade cannot skip major versions. Please upgrade one major version at a time" >&2
+CURRENT="$(nc_version)"
+TARGET_VERSION="$(determine_nc_upgrade_version "${CURRENT?}" "${VER?}")"
+[[ -n "$TARGET_VERSION" ]] || {
+  echo "Could not find a valid upgrade path from '${CURRENT}' to '${TARGET_VERSION}'. Nothing to update."
   exit 1
-fi
+}
+
+MAJOR_NEW="${TARGET_VERSION%%.*}"
 
 if [[ "$MAJOR_NEW" -ge 24 ]] && [[ "$(lsb_release -r)" =~ .*10 ]]
 then
@@ -55,18 +55,10 @@ then
 fi
 
 grep -qP "\d+\.\d+\.\d+" <<<"$CURRENT" || { echo "Malformed version $CURRENT"; exit 1; }
-grep -qP "\d+\.\d+\.\d+" <<<"$VER"     || { echo "Malformed version $VER"    ; exit 1; }
+grep -qP "\d+\.\d+\.\d+" <<<"$TARGET_VERSION"   || { echo "Malformed version $TARGET_VERSION"    ; exit 1; }
 
 echo "Current   Nextcloud version $CURRENT"
-echo "Available Nextcloud version $VER"
-is_more_recent_than "${VER}" "${CURRENT}" || { echo "Nothing to update"; exit 1; } # we want `exit 1` so the autoupdate doesn't notify success in this case
-
-
-if ! is_more_recent_than '25.0.0' "${VER}" && is_more_recent_than "8.1.0" "${PHPVER}.0" && is_docker
-then
-  echo 'You need to upgrade to a later docker image in order to upgrade to Nextcloud 25+'
-  exit 1
-fi
+echo "Available Nextcloud version $TARGET_VERSION"
 
 # make sure that cron.php is not running and there are no pending jobs
 # https://github.com/nextcloud/server/issues/10949
@@ -88,8 +80,8 @@ trap cleanup EXIT
 
 # get new code
 ####################
-URL="https://download.nextcloud.com/server/releases/nextcloud-$VER.tar.bz2"
-echo "Download Nextcloud $VER..."
+URL="https://download.nextcloud.com/server/releases/nextcloud-$TARGET_VERSION.tar.bz2"
+echo "Download Nextcloud $TARGET_VERSION..."
 wget -q "$URL" -O nextcloud.tar.bz2 || { echo "Error downloading"; exit 1; }
 
 # backup
@@ -127,7 +119,7 @@ trap rollback_simple INT TERM HUP ERR
 
 # replace code
 ####################
-echo "Install Nextcloud $VER..."
+echo "Install Nextcloud $TARGET_VERSION..."
 mv -T nextcloud nextcloud-old
 tar -xf nextcloud.tar.bz2             # && false # test point
 rm -rf /var/www/nextcloud.tar.bz2
@@ -195,7 +187,7 @@ $ncc | grep -q db:add-missing-primary-keys && $ncc db:add-missing-primary-keys -
 $ncc | grep -q db:convert-filecache-bigint && $ncc db:convert-filecache-bigint -n
 
 # use the correct version for custom apps
-NCVER="$(ncc status | grep "version:" | awk '{ print $3 }')"
+NCVER="$(nc_version)"
 if is_more_recent_than "21.0.0" "${NCVER}"; then
   NCPREV=/var/www/ncp-previewgenerator/ncp-previewgenerator-nc20
 else

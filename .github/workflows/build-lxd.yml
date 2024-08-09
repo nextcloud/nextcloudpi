@@ -683,16 +683,17 @@ jobs:
       - name: convert to LXC image
         id: lxd-to-lxc
         run: |
-          mkdir repackage output
-          cd repackage
-          sudo tar xpf "../${LXD_ARTIFACT_FILE?}"
-          sudo rm -rf ./rootfs/dev
-          LXC_ARTIFACT_FILE="${LXD_ARTIFACT_FILE//LXD/LXC}"
-          sudo tar cpzf "../output/${LXC_ARTIFACT_FILE?}" -C rootfs/ .
-          cd ..
-          sudo chown "$(id -un):" "./output/${LXC_ARTIFACT_FILE}"
-          echo "artifact_file=${LXC_ARTIFACT_FILE?}" >> $GITHUB_OUTPUT
-          echo "artifact_name=${LXD_ARTIFACT_NAME//lxd/lxc}" >> $GITHUB_OUTPUT
+          mkdir repackage output;
+          cd repackage; 
+          sudo su - -c "cd '$(pwd)'; tar xpf '../${LXD_ARTIFACT_FILE?}';"
+          sudo rm -rf ./rootfs/dev;
+          LXC_ARTIFACT_FILE="${LXD_ARTIFACT_FILE//LXD/LXC}";
+          sudo tar cpzf "../output/${LXC_ARTIFACT_FILE?}" -C rootfs/ .;
+          cd ..;
+          sudo chown "$(id -un):" "./output/${LXC_ARTIFACT_FILE}";  
+          ls -l ./output
+          echo "artifact_file=${LXC_ARTIFACT_FILE?}" >> $GITHUB_OUTPUT;
+          echo "artifact_name=${LXD_ARTIFACT_NAME//lxd/lxc}" >> $GITHUB_OUTPUT;
       - name: upload LXD image to artifact store
         uses: actions/upload-artifact@v3
         with:

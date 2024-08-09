@@ -1,4 +1,4 @@
-#!/bin/bash
+    #!/bin/bash
 
 set -eu -o pipefail
 
@@ -37,7 +37,9 @@ save_maintenance_mode
 
 # Perform dist-upgrade
 
-apt-get update && apt-get upgrade -y
+apt-get update
+apt-get remove -y libc-dev-bin || true
+apt-get upgrade -y
 for aptlist in /etc/apt/sources.list /etc/apt/sources.list.d/{php.list,armbian.list,raspi.list}
 do
   [ -f "$aptlist" ] && sed -i -e "s/bullseye/bookworm/g" "$aptlist"
@@ -58,6 +60,7 @@ then
   apt-get install -y --no-install-recommends systemd-resolved && systemctl enable --now systemd-resolved
 fi
 apt-get full-upgrade -y
+sudo apt-get install -y --no-install-recommends libc-dev-bin || true
 sudo apt-get --purge  autoremove -y
 
 apt-get install -y --no-install-recommends exfatprogs

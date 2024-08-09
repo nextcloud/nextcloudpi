@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Export NextCloudPi configuration
+# Export NextcloudPi configuration
 #
 #
 # Copyleft 2017 by Courtney Hicks

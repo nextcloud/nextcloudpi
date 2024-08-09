@@ -6,18 +6,20 @@ set -e
 
 source /usr/local/etc/library.sh # sets NCLATESTVER
 
-CURRENT="$(ncc status | grep "version:" | awk '{ print $3 }')"
-LATEST="$(wget -qO- https://raw.githubusercontent.com/nextcloud/nextcloudpi/master/etc/ncp.cfg | jq -r .nextcloud_version)"
+CURRENT="$(nc_version)"
+NEXT_VERSION="$(determine_nc_upgrade_version "${CURRENT}" "${NCLATESTVER?}")"
+[[ -n "$NEXT_VERSION" ]] || exit 0
+
 NOTIFIED=/var/run/.nc-version-notified
 
-test -e "${NOTIFIED}" && [[ "${LATEST}" == "$( cat "${NOTIFIED}" )" ]] && {
-  echo "Found update from ${CURRENT} to ${LATEST}. Already notified"
+test -e "${NOTIFIED}" && [[ "${NEXT_VERSION}" == "$( cat "${NOTIFIED}" )" ]] && {
+  echo "Found update from ${CURRENT} to ${NEXT_VERSION}. Already notified"
   exit 0
 }
 
-if is_more_recent_than "${LATEST}" "${CURRENT}"; then
+if is_more_recent_than "${NEXT_VERSION}" "${CURRENT}"; then
   notify_admin \
     "Nextcloud update" \
-    "Update from ${CURRENT} to ${LATEST} is available. Update from https://$(get_ip):4443"
-  echo "${LATEST}" > "${NOTIFIED}"
+    "Update from ${CURRENT} to ${NEXT_VERSION} is available. Update from https://$(get_ip):4443"
+  echo "${NEXT_VERSION}" > "${NOTIFIED}"
 fi

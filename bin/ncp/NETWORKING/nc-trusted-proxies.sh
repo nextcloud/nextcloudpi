@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Manually add trusted proxies in NextCloudPi
+# Manually add trusted proxies in NextcloudPi
 #
 # Copyleft 2019 by Pascal Haefliger <45995338+paschaef_a_t_users_d_o_t_noreply_d_o_tgithub_d_o_t_com>
 # GPL licensed (see end of file) * Use at your own risk!
