@@ -2,6 +2,10 @@
 
 ## [v1.54.3](https://github.com/nextcloud/nextcloudpi/tree/v1.54.3) (2024-08-11) Improved Nextcloud (auto) updates
 
+### Fixes
+
+- Prevent dependency conflict during distribution upgrade to debian 12
+
 ### Changes
 
 - Nextcloud updates now automatically determine the next valid version to upgrade to. Auto updates always update to the latest minor version.
