@@ -27,7 +27,7 @@ echo -e "[ncp-update-nc]"                              >> /var/log/ncp.log
 
 if [[ \${PIPESTATUS[0]} -eq 0 ]]; then
 
-  VER="\$( /usr/local/bin/ncc status | grep "version:" | awk '{ print \$3 }' )"
+  VER="\$(nc_version)"
 
   notify_admin "NextCloudPi" "Nextcloud was updated to \$VER"
 fi

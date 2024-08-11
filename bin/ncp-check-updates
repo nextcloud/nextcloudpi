@@ -6,8 +6,8 @@ VERFILE=/usr/local/etc/ncp-version
 LATEST=/var/run/.ncp-latest-version
 
 if ncp-test-updates; then
-  echo -e "\nNextCloudPi \e[1m$( cat $VERFILE)\e[0m is outdated"
+  echo -e "\nNextcloudPi \e[1m$( cat $VERFILE)\e[0m is outdated"
   echo -e "update to \e[1m$( cat $LATEST )\e[0m through 'ncp-config' or type 'sudo ncp-update'" 
 else
-  echo -e "\nNextCloudPi \e[1m$( cat $VERFILE)\e[0m is up to date"
+  echo -e "\nNextcloudPi \e[1m$( cat $VERFILE)\e[0m is up to date"
 fi
