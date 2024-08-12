@@ -54,11 +54,21 @@ then
   exit 1
 fi
 
+if [[ "$MAJOR_NEW" -ge 29 ]] && [[ "$(lsb_release -r)" =~ .*12 ]]
+then
+  echo -e "NCP doesn't support Nextcloud versions greater than 28 with Debian 11 (Bullseye). Please run ncp-dist-upgrade."
+  exit 1
+fi
+
 grep -qP "\d+\.\d+\.\d+" <<<"$CURRENT" || { echo "Malformed version $CURRENT"; exit 1; }
 grep -qP "\d+\.\d+\.\d+" <<<"$TARGET_VERSION"   || { echo "Malformed version $TARGET_VERSION"    ; exit 1; }
 
 echo "Current   Nextcloud version $CURRENT"
 echo "Available Nextcloud version $TARGET_VERSION"
+if [[ "$TARGET_VERSION" != "$VER" ]]
+then
+  echo "INFO: You have requested an update to '$VER', but a direct update to '$VER' cannot be performed, so the latest available version that can be updated to has been selected automatically."
+fi
 
 # make sure that cron.php is not running and there are no pending jobs
 # https://github.com/nextcloud/server/issues/10949
