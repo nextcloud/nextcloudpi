@@ -325,7 +325,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           subject="$(git tag -n10 --format="%(contents:subject)" "${{ env.VERSION }}")"
-          body="$(git tag -n10 --format="%(contents:body)" "${{ env.VERSION }}")"
+          body="$(git tag -n30 --format="%(contents:body)" "${{ env.VERSION }}")"
           separator="
 
           ---
