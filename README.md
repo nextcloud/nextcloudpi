@@ -141,6 +141,14 @@ Thenk you [tteck][tteck-profile] :heart: for making the helper script & letting 
 
 You can find his GitHub repository with his helper scripts [here][gh-helper-scripts-repo].
 
+## Run on unRAID
+
+Use the [install script][unraid-script] from [ich777][ich777-profile] to install the LXC container on your unRAID instance
+
+Installation: `bash -c "$(wget -qO- https://raw.githubusercontent.com/ich777/unraid_lxc_nextcloudpi/master/nextcloudpi.sh)"`
+
+If you need more information refer to his repository [here][unraid-script-repo].
+
 ## How to build
 
 Packages
@@ -289,6 +297,14 @@ You can find us on the [Forum][nc-forum], [Telegram][chat-telegram] or [Matrix][
 [website-helper-scripts]: https://tteck.github.io/Proxmox/
 
 [ncp-proxmox-install-script-v5]: https://github.com/tteck/Proxmox/blob/main/install/nextcloudpi-v5-install.sh
+
+<!-- ich777 -->
+
+[ich777-profile]: https://github.com/ich777
+
+[unraid-script-repo]: https://github.com/ich777/unraid_lxc_nextcloudpi
+
+[unraid-script]: https://raw.githubusercontent.com/ich777/unraid_lxc_nextcloudpi/master/nextcloudpi.sh
 
 <!-- IMAGES -->
 
