@@ -27,7 +27,8 @@ from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.firefox.options import Options
-from selenium.common.exceptions import NoSuchElementException, WebDriverException, TimeoutException
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import NoSuchElementException, WebDriverException, TimeoutException, ElementNotInteractableException
 from typing import List, Tuple
 import traceback
 
@@ -129,14 +130,34 @@ def close_first_run_wizard(driver: WebDriver):
     except NoSuchElementException:
         pass
     if first_run_wizard is not None and first_run_wizard.is_displayed():
-        wait.until(VisibilityOfElementLocatedByAnyLocator([(By.CLASS_NAME, "modal-container__close"),
-                                                           (By.CLASS_NAME, "first-run-wizard__close-button")]))
+        # wait.until(VisibilityOfElementLocatedByAnyLocator([(By.XPATH, "//div[@id='firstrunwizard]//button[@aria-label='Close']'")]))
+        #print(first_run_wizard.find_element(By.CSS_SELECTOR, 'button[aria-label="Close"]'))
         try:
-            overlay_close_btn = driver.find_element(By.CLASS_NAME, "first-run-wizard__close-button")
-            overlay_close_btn.click()
-        except NoSuchElementException:
-            overlay_close_btn = driver.find_element(By.CLASS_NAME, "modal-container__close")
-            overlay_close_btn.click()
+            wait.until(VisibilityOfElementLocatedByAnyLocator([(By.XPATH, "//button[@aria-label='Close']"),
+                                                               (By.CLASS_NAME, "modal-container__close"),
+                                                               (By.CLASS_NAME, "first-run-wizard__close-button")]))
+            try:
+                driver.execute_script("""
+                let btn = document.querySelector('#firstrunwizard button[aria-label="Close"]'); 
+                if(btn) { 
+                    btn.click(); 
+                }
+                """)
+            except (NoSuchElementException, ElementNotInteractableException):
+                try:
+                    overlay_close_btn = driver.find_element(By.CLASS_NAME, "modal-container__close")
+                    overlay_close_btn.click()
+                except (NoSuchElementException, ElementNotInteractableException):
+                    overlay_close_btn = driver.find_element(By.CLASS_NAME, "first-run-wizard__close-button")
+                    overlay_close_btn.click()
+        except TimeoutException:
+            driver.execute_script("""
+            let btn = document.querySelector('#firstrunwizard button[aria-label="Close"]'); 
+            if(btn) { 
+                btn.click(); 
+            }
+            """)
+
         time.sleep(3)
 
 
