@@ -5,9 +5,9 @@ source /usr/local/etc/library.sh
 echo "Upgrading PHP..."
 export DEBIAN_FRONTEND=noninteractive
 PHPVER_OLD="$PHPVER"
-PHPVER_NEW="8.1"
-PHP_PACKAGES_OLD=(php-{common,igbinary,redis,json} "php${PHPVER_OLD}" \
-  "php${PHPVER_OLD}"-{curl,gd,fpm,cli,opcache,mbstring,xml,zip,fileinfo,ldap,intl,bz2,json,common,readline,mysql,bcmath,gmp})
+PHPVER_NEW="8.3"
+PHP_PACKAGES_OLD=("php${PHPVER_OLD}" \
+  "php${PHPVER_OLD}"-{curl,gd,fpm,cli,opcache,mbstring,xml,zip,fileinfo,ldap,intl,bz2,mysql,bcmath,gmp,redis,common})
 PHP_PACKAGES_NEW=("php${PHPVER_NEW}" \
   "php${PHPVER_NEW}"-{curl,gd,fpm,cli,opcache,mbstring,xml,zip,fileinfo,ldap,intl,bz2,mysql,bcmath,gmp,redis,common})
 
@@ -17,7 +17,8 @@ php_restore() {
   set +e
   service "php${PHPVER_NEW}-fpm" stop
   a2disconf php${PHPVER_NEW}-fpm
-  rm /etc/apt/sources.list.d/php.list
+  wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
+  echo "deb https://packages.sury.org/php/ ${RELEASE%-security} main" > /etc/apt/sources.list.d/php.list
   apt-get update
   apt-get remove --purge -y "${PHP_PACKAGES_NEW[@]}"
   apt-get install -y --no-install-recommends -t "$RELEASE" "${PHP_PACKAGES_OLD[@]}"
@@ -33,9 +34,6 @@ php_restore() {
 
 trap php_restore INT TERM HUP ERR
 
-# Setup apt repository for php 8
-wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
-echo "deb https://packages.sury.org/php/ ${RELEASE%-security} main" > /etc/apt/sources.list.d/php.list
 apt-get update
 
 clear_opcache
@@ -63,3 +61,4 @@ echo "Starting apache and php-fpm..."
 service "php${PHPVER_NEW}-fpm" start
 service apache2 start
 ncc status
+rm -f /etc/apt/sources.list.d/php.list /etc/apt/trusted.gpg.d/php.gpg
