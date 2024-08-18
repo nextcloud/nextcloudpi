@@ -457,7 +457,7 @@ jobs:
           echo "Running update to ${VERSION}"
           
           current_nc_version="$(sudo "$LXC" exec ncp -- ncc status | grep "version:" | awk '{ print $3 }')"
-          latest_nc_version="$(cat etc/ncp.cfg | jq -r '.nextcloud_version')"
+          latest_nc_version="27.0.1"
           
           sudo "$LXC" exec ncp -- bash -c "DBG=x ncp-update ${UPDATE_ARGS[*]}"
           sudo "$LXC" exec ncp -- /usr/local/bin/ncc status
@@ -467,6 +467,7 @@ jobs:
             echo "Nextcloud is up to date - skipping NC update test."
           else
             sudo "$LXC" exec ncp -- bash -c "DBG=x ncp-update-nc ${latest_nc_version?}"
+            sudo "$LXC" exec ncp -- /usr/local/bin/ncc status
           fi
   
           sudo "$LXC" exec ncp -- rm -f /opt/ncdata/data/nextcloud.log
@@ -514,7 +515,21 @@ jobs:
             echo "can't upgrade from Debian $(sudo "$LXC" exec ncp -- cat /etc/os-release | grep VERSION_ID=)"
             exit 1
           }
+          current_nc_version="$(sudo "$LXC" exec ncp -- ncc status | grep "version:" | awk '{ print $3 }')"
+          latest_nc_version="$(cat etc/ncp.cfg | jq -r '.nextcloud_version')"
+          
           sudo "$LXC" exec ncp -- bash -c "DEBIAN_FRONTEND=noninteractive ncp-dist-upgrade"
+          sudo "$LXC" exec ncp -- /usr/local/bin/ncc status
+          
+          if [[ "$current_nc_version" =~ "$latest_nc_version".* ]]
+          then
+            echo "Nextcloud is up to date - skipping NC update test."
+          else
+            sudo "$LXC" exec ncp -- bash -c "DBG=x ncp-update-nc ${latest_nc_version?}"
+            sudo "$LXC" exec ncp -- /usr/local/bin/ncc status
+          fi
+          
+          sudo "$LXC" exec ncp -- rm -f /opt/ncdata/data/nextcloud.log
           
           sudo "$LXC" exec ncp -- rm -f /opt/ncdata/data/nextcloud.log
           
