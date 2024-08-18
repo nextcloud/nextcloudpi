@@ -55,10 +55,11 @@ fi
 systemd-run -u 'ncp-update-nc' bash -c "DBG='${DBG:-}' /usr/local/bin/ncp-update-nc.d/update-nc.sh '${VER}' |& tee /var/log/ncp-update-nc.log"
 sleep 5
 
-if ! [[ "$(systemctl is-active ncp-update-nc ||:)" =~ ^(active|activating|deactivating)$ ]]
+if ! [[ "$(systemctl is-active ncp-update-nc ||:)" =~ ^(active|inactive|activating|deactivating)$ ]]
 then
   echo "Failed to start ncp-update-nc"
-  systemctl status --no-pager ncp-update-nc
+  [[ -f /var/log/ncp-update-nc.log ]] && cat /var/log/ncp-update-nc.log
+  systemctl status --no-pager ncp-update-nc ||:
 fi
 
 connect_to_nc_update
