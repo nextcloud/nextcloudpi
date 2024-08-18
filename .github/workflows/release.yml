@@ -324,6 +324,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          
+          NC_VERSION="$(jq -r '.nextcloud_version' < etc/ncp.cfg)"
+          PHP_VERSION="$(jq -r '.php_version' < etc/ncp.cfg)"
+          DEBIAN_VERSION="$(jq -r '.release' < etc/ncp.cfg)"
+          ARMBIAN_VERSIOn="$(cat build/armbian/armbian_version)"
+          
           subject="$(git tag -n10 --format="%(contents:subject)" "${{ env.VERSION }}")"
           body="$(git tag -n30 --format="%(contents:body)" "${{ env.VERSION }}")"
           separator="
@@ -334,6 +340,12 @@ jobs:
 
           gh release create --draft -F - "${{ env.VERSION }}" <<EOF
           ${subject:-No message found}
+          
+          ### Included Software
+          Nextcloud ${NC_VERSION} (can be automatically updated to latest minor version) 
+          PHP ${PHP_VERSION}
+          Debian ${DEBIAN_VERSION}
+          Armbian ${ARMBIAN_VERSION}
 
           ${body:+${body}${separator}}
 
