@@ -23,19 +23,42 @@ BIN="${0##*/}"
 VER="$1"
 [[ "$VER" == "" ]] && { echo "Usage ${BIN} <version>"; exit 1; }
 
-if systemctl is-active ncp-update-nc >/dev/null 2>&1
+connect_to_nc_update() {
+  tail -f "/var/log/ncp-update-nc.log" &
+  tail_pid=$!
+  while [[ "$(systemctl is-active ncp-update-nc ||:)" == "active" ]]
+  do
+    sleep 3
+  done
+
+  kill "$tail_pid"
+  if [[ "$(systemctl is-active ncp-update-nc ||:)" == "inactive" ]]
+  then
+    echo "Nextcloud update finished successfully."
+    return 0
+  elif [[ "$(systemctl is-active ncp-update-nc ||:)" == "failed" ]]
+  then
+    echo "Nextcloud update failed."
+    return 1
+  else
+    echo "Nextcloud update was not found or failed (unexpected status: '$(systemctl is-active ncp-update-nc ||:)')"
+  fi
+}
+
+if [[ "$(systemctl is-active ncp-update-nc ||:)" == "activating" ]]
 then
   echo "Existing ncp-update-nc process detected. Connecting..."
-  tail -f "/var/log/ncp-update-nc.log"
+  connect_to_nc_update
   exit 0
 fi
 
-systemd-run -u 'ncp-update-nc' -p "RemainAfterExit=yes" bash -c "DBG='${DBG:-}' /usr/local/bin/ncp-update-nc.d/update-nc.sh '${VER}' |& tee /var/log/ncp-update-nc.log"
+systemd-run -u 'ncp-update-nc' bash -c "DBG='${DBG:-}' /usr/local/bin/ncp-update-nc.d/update-nc.sh '${VER}' |& tee /var/log/ncp-update-nc.log"
 sleep 5
 
-if ! systemctl is-active ncp-update-nc >/dev/null 2>&1
+if [[ "$(systemctl is-active ncp-update-nc ||:)" != "activating" ]]
 then
   echo "Failed to start ncp-update-nc"
   systemctl status --no-pager ncp-update-nc
 fi
-tail -f "/var/log/ncp-update-nc.log"
+
+connect_to_nc_update
