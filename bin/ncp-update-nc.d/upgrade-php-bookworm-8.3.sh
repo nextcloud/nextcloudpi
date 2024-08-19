@@ -57,8 +57,12 @@ install_template "php/opcache.ini.sh" "/etc/php/${PHPVER_NEW}/mods-available/opc
 
 a2enconf "php${PHPVER_NEW}-fpm"
 
+[[ -f "/etc/systemd/system/php${PHPVER_OLD}-fpm.service.d/ncp.conf" ]] && {
+  mkdir -p "/etc/systemd/system/php${PHPVER_NEW}-fpm.service.d"
+  cp "/etc/systemd/system/php${PHPVER_OLD}-fpm.service.d/ncp.conf" "/etc/systemd/system/php${PHPVER_NEW}-fpm.service.d/ncp.conf"
+}
+
 echo "Starting apache and php-fpm..."
 service "php${PHPVER_NEW}-fpm" start
 service apache2 start
 ncc status
-rm -f /etc/apt/sources.list.d/php.list /etc/apt/trusted.gpg.d/php.gpg
