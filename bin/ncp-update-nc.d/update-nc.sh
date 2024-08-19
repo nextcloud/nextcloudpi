@@ -23,6 +23,10 @@ ncc status &>/dev/null          || { [[ "$DBG" == x ]] && ncc status; echo "Next
 [[ ${EUID} -eq 0 ]] && SUDO="sudo -u www-data"
 CURRENT="$(nc_version)"
 TARGET_VERSION="$(determine_nc_upgrade_version "${CURRENT?}" "${VER?}")"
+[[ "$TARGET_VERSION" == "$CURRENT" ]] && {
+  echo "Nextcloud version ${CURRENT} is already installed. Nothing to do."
+  exit 0
+}
 [[ -n "$TARGET_VERSION" ]] || {
   echo "Could not find a valid upgrade path from '${CURRENT}' to '${TARGET_VERSION}'. Nothing to update."
   exit 1
