@@ -52,6 +52,7 @@ then
   exit $?
 fi
 
+systemctl reset-failed ncp-encrypt ||:
 systemd-run -u 'ncp-update-nc' bash -c "DBG='${DBG:-}' /usr/local/bin/ncp-update-nc.d/update-nc.sh '${VER}' |& tee /var/log/ncp-update-nc.log"
 sleep 5
 
