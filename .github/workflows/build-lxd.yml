@@ -362,7 +362,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          ref: "${{ env.VERSION }}"
+          ref: "v1.54.3"
       - name: Setup Firefox
         continue-on-error: true
         id: setup-firefox-browser-action
@@ -422,7 +422,7 @@ jobs:
             sudo "$LXC" exec ncp -- "tail -n20 /var/log/ncp.log" || true
             exit 1
           }
-          python nextcloud_tests.py --no-gui --skip-release-check "nextcloudpi.local" 443 4443 || {
+          python nextcloud_tests.py --skip-release-check --no-gui "nextcloudpi.local" 443 4443 || {
             echo "Nextcloud test failed!"
             echo "Geckodriver logs:"
             tail -n 20 geckodriver.log >&2 || true
@@ -507,6 +507,10 @@ jobs:
             echo "System test failed!"
             exit 1
           }
+      - name: Checkout current version
+        run: |
+          git fetch origin
+          git checkout "${{ env.VERSION }}"
       - name: NCP distupgrade
         id: distupgrade
         run: |
