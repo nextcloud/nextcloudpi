@@ -132,7 +132,7 @@ class SettingsService {
 			2 => ["pipe", "w"]
 		];
 
-		$proc = proc_open($cmd, $descriptorSpec, $pipes, "/home/www-data", null);
+		$proc = proc_open($cmd, $descriptorSpec, $pipes, "/var/www", null);
 		$stdout = stream_get_contents($pipes[1]);
 		fclose($pipes[1]);
 		$stderr = stream_get_contents($pipes[2]);
