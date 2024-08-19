@@ -43,7 +43,7 @@ Please reach out in the [Matrix][chat-matrix-wiki] or [Telegram][chat-telegram-w
 
 ## Features
 
- * Raspberry Pi OS/Debian 11 _(Bullseye)_
+ * Raspberry Pi OS/Debian 12 _(Bookworm)_
  * Nextcloud
  * Apache, with HTTP2 enabled
  * PHP 8.1
