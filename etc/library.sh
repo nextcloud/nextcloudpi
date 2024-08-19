@@ -534,6 +534,7 @@ function determine_nc_upgrade_version() {
 
     if [[ "${supported_maj}" -le "${current_maj}" ]]
     then
+      echo "$current"
       # No update available
       return 0
     fi
