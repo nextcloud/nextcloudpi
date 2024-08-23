@@ -528,6 +528,7 @@ function determine_nc_update_version() {
   #CURRENT="$(ncc status | grep "versionstring:" | awk '{ print $3 }')"
   current_maj="${current%%.*}"
   requested_maj="${requested%%.*}"
+  supported_maj="${supported%%.*}"
 
   # If valid version is requested -> direct update, don't consider anything else
   if [[ "$requested" =~ ^[0-9.]*$ ]] && [[ "$requested_maj" -le "$((current_maj + 1))" ]]

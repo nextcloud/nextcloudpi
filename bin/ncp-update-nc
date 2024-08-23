@@ -24,7 +24,7 @@ VER="$1"
 [[ "$VER" == "" ]] && { echo "Usage ${BIN} <version>"; exit 1; }
 
 connect_to_nc_update() {
-  tail -f "/var/log/ncp-update-nc.log" &
+  tail -n 100 -f "/var/log/ncp-update-nc.log" &
   tail_pid=$!
   while [[ "$(systemctl is-active ncp-update-nc ||:)" =~ ^(active|activating|deactivating)$ ]]
   do
