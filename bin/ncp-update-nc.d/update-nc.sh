@@ -22,7 +22,13 @@ ncc status &>/dev/null          || { [[ "$DBG" == x ]] && ncc status; echo "Next
 
 [[ ${EUID} -eq 0 ]] && SUDO="sudo -u www-data"
 CURRENT="$(nc_version)"
-TARGET_VERSION="$(determine_nc_upgrade_version "${CURRENT?}" "${VER?}")"
+if [[ "$VER" == "0" ]] || [[ "$VER" == "" ]]
+then
+  REQUESTED_VERSION="${NCLATESTVER?}"
+else
+  REQUESTED_VERSION="$VER"
+fi
+TARGET_VERSION="$(determine_nc_update_version "${CURRENT?}" "${NCLATESTVER}" "${REQUESTED_VERSION}")"
 [[ "$TARGET_VERSION" == "$CURRENT" ]] && {
   echo "Nextcloud version ${CURRENT} is already installed. Nothing to do."
   exit 0
@@ -52,9 +58,9 @@ grep -qP "\d+\.\d+\.\d+" <<<"$TARGET_VERSION"   || { echo "Malformed version $TA
 
 echo "Current   Nextcloud version $CURRENT"
 echo "Available Nextcloud version $TARGET_VERSION"
-if [[ "$TARGET_VERSION" != "$VER" ]]
+if [[ "$TARGET_VERSION" != "$REQUESTED_VERSION" ]]
 then
-  echo "INFO: You have requested an update to '$VER', but a direct update to '$VER' cannot be performed, so the latest available version that can be updated to has been selected automatically."
+  echo "INFO: You have requested an update to '${REQUESTED_VERSION}', but a direct update to '${REQUESTED_VERSION}' cannot be performed, so the latest available version that can be updated to has been selected automatically."
 fi
 
 # make sure that cron.php is not running and there are no pending jobs
