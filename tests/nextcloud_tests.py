@@ -27,7 +27,8 @@ from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.firefox.options import Options
-from selenium.common.exceptions import NoSuchElementException, WebDriverException, TimeoutException
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import NoSuchElementException, WebDriverException, TimeoutException, ElementNotInteractableException
 from typing import List, Tuple
 import traceback
 
@@ -122,21 +123,32 @@ def is_admin_notifications_checkbox(item: WebElement):
 
 
 def close_first_run_wizard(driver: WebDriver):
-    wait = WebDriverWait(driver, 60)
+    wait = WebDriverWait(driver, 20)
     first_run_wizard = None
     try:
         first_run_wizard = driver.find_element(By.CSS_SELECTOR, "#firstrunwizard")
     except NoSuchElementException:
         pass
     if first_run_wizard is not None and first_run_wizard.is_displayed():
-        wait.until(VisibilityOfElementLocatedByAnyLocator([(By.CLASS_NAME, "modal-container__close"),
-                                                           (By.CLASS_NAME, "first-run-wizard__close-button")]))
+        for i in range(3):
+            try:
+                wait.until(VisibilityOfElementLocatedByAnyLocator([(By.CSS_SELECTOR, '.modal-container__content button[aria-label=Close]'),
+                                                                   (By.CLASS_NAME, "modal-container__close"),
+                                                                   (By.CLASS_NAME, "first-run-wizard__close-button")]))
+            except TimeoutException as e:
+                if i == 3:
+                    raise e
         try:
-            overlay_close_btn = driver.find_element(By.CLASS_NAME, "first-run-wizard__close-button")
+            overlay_close_btn = driver.find_element(By.CSS_SELECTOR, '.modal-container__content button[aria-label=Close]')
             overlay_close_btn.click()
-        except NoSuchElementException:
-            overlay_close_btn = driver.find_element(By.CLASS_NAME, "modal-container__close")
-            overlay_close_btn.click()
+        except (NoSuchElementException, ElementNotInteractableException):
+            try:
+                overlay_close_btn = driver.find_element(By.CLASS_NAME, "modal-container__close")
+                overlay_close_btn.click()
+            except (NoSuchElementException, ElementNotInteractableException):
+                overlay_close_btn = driver.find_element(By.CLASS_NAME, "first-run-wizard__close-button")
+                overlay_close_btn.click()
+
         time.sleep(3)
 
 

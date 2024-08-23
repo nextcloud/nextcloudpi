@@ -519,16 +519,30 @@ function nc_version()
   ncc status | grep "versionstring:" | awk '{ print $3 }'
 }
 
-function determine_nc_upgrade_version() {
+function determine_nc_update_version() {
   local current supported current_maj supported_maj versions next_version
   current="${1?}"
   supported="${2?}"
+  requested="${3:-latest}"
 
   #CURRENT="$(ncc status | grep "versionstring:" | awk '{ print $3 }')"
   current_maj="${current%%.*}"
+  requested_maj="${requested%%.*}"
   supported_maj="${supported%%.*}"
-  versions="$(curl -L -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/repos/nextcloud/server/releases?per_page=100 | jq -r '.[].tag_name' | grep -v -e 'rc.$' -e 'beta.$' | sort -V)"
+
+  # If valid version is requested -> direct update, don't consider anything else
+  if [[ "$requested" =~ ^[0-9.]*$ ]] && [[ "$requested_maj" -le "$((current_maj + 1))" ]]
+  then
+    echo "$requested"
+    return 0
+  fi
+
+  versions="$(curl -q -L -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/repos/nextcloud/server/releases?per_page=100 | jq -r '.[].tag_name' | grep -v -e 'rc.$' -e 'beta.$' | sort -V)"
   next_version="$(grep "v${current_maj}." <<<"${versions}" | tail -n 1 | tr -d 'v')"
+  next_version_maj="${next_version%%.*}"
+  next_version_min="${next_version#*.}"
+  next_version_min="${next_version_min%%.*}"
+
   if [[ "${next_version}" == "${current}" ]]
   then
 

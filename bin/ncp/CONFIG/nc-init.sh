@@ -127,11 +127,11 @@ EOF
   }
 
   mysql nextcloud <<EOF
-replace into  ${DB_PREFIX}appconfig values ( 'theming', 'name'          , "NextCloudPi"             , 2, null);
-replace into  ${DB_PREFIX}appconfig values ( 'theming', 'slogan'        , "keep your data close"    , 2, null);
-replace into  ${DB_PREFIX}appconfig values ( 'theming', 'url'           , "https://nextcloudpi.com" , 2, null);
-replace into  ${DB_PREFIX}appconfig values ( 'theming', 'logoMime'      , "image/svg+xml"           , 2, null);
-replace into  ${DB_PREFIX}appconfig values ( 'theming', 'backgroundMime', "image/png"               , 2, null);
+replace into  ${DB_PREFIX}appconfig values ( 'theming', 'name'          , "NextCloudPi"             , 2, 0);
+replace into  ${DB_PREFIX}appconfig values ( 'theming', 'slogan'        , "keep your data close"    , 2, 0);
+replace into  ${DB_PREFIX}appconfig values ( 'theming', 'url'           , "https://nextcloudpi.com" , 2, 0);
+replace into  ${DB_PREFIX}appconfig values ( 'theming', 'logoMime'      , "image/svg+xml"           , 2, 0);
+replace into  ${DB_PREFIX}appconfig values ( 'theming', 'backgroundMime', "image/png"               , 2, 0);
 EOF
 
   # NCP app

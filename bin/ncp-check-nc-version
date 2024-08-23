@@ -7,7 +7,7 @@ set -e
 source /usr/local/etc/library.sh # sets NCLATESTVER
 
 CURRENT="$(nc_version)"
-NEXT_VERSION="$(determine_nc_upgrade_version "${CURRENT}" "${NCLATESTVER?}")"
+NEXT_VERSION="$(determine_nc_update_version "${CURRENT}" "${NCLATESTVER?}")"
 [[ -n "$NEXT_VERSION" ]] || exit 0
 
 NOTIFIED=/var/run/.nc-version-notified
