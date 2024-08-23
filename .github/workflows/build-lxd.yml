@@ -459,7 +459,10 @@ jobs:
           current_nc_version="$(sudo "$LXC" exec ncp -- ncc status | grep "version:" | awk '{ print $3 }')"
           latest_nc_version="27.1.6"
           
+          sudo "$LXC" exec ncp -- apt-get update
+          sudo "$LXC" exec ncp -- apt-get install --no-install-recommends -y gnupg2
           sudo "$LXC" exec ncp -- apt-key adv --fetch-keys https://packages.sury.org/php/apt.gpg
+          
           sudo "$LXC" exec ncp -- bash -c "DBG=x ncp-update ${UPDATE_ARGS[*]}"
           sudo "$LXC" exec ncp -- /usr/local/bin/ncc status
           
