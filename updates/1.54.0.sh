@@ -26,7 +26,7 @@ done
 echo "done."
 
 echo "Updating PHP package signing key..."
-apt-get update
+apt-get update ||:
 apt-get install --no-install-recommends -y gnupg2
 
 apt-key adv --fetch-keys https://packages.sury.org/php/apt.gpg
