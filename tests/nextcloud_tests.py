@@ -123,40 +123,31 @@ def is_admin_notifications_checkbox(item: WebElement):
 
 
 def close_first_run_wizard(driver: WebDriver):
-    wait = WebDriverWait(driver, 60)
+    wait = WebDriverWait(driver, 20)
     first_run_wizard = None
     try:
         first_run_wizard = driver.find_element(By.CSS_SELECTOR, "#firstrunwizard")
     except NoSuchElementException:
         pass
     if first_run_wizard is not None and first_run_wizard.is_displayed():
-        # wait.until(VisibilityOfElementLocatedByAnyLocator([(By.XPATH, "//div[@id='firstrunwizard]//button[@aria-label='Close']'")]))
-        #print(first_run_wizard.find_element(By.CSS_SELECTOR, 'button[aria-label="Close"]'))
-        try:
-            wait.until(VisibilityOfElementLocatedByAnyLocator([(By.XPATH, "//button[@aria-label='Close']"),
-                                                               (By.CLASS_NAME, "modal-container__close"),
-                                                               (By.CLASS_NAME, "first-run-wizard__close-button")]))
+        for i in range(3):
             try:
-                driver.execute_script("""
-                let btn = document.querySelector('#firstrunwizard button[aria-label="Close"]'); 
-                if(btn) { 
-                    btn.click(); 
-                }
-                """)
+                wait.until(VisibilityOfElementLocatedByAnyLocator([(By.CSS_SELECTOR, '.modal-container__content button[aria-label=Close]'),
+                                                                   (By.CLASS_NAME, "modal-container__close"),
+                                                                   (By.CLASS_NAME, "first-run-wizard__close-button")]))
+            except TimeoutException as e:
+                if i == 3:
+                    raise e
+        try:
+            overlay_close_btn = driver.find_element(By.CSS_SELECTOR, '.modal-container__content button[aria-label=Close]')
+            overlay_close_btn.click()
+        except (NoSuchElementException, ElementNotInteractableException):
+            try:
+                overlay_close_btn = driver.find_element(By.CLASS_NAME, "modal-container__close")
+                overlay_close_btn.click()
             except (NoSuchElementException, ElementNotInteractableException):
-                try:
-                    overlay_close_btn = driver.find_element(By.CLASS_NAME, "modal-container__close")
-                    overlay_close_btn.click()
-                except (NoSuchElementException, ElementNotInteractableException):
-                    overlay_close_btn = driver.find_element(By.CLASS_NAME, "first-run-wizard__close-button")
-                    overlay_close_btn.click()
-        except TimeoutException:
-            driver.execute_script("""
-            let btn = document.querySelector('#firstrunwizard button[aria-label="Close"]'); 
-            if(btn) { 
-                btn.click(); 
-            }
-            """)
+                overlay_close_btn = driver.find_element(By.CLASS_NAME, "first-run-wizard__close-button")
+                overlay_close_btn.click()
 
         time.sleep(3)
 
