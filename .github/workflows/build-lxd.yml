@@ -348,8 +348,8 @@ jobs:
       VERSION: "${{ inputs.git_ref || github.ref }}"
       LXC: "${{ needs.determine-runner.outputs.lxc_cmd }}"
       LXD_EXTRA_PROFILE: "${{ needs.determine-runner.outputs.lxd_extra_profile }}"
-      PREVIOUS_IMAGE_URL_ARM64: "https://github.com/nextcloud/nextcloudpi/releases/download/v1.53.2/NextcloudPi_LXD_arm64_v1.53.2.tar.gz"
-      PREVIOUS_IMAGE_URL_AMD64: "https://github.com/nextcloud/nextcloudpi/releases/download/v1.53.2/NextcloudPi_LXD_x86_v1.53.2.tar.gz"
+      PREVIOUS_IMAGE_URL_ARM64: "https://github.com/nextcloud/nextcloudpi/releases/download/v1.53.0/NextcloudPi_LXD_arm64_v1.53.0.tar.gz"
+      PREVIOUS_IMAGE_URL_AMD64: "https://github.com/nextcloud/nextcloudpi/releases/download/v1.53.0/NextCloudPi_LXD_x86_v1.53.0.tar.gz"
       USE_INCUS: "${{ needs.determine-runner.outputs.lxc_cmd == 'incus' && 'yes' || 'no' }}"
     steps:
       - name: Setup incus
@@ -457,8 +457,9 @@ jobs:
           echo "Running update to ${VERSION}"
           
           current_nc_version="$(sudo "$LXC" exec ncp -- ncc status | grep "version:" | awk '{ print $3 }')"
-          latest_nc_version="27.0.1"
+          latest_nc_version="27.1.6"
           
+          sudo "$LXC" exec ncp -- apt-key adv --fetch-keys https://packages.sury.org/php/apt.gpg
           sudo "$LXC" exec ncp -- bash -c "DBG=x ncp-update ${UPDATE_ARGS[*]}"
           sudo "$LXC" exec ncp -- /usr/local/bin/ncc status
           
