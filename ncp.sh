@@ -128,7 +128,7 @@ EOF
 
   cat > /home/www/ncp-app-bridge.sh <<'EOF'
 #!/bin/bash
-set -e
+set -ex
 grep -q '[\\&#;`|*?~<>^()[{}$&]' <<< "$*" && exit 1
 action="${1?}"
 [[ "$action" == "config" ]] && {

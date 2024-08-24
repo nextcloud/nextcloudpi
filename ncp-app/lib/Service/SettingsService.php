@@ -38,6 +38,7 @@ class SettingsService {
 		}
 		if ($config == null) {
 			$this->logger->error("Failed to retrieve ncp config (exit code: $ret)");
+			$this->logger->error("ERR: $stderr")
 			return $defaults;
 		}
 		return $config;
@@ -132,11 +133,13 @@ class SettingsService {
 			2 => ["pipe", "w"]
 		];
 
-		$proc = proc_open($cmd, $descriptorSpec, $pipes, "/var/www", null);
+		$proc = proc_open($cmd, $descriptorSpec, $pipes, "/home/www", null);
 		$stdout = stream_get_contents($pipes[1]);
 		fclose($pipes[1]);
 		$stderr = stream_get_contents($pipes[2]);
 		fclose($pipes[2]);
+
+        $this->logger->error("STDERR: $stderr")
 		return [proc_close($proc), $stdout, $stderr];
 	}
 }
