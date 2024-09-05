@@ -139,7 +139,6 @@ class SettingsService {
 		$stderr = stream_get_contents($pipes[2]);
 		fclose($pipes[2]);
 
-        $this->logger->error("STDERR: $stderr");
 		return [proc_close($proc), $stdout, $stderr];
 	}
 }

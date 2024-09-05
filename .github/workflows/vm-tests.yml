@@ -64,7 +64,7 @@ jobs:
           version: ${{ env.VERSION }}
           uid: "${{ env.UID }}"
           hcloud_token: ${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}
-          server_type: "cx11"
+          server_type: "cx22"
       - name: set instance variables
         run: |
           echo "SERVER_ADDRESS=${{ steps.create-test-instance.outputs.server_address }}" >> "$GITHUB_ENV"
@@ -314,7 +314,7 @@ jobs:
           version: "${{ env.PREVIOUS_VERSION }}"
           uid: "${{ env.UID }}"
           hcloud_token: ${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}
-          server_type: "cx11"
+          server_type: "cx22"
       - name: Set instance variables
         run: |
           echo "SERVER_ADDRESS=${{ steps.create-test-instance.outputs.server_address }}" >> "$GITHUB_ENV"
@@ -341,7 +341,7 @@ jobs:
           
           echo "Run integration tests"
           ssh -o "StrictHostKeyChecking=no" -o "UserKnownHostsFile=/dev/null" "root@${SERVER_ADDRESS}" cat /usr/local/etc/instance.cfg
-          test-ncp-instance -a -f "$SNAPSHOT_ID" -b "${VERSION}" --systemtest-args "--skip-update-test" --nc-test-args "--skip-release-check" "root@${SERVER_ADDRESS}" "localhost" "8443" "9443" || {
+          test-ncp-instance -a -f "$SNAPSHOT_ID" -b "v1.54.3" --systemtest-args "--skip-update-test" --nc-test-args "--skip-release-check" "root@${SERVER_ADDRESS}" "localhost" "8443" "9443" || {
           
             echo "Integration tests failed"
             echo "Here are the last lines of ncp-install.log:"
@@ -387,7 +387,7 @@ jobs:
           NC_TEST_ARGS=()
           ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" cat /etc/os-release | grep VERSION_ID=12 || NC_TEST_ARGS+=("--skip-release-check")
           set -x
-          test-ncp-instance -f "$SNAPSHOT_ID" -b "${VERSION}" --nc-test-args "$NC_TEST_ARGS" --systemtest-args "--skip-update-test" "root@${SERVER_ADDRESS}" "localhost" "8443" "9443" || {
+          test-ncp-instance -f "$SNAPSHOT_ID" -b "v1.54.3" --nc-test-args "$NC_TEST_ARGS" --systemtest-args "--skip-update-test" "root@${SERVER_ADDRESS}" "localhost" "8443" "9443" || {
           
             echo "Integration tests failed"
             echo "Here are the last lines of ncp-install.log:"
@@ -420,6 +420,45 @@ jobs:
           }
           ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" DEBIAN_FRONTEND=noninteractive ncp-dist-upgrade
           echo "skipped=no" | tee -a $GITHUB_OUTPUT
+      - name: Update Nextcloud
+        working-directory: /__w/nextcloudpi/nextcloudpi/ncp-test-automation/bin
+        run: |
+          set -ex
+          apk add jq
+          
+          echo "Setup ssh"
+          eval "$(ssh-agent)"
+          ssh-add /__w/nextcloudpi/nextcloudpi/.ssh/automation_ssh_key
+          
+          source ./library.sh
+          
+          current_nc_version="$(ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" "ncc status" | grep "version:" | awk '{ print $3 }')"
+          latest_nc_version="$(cat ../../etc/ncp.cfg | jq -r '.nextcloud_version')"
+          
+          if [[ "$current_nc_version" =~ "$latest_nc_version".* ]]
+          then
+            echo "Nextcloud is up to date - skipping NC update test."
+          else
+            for i in {1..10};
+            do
+              echo "running nc update ($i/10)..."
+              ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" "bash -c 'DBG=x ncp-update-nc ${latest_nc_version?}'"
+          
+              ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" /usr/local/bin/ncc status
+          
+              current_nc_version_new="$(ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" "ncc status" | grep "version:" | awk '{ print $3 }')"
+              if [[ "$current_nc_version_new" =~ "$latest_nc_version".* ]]
+              then
+                break
+              fi
+              if [[ "$current_nc_version" == "$current_nc_version_new" ]]
+              then
+                echo "failed to update to $latest_nc_version"
+                exit 1
+              fi
+              current_nc_version="$current_nc_version_new"
+            done
+          fi
 
       - name: Run integration tests after dist-upgrade
         id: final_test

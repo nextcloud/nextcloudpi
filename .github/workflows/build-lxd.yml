@@ -541,7 +541,7 @@ jobs:
             
               sudo "$LXC" exec ncp -- /usr/local/bin/ncc status
               current_nc_version_new="$(sudo "$LXC" exec ncp -- ncc status | grep "version:" | awk '{ print $3 }')"
-              if [[ "$current_nc_version" =~ "$latest_nc_version".* ]]
+              if [[ "$current_nc_version_new" =~ "$latest_nc_version".* ]]
               then
                 break
               fi
