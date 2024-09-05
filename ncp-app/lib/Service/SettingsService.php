@@ -38,7 +38,7 @@ class SettingsService {
 		}
 		if ($config == null) {
 			$this->logger->error("Failed to retrieve ncp config (exit code: $ret)");
-			$this->logger->error("ERR: $stderr")
+			$this->logger->error("ERR: $stderr");
 			return $defaults;
 		}
 		return $config;
@@ -139,7 +139,7 @@ class SettingsService {
 		$stderr = stream_get_contents($pipes[2]);
 		fclose($pipes[2]);
 
-        $this->logger->error("STDERR: $stderr")
+        $this->logger->error("STDERR: $stderr");
 		return [proc_close($proc), $stdout, $stderr];
 	}
 }

@@ -122,8 +122,8 @@ def is_admin_notifications_checkbox(item: WebElement):
         return False
 
 
-def close_first_run_wizard(driver: WebDriver):
-    wait = WebDriverWait(driver, 20)
+def close_first_run_wizard(driver: WebDriver, wait_multiplier=1):
+    wait = WebDriverWait(driver, 20 * wait_multiplier)
     first_run_wizard = None
     try:
         first_run_wizard = driver.find_element(By.CSS_SELECTOR, "#firstrunwizard")
@@ -152,7 +152,7 @@ def close_first_run_wizard(driver: WebDriver):
         time.sleep(3)
 
 
-def test_nextcloud(IP: str, nc_port: str, driver: WebDriver, skip_release_check: bool):
+def test_nextcloud(IP: str, nc_port: str, driver: WebDriver, skip_release_check: bool, wait_multiplier=1):
     """ Login and assert admin page checks"""
     test = Test()
     test.new("nextcloud page")
@@ -179,7 +179,7 @@ def test_nextcloud(IP: str, nc_port: str, driver: WebDriver, skip_release_check:
     test.report("password", "Wrong password" not in driver.page_source, msg="Failed to login with provided password")
 
     test.new("settings config")
-    wait = WebDriverWait(driver, 60)
+    wait = WebDriverWait(driver, 60 * wait_multiplier)
     try:
         wait.until(VisibilityOfElementLocatedByAnyLocator([(By.CSS_SELECTOR, "#security-warning-state-ok"),
                                                            (By.CSS_SELECTOR, "#security-warning-state-warning"),
@@ -236,7 +236,7 @@ def test_nextcloud(IP: str, nc_port: str, driver: WebDriver, skip_release_check:
     except Exception as e:
         test.check(e)
 
-    close_first_run_wizard(driver)
+    close_first_run_wizard(driver, wait_multiplier)
 
     test.new("admin section (1)")
     try:
@@ -289,7 +289,7 @@ def test_nextcloud(IP: str, nc_port: str, driver: WebDriver, skip_release_check:
     except Exception as e:
         test.check(e)
     test.new("admin section (2)")
-    wait = WebDriverWait(driver, 10)
+    wait = WebDriverWait(driver, 10 * wait_multiplier)
     try:
         li = next(filter(is_admin_notifications_checkbox, list_items))
         li.find_element(By.TAG_NAME, "input").click()
@@ -321,13 +321,14 @@ if __name__ == "__main__":
 
     # parse options
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'hn', ['help', 'new', 'no-gui', 'skip-release-check'])
+        opts, args = getopt.getopt(sys.argv[1:], 'hn', ['help', 'new', 'no-gui', 'skip-release-check', 'wait-multiplier='])
     except getopt.GetoptError:
         usage()
         sys.exit(2)
 
     skip_release_check = False
     options = webdriver.FirefoxOptions()
+    wait_multiplier = 1
     for opt, arg in opts:
         if opt in ('-h', '--help'):
             usage()
@@ -339,6 +340,8 @@ if __name__ == "__main__":
             options.add_argument("-headless")
         elif opt == '--skip-release-check':
             skip_release_check = True
+        elif opt == '--wait-multiplier':
+            wait_multiplier = int(arg)
         else:
             usage()
             sys.exit(2)
@@ -377,7 +380,7 @@ if __name__ == "__main__":
     driver = webdriver.Firefox(options=options)
     failed=False
     try:
-        test_nextcloud(IP, nc_port, driver, skip_release_check)
+        test_nextcloud(IP, nc_port, driver, skip_release_check, wait_multiplier)
     except Exception as e:
         print(e)
         print(traceback.format_exc())
