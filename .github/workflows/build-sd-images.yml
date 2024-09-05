@@ -296,7 +296,7 @@ jobs:
               echo "${LOG_DIAG} Nextcloud log: "
               "${CONTAINER_CMD[@]}" -q ncp /bin/bash -c 'ls -l /opt/ncdata/data/nextcloud.log' |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
               "${CONTAINER_CMD[@]}" -q ncp /bin/bash -c 'cat /opt/ncdata/data/nextcloud.log' |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
-              cat ./raspbian_root/opt/ncdata/data/nextcloud.log |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+              sudo cat ./raspbian_root/opt/ncdata/data/nextcloud.log |& awk "{ print \"${LOG_DIAG} \" \$0 }"
               sleep 12
               continue
             }
