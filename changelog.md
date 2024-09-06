@@ -1,5 +1,28 @@
 # NextcloudPi Changelog
 
+## [v1.55.0](https://github.com/nextcloud/nextcloudpi/tree/v1.55.0) (2024-09-06) Support for PHP 8.3 and Nextcloud 29
+
+### Changes
+
+- Support for Nextcloud 29
+- Support for PHP 8.3
+- Run `maintenance:repair --include-expensive` after NC update if necessary
+- Add logrotate for redis, apache and mysql logs
+- Add support for the OrangePi 5 and OrangePi 5 Plus boards
+
+### Fixes
+
+- Fix bug in nc-format-USB.sh (thanks @m-breitbach)
+- Nextcloud updater fixes 
+  - Fix constant retries of the auto update if on a version that's later than the last officially supported one [#1965](https://github.com/nextcloud/nextcloudpi/issues/1965)
+  - Fix incorrect detection of os constraints for NC updates beyond v28 [#1960](https://github.com/nextcloud/nextcloudpi/issues/1960)
+  - Fix user requested version being ignored if a later version was available
+- Improve stability of nc-encrypt by daemonizing the encryption process [#1874](https://github.com/nextcloud/nextcloudpi/issues/1874)
+
+### Development related
+
+- Perform nc update tests for both lxd as well as vms during CI/CD
+
 ## [v1.54.3](https://github.com/nextcloud/nextcloudpi/tree/v1.54.3) (2024-08-11) Improved Nextcloud (auto) updates
 
 ### Fixes
