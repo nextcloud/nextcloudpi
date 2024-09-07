@@ -282,20 +282,20 @@ jobs:
               echo -e "${LOG_DIAG} /etc/os-release:"
               "${CONTAINER_CMD[@]}" -q ncp /bin/bash -c 'cat /etc/os-release'
               echo -e "${LOG_DIAG} /usr/local/etc/ncp.cfg:"
-              "${CONTAINER_CMD[@]}" -q ncp /bin/bash -c 'cat /usr/local/etc/ncp.cfg'
+              "${CONTAINER_CMD[@]}" --pipe -q ncp /bin/bash -c 'cat /usr/local/etc/ncp.cfg'
               cat ./raspbian_root/usr/local/etc/ncp.cfg
-              echo -e "${LOG_DIAG} /home/ncp-app-bridge confi g ncp"
-              "${CONTAINER_CMD[@]}" -q ncp /bin/bash -c 'sudo -u www-data sudo /home/www/ncp-app-bridge.sh config ncp'
+              echo -e "${LOG_DIAG} /home/ncp-app-bridge config ncp"
               sudo ls -l ./raspbian_root/home/www/ncp-app-bridge.sh
+              "${CONTAINER_CMD[@]}" --pipe --uid=33 ncp /bin/bash -c 'sudo /home/www/ncp-app-bridge.sh config ncp'
               echo -e "{$LOG_DIAG} Geckodriver logs:"
               tail -n 20 geckodriver.log >&2 |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
               echo -e "${LOG_CICD} ================"
               echo -e "${LOG_DIAG} ncp.log: "
-              "${CONTAINER_CMD[@]}" -q ncp /bin/bash -c "tail -n20 /var/log/ncp.log" |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
+              "${CONTAINER_CMD[@]}" --pipe ncp /bin/bash -c "tail -n20 /var/log/ncp.log" |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
               echo "================"
               echo "${LOG_DIAG} Nextcloud log: "
-              "${CONTAINER_CMD[@]}" -q ncp /bin/bash -c 'ls -l /opt/ncdata/data/nextcloud.log' |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
-              "${CONTAINER_CMD[@]}" -q ncp /bin/bash -c 'cat /opt/ncdata/data/nextcloud.log' |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
+              "${CONTAINER_CMD[@]}" --pipe -q ncp /bin/bash -c 'ls -l /opt/ncdata/data/nextcloud.log' |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
+              "${CONTAINER_CMD[@]}" --pipe -q ncp /bin/bash -c 'cat /opt/ncdata/data/nextcloud.log' |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
               sudo cat ./raspbian_root/opt/ncdata/data/nextcloud.log |& awk "{ print \"${LOG_DIAG} \" \$0 }"
               sleep 12
               continue
