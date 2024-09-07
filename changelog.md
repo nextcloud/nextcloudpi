@@ -1,6 +1,6 @@
 # NextcloudPi Changelog
 
-## [v1.55.0](https://github.com/nextcloud/nextcloudpi/tree/v1.55.0) (2024-09-06) Support for PHP 8.3 and Nextcloud 29
+## [v1.55.0](https://github.com/nextcloud/nextcloudpi/tree/v1.55.0) (2024-09-07) Support for PHP 8.3 and Nextcloud 29
 
 ### Changes
 
