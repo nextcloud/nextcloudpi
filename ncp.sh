@@ -22,7 +22,8 @@ install()
 {
   # NCP-CONFIG
   apt-get update
-  $APTINSTALL git dialog whiptail jq file lsb-release tmux
+  $APTINSTALL git dialog whiptail jq file lsb-release tmux logrotate
+
   mkdir -p "$CONFDIR" "$BINDIR"
 
   # This has changed, pi user no longer exists by default, the user needs to create it with Raspberry Pi imager

@@ -19,6 +19,8 @@ LINUXFAMILY=$2
 BOARD=$3
 BUILD_DESKTOP=$4
 
+echo "include home dir? ${INCLUDE_HOME_DIR:-no}"
+
 cd /tmp/overlay
 NCPCFG=etc/ncp.cfg
 source etc/library.sh # sets RELEASE

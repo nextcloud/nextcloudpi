@@ -20,14 +20,14 @@ install()
 
 configure()
 {
-(
+
   set -e -o pipefail
   local datadir parentdir encdir tmpdir
   datadir="$(get_ncpcfg datadir)"
   [[ "${datadir?}" == "null" ]] && datadir=/var/www/nextcloud/data
   parentdir="$(dirname "${datadir}")"
   encdir="${parentdir?}/ncdata_enc"
-  tmpdir="$(mktemp -u -p "${parentdir}" -t nc-data-crypt.XXXXXX))"
+  tmpdir="$(mktemp -u -p "${parentdir}" -t nc-data-crypt.XXXXXX)"
 
   [[ "${ACTIVE?}" != "yes" ]] && {
     if ! is_active; then
@@ -55,9 +55,11 @@ configure()
     return
   fi
 
+  export PASSWORD
   # Just mount already encrypted data
   if [[ -f "${encdir?}"/gocryptfs.conf ]]; then
-    echo "${PASSWORD?}" | gocryptfs -allow_other -q "${encdir}" "${datadir}" 2>&1 | sed /^Switch/d
+    systemctl reset-failed ncp-encrypt ||:
+    systemd-run -u ncp-encrypt -E PASSWORD bash -c "gocryptfs -fg -allow_other -q '${encdir}' '${datadir}' <<<\"\${PASSWORD}\" 2>&1 | sed /^Switch/d |& tee /var/log/ncp-encrypt.log"
 
     # switch to the regular virtual hosts after we decrypt, so we can access NC and ncp-web
     a2ensite ncp 001-nextcloud
@@ -70,12 +72,33 @@ configure()
   mkdir -p "${encdir?}"
   echo "${PASSWORD?}" | gocryptfs -init -q "${encdir}"
   save_maintenance_mode
+  cleanup() {
+    umount "${datadir}" ||:
+    [[ -f "${tmpdir}" ]] && {
+      rm -rf "${datadir?}" ||:
+      mv "${tmpdir}" "${datadir}"
+
+      chown -R www-data:www-data "${datadir}"
+    }
+  }
+
+  trap cleanup 1
   trap restore_maintenance_mode EXIT
 
   mv "${datadir?}" "${tmpdir?}"
 
   mkdir "${datadir}"
-  echo "${PASSWORD}" | gocryptfs -allow_other -q "${encdir}" "${datadir}" 2>&1 | sed /^Switch/d
+  systemctl reset-failed ncp-encrypt ||:
+  systemd-run -u ncp-encrypt -E PASSWORD bash -c "gocryptfs -fg -allow_other -q '${encdir}' '${datadir}' <<<\"\${PASSWORD}\" 2>&1 | sed /^Switch/d |& tee /var/log/ncp-encrypt.log"
+
+  maxtries=5
+  while [[ "$(systemctl is-active ncp-encrypt)" != "active" ]] || ! mount | grep -1 "${datadir}"
+  do
+    echo "Wating for encryption process to start... (${maxtries})"
+    sleep 3
+    maxtries=$((maxtries - 1))
+    [[ $maxtries -gt 0 ]] || return 1
+  done
 
   echo "Encrypting data..."
   mv "${tmpdir}"/* "${tmpdir}"/.[!.]* "${datadir}"
@@ -85,7 +108,7 @@ configure()
   set_ncpcfg datadir "${datadir}"
 
   echo "Data is now encrypted"
-)
+
 }
 
 # License

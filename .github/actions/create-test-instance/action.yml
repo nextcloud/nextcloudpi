@@ -13,7 +13,7 @@ inputs:
   server_type:
     description: Server type to use for hetzner servers
     required: true
-    default: "cx11"
+    default: "cx22"
 
 outputs:
   server_address:

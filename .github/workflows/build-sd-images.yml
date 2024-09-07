@@ -64,29 +64,28 @@ jobs:
 #          update-binfmts --display qemu-aarch64
 #          update-binfmts --display qemu-arm
       - name: "Build Armbian"
-        if: ${{ inputs.board_id != 'raspberrypi' }}
         id: build-armbian
         continue-on-error: true
         run: |
           set -ex
           export IMG="NextcloudPi_${{ inputs.board_name }}_${VERSION//\//_}.img"
           [[ "${{ github.ref_protected }}" == true ]] || export DBG=x
-          
+
           ./build/build-SD-armbian.sh "${{ inputs.board_id }}" "${{ inputs.board_name }}"
-          
+
           artifacts=("armbian/output/images/Armbian"*.img)
           mkdir -p output
           mv "${artifacts[0]}" "output/$IMG"
           echo "artifact_file=${IMG}" >> $GITHUB_OUTPUT
           echo "ARTIFACT_FILE=${IMG}" >> $GITHUB_ENV
       - name: "Build Armbian (2nd attempt)"
-        if: ${{ inputs.board_id != 'raspberrypi' && steps.build-armbian.outcome == 'failure' }}
+        if: ${{ steps.build-armbian.outcome == 'failure' }}
         id: build-armbian-2nd
         run: |
           set -ex
           echo -e "${LOG_CICD} Cleanup armbian build leftovers..."
           sudo rm -rf armbian/ tmp/ output/
-          
+
           export IMG="NextcloudPi_${{ inputs.board_name }}_${VERSION//\//_}.img"
           [[ "${{ github.ref_protected }}" == true ]] || export DBG=x
 
@@ -98,34 +97,11 @@ jobs:
           echo "artifact_file=${IMG}" >> $GITHUB_OUTPUT
           echo "ARTIFACT_FILE=${IMG}" >> $GITHUB_ENV
       - name: "Upload Armbian logs"
-        if: ${{ inputs.board_id != 'raspberrypi' && failure() }}
+        if: ${{ failure() }}
         uses: actions/upload-artifact@v3
         with:
           name: ${{ github.run_id }}-${{ inputs.board_id }}-logs
           path: armbian/output
-      - name: Build RPI SD Image
-        if: ${{ inputs.board_id == 'raspberrypi' }}
-        id: build-rpi
-        run: |
-          set -ex
-          echo -e "${LOG_CICD} Protected? ${{ github.ref_protected }}"
-          export IMG="NextcloudPi_${{ inputs.board_name }}_${VERSION//\//_}.img"
-          [[ "${{ github.ref_protected }}" == true ]] || export DBG=x
-          wget -q https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-aarch64-static -O ./qemu-aarch64-static
-          ./build/build-SD-rpi.sh
-          mkdir -p output
-          mv "tmp/$IMG" ./output/
-
-          for i in {1..10}
-          do
-            sudo losetup | grep "${IMG}" || break;
-            [[ "$i" -lt 10 ]] || { echo -e "${LOG_CICD} Timeout while waiting for image to unmount"; exit 1; }
-            sleep 6
-            echo -e "${LOG_CICD} Retrying ($i out of 10)"
-          done
-
-          echo "artifact_file=${IMG}" >> $GITHUB_OUTPUT
-          echo "ARTIFACT_FILE=${IMG}" >> $GITHUB_ENV
       - name: upload image to artifact store
         uses: actions/upload-artifact@v3
         with:
@@ -135,7 +111,7 @@ jobs:
 
   test:
     needs: build
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     env:
       VERSION: "${{ inputs.git_ref }}"
       ARTIFACT_ID: ${{ needs.build.outputs.artifact_name }}
@@ -151,18 +127,9 @@ jobs:
     steps:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
-#      - name: Set up QEMU
-#        run: |
-#          sudo apt-get update
-#          sudo apt-get install -y binfmt-support
-#          docker run --rm --privileged tonistiigi/binfmt:latest --install all
-#          docker run --rm --privileged multiarch/qemu-user-static:register --reset --credential yes
-#          sudo systemctl disable apparmor
-      #          sudo mkdir -p /etc/binfmt
-      #          for conf in qemu-{aarch64,arm}-static.conf
-      #          do
-      #            sed 's/:F$/:OC/' /usr/lib/binfmt.d/$conf | sudo tee /etc/binfmt/$conf
-      #          done
+      - name: Disable apparmor
+        run: |
+          sudo systemctl disable apparmor
       - name: Checkout code
         uses: actions/checkout@v3
         with:
@@ -191,9 +158,9 @@ jobs:
           echo '[Service]' | sudo tee raspbian_root/etc/systemd/system/redis-server.service.d/ncp.conf
           echo 'PrivateUsers=false' | sudo tee -a raspbian_root/etc/systemd/system/redis-server.service.d/ncp.conf
           
-          sudo mkdir -p raspbian_root/etc/systemd/system/php8.1-fpm.service.d
-          echo '[Service]' | sudo tee raspbian_root/etc/systemd/system/php8.1-fpm.service.d/ncp.conf
-          echo 'ExecStartPre=mkdir -p /var/run/php' | sudo tee -a raspbian_root/etc/systemd/system/php8.1-fpm.service.d/ncp.conf
+          sudo mkdir -p raspbian_root/etc/systemd/system/php8.3-fpm.service.d
+          echo '[Service]' | sudo tee raspbian_root/etc/systemd/system/php8.3-fpm.service.d/ncp.conf
+          echo 'ExecStartPre=mkdir -p /var/run/php' | sudo tee -a raspbian_root/etc/systemd/system/php8.3-fpm.service.d/ncp.conf
       - name: Test image
         id: test
         run: |
@@ -208,13 +175,13 @@ jobs:
           sudo systemd-nspawn --boot -D ./raspbian_root/ -M ncp --hostname=nextcloudpi |& awk "{ print \"${LOG_GUEST} \" \$0 }" &
           sleep 60
           
-          CONTAINER_CMD=(sudo systemd-run --machine=ncp -P --wait)
+            CONTAINER_CMD=(sudo systemd-run --machine=ncp -P --wait)
           
           success=false
           for attempt in {1..30}
           do
             echo -e "${LOG_CICD} == Wait until container network is available (attempt $attempt/30) =="
-            ip="$("${CONTAINER_CMD[@]}" bash -c '. /usr/local/etc/library.sh > /dev/null; get_ip')"
+                ip="$("${CONTAINER_CMD[@]}" bash -c '. /usr/local/etc/library.sh > /dev/null; get_ip')"
             [[ -n "$ip" ]] && curl -k "https://$ip/activate/" > /dev/null || { sleep 6; continue; }
             success=true
             break
@@ -249,12 +216,14 @@ jobs:
           done
           
           [[ "$success" == "true" ]] || {
-              echo -e "${LOG_CICD} Timeout reached."
-              "${CONTAINER_CMD[@]}" -q systemctl status mysql |& awk "{ print \"${LOG_DIAG} \" \$0 }"
-              "${CONTAINER_CMD[@]}" -q systemctl status redis |& awk "{ print \"${LOG_DIAG} \" \$0 }"
-              "${CONTAINER_CMD[@]}" -q systemctl status 'php*-fpm' |& awk "{ print \"${LOG_DIAG} \" \$0 }"
-              "${CONTAINER_CMD[@]}" -q systemctl status apache2 |& awk "{ print \"${LOG_DIAG} \" \$0 }"
-              "${CONTAINER_CMD[@]}" -q ncp-diag |& awk "{ print \"${LOG_DIAG} \" \$0 }"
+              echo -e "${LOG_CICD} ERR: Timeout reached."
+              "${CONTAINER_CMD[@]}" -q systemctl status mysql |& awk "{ print \"${LOG_DIAG} \" \$0 }" ||:
+              "${CONTAINER_CMD[@]}" -q systemctl status redis-server |& awk "{ print \"${LOG_DIAG} \" \$0 }" ||:
+              sudo journalctl --file ./raspbian_root/var/log/journal/"$(sudo cat ./raspbian_root/etc/machine-id)"/system.journal --no-pager -eu redis-server ||:
+              "${CONTAINER_CMD[@]}" -q journalctl --no-pager -eu redis-server
+              "${CONTAINER_CMD[@]}" -q systemctl status 'php*-fpm' |& awk "{ print \"${LOG_DIAG} \" \$0 }" ||:
+              "${CONTAINER_CMD[@]}" -q systemctl status apache2 |& awk "{ print \"${LOG_DIAG} \" \$0 }" ||:
+              "${CONTAINER_CMD[@]}" -q ncp-diag |& awk "{ print \"${LOG_DIAG} \" \$0 }" ||:
               exit 1
           }
           
@@ -310,15 +279,24 @@ jobs:
             python tests/nextcloud_tests.py --no-gui "$ip" 443 4443 |& awk "{ print \"${LOG_TEST} \" \$0 }"
             [[ ${PIPESTATUS[0]} -eq 0 ]] || {
               echo -e "${LOG_CICD} Nextcloud test failed!"
+              echo -e "${LOG_DIAG} /etc/os-release:"
+              "${CONTAINER_CMD[@]}" -q ncp /bin/bash -c 'cat /etc/os-release'
+              echo -e "${LOG_DIAG} /usr/local/etc/ncp.cfg:"
+              "${CONTAINER_CMD[@]}" --pipe -q ncp /bin/bash -c 'cat /usr/local/etc/ncp.cfg'
+              cat ./raspbian_root/usr/local/etc/ncp.cfg
+              echo -e "${LOG_DIAG} /home/ncp-app-bridge config ncp"
+              sudo ls -l ./raspbian_root/home/www/ncp-app-bridge.sh
+              "${CONTAINER_CMD[@]}" --pipe --uid=33 ncp /bin/bash -c 'sudo /home/www/ncp-app-bridge.sh config ncp'
               echo -e "{$LOG_DIAG} Geckodriver logs:"
               tail -n 20 geckodriver.log >&2 |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
               echo -e "${LOG_CICD} ================"
               echo -e "${LOG_DIAG} ncp.log: "
-              "${CONTAINER_CMD[@]}" -q ncp /bin/bash -c "tail -n20 /var/log/ncp.log" |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
+              "${CONTAINER_CMD[@]}" --pipe ncp /bin/bash -c "tail -n20 /var/log/ncp.log" |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
               echo "================"
               echo "${LOG_DIAG} Nextcloud log: "
-              "${CONTAINER_CMD[@]}" -q ncp /bin/bash -c 'ls -l /opt/ncdata/data/nextcloud.log' |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
-              "${CONTAINER_CMD[@]}" -q ncp /bin/bash -c 'cat /opt/ncdata/data/nextcloud.log' |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
+              "${CONTAINER_CMD[@]}" --pipe -q ncp /bin/bash -c 'ls -l /opt/ncdata/data/nextcloud.log' |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
+              "${CONTAINER_CMD[@]}" --pipe -q ncp /bin/bash -c 'cat /opt/ncdata/data/nextcloud.log' |& awk "{ print \"${LOG_DIAG} \" \$0 }" || true
+              sudo cat ./raspbian_root/opt/ncdata/data/nextcloud.log |& awk "{ print \"${LOG_DIAG} \" \$0 }"
               sleep 12
               continue
             }

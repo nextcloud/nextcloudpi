@@ -5,6 +5,8 @@ target_file="${2?}"
 all=({100..1})
 cohortes=()
 
+touch "${target_file?}"
+
 while IFS="" read -r line || [ -n "$line" ]
 do
   [[ -n "$line" ]] || continue
