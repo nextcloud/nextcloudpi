@@ -1,5 +1,11 @@
 # NextcloudPi Changelog
 
+## [v1.55.1](https://github.com/nextcloud/nextcloudpi/tree/v1.55.1) (2024-09-08) Hotfix release
+
+### Fixes
+
+- Prevent attempted downgrade in ncp-update-nc
+
 ## [v1.55.0](https://github.com/nextcloud/nextcloudpi/tree/v1.55.0) (2024-09-07) Support for PHP 8.3 and Nextcloud 29
 
 ### Changes
