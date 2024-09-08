@@ -24,7 +24,7 @@ ncc status &>/dev/null          || { [[ "$DBG" == x ]] && ncc status; echo "Next
 CURRENT="$(nc_version)"
 if [[ "$VER" == "0" ]] || [[ "$VER" == "" ]]
 then
-  REQUESTED_VERSION="${NCLATESTVER?}"
+  REQUESTED_VERSION="latest"
 else
   REQUESTED_VERSION="$VER"
 fi
@@ -57,10 +57,11 @@ grep -qP "\d+\.\d+\.\d+" <<<"$CURRENT" || { echo "Malformed version $CURRENT"; e
 grep -qP "\d+\.\d+\.\d+" <<<"$TARGET_VERSION"   || { echo "Malformed version $TARGET_VERSION"    ; exit 1; }
 
 echo "Current   Nextcloud version $CURRENT"
-echo "Available Nextcloud version $TARGET_VERSION"
+echo "Requested Nextcloud version $REQUESTED_VERSION"
+echo "Selected  Nextcloud version $TARGET_VERSION"
 if [[ "$TARGET_VERSION" != "$REQUESTED_VERSION" ]]
 then
-  echo "INFO: You have requested an update to '${REQUESTED_VERSION}', but a direct update to '${REQUESTED_VERSION}' cannot be performed, so the latest available version that can be updated to has been selected automatically."
+  echo "INFO: You have requested an update to '${REQUESTED_VERSION}', but a direct update to '${REQUESTED_VERSION}' cannot be performed, so the latest available version that can be updated to (${TARGET_VERSION}) has been selected automatically."
 fi
 
 # make sure that cron.php is not running and there are no pending jobs

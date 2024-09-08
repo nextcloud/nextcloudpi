@@ -1,0 +1,76 @@
+#!/bin/bash
+set -ex
+
+fail() {
+  echo "$@"
+  exit 1
+}
+
+#shellcheck source=./library.sh
+. "$(dirname "$0")/library.sh" ||:
+
+
+case=1
+
+current=27.0.1
+supported=27.0.8
+requested=""
+
+expected=27.1.11
+
+actual="$(determine_nc_update_version "$current" "$supported" "$requested")"
+
+[[ "$expected"  == "$actual" ]] || fail "C$case: unexpected nc target version: $actual (expected: $expected)"
+
+
+case=2
+
+# TODO: Set to 26.0.1
+current=26.0.13
+supported=27.0.8
+requested=""
+
+expected=27.1.11
+
+actual="$(determine_nc_update_version "$current" "$supported" "$requested")"
+
+[[ "$expected"  == "$actual" ]] || fail "C$case: unexpected nc target version: $actual (expected: $expected)"
+
+
+case=3
+
+current=26.0.1
+supported=27.0.8
+requested="27.1.3"
+
+expected=27.1.3
+
+actual="$(determine_nc_update_version "$current" "$supported" "$requested")"
+
+[[ "$expected"  == "$actual" ]] || fail "C$case: unexpected nc target version: $actual (expected: $expected)"
+
+
+case=4
+
+current=29.0.5
+supported=27.0.8
+requested=""
+
+expected=29.0.6
+
+actual="$(determine_nc_update_version "$current" "$supported" "$requested")"
+
+[[ "$expected"  == "$actual" ]] || fail "C$case: unexpected nc target version: $actual (expected: $expected)"
+
+
+case=5
+
+current=29.0.5
+supported=27.0.8
+requested="27.0.8"
+
+expected="29.0.5"
+
+actual="$(determine_nc_update_version "$current" "$supported" "$requested")"
+
+[[ "$expected"  == "$actual" ]] || fail "C$case: unexpected nc target version: $actual (expected: $expected)"

@@ -531,10 +531,17 @@ function determine_nc_update_version() {
   supported_maj="${supported%%.*}"
 
   # If valid version is requested -> direct update, don't consider anything else
-  if [[ "$requested" =~ ^[0-9.]*$ ]] && [[ "$requested_maj" -le "$((current_maj + 1))" ]]
+  if [[ "$requested" =~ ^[0-9]*.[0-9]*.[0-9]*$ ]]
   then
-    echo "$requested"
-    return 0
+    if ! is_more_recent_than "${requested}" "${current}"
+    then
+      echo "$current"
+      return 0
+    elif [[ "$requested_maj" -le "$((current_maj + 1))" ]]
+    then
+      echo "$requested"
+      return 0
+    fi
   fi
 
   versions="$(curl -q -L -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/repos/nextcloud/server/releases?per_page=100 | jq -r '.[].tag_name' | grep -v -e 'rc.$' -e 'beta.$' | sort -V)"
