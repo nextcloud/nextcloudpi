@@ -8,7 +8,10 @@ source /usr/local/etc/library.sh # sets NCLATESTVER
 
 CURRENT="$(nc_version)"
 NEXT_VERSION="$(determine_nc_update_version "${CURRENT}" "${NCLATESTVER?}")"
-[[ -n "$NEXT_VERSION" ]] || exit 0
+if [[ -z "$NEXT_VERSION" ]] || [[ "$NEXT_VERSION" == "${CURRENT}" ]]
+then
+  exit 0
+fi
 
 NOTIFIED=/var/run/.nc-version-notified
 
