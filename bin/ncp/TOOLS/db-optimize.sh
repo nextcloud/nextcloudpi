@@ -6,7 +6,7 @@
 configure()
 {
   echo -ne "begin of MariaDB Optimization..."
-  mariadb-check --optimize --all-databases >/dev/null
+  mariadb-check -u root --optimize --all-databases 
   echo "Completed"
 }
 
