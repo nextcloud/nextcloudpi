@@ -31,7 +31,7 @@ fi
 TARGET_VERSION="$(determine_nc_update_version "${CURRENT?}" "${NCLATESTVER}" "${REQUESTED_VERSION}")"
 [[ "$TARGET_VERSION" == "$CURRENT" ]] && {
   echo "Nextcloud version ${CURRENT} is already installed. Nothing to do."
-  exit 0
+  exit 1
 }
 [[ -n "$TARGET_VERSION" ]] || {
   echo "Could not find a valid upgrade path from '${CURRENT}' to '${TARGET_VERSION}'. Nothing to update."
