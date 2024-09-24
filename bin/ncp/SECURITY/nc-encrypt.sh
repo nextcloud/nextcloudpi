@@ -58,7 +58,7 @@ configure()
   export PASSWORD
   # Just mount already encrypted data
   if [[ -f "${encdir?}"/gocryptfs.conf ]]; then
-    systemctl reset-failed ncp-encrypt ||:
+    systemctl reset-failed ncp-encrypt 2>/dev/null ||:
     systemd-run -u ncp-encrypt -E PASSWORD bash -c "gocryptfs -fg -allow_other -q '${encdir}' '${datadir}' <<<\"\${PASSWORD}\" 2>&1 | sed /^Switch/d |& tee /var/log/ncp-encrypt.log"
 
     # switch to the regular virtual hosts after we decrypt, so we can access NC and ncp-web
@@ -88,7 +88,7 @@ configure()
   mv "${datadir?}" "${tmpdir?}"
 
   mkdir "${datadir}"
-  systemctl reset-failed ncp-encrypt ||:
+  systemctl reset-failed ncp-encrypt 2>/dev/null ||:
   systemd-run -u ncp-encrypt -E PASSWORD bash -c "gocryptfs -fg -allow_other -q '${encdir}' '${datadir}' <<<\"\${PASSWORD}\" 2>&1 | sed /^Switch/d |& tee /var/log/ncp-encrypt.log"
 
   maxtries=5
