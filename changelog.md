@@ -1,5 +1,12 @@
 # NextcloudPi Changelog
 
+## [v1.55.2](https://github.com/nextcloud/nextcloudpi/tree/v1.55.2) (2024-09-24) Hotfix release
+
+### Fixes
+
+- Increase the maximum package size for mysqldump to 256M (fixes [#1979](https://github.com/nextcloud/nextcloudpi/issues/1979))
+- Fix repeated erroneous update success messages for auto updates (fixes [#1979](https://github.com/nextcloud/nextcloudpi/issues/1979), [#1981](https://github.com/nextcloud/nextcloudpi/issues/1981))
+
 ## [v1.55.1](https://github.com/nextcloud/nextcloudpi/tree/v1.55.1) (2024-09-08) Hotfix release
 
 ### Fixes
