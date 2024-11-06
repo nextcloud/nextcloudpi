@@ -52,7 +52,7 @@ then
   exit $?
 fi
 
-systemctl reset-failed ncp-encrypt 2>/dev/null ||:
+systemctl reset-failed ncp-update-nc 2>/dev/null ||:
 systemd-run -u 'ncp-update-nc' bash -c "set -o pipefail; DBG='${DBG:-}' /usr/local/bin/ncp-update-nc.d/update-nc.sh '${VER}' |& tee /var/log/ncp-update-nc.log"
 sleep 1
 
