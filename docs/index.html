@@ -498,12 +498,13 @@
 </section>
 
 <section class="section">
+
 	<nav class="level">
 		<div class="container">
 			<section id="supported_systems" class="section">
 				<div class="container content level-item">
 					<p class="title">
-						Supported Systems
+						Installation
 					</p>
 				</div>
 			</section>
@@ -511,8 +512,7 @@
 			<section class="section">
 				<div class="tab tabs is-centered is-small">
 				<ul>
-					<li class="tablinks"><a onclick="openTab(event, 'debian');">Debian</a></li>
-					<li class="tablinks"><a onclick="openTab(event, 'vm');">Virtual Machine</a></li>
+<!--					<li class="tablinks"><a onclick="openTab(event, 'vm');">Virtual Machine</a></li>-->
 					<li class="tablinks"><a onclick="openTab(event, 'lxd');">LXD</a></li>
 					<li class="tablinks"><a onclick="openTab(event, 'proxmox');">Proxmox</a></li>
 					<li class="tablinks"><a onclick="openTab(event, 'raspberry-pi');">Raspberry Pi</a></li>
@@ -522,39 +522,47 @@
 					<li class="tablinks"><a onclick="openTab(event, 'odroid-c4');">Odroid C4</a></li>
 					<li class="tablinks"><a onclick="openTab(event, 'rock64');">Rock64</a></li>
 					<li class="tablinks"><a onclick="openTab(event, 'rockpro64');">RockPro64</a></li>
+					<li class="tablinks"><a onclick="openTab(event, 'orange-pi');">Orange Pi</a></li>
 					<li class="tablinks"><a onclick="openTab(event, 'banana-pi');">Banana Pi</a></li>
-					<li class="tablinks"><a onclick="openTab(event, 'armbian');">Armbian</a></li>
+					<li class="tablinks"><a onclick="openTab(event, 'debian');">Debian</a></li>
+					<li class="tablinks"><a onclick="openTab(event, 'armbian');">Armbian SBCs</a></li>
 				</ul>
 				</div>
 			</section>
 
 			<section class="section is-hidden tabcontent" id="debian">
 				<div class="box">
-				<div class="container content level-item">
-					<figure class="image">
-						<img src="images/openlogo-nd-100.png">
-					</figure>
-				</div>
-				<div class="container content level-item">
-					<p class="title">
-						Debian 11 Bullseye (all architectures)
-					</p>
-				</div>
-				<div class="container content level-item">
-					<p class="subtitle has-text-centered">
-						Install on any Debian supported architecture in one line.
-					</p>
-				</div>
-				<div class="container content level-item">
-					<p style="font-style: italic;">
-						Note: This assumes a clean Debian installation, there is currently no rollback method.
-					</p>
-				</div>
-				<div class="container content level-item">
-					<p>
-						<pre># curl -sSL https://raw.githubusercontent.com/nextcloud/nextcloudpi/master/install.sh | bash</pre>
-					</p>
-				</div>
+					<div class="container content level-item">
+						<figure class="image">
+							<img src="images/openlogo-nd-100.png">
+						</figure>
+					</div>
+					<div class="container content level-item">
+						<p class="title">
+							Debian 12 Bookworm (all architectures)
+						</p>
+					</div>
+					<div class="container content level-item">
+						<p class="subtitle has-text-centered">
+							Install on any Debian supported architecture in one line.
+						</p>
+					</div>
+					<div class="container content level-item">
+						<p style="font-style: italic;">
+							Note: This assumes a clean Debian installation, there is currently no rollback method.
+						</p>
+					</div>
+					<div class="container content level-item">
+						<p>
+							<pre># curl -sSL https://raw.githubusercontent.com/nextcloud/nextcloudpi/master/install.sh | bash</pre>
+						</p>
+					</div>
+					<div class="container content level-item">
+						<p>
+							Instead of piping to bash, you can <a href="https://github.com/nextcloud/nextcloudpi/blob/master/install.sh">inspect the code</a> and launch it manually.
+						</p>
+					</div>
+					<div class="block"></div>
 				</div>
 			</section>
 
@@ -581,7 +589,7 @@
 				</div>
 			</section>
 
-			<section class="section is-hidden tabcontent" id="lxd">
+			<section class="section is-active tabcontent" id="lxd">
 				<div class="container">
 					<div class="box">
 						<div class="container content level-item">
@@ -599,19 +607,21 @@
 								Run NextcloudPi in any system that supports LXC containers.
 							</p>
 						</div>
+						<div class="block"></div>
             			<p class="content level-item"><a href="https://linuxcontainers.org/lxd/docs/master/">LXD Documentation</a></p>
 						<div class="container level-item">
 							<pre>
-								# Download the image form https://github.com/nextcloud/nextcloudpi/releases e.g.:
-								wget -O - https://github.com/nextcloud/nextcloudpi/releases/download/v1.51.0/NextCloudPi_LXD_v1.51.0.tar.gz
+# Download the image from https://github.com/nextcloud/nextcloudpi/releases e.g.:
+wget -O - https://github.com/nextcloud/nextcloudpi/releases/download/v1.51.0/NextCloudPi_LXD_v1.51.0.tar.gz
 
-								# Import the image, replace the X's with the version numbers
-								lxc image import "NextcloudPi_LXD_vX.XX.X.tar.gz" --alias "ncp/vX.XX.X"
+# Import the image, replace the X's with the version numbers
+lxc image import "NextcloudPi_LXD_vX.XX.X.tar.gz" --alias "ncp/vX.XX.X"
 
-								# Create and start a container from the image
-								lxc launch "ncp/vX.XX.X" ncp
+# Create and start a container from the image
+lxc launch "ncp/vX.XX.X" ncp
 							</pre>
 						</div>
+						<div class="block"></div>
 					</div>
 				</div>
 			</section>
@@ -641,17 +651,20 @@
 								and press "Download".
 							</p>
 						</div>
+						<div class="block"></div>
 						<div class="container level-item">
 							<figure class="image">
 								<img style="max-height: 300px" alt="Download from URL dialog" src="images/ncp-proxmox-download-screenshot.png">
 							</figure>
 						</div>
+						<div class="block"></div>
 						<div class="container level-item">
 							<p class="block has-text-centered">
 								Optionally, you can copy the corresponding md5 sum from the releases page and paste it in the "Checksum" field to have
 								Proxmox check that the downloaded image was not corrupted
 							</p>
 						</div>
+						<div class="block"></div>
 					</div>
 				</div>
 			</section>
@@ -666,7 +679,7 @@
 						</div>
 						<div class="container content level-item">
 							<p class="title">
-								Raspberry Pi (all models)
+								Raspberry Pi (3 and later)
 							</p>
 						</div>
 						<div class="container content level-item has-text-centered">
@@ -674,6 +687,13 @@
 								The most popular board around!<br>
 								You can convert it into your home cloud now.<br><br>
 								There are Berryboot images available in order to run NextcloudPi directly from an external hard drive.
+							</p>
+						</div>
+						<div class="block"></div>
+						<div class="container content level-item has-text-centered">
+							<p class="subtitle has-text-centered">
+								Download <a href="https://github.com/nextcloud/nextcloudpi/releases">the latest NextcloudPi image</a>
+								and flash it to an SD card, e.g. using <a href="https://etcher.balena.io/">balenaEtcher</a>.
 							</p>
 						</div>
 						<div class="block"></div>
@@ -700,6 +720,13 @@
 							</p>
 						</div>
 						<div class="block"></div>
+						<div class="container content level-item has-text-centered">
+							<p class="subtitle has-text-centered">
+								Download <a href="https://github.com/nextcloud/nextcloudpi/releases">the latest NextcloudPi image</a>
+								and flash it to an SD card, e.g. using <a href="https://etcher.balena.io/">balenaEtcher</a>.
+							</p>
+						</div>
+						<div class="block"></div>
 					</div>
 				</div>
 			</section>
@@ -720,6 +747,13 @@
 						<div class="container content level-item">
 							<p class="subtitle has-text-centered">
 								The latest iteration of the Odroid NAS oriented boards, in a more modern 64bit version.
+							</p>
+						</div>
+						<div class="block"></div>
+						<div class="container content level-item has-text-centered">
+							<p class="subtitle has-text-centered">
+								Download <a href="https://github.com/nextcloud/nextcloudpi/releases">the latest NextcloudPi image</a>
+								and flash it to an SD card, e.g. using <a href="https://etcher.balena.io/">balenaEtcher</a>.
 							</p>
 						</div>
 						<div class="block"></div>
@@ -746,6 +780,13 @@
 							</p>
 						</div>
 						<div class="block"></div>
+						<div class="container content level-item has-text-centered">
+							<p class="subtitle has-text-centered">
+								Download <a href="https://github.com/nextcloud/nextcloudpi/releases">the latest NextcloudPi image</a>
+								and flash it to an SD card, e.g. using <a href="https://etcher.balena.io/">balenaEtcher</a>.
+							</p>
+						</div>
+						<div class="block"></div>
 					</div>
 				</div>
 			</section>
@@ -766,6 +807,13 @@
 						<div class="container content level-item">
 							<p class="subtitle has-text-centered">
 								ODROID-C4 is a new generation single board computer that is more energy efficient and faster performing than ODROID-C2
+							</p>
+						</div>
+						<div class="block"></div>
+						<div class="container content level-item has-text-centered">
+							<p class="subtitle has-text-centered">
+								Download <a href="https://github.com/nextcloud/nextcloudpi/releases">the latest NextcloudPi image</a>
+								and flash it to an SD card, e.g. using <a href="https://etcher.balena.io/">balenaEtcher</a>.
 							</p>
 						</div>
 						<div class="block"></div>
@@ -792,6 +840,13 @@
 							</p>
 						</div>
 						<div class="block"></div>
+						<div class="container content level-item has-text-centered">
+							<p class="subtitle has-text-centered">
+								Download <a href="https://github.com/nextcloud/nextcloudpi/releases">the latest NextcloudPi image</a>
+								and flash it to an SD card, e.g. using <a href="https://etcher.balena.io/">balenaEtcher</a>.
+							</p>
+						</div>
+						<div class="block"></div>
 					</div>
 				</div>
 			</section>
@@ -815,6 +870,13 @@
 							</p>
 						</div>
 						<div class="block"></div>
+						<div class="container content level-item has-text-centered">
+							<p class="subtitle has-text-centered">
+								Download <a href="https://github.com/nextcloud/nextcloudpi/releases">the latest NextcloudPi image</a>
+								and flash it to an SD card, e.g. using <a href="https://etcher.balena.io/">balenaEtcher</a>.
+							</p>
+						</div>
+						<div class="block"></div>
 					</div>
 				</div>
 			</section>
@@ -835,6 +897,44 @@
 						<div class="container content level-item">
 							<p class="subtitle has-text-centered">
 								SATA port and Gigabit Ethernet make the Banana Pi a popular low cost NAS solution.
+							</p>
+						</div>
+						<div class="block"></div>
+						<div class="container content level-item has-text-centered">
+							<p class="subtitle has-text-centered">
+								Download <a href="https://github.com/nextcloud/nextcloudpi/releases">the latest NextcloudPi image</a>
+								and flash it to an SD card, e.g. using <a href="https://etcher.balena.io/">balenaEtcher</a>.
+							</p>
+						</div>
+						<div class="block"></div>
+					</div>
+				</div>
+			</section>
+
+			<section class="section is-hidden tabcontent" id="orange-pi">
+				<div class="container">
+					<div class="box">
+						<div class="container content level-item">
+							<figure class="image">
+								<img alt="photo of Orange Pi5" src="images/orangepi.png" style="max-height: 200px;">
+							</figure>
+						</div>
+						<div class="container content level-item">
+							<p class="title">
+								Orange Pi 5(+)
+							</p>
+						</div>
+						<div class="container content level-item">
+							<p class="subtitle has-text-centered">
+								Being one of the more powerful boards in its price segment, the Orange Pi 5 and 5+
+								are valued by many.
+							</p>
+						</div>
+						<div class="block"></div>
+						<div class="container content level-item has-text-centered">
+							<p class="subtitle has-text-centered">
+								Download <a href="https://github.com/nextcloud/nextcloudpi/releases">the latest NextcloudPi image</a>
+								and flash it to an SD card, e.g. using <a href="https://etcher.balena.io/">balenaEtcher</a>.
 							</p>
 						</div>
 						<div class="block"></div>
@@ -870,50 +970,6 @@
 	</nav>
 </section>
 
-<section class="section" id="installation">
-
-	<div class="container content level-item">
-		<p id="installation" class="title">
-			Installation
-		</p>
-	</div>
-
-<section class="section" id="debian-installation">
-	<div class="container content">
-	<div class="block level-item level-left">
-		<p id="debian-installation" class="title" style="font-size: 22.4px;">
-			Debian
-		</p>
-	</div>
-
-	<div class="block content level-item">
-		<figure class="image">
-			<img src="images/openlogo-nd-100.png">
-		</figure>
-	</div>
-
-	<div class="block content level-item">
-		<p>
-			You can install NextcloudPi in any Debian Bullseye system, by using the curl installer.
-		</p>
-	</div>
-	<div class="block content level-item">
-		<p style="font-style: italic;">
-			Note: This assumes a clean Debian installation, there is currently no rollback method.
-		</p>
-	</div>
-
-	<div class="container content level-item">
-		<pre># curl -sSL https://raw.githubusercontent.com/nextcloud/nextcloudpi/master/install.sh | bash</pre>
-	</div>
-
-	<div class="container content level-item">
-		<p>
-			Instead of piping to bash, you can <a href="https://github.com/nextcloud/nextcloudpi/blob/master/install.sh">inspect the code</a> and launch it manually.
-		</p>
-	</div>
-	</div>
-</section>
 
 <section class="section" id="sbc-installation">
 	<div class="container content level-item level-left">
