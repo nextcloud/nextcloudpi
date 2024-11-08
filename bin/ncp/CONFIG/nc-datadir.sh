@@ -103,7 +103,7 @@ configure()
   cd /var/www/nextcloud
   [[ "$BUILD_MODE" == 1 ]] || save_maintenance_mode
 
-  echo "moving data directory from ${SRCDIR} to ${BASEDIR}..."
+  echo "moving data directory from ${SRCDIR} to ${DATADIR}..."
 
   # use subvolumes, if BTRFS
   [[ "$(stat -fc%T "${BASEDIR}")" == "btrfs" ]] && ! is_docker && {

@@ -59,9 +59,15 @@ grep -qP "\d+\.\d+\.\d+" <<<"$TARGET_VERSION"   || { echo "Malformed version $TA
 echo "Current   Nextcloud version $CURRENT"
 echo "Requested Nextcloud version $REQUESTED_VERSION"
 echo "Selected  Nextcloud version $TARGET_VERSION"
-if [[ "$TARGET_VERSION" != "$REQUESTED_VERSION" ]]
+
+if [[ "$REQUESTED_VERSION" == "latest" ]]
+then
+  echo "INFO: You have requested an update to the latest available version that can be performed directly, which is '${TARGET_VERSION}'. Updates can only performed to the next major version (or the latest minor version of the current major version). If you run ncp-update-nc again after this update completes, a new version might be available."
+  sleep 3
+elif [[ "$TARGET_VERSION" != "$REQUESTED_VERSION" ]]
 then
   echo "INFO: You have requested an update to '${REQUESTED_VERSION}', but a direct update to '${REQUESTED_VERSION}' cannot be performed, so the latest available version that can be updated to (${TARGET_VERSION}) has been selected automatically."
+  sleep 3
 fi
 
 # make sure that cron.php is not running and there are no pending jobs

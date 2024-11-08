@@ -23,8 +23,8 @@ configure()
   grep -qP "^\d+$" <<<"$RUNTIME" || { echo "Invalid RUNTIME value $RUNTIME"; return 1; }
   RUNTIME=$((RUNTIME*60))
 
-  echo "0  2  *  *  *  root  /usr/local/bin/nc-previews" >  /etc/cron.d/ncp-previews-auto
-  chmod 644 /etc/cron.d/ncp-previews-auto
+  echo "0  2  *  *  *  root  /usr/local/bin/nc-previews" >  /etc/cron.d/nc-previews-auto
+  chmod 644 /etc/cron.d/nc-previews-auto
 
   cat > /usr/local/bin/nc-previews <<EOF
 #!/bin/bash

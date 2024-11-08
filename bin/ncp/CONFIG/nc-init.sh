@@ -189,6 +189,7 @@ EOF
   # TODO temporary workaround for https://github.com/nextcloud/server/pull/13358
   ncc -n db:convert-filecache-bigint
   ncc db:add-missing-indices
+  ncc maintenance:repair --include-expensive
 
   # Default trusted domain (only from ncp-config)
   test -f /usr/local/bin/nextcloud-domain.sh && {

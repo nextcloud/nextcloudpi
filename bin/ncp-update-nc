@@ -52,8 +52,9 @@ then
   exit $?
 fi
 
-systemctl reset-failed ncp-encrypt 2>/dev/null ||:
-systemd-run -u 'ncp-update-nc' bash -c "set -o pipefail; DBG='${DBG:-}' /usr/local/bin/ncp-update-nc.d/update-nc.sh '${VER}' |& tee /var/log/ncp-update-nc.log"
+systemctl reset-failed ncp-update-nc 2>/dev/null ||:
+systemd-run -u 'ncp-update-nc' --service-type=oneshot --no-block -p TimeoutStartSec="24h" -p TimeoutStopSec="1h" \
+  bash -c "set -o pipefail; DBG='${DBG:-}' /usr/local/bin/ncp-update-nc.d/update-nc.sh '${VER}' |& tee /var/log/ncp-update-nc.log"
 sleep 1
 
 if ! [[ "$(systemctl is-active ncp-update-nc ||:)" =~ ^(active|inactive|activating|deactivating)$ ]]
