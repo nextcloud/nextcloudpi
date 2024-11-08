@@ -513,7 +513,8 @@
 				<ul>
 					<li class="tablinks"><a onclick="openTab(event, 'debian');">Debian</a></li>
 					<li class="tablinks"><a onclick="openTab(event, 'vm');">Virtual Machine</a></li>
-					<li class="tablinks"><a onclick="openTab(event, 'lxd');">LXD/LXC</a></li>
+					<li class="tablinks"><a onclick="openTab(event, 'lxd');">LXD</a></li>
+					<li class="tablinks"><a onclick="openTab(event, 'proxmox');">Proxmox</a></li>
 					<li class="tablinks"><a onclick="openTab(event, 'raspberry-pi');">Raspberry Pi</a></li>
 					<li class="tablinks"><a onclick="openTab(event, 'odroid-hc2');">Odroid HC2/HC1/XU4</a></li>
 					<li class="tablinks"><a onclick="openTab(event, 'odroid-hc4');">Odroid HC4</a></li>
@@ -598,25 +599,60 @@
 								Run NextcloudPi in any system that supports LXC containers.
 							</p>
 						</div>
-            <p class="content level-item"><a href="https://linuxcontainers.org/lxd/docs/master/">LXD Documentation</a></p>
+            			<p class="content level-item"><a href="https://linuxcontainers.org/lxd/docs/master/">LXD Documentation</a></p>
 						<div class="container level-item">
 							<pre>
-# Download the image form https://github.com/nextcloud/nextcloudpi/releases e.g.:
-wget -O - https://github.com/nextcloud/nextcloudpi/releases/download/v1.51.0/NextCloudPi_LXD_v1.51.0.tar.gz
+								# Download the image form https://github.com/nextcloud/nextcloudpi/releases e.g.:
+								wget -O - https://github.com/nextcloud/nextcloudpi/releases/download/v1.51.0/NextCloudPi_LXD_v1.51.0.tar.gz
 
-# Import the image, replace the X's with the version numbers
-lxc image import "NextcloudPi_LXD_vX.XX.X.tar.gz" --alias "ncp/vX.XX.X"
+								# Import the image, replace the X's with the version numbers
+								lxc image import "NextcloudPi_LXD_vX.XX.X.tar.gz" --alias "ncp/vX.XX.X"
 
-# Create and start a container from the image
-lxc launch "ncp/vX.XX.X" ncp
-</pre>
+								# Create and start a container from the image
+								lxc launch "ncp/vX.XX.X" ncp
+							</pre>
+						</div>
 					</div>
-          <div class="block"></div>
-          <div class="container level-item"><p class="subtitle">For Proxmox installation please use the helper script made by <a href="https://tteck.github.io/Proxmox/">tteck</a></p></div>
-          <div class="block"></div>
-          <div class="container level-item">
-            <pre>bash -c "$(wget -qLO - https://github.com/tteck/Proxmox/raw/main/ct/nextcloudpi-v5.sh)"</pre>
-          </div>
+				</div>
+			</section>
+
+			<section class="section is-hidden tabcontent" id="proxmox">
+				<div class="container">
+					<div class="box">
+						<div class="container content level-item">
+							<figure class="image">
+								<img src="images/proxmox_logo.png">
+							</figure>
+						</div>
+						<div class="container content level-item">
+							<p class="title">
+								Proxmox Container (LXC)
+							</p>
+						</div>
+						<div class="block"></div>
+						<div class="container level-item">
+							<p class="subtitle">To run NextcloudPi on Proxmox use the *.lxc image from the <a href="https://github.com/nextcloud/nextcloudpi/releases">Nextcloudpi releases page</a></p>
+						</div>
+						<div class="block"></div>
+						<div class="container level-item">
+							<p class="block has-text-centered">
+								In your Proxmox web interface, head to any storage pool that has CT Templates enabled, go to CT Templates,
+								click "Download from URL" and enter the link to the latest LXC image from the <a href="https://github.com/nextcloud/nextcloudpi/releases">Nextcloudpi releases page</a>
+								and press "Download".
+							</p>
+						</div>
+						<div class="container level-item">
+							<figure class="image">
+								<img style="max-height: 300px" alt="Download from URL dialog" src="images/ncp-proxmox-download-screenshot.png">
+							</figure>
+						</div>
+						<div class="container level-item">
+							<p class="block has-text-centered">
+								Optionally, you can copy the corresponding md5 sum from the releases page and paste it in the "Checksum" field to have
+								Proxmox check that the downloaded image was not corrupted
+							</p>
+						</div>
+					</div>
 				</div>
 			</section>
 
