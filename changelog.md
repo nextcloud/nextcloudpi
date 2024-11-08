@@ -1,5 +1,17 @@
 # NextcloudPi Changelog
 
+## [v1.55.3](https://github.com/nextcloud/nextcloudpi/tree/v1.55.3) (2024-11-08) Nextcloud 30 and fixes
+
+### Changes
+
+- Support for Nextcloud 30 ([#1957](https://github.com/nextcloud/nextcloudpi/issues/1957))
+
+### Fixes
+
+- Fix resetting failed state of previous ncp-update-nc job ([#1992](https://github.com/nextcloud/nextcloudpi/issues/1992))
+- Fix installer on systems using resolvconf as DNS manager ([#1926](](https://github.com/nextcloud/nextcloudpi/issues/1926))
+- Fix typo that prevents ncp-previews from being disabled (Thanks @m-breitbach)
+
 ## [v1.55.2](https://github.com/nextcloud/nextcloudpi/tree/v1.55.2) (2024-09-24) Hotfix release
 
 ### Fixes
