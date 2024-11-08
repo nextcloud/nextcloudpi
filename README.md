@@ -27,17 +27,15 @@ Please reach out in the [Matrix][chat-matrix-wiki] or [Telegram][chat-telegram-w
 
 ---
 
+### Test Status
+
 `master`
 
-[![VM Tests][vm-tests-badge]][vm-tests]
-
-[![Docker Tests][docker-tests-badge]][docker-tests]
+[![Release](https://github.com/nextcloud/nextcloudpi/actions/workflows/release.yml/badge.svg)](https://github.com/nextcloud/nextcloudpi/actions/workflows/release.yml)
 
 `devel`
 
-[![VM Tests][gh-vm-tests-badge-devel]][vm-tests]
-
-[![Docker Tests][gh-docker-tests-badge-devel]][docker-tests]
+[![Release](https://github.com/nextcloud/nextcloudpi/actions/workflows/release.yml/badge.svg?branch=devel)](https://github.com/nextcloud/nextcloudpi/actions/workflows/release.yml)
 
 ---
 
@@ -127,11 +125,26 @@ lxc start ncp
 
 ## Run in Proxmox
 
+There are two ways to run NCP on Proxmox:
+
+### 1. Using the official release image
+
+In your Proxmox web interface, head to any storage pool that has CT Templates enabled, go to CT Templates, 
+click "Download from URL" and enter the link to the latest LXC image from the [Nextcloudpi releases page](https://github.com/nextcloud/nextcloudpi/releases)
+and press "Download".
+
+<img height="300" alt="Download from URL dialog" src="https://nextcloudpi.com/images/ncp-proxmox-download-screenshot.png">
+
+Optionally, you can copy the corresponding md5 sum from the releases page and paste it in the "Checksum" field to have
+Proxmox check that the downloaded image was not corrupted
+
+### 2. Installer by tteck
+
 Use the [install script][ncp-proxmox-install-script-v5] from [tteck][tteck-profile] to install the LXC container on your Proxmox instance
 
 He has multiple helper scripts available for Proxmox on his [website][website-helper-scripts], do go have a look if you're using Proxmox. :+1:
 
-Installation: `bash -c "$(wget -qLO - https://github.com/tteck/Proxmox/raw/main/ct/nextcloudpi-v5.sh)"`
+Installation: `bash -c "$(wget -qLO - https://github.com/tteck/Proxmox/raw/main/ct/nextcloudpi.sh)"`
 
 Default Settings: `2GB RAM - 8GB Storage - 2vCPU`
 
