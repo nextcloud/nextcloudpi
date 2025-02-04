@@ -135,7 +135,7 @@ configure()
   create_tmp_upload_dir
   ncc config:system:set tempdirectory --value "$DATADIR/tmp" \
   || sed -i "s|'tempdirectory' =>.*|'tempdirectory' => '${DATADIR}/tmp',|" "${NCDIR?}"/config/config.php
-  sed -i "s|^;\?upload_tmp_dir =.*$|uploadtmp_dir = ${DATADIR}/tmp|"  /etc/php/"${PHPVER?}"/cli/php.ini
+  sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = ${DATADIR}/tmp|"  /etc/php/"${PHPVER?}"/cli/php.ini
   sed -i "s|^;\?upload_tmp_dir =.*$|upload_tmp_dir = ${DATADIR}/tmp|" /etc/php/"${PHPVER}"/fpm/php.ini
   sed -i "s|^;\?sys_temp_dir =.*$|sys_temp_dir = ${DATADIR}/tmp|"     /etc/php/"${PHPVER}"/fpm/php.ini
 
