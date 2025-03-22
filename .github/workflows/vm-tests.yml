@@ -52,7 +52,7 @@ jobs:
           ssh-keygen -t ed25519 -f ".ssh/automation_ssh_key"
           . /ncp-test-automation/bin/entrypoint.sh
       - name: upload ssh private key to artifact store
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: "${{ env.SSH_ARTIFACT_NAME }}"
           path: /__w/nextcloudpi/nextcloudpi/.ssh
@@ -302,7 +302,7 @@ jobs:
           ssh-keygen -t ed25519 -f "/__w/nextcloudpi/nextcloudpi/.ssh/automation_ssh_key"
           . /ncp-test-automation/bin/entrypoint.sh
       - name: upload ssh private key to artifact store
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: "${{ env.SSH_ARTIFACT_NAME }}"
           path: /__w/nextcloudpi/nextcloudpi/.ssh
@@ -514,7 +514,7 @@ jobs:
       UID: ${{ github.run_id }}-install
     steps:
       - name: download ssh private key from artifact store
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         if: ${{ contains('success|failure', env.TEST_RESULT) }}
         with:
           name: ${{ env.SSH_ARTIFACT_NAME }}
@@ -621,7 +621,7 @@ jobs:
       SSH_ARTIFACT_NAME: "${{ needs.dist-upgrade-test.outputs.ssh_artifact_name }}"
     steps:
       - name: download ssh private key from artifact store
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         if: ${{ contains('success|failure', env.TEST_RESULT) }}
         with:
           name: ${{ env.SSH_ARTIFACT_NAME }}

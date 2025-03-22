@@ -91,7 +91,7 @@ jobs:
           sudo "$LXC" image export -q ncp/"${version}" "output/${ARTIFACT_FILE}"
           echo "artifact_file=${ARTIFACT_FILE}.tar.gz" >> $GITHUB_OUTPUT
       - name: upload LXD image to artifact store
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: "${{ env.ARTIFACT_NAME }}"
           path: "output/${{ steps.pack-lxd.outputs.artifact_file }}"
@@ -639,7 +639,7 @@ jobs:
       - name: Setup Selenium
         run: pip install selenium
       - name: download LXD image from artifact store
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ env.ARTIFACT_NAME }}
       - name: Remove old lxd images
@@ -714,7 +714,7 @@ jobs:
       LXD_ARTIFACT_FILE: ${{ needs.build-current.outputs.artifact_file }}
     steps:
       - name: download LXD image from artifact store
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ env.LXD_ARTIFACT_NAME }}
       - name: convert to LXC image
@@ -732,7 +732,7 @@ jobs:
           echo "artifact_file=${LXC_ARTIFACT_FILE?}" >> $GITHUB_OUTPUT;
           echo "artifact_name=${LXD_ARTIFACT_NAME//lxd/lxc}" >> $GITHUB_OUTPUT;
       - name: upload LXD image to artifact store
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: "${{ steps.lxd-to-lxc.outputs.artifact_name }}"
           path: "output/${{ steps.lxd-to-lxc.outputs.artifact_file }}"
