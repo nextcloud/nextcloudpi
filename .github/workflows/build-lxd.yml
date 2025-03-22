@@ -668,18 +668,18 @@ jobs:
       - name: Test LXD Image
         working-directory: ./tests
         run: |
-          "$LXC" exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
+          sudo "$LXC" exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
           python activation_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
             echo "Activation test failed!"
             echo "Geckodriver logs:"
             tail -n 20 geckodriver.log >&2 || true
             echo "================"
             echo "ncp.log: "
-            "$LXC" exec ncp -- "tail -n20 /var/log/ncp.log" || true
+            sudo "$LXC" exec ncp -- "tail -n20 /var/log/ncp.log" || true
             echo "================"
             echo "nextcloud log: "
             datadir="$("$LXC" exec ncp -- ncc config:system:get datadirectory)"
-            "$LXC" exec ncp -- cat "$datadir/nextcloud.log" || true
+            sudo "$LXC" exec ncp -- cat "$datadir/nextcloud.log" || true
             exit 1
           }
           python nextcloud_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
@@ -688,11 +688,11 @@ jobs:
             tail -n 20 geckodriver.log >&2 || true
             echo "================"
             echo "ncp.log: "
-            "$LXC" exec ncp -- "tail -n20 /var/log/ncp.log" || true
+            sudo "$LXC" exec ncp -- "tail -n20 /var/log/ncp.log" || true
             echo "================"
             echo "nextcloud log: "
-            datadir="$("$LXC" exec ncp -- ncc config:system:get datadirectory)"
-            "$LXC" exec ncp -- cat "$datadir/nextcloud.log" || true
+            datadir="$(sudo "$LXC" exec ncp -- ncc config:system:get datadirectory)"
+            sudo "$LXC" exec ncp -- cat "$datadir/nextcloud.log" || true
             exit 1
           }
           USE_INCUS="$USE_INCUS" python system_tests.py --non-interactive || {
