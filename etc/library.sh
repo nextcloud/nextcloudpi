@@ -22,7 +22,7 @@ export DB_PREFIX="$(php -r 'include("/var/www/nextcloud/config/config.php"); ech
 export SYSTEMD_PAGER=
 
 [[ -f "$NCPCFG" ]] || export NCPCFG=/usr/local/etc/ncp.cfg
-[[ -f "$NCPCFG" ]] || { echo "$NCPCFG not found" >2; exit 1; }
+[[ -f "$NCPCFG" ]] || { echo "$NCPCFG not found" >&2; exit 1; }
 
 if [[ "$(ps -p 1 --no-headers -o "%c")" == "systemd" ]] && ! [[ -d "/run/systemd/system" ]]
 then
