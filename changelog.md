@@ -1,5 +1,16 @@
 # NextcloudPi Changelog
 
+## [v1.55.4](https://github.com/nextcloud/nextcloudpi/tree/v1.55.3) (2025-03-24) Nextcloud 31 and fixes
+
+### Changes
+
+- Support for Nextcloud 31
+
+### Fixes
+
+- Fix wrongly configured temporary directory for uploads (fixes [#1750](https://github.com/nextcloud/nextcloudpi/issues/1750), [#1857](https://github.com/nextcloud/nextcloudpi/issues/1857)), thanks [@joshtrichards](https://github.com/joshtrichards)
+- Fix regression breaking php upgrades (see [#2026](https://github.com/nextcloud/nextcloudpi/pull/2026)), thanks [@twojstaryzdomu](https://github.com/twojstaryzdomu)
+
 ## [v1.55.3](https://github.com/nextcloud/nextcloudpi/tree/v1.55.3) (2024-11-08) Nextcloud 30 and fixes
 
 ### Changes
