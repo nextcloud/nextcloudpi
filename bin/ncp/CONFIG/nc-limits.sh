@@ -82,14 +82,14 @@ configure()
   [[ "$CONF_VALUE" == "$(cat "$CONF")" ]] || service mariadb restart
 
   # RESTART PHP
-  [[ "$require_fpm_restart" == "true" ]] && {
+  [[ "$require_fpm_restart" != "true" ]] || {
     bash -c "sleep 3; source /usr/local/etc/library.sh; clear_opcache; service php${PHPVER}-fpm restart" &>/dev/null &
   }
 
   # redis max memory
   local CONF=/etc/redis/redis.conf
   local CURRENT_REDIS_MEM="$( grep "^maxmemory" "$CONF" | awk '{ print $2 }' )"
-  [[ "$REDISMEM" != "$CURRENT_REDIS_MEM" ]] && {
+  [[ "$REDISMEM" == "$CURRENT_REDIS_MEM" ]] || {
     sed -i "s|^maxmemory .*|maxmemory $REDISMEM|" "$CONF"
     chown redis:redis "$CONF"
     service redis-server restart

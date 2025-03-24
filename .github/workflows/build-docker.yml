@@ -381,7 +381,7 @@ jobs:
           docker exec nextcloudpi bash /usr/local/bin/ncp-diag |& awk "{ print \"${LOG_DIAG} \" \$0 }"
       - name: "Upload error report"
         if: ${{ failure() }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ github.run_id }}-docker-${{ env.ARCH }}-update-test-error-report
           path: tests/error-report.txt
@@ -533,7 +533,7 @@ jobs:
 
       - name: "Upload error report"
         if: ${{ failure() }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ github.run_id }}-docker-${{ env.ARCH }}-install-test-error-report
           path: tests/error-report.txt
