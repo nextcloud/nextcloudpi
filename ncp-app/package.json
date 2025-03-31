@@ -24,7 +24,7 @@
     "@nextcloud/dialogs": "^3.1.4",
     "@nextcloud/router": "^2.0.0",
     "@nextcloud/vue": "^5.4.0",
-    "vue": "^2.7.0"
+    "vue": "^3.0.0"
   },
   "browserslist": [
     "extends @nextcloud/browserslist-config"
