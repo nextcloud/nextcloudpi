@@ -14,7 +14,6 @@ export NCDIR=/var/www/nextcloud
 export ncc=/usr/local/bin/ncc
 export NCPCFG=${NCPCFG:-etc/ncp.cfg}
 export ARCH="$(dpkg --print-architecture)"
-export DB_PREFIX="$(php -r 'include("/var/www/nextcloud/config/config.php"); echo $CONFIG['"'dbtableprefix'"'];' || echo 'oc_')"
 [[ "${ARCH}" =~ ^(armhf|arm)$ ]] && ARCH="armv7"
 [[ "${ARCH}" == "arm64" ]] && ARCH=aarch64
 [[ "${ARCH}" == "amd64" ]] && ARCH=x86_64
@@ -58,6 +57,9 @@ RELEASE=$(    jq -r .release           < "$NCPCFG")
 # the default repo in bullseye is bullseye-security
 grep -Eh '^deb ' /etc/apt/sources.list | grep "${RELEASE}-security" > /dev/null && RELEASE="${RELEASE}-security"
 command -v ncc &>/dev/null && NCVER="$(ncc status 2>/dev/null | grep "version:" | awk '{ print $3 }')"
+DB_PREFIX="$(php -r 'include("/var/www/nextcloud/config/config.php"); echo $CONFIG['"'dbtableprefix'"'];' || echo 'oc_')"
+
+export DB_PREFIX
 
 function configure_app()
 {
