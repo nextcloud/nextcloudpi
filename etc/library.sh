@@ -62,7 +62,7 @@ then
   grep -Eh '^deb ' /etc/apt/sources.list | grep "${RELEASE}-security" > /dev/null && RELEASE="${RELEASE}-security"
   command -v ncc &>/dev/null && NCVER="$(ncc status 2>/dev/null | grep "version:" | awk '{ print $3 }')"
   DB_PREFIX="$(php -r 'include("/var/www/nextcloud/config/config.php"); echo $CONFIG["dbtableprefix"];')"
-  cat > /var/www/ncp-web/library-cache << EOF
+  test -d /var/www/ncp-web && cat > /var/www/ncp-web/library-cache << EOF
 NCLATESTVER="${NCLATESTVER}"
 PHPVER="${PHPVER}"
 RELEASE="${RELEASE}"
