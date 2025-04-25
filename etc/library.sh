@@ -57,9 +57,9 @@ RELEASE=$(    jq -r .release           < "$NCPCFG")
 # the default repo in bullseye is bullseye-security
 grep -Eh '^deb ' /etc/apt/sources.list | grep "${RELEASE}-security" > /dev/null && RELEASE="${RELEASE}-security"
 command -v ncc &>/dev/null && NCVER="$(ncc status 2>/dev/null | grep "version:" | awk '{ print $3 }')"
-DB_PREFIX="$(php -r 'include("/var/www/nextcloud/config/config.php"); echo $CONFIG['"'dbtableprefix'"'];' || echo 'oc_')"
+DB_PREFIX="$(php -r 'include("/var/www/nextcloud/config/config.php"); echo $CONFIG["dbtableprefix"];')"
 
-export DB_PREFIX
+export DB_PREFIX=${DB_PREFIX:-oc_}
 
 function configure_app()
 {
