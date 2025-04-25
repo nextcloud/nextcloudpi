@@ -51,13 +51,27 @@ command -v jq &>/dev/null || {
   apt-get install -y --no-install-recommends jq
 }
 
-NCLATESTVER=$(jq -r .nextcloud_version < "$NCPCFG")
-PHPVER=$(     jq -r .php_version       < "$NCPCFG")
-RELEASE=$(    jq -r .release           < "$NCPCFG")
-# the default repo in bullseye is bullseye-security
-grep -Eh '^deb ' /etc/apt/sources.list | grep "${RELEASE}-security" > /dev/null && RELEASE="${RELEASE}-security"
-command -v ncc &>/dev/null && NCVER="$(ncc status 2>/dev/null | grep "version:" | awk '{ print $3 }')"
-DB_PREFIX="$(php -r 'include("/var/www/nextcloud/config/config.php"); echo $CONFIG["dbtableprefix"];')"
+if [ /var/www/ncp-web/library-cache -ot /etc/apt/sources.list ] || \
+   [ /var/www/ncp-web/library-cache -ot /var/www/nextcloud/config/config.php ] ||
+   [ /var/www/ncp-web/library-cache -ot "$NCPCFG" ]
+then
+  NCLATESTVER=$(jq -r .nextcloud_version < "$NCPCFG")
+  PHPVER=$(     jq -r .php_version       < "$NCPCFG")
+  RELEASE=$(    jq -r .release           < "$NCPCFG")
+  # the default repo in bullseye is bullseye-security
+  grep -Eh '^deb ' /etc/apt/sources.list | grep "${RELEASE}-security" > /dev/null && RELEASE="${RELEASE}-security"
+  command -v ncc &>/dev/null && NCVER="$(ncc status 2>/dev/null | grep "version:" | awk '{ print $3 }')"
+  DB_PREFIX="$(php -r 'include("/var/www/nextcloud/config/config.php"); echo $CONFIG["dbtableprefix"];')"
+  cat > /var/www/ncp-web/library-cache << EOF
+NCLATESTVER="${NCLATESTVER}"
+PHPVER="${PHPVER}"
+RELEASE="${RELEASE}"
+NCVER="${NCVER}"
+DB_PREFIX="${DB_PREFIX}"
+EOF
+else
+  source /var/www/ncp-web/library-cache
+fi
 
 export DB_PREFIX=${DB_PREFIX:-oc_}
 
