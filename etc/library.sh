@@ -61,7 +61,9 @@ then
   # the default repo in bullseye is bullseye-security
   grep -Eh '^deb ' /etc/apt/sources.list | grep "${RELEASE}-security" > /dev/null && RELEASE="${RELEASE}-security"
   command -v ncc &>/dev/null && NCVER="$(ncc status 2>/dev/null | grep "version:" | awk '{ print $3 }')"
-  DB_PREFIX="$(php -r 'include("/var/www/nextcloud/config/config.php"); echo $CONFIG["dbtableprefix"];')"
+  if [ -s /var/www/nextcloud/config/config.php ];then
+    DB_PREFIX="$(php -r 'include("/var/www/nextcloud/config/config.php"); echo $CONFIG["dbtableprefix"];')"
+  fi
   test -d /var/www/ncp-web && cat > /var/www/ncp-web/library-cache << EOF
 NCLATESTVER="${NCLATESTVER}"
 PHPVER="${PHPVER}"
