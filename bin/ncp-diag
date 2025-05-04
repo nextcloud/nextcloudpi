@@ -142,8 +142,15 @@ echo "Port 80|$PORT80"
 echo "Port 443|$PORT443"
 
 # LAN
-IFACE=$( ip r | grep "default via" | awk '{ print $5 }' | head -1 )
-GW=$(    ip r | grep "default via" | awk '{ print $3 }' | head -1 )
+ if [ ! -e /usr/sbin/unchroot ]; then
+    ## Standard Install
+    IFACE=$( ip r | grep "default via" | awk '{ print $5 }' | head -1 )
+    GW=$(    ip r | grep "default via" | awk '{ print $3 }' | head -1 )
+ else
+    ## Android Container
+    IFACE=$( ip r | awk '{ print $3 }' | head -1 )
+    GW=$( ip r get 9.9.9.9 | grep "via" | awk '{ print $3 }' | head -1 )
+ fi
 IP="$(get_ip)"
 
 echo "IP|$IP"
