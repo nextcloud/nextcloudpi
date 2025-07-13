@@ -24,7 +24,6 @@ export DEBIAN_FRONTEND=noninteractive
 
 install()
 {
-    set -x
     # Setup apt repository for php 8
     wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
     echo "deb https://packages.sury.org/php/ ${RELEASE%-security} main" > /etc/apt/sources.list.d/php.list

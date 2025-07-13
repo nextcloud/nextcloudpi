@@ -11,7 +11,6 @@
 
 install()
 {
-  set -x
   apt-get update
   apt-get install --no-install-recommends -y dnsmasq
   sleep 10
