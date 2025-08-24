@@ -99,7 +99,7 @@ install()
   done
 
   cd /tmp
-  mysql_secure_installation <<EOF
+  mariadb-secure-installation <<EOF
 $DBPASSWD
 y
 $DBPASSWD
