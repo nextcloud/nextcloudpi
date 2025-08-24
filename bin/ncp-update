@@ -23,7 +23,7 @@ fi
   trap 'cd /; rm -rf "${TEMPDIR}"' EXIT
 
   echo -e "Downloading updates"
-  git clone --depth 20 -b "$BRANCH" -q https://github.com/nextcloud/nextcloudpi.git "$TEMPDIR" || {
+  git clone --depth 20 -b "$BRANCH" -q https://github.com/sven-ola/nextcloudpi.git "$TEMPDIR" || {
     echo "No internet connectivity"
     exit 1
   }
