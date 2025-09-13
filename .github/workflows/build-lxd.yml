@@ -370,6 +370,7 @@ jobs:
       - name: Setup Firefox from packages
         if: ${{ steps.setup-firefox-browser-action.outcome == 'failure' }}
         run: |
+          sudo apt-get update
           sudo apt-get install -y --no-install-recommends firefox
       - name: Setup GeckoDriver
         env:
@@ -385,6 +386,7 @@ jobs:
           sudo mv geckodriver /usr/local/bin/
       - name: Setup Selenium
         run: |
+          sudo apt-get -y install python3-venv
           python3 -m venv ./.venv
           ./.venv/bin/pip install selenium
       - name: download LXD image
@@ -415,7 +417,7 @@ jobs:
         working-directory: ./tests
         run: |
           sudo "$LXC" exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
-          ./.venv/bin/python activation_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
+          ../.venv/bin/python activation_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
             echo "Activation test failed!"
             echo "Geckodriver logs:"
             tail -n 20 geckodriver.log >&2 || true
@@ -424,7 +426,7 @@ jobs:
             sudo "$LXC" exec ncp -- "tail -n20 /var/log/ncp.log" || true
             exit 1
           }
-          ./.venv/bin/python nextcloud_tests.py --skip-release-check --no-gui "nextcloudpi.local" 443 4443 || {
+          ../.venv/bin/python nextcloud_tests.py --skip-release-check --no-gui "nextcloudpi.local" 443 4443 || {
             echo "Nextcloud test failed!"
             echo "Geckodriver logs:"
             tail -n 20 geckodriver.log >&2 || true
@@ -437,7 +439,7 @@ jobs:
             sudo "$LXC" exec ncp -- cat "$datadir/nextcloud.log" || true
             exit 1
           }
-          USE_INCUS="$USE_INCUS"  ./.venv/bin/python system_tests.py --non-interactive --skip-update-test || {
+          USE_INCUS="$USE_INCUS"  ../.venv/bin/python system_tests.py --non-interactive --skip-update-test || {
             echo "System test failed!"
             exit 1
           }
@@ -495,7 +497,7 @@ jobs:
       - name: Test LXD Image
         working-directory: ./tests
         run: |
-          ./.venv/bin/python nextcloud_tests.py --no-gui --skip-release-check "nextcloudpi.local" 443 4443 || {
+          ../.venv/bin/python nextcloud_tests.py --no-gui --skip-release-check "nextcloudpi.local" 443 4443 || {
             echo "Nextcloud test failed!"
             echo "Geckodriver logs:"
             tail -n 20 geckodriver.log >&2 || true
@@ -509,7 +511,7 @@ jobs:
             exit 1
           }
           sudo "$LXC" exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
-          USE_INCUS="$USE_INCUS" ./.venv/bin/python system_tests.py --non-interactive --skip-update-test || {
+          USE_INCUS="$USE_INCUS" ../.venv/bin/python system_tests.py --non-interactive --skip-update-test || {
             echo "System test failed!"
             exit 1
           }
@@ -575,7 +577,7 @@ jobs:
         working-directory: ./tests
         run: |
           sudo "$LXC" exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
-          ./.venv/bin/python nextcloud_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
+          ../.venv/bin/python nextcloud_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
             echo "Nextcloud test failed!"
             echo "Geckodriver logs:"
             tail -n 20 geckodriver.log >&2 || true
@@ -588,7 +590,7 @@ jobs:
             sudo "$LXC" exec ncp -- cat "$datadir/nextcloud.log" || true
             exit 1
           }
-          USE_INCUS="$USE_INCUS" ./.venv/bin/python system_tests.py --non-interactive || {
+          USE_INCUS="$USE_INCUS" ../.venv/bin/python system_tests.py --non-interactive || {
             echo "System test failed!"
             exit 1
           }
@@ -625,6 +627,7 @@ jobs:
       - name: Setup Firefox from packages
         if: ${{ steps.setup-firefox-browser-action.outcome == 'failure' }}
         run: |
+          sudo apt-get update
           sudo apt-get install -y --no-install-recommends firefox
       - name: Setup GeckoDriver
         env:
@@ -640,6 +643,7 @@ jobs:
           sudo mv geckodriver /usr/local/bin/
       - name: Setup Selenium
         run: |
+          sudo apt-get install -y python3-venv
           python3 -m venv ./.venv
           ./.venv/bin/pip install selenium
       - name: download LXD image from artifact store
