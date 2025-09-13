@@ -36,6 +36,7 @@ hostname -F /etc/hostname # fix 'sudo resolve host' errors
 CODE_DIR="$(pwd)" DBG=x bash install.sh || {
   echo "SOMETHING WENT WRONG, EXITING..."
   ! [ -f /var/log/redis.log ] || cat /var/log/redis.log
+  sudo -u redis redis-server /etc/redis/redis.conf
   sleep 120
   exit 1
 }
