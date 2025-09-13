@@ -143,7 +143,9 @@ jobs:
           set -x
           mv output/${ARTIFACT_FILE?} ncp.img
           sudo apt-get install -y systemd-container
-          sudo pip install selenium
+          python3 -m venv ./.venv
+          . ./.venv/bin/activate
+          ./.venv/bin/pip install selenium
           sudo rm -rf raspbian_root
           . ./build/buildlib.sh
           mount_raspbian "ncp.img"
@@ -234,7 +236,7 @@ jobs:
           for attempt in {1..5}
           do
             echo -e "${LOG_CICD} == Activation Tests (attempt $attempt/5) =="
-            python tests/activation_tests.py -t 300 --no-gui "$ip" 443 4443 |& awk "{ print \"${LOG_TEST} \" \$0 }"
+            ./.venv/bin/python tests/activation_tests.py -t 300 --no-gui "$ip" 443 4443 |& awk "{ print \"${LOG_TEST} \" \$0 }"
             [[ ${PIPESTATUS[0]} -eq 0 ]] || {
               echo -e "${LOG_CICD} Activation test failed!"
               echo -e "${LOG_DIAG} Geckodriver logs:"
@@ -258,7 +260,7 @@ jobs:
           for attempt in {1..5}
           do
             echo -e "${LOG_CICD} == System Tests (attempt $attempt/5) =="
-            sudo python tests/system_tests.py --non-interactive |& awk "{ print \"${LOG_TEST} \" \$0 }"
+            ./.venv/bin/python tests/system_tests.py --non-interactive |& awk "{ print \"${LOG_TEST} \" \$0 }"
             [[ ${PIPESTATUS[0]} -eq 0 ]] || {
               echo -e "${LOG_CICD} System test failed!"
               sleep 12
@@ -276,7 +278,7 @@ jobs:
           for attempt in {1..5}
           do
             echo -e "${LOG_CICD} == Nextcloud Tests (attempt $attempt/5) =="
-            python tests/nextcloud_tests.py --no-gui "$ip" 443 4443 |& awk "{ print \"${LOG_TEST} \" \$0 }"
+            ./.venv/bin/python tests/nextcloud_tests.py --no-gui "$ip" 443 4443 |& awk "{ print \"${LOG_TEST} \" \$0 }"
             [[ ${PIPESTATUS[0]} -eq 0 ]] || {
               echo -e "${LOG_CICD} Nextcloud test failed!"
               echo -e "${LOG_DIAG} /etc/os-release:"

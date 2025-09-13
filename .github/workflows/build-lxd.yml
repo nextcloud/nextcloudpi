@@ -384,7 +384,9 @@ jobs:
           tar xf "geckodriver-"*"-$arch.tar.gz"
           sudo mv geckodriver /usr/local/bin/
       - name: Setup Selenium
-        run: pip install selenium
+        run: |
+          python3 -m venv ./.venv
+          ./.venv/bin/pip install selenium
       - name: download LXD image
         run: |
           image_url="${PREVIOUS_IMAGE_URL_AMD64?}"
@@ -413,7 +415,7 @@ jobs:
         working-directory: ./tests
         run: |
           sudo "$LXC" exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
-          python activation_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
+          ./.venv/bin/python activation_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
             echo "Activation test failed!"
             echo "Geckodriver logs:"
             tail -n 20 geckodriver.log >&2 || true
@@ -422,7 +424,7 @@ jobs:
             sudo "$LXC" exec ncp -- "tail -n20 /var/log/ncp.log" || true
             exit 1
           }
-          python nextcloud_tests.py --skip-release-check --no-gui "nextcloudpi.local" 443 4443 || {
+          ./.venv/bin/python nextcloud_tests.py --skip-release-check --no-gui "nextcloudpi.local" 443 4443 || {
             echo "Nextcloud test failed!"
             echo "Geckodriver logs:"
             tail -n 20 geckodriver.log >&2 || true
@@ -435,7 +437,7 @@ jobs:
             sudo "$LXC" exec ncp -- cat "$datadir/nextcloud.log" || true
             exit 1
           }
-          USE_INCUS="$USE_INCUS"  python system_tests.py --non-interactive --skip-update-test || {
+          USE_INCUS="$USE_INCUS"  ./.venv/bin/python system_tests.py --non-interactive --skip-update-test || {
             echo "System test failed!"
             exit 1
           }
@@ -493,7 +495,7 @@ jobs:
       - name: Test LXD Image
         working-directory: ./tests
         run: |
-          python nextcloud_tests.py --no-gui --skip-release-check "nextcloudpi.local" 443 4443 || {
+          ./.venv/bin/python nextcloud_tests.py --no-gui --skip-release-check "nextcloudpi.local" 443 4443 || {
             echo "Nextcloud test failed!"
             echo "Geckodriver logs:"
             tail -n 20 geckodriver.log >&2 || true
@@ -507,7 +509,7 @@ jobs:
             exit 1
           }
           sudo "$LXC" exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
-          USE_INCUS="$USE_INCUS" python system_tests.py --non-interactive --skip-update-test || {
+          USE_INCUS="$USE_INCUS" ./.venv/bin/python system_tests.py --non-interactive --skip-update-test || {
             echo "System test failed!"
             exit 1
           }
@@ -573,7 +575,7 @@ jobs:
         working-directory: ./tests
         run: |
           sudo "$LXC" exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
-          python nextcloud_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
+          ./.venv/bin/python nextcloud_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
             echo "Nextcloud test failed!"
             echo "Geckodriver logs:"
             tail -n 20 geckodriver.log >&2 || true
@@ -586,7 +588,7 @@ jobs:
             sudo "$LXC" exec ncp -- cat "$datadir/nextcloud.log" || true
             exit 1
           }
-          USE_INCUS="$USE_INCUS" python system_tests.py --non-interactive || {
+          USE_INCUS="$USE_INCUS" ./.venv/bin/python system_tests.py --non-interactive || {
             echo "System test failed!"
             exit 1
           }
@@ -637,7 +639,9 @@ jobs:
           tar xf "geckodriver-"*"-$arch.tar.gz"
           sudo mv geckodriver /usr/local/bin/
       - name: Setup Selenium
-        run: pip install selenium
+        run: |
+          python3 -m venv ./.venv
+          ./.venv/bin/pip install selenium
       - name: download LXD image from artifact store
         uses: actions/download-artifact@v4
         with:
@@ -669,7 +673,7 @@ jobs:
         working-directory: ./tests
         run: |
           sudo "$LXC" exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
-          python activation_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
+          ./.venv/bin/python activation_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
             echo "Activation test failed!"
             echo "Geckodriver logs:"
             tail -n 20 geckodriver.log >&2 || true
@@ -682,7 +686,7 @@ jobs:
             sudo "$LXC" exec ncp -- cat "$datadir/nextcloud.log" || true
             exit 1
           }
-          python nextcloud_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
+          ./.venv/bin/python nextcloud_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
             echo "Nextcloud test failed!"
             echo "Geckodriver logs:"
             tail -n 20 geckodriver.log >&2 || true
@@ -695,7 +699,7 @@ jobs:
             sudo "$LXC" exec ncp -- cat "$datadir/nextcloud.log" || true
             exit 1
           }
-          USE_INCUS="$USE_INCUS" python system_tests.py --non-interactive || {
+          USE_INCUS="$USE_INCUS" ./.venv/bin/python system_tests.py --non-interactive || {
             echo "System test failed!"
             exit 1
           }
