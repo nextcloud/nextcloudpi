@@ -57,6 +57,15 @@ EOF
     mkdir -p /var/run/redis
     chown redis /var/run/redis
     sudo -u redis redis-server /etc/redis/redis.conf &
+    redis_pid=$!
+    for i in {1..5}
+    do
+      ps -p $PID || [[ $i -lt 5 ]] || {
+        echo "FAILED TO START REDIS"
+        return 1
+      } && break
+      sleep 3
+    done
   fi
 
   while :; do
