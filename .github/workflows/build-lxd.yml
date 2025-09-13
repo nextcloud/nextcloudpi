@@ -47,7 +47,7 @@ jobs:
             echo "lxd_extra_profile=network" | tee -a "$GITHUB_OUTPUT"
           else
             LXC_CMD="incus"
-            RUNNER_LABEL="ubuntu-20.04"
+            RUNNER_LABEL="ubuntu-latest"
           fi
 
           echo "runner_label=$RUNNER_LABEL" | tee -a $GITHUB_OUTPUT

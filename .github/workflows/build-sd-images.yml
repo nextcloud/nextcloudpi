@@ -23,7 +23,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     env:
       VERSION: "${{ inputs.git_ref }}"
       LOG_GUEST: "\\033[1;34mGUEST::\\033[0m"
@@ -336,7 +336,7 @@ jobs:
           }
 
 #  test-distupgrade:
-#    runs-on: ubuntu-20.04
+#    runs-on: ubuntu-latest
 #    env:
 #      VERSION: "${{ inputs.git_ref || github.ref }}"
 #      LOG_GUEST: "\\033[1;34mGUEST::\\033[0m"
