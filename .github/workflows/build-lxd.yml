@@ -348,8 +348,8 @@ jobs:
       VERSION: "${{ inputs.git_ref || github.ref }}"
       LXC: "${{ needs.determine-runner.outputs.lxc_cmd }}"
       LXD_EXTRA_PROFILE: "${{ needs.determine-runner.outputs.lxd_extra_profile }}"
-      PREVIOUS_IMAGE_URL_ARM64: "https://github.com/nextcloud/nextcloudpi/releases/download/v1.53.0/NextcloudPi_LXD_arm64_v1.53.0.tar.gz"
-      PREVIOUS_IMAGE_URL_AMD64: "https://github.com/nextcloud/nextcloudpi/releases/download/v1.53.0/NextCloudPi_LXD_x86_v1.53.0.tar.gz"
+      PREVIOUS_IMAGE_URL_ARM64: "https://github.com/nextcloud/nextcloudpi/releases/download/v1.53.3/NextcloudPi_LXD_arm64_v1.53.3.tar.gz"
+      PREVIOUS_IMAGE_URL_AMD64: "https://github.com/nextcloud/nextcloudpi/releases/download/v1.53.3/NextCloudPi_LXD_x86_v1.53.3.tar.gz"
       USE_INCUS: "${{ needs.determine-runner.outputs.lxc_cmd == 'incus' && 'yes' || 'no' }}"
     steps:
       - name: Setup incus
