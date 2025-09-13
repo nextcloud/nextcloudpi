@@ -213,7 +213,8 @@ def test_nextcloud(IP: str, nc_port: str, driver: WebDriver, skip_release_check:
             infos = driver.find_elements(By.CSS_SELECTOR, "#postsetupchecks > .info > li")
             for info in infos:
                 if re.match(r'.*Your installation has no default phone region set.*', info.text) \
-                        or re.match(r'The PHP module "imagick" is not enabled', info.text):
+                        or re.match(r'The PHP module "imagick" is not enabled', info.text) \
+                        or re.match(r'The PHP module "imagick" in this instance has no SVG support.*', info.text):
                     continue
                 else:
                     print(f'INFO: {info.text}')
