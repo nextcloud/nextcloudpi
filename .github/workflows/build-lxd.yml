@@ -461,7 +461,7 @@ jobs:
           echo "Running update to ${VERSION}"
           
           current_nc_version="$(sudo "$LXC" exec ncp -- ncc status | grep "version:" | awk '{ print $3 }')"
-          latest_nc_version="27.1.6"
+          latest_nc_version="29.0.9"
           
           sudo "$LXC" exec ncp -- apt-get update ||:
           sudo "$LXC" exec ncp -- apt-get install --no-install-recommends -y gnupg2
