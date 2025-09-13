@@ -376,8 +376,9 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          set -x
           arch=linux64
-          if [[ "$RUNNER_ARCH" == "ARM64" ]]
+          if [[ "${{ runner.arch }}" == "ARM64" ]]
           then
             arch="linux-aarch64"
           fi
@@ -392,7 +393,7 @@ jobs:
       - name: download LXD image
         run: |
           image_url="${PREVIOUS_IMAGE_URL_AMD64?}"
-          if [[ "$RUNNER_ARCH" == "ARM64" ]]
+          if [[ "${{ runner.arch }}" == "ARM64" ]]
           then
             image_url="${PREVIOUS_IMAGE_URL_ARM64?}"
           fi
@@ -633,8 +634,9 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          set -x
           arch=linux64
-          if [[ "$RUNNER_ARCH" == "ARM64" ]]
+          if [[ "${{ runner.arch }}" == "ARM64" ]]
           then
             arch="linux-aarch64"
           fi
