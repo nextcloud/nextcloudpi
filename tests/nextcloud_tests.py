@@ -235,6 +235,8 @@ def test_nextcloud(IP: str, nc_port: str, driver: WebDriver, skip_release_check:
         test.check(True)
 
     except Exception as e:
+
+        print(driver.find_element(By.CSS_SELECTOR, "#security-warning").get_attribute("innerHTML"))
         test.check(e)
 
     close_first_run_wizard(driver, wait_multiplier)
