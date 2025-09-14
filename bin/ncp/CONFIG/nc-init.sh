@@ -55,8 +55,9 @@ EOF
   # make sure redis is running first
   if ! pgrep -c redis-server &>/dev/null; then
     mkdir -p /var/run/redis
+    mkdir -p /var/log/
     chown redis /var/run/redis
-    sudo -u redis redis-server /etc/redis/redis.conf &
+    sudo -u redis redis-server /etc/redis/redis.conf > /var/log/redis.log 2>&1 &
     redis_pid=$!
     for i in {1..5}
     do
