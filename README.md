@@ -142,17 +142,17 @@ Proxmox check that the downloaded image was not corrupted
 
 Use the [install script][ncp-proxmox-install-script-v5] from [community-scripts][community-scripts-profile] to install the LXC container on your Proxmox instance
 
-He has multiple helper scripts available for Proxmox on his [website][website-helper-scripts], do go have a look if you're using Proxmox. :+1:
+[community-scripts][community-scripts-profile] has multiple helper scripts available for Proxmox on their [website][website-helper-scripts], go have a look if you're using Proxmox. :+1:
 
 Installation: `bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/ct/nextcloudpi.sh)"`
 
 Default Settings: `2GB RAM - 8GB Storage - 2vCPU`
 
-_(Check his [website][website-helper-scripts] if this has changed and we haven't had the time to update it here yet, it's located under: Operating-System > NextcloudPi LXC)_
+_(Check their [website][website-helper-scripts] if this has changed and we haven't had the time to update it here yet, it's located under: Operating-Systems > NextcloudPi LXC)_
 
 Thank you to the [community-scripts][community-scripts-profile] organisation :heart: for making the helper script & letting us use this for Proxmox installations :pray:
 
-You can find the GitHub repository with his helper scripts [here][gh-helper-scripts-repo].
+You can find the GitHub repository with the helper scripts here: [here][gh-helper-scripts-repo].
 
 ## How to build
 
