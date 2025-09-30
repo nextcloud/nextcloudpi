@@ -53,6 +53,7 @@ EOF
   ## INITIALIZE NEXTCLOUD
 
   # make sure redis is running first
+  REDISPASS="$( grep "^requirepass" /etc/redis/redis.conf | cut -f2 -d' ' )"
   if ! pgrep -c redis-server &>/dev/null; then
     mkdir -p /var/run/redis
     mkdir -p /var/log/
@@ -61,10 +62,18 @@ EOF
     redis_pid=$!
     for i in {1..5}
     do
-      ps -p $PID || [[ $i -lt 5 ]] || {
-        echo "FAILED TO START REDIS"
-        return 1
-      } && break
+
+      if redis-cli -s //var/run/redis/redis.sock -a "$REDISPASS" ping | grep PONG
+      then
+        break
+      else
+        if [[ $i -ge 5 ]]
+        then
+          echo "FAILED TO START REDIS"
+          cat /var/log/redis.log /var/log/redis/redis-server.log
+          return 1
+        fi
+      fi
       sleep 3
     done
   fi

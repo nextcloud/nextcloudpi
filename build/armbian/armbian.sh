@@ -33,13 +33,11 @@ echo -e "\nInstalling NextCloudPi"
 
 hostname -F /etc/hostname # fix 'sudo resolve host' errors
 
-CODE_DIR="$(pwd)" DBG=x bash install.sh || {
+ARMBIAN_BUILD=yes CODE_DIR="$(pwd)" DBG=x bash install.sh || {
   echo "SOMETHING WENT WRONG, EXITING..."
-  ! [ -f /var/log/redis.log ] || cat /var/log/redis.log
-  sudo -u redis redis-server /etc/redis/redis.conf
-  sleep 120
   exit 1
 }
+sed -i 's/^ignore-warnings ARM64-COW-BUG//' /etc/redis/redis.conf
 
 echo -e "\nPostinstall..."
 run_app_unsafe post-inst.sh
