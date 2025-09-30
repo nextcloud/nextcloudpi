@@ -11,7 +11,7 @@ done
 # wicd service finishes before completing DHCP
 while :; do
   local_ip="$(get_ip)"
-  pub_ip="$(curl -m4 icanhazip.com 2>/dev/null)"
+  pub_ip="$(curl -4 icanhazip.com 2>/dev/null)"
 
   [[ "$pub_ip"   != "" ]] && ncc config:system:set trusted_domains 11 --value="$pub_ip"
   [[ "$local_ip" != "" ]] && break
