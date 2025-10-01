@@ -252,6 +252,8 @@ def test_autoupdates():
 
 if __name__ == "__main__":
 
+    sudo_prefix = ['sudo'] if os.environ.get('USE_SUDO', 'no') == 'yes' else []
+
     signal.signal(signal.SIGINT, signal_handler)
 
     # parse options
@@ -290,11 +292,12 @@ if __name__ == "__main__":
 
     # detect if we are running this in a NCP instance
     try:
-        dockers_running = run(['docker', 'ps', '--format', '{{.Names}}'], stdout=PIPE).stdout.decode('utf-8')
+        dockers_running = run(sudo_prefix + ['docker', 'ps', '--format', '{{.Names}}'], stdout=PIPE).stdout.decode('utf-8')
     except:
         dockers_running = ''
 
-    lxc_command = ['lxc'] if 'USE_INCUS' not in os.environ or os.environ['USE_INCUS'] != 'yes' else ['incus']
+    lxc_command = sudo_prefix
+    lxc_command += ['lxc'] if 'USE_INCUS' not in os.environ or os.environ['USE_INCUS'] != 'yes' else ['incus']
 
     try:
         lxc_test = run(lxc_command + ['info'], stdout=PIPE, check=True)
@@ -316,7 +319,7 @@ if __name__ == "__main__":
             lxc_running = False
 
     try:
-        systemd_container_running = run(['machinectl', 'show', 'ncp'], stdout=PIPE, check = True)
+        systemd_container_running = run(sudo_prefix + ['machinectl', 'show', 'ncp'], stdout=PIPE, check = True)
     except:
         systemd_container_running = False
 
@@ -326,12 +329,12 @@ if __name__ == "__main__":
         print(tc.brown + "* local NCP instance detected" + tc.normal)
         if not is_lxc():
             binaries_must_be_installed = binaries_must_be_installed + binaries_no_docker
-        pre_cmd = []
+        pre_cmd = sudo_prefix
 
     # docker method
     elif 'nextcloudpi' in dockers_running:
         print( tc.brown + "* local NCP docker instance detected" + tc.normal)
-        pre_cmd = ['docker', 'exec']
+        pre_cmd = sudo_prefix + ['docker', 'exec']
         if interactive:
             pre_cmd.append('-ti')
         pre_cmd.append('nextcloudpi')
@@ -342,7 +345,7 @@ if __name__ == "__main__":
         pre_cmd = lxc_command + ['exec', 'ncp', '--']
 
     elif systemd_container_running:
-        pre_cmd = ['systemd-run', '--wait', '-P', '--machine=ncp']
+        pre_cmd = sudo_prefix + ['systemd-run', '--wait', '-P', '--machine=ncp']
 
     # SSH method
     else:
@@ -350,7 +353,7 @@ if __name__ == "__main__":
             print( tc.brown + "* No local NCP instance detected, trying SSH with " +
                tc.yellow + ssh_cmd + tc.normal + "...")
         binaries_must_be_installed = binaries_must_be_installed + binaries_no_docker
-        pre_cmd = ['ssh', '-o UserKnownHostsFile=/dev/null' , '-o PasswordAuthentication=no',
+        pre_cmd = sudo_prefix + ['ssh', '-o UserKnownHostsFile=/dev/null' , '-o PasswordAuthentication=no',
                    '-o StrictHostKeyChecking=no', '-o ConnectTimeout=10', ssh_cmd[4:]]
 
         if not skip_ping:

@@ -177,7 +177,7 @@ jobs:
           sudo systemd-nspawn --boot -D ./raspbian_root/ -M ncp --hostname=nextcloudpi |& awk "{ print \"${LOG_GUEST} \" \$0 }" &
           sleep 60
           
-            CONTAINER_CMD=(sudo systemd-run --machine=ncp -P --wait)
+          CONTAINER_CMD=(sudo systemd-run --machine=ncp -P --wait)
           
           success=false
           for attempt in {1..30}
@@ -260,7 +260,7 @@ jobs:
           for attempt in {1..5}
           do
             echo -e "${LOG_CICD} == System Tests (attempt $attempt/5) =="
-            ./.venv/bin/python tests/system_tests.py --non-interactive |& awk "{ print \"${LOG_TEST} \" \$0 }"
+            USE_SUDO=yes ./.venv/bin/python tests/system_tests.py --non-interactive |& awk "{ print \"${LOG_TEST} \" \$0 }"
             [[ ${PIPESTATUS[0]} -eq 0 ]] || {
               echo -e "${LOG_CICD} System test failed!"
               sleep 12
