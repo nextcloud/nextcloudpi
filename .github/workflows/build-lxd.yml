@@ -385,6 +385,8 @@ jobs:
           gh release download -R mozilla/geckodriver -p 'geckodriver-*-'"$arch.tar.gz"
           tar xf "geckodriver-"*"-$arch.tar.gz"
           sudo mv geckodriver /usr/local/bin/
+          sudo chmod +x /usr/local/bin/geckodriver
+          geckodriver -V
       - name: Setup Selenium
         run: |
           sudo apt-get -y install python3-venv
@@ -643,6 +645,8 @@ jobs:
           gh release download -R mozilla/geckodriver -p 'geckodriver-*-'"$arch.tar.gz"
           tar xf "geckodriver-"*"-$arch.tar.gz"
           sudo mv geckodriver /usr/local/bin/
+          sudo chmod +x /usr/local/bin/geckodriver
+          geckodriver -V
       - name: Setup Selenium
         run: |
           sudo apt-get install -y python3-venv

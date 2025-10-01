@@ -20,8 +20,12 @@ import sys
 import getopt
 import os
 import signal
-from subprocess import run, getstatusoutput, PIPE, CompletedProcess
+from subprocess import run as sp_run, getstatusoutput, PIPE, CompletedProcess
 from typing import Optional
+
+def run(*args, **kwargs):
+    print("running command: " + " ".join(args[0]))
+    return sp_run(*args, **kwargs)
 
 processes_must_be_running = [
         'apache2',
@@ -47,7 +51,7 @@ binaries_no_docker = [
         'btrfs',
         'fail2ban-server',
         'udiskie',
-        'ufw',
+        'ufw'
         'samba',
         ]
 
@@ -296,20 +300,23 @@ if __name__ == "__main__":
     except:
         dockers_running = ''
 
-    lxc_command = sudo_prefix
-    lxc_command += ['lxc'] if 'USE_INCUS' not in os.environ or os.environ['USE_INCUS'] != 'yes' else ['incus']
+    lxc_command = sudo_prefix + ['lxc'] if os.environ.get('USE_INCUS', 'no') != 'yes' else ['incus']
 
     try:
         lxc_test = run(lxc_command + ['info'], stdout=PIPE, check=True)
         if lxc_test.returncode != 0:
             raise Exception(f"failed to execute {lxc_command} info")
     except:
-        try:
-            lxc_test = run(['sudo'] + lxc_command + ['info'], stdout=PIPE, check='True')
-            lxc_command = ['sudo'] + lxc_command
-        except:
+        if os.environ.get('USE_SUDO', 'no') == 'yes':
             lxc_command = None
             lxc_running = False
+        else:
+            try:
+                lxc_test = run(['sudo'] + lxc_command + ['info'], stdout=PIPE, check='True')
+                lxc_command = ['sudo'] + lxc_command
+            except:
+                lxc_command = None
+                lxc_running = False
 
     # detect if we are running this in a LXC instance
     if lxc_command is not None:
@@ -359,14 +366,14 @@ if __name__ == "__main__":
         if not skip_ping:
             at_char = ssh_cmd.index('@')
             ip = ssh_cmd[at_char+1:]
-            ping_cmd = run(['ping', '-c1', '-w10', ip], stdout=PIPE, stderr=PIPE)
+            ping_cmd = run(sudo_prefix + ['ping', '-c1', '-w10', ip], stdout=PIPE, stderr=PIPE)
             if ping_cmd.returncode != 0:
                 print(tc.red + "No connectivity to " + tc.yellow + ip + tc.normal)
                 #sys.exit(1)
 
         ssh_test = run(pre_cmd + [':'], stdout=PIPE, stderr=PIPE)
         if ssh_test.returncode != 0:
-            ssh_copy = run(['ssh-copy-id', ssh_cmd[4:]], stderr=PIPE)
+            ssh_copy = run(sudo_prefix + ['ssh-copy-id', ssh_cmd[4:]], stderr=PIPE)
             if ssh_copy.returncode != 0:
                 print(tc.red + "SSH connection failed" + tc.normal)
                 sys.exit(1)
