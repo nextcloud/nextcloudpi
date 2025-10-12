@@ -15,6 +15,10 @@ on:
         required: false
         default: true
         type: boolean
+      test_image_url:
+        required: false
+        type: string
+        default: ""
     outputs:
       artifact_name:
         value: "${{ jobs.build.outputs.artifact_name }}"
@@ -63,7 +67,13 @@ jobs:
 #          which qemu-aarch64-static
 #          update-binfmts --display qemu-aarch64
 #          update-binfmts --display qemu-arm
+      - name: "Skip build"
+        if: "${{ inputs.test_image_url != '' }}"
+        run: |
+          echo "artifact_file=NextcloudPi_TestImage_${VERSION//\//_}.img" >> $GITHUB_OUTPUT
+          echo "ARTIFACT_FILE=NextcloudPi_TestImage_${VERSION//\//_}.img" >> $GITHUB_ENV
       - name: "Build Armbian"
+        if: "${{ inputs.test_image_url == '' }}"
         id: build-armbian
         continue-on-error: true
         run: |
@@ -103,6 +113,7 @@ jobs:
           name: ${{ github.run_id }}-${{ inputs.board_id }}-logs
           path: armbian/output
       - name: upload image to artifact store
+        if: "${{ inputs.test_image_url == '' }}"
         uses: actions/upload-artifact@v4
         with:
           name: ${{ github.run_id }}-${{ inputs.board_id }}-image
@@ -135,9 +146,16 @@ jobs:
         with:
           ref: "${{ env.VERSION }}"
       - uses: actions/download-artifact@v4
+        if: "${{ inputs.test_image_url == '' }}"
         with:
           name: ${{ env.ARTIFACT_ID }}
           path: output
+      - name: Download Test Image
+        if: "${{ inputs.test_image_url != '' }}"
+        run: |
+          set -ex
+          mkdir -p output
+          wget -nv "${{ inputs.test_image_url }}" | pv -i 3 > "output/${ARTIFACT_FILE?}"
       - name: Prepare test
         run: |
           set -x

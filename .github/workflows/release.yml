@@ -26,6 +26,11 @@ on:
         description: 'Release images to GH'
         required: false
         default: false
+      test_image_url:
+        type: string
+        description: 'URL for test image to test instead of actual armbian builds'
+        required: false
+        default: ''
   push:
     tags:
       - "v*"
@@ -68,12 +73,22 @@ jobs:
     secrets: inherit
 
   raspberrypi-5:
-    if: ${{ inputs.sd-images || ( github.event_name != 'workflow_dispatch' && !startsWith(github.ref_name, 'docker-') ) }}
+    if: ${{ false && inputs.sd-images || ( github.event_name != 'workflow_dispatch' && !startsWith(github.ref_name, 'docker-') ) }}
     uses: ./.github/workflows/build-sd-images.yml
     with:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
       board_id: rpi5b
       board_name: RaspberryPi5
+    secrets: inherit
+
+  armbian-test-image:
+    if: ${{ inputs.test_image_url != '' || ( github.event_name != 'workflow_dispatch' && !startsWith(github.ref_name, 'docker-') ) }}
+    uses: ./.github/workflows/build-sd-images.yml
+    with:
+      git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
+      board_id: testimage
+      board_name: TestImage
+      test_image_url: "${{ inputs.test_image_url }}"
     secrets: inherit
 
   # TODO: Fix 32bit armbian images
