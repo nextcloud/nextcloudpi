@@ -23,6 +23,7 @@ from pathlib import Path
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import WebDriverWait
@@ -388,7 +389,7 @@ if __name__ == "__main__":
     print("Nextcloud tests " + tc.yellow + IP + tc.normal)
     print("---------------------------")
 
-    driver = webdriver.Firefox(options=options, executable_path=webdriver_exec_path)
+    driver = webdriver.Firefox(options=options, service=Service(webdriver_exec_path))
     failed=False
     try:
         test_nextcloud(IP, nc_port, driver, skip_release_check, wait_multiplier)

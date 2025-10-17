@@ -23,6 +23,7 @@ import signal
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
+from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.firefox.options import Options
@@ -95,7 +96,7 @@ def test_activation(IP, nc_port, admin_port, options, webdriver_exec_path="gecko
 
     # activation page
     test = Test()
-    driver = webdriver.Firefox(options=options, executable_path=webdriver_exec_path)
+    driver = webdriver.Firefox(options=options, service=Service(webdriver_exec_path))
     driver.implicitly_wait(5)
     test.new("activation opens")
     driver.get(f"https://{IP}:{nc_port}")
@@ -137,7 +138,7 @@ def test_activation(IP, nc_port, admin_port, options, webdriver_exec_path="gecko
 
     # ncp-web
     test.new("ncp-web")
-    driver = webdriver.Firefox(options=options, executable_path=webdriver_exec_path)
+    driver = webdriver.Firefox(options=options, service=Service(webdriver_exec_path))
     driver.implicitly_wait(30)
     try:
         driver.get(f"https://ncp:{urllib.parse.quote_plus(ncp_pass)}@{IP}:{admin_port}")
