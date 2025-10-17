@@ -332,6 +332,13 @@ if __name__ == "__main__":
 
     skip_release_check = False
     options = webdriver.FirefoxOptions()
+    webdriver_exec_path = "geckodriver"
+    if 'GECKODRIVER_PATH' in os.environ:
+        print(f"Setting geckodriver from env ({os.environ['GECKODRIVER_PATH']})")
+        webdriver_exec_path = os.environ['GECKODRIVER_PATH']
+    if 'FF_BINARY_PATH' in os.environ:
+        print(f"Setting firefox binary from env ({os.environ['FF_BINARY_PATH']}")
+        options.binary_location = os.environ['FF_BINARY_PATH']
     wait_multiplier = 1
     for opt, arg in opts:
         if opt in ('-h', '--help'):
@@ -381,7 +388,7 @@ if __name__ == "__main__":
     print("Nextcloud tests " + tc.yellow + IP + tc.normal)
     print("---------------------------")
 
-    driver = webdriver.Firefox(options=options)
+    driver = webdriver.Firefox(options=options, executable_path=webdriver_exec_path)
     failed=False
     try:
         test_nextcloud(IP, nc_port, driver, skip_release_check, wait_multiplier)

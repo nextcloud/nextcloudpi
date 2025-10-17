@@ -90,12 +90,12 @@ def signal_handler(sig, frame):
         sys.exit(0)
 
 
-def test_activation(IP, nc_port, admin_port, options, wait_timeout=120):
+def test_activation(IP, nc_port, admin_port, options, webdriver_exec_path="geckodriver", wait_timeout=120):
     """ Activation process checks"""
 
     # activation page
     test = Test()
-    driver = webdriver.Firefox(options=options)
+    driver = webdriver.Firefox(options=options, executable_path=webdriver_exec_path)
     driver.implicitly_wait(5)
     test.new("activation opens")
     driver.get(f"https://{IP}:{nc_port}")
@@ -137,7 +137,7 @@ def test_activation(IP, nc_port, admin_port, options, wait_timeout=120):
 
     # ncp-web
     test.new("ncp-web")
-    driver = webdriver.Firefox(options=options)
+    driver = webdriver.Firefox(options=options, executable_path=webdriver_exec_path)
     driver.implicitly_wait(30)
     try:
         driver.get(f"https://ncp:{urllib.parse.quote_plus(ncp_pass)}@{IP}:{admin_port}")
@@ -164,6 +164,13 @@ if __name__ == "__main__":
 
     arg_timeout = 120
     options = webdriver.FirefoxOptions()
+    webdriver_exec_path = "geckodriver"
+    if 'GECKODRIVER_PATH' in os.environ:
+        print(f"Setting geckodriver from env ({os.environ['GECKODRIVER_PATH']})")
+        webdriver_exec_path = os.environ['GECKODRIVER_PATH']
+    if 'FF_BINARY_PATH' in os.environ:
+        print(f"Setting firefox binary from env ({os.environ['FF_BINARY_PATH']}")
+        options.binary_location = os.environ['FF_BINARY_PATH']
     for opt, arg in opts:
         if opt in ('-h', '--help'):
             usage()
@@ -184,7 +191,7 @@ if __name__ == "__main__":
     print("Activation tests " + tc.yellow + IP + tc.normal)
     print("---------------------------")
 
-    test_activation(IP, nc_port, admin_port, options, arg_timeout)
+    test_activation(IP, nc_port, admin_port, options, webdriver_exec_path, arg_timeout)
 
 # License
 #

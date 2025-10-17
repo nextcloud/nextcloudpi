@@ -386,6 +386,7 @@ jobs:
           tar xf "geckodriver-"*"-$arch.tar.gz"
           sudo mv geckodriver /usr/local/bin/
           sudo chmod +x /usr/local/bin/geckodriver
+          echo "GECKODRIVER_PATH=/usr/local/bin/geckodriver" >> "$GITHUB_ENV"
           geckodriver -V
       - name: Setup Selenium
         run: |
@@ -419,6 +420,8 @@ jobs:
       - name: Activate and Test LXD Image
         working-directory: ./tests
         run: |
+          set -x
+          export GECKODRIVER_PATH="$GECKODRIVER_PATH"
           sudo "$LXC" exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
           ../.venv/bin/python activation_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
             echo "Activation test failed!"
@@ -507,6 +510,8 @@ jobs:
       - name: Test LXD Image
         working-directory: ./tests
         run: |
+          set -x
+          export GECKODRIVER_PATH="$GECKODRIVER_PATH"
           ../.venv/bin/python nextcloud_tests.py --no-gui --skip-release-check "nextcloudpi.local" 443 4443 || {
             echo "Nextcloud test failed!"
             echo "Geckodriver logs:"
@@ -586,6 +591,8 @@ jobs:
       - name: Test LXD Image
         working-directory: ./tests
         run: |
+          set -x
+          export GECKODRIVER_PATH="$GECKODRIVER_PATH"
           sudo "$LXC" exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
           ../.venv/bin/python nextcloud_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
             echo "Nextcloud test failed!"
@@ -653,6 +660,7 @@ jobs:
           tar xf "geckodriver-"*"-$arch.tar.gz"
           sudo mv geckodriver /usr/local/bin/
           sudo chmod +x /usr/local/bin/geckodriver
+          echo "GECKODRIVER_PATH=/usr/local/bin/geckodriver" >> "$GITHUB_ENV"
           geckodriver -V
       - name: Setup Selenium
         run: |
@@ -689,6 +697,8 @@ jobs:
       - name: Test LXD Image
         working-directory: ./tests
         run: |
+          set -x
+          export GECKODRIVER_PATH="$GECKODRIVER_PATH"
           sudo "$LXC" exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
           ../.venv/bin/python activation_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
             echo "Activation test failed!"
