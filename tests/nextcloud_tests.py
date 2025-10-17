@@ -334,7 +334,7 @@ if __name__ == "__main__":
 
     skip_release_check = False
     options = webdriver.FirefoxOptions()
-    webdriver_exec_path = "geckodriver"
+    webdriver_exec_path = None
     if 'GECKODRIVER_PATH' in os.environ:
         print(f"Setting geckodriver from env ({os.environ['GECKODRIVER_PATH']})")
         webdriver_exec_path = os.environ['GECKODRIVER_PATH']
@@ -390,7 +390,10 @@ if __name__ == "__main__":
     print("Nextcloud tests " + tc.yellow + IP + tc.normal)
     print("---------------------------")
 
-    driver = webdriver.Firefox(options=options, service=Service(webdriver_exec_path))
+    if webdriver_exec_path is None:
+        driver = webdriver.Firefox(options=options)
+    else:
+        driver = webdriver.Firefox(options=options, service=Service(webdriver_exec_path))
     failed=False
     try:
         test_nextcloud(IP, nc_port, driver, skip_release_check, wait_multiplier)
