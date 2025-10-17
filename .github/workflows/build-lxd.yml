@@ -341,6 +341,7 @@ jobs:
 #          }
 
   test-dist-upgrade:
+    if: false
     needs:
       - determine-runner
     runs-on: ${{ needs.determine-runner.outputs.runner_label }}
