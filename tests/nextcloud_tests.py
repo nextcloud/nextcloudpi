@@ -194,7 +194,8 @@ def test_nextcloud(IP: str, nc_port: str, driver: WebDriver, skip_release_check:
 
             warnings = driver.find_elements(By.CSS_SELECTOR, "#postsetupchecks > .warnings > li")
             for warning in warnings:
-                if re.match(r'.*Server has no maintenance window start time configured.*', warning.text):
+                if re.match(r'.*Server has no maintenance window start time configured.*', warning.text) \
+                        or re.match(r'.*Server has no maintenance window start time configured.*', warning.text):
                     continue
                 elif re.match(r'.*Could not check for JavaScript support.*', warning.text):
                     continue
@@ -216,7 +217,7 @@ def test_nextcloud(IP: str, nc_port: str, driver: WebDriver, skip_release_check:
                 if re.match(r'.*Your installation has no default phone region set.*', info.text) \
                         or re.match(r'The PHP module "imagick" is not enabled', info.text) \
                         or re.match(r'The PHP module "imagick" in this instance has no SVG support.*', info.text) \
-                        or re.match(r'1 warning in the logs since.*', info.text):
+                        or re.match(r'\d+ warning in the logs since.*', info.text):
                     continue
                 else:
                     print(f'INFO: {info.text}')
