@@ -73,7 +73,7 @@ jobs:
       - name: Setup incus
         if: ${{ needs.determine-runner.outputs.runner_label != 'ubuntu-20.04-arm64' }}
         run: |
-          curl https://pkgs.zabbly.com/get/incus-stable | sudo sh -x
+          sudo apt-get install -y incus qemu-system incus-tools
           sudo iptables -I DOCKER-USER -i incusbr0 -j ACCEPT
           sudo iptables -I DOCKER-USER -o incusbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
           sudo incus admin init --auto
@@ -355,7 +355,7 @@ jobs:
       - name: Setup incus
         if: ${{ needs.determine-runner.outputs.runner_label != 'ubuntu-20.04-arm64' }}
         run: |
-          curl https://pkgs.zabbly.com/get/incus-stable | sudo sh -x
+          sudo apt-get install -y incus qemu-system incus-tools
           sudo iptables -I DOCKER-USER -i incusbr0 -j ACCEPT
           sudo iptables -I DOCKER-USER -o incusbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
           sudo incus admin init --auto
@@ -619,7 +619,7 @@ jobs:
       - name: Setup incus
         if: ${{ needs.determine-runner.outputs.runner_label != 'ubuntu-20.04-arm64' }}
         run: |
-          curl https://pkgs.zabbly.com/get/incus-stable | sudo sh -x
+          sudo apt-get install -y incus qemu-system incus-tools
           sudo iptables -I DOCKER-USER -i incusbr0 -j ACCEPT
           sudo iptables -I DOCKER-USER -o incusbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
           sudo incus admin init --auto
