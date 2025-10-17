@@ -341,7 +341,7 @@ jobs:
 #          }
 
   test-dist-upgrade:
-    if: ${{ runner.arch != 'ARM64' }}
+    if: ${{ needs.determine-runner.outputs.runner_label == 'ubuntu-latest' }}
     needs:
       - determine-runner
     runs-on: ${{ needs.determine-runner.outputs.runner_label }}
