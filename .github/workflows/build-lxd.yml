@@ -393,7 +393,7 @@ jobs:
         run: |
           sudo apt-get -y install python3-venv
           python3 -m venv ./.venv
-          ./.venv/bin/pip install selenium
+          ./.venv/bin/pip install 'selenium>=3.0.0,<4.0.0'
       - name: download LXD image
         run: |
           image_url="${PREVIOUS_IMAGE_URL_AMD64?}"
