@@ -442,8 +442,15 @@ jobs:
             sudo "$LXC" exec ncp -- cat "$datadir/nextcloud.log" || true
             exit 1
           }
+          sleep 10
           USE_INCUS="$USE_INCUS"  ../.venv/bin/python system_tests.py --non-interactive --skip-update-test || {
             echo "System test failed!"
+            echo "ncp.log: "
+            sudo "$LXC" exec ncp -- "tail -n20 /var/log/ncp.log" || true
+            echo "================"
+            echo "nextcloud log: "
+            datadir="$(sudo "$LXC" exec ncp -- ncc config:system:get datadirectory)"
+            sudo "$LXC" exec ncp -- cat "$datadir/nextcloud.log" || true
             exit 1
           }
 
