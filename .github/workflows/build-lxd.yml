@@ -364,11 +364,12 @@ jobs:
         with:
           ref: "v1.54.3"
       - name: Setup Firefox
+        if: ${{ runner.arch != 'ARM64' }}
         continue-on-error: true
         id: setup-firefox-browser-action
         uses: browser-actions/setup-firefox@latest
       - name: Setup Firefox from packages
-        if: ${{ steps.setup-firefox-browser-action.outcome == 'failure' }}
+        if: ${{ runner.arch == 'ARM64' || steps.setup-firefox-browser-action.outcome == 'failure' }}
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends firefox
@@ -641,11 +642,12 @@ jobs:
           sudo iptables -I DOCKER-USER -o incusbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
           sudo incus admin init --auto
       - name: Setup Firefox
+        if: ${{ runner.arch != 'ARM64' }}
         continue-on-error: true
         id: setup-firefox-browser-action
         uses: browser-actions/setup-firefox@latest
       - name: Setup Firefox from packages
-        if: ${{ steps.setup-firefox-browser-action.outcome == 'failure' }}
+        if: ${{ runner.arch == 'ARM64' || steps.setup-firefox-browser-action.outcome == 'failure' }}
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends firefox
