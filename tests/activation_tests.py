@@ -141,7 +141,7 @@ def test_activation(IP, nc_port, admin_port, options, webdriver_exec_path=None, 
 
     # ncp-web
     test.new("ncp-web")
-    driver = webdriver.Firefox(options=options, **driver_kwargs)
+    # driver = webdriver.Firefox(options=options, **driver_kwargs)
     driver.implicitly_wait(30)
     try:
         driver.get(f"https://ncp:{urllib.parse.quote_plus(ncp_pass)}@{IP}:{admin_port}")
