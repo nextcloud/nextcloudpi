@@ -422,6 +422,7 @@ jobs:
         run: |
           set -x
           export GECKODRIVER_PATH="$GECKODRIVER_PATH"
+          export FF_BINARY_PATH="$(which firefox)"
           sudo "$LXC" exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
           ../.venv/bin/python activation_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
             echo "Activation test failed!"
@@ -512,6 +513,7 @@ jobs:
         run: |
           set -x
           export GECKODRIVER_PATH="$GECKODRIVER_PATH"
+          export FF_BINARY_PATH="$(which firefox)"
           ../.venv/bin/python nextcloud_tests.py --no-gui --skip-release-check "nextcloudpi.local" 443 4443 || {
             echo "Nextcloud test failed!"
             echo "Geckodriver logs:"
@@ -593,6 +595,7 @@ jobs:
         run: |
           set -x
           export GECKODRIVER_PATH="$GECKODRIVER_PATH"
+          export FF_BINARY_PATH="$(which firefox)"
           sudo "$LXC" exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
           ../.venv/bin/python nextcloud_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
             echo "Nextcloud test failed!"
@@ -699,6 +702,7 @@ jobs:
         run: |
           set -x
           export GECKODRIVER_PATH="$GECKODRIVER_PATH"
+          export FF_BINARY_PATH="$(which firefox)"
           sudo "$LXC" exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
           ../.venv/bin/python activation_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
             echo "Activation test failed!"
