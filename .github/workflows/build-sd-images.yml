@@ -155,7 +155,8 @@ jobs:
         run: |
           set -ex
           mkdir -p output
-          wget -nv "${{ inputs.test_image_url }}" | pv -i 3 > "output/${ARTIFACT_FILE?}"
+          sudo apt-get install -y pv
+          wget -nv "${{ inputs.test_image_url }}" -O - | pv -n --bytes --rate --timer -i 3 > "output/${ARTIFACT_FILE?}"
       - name: Prepare test
         run: |
           set -x

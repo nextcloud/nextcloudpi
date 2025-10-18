@@ -182,7 +182,7 @@ def test_nextcloud(IP: str, nc_port: str, driver: WebDriver, skip_release_check:
     test.new("settings config")
     wait = WebDriverWait(driver, 60 * wait_multiplier * 5)
     try:
-        wait.until(VisibilityOfElementLocatedByAnyLocator([(By.CSS_SELECTOR, "#security-warning.settings-section")])
+        wait.until(VisibilityOfElementLocatedByAnyLocator([(By.CSS_SELECTOR, "#security-warning.settings-section")]))
         settings_config_check(wait, test)
     except TimeoutException:
         settings_config_check_pre32(wait, test)
