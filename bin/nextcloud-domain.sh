@@ -14,7 +14,7 @@ while :; do
 
   pub_ipv4="$(curl -4 -m4 icanhazip.com 2>/dev/null)"
   pub_ipv6="$(curl -6 -m4 icanhazip.com 2>/dev/null)"
-  [[ "$pub_ipv4"   != "" ]] && ncc config:system:set trusted_domains 11 --value="$pub_ipv4"
+  [[ -z "$pub_ipv4" ]] || ncc config:system:set trusted_domains 11 --value="$pub_ipv4"
   [[ "$pub_ipv6"   != "" ]] && ncc config:system:set trusted_domains 12 --value="[$pub_ipv6]"
 
   [[ "$local_ip" != "" ]] && break
