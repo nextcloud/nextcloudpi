@@ -180,67 +180,12 @@ def test_nextcloud(IP: str, nc_port: str, driver: WebDriver, skip_release_check:
     test.report("password", "Wrong password" not in driver.page_source, msg="Failed to login with provided password")
 
     test.new("settings config")
-    wait = WebDriverWait(driver, 60 * wait_multiplier * 3)
+    wait = WebDriverWait(driver, 60 * wait_multiplier * 5)
     try:
-        wait.until(VisibilityOfElementLocatedByAnyLocator([(By.CSS_SELECTOR, "#security-warning-state-ok"),
-                                                           (By.CSS_SELECTOR, "#security-warning-state-warning"),
-                                                           (By.CSS_SELECTOR, "#security-warning-state-error"),
-                                                           (By.CSS_SELECTOR, "#security-warning-state-failure")]))
-
-        element_ok = driver.find_element(By.ID, "security-warning-state-ok")
-        element_warn = driver.find_element(By.ID, "security-warning-state-warning")
-
-        if element_warn.is_displayed():
-
-            warnings = driver.find_elements(By.CSS_SELECTOR, "#postsetupchecks > .warnings > li")
-            for warning in warnings:
-                if re.match(r'.*Server has no maintenance window start time configured.*', warning.text) \
-                        or re.match(r'.*Server has no maintenance window start time configured.*', warning.text):
-                    continue
-                elif re.match(r'.*Could not check for JavaScript support.*', warning.text):
-                    continue
-                # TODO: Solve redis error logs at the source
-                elif re.match(r'.*\d+ errors? in the logs since.*', warning.text):
-                    continue
-                else:
-                    raise ConfigTestFailure(f"WARN: {warning.text}")
-
-            if driver.find_element(By.CSS_SELECTOR, "#postsetupchecks > .errors").is_displayed():
-                try:
-                    first_error = driver.find_element(By.CSS_SELECTOR, "#postsetupchecks > .errors > li")
-                except NoSuchElementException:
-                    first_error = None
-                raise ConfigTestFailure(f"ERROR: {first_error.text if first_error is not None else 'unexpected error'}")
-
-            infos = driver.find_elements(By.CSS_SELECTOR, "#postsetupchecks > .info > li")
-            for info in infos:
-                if re.match(r'.*Your installation has no default phone region set.*', info.text) \
-                        or re.match(r'The PHP module "imagick" is not enabled', info.text) \
-                        or re.match(r'The PHP module "imagick" in this instance has no SVG support.*', info.text) \
-                        or re.match(r'\d+ warning in the logs since.*', info.text):
-                    continue
-                else:
-                    print(f'INFO: {info.text}')
-                    php_modules = info.find_elements(By.CSS_SELECTOR, "li")
-                    if len(php_modules) != 1:
-                        raise ConfigTestFailure(f"Could not find the list of php modules within the info message "
-                                                f"'{infos[0].text}'")
-                    if php_modules[0].text != "imagick":
-                        raise ConfigTestFailure("The list of php_modules does not equal [imagick]")
-
-        elif not element_ok.is_displayed():
-            errors = driver.find_elements(By.CSS_SELECTOR, "#postsetupchecks > .errors > li")
-            for error in errors:
-                print(f'ERROR: {error.text}')
-            raise ConfigTestFailure("Neither the warnings nor the ok status is displayed "
-                                    "(so there are probably errors or the page is broken)")
-
-        test.check(True)
-
-    except Exception as e:
-
-        print(driver.find_element(By.CSS_SELECTOR, "#security-warning").get_attribute("innerHTML"))
-        test.check(e)
+        wait.until(VisibilityOfElementLocatedByAnyLocator([(By.CSS_SELECTOR, "#security-warning.settings-section")])
+        settings_config_check(wait, test)
+    except TimeoutException:
+        settings_config_check_pre32(wait, test)
 
     close_first_run_wizard(driver, wait_multiplier)
 
@@ -319,6 +264,98 @@ def test_nextcloud(IP: str, nc_port: str, driver: WebDriver, skip_release_check:
         test.check(li.find_element(By.TAG_NAME, "input").is_selected() != old_admin_notifications_value,
                    "Toggling admin notifications didn't work")
     except Exception as e:
+        test.check(e)
+
+def settings_config_check_warnings(warnings):
+    for warning in warnings:
+        if re.match(r'.*Server has no maintenance window start time configured.*', warning.text) \
+                or re.match(r'.*Server has no maintenance window start time configured.*', warning.text):
+            continue
+        elif re.match(r'.*Could not check for JavaScript support.*', warning.text):
+            continue
+        # TODO: Solve redis error logs at the source
+        elif re.match(r'.*\d+ errors? in the logs since.*', warning.text):
+            continue
+        else:
+            raise ConfigTestFailure(f"WARN: {warning.text}")
+
+def settings_config_check_infos(infos):
+    for info in infos:
+        if re.match(r'.*Your installation has no default phone region set.*', info.text) \
+                or re.match(r'The PHP module "imagick" is not enabled', info.text) \
+                or re.match(r'The PHP module "imagick" in this instance has no SVG support.*', info.text) \
+                or re.match(r'\d+ warnings? in the logs since.*', info.text):
+            continue
+        else:
+            print(f'INFO: {info.text}')
+            php_modules = info.find_elements(By.CSS_SELECTOR, "li")
+            if len(php_modules) != 1:
+                raise ConfigTestFailure(f"Could not find the list of php modules within the info message "
+                                        f"'{infos[0].text}'")
+            if php_modules[0].text != "imagick":
+                raise ConfigTestFailure("The list of php_modules does not equal [imagick]")
+
+
+def settings_config_check_errors(errors):
+    if len(errors) == 0:
+        return
+    for error in errors:
+        print(f'ERROR: {error.text}')
+    raise ConfigTestFailure("Neither the warnings nor the ok status is displayed "
+                            "(so there are probably errors or the page is broken)")
+
+
+def settings_config_check(wait, test):
+    try:
+        wait.until_not(VisibilityOfElementLocatedByAnyLocator([(By.CSS_SELECTOR, "#security-warning .loading-icon")]))
+        warnings = driver.find_elements(By.CSS_SELECTOR, "#security-warning li.settings-setup-checks-item--warning .settings-setup-checks-item__description")
+        settings_config_check_warnings(warnings)
+        infos = driver.find_elements(By.CSS_SELECTOR, "#security-warning li.settings-setup-checks-item--info .settings-setup-checks-item__description")
+        settings_config_check_infos(infos)
+        errors = driver.find_elements(By.CSS_SELECTOR, "#security-warning li.settings-setup-checks-item--error .settings-setup-checks-item__description")
+        settings_config_check_errors(errors)
+
+        test.check(True)
+    except Exception as e:
+        print(driver.find_element(By.CSS_SELECTOR, "#security-warning").get_attribute("innerHTML"))
+        test.check(e)
+
+
+def settings_config_check_pre32(wait, test):
+    try:
+        wait.until(VisibilityOfElementLocatedByAnyLocator([(By.CSS_SELECTOR, "#security-warning-state-ok"),
+                                                           (By.CSS_SELECTOR, "#security-warning-state-warning"),
+                                                           (By.CSS_SELECTOR, "#security-warning-state-error"),
+                                                           (By.CSS_SELECTOR, "#security-warning-state-failure")]))
+
+        element_ok = driver.find_element(By.ID, "security-warning-state-ok")
+        element_warn = driver.find_element(By.ID, "security-warning-state-warning")
+
+        if element_warn.is_displayed():
+
+            warnings = driver.find_elements(By.CSS_SELECTOR, "#postsetupchecks > .warnings > li")
+            settings_config_check_warnings(warnings)
+
+            if driver.find_element(By.CSS_SELECTOR, "#postsetupchecks > .errors").is_displayed():
+                try:
+                    first_error = driver.find_element(By.CSS_SELECTOR, "#postsetupchecks > .errors > li")
+                except NoSuchElementException:
+                    first_error = None
+                raise ConfigTestFailure(f"ERROR: {first_error.text if first_error is not None else 'unexpected error'}")
+
+            infos = driver.find_elements(By.CSS_SELECTOR, "#postsetupchecks > .info > li")
+            settings_config_check_infos(infos)
+
+
+        elif not element_ok.is_displayed():
+            errors = driver.find_elements(By.CSS_SELECTOR, "#postsetupchecks > .errors > li")
+            settings_config_check_errors(errors)
+
+        test.check(True)
+
+    except Exception as e:
+
+        print(driver.find_element(By.CSS_SELECTOR, "#security-warning").get_attribute("innerHTML"))
         test.check(e)
 
 
