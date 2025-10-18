@@ -15,6 +15,10 @@ on:
         required: false
         default: true
         type: boolean
+      test_image_url:
+        required: false
+        type: string
+        default: ""
     outputs:
       artifact_name:
         value: "${{ jobs.build.outputs.artifact_name }}"
@@ -23,7 +27,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     env:
       VERSION: "${{ inputs.git_ref }}"
       LOG_GUEST: "\\033[1;34mGUEST::\\033[0m"
@@ -63,7 +67,13 @@ jobs:
 #          which qemu-aarch64-static
 #          update-binfmts --display qemu-aarch64
 #          update-binfmts --display qemu-arm
+      - name: "Skip build"
+        if: "${{ inputs.test_image_url != '' }}"
+        run: |
+          echo "artifact_file=NextcloudPi_TestImage_${VERSION//\//_}.img" >> $GITHUB_OUTPUT
+          echo "ARTIFACT_FILE=NextcloudPi_TestImage_${VERSION//\//_}.img" >> $GITHUB_ENV
       - name: "Build Armbian"
+        if: "${{ inputs.test_image_url == '' }}"
         id: build-armbian
         continue-on-error: true
         run: |
@@ -103,6 +113,7 @@ jobs:
           name: ${{ github.run_id }}-${{ inputs.board_id }}-logs
           path: armbian/output
       - name: upload image to artifact store
+        if: "${{ inputs.test_image_url == '' }}"
         uses: actions/upload-artifact@v4
         with:
           name: ${{ github.run_id }}-${{ inputs.board_id }}-image
@@ -135,15 +146,24 @@ jobs:
         with:
           ref: "${{ env.VERSION }}"
       - uses: actions/download-artifact@v4
+        if: "${{ inputs.test_image_url == '' }}"
         with:
           name: ${{ env.ARTIFACT_ID }}
           path: output
+      - name: Download Test Image
+        if: "${{ inputs.test_image_url != '' }}"
+        run: |
+          set -ex
+          mkdir -p output
+          wget -nv "${{ inputs.test_image_url }}" | pv -i 3 > "output/${ARTIFACT_FILE?}"
       - name: Prepare test
         run: |
           set -x
           mv output/${ARTIFACT_FILE?} ncp.img
           sudo apt-get install -y systemd-container
-          sudo pip install selenium
+          python3 -m venv ./.venv
+          . ./.venv/bin/activate
+          ./.venv/bin/pip install selenium
           sudo rm -rf raspbian_root
           . ./build/buildlib.sh
           mount_raspbian "ncp.img"
@@ -175,7 +195,7 @@ jobs:
           sudo systemd-nspawn --boot -D ./raspbian_root/ -M ncp --hostname=nextcloudpi |& awk "{ print \"${LOG_GUEST} \" \$0 }" &
           sleep 60
           
-            CONTAINER_CMD=(sudo systemd-run --machine=ncp -P --wait)
+          CONTAINER_CMD=(sudo systemd-run --machine=ncp -P --wait)
           
           success=false
           for attempt in {1..30}
@@ -234,7 +254,7 @@ jobs:
           for attempt in {1..5}
           do
             echo -e "${LOG_CICD} == Activation Tests (attempt $attempt/5) =="
-            python tests/activation_tests.py -t 300 --no-gui "$ip" 443 4443 |& awk "{ print \"${LOG_TEST} \" \$0 }"
+            ./.venv/bin/python tests/activation_tests.py -t 300 --no-gui "$ip" 443 4443 |& awk "{ print \"${LOG_TEST} \" \$0 }"
             [[ ${PIPESTATUS[0]} -eq 0 ]] || {
               echo -e "${LOG_CICD} Activation test failed!"
               echo -e "${LOG_DIAG} Geckodriver logs:"
@@ -258,7 +278,7 @@ jobs:
           for attempt in {1..5}
           do
             echo -e "${LOG_CICD} == System Tests (attempt $attempt/5) =="
-            sudo python tests/system_tests.py --non-interactive |& awk "{ print \"${LOG_TEST} \" \$0 }"
+            USE_SUDO=yes ./.venv/bin/python tests/system_tests.py --non-interactive |& awk "{ print \"${LOG_TEST} \" \$0 }"
             [[ ${PIPESTATUS[0]} -eq 0 ]] || {
               echo -e "${LOG_CICD} System test failed!"
               sleep 12
@@ -276,7 +296,7 @@ jobs:
           for attempt in {1..5}
           do
             echo -e "${LOG_CICD} == Nextcloud Tests (attempt $attempt/5) =="
-            python tests/nextcloud_tests.py --no-gui "$ip" 443 4443 |& awk "{ print \"${LOG_TEST} \" \$0 }"
+            ./.venv/bin/python tests/nextcloud_tests.py --no-gui "$ip" 443 4443 |& awk "{ print \"${LOG_TEST} \" \$0 }"
             [[ ${PIPESTATUS[0]} -eq 0 ]] || {
               echo -e "${LOG_CICD} Nextcloud test failed!"
               echo -e "${LOG_DIAG} /etc/os-release:"
@@ -336,7 +356,7 @@ jobs:
           }
 
 #  test-distupgrade:
-#    runs-on: ubuntu-20.04
+#    runs-on: ubuntu-latest
 #    env:
 #      VERSION: "${{ inputs.git_ref || github.ref }}"
 #      LOG_GUEST: "\\033[1;34mGUEST::\\033[0m"

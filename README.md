@@ -144,6 +144,7 @@ Use the [install script][ncp-proxmox-install-script-v5] from [community-scripts]
 
 [community-scripts][community-scripts-profile] has multiple helper scripts available for Proxmox on their [website][website-helper-scripts], go have a look if you're using Proxmox. :+1:
 
+
 Installation: `bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/ct/nextcloudpi.sh)"`
 
 Default Settings: `2GB RAM - 8GB Storage - 2vCPU`
