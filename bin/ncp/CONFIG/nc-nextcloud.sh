@@ -60,6 +60,10 @@ install()
   sed -i 's|# rename-command CONFIG ""|rename-command CONFIG ""|'  $REDIS_CONF
   sed -i "s|^port.*|port 0|"                                       $REDIS_CONF
   echo "maxmemory $REDIS_MEM" >> $REDIS_CONF
+  if [[ "$ARMBIAN_BUILD" == "yes" ]]
+  then
+    echo "ignore-warnings ARM64-COW-BUG" >> $REDIS_CONF
+  fi
   echo 'vm.overcommit_memory = 1' >> /etc/sysctl.conf
 
   if is_lxc; then

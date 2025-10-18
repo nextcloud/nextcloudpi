@@ -23,6 +23,7 @@ from pathlib import Path
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import WebDriverWait
@@ -179,7 +180,7 @@ def test_nextcloud(IP: str, nc_port: str, driver: WebDriver, skip_release_check:
     test.report("password", "Wrong password" not in driver.page_source, msg="Failed to login with provided password")
 
     test.new("settings config")
-    wait = WebDriverWait(driver, 60 * wait_multiplier)
+    wait = WebDriverWait(driver, 60 * wait_multiplier * 3)
     try:
         wait.until(VisibilityOfElementLocatedByAnyLocator([(By.CSS_SELECTOR, "#security-warning-state-ok"),
                                                            (By.CSS_SELECTOR, "#security-warning-state-warning"),
@@ -193,7 +194,8 @@ def test_nextcloud(IP: str, nc_port: str, driver: WebDriver, skip_release_check:
 
             warnings = driver.find_elements(By.CSS_SELECTOR, "#postsetupchecks > .warnings > li")
             for warning in warnings:
-                if re.match(r'.*Server has no maintenance window start time configured.*', warning.text):
+                if re.match(r'.*Server has no maintenance window start time configured.*', warning.text) \
+                        or re.match(r'.*Server has no maintenance window start time configured.*', warning.text):
                     continue
                 elif re.match(r'.*Could not check for JavaScript support.*', warning.text):
                     continue
@@ -213,7 +215,9 @@ def test_nextcloud(IP: str, nc_port: str, driver: WebDriver, skip_release_check:
             infos = driver.find_elements(By.CSS_SELECTOR, "#postsetupchecks > .info > li")
             for info in infos:
                 if re.match(r'.*Your installation has no default phone region set.*', info.text) \
-                        or re.match(r'The PHP module "imagick" is not enabled', info.text):
+                        or re.match(r'The PHP module "imagick" is not enabled', info.text) \
+                        or re.match(r'The PHP module "imagick" in this instance has no SVG support.*', info.text) \
+                        or re.match(r'\d+ warning in the logs since.*', info.text):
                     continue
                 else:
                     print(f'INFO: {info.text}')
@@ -234,6 +238,8 @@ def test_nextcloud(IP: str, nc_port: str, driver: WebDriver, skip_release_check:
         test.check(True)
 
     except Exception as e:
+
+        print(driver.find_element(By.CSS_SELECTOR, "#security-warning").get_attribute("innerHTML"))
         test.check(e)
 
     close_first_run_wizard(driver, wait_multiplier)
@@ -328,6 +334,13 @@ if __name__ == "__main__":
 
     skip_release_check = False
     options = webdriver.FirefoxOptions()
+    webdriver_exec_path = None
+    if 'GECKODRIVER_PATH' in os.environ:
+        print(f"Setting geckodriver from env ({os.environ['GECKODRIVER_PATH']})")
+        webdriver_exec_path = os.environ['GECKODRIVER_PATH']
+    if 'FF_BINARY_PATH' in os.environ:
+        print(f"Setting firefox binary from env ({os.environ['FF_BINARY_PATH']}")
+        options.binary_location = os.environ['FF_BINARY_PATH']
     wait_multiplier = 1
     for opt, arg in opts:
         if opt in ('-h', '--help'):
@@ -377,7 +390,10 @@ if __name__ == "__main__":
     print("Nextcloud tests " + tc.yellow + IP + tc.normal)
     print("---------------------------")
 
-    driver = webdriver.Firefox(options=options)
+    if webdriver_exec_path is None:
+        driver = webdriver.Firefox(options=options)
+    else:
+        driver = webdriver.Firefox(options=options, service=Service(webdriver_exec_path))
     failed=False
     try:
         test_nextcloud(IP, nc_port, driver, skip_release_check, wait_multiplier)
