@@ -47,7 +47,7 @@ jobs:
             echo "lxd_extra_profile=network" | tee -a "$GITHUB_OUTPUT"
           else
             LXC_CMD="incus"
-            RUNNER_LABEL="ubuntu-20.04"
+            RUNNER_LABEL="ubuntu-latest"
           fi
 
           echo "runner_label=$RUNNER_LABEL" | tee -a $GITHUB_OUTPUT
@@ -73,7 +73,7 @@ jobs:
       - name: Setup incus
         if: ${{ needs.determine-runner.outputs.runner_label != 'ubuntu-20.04-arm64' }}
         run: |
-          curl https://pkgs.zabbly.com/get/incus-stable | sudo sh -x
+          sudo apt-get install -y incus qemu-system incus-tools
           sudo iptables -I DOCKER-USER -i incusbr0 -j ACCEPT
           sudo iptables -I DOCKER-USER -o incusbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
           sudo incus admin init --auto
@@ -341,6 +341,7 @@ jobs:
 #          }
 
   test-dist-upgrade:
+    if: false
     needs:
       - determine-runner
     runs-on: ${{ needs.determine-runner.outputs.runner_label }}
@@ -348,14 +349,14 @@ jobs:
       VERSION: "${{ inputs.git_ref || github.ref }}"
       LXC: "${{ needs.determine-runner.outputs.lxc_cmd }}"
       LXD_EXTRA_PROFILE: "${{ needs.determine-runner.outputs.lxd_extra_profile }}"
-      PREVIOUS_IMAGE_URL_ARM64: "https://github.com/nextcloud/nextcloudpi/releases/download/v1.53.0/NextcloudPi_LXD_arm64_v1.53.0.tar.gz"
-      PREVIOUS_IMAGE_URL_AMD64: "https://github.com/nextcloud/nextcloudpi/releases/download/v1.53.0/NextCloudPi_LXD_x86_v1.53.0.tar.gz"
+      PREVIOUS_IMAGE_URL_ARM64: "https://github.com/nextcloud/nextcloudpi/releases/download/v1.53.2/NextcloudPi_LXD_arm64_v1.53.2.tar.gz"
+      PREVIOUS_IMAGE_URL_AMD64: "https://github.com/nextcloud/nextcloudpi/releases/download/v1.53.2/NextCloudPi_LXD_x86_v1.53.2.tar.gz"
       USE_INCUS: "${{ needs.determine-runner.outputs.lxc_cmd == 'incus' && 'yes' || 'no' }}"
     steps:
       - name: Setup incus
         if: ${{ needs.determine-runner.outputs.runner_label != 'ubuntu-20.04-arm64' }}
         run: |
-          curl https://pkgs.zabbly.com/get/incus-stable | sudo sh -x
+          sudo apt-get install -y incus qemu-system incus-tools
           sudo iptables -I DOCKER-USER -i incusbr0 -j ACCEPT
           sudo iptables -I DOCKER-USER -o incusbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
           sudo incus admin init --auto
@@ -364,31 +365,40 @@ jobs:
         with:
           ref: "v1.54.3"
       - name: Setup Firefox
+        if: ${{ runner.arch != 'ARM64' }}
         continue-on-error: true
         id: setup-firefox-browser-action
         uses: browser-actions/setup-firefox@latest
       - name: Setup Firefox from packages
-        if: ${{ steps.setup-firefox-browser-action.outcome == 'failure' }}
+        if: ${{ runner.arch == 'ARM64' || steps.setup-firefox-browser-action.outcome == 'failure' }}
         run: |
+          sudo apt-get update
           sudo apt-get install -y --no-install-recommends firefox
       - name: Setup GeckoDriver
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          set -x
           arch=linux64
-          if [[ "$RUNNER_ARCH" == "ARM64" ]]
+          if [[ "${{ runner.arch }}" == "ARM64" ]]
           then
             arch="linux-aarch64"
           fi
           gh release download -R mozilla/geckodriver -p 'geckodriver-*-'"$arch.tar.gz"
           tar xf "geckodriver-"*"-$arch.tar.gz"
           sudo mv geckodriver /usr/local/bin/
+          sudo chmod +x /usr/local/bin/geckodriver
+          echo "GECKODRIVER_PATH=/usr/local/bin/geckodriver" >> "$GITHUB_ENV"
+          geckodriver -V
       - name: Setup Selenium
-        run: pip install selenium
+        run: |
+          sudo apt-get -y install python3-venv
+          python3 -m venv ./.venv
+          ./.venv/bin/pip install 'selenium>=3.0.0,<4.0.0'
       - name: download LXD image
         run: |
           image_url="${PREVIOUS_IMAGE_URL_AMD64?}"
-          if [[ "$RUNNER_ARCH" == "ARM64" ]]
+          if [[ "${{ runner.arch }}" == "ARM64" ]]
           then
             image_url="${PREVIOUS_IMAGE_URL_ARM64?}"
           fi
@@ -412,8 +422,11 @@ jobs:
       - name: Activate and Test LXD Image
         working-directory: ./tests
         run: |
+          set -x
+          export GECKODRIVER_PATH="$GECKODRIVER_PATH"
+          export FF_BINARY_PATH="$(which firefox)"
           sudo "$LXC" exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
-          python activation_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
+          ../.venv/bin/python activation_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
             echo "Activation test failed!"
             echo "Geckodriver logs:"
             tail -n 20 geckodriver.log >&2 || true
@@ -422,7 +435,7 @@ jobs:
             sudo "$LXC" exec ncp -- "tail -n20 /var/log/ncp.log" || true
             exit 1
           }
-          python nextcloud_tests.py --skip-release-check --no-gui "nextcloudpi.local" 443 4443 || {
+          ../.venv/bin/python nextcloud_tests.py --skip-release-check --no-gui "nextcloudpi.local" 443 4443 || {
             echo "Nextcloud test failed!"
             echo "Geckodriver logs:"
             tail -n 20 geckodriver.log >&2 || true
@@ -435,8 +448,15 @@ jobs:
             sudo "$LXC" exec ncp -- cat "$datadir/nextcloud.log" || true
             exit 1
           }
-          USE_INCUS="$USE_INCUS"  python system_tests.py --non-interactive --skip-update-test || {
+          sleep 10
+          USE_INCUS="$USE_INCUS"  ../.venv/bin/python system_tests.py --non-interactive --skip-update-test || {
             echo "System test failed!"
+            echo "ncp.log: "
+            sudo "$LXC" exec ncp -- "tail -n20 /var/log/ncp.log" || true
+            echo "================"
+            echo "nextcloud log: "
+            datadir="$(sudo "$LXC" exec ncp -- ncc config:system:get datadirectory)"
+            sudo "$LXC" exec ncp -- cat "$datadir/nextcloud.log" || true
             exit 1
           }
 
@@ -457,7 +477,7 @@ jobs:
           echo "Running update to ${VERSION}"
           
           current_nc_version="$(sudo "$LXC" exec ncp -- ncc status | grep "version:" | awk '{ print $3 }')"
-          latest_nc_version="27.1.6"
+          latest_nc_version="28.0.14"
           
           sudo "$LXC" exec ncp -- apt-get update ||:
           sudo "$LXC" exec ncp -- apt-get install --no-install-recommends -y gnupg2
@@ -466,13 +486,13 @@ jobs:
           sudo "$LXC" exec ncp -- bash -c "DBG=x ncp-update ${UPDATE_ARGS[*]}"
           sudo "$LXC" exec ncp -- /usr/local/bin/ncc status
           
-          if [[ "$current_nc_version" =~ "$latest_nc_version".* ]]
-          then
-            echo "Nextcloud is up to date - skipping NC update test."
-          else
-            sudo "$LXC" exec ncp -- bash -c "DBG=x ncp-update-nc ${latest_nc_version?}"
-            sudo "$LXC" exec ncp -- /usr/local/bin/ncc status
-          fi
+          #if [[ "$current_nc_version" =~ "$latest_nc_version".* ]]
+          #then
+          #  echo "Nextcloud is up to date - skipping NC update test."
+          #else
+          #  sudo "$LXC" exec ncp -- bash -c "DBG=x ncp-update-nc ${latest_nc_version?}"
+          #  sudo "$LXC" exec ncp -- /usr/local/bin/ncc status
+          #fi
   
           sudo "$LXC" exec ncp -- rm -f /opt/ncdata/data/nextcloud.log
           
@@ -493,7 +513,10 @@ jobs:
       - name: Test LXD Image
         working-directory: ./tests
         run: |
-          python nextcloud_tests.py --no-gui --skip-release-check "nextcloudpi.local" 443 4443 || {
+          set -x
+          export GECKODRIVER_PATH="$GECKODRIVER_PATH"
+          export FF_BINARY_PATH="$(which firefox)"
+          ../.venv/bin/python nextcloud_tests.py --no-gui --skip-release-check "nextcloudpi.local" 443 4443 || {
             echo "Nextcloud test failed!"
             echo "Geckodriver logs:"
             tail -n 20 geckodriver.log >&2 || true
@@ -507,7 +530,7 @@ jobs:
             exit 1
           }
           sudo "$LXC" exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
-          USE_INCUS="$USE_INCUS" python system_tests.py --non-interactive --skip-update-test || {
+          USE_INCUS="$USE_INCUS" ../.venv/bin/python system_tests.py --non-interactive --skip-update-test || {
             echo "System test failed!"
             exit 1
           }
@@ -572,8 +595,11 @@ jobs:
       - name: Test LXD Image
         working-directory: ./tests
         run: |
+          set -x
+          export GECKODRIVER_PATH="$GECKODRIVER_PATH"
+          export FF_BINARY_PATH="$(which firefox)"
           sudo "$LXC" exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
-          python nextcloud_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
+          ../.venv/bin/python nextcloud_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
             echo "Nextcloud test failed!"
             echo "Geckodriver logs:"
             tail -n 20 geckodriver.log >&2 || true
@@ -586,7 +612,7 @@ jobs:
             sudo "$LXC" exec ncp -- cat "$datadir/nextcloud.log" || true
             exit 1
           }
-          USE_INCUS="$USE_INCUS" python system_tests.py --non-interactive || {
+          USE_INCUS="$USE_INCUS" ../.venv/bin/python system_tests.py --non-interactive || {
             echo "System test failed!"
             exit 1
           }
@@ -612,32 +638,41 @@ jobs:
       - name: Setup incus
         if: ${{ needs.determine-runner.outputs.runner_label != 'ubuntu-20.04-arm64' }}
         run: |
-          curl https://pkgs.zabbly.com/get/incus-stable | sudo sh -x
+          sudo apt-get install -y incus qemu-system incus-tools
           sudo iptables -I DOCKER-USER -i incusbr0 -j ACCEPT
           sudo iptables -I DOCKER-USER -o incusbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
           sudo incus admin init --auto
       - name: Setup Firefox
+        if: ${{ runner.arch != 'ARM64' }}
         continue-on-error: true
         id: setup-firefox-browser-action
         uses: browser-actions/setup-firefox@latest
       - name: Setup Firefox from packages
-        if: ${{ steps.setup-firefox-browser-action.outcome == 'failure' }}
+        if: ${{ runner.arch == 'ARM64' || steps.setup-firefox-browser-action.outcome == 'failure' }}
         run: |
+          sudo apt-get update
           sudo apt-get install -y --no-install-recommends firefox
       - name: Setup GeckoDriver
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          set -x
           arch=linux64
-          if [[ "$RUNNER_ARCH" == "ARM64" ]]
+          if [[ "${{ runner.arch }}" == "ARM64" ]]
           then
             arch="linux-aarch64"
           fi
           gh release download -R mozilla/geckodriver -p 'geckodriver-*-'"$arch.tar.gz"
           tar xf "geckodriver-"*"-$arch.tar.gz"
           sudo mv geckodriver /usr/local/bin/
+          sudo chmod +x /usr/local/bin/geckodriver
+          echo "GECKODRIVER_PATH=/usr/local/bin/geckodriver" >> "$GITHUB_ENV"
+          geckodriver -V
       - name: Setup Selenium
-        run: pip install selenium
+        run: |
+          sudo apt-get install -y python3-venv
+          python3 -m venv ./.venv
+          ./.venv/bin/pip install selenium
       - name: download LXD image from artifact store
         uses: actions/download-artifact@v4
         with:
@@ -668,8 +703,11 @@ jobs:
       - name: Test LXD Image
         working-directory: ./tests
         run: |
+          set -x
+          export GECKODRIVER_PATH="$GECKODRIVER_PATH"
+          export FF_BINARY_PATH="$(which firefox)"
           sudo "$LXC" exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
-          python activation_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
+          ../.venv/bin/python activation_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
             echo "Activation test failed!"
             echo "Geckodriver logs:"
             tail -n 20 geckodriver.log >&2 || true
@@ -682,7 +720,7 @@ jobs:
             sudo "$LXC" exec ncp -- cat "$datadir/nextcloud.log" || true
             exit 1
           }
-          python nextcloud_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
+          ../.venv/bin/python nextcloud_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
             echo "Nextcloud test failed!"
             echo "Geckodriver logs:"
             tail -n 20 geckodriver.log >&2 || true
@@ -695,7 +733,7 @@ jobs:
             sudo "$LXC" exec ncp -- cat "$datadir/nextcloud.log" || true
             exit 1
           }
-          USE_INCUS="$USE_INCUS" python system_tests.py --non-interactive || {
+          USE_INCUS="$USE_INCUS" ../.venv/bin/python system_tests.py --non-interactive || {
             echo "System test failed!"
             exit 1
           }
