@@ -165,8 +165,8 @@ EOF
   ncc app:enable  contacts
   ncc app:install notes
   ncc app:enable  notes
-  ncc app:install tasks
-  ncc app:enable  tasks
+  #ncc app:install tasks
+  #ncc app:enable  tasks
 
   # we handle this ourselves
   ncc app:disable updatenotification
