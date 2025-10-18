@@ -240,6 +240,11 @@ then
   source /usr/local/etc/library.sh
 fi
 
+if { ncc app_api:daemon:list || true; } 2> /dev/null | grep 'No registered daemon configs.' > /dev/null 2>&1
+then
+  ncc app:disable app_api
+fi
+
 # refresh completions
 ncc _completion -g --shell-type bash -p ncc | sed 's|/var/www/nextcloud/occ|ncc|g' > /usr/share/bash-completion/completions/ncp
 
