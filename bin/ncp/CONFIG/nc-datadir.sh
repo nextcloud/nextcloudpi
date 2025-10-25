@@ -79,7 +79,7 @@ configure()
   ENCDIR="${BASEDIR}"/ncdata_enc
 
   # checks
-  [[ "$DISABLE_FS_CHECK" == 1 ]] || [[ "$(stat -fc%T "${BASEDIR}")" =~ ext|btrfs|zfs ]] || {
+  [[ "$DISABLE_FS_CHECK" == 1 ]] || [[ "$(stat -fc%T "${BASEDIR}")" =~ ext|btrfs|zfs|overlayfs ]] || {
     echo -e "Only ext/btrfs/zfs filesystems can hold the data directory (found '$(stat -fc%T "${BASEDIR}")')"
     return 1
   }
