@@ -82,7 +82,7 @@ jobs:
     secrets: inherit
 
   armbian-test-image:
-    if: ${{ inputs.test_image_url != '' || ( github.event_name != 'workflow_dispatch' && !startsWith(github.ref_name, 'docker-') ) }}
+    if: ${{ inputs.test_image_url != '' }}
     uses: ./.github/workflows/build-sd-images.yml
     with:
       git_ref: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
