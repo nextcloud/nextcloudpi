@@ -142,11 +142,12 @@ cp nextcloud-old/config/config.php nextcloud/config/
 ####################
 cp -raT nextcloud-old/themes/ nextcloud/themes/
 
-# copy old NCP apps
+# copy old NC apps
 ####################
-for app in nextcloudpi previewgenerator notify_push; do
-  if [[ -d nextcloud-old/apps/"${app}" ]]; then
-    cp -r -L nextcloud-old/apps/"${app}" /var/www/nextcloud/apps/
+for app in nextcloud-old/apps/*; do
+  if ! [[ -d /var/www/nextcloud/apps/"$(basename "$app")" ]]
+  then
+    cp -r -L "${app}" /var/www/nextcloud/apps/
   fi
 done
 
