@@ -179,7 +179,7 @@ else if ( $_POST['action'] == "sidebar" )
   require( "elements.php" );
   // return JSON
   echo '{ "token": "' . getCSRFToken() . '",';               // Get new token
-  echo ' "output": '  . json_encode( print_sidebar( $l, true ) ) . ' , ';
+  echo ' "output": '  . json_encode( print_sidebar( $l, false ) ) . ' , ';
   echo ' "ret": "0" }';
 }
 

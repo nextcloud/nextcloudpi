@@ -37,7 +37,7 @@ configure()
   local BASEDIR=$( dirname "$DBDIR" )
   mkdir -p "$BASEDIR"
 
-  [[ "$(stat -fc%T "${BASEDIR}")" =~ ext|btrfs|zfs ]] || { echo -e "Only ext/btrfs/zfs filesystems can hold the data directory (found '$(stat -fc%T "${BASEDIR}")"; return 1; }
+  [[ "$(stat -fc%T "${BASEDIR}")" =~ ext|btrfs|zfs|overlayfs ]] || { echo -e "Only ext/btrfs/zfs filesystems can hold the data directory (found '$(stat -fc%T "${BASEDIR}")"; return 1; }
 
   sudo -u mysql test -x "$BASEDIR" || { echo -e "ERROR: the user mysql does not have access permissions over $BASEDIR"; return 1; }
 

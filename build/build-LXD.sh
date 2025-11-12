@@ -63,7 +63,6 @@ LXC_CREATE+=(ncp)
 #  fi
 #fi
 
-set -x
 EXEC_ARGS=()
 [[ -z "$BRANCH" ]] || EXEC_ARGS+=(--env "BRANCH=${BRANCH}")
 systemd-run --user --scope -p "Delegate=yes" "${LXC_CMD[@]}" start ncp -q || \

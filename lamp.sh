@@ -24,10 +24,11 @@ export DEBIAN_FRONTEND=noninteractive
 
 install()
 {
-    set -x
     # Setup apt repository for php 8
-    wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
-    echo "deb https://packages.sury.org/php/ ${RELEASE%-security} main" > /etc/apt/sources.list.d/php.list
+    if [ ! -f /etc/apt/sources.list.d/php.list ] || [ ! -f /etc/apt/trusted.gpg.d/php.gpg ];then
+        wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
+        echo "deb https://packages.sury.org/php/ ${RELEASE%-security} main" > /etc/apt/sources.list.d/php.list
+    fi
     apt-get update
     $APTINSTALL apt-utils cron curl
     ls -l /var/lock || true
@@ -100,7 +101,7 @@ install()
   done
 
   cd /tmp
-  mysql_secure_installation <<EOF
+  mariadb-secure-installation <<EOF
 $DBPASSWD
 y
 $DBPASSWD
