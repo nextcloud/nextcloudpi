@@ -171,6 +171,9 @@ EOF
   # we handle this ourselves
   ncc app:disable updatenotification
 
+  # Not supported in Nextcloudpi without manual setup
+  ncc app:disable app_api
+
   # ncp-previewgenerator
   local ncver
   ncver="$(ncc status 2>/dev/null | grep "version:" | awk '{ print $3 }')"

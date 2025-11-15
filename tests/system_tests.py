@@ -51,7 +51,7 @@ binaries_no_docker = [
         'btrfs',
         'fail2ban-server',
         'udiskie',
-        'ufw'
+        'ufw',
         'samba',
         ]
 

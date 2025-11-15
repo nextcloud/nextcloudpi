@@ -142,11 +142,12 @@ cp nextcloud-old/config/config.php nextcloud/config/
 ####################
 cp -raT nextcloud-old/themes/ nextcloud/themes/
 
-# copy old NCP apps
+# copy old NC apps
 ####################
-for app in nextcloudpi previewgenerator; do
-  if [[ -d nextcloud-old/apps/"${app}" ]]; then
-    cp -r -L nextcloud-old/apps/"${app}" /var/www/nextcloud/apps/
+for app in nextcloud-old/apps/*; do
+  if ! [[ -d /var/www/nextcloud/apps/"$(basename "$app")" ]]
+  then
+    cp -r -L "${app}" /var/www/nextcloud/apps/
   fi
 done
 
@@ -195,6 +196,7 @@ $ncc | grep -q db:add-missing-indices && $ncc db:add-missing-indices -n
 $ncc | grep -q db:add-missing-columns && $ncc db:add-missing-columns -n
 $ncc | grep -q db:add-missing-primary-keys && $ncc db:add-missing-primary-keys -n
 $ncc | grep -q db:convert-filecache-bigint && $ncc db:convert-filecache-bigint -n
+$ncc | grep -q db:convert-mysql-charset && $ncc db:convert-mysql-charset -n
 $ncc maintenance:repair --help | grep -q -e '--include-expensive' && $ncc maintenance:repair --include-expensive
 
 # use the correct version for custom apps

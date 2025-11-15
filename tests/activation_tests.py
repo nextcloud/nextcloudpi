@@ -23,6 +23,7 @@ import signal
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
+from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.firefox.options import Options
@@ -90,12 +91,15 @@ def signal_handler(sig, frame):
         sys.exit(0)
 
 
-def test_activation(IP, nc_port, admin_port, options, wait_timeout=120):
+def test_activation(IP, nc_port, admin_port, options, webdriver_exec_path=None, wait_timeout=120):
     """ Activation process checks"""
+    driver_kwargs={}
+    if webdriver_exec_path is not None:
+        driver_kwargs['service'] = Service(webdriver_exec_path)
 
     # activation page
     test = Test()
-    driver = webdriver.Firefox(options=options)
+    driver = webdriver.Firefox(options=options, **driver_kwargs)
     driver.implicitly_wait(5)
     test.new("activation opens")
     driver.get(f"https://{IP}:{nc_port}")
@@ -137,7 +141,9 @@ def test_activation(IP, nc_port, admin_port, options, wait_timeout=120):
 
     # ncp-web
     test.new("ncp-web")
-    driver = webdriver.Firefox(options=options)
+    if webdriver_exec_path is not None:
+        driver_kwargs['service'] = Service(webdriver_exec_path)
+    driver = webdriver.Firefox(options=options, **driver_kwargs)
     driver.implicitly_wait(30)
     try:
         driver.get(f"https://ncp:{urllib.parse.quote_plus(ncp_pass)}@{IP}:{admin_port}")
@@ -164,6 +170,13 @@ if __name__ == "__main__":
 
     arg_timeout = 120
     options = webdriver.FirefoxOptions()
+    webdriver_exec_path = None
+    if 'GECKODRIVER_PATH' in os.environ:
+        print(f"Setting geckodriver from env ({os.environ['GECKODRIVER_PATH']})")
+        webdriver_exec_path = os.environ['GECKODRIVER_PATH']
+    if 'FF_BINARY_PATH' in os.environ:
+        print(f"Setting firefox binary from env ({os.environ['FF_BINARY_PATH']}")
+        options.binary_location = os.environ['FF_BINARY_PATH']
     for opt, arg in opts:
         if opt in ('-h', '--help'):
             usage()
@@ -184,7 +197,7 @@ if __name__ == "__main__":
     print("Activation tests " + tc.yellow + IP + tc.normal)
     print("---------------------------")
 
-    test_activation(IP, nc_port, admin_port, options, arg_timeout)
+    test_activation(IP, nc_port, admin_port, options, webdriver_exec_path, arg_timeout)
 
 # License
 #

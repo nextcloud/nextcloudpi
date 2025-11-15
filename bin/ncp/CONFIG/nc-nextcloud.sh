@@ -83,6 +83,25 @@ EOF
   update-rc.d redis-server enable
   clear_opcache
 
+  # NC service workers
+  cat > /etc/systemd/system/nextcloud-ai-worker@.service <<'EOF'
+[Unit]
+Description=Nextcloud AI worker %i
+After=network.target
+
+[Service]
+ExecStart=php occ background-job:worker -t 60 'OC\\TaskProcessing\\SynchronousBackgroundJob'
+Restart=always
+StartLimitInterval=60
+StartLimitBurst=10
+WorkingDirectory=/var/www/nextcloud
+User=www-data
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+
   # service to randomize passwords on first boot
   mkdir -p /usr/lib/systemd/system
   cat > /usr/lib/systemd/system/nc-provisioning.service <<'EOF'

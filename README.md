@@ -138,21 +138,22 @@ and press "Download".
 Optionally, you can copy the corresponding md5 sum from the releases page and paste it in the "Checksum" field to have
 Proxmox check that the downloaded image was not corrupted
 
-### 2. Installer by tteck
+### 2. Installer by community-scripts (formerly tteck)
 
-Use the [install script][ncp-proxmox-install-script-v5] from [tteck][tteck-profile] to install the LXC container on your Proxmox instance
+Use the [install script][ncp-proxmox-install-script-v5] from [community-scripts][community-scripts-profile] to install the LXC container on your Proxmox instance
 
-He has multiple helper scripts available for Proxmox on his [website][website-helper-scripts], do go have a look if you're using Proxmox. :+1:
+[community-scripts][community-scripts-profile] has multiple helper scripts available for Proxmox on their [website][website-helper-scripts], go have a look if you're using Proxmox. :+1:
 
-Installation: `bash -c "$(wget -qLO - https://github.com/tteck/Proxmox/raw/main/ct/nextcloudpi.sh)"`
+
+Installation: `bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/ct/nextcloudpi.sh)"`
 
 Default Settings: `2GB RAM - 8GB Storage - 2vCPU`
 
-_(Check his [website][website-helper-scripts] if this has changed and we haven't had the time to update it here yet, it's located under: Media - Photo > NextcloudPi LXC)_
+_(Check their [website][website-helper-scripts] if this has changed and we haven't had the time to update it here yet, it's located under: Operating-Systems > NextcloudPi LXC)_
 
-Thenk you [tteck][tteck-profile] :heart: for making the helper script & letting us use this for Proxmox installations :pray:
+Thank you to the [community-scripts][community-scripts-profile] organisation :heart: for making the helper script & letting us use this for Proxmox installations :pray:
 
-You can find his GitHub repository with his helper scripts [here][gh-helper-scripts-repo].
+You can find the GitHub repository with the helper scripts here: [here][gh-helper-scripts-repo].
 
 ## How to build
 
@@ -293,15 +294,15 @@ You can find us on the [Forum][nc-forum], [Telegram][chat-telegram] or [Matrix][
 
 [nc-badge]: https://img.shields.io/badge/Nextcloud-0082C9?style=for-the-badge&logo=Nextcloud&logoColor=white
 
-<!-- TTECK -->
+<!-- COMMUNITY-SCRIPTS -->
 
-[tteck-profile]: https://github.com/tteck
+[community-scripts-profile]: https://github.com/community-scripts/
 
-[gh-helper-scripts-repo]: https://github.com/tteck/Proxmox
+[gh-helper-scripts-repo]: https://github.com/community-scripts/ProxmoxVE
 
-[website-helper-scripts]: https://tteck.github.io/Proxmox/
+[website-helper-scripts]: https://community-scripts.github.io/ProxmoxVE/
 
-[ncp-proxmox-install-script-v5]: https://github.com/tteck/Proxmox/blob/main/install/nextcloudpi-v5-install.sh
+[ncp-proxmox-install-script-v5]: https://github.com/community-scripts/ProxmoxVE/blob/main/install/nextcloudpi-install.sh
 
 <!-- IMAGES -->
 
