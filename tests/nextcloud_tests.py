@@ -180,13 +180,12 @@ def test_nextcloud(IP: str, nc_port: str, driver: WebDriver, skip_release_check:
     test.report("password", "Wrong password" not in driver.page_source, msg="Failed to login with provided password")
 
     test.new("settings config")
-    wait = WebDriverWait(driver, 60 * wait_multiplier * 3)
-    secwarn = driver.find_element(By.CSS_SELECTOR, "#security-warning.settings-section")
-    if secwarn is None:
-        settings_config_check_pre32(wait, test)
-    else:
+    wait = WebDriverWait(driver, 60 * wait_multiplier * 5)
+    try:
+        wait.until(VisibilityOfElementLocatedByAnyLocator([(By.CSS_SELECTOR, "#security-warning.settings-section")]))
         settings_config_check(wait, test)
-
+    except TimeoutException:
+        settings_config_check_pre32(wait, test)
 
     close_first_run_wizard(driver, wait_multiplier)
 
