@@ -82,5 +82,13 @@ EOF
   cat /usr/local/etc/instance.cfg
 }
 
+systemctl is-enabled -q nextcloud-ai-worker@1.service || {
+  max="$(nproc || echo '2')"
+  max="$((max-1))"
+  for i in $(seq 1 "$max")
+  do
+    systemctl enable --now "nextcloud-ai-worker@${i}.service"
+  done
+}
 
 exit 0
