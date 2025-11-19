@@ -1,5 +1,18 @@
 # NextcloudPi Changelog
 
+
+## [v1.56.0](https://github.com/nextcloud/nextcloudpi/tree/v1.56.0) (2025-11-19) Nextcloud 32 and fixes
+
+### Changes
+
+- Support for Nextcloud 32
+- Add service workers for Nextcloud's AI functionality
+
+### Fixes
+
+- Fix broken IPv6 addresses added to trusted IPs ([#2060](https://github.com/nextcloud/nextcloudpi/issues/2060), thanks @lukaszgoworko)
+- Fix unnecessary reinstallation of notify_push app during updates ([#2069](https://github.com/nextcloud/nextcloudpi/issues/2069), thanks @lovenemesis)
+
 ## [v1.55.4](https://github.com/nextcloud/nextcloudpi/tree/v1.55.3) (2025-03-24) Nextcloud 31 and fixes
 
 ### Changes
