@@ -15,7 +15,12 @@ source /usr/local/etc/library.sh
 # Distro, NCP version and tag
 echo "NextcloudPi version|$( cat /usr/local/etc/ncp-version )"
 [[ -f /usr/local/etc/ncp-baseimage ]] && echo "NextcloudPi image|$( cat /usr/local/etc/ncp-baseimage )"
-echo "OS|$(sed 's| \\n \\l||' /etc/issue). $(uname -r) ($(uname -m))"
+if [[ -r /etc/os-release ]]; then
+  . /etc/os-release
+  echo "OS|$PRETTY_NAME. $(uname -r) ($(uname -m))"
+else
+  echo "OS|unknown. $(uname -r) ($(uname -m))"
+fi
 
 # Data
 DATADIR="$( grep datadirectory /var/www/nextcloud/config/config.php |
