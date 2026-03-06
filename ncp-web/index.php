@@ -65,7 +65,7 @@ header("Link: </js/minified.js>; rel=preload; as=script;,</js/ncp.js>; rel=prelo
 <?php
   require("L10N.php");
   try {
-    $l = new L10N($_SERVER["HTTP_ACCEPT_LANGUAGE"], $l10nDir, $modules_path);
+    $l = new L10N(($_SERVER["HTTP_ACCEPT_LANGUAGE"] ?? ''), $l10nDir, $modules_path);
   } catch (Exception $e) {
     die("<p class='error'>Error while loading localizations!</p>");
   }
@@ -287,7 +287,7 @@ HTML
         <div id="logs-wrapper" class="content-box <?php if(!array_key_exists('app',$_GET) || (array_key_exists('app',$_GET) && $_GET['app'] != 'logs')) echo 'hidden';?>">
           <h2 class="text-title"><?php echo $l->__("NextcloudPi logs"); ?></h2>
           <div id="logs-content" class="table-wrapper">
-            <div id="logs-details-box" class="outputbox"><?php echo str_replace(array("\r\n", "\n", "\r"), '<br/>', file_get_contents('/var/log/ncp.log')) ?></div>
+            <div id="logs-details-box" class="outputbox"><?php echo str_replace(array("\r\n", "\n", "\r"), '<br/>', htmlspecialchars(file_get_contents('/var/log/ncp.log'), ENT_QUOTES, 'UTF-8')) ?></div>
             <div id="log-download-btn-wrapper"><input id="log-download-btn" type="button" value="Download"/></div>
           </div>
   </div>

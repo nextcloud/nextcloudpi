@@ -21,7 +21,7 @@ ignore_user_abort(true);
 //
 require("L10N.php");
 try {
-  $l = new L10N($_SERVER["HTTP_ACCEPT_LANGUAGE"], $l10nDir, $cfg_dir);
+  $l = new L10N(($_SERVER["HTTP_ACCEPT_LANGUAGE"] ?? ''), $l10nDir, $cfg_dir);
 } catch (Exception $e) {
   die(json_encode("<p class='error'>Error while loading localizations!</p>"));
 }
