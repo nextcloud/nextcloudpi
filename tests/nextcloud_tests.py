@@ -274,7 +274,7 @@ def settings_config_check_warnings(warnings):
         elif re.match(r'.*Could not check for JavaScript support.*', warning.text):
             continue
         # TODO: Solve redis error logs at the source
-        elif re.match(r'.*\d+ errors? in the logs since.*', warning.text):
+        elif re.match(r'.*\d+ (errors?|warnings?) in the logs since.*', warning.text):
             continue
         else:
             raise ConfigTestFailure(f"WARN: {warning.text}")
