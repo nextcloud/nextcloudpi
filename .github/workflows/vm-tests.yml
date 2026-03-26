@@ -25,6 +25,7 @@ jobs:
       env:
         HCLOUD_TOKEN: "${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}"
         UID: "${{ github.run_id }}-install"
+        SERVER_TYPE: "cx23"
     outputs:
       server_address: ${{ steps.create-test-instance.outputs.server_address }}
       snapshot_id: ${{ steps.create-test-instance.outputs.snapshot_id }}
@@ -64,7 +65,7 @@ jobs:
           version: ${{ env.VERSION }}
           uid: "${{ env.UID }}"
           hcloud_token: ${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}
-          server_type: "cx22"
+          server_type: "cx23"
       - name: set instance variables
         run: |
           echo "SERVER_ADDRESS=${{ steps.create-test-instance.outputs.server_address }}" >> "$GITHUB_ENV"
@@ -314,7 +315,7 @@ jobs:
           version: "${{ env.PREVIOUS_VERSION }}"
           uid: "${{ env.UID }}"
           hcloud_token: ${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}
-          server_type: "cx22"
+          server_type: "cx23"
       - name: Set instance variables
         run: |
           echo "SERVER_ADDRESS=${{ steps.create-test-instance.outputs.server_address }}" >> "$GITHUB_ENV"
