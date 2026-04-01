@@ -284,7 +284,7 @@ def settings_config_check_infos(infos):
         if re.match(r'.*Your installation has no default phone region set.*', info.text) \
                 or re.match(r'The PHP module "imagick" is not enabled', info.text) \
                 or re.match(r'The PHP module "imagick" in this instance has no SVG support.*', info.text) \
-                or re.match(r'\d+ warnings? in the logs since.*', info.text):
+                or re.match(r'.*\d+ (errors?|warnings?) in the logs since.*', info.text):
             continue
         else:
             print(f'INFO: {info.text}')
