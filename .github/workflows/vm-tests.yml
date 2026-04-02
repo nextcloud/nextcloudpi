@@ -215,8 +215,10 @@ jobs:
           }
       - name: perform update
         working-directory: /ncp-test-automation/bin
+        shell: bash
         run: |
-          set -e
+          set -ex
+          apk add jq
 
           echo "Setup ssh"
           chmod 0600 /__w/nextcloudpi/nextcloudpi/.ssh/automation_ssh_key
@@ -230,12 +232,12 @@ jobs:
           ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" "DBG=x ncp-update '$VERSION'"
           echo "Updating Nextcloud"
           
-          ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" "ncc status" | grep "version:" | awk '{ print $3 }')"
+          ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" "ncc status" | grep "version:" | awk '{ print $3 }'
           latest_nc_version="$(cat /__w/nextcloudpi/nextcloudpi/etc/ncp.cfg | jq -r '.nextcloud_version')"
           
           for i in {1..10};
           do
-            echo "running nc update ($i/10)..."
+            echo "running nc update $i/10..."
             ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" "DBG=x ncp-update-nc ${latest_nc_version?}"
         
             ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" /usr/local/bin/ncc status
@@ -588,7 +590,7 @@ jobs:
       SSH_ARTIFACT_NAME: "${{ needs.update-test.outputs.ssh_artifact_name }}"
     steps:
       - name: download ssh private key from artifact store
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         if: ${{ contains('success|failure', env.TEST_RESULT) }}
         with:
           name: ${{ env.SSH_ARTIFACT_NAME }}

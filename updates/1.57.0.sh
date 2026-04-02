@@ -2,4 +2,7 @@
 
 set -eu
 
-ncc config:system:set serverid --value="$((RANDOM % 1024))" --type=integer
+source /usr/local/etc/library.sh
+
+ncc config:system:set serverid --value=
+sudo apt-get install php${PHPVER}-apcu
