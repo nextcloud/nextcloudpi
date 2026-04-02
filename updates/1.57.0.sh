@@ -13,5 +13,7 @@ echo "Removing custom version of previewgenerator app ..."
 ncc app:remove previewgenerator || :;
 rm -f /var/www/nextcloud/apps/previewgenerator
 rm -rf /var/www/ncp-previewgenerator
-
-echo "INFO: You can now setup the latest version of the previewgenerator app including background generation of previews from the NCP admin UI."
+if [[ -f "/etc/cron.d/nc-previews-auto" ]]
+then
+  run_app nc-previews-auto
+fi

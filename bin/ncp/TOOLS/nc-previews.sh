@@ -11,22 +11,30 @@
 
 configure()
 {
+  # Disable during build
+  ! [[ -f /.ncp-image ]] || return 0
+
   pgrep -af preview:pre-generate &>/dev/null || pgrep -af preview:generate-all &>/dev/null && {
     echo "nc-previews is already running"
     return 1
   }
 
-  ncc app:getpath previewgenerator > /dev/null || ncc app:install previewgenerator
-  is_app_enabled previewgenerator || ncc app:enable previewgenerator
+  if ! [[ -f /.ncp-image ]]
+  then
+    ncc app:getpath previewgenerator > /dev/null || ncc app:install previewgenerator
+    is_app_enabled previewgenerator || ncc app:enable previewgenerator
+    ncc config:app:set --value="64 256" previewgenerator squareSizes
+    ncc config:app:set --value="256 4096" previewgenerator fillWidthHeightSizes
+    ncc config:app:set --value="64 256 1024" previewgenerator widthSizes
+    ncc config:app:set --value="64 256 1024" previewgenerator heightSizes
+    if is_app_enabled memories
+    then
+      ncc config:app:set --value="256 4096" previewgenerator coverWidthHeightSizes
+    else
+      ncc config:app:set --value="" previewgenerator coverWidthHeightSizes
+    fi
+  fi
 
-  ncc config:app:set --value="64 256" previewgenerator squareSizes
-  ncc config:app:set --value="256 4096" previewgenerator fillWidthHeightSizes
-  ! is_app_enabled memories || ncc config:app:set --value="256 4096" previewgenerator coverWidthHeightSizes
-  ncc config:app:set --value="64 256 1024" previewgenerator widthSizes
-  ncc config:app:set --value="64 256 1024" previewgenerator heightSizes
-  ncc config:app:set --value=false --type=boolean previewgenerator job_disabled
-  ncc config:app:set --value=3000 --type=integer previewgenerator job_max_execution_time
-  ncc config:app:set --value=0 --type=integer previewgenerator job_max_previews
 
   [[ "$CLEAN" == "yes" ]] && {
     if [[ "$(nc_version)" -lt 31 ]]
@@ -51,11 +59,6 @@ configure()
   done
   wait
 
-  if [[ "$BACKGROUN_JOB" == "yes" ]]
-  then
-    install_template cron.hourly/ncp-previewgenerator /etc/cron.hourly/ncp-previewgenerator
-    chmod +x /etc/cron.hourly/ncp-previewgenerator
-  fi
 }
 
 install() { :; }

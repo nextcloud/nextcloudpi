@@ -2,10 +2,15 @@
 
 cat <<'EOF'
 #!/usr/bin/env bash
-source /usr/local/etc/library.sh
 set -eu
+source /usr/local/etc/library.sh
 
-! is_app_enabled memories || ncc config:app:set --value="256 4096" previewgenerator coverWidthHeightSizes
+if is_app_enabled memories
+then
+  ncc config:app:set --value="256 4096" previewgenerator coverWidthHeightSizes
+else
+  ncc config:app:set --value="" previewgenerator coverWidthHeightSizes
+fi
 
 for _ in $(seq 1 $(nproc)); do
   ncc preview:generate-all -n -q &

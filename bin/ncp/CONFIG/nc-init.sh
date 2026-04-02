@@ -184,6 +184,13 @@ EOF
   fi
 
   # previews
+
+  ncc app:install previewgenerator
+  ncc app:enable previewgenerator
+  ncc config:app:set --value="64 256" previewgenerator squareSizes
+  ncc config:app:set --value="256 4096" previewgenerator fillWidthHeightSizes
+  ncc config:app:set --value="64 256 1024" previewgenerator widthSizes
+  ncc config:app:set --value="64 256 1024" previewgenerator heightSizes
   ncc config:system:set preview_max_x --value 2048
   ncc config:system:set preview_max_y --value 2048
   ncc config:system:set jpeg_quality --value 60
