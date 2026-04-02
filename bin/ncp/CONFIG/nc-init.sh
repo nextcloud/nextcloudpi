@@ -196,6 +196,7 @@ EOF
   ncc config:system:set preview_max_x --value 2048
   ncc config:system:set preview_max_y --value 2048
   ncc config:system:set jpeg_quality --value 60
+  ncc config:system:set serverid --value="$((RANDOM % 1024))" --type=integer
   ncc config:app:set preview jpeg_quality --value="60"
 
   # other
