@@ -433,7 +433,7 @@ jobs:
             tail -n 20 geckodriver.log >&2 || true
             echo "================"
             echo "ncp.log: "
-            sudo "$LXC" exec ncp -- "tail -n20 /var/log/ncp.log" || true
+            sudo "$LXC" exec ncp -- bash -c "tail -n20 /var/log/ncp.log" || true
             exit 1
           }
           ../.venv/bin/python nextcloud_tests.py --skip-release-check --no-gui "nextcloudpi.local" 443 4443 || {
@@ -442,7 +442,7 @@ jobs:
             tail -n 20 geckodriver.log >&2 || true
             echo "================"
             echo "ncp.log: "
-            sudo "$LXC" exec ncp -- "tail -n20 /var/log/ncp.log" || true
+            sudo "$LXC" exec ncp -- bash -c "tail -n20 /var/log/ncp.log" || true
             echo "================"
             echo "nextcloud log: "
             datadir="$(sudo "$LXC" exec ncp -- ncc config:system:get datadirectory)"
@@ -452,7 +452,7 @@ jobs:
           USE_INCUS="$USE_INCUS"  ../.venv/bin/python system_tests.py --non-interactive --skip-update-test || {
             echo "System test failed!"
             echo "ncp.log: "
-            sudo "$LXC" exec ncp -- "tail -n20 /var/log/ncp.log" || true
+            sudo "$LXC" exec ncp -- bash -c "tail -n20 /var/log/ncp.log" || true
             echo "================"
             echo "nextcloud log: "
             datadir="$(sudo "$LXC" exec ncp -- ncc config:system:get datadirectory)"
@@ -521,7 +521,7 @@ jobs:
             tail -n 20 geckodriver.log >&2 || true
             echo "================"
             echo "ncp.log: "
-            sudo "$LXC" exec ncp -- "tail -n20 /var/log/ncp.log" || true
+            sudo "$LXC" exec ncp -- bash -c "tail -n20 /var/log/ncp.log" || true
             echo "================"
             echo "nextcloud log: "
             datadir="$(sudo "$LXC" exec ncp -- ncc config:system:get datadirectory)"
@@ -604,7 +604,7 @@ jobs:
             tail -n 20 geckodriver.log >&2 || true
             echo "================"
             echo "ncp.log: "
-            sudo "$LXC" exec ncp -- "tail -n20 /var/log/ncp.log" || true
+            sudo "$LXC" exec ncp -- bash -c "tail -n20 /var/log/ncp.log" || true
             echo "================"
             echo "nextcloud log: "
             datadir="$(sudo "$LXC" exec ncp -- ncc config:system:get datadirectory)"
@@ -713,7 +713,7 @@ jobs:
             tail -n 20 geckodriver.log >&2 || true
             echo "================"
             echo "ncp.log: "
-            sudo "$LXC" exec ncp -- "tail -n20 /var/log/ncp.log" || true
+            sudo "$LXC" exec ncp -- bash -c "tail -n20 /var/log/ncp.log" || true
             echo "================"
             echo "nextcloud log: "
             datadir="$("$LXC" exec ncp -- ncc config:system:get datadirectory)"
@@ -726,7 +726,7 @@ jobs:
             tail -n 20 geckodriver.log >&2 || true
             echo "================"
             echo "ncp.log: "
-            sudo "$LXC" exec ncp -- "tail -n20 /var/log/ncp.log" || true
+            sudo "$LXC" exec ncp -- bash -c "tail -n20 /var/log/ncp.log" || true
             echo "================"
             echo "nextcloud log: "
             datadir="$(sudo "$LXC" exec ncp -- ncc config:system:get datadirectory)"

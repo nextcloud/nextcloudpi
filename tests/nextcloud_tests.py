@@ -290,7 +290,7 @@ def settings_config_check_infos(infos):
             print(f'INFO: {info.text}')
             php_modules = info.find_elements(By.CSS_SELECTOR, "li")
             if len(php_modules) != 1:
-                print(f'match? ' + str(re.match(r'.*\d+ (errors?|warnings?) in the logs since.*'))
+                print(f'does "{info.text}" match? ' + str(re.match(r'.*\d+ (errors?|warnings?) in the logs since.*', info.text)))
                 raise ConfigTestFailure(f"Could not find the list of php modules within the info message "
                                         f"'{infos[0].text}'")
             if php_modules[0].text != "imagick":
