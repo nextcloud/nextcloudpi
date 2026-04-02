@@ -184,7 +184,7 @@ jobs:
           echo "SERVER_ADDRESS=${{ steps.create-test-instance.outputs.server_address }}" >> "$GITHUB_ENV"
           echo "SNAPSHOT_ID=${{ steps.create-test-instance.outputs.snapshot_id }}" >> "$GITHUB_ENV"
       - name: Activate and Test postinstall VM
-        working-directory: /__w/nextcloudpi/nextcloudpi/ncp-test-automation/bin
+        working-directory: /ncp-test-automation/bin
         run: |
           set -e
           echo "Setup ssh"
@@ -214,7 +214,7 @@ jobs:
             exit 1
           }
       - name: perform update
-        working-directory: /__w/nextcloudpi/nextcloudpi/ncp-test-automation/bin
+        working-directory: /ncp-test-automation/bin
         run: |
           set -e
 
@@ -228,9 +228,32 @@ jobs:
           echo "Updating from $PREVIOUS_VERSION to $VERSION"
           ssh-keygen -f "$HOME/.ssh/known_hosts" -R "${SERVER_ADDRESS}" 2> /dev/null || true
           ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" "DBG=x ncp-update '$VERSION'"
+          echo "Updating Nextcloud"
+          
+          ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" "ncc status" | grep "version:" | awk '{ print $3 }')"
+          latest_nc_version="$(cat /__w/nextcloudpi/nextcloudpi/etc/ncp.cfg | jq -r '.nextcloud_version')"
+          
+          for i in {1..10};
+          do
+            echo "running nc update ($i/10)..."
+            ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" "DBG=x ncp-update-nc ${latest_nc_version?}"
+        
+            ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" /usr/local/bin/ncc status
+            current_nc_version_new="$(ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" "ncc status" | grep "version:" | awk '{ print $3 }')"
+            if [[ "$current_nc_version_new" =~ "$latest_nc_version".* ]]
+            then
+              break
+            fi
+            if [[ "$current_nc_version" == "$current_nc_version_new" ]]
+            then
+              echo "failed to update to $latest_nc_version"
+              exit 1
+            fi
+            current_nc_version="$current_nc_version_new"
+          done
       - name: Run integration tests after update
         id: final_test
-        working-directory: /__w/nextcloudpi/nextcloudpi/ncp-test-automation/bin
+        working-directory: /ncp-test-automation/bin
         run: |
           set -e
 
