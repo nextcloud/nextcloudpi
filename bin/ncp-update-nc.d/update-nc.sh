@@ -205,9 +205,7 @@ fi
 
 # use the correct version for custom apps
 NCVER="$(nc_version)"
-if is_more_recent_than "21.0.0" "${NCVER}"; then
-  NCPREV=/var/www/ncp-previewgenerator/ncp-previewgenerator-nc20
-else
+if ! is_more_recent_than "21.0.0" "${NCVER}"; then
   # Install notify_push if not installed
   if ! is_app_enabled notify_push; then
     ncc app:install notify_push
@@ -227,10 +225,7 @@ else
     }
 
   fi
-  NCPREV=/var/www/ncp-previewgenerator/ncp-previewgenerator-nc21
 fi
-rm -rf /var/www/nextcloud/apps/previewgenerator
-ln -snf "${NCPREV}" /var/www/nextcloud/apps/previewgenerator
 
 if ! is_more_recent_than "24.0.0" "${NCVER}" && is_more_recent_than "8.1.0" "${PHPVER}.0"
 then

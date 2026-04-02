@@ -503,7 +503,7 @@ function is_more_recent_than()
 function is_app_enabled()
 {
   local app="$1"
-   ncc app:list | sed '0,/Disabled/!d' | grep -q "${app}"
+  ncc app:list --output json | jq -r '.enabled | keys | .[]' | grep '^previewgenerator$' > /dev/null 2> /dev/null
 }
 
 function check_distro()

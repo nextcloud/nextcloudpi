@@ -16,31 +16,46 @@ configure()
     return 1
   }
 
-  [[ "$CLEAN" == "yes" ]] && {
-    local datadir
-    datadir=$( get_nc_config_value datadirectory ) || {
-      echo "data directory not found";
-      return 1;
-    }
+  ncc app:getpath previewgenerator > /dev/null || ncc app:install previewgenerator
+  is_app_enabled previewgenerator || ncc app:enable previewgenerator
 
-    rm -r "$datadir"/appdata_*/preview/* &>/dev/null
-    mysql nextcloud <<<"delete from ${DB_PREFIX?}filecache where path like \"appdata_%/preview/%\""
-    ncc files:scan-app-data -n
+  ncc config:app:set --value="64 256" previewgenerator squareSizes
+  ncc config:app:set --value="256 4096" previewgenerator fillWidthHeightSizes
+  ! is_app_enabled memories || ncc config:app:set --value="256 4096" previewgenerator coverWidthHeightSizes
+  ncc config:app:set --value="64 256 1024" previewgenerator widthSizes
+  ncc config:app:set --value="64 256 1024" previewgenerator heightSizes
+  ncc config:app:set --value=false --type=boolean previewgenerator job_disabled
+  ncc config:app:set --value=3000 --type=integer previewgenerator job_max_execution_time
+  ncc config:app:set --value=0 --type=integer previewgenerator job_max_previews
+
+  [[ "$CLEAN" == "yes" ]] && {
+    if [[ "$(nc_version)" -lt 31 ]]
+    then
+      echo "ERROR: CLEAN not supported for Nextcloud < 31"
+    else
+      ncc preview:cleanup
+    fi
   }
 
   [[ "$INCREMENTAL" == "yes" ]] && {
-    for i in $(seq 1 $(nproc)); do
+    for _ in $(seq 1 $(nproc)); do
       ncc preview:pre-generate -n -vvv &
     done
     wait
     return
   }
 
-  for i in $(seq 1 $(nproc)); do
+  for _ in $(seq 1 $(nproc)); do
     [[ "$PATH1" != "" ]] && PATH_ARG=(-p "$PATH1")
-    ncc preview:generate-all -n -v ${PATH_ARG[@]} &
+    ncc preview:generate-all -n -v "${PATH_ARG[@]}" &
   done
   wait
+
+  if [[ "$BACKGROUN_JOB" == "yes" ]]
+  then
+    install_template cron.hourly/ncp-previewgenerator /etc/cron.hourly/ncp-previewgenerator
+    chmod +x /etc/cron.hourly/ncp-previewgenerator
+  fi
 }
 
 install() { :; }

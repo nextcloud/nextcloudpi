@@ -34,10 +34,10 @@ EOF
   rm -f "$BINDIR"/{SYSTEM/unattended-upgrades.sh,CONFIG/nc-autoupdate-nc.sh,CONFIG/nc-autoupdate-ncp.sh,CONFIG/nc-update-nc-apps-auto.sh}
 
   # previews settings
-  ncc config:app:set previewgenerator squareSizes --value="32"
-  ncc config:app:set previewgenerator widthSizes  --value="128 256 512"
-  ncc config:app:set previewgenerator heightSizes --value="128 256"
-  ncc config:system:set jpeg_quality --value 60
+#  ncc config:app:set previewgenerator squareSizes --value="32"
+#  ncc config:app:set previewgenerator widthSizes  --value="128 256 512"
+#  ncc config:app:set previewgenerator heightSizes --value="128 256"
+#  ncc config:system:set jpeg_quality --value 60
 
   # update unattended labels
   is_active_app unattended-upgrades && run_app unattended-upgrades
@@ -125,9 +125,9 @@ EOF
 
   # adjust preview sizes
   [[ "$(ncc config:system:get preview_max_x)" == "" ]] && {
-    ncc config:app:set previewgenerator squareSizes --value="32 256"
-    ncc config:app:set previewgenerator widthSizes  --value="256 384"
-    ncc config:app:set previewgenerator heightSizes --value="256"
+#    ncc config:app:set previewgenerator squareSizes --value="32 256"
+#    ncc config:app:set previewgenerator widthSizes  --value="256 384"
+#    ncc config:app:set previewgenerator heightSizes --value="256"
     ncc config:system:set preview_max_x --value 2048
     ncc config:system:set preview_max_y --value 2048
     ncc config:system:set jpeg_quality --value 60
