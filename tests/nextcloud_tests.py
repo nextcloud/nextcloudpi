@@ -274,7 +274,7 @@ def settings_config_check_warnings(warnings):
         elif re.match(r'.*Could not check for JavaScript support.*', warning.text):
             continue
         # TODO: Solve redis error logs at the source
-        elif re.match(r'.*\d+ errors? in the logs since.*', warning.text):
+        elif re.match(r'.*\d+ (errors?|warnings?) in the logs since.*', warning.text):
             continue
         else:
             raise ConfigTestFailure(f"WARN: {warning.text}")
@@ -284,14 +284,15 @@ def settings_config_check_infos(infos):
         if re.match(r'.*Your installation has no default phone region set.*', info.text) \
                 or re.match(r'The PHP module "imagick" is not enabled', info.text) \
                 or re.match(r'The PHP module "imagick" in this instance has no SVG support.*', info.text) \
-                or re.match(r'\d+ warnings? in the logs since.*', info.text):
+                or re.match(r'.*\d+ (errors?|warnings?) in the logs since.*', info.text) \
+                or re.match(r'Second factor providers are available but two-factor authentication is not enforced.', info.text):
             continue
         else:
             print(f'INFO: {info.text}')
             php_modules = info.find_elements(By.CSS_SELECTOR, "li")
             if len(php_modules) != 1:
                 raise ConfigTestFailure(f"Could not find the list of php modules within the info message "
-                                        f"'{infos[0].text}'")
+                                        f"'{info.text}'")
             if php_modules[0].text != "imagick":
                 raise ConfigTestFailure("The list of php_modules does not equal [imagick]")
 

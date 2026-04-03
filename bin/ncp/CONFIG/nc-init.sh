@@ -177,28 +177,26 @@ EOF
   # ncp-previewgenerator
   local ncver
   ncver="$(ncc status 2>/dev/null | grep "version:" | awk '{ print $3 }')"
-  if is_more_recent_than "21.0.0" "${ncver}"; then
-    local ncprev=/var/www/ncp-previewgenerator/ncp-previewgenerator-nc20
-  else
+  if ! is_more_recent_than "21.0.0" "${ncver}"; then
     ncc app:install notify_push
     ncc app:enable  notify_push
     test -f /.ncp-image || start_notify_push # don't start during build
-    local ncprev=/var/www/ncp-previewgenerator/ncp-previewgenerator-nc21
   fi
-  ln -snf "${ncprev}" /var/www/nextcloud/apps/previewgenerator
-  chown -R www-data: /var/www/nextcloud/apps/previewgenerator
-  ncc app:enable previewgenerator
 
   # previews
-  ncc config:app:set previewgenerator squareSizes --value="32 256"
-  ncc config:app:set previewgenerator widthSizes  --value="256 384"
-  ncc config:app:set previewgenerator heightSizes --value="256"
+
+  ncc app:install previewgenerator
+  ncc app:enable previewgenerator
+  ncc config:app:set --value="64 256" previewgenerator squareSizes
+  ncc config:app:set --value="256 4096" previewgenerator fillWidthHeightSizes
+  ncc config:app:set --value="64 256 1024" previewgenerator widthSizes
+  ncc config:app:set --value="64 256 1024" previewgenerator heightSizes
   ncc config:system:set preview_max_x --value 2048
   ncc config:system:set preview_max_y --value 2048
   ncc config:system:set jpeg_quality --value 60
-  ncc config:app:set preview jpeg_quality --value="60"
 
   # other
+  ncc config:system:set serverid --value="$((RANDOM % 1024))" --type=integer
   ncc config:system:set overwriteprotocol --value=https
   ncc config:system:set overwrite.cli.url --value="https://nextcloudpi/"
 

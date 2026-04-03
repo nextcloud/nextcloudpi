@@ -7,11 +7,23 @@
 #
 #
 
+tmpl_trusted_proxies_list() {
+  (
+  . /usr/local/etc/library.sh
+    for param in PROXY{1,2,3}
+    do
+      proxy="$(find_app_param nc-trusted-proxies "$param")"
+      [[ -z "$proxy" ]] || echo "$proxy"
+    done
+  )
+}
+
 configure()
 {
   [[ "$PROXY1" != "" ]] && ncc config:system:set trusted_proxies 0 --value="$PROXY1"
   [[ "$PROXY2" != "" ]] && ncc config:system:set trusted_proxies 1 --value="$PROXY2"
   [[ "$PROXY3" != "" ]] && ncc config:system:set trusted_proxies 2 --value="$PROXY3"
+  install_template nextcloud.conf.sh /etc/apache2/sites-available/001-nextcloud.conf
 
   exit 0
 }

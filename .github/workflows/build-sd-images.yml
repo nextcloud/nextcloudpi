@@ -155,12 +155,14 @@ jobs:
         run: |
           set -ex
           mkdir -p output
+          sudo apt-get update
           sudo apt-get install -y pv
           wget -nv "${{ inputs.test_image_url }}" -O - | pv -n --bytes --rate --timer -i 3 > "output/${ARTIFACT_FILE?}"
       - name: Prepare test
         run: |
           set -x
           mv "output/${ARTIFACT_FILE?}" ncp.img
+          sudo apt-get update
           sudo apt-get install -y systemd-container
           python3 -m venv ./.venv
           . ./.venv/bin/activate

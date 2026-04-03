@@ -40,7 +40,7 @@ install()
     install_with_shadow_workaround --no-install-recommends systemd
     $APTINSTALL -t $RELEASE php${PHPVER} php${PHPVER}-curl php${PHPVER}-gd php${PHPVER}-fpm php${PHPVER}-cli php${PHPVER}-opcache \
                             php${PHPVER}-mbstring php${PHPVER}-xml php${PHPVER}-zip php${PHPVER}-fileinfo php${PHPVER}-ldap \
-                            php${PHPVER}-intl php${PHPVER}-bz2
+                            php${PHPVER}-intl php${PHPVER}-bz2 php${PHPVER}-apcu
 
     mkdir -p /run/php
 
@@ -74,6 +74,7 @@ install()
     a2enmod dir
     a2enmod mime
     a2enmod ssl
+    a2enmod remoteip
 
     echo "ServerName localhost" >> /etc/apache2/apache2.conf
 

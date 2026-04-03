@@ -8,48 +8,33 @@
 
 isactive()
 {
-  [[ -f "/etc/cron.d/nc-previews-auto" ]]
+  [[ -f "/etc/cron.hourly/ncp-previewgenerator" ]]
 }
 
 configure()
 {
+  # Disable during build
+  ! [[ -f /.ncp-image ]] || return 0
+
   [[ "$ACTIVE" != "yes" ]] && {
-    rm -f /etc/cron.d/nc-previews-auto
-    service cron restart
+    rm -f "/etc/cron.hourly/ncp-previewgenerator"
     echo "Automatic preview generation disabled"
     return 0
   }
 
-  grep -qP "^\d+$" <<<"$RUNTIME" || { echo "Invalid RUNTIME value $RUNTIME"; return 1; }
-  RUNTIME=$((RUNTIME*60))
+  ncc app:getpath previewgenerator > /dev/null || ncc app:install previewgenerator
+  is_app_enabled previewgenerator || ncc app:enable previewgenerator
+  ncc config:app:set --value="64 256" previewgenerator squareSizes
+  ncc config:app:set --value="256 4096" previewgenerator fillWidthHeightSizes
+  ncc config:app:set --value="64 256 1024" previewgenerator widthSizes
+  ncc config:app:set --value="64 256 1024" previewgenerator heightSizes
+  ncc config:app:set --value=false --type=boolean previewgenerator job_disabled
+  ncc config:app:set --value=3000 --type=integer previewgenerator job_max_execution_time
+  ncc config:app:set --value=0 --type=integer previewgenerator job_max_previews
 
-  echo "0  2  *  *  *  root  /usr/local/bin/nc-previews" >  /etc/cron.d/nc-previews-auto
-  chmod 644 /etc/cron.d/nc-previews-auto
-
-  cat > /usr/local/bin/nc-previews <<EOF
-#!/bin/bash
-echo -e "\n[ nc-previews-auto ]" >> /var/log/ncp.log
-(
-    for i in \$(seq 1 \$(nproc)); do
-      ionice -c3 nice -n20 /usr/local/bin/ncc preview:pre-generate -n -vvv &
-    done
-    wait
-) 2>&1 >>/var/log/ncp.log &
-
-PID=\$!
-[[ "$RUNTIME" != 0 ]] && {
-  for i in \$(seq 1 1 $RUNTIME); do
-    sleep 1
-    kill -0 "\$PID" &>/dev/null || break
-  done
-  pkill -f preview:pre-generate
-  pkill -f preview:generate-all
-}
-wait "\$PID"
-EOF
-chmod +x /usr/local/bin/nc-previews
-
-  service cron restart
+  mkdir -p /etc/cron.hourly
+  install_template cron.hourly/ncp-previewgenerator /etc/cron.hourly/ncp-previewgenerator
+  chmod +x /etc/cron.hourly/ncp-previewgenerator
   echo "Automatic preview generation enabled"
   return 0
 }

@@ -154,11 +154,6 @@ rm -rf /var/www/ncp-app
 mkdir -p /var/www/ncp-app
 cp -r ncp-app/{appinfo,css,img,js,lib,templates} /var/www/ncp-app/
 
-# install ncp-previewgenerator
-rm -rf /var/www/ncp-previewgenerator
-cp -r ncp-previewgenerator /var/www/
-chown -R www-data:         /var/www/ncp-previewgenerator
-
 # copy NC app to nextcloud directory and enable it
 rm -rf /var/www/nextcloud/apps/nextcloudpi
 cp -r /var/www/ncp-app /var/www/nextcloud/apps/nextcloudpi
