@@ -74,7 +74,7 @@ install()
     a2enmod dir
     a2enmod mime
     a2enmod ssl
-    a3enmod remoteip
+    a2enmod remoteip
 
     echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
