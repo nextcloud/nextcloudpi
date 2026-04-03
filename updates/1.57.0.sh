@@ -10,7 +10,11 @@ echo "Installing PHP APCU ..."
 sudo apt-get install -y php${PHPVER}-apcu
 echo "Enable apache2 remoteip"
 a2enmod remoteip
-install_template nextcloud.conf.sh /etc/apache2/sites-available/001-nextcloud.conf
+install_template nextcloud.conf.sh /etc/apache2/sites-available/001-nextcloud.conf --allow-fallback || {
+  echo "ERROR: Parsing template failed. Nextcloud will not work."
+  exit 1
+}
+systemctl reload apache2
 
 if [[ -L /var/www/nextcloud/apps/previewgenerator ]]
 then
@@ -32,6 +36,8 @@ then
   set_app_param nc-previews INCREMENTAL no
   set_app_param nc-previews PATH1 ""
 
+  # Remove old cronjob as late as possible to allow rerunning on interruptions
+  rm /etc/cron.d/nc-previews-auto
   run_app nc-previews
   echo "Done."
 fi
