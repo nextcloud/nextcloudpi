@@ -29,6 +29,17 @@ else
   METRICS_IS_ENABLED=no
 fi
 
+if ! [[ -f /.ncp-image ]] && [[ "$1" != "--defaults" ]] && [[ -f "${BINDIR}/NETWORKING/nc-trusted-proxies.sh" ]]; then
+  TRUSTED_PROXIES=()
+  while read -r proxy
+  do
+    TRUSTED_PROXIES+=("$proxy")
+  done < <(
+  source "${BINDIR}/NETWORKING/nc-trusted-proxies.sh"
+  tmpl_trusted_proxies_list
+  )
+fi
+
 echo "INFO: Metrics enabled: ${METRICS_IS_ENABLED}" >&2
 
 echo "### DO NOT EDIT! THIS FILE HAS BEEN AUTOMATICALLY GENERATED. CHANGES WILL BE OVERWRITTEN ###"
@@ -81,7 +92,17 @@ cat <<EOF
     ProxyPass /push/ws ws://127.0.0.1:7867/ws
     ProxyPass /push/ http://127.0.0.1:7867/
     ProxyPassReverse /push/ http://127.0.0.1:7867/
+
+    RemoteIPHeader X-Forwarded-For
 EOF
+
+if [[ "$1" != "--defaults" ]] && [[ "${#TRUSTED_PROXIES[@]}" != 0 ]]
+then
+  for proxy in "${TRUSTED_PROXIES[@]}"
+  do
+    echo "RemoteIPTrustedProxy $proxy"
+  done
+fi
 
 if [[ "$1" != "--defaults" ]] && [[ "$METRICS_IS_ENABLED" == yes ]]
 then
