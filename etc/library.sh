@@ -487,7 +487,7 @@ function is_more_recent_than()
   local patch_b=$( cut -d. -f3 <<<"$version_B" )
 
   # Compare version A with version B
-  # Return true if A is more recent than B
+  # Return 1 if A is more recent than B
 
   if [ "$major_b" -gt "$major_a" ]; then
     return 1
