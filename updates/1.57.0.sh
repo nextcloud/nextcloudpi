@@ -7,7 +7,8 @@ source /usr/local/etc/library.sh
 echo "Configuring serverid ..."
 ncc config:system:get serverid > /dev/null || ncc config:system:set serverid --value="$((RANDOM % 1024))" --type=integer
 echo "Installing PHP APCU ..."
-sudo apt-get install -y php${PHPVER}-apcu
+apt-get update
+apt-get install -y php${PHPVER}-apcu
 echo "Enable apache2 remoteip"
 a2enmod remoteip
 install_template nextcloud.conf.sh /etc/apache2/sites-available/001-nextcloud.conf --allow-fallback || {
