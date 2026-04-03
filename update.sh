@@ -126,6 +126,8 @@ for file in etc/ncp-config.d/*; do
 
 done
 
+cp -r etc/ncp-templates /usr/local/etc/
+
 # update NCVER in ncp.cfg and nc-nextcloud.cfg (for nc-autoupdate-nc and nc-update-nextcloud)
 nc_version=$(jq -r .nextcloud_version < etc/ncp.cfg)
 cfg="$(jq '.' /usr/local/etc/ncp.cfg)"
