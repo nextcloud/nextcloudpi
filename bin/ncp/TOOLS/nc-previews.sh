@@ -79,6 +79,7 @@ configure()
       echo "ERROR: CLEAN not supported for Nextcloud < 31 (was $(nc_version))"
       return
     else
+      echo 'echo "Cleaning old previews. This can take a while ..."' >> "$tmpscript"
       echo 'ncc preview:cleanup' >> "$tmpscript"
     fi
   }
@@ -94,7 +95,7 @@ EOF
   }
 
   [[ "$PATH1" != "" ]] && PATH_ARG=(-p "$PATH1")
-  echo "ncc preview:generate-all -q \"${PROC}\" -n -v " "${PATH_ARG[@]}" >> "$tmpscript"
+  echo "ncc preview:generate-all -w \"${PROC}\" -n -vv " "${PATH_ARG[@]}" >> "$tmpscript"
 
   systemctl reset-failed "${GENERATE_JOB_ID}" 2>/dev/null ||:
   systemd-run -u "${GENERATE_JOB_ID}" --service-type=oneshot --no-block -p TimeoutStartSec="72h" -p TimeoutStopSec="1h" \
@@ -109,7 +110,9 @@ EOF
     exit 1
   fi
 
-  connect_to_preview_generation
+  echo "Preview generation started. You can safely close this session, the job will keep running in the background."
+
+  [[ "${PREVIEW_GENERATION_DETACH:-false}" == "true" ]] || connect_to_preview_generation
 }
 
 install() { :; }

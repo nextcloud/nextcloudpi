@@ -36,8 +36,8 @@ then
   set_app_param nc-previews INCREMENTAL no
   set_app_param nc-previews PATH1 ""
 
-  # Remove old cronjob as late as possible to allow rerunning on interruptions
+  PREVIEW_GENERATION_DETACH=true run_app nc-previews
+  echo "Initial preview generation job started in background. You can view it's progress by running the nc-previews app from the NCP web UI."
   rm /etc/cron.d/nc-previews-auto
-  run_app nc-previews
   echo "Done."
 fi
