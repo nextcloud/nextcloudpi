@@ -10,6 +10,19 @@
 
 # just change NCLATESTVER and re-activate in update.sh to upgrade users
 
+tmpl_ncp_update_nc_args() {
+
+  CHECK_INCOMPATIBLE_APPS="$(
+    . /usr/local/etc/library.sh
+    find_app_param nc-autoupdate-nc CHECK_INCOMPATIBLE_APPS
+  )"
+  if [[ "${CHECK_INCOMPATIBLE_APPS:-yes}" != "yes" ]]
+  then
+    echo "--allow-incompatible-apps"
+  fi
+
+}
+
 configure()
 {
   [[ "$ACTIVE" != "yes" ]] && {
@@ -18,21 +31,7 @@ configure()
     return 0
   }
 
-  cat > /etc/cron.daily/ncp-autoupdate-nc <<EOF
-#!/bin/bash
-source /usr/local/etc/library.sh
-
-echo -e "[ncp-update-nc]"                              >> /var/log/ncp.log
-/usr/local/bin/ncp-update-nc "latest" 2>&1 | tee -a /var/log/ncp.log
-
-if [[ \${PIPESTATUS[0]} -eq 0 ]]; then
-
-  VER="\$(nc_version)"
-
-  notify_admin "NextCloudPi" "Nextcloud was updated to \$VER"
-fi
-echo "" >> /var/log/ncp.log
-EOF
+  install_template cron.daily/ncp-autoupdate-nc.sh "/etc/cron.daily/ncp-autoupdate-nc"
   chmod 755 /etc/cron.daily/ncp-autoupdate-nc
   echo "automatic Nextcloud updates enabled"
 }

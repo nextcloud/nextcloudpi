@@ -94,6 +94,27 @@ URL="https://download.nextcloud.com/server/releases/nextcloud-$TARGET_VERSION.ta
 echo "Download Nextcloud $TARGET_VERSION..."
 wget -q "$URL" -O nextcloud.tar.bz2 || { echo "Error downloading"; exit 1; }
 
+# Check if installed apps are compatible
+server_apps="$(tar -tf nextcloud.tar.bz2 --exclude='nextcloud/apps/*/*' | grep '^nextcloud/apps' | sed -e 's|^nextcloud/apps/||g' -e 's|/$||g')"
+compatible_apps="$(curl "https://apps.nextcloud.com/api/v1/platform/$TARGET_VERSION/apps.json" | jq '.[].id' -r)"
+enabled_apps="$(ncc app:list --output json | jq '.enabled | keys | .[]' -r)"
+
+incompatible="$(comm -2 -3 <( echo "${enabled_apps?}" | sort ) <( { echo "${compatible_apps?}"; echo "${server_apps?}"; echo "nextcloudpi"; } | sort ))"
+
+if [[ -n "$incompatible" ]]
+then
+  if [[ " ${*} " =~ " "--allow-incompatible-apps" " ]]
+  then
+    echo "WARNING: The following apps are incompatible with the new Nextcloud version and will be disabled (update is running with --allow-incompatible-apps):"
+    echo "$incompatible"
+  else
+    echo "ERROR: Some installed apps are incompatible with the new Nextcloud version. Aborting update (run with --allow-incompatible-apps to ignore this)."
+    echo "Incompatible apps:"
+    echo "$incompatible"
+    exit 1
+  fi
+fi
+
 # backup
 ####################
 BKPDIR="$BASEDIR"

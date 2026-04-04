@@ -33,7 +33,7 @@ configure()
   ncc config:app:set --value=0 --type=integer previewgenerator job_max_previews
 
   mkdir -p /etc/cron.hourly
-  install_template cron.hourly/ncp-previewgenerator /etc/cron.hourly/ncp-previewgenerator
+  install_template cron.hourly/ncp-previewgenerator.sh /etc/cron.hourly/ncp-previewgenerator
   chmod +x /etc/cron.hourly/ncp-previewgenerator
   echo "Automatic preview generation enabled"
   return 0

@@ -22,6 +22,11 @@ set -eE${DBG}
 BIN="${0##*/}"
 VER="$1"
 [[ "$VER" == "" ]] && { echo "Usage ${BIN} <version>"; exit 1; }
+extra_args=()
+if [[ " $* " =~ " "--allow-incompatible-apps" " ]]
+then
+  extra_args+=(--allow-incompatible-apps)
+fi
 
 connect_to_nc_update() {
   tail -n 100 -f "/var/log/ncp-update-nc.log" &
@@ -54,7 +59,7 @@ fi
 
 systemctl reset-failed ncp-update-nc 2>/dev/null ||:
 systemd-run -u 'ncp-update-nc' --service-type=oneshot --no-block -p TimeoutStartSec="24h" -p TimeoutStopSec="1h" \
-  bash -c "set -o pipefail; DBG='${DBG:-}' /usr/local/bin/ncp-update-nc.d/update-nc.sh '${VER}' |& tee /var/log/ncp-update-nc.log"
+  bash -c "set -o pipefail; DBG='${DBG:-}' /usr/local/bin/ncp-update-nc.d/update-nc.sh '${VER}' ${extra_args[*]} |& tee /var/log/ncp-update-nc.log"
 sleep 1
 
 if ! [[ "$(systemctl is-active ncp-update-nc ||:)" =~ ^(active|inactive|activating|deactivating)$ ]]

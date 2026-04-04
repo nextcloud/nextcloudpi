@@ -17,6 +17,11 @@ install_template nextcloud.conf.sh /etc/apache2/sites-available/001-nextcloud.co
 }
 systemctl reload apache2
 
+if is_active_app nc-autoupdate-nc
+then
+  run_app nc-autoupdate-nc
+fi
+
 if [[ -L /var/www/nextcloud/apps/previewgenerator ]]
 then
   echo "Removing custom version of previewgenerator app ..."

@@ -12,7 +12,12 @@ LATEST="$NCLATESTVER"
 
 configure()
 {
-  bash /usr/local/bin/ncp-update-nc "$VERSION"
+  extra_args=()
+  if [[ "${CHECK_INCOMPATIBLE_APPS:-yes}" != "yes" ]]
+  then
+    extra_args+=(--allow-incompatible-apps)
+  fi
+  bash /usr/local/bin/ncp-update-nc "$VERSION" "${extra_args[@]}"
 }
 
 install() { :; }
