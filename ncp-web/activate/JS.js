@@ -44,6 +44,23 @@ function launch_nc_passwd()
   } ).error( errorMsg );
 }
 
+function seturl_ok_cb( result )
+{
+  var ret = $.parseJSON(result)
+  if (ret.token)
+    $('#csrf-token').set( { value: ret.token } );
+  if ( ret.ret === '0') {
+
+    $.request('post', '../ncp-launcher.php', { action: 'launch',
+                                               ref   : 'nc-admin',
+                                               config: '{ "PASSWORD":"' + $('#nc-pwd').get('.value') + '",'
+                                                   + '"CONFIRM" :"' + $('#nc-pwd').get('.value') + '",'
+                                                   + '"USER"    : "ncp" }',
+                                               csrf_token: $( '#csrf-token' ).get( '.value' ) }
+    ).then( nc_admin_ok_cb ).error( errorMsg );
+  }
+}
+
 function nc_admin_ok_cb( result ) 
 {
   var ret = $.parseJSON( result );
@@ -60,13 +77,10 @@ function nc_admin_ok_cb( result )
 function launch_activation()
 {
   // request
-  $.request('post', '../ncp-launcher.php', { action: 'launch',
-                                             ref   : 'nc-admin', 
-                                             config: '{ "PASSWORD":"' + $('#nc-pwd').get('.value') + '",'
-                                                     + '"CONFIRM" :"' + $('#nc-pwd').get('.value') + '",'
-                                                     + '"USER"    : "ncp" }',
-                                             csrf_token: $( '#csrf-token' ).get( '.value' ) } 
-  ).then( nc_admin_ok_cb ).error( errorMsg );
+  $.request('post', '../ncp-launcher.php', { action: 'set-url',
+    url: window.location.origin,
+    csrf_token: $( '#csrf-token' ).get( '.value' ) }
+  ).then(seturl_ok_cb).error(errorMsg)
 }
 
 $(function() 

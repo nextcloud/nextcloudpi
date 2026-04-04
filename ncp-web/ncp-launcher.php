@@ -154,6 +154,15 @@ else if ( $_POST['action'] == "info" )
   echo ' "table": '       . json_encode( $table       ) . ' , ';
   echo ' "suggestions": ' . json_encode( $suggestions ) . ' , ';
   echo ' "ret": "'        . $ret                        . '" }';
+} else if ($_POST['action'] == "set-url") {
+  if (!$_POST['url']) {
+    exit('{ "output": "domain can\'t be empty", "ret": 1 }');
+  }
+  echo '{ "token": "' . getCSRFToken() . '",';               // Get new token
+  exec("/usr/bin/php /var/www/nextcloud/occ config:system:set overwrite.cli.url --value '" . $_POST['url'] . "'",
+      $out, $ret);
+  echo  ' "out": "' . htmlspecialchars(join("\n", $out), ENT_QUOTES, "UTF-8") . '", ';
+  echo  ' "ret": "' . $ret . '"}';
 }
 
 //

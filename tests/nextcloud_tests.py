@@ -89,8 +89,12 @@ class Test:
 
 def usage():
     "Print usage"
-    print("usage: nextcloud_tests.py [--new] [ip]")
-    print("--new removes saved configuration")
+    print("usage: nextcloud_tests.py [-h|--help] [-n|--new] [--no-gui] [--skip-release-check] [--wait-multiplier=1] [--return-after=0] [ip]")
+    print("  -n|--new removes saved configuration")
+    print("  -h|--help show this message")
+    print("  --no-gui run selenium in headless mode")
+    print("  --skip-release-check skip release check")
+    print("  --wait-multiplier=1 Multiply all wait times by this value")
 
 
 def signal_handler(sig, frame):
@@ -377,7 +381,7 @@ if __name__ == "__main__":
         print(f"Setting geckodriver from env ({os.environ['GECKODRIVER_PATH']})")
         webdriver_exec_path = os.environ['GECKODRIVER_PATH']
     if 'FF_BINARY_PATH' in os.environ:
-        print(f"Setting firefox binary from env ({os.environ['FF_BINARY_PATH']}")
+        print(f"Setting firefox binary from env ({os.environ['FF_BINARY_PATH']})")
         options.binary_location = os.environ['FF_BINARY_PATH']
     wait_multiplier = 1
     for opt, arg in opts:
