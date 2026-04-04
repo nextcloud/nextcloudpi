@@ -1,5 +1,24 @@
 # NextcloudPi Changelog
 
+## [v1.57.0](https://github.com/nextcloud/nextcloudpi/tree/v1.57.0) (2026-04-04) Nextcloud 33, new previewgenerator, fixes
+
+### Changes
+
+- Support for Nextcloud 33
+- Migrate to upstream previewgenerator (fixes [#2098](https://github.com/nextcloud/nextcloudpi/issues/2098))
+- Set overwrite.cli.url during NCP activation (fixes [#2087](https://github.com/nextcloud/nextcloudpi/issues/2087))
+- Add option to check for incompatible apps in nc-update-nextcloud and nc-autoupdate-nc (on by default)
+
+### Fixes
+
+- Fix outdated OS version being picked up in ncp_diag ([#2090](https://github.com/nextcloud/nextcloudpi/pull/2090) , thanks @CrazyWolf13)
+- Fix(ncp-web): prevent XSS via log output and undefined array key warning ([#2096](https://github.com/nextcloud/nextcloudpi/pull/2096), thanks @aroldobossoni)
+- Fix trusted proxy not being respected by Apache
+
+### Development related
+
+- Reenable and fix update tests for incus and VM targets
+- Disable dist-upgrade test for VM target
 
 ## [v1.56.0](https://github.com/nextcloud/nextcloudpi/tree/v1.56.0) (2025-11-19) Nextcloud 32 and fixes
 
