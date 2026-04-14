@@ -1,5 +1,14 @@
 # NextcloudPi Changelog
 
+## [v1.57.1](https://github.com/nextcloud/nextcloudpi/tree/v1.57.1) (2026-04-14) Various fixes
+
+### Fixes
+
+- Fail gracefully when parsing invalid backup cache ([#2105](https://github.com/nextcloud/nextcloudpi/pull/2105), thanks @Dominik0101)
+- security: Properly escape all bash arguments in ncp-web (ncp-launcher.php)
+- Make sure, sury repository key is updated from pkg sources (fixes [#2104](https://github.com/nextcloud/nextcloudpi/issues/2104))
+- Fix broken ncp-preview-generator cronjob script (fixes [#2107](https://github.com/nextcloud/nextcloudpi/issues/2107))
+
 ## [v1.57.0](https://github.com/nextcloud/nextcloudpi/tree/v1.57.0) (2026-04-04) Nextcloud 33, new previewgenerator, fixes
 
 ### Changes
