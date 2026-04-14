@@ -55,7 +55,10 @@ HTML;
     $cache_str = file_get_contents($cache_file)
       or exit("error opening ${cache_file}");
 
-    $cache = json_decode($cache_str, true) or [];
+    $cache = json_decode($cache_str, true);
+    if (!is_array($cache)) {
+      $cache = [];
+    }
   } else {
     $cache = [];
   }
