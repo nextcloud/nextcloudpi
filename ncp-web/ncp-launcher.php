@@ -16,6 +16,11 @@ $cfg_dir = '/usr/local/etc/ncp-config.d/';
 $l10nDir = "l10n";
 ignore_user_abort(true);
 
+function bash_escape_arg($arg): string
+{
+  return "'" . str_replace("'", "\\'", $arg) . "'";
+}
+
 //
 // language
 //
@@ -105,7 +110,7 @@ if ( $_POST['action'] == "launch" && $_POST['config'] )
   echo ' "output": "" , ';
   echo ' "ret": ';
 
-  exec( 'bash -c "sudo /home/www/ncp-launcher.sh ' . $ncp_app . '"' , $output , $ret );
+  exec( 'bash -c "sudo /home/www/ncp-launcher.sh ' . bash_escape_arg($ncp_app) . '"' , $output , $ret );
   echo '"' . $ret . '" }';
 }
 
@@ -159,7 +164,7 @@ else if ( $_POST['action'] == "info" )
     exit('{ "output": "domain can\'t be empty", "ret": 1 }');
   }
   echo '{ "token": "' . getCSRFToken() . '",';               // Get new token
-  exec("/usr/bin/php /var/www/nextcloud/occ config:system:set overwrite.cli.url --value '" . $_POST['url'] . "'",
+  exec("/usr/bin/php /var/www/nextcloud/occ config:system:set overwrite.cli.url --value " . bash_escape_arg($_POST['url']),
       $out, $ret);
   echo  ' "out": "' . htmlspecialchars(join("\n", $out), ENT_QUOTES, "UTF-8") . '", ';
   echo  ' "ret": "' . $ret . '"}';
