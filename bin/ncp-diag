@@ -70,15 +70,11 @@ echo "Internet check|$( ping -W 2 -w 1 -q github.com &>/dev/null && echo ok || e
 
 function is_port_open()
 {
-  # The URL leads to an application I've deployed for NCP on https://fly.io using a Docker container I made.
-  # The image for the container is available on Docker Hub (zendai/checkport:sanic) if you wish to deploy one yourself.
-  # The code for the Sanic server and Docker image is available at: https://github.com/ZendaiOwl/Build/tree/master/Docker/Python/Sanic/checkport
-  # I only have a free tier with limited outbound data per month, 100GB p/month.
-  # If we go over 100GB outbound data in a month, I will start being charged for the data going over that limit.
-  # I used a low level Python socket library & fortunately each request only consumes aprox. ~ 60-74 bytes p/second.
-  # Meaning 100GB should be plenty, it should be enough to handle a little less
-  # than 450 request p/second a month, unless my calculations are wrong.
-  # Thank you :pray: from Victor-ray, S. https://github.com/ZendaiOwl
+  # Checkport is deployed at fly.io by Victor-ray, S. for NextcloudPi.
+  # Repo: https://gitbox.zendai.net.eu.org/n0rs3/checkport
+  # docker.io/zendai/checkport:sanic
+  # Please don't abuse it :pray:
+  # It's deployed with free limits on my personal account and can handle a little less than 450 request p/second before I get charged extra.
   local -r PORTURL="https://checkport.zendai.net.eu.org/check"
   local TYPE="${1?}" IPType
   # Checks both port 80 & 443 for IPv4/IPv6 and returns the result or [N/A] [N/A]
