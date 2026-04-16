@@ -234,6 +234,12 @@ jobs:
           
           ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" "ncc status" | grep "version:" | awk '{ print $3 }'
           latest_nc_version="$(cat /__w/nextcloudpi/nextcloudpi/etc/ncp.cfg | jq -r '.nextcloud_version')"
+          current_nc_version_new="$(ssh "${SSH_OPTIONS[@]}" "root@${SERVER_ADDRESS}" "ncc status" | grep "version:" | awk '{ print $3 }')"
+          
+          if [[ "$current_nc_version_new" =~ "$latest_nc_version".* ]]
+          then
+            exit 0
+          fi
           
           for i in {1..10};
           do
