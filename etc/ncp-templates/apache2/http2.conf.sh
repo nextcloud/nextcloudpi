@@ -22,7 +22,7 @@ SSLCompression          off
 SSLSessionTickets       on
 
 # OCSP Stapling
-SSLUseStapling          on
+SSLUseStapling          off
 SSLStaplingResponderTimeout 5
 SSLStaplingReturnResponderErrors off
 SSLStaplingCache        shmcb:/var/run/ocsp(128000)
