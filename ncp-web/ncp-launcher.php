@@ -166,6 +166,8 @@ else if ( $_POST['action'] == "info" )
   echo '{ "token": "' . getCSRFToken() . '",';               // Get new token
   exec("/usr/bin/php /var/www/nextcloud/occ config:system:set overwrite.cli.url --value " . bash_escape_arg($_POST['url']),
       $out, $ret);
+  exec("/usr/bin/bash -c 'echo \"url set to: ". bash_escape_arg($_POST['url']) ."\" >> /var/log/ncp.log'");
+  exec("/usr/bin/bash -c 'echo \"". htmlspecialchars(join("\n", $out), ENT_QUOTES, "UTF-8") ."\" >> /var/log/ncp.log'");
   echo  ' "out": "' . htmlspecialchars(join("\n", $out), ENT_QUOTES, "UTF-8") . '", ';
   echo  ' "ret": "' . $ret . '"}';
 }

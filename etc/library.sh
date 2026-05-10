@@ -146,6 +146,7 @@ function set-nc-domain()
   fi
   if [[ "${domain}" == "" ]] || is_an_ip "${domain}"; then
     echo "warning: No domain found. Defaulting to '$(hostname)'"
+    echo "overwrite.cli.url was: $(ncc config:system:get overwrite.cli.url)"
     domain="$(hostname)"
   fi
   local proto
@@ -503,7 +504,7 @@ function is_more_recent_than()
 function is_app_enabled()
 {
   local app="$1"
-  ncc app:list --output json | jq -r '.enabled | keys | .[]' | grep '^previewgenerator$' > /dev/null 2> /dev/null
+  ncc app:list --output json | jq -r '.enabled | keys | .[]' | grep "^${app}$" > /dev/null 2> /dev/null
 }
 
 function check_distro()

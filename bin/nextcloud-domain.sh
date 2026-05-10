@@ -1,7 +1,7 @@
 #!/bin/bash
 
 source /usr/local/etc/library.sh
-
+set -x
 # wait until user decrypts the instance first
 while :; do
   needs_decrypt || break
@@ -31,6 +31,8 @@ while :; do
     sleep 3
     continue
   }
+  # TODO: REmove debug output
+  echo "found domain: $nc_domain"
   # Fix the situation where junk was introduced in the config by mistake
   # because Redis was not yet ready to be used even if it was up
   [[ "${nc_domain}" =~ "RedisException" ]] && nc_domain="$(hostname)"
