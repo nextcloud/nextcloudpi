@@ -14,7 +14,8 @@ export NCDIR=/var/www/nextcloud
 export ncc=/usr/local/bin/ncc
 export NCPCFG=${NCPCFG:-etc/ncp.cfg}
 export ARCH="$(dpkg --print-architecture)"
-export DB_PREFIX="$(php -r 'include("/var/www/nextcloud/config/config.php"); echo $CONFIG['"'dbtableprefix'"'];' || echo 'oc_')"
+# 2>/dev/null suppresses stderr-Output if PHP is not yet installed (new system)
+export DB_PREFIX="$(php -r 'include("/var/www/nextcloud/config/config.php"); echo $CONFIG['"'dbtableprefix'"'];' 2>/dev/null || echo 'oc_')"
 [[ "${ARCH}" =~ ^(armhf|arm)$ ]] && ARCH="armv7"
 [[ "${ARCH}" == "arm64" ]] && ARCH=aarch64
 [[ "${ARCH}" == "amd64" ]] && ARCH=x86_64
@@ -55,8 +56,10 @@ command -v jq &>/dev/null || {
 NCLATESTVER=$(jq -r .nextcloud_version < "$NCPCFG")
 PHPVER=$(     jq -r .php_version       < "$NCPCFG")
 RELEASE=$(    jq -r .release           < "$NCPCFG")
-# the default repo in bullseye is bullseye-security
-grep -Eh '^deb ' /etc/apt/sources.list | grep "${RELEASE}-security" > /dev/null && RELEASE="${RELEASE}-security"
+# check also /etc/apt/sources.list.d/ in Trixie
+grep -Eh '^deb ' /etc/apt/sources.list 2>/dev/null | grep "${RELEASE}-security" > /dev/null \
+  || grep -Eh '^deb ' /etc/apt/sources.list.d/*.list 2>/dev/null | grep "${RELEASE}-security" > /dev/null \
+  && RELEASE="${RELEASE}-security"
 command -v ncc &>/dev/null && NCVER="$(ncc status 2>/dev/null | grep "version:" | awk '{ print $3 }')"
 
 function configure_app()
