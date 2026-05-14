@@ -604,8 +604,24 @@ function clear_password_fields()
 
 function apt_install()
 {
+  wait_for_dpkg
   apt-get update --allow-releaseinfo-change
+  wait_for_dpkg
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends -o Dpkg::Options::=--force-confdef -o Dpkg::Options::="--force-confold" "$@"
+}
+
+function wait_for_dpkg() {
+  local tries=0
+  while fuser /var/lib/dpkg/lock-frontend /var/lib/dpkg/lock >/dev/null 2>&1; do
+    echo "dpkg locked, waiting..."
+    fuser -v /var/lib/dpkg/lock-frontend /var/lib/dpkg/lock 2>/dev/null || true
+    sleep 2
+    tries=$((tries + 1))
+    if [[ $tries -ge 150 ]]; then
+      echo "dpkg lock timeout"
+      return 1
+    fi
+  done
 }
 
 function is_docker() {
