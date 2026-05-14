@@ -112,6 +112,9 @@ configure()
     btrfs subvolume create "${BASEDIR}"
   }
 
+  # first set in config the new value, because occ checks if the current datadir exists
+  ncc config:system:set datadirectory --value="${DATADIR}"
+
   # use encryption, if selected
   if is_active_app nc-encrypt; then
     # if we have encryption AND BTRFS, then store ncdata_enc in the subvolume
@@ -123,12 +126,7 @@ configure()
   fi
   chown www-data: "${DATADIR}"
 
-  # datadir
-  ncc config:system:set datadirectory  --value="${DATADIR}" \
-  || sed -i "s|'datadirectory' =>.*|'datadirectory' => '${DATADIR}',|" "${NCDIR?}"/config/config.php
-
-  ncc config:system:set logfile --value="${DATADIR}/nextcloud.log" \
-  || sed -i "s|'logfile' =>.*|'logfile' => '${DATADIR}/nextcloud.log',|" "${NCDIR?}"/config/config.php
+  ncc config:system:set logfile --value="${DATADIR}/nextcloud.log"
   set_ncpcfg datadir "${DATADIR}"
 
   # tmp upload dir
