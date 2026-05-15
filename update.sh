@@ -183,10 +183,6 @@ install_template "systemd/php-fpm.service.d.ncp.conf.sh" \
 # update old images
 ./run_update_history.sh "$UPDATESDIR"
 
-# reload systemd after drop-in changes
-systemctl daemon-reload
-service "php${PHPVER}-fpm" restart
-
 # update to the latest NC version
 is_active_app nc-autoupdate-nc && run_app nc-autoupdate-nc
 
