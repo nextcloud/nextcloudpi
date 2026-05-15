@@ -8,10 +8,6 @@
 # More at https://ownyourbits.com/2017/03/13/nextcloudpi-gets-nextcloudpi-config/
 #
 
-log_step() {
-  echo "[$(date -Is)] $*"
-}
-
 is_active()
 {
   local SRCDIR
@@ -116,7 +112,6 @@ configure()
     btrfs subvolume create "${BASEDIR}"
   }
 
-  log_step "setting nc config: datadirectory"
   # first set in config the new value, because occ checks if the current datadir exists
   ncc config:system:set datadirectory --value="${DATADIR}"
 
