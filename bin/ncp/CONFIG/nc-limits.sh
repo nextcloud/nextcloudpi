@@ -76,6 +76,15 @@ configure()
   install_template "php/pool.d.www.conf.sh" "$CONF"
   [[ "$CONF_VALUE"  == "$(cat "$CONF")"   ]] || require_fpm_restart=true
 
+  # PHP-FPM SYSTEMD DROP-IN (ReadWritePaths for ProtectSystem=full)
+  local DROPIN=/etc/systemd/system/php${PHPVER}-fpm.service.d/ncp.conf
+  CONF_VALUE="$(cat "$DROPIN" 2> /dev/null || true)"
+  install_template "systemd/php-fpm.service.d.ncp.conf.sh" "$DROPIN"
+  if [[ "$CONF_VALUE" != "$(cat "$DROPIN")" ]]; then
+    systemctl daemon-reload
+    require_fpm_restart=true
+  fi
+
   local CONF=/etc/mysql/mariadb.conf.d/91-ncp.cnf
   CONF_VALUE="$(cat "$CONF" 2> /dev/null || true)"
   install_template "mysql/91-ncp.cnf.sh" "$CONF"
