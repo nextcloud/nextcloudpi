@@ -66,6 +66,11 @@ install()
 
     install_template "php/opcache.ini.sh" "/etc/php/${PHPVER}/mods-available/opcache.ini" --defaults
 
+    # systemd drop-in: allow write access to NCP paths blocked by ProtectSystem=full
+    install_template "systemd/php-fpm.service.d.ncp.conf.sh" \
+      "/etc/systemd/system/php${PHPVER}-fpm.service.d/ncp.conf"
+    systemctl daemon-reload
+
     a2enmod http2
     a2enconf http2
     a2enmod proxy_fcgi setenvif
