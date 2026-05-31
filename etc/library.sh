@@ -179,6 +179,8 @@ function start_notify_push()
     if [[ -f /.docker-image ]]; then
       NEXTCLOUD_URL=https://localhost sudo -E -u www-data "/var/www/nextcloud/apps/notify_push/bin/${ARCH}/notify_push" --allow-self-signed /var/www/nextcloud/config/config.php &>/dev/null &
     else
+      # load generated systemd-unit
+      systemctl daemon-reload
       systemctl enable --now notify_push
     fi
     sleep 5 # apparently we need to make sure we wait until the database is written or something
