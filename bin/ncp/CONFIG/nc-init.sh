@@ -180,7 +180,6 @@ EOF
   if ! is_more_recent_than "21.0.0" "${ncver}"; then
     ncc app:install notify_push
     ncc app:enable  notify_push
-    test -f /.ncp-image || start_notify_push # don't start during build
   fi
 
   # previews
@@ -215,6 +214,9 @@ EOF
   test -f /usr/local/bin/nextcloud-domain.sh && {
     test -f /.ncp-image || bash /usr/local/bin/nextcloud-domain.sh
   }
+
+  # start notify_push after NC is fully configured
+  test -f /.ncp-image || start_notify_push # don't start during build
 
   # dettach mysql during the build
   if [[ "${db_pid}" != "" ]]; then
