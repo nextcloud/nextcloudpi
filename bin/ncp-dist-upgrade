@@ -15,6 +15,9 @@ then
 elif [[ "$VERSION_ID" -eq 11 ]]
 then
   UPGRADE_CMD=(bash /usr/local/bin/ncp-dist-upgrade.d/debian-11.sh)
+elif [[ "$VERSION_ID" -eq 12 ]]
+then
+  UPGRADE_CMD=(bash /usr/local/bin/ncp-dist-upgrade.d/debian-12.sh)
 else
   echo "No dist-upgrade available for OS version: Debian ${VERSION}."
   exit 0
