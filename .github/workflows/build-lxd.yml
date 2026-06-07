@@ -323,7 +323,15 @@ jobs:
 
           latest_build="${latest_nc_version#*.}"
           latest_build="${latest_build#*.}"
-          if [[ "$current_nc_version" =~ "$latest_nc_version".* ]] || { [[ "^${latest_nc_version}" =~ "${current_nc_version%.*}".* ]] && [[ "${current_nc_version##*.}" -lt "${latest_build}" ]]; }
+          
+          if [[ "$current_nc_version" =~ ^[0-9]*\\.[0-9]*\\.[0-9]*\\.[0-9]*$ ]]
+          then
+            current_nc_version="${current_nc_version%.*}"
+          fi
+          current_build="${current_nc_version#*.}"
+          current_build="${current_build#*.}"
+          
+          if [[ "${current_nc_version%.*}" == "${latest_nc_version%.*}" ]] && [[ "${current_build}" -ge "${latest_build}" ]]
           then
             echo "Nextcloud is up to date - skipping NC update test."
           else
