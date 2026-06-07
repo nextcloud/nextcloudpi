@@ -36,6 +36,12 @@ is_more_recent_than "${PHPVER}.0" "8.2.0" || {
 save_maintenance_mode
 
 # Perform dist-upgrade
+set -x
+
+# Make sure, PHP repo is properly setup
+curl -sSLo /tmp/debsuryorg-archive-keyring.deb https://packages.sury.org/debsuryorg-archive-keyring.deb
+dpkg -i /tmp/debsuryorg-archive-keyring.deb
+echo "deb [signed-by=/usr/share/keyrings/debsuryorg-archive-keyring.gpg] https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list
 
 apt-get update
 apt-get upgrade -y
