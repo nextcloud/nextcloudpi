@@ -6,26 +6,11 @@
 # GPL licensed (see end of file) * Use at your own risk!
 #
 
-
-wait_for_dpkg() {
-  local tries=0
-  while fuser /var/lib/dpkg/lock-frontend /var/lib/dpkg/lock >/dev/null 2>&1; do
-    echo "dpkg locked, waiting..."
-    fuser -v /var/lib/dpkg/lock-frontend /var/lib/dpkg/lock 2>/dev/null || true
-    sleep 2
-    tries=$((tries + 1))
-    if [[ $tries -ge 150 ]]; then
-      echo "dpkg lock timeout"
-      return 1
-    fi
-  done
-}
-
 install() {
-  wait_for_dpkg || return 1
-  apt-get update || return 1
-  wait_for_dpkg || return 1
-  DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y dnsutils || return 1
+  wait_for_dpkg \
+  && apt-get update \
+  && wait_for_dpkg \
+  && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y dnsutils
 }
 
 configure() 
