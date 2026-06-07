@@ -66,8 +66,8 @@ sudo apt-get --purge  autoremove -y
 apt-get install -y --no-install-recommends exfatprogs
 
 #mkdir -p /etc/systemd/system/php8.1-fpm.service.d
-#echo '[Service]' > /etc/systemd/system/php8.1-fpm.service.d/ncp.conf
-#echo 'ExecStartPre=mkdir -p /var/run/php' >> /etc/systemd/system/php8.1-fpm.service.d/ncp.conf
+#echo '[Service]' > /etc/systemd/system/php8.1-fpm.service.d/ncp-ci.conf
+#echo 'ExecStartPre=mkdir -p /var/run/php' >> /etc/systemd/system/php8.1-fpm.service.d/ncp-ci.conf
 #[[ "$INIT_SYSTEM" != "systemd" ]] || { systemctl daemon-reload && systemctl restart php8.1-fpm; }
 
 restore_maintenance_mode
