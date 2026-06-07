@@ -113,7 +113,9 @@ configure()
   }
 
   # first set in config the new value, because occ checks if the current datadir exists
-  ncc config:system:set datadirectory --value="${DATADIR}"
+  ncc config:system:set datadirectory --value="${DATADIR}" \
+  || sed -i "s|'datadirectory' =>.*|'datadirectory' => '${DATADIR}',|" "${NCDIR?}"/config/config.php
+  Could not apply suggestion.
 
   # use encryption, if selected
   if is_active_app nc-encrypt; then
@@ -126,7 +128,8 @@ configure()
   fi
   chown www-data: "${DATADIR}"
 
-  ncc config:system:set logfile --value="${DATADIR}/nextcloud.log"
+  ncc config:system:set logfile --value="${DATADIR}/nextcloud.log" \
+  || sed -i "s|'logfile' =>.*|'logfile' => '${DATADIR}/nextcloud.log',|" "${NCDIR?}"/config/config.php
   set_ncpcfg datadir "${DATADIR}"
 
   # tmp upload dir
