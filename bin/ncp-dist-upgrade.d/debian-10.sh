@@ -4,26 +4,6 @@ set -eu -o pipefail
 
 [[ -f /.dockerenv ]] && { echo "Not supported in Docker. Upgrade the container instead"; exit 0; }
 
-new_cfg=/usr/local/etc/ncp-recommended.cfg
-[[ -f "${new_cfg}" ]] || { echo "Already on the lastest recommended distribution. Abort." >&2; exit 1; }
-
-APTINSTALL="apt-get install -y --no-install-recommends"
-export DEBIAN_FRONTEND=noninteractive
-
-echo "
->>> ATTENTION <<<
-This is a dangerous process that is only guaranteed to work properly if you
-have not made manual changes in the system. Backup the SD card first and
-proceed at your own risk.
-
-Note that this is not a requirement for NCP to continue working properly.
-The current distribution will keep receiving updates for some time.
-
-Do you want to continue? [y/N]"
-
-read key
-[[ "$key" == y ]] || exit 0
-
 source /usr/local/etc/library.sh # sets NCPCFG RELEASE PHPVER
 old_cfg="${NCPCFG}"
 
