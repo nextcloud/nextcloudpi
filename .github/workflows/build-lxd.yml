@@ -159,6 +159,7 @@ jobs:
         env:
           USE_INCUS: "${{ needs.determine-runner.outputs.lxc_cmd == 'incus' && 'yes' || 'no' }}"
         run: |
+          set -x
           export CI
           LXD_EXTRA_PROFILE="$LXD_EXTRA_PROFILE" BRANCH="${VERSION##refs/heads/}" ./build/build-LXD.sh
       - name: Pack LXD image
@@ -269,13 +270,13 @@ jobs:
           export FF_BINARY_PATH="$(which firefox)"
           sudo "$LXC" exec ncp -- /usr/local/bin/ncc config:system:set overwrite.cli.url --value "https://nextcloudpi.local"
           sudo "$LXC" exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
-          ../.venv/bin/python activation_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
+          ../.venv/bin/python activation_tests.py -t 300 --no-gui "nextcloudpi.local" 443 4443 || {
             echo "Activation test failed!"
             echo "Geckodriver logs:"
             tail -n 20 geckodriver.log >&2 || true
             echo "================"
             echo "ncp.log: "
-            sudo "$LXC" exec ncp -- bash -c "tail -n500 /var/log/ncp.log" || true
+            sudo "$LXC" exec ncp -- bash -c "cat /var/log/ncp.log" || true
             echo "================"
             echo "nextcloud log: "
             datadir="$(sudo "$LXC" exec ncp -- ncc config:system:get datadirectory)"
