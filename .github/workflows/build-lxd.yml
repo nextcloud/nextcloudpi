@@ -275,7 +275,7 @@ jobs:
             tail -n 20 geckodriver.log >&2 || true
             echo "================"
             echo "ncp.log: "
-            sudo "$LXC" exec ncp -- bash -c "tail -n100 /var/log/ncp.log" || true
+            sudo "$LXC" exec ncp -- bash -c "tail -n500 /var/log/ncp.log" || true
             echo "================"
             echo "nextcloud log: "
             datadir="$(sudo "$LXC" exec ncp -- ncc config:system:get datadirectory)"
