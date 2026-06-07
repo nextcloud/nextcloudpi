@@ -14,7 +14,8 @@ export NCDIR=/var/www/nextcloud
 export ncc=/usr/local/bin/ncc
 export NCPCFG=${NCPCFG:-etc/ncp.cfg}
 export ARCH="$(dpkg --print-architecture)"
-export DB_PREFIX="$(php -r 'include("/var/www/nextcloud/config/config.php"); echo $CONFIG['"'dbtableprefix'"'];' || echo 'oc_')"
+# 2>/dev/null suppresses stderr-Output if PHP is not yet installed (new system)
+export DB_PREFIX="$(php -r 'include("/var/www/nextcloud/config/config.php"); echo $CONFIG['"'dbtableprefix'"'];' 2>/dev/null || echo 'oc_')"
 [[ "${ARCH}" =~ ^(armhf|arm)$ ]] && ARCH="armv7"
 [[ "${ARCH}" == "arm64" ]] && ARCH=aarch64
 [[ "${ARCH}" == "amd64" ]] && ARCH=x86_64
@@ -55,8 +56,10 @@ command -v jq &>/dev/null || {
 NCLATESTVER=$(jq -r .nextcloud_version < "$NCPCFG")
 PHPVER=$(     jq -r .php_version       < "$NCPCFG")
 RELEASE=$(    jq -r .release           < "$NCPCFG")
-# the default repo in bullseye is bullseye-security
-grep -Eh '^deb ' /etc/apt/sources.list | grep "${RELEASE}-security" > /dev/null && RELEASE="${RELEASE}-security"
+# check also /etc/apt/sources.list.d/ in Trixie
+grep -Eh '^deb ' /etc/apt/sources.list 2>/dev/null | grep "${RELEASE}-security" > /dev/null \
+  || grep -Eh '^deb ' /etc/apt/sources.list.d/*.list 2>/dev/null | grep "${RELEASE}-security" > /dev/null \
+  && RELEASE="${RELEASE}-security"
 command -v ncc &>/dev/null && NCVER="$(ncc status 2>/dev/null | grep "version:" | awk '{ print $3 }')"
 
 function configure_app()
@@ -176,6 +179,8 @@ function start_notify_push()
     if [[ -f /.docker-image ]]; then
       NEXTCLOUD_URL=https://localhost sudo -E -u www-data "/var/www/nextcloud/apps/notify_push/bin/${ARCH}/notify_push" --allow-self-signed /var/www/nextcloud/config/config.php &>/dev/null &
     else
+      # load generated systemd-unit
+      systemctl daemon-reload
       systemctl enable --now notify_push
     fi
     sleep 5 # apparently we need to make sure we wait until the database is written or something
@@ -600,8 +605,24 @@ function clear_password_fields()
 
 function apt_install()
 {
+  wait_for_dpkg
   apt-get update --allow-releaseinfo-change
+  wait_for_dpkg
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends -o Dpkg::Options::=--force-confdef -o Dpkg::Options::="--force-confold" "$@"
+}
+
+function wait_for_dpkg() {
+  local tries=0
+  while fuser /var/lib/dpkg/lock-frontend /var/lib/dpkg/lock >/dev/null 2>&1; do
+    echo "dpkg locked, waiting..."
+    fuser -v /var/lib/dpkg/lock-frontend /var/lib/dpkg/lock 2>/dev/null || true
+    sleep 2
+    tries=$((tries + 1))
+    if [[ $tries -ge 150 ]]; then
+      echo "dpkg lock timeout"
+      return 1
+    fi
+  done
 }
 
 function is_docker() {

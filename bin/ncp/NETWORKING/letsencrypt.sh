@@ -62,6 +62,8 @@ configure()
     local key_path="$(grep SSLCertificateKeyFile "${nc_vhostcfg}" | awk '{ print $2 }')"
     sed -i "s|SSLCertificateFile.*|SSLCertificateFile ${cert_path}|"      "${ncp_vhostcfg}"
     sed -i "s|SSLCertificateKeyFile.*|SSLCertificateKeyFile ${key_path}|" "${ncp_vhostcfg}"
+    # Disable OCSP stapling without Let's Encrypt certificate
+    sed -i 's/SSLUseStapling.*$/SSLUseStapling          off/' /etc/apache2/conf-available/http2.conf
     apachectl -k graceful
     echo "letsencrypt certificates disabled. Using self-signed certificates instead."
     exit 0
@@ -134,6 +136,8 @@ EOF
       }
     done
     set-nc-domain "$DOMAIN"
+    # Enable OCSP stapling with valid Let's Encrypt certificate
+    sed -i 's/SSLUseStapling.*$/SSLUseStapling          on/' /etc/apache2/conf-available/http2.conf
 
     apachectl -k graceful
     rm -rf $ncdir/.well-known
