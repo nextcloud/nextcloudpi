@@ -321,7 +321,9 @@ jobs:
           sudo "$LXC" exec ncp -- bash -c "DBG=x ncp-update ${UPDATE_ARGS[*]}"
           sudo "$LXC" exec ncp -- /usr/local/bin/ncc status
 
-          if [[ "$current_nc_version" =~ "$latest_nc_version".* ]]
+          latest_build="${latest_nc_version#*.}"
+          latest_build="${latest_build#*.}"
+          if [[ "$current_nc_version" =~ "$latest_nc_version".* ]] || { [[ "^${latest_nc_version}" =~ "${current_nc_version%.*}".* ]] && [[ "${current_nc_version##*.}" -lt "${latest_build}" ]]; }
           then
             echo "Nextcloud is up to date - skipping NC update test."
           else
