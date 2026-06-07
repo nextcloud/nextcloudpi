@@ -146,6 +146,7 @@ function set-nc-domain()
   fi
   if [[ "${domain}" == "" ]] || is_an_ip "${domain}"; then
     echo "warning: No domain found. Defaulting to '$(hostname)'"
+    echo "overwrite.cli.url was: $(ncc config:system:get overwrite.cli.url)"
     domain="$(hostname)"
   fi
   local proto
