@@ -275,7 +275,7 @@ jobs:
             tail -n 20 geckodriver.log >&2 || true
             echo "================"
             echo "ncp.log: "
-            sudo "$LXC" exec ncp -- bash -c "tail -n20 /var/log/ncp.log" || true
+            sudo "$LXC" exec ncp -- bash -c "tail -n100 /var/log/ncp.log" || true
             echo "================"
             echo "nextcloud log: "
             datadir="$(sudo "$LXC" exec ncp -- ncc config:system:get datadirectory)"
@@ -295,7 +295,7 @@ jobs:
             sudo "$LXC" exec ncp -- cat "$datadir/nextcloud.log" || true
             exit 1
           }
-          USE_INCUS="$USE_INCUS" python system_tests.py --non-interactive --skip-update-test || {
+          USE_INCUS="$USE_INCUS" ../.venv/bin/python system_tests.py --non-interactive --skip-update-test || {
             echo "System test failed!"
             exit 1
           }
@@ -324,7 +324,7 @@ jobs:
           latest_build="${latest_nc_version#*.}"
           latest_build="${latest_build#*.}"
           
-          if [[ "$current_nc_version" =~ ^[0-9]*\\.[0-9]*\\.[0-9]*\\.[0-9]*$ ]]
+          if [[ "$current_nc_version" =~ ^[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*$ ]]
           then
             current_nc_version="${current_nc_version%.*}"
           fi
@@ -638,7 +638,17 @@ jobs:
           sudo "$LXC" exec ncp -- bash -c "DEBIAN_FRONTEND=noninteractive ncp-dist-upgrade"
           sudo "$LXC" exec ncp -- /usr/local/bin/ncc status
           
-          if [[ "$current_nc_version" =~ "$latest_nc_version".* ]]
+          latest_build="${latest_nc_version#*.}"
+          latest_build="${latest_build#*.}"
+          
+          if [[ "$current_nc_version" =~ ^[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*$ ]]
+          then
+            current_nc_version="${current_nc_version%.*}"
+          fi
+          current_build="${current_nc_version#*.}"
+          current_build="${current_build#*.}"
+          
+          if [[ "${current_nc_version%.*}" == "${latest_nc_version%.*}" ]] && [[ "${current_build}" -ge "${latest_build}" ]]
           then
             echo "Nextcloud is up to date - skipping NC update test."
           else
