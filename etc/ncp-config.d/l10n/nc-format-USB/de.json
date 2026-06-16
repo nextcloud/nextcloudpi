@@ -1,3 +1,8 @@
-{"translations": {
-    "nc-format-USB": "USB-Laufwerke formatieren"
-}}
+{
+    "translations": {
+        "LABEL": "Laufwerksbezeichnung",
+        "Format an external USB drive as a BTRFS partition (dangerous)": "Ein externes USB-Laufwerk als BTRFS-Partition formatieren (Achtung: gefährlich!)",
+        "Make sure that ONLY the USB drive that you want to format is plugged in.\ncareful, this will destroy any data in the USB drive\n\n** YOU WILL LOSE ALL YOUR USB DATA **": "Bitte sicherstellen, dass NUR der USB-Stick der formatiert werden soll angeschlossen ist.\nAchtung: Dadurch werden alle Daten auf dem USB-Stick gelöscht.\n\n** ALLE DATEN AUF DEM USB-LAUFWERK GEHEN VERLOREN! **",
+        "nc-format-USB": "USB-Laufwerk formatieren"
+    }
+}

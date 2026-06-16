@@ -1,3 +1,13 @@
-{"translations": {
-    "nc-nextcloud": "Nextcloud Einstellungen"
-}}
+{
+    "translations": {
+        "VER": "Version",
+        "BETA": "Betaversion",
+        "MAXFILESIZE": "Maximale Dateigröße",
+        "MEMORYLIMIT": "Speicherlimit",
+        "MAXTRANSFERTIME": "Maximale Übertragungszeit",
+        "NextCloud installation": "Nextcloud installieren",
+        "This new installation will cleanup current\nNextCloud instance, including files and database.\n\nYou can later use nc-init to configure to NextCloudPi defaults\n\n** perform backup before proceding **\n\nYou can use nc-backup ":"Diese neue Installation wird die aktuelle\nNextcloud-Instanz einschließlich aller Dateien und der Datenbank löschen.\n\nDanach kann mit „Nextcloud initialisieren“ die NextcloudPi-Standardkonfiguration eingerichtet werden.\n\n** Vor dem Fortfahren eine Sicherung ausführen! **\n\nDas geht z.B. mittels „Sicherung erstellen“.",
+        "nc-nextcloud": "Nextcloud Setup",
+        "Install any NextCloud version": "Eine beliebige Nextcloud-Version installieren"
+    }
+}

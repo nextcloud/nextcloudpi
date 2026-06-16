@@ -1,3 +1,9 @@
-{"translations": {
-    "nc-scan-auto": "Automatischer Datei-Scan"
-}}
+{
+    "translations": {
+        "ACTIVE": "Aktiviert",
+        "SCANINTERVAL": "Scan-Intervall",
+        "Periodically scan NC for externally modified files": "Nextcloud perdiodisch nach Dateien durchsuchen, die durch externe Zugriffe verändert wurden",
+        "Set the time in minutes in SCANINTERVAL.\n\n>>> If there are too many files this can greatly affect performance. <<<": "Das SCANINTERVAL in Minuten einstellen.\n\n>>> Bei einer großen Anzahl von Dateien kann dies die Leistung erheblich beeinträchtigen. <<<",
+        "nc-scan-auto": "Automatischer Datei-Scan"
+    }
+}

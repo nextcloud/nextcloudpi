@@ -1,3 +1,7 @@
-{"translations": {
-    "nc-export-ncp": "NCP-Export"
-}}
+{
+    "translations": {
+        "DIR": "Verzeichnis",
+        "Export NextCloudPi configuration": "NextcloudPi-Konfiguration exportieren",
+        "nc-export-ncp": "NCP-Konfig. exportieren"
+    }
+}

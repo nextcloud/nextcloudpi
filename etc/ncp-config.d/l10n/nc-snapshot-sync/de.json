@@ -1,0 +1,9 @@
+{
+    "translations":{
+        "ACTIVE": "Aktiviert",
+        "SNAPDIR": "Snapshot-Verzeichnis",
+        "DESTINATION": "Zielverzeichnis",
+        "COMPRESSION": "Snapshot komprimieren",
+        "SYNCDAYS": "Synchronisationsintervall (Tage)"
+    }
+}

@@ -1,3 +1,8 @@
-{"translations": {
-    "nc-ramlogs": "RAM-Logs"
-}}
+{
+    "translations": {
+        "ACTIVE": "Aktiviert",
+        "mount logs in RAM to prevent SD degradation (faster, consumes more RAM)": "Die Logs im RAM speichern, um die Degradation der SD-Karte zu verlangsamen (schneller, benötigt mehr RAM)",
+        "You need to reboot for this change to take effect": "Ein Neustart ist nötig, damit diese Einstellung übernommen wird.",
+        "nc-ramlogs": "Logs im RAM"
+    }
+}

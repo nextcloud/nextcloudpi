@@ -1,0 +1,8 @@
+{
+    "translations":{
+      "DESTINATION": "Ziel",
+      "Sync Nextcloud data through rsync": "Nextcloud-Daten über rsync synchronisieren",
+      "'user' needs SSH autologin from the NCP 'root' user at 'ip'\nif we are launching from ncp-web": "„user“ benötigt eine automatische SSH-Anmeldung durch den NCP-Benutzer „root“ unter der IP-Adresse „ip“\nwenn der Start über ncp-web erfolgt.",
+      "nc-rsync":"rsync einrichten"
+    }
+}

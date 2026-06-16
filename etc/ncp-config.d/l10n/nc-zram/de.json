@@ -1,0 +1,7 @@
+{
+    "translations":{
+        "ACTIVE": "Aktiviert",
+        "Enable compressed RAM to improve swap performance": "RAM-Kompression (zram) aktivieren, um die Swap-Leistung zu verbessern",
+        "nc-zram": "RAM-Kompression"
+    }
+}

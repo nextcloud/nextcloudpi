@@ -1,3 +1,8 @@
-{"translations": {
-    "nc-datadir": "Datenverzeichnis"
-}}
+{
+    "translations": {
+        "DATADIR": "Datenverzeichnis",
+        "Change your data dir to a new location, like an external USB drive": "Mit diesem Tool kann das Datenverzeichnis verschoben werden, z.B. auf ein externes USB-Laufwerk.",
+        "Note that non Unix filesystems such as NTFS are not supported\nbecause they do not provide a compatible user/permissions system.\nAlso please note that the default location, when first installed is /var/www/nextcloud/data. \nMove it to the desired location by editing the DATADIR= field, the PATH shown is an example.": "Nicht-Unix-Dateisysteme wie NTFS werden nicht unterstützt werden,\nda sie keine kompatible Rechteverwaltung haben.\n\nDer Standard-Speicherort nach der Ersteinrichtung ist /var/www/nextcloud/data. \nDas Datenverzeichnis kann an den gewünschten Speicherort verschoben werden, indem das Feld „Datenverzeichnis“ angepasst wird; der zuerst angezeigte Pfad dient nur als Beispiel.",
+        "nc-datadir": "Datenverzeichnis"
+    }
+}

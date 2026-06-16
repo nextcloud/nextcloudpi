@@ -1,3 +1,6 @@
-{"translations": {
-    "nc-audit": "Sicherheitsüberprüfung"
-}}
+{
+    "translations": {
+        "nc-audit": "Sicherheitsüberprüfung",
+        "Perform a security audit with lynis and debsecan": "Eine Sicherheitsüberprüfung mit lynis und debsecan durchführen"
+    }
+}

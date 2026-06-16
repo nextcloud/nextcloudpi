@@ -1,0 +1,10 @@
+{
+    "translations": {
+        "ACTIVE": "Aktiviert",
+        "DOMAIN": "Domain",
+        "Free Dynamic DNS provider (need account from https://duckdns.org)": "Kostenloser Dynamic-DNS Anbieter DuckDNS (Account benötigt)",
+        "TOKEN": "Token",
+        "duckDNS": "duckDNS"
+    }
+}
+

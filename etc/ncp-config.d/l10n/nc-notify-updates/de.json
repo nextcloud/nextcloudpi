@@ -1,3 +1,8 @@
-{"translations": {
-    "nc-notify-updates": "Update-Benachrichtigungen"
-}}
+{
+    "translations": {
+        "ACTIVE": "Aktiviert",
+        "USER": "Benutzer",
+        "Notify in NC when a NextCloudPi update is available": "In Nextcoud benachrichtigen, wenn ein Update für NextcloudPi zur Verfügung steht",
+        "nc-notify-updates": "Update-Benachrichtigungen"
+    }
+}

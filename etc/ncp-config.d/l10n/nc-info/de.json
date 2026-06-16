@@ -1,3 +1,6 @@
-{"translations": {
-    "nc-info": "System Informationen"
-}}
+{
+    "translations": {
+        "Print NextCloudPi system info": "NextcloudPi Systeminformationen anzeigen",
+        "nc-info": "System Informationen"
+    }
+}

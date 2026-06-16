@@ -1,3 +1,6 @@
-{"translations": {
-    "nc-update": "Update"
-}}
+{
+    "translations": {
+        "Update NextCloudPi": "NextcloudPi aktualisieren",
+        "nc-update": "NCP-Update"
+    }
+}
