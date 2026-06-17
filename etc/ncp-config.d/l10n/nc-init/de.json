@@ -1,3 +1,9 @@
-{"translations": {
-    "nc-init": "Initialisierung"
-}}
+{
+    "translations": {
+        "(Re)initiate Nextcloud to a clean configuration": "Nextcloud mit einer sauberen Konfiguration (neu) einrichten",
+        "This action will configure NextCloud to NextCloudPi defaults.\n\n** YOUR CONFIGURATION WILL BE LOST **\n\n": "Durch diesen Vorgang wird NextCloud auf die Standardwerte von NextCloudPi zurückgesetzt.\n\n** DIE AKTUELLE KONFIGURATION WIRD VOLLSTÄNDIG ÜBERSCHRIEBEN! **\n\n",
+        "ADMINUSER": "Admin-Nutzer",
+        "ADMINPASS": "Admin-Passwort",
+        "nc-init": "Nextcloud initialisieren"
+    }
+}

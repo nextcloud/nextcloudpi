@@ -1,3 +1,11 @@
-{"translations": {
-    "nc-limits": "Systembegrenzungen"
-}}
+{
+    "translations": {
+        "Configure system limits for NextCloudPi": "Systemgrenzwerte für NextcloudPi festelegen",
+        "MAXFILESIZE": "Maximale Dateigröße für Uploads",
+        "MEMORYLIMIT": "Speicherlimit",
+        "PHPTHREADS": "Maximale Anzahl an PHP-Threads",
+        "REDISMEM": "Speicherlimit für Redis",
+        "Set PHP threads to 0 in order to use all cores": "Die Anzahl der PHP-Threads auf 0 setzen, um alle Kerne zu nutzen",
+        "nc-limits": "Systemgrenzwerte"
+    }
+}

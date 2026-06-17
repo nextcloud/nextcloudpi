@@ -1,3 +1,7 @@
-{"translations": {
-    "nc-httpsonly": "HTTPS-Zwang"
-}}
+{
+    "translations": {
+        "ACTIVE": "Aktiviert",
+        "Force HTTPS": "HTTPS erzwingen",
+        "nc-httpsonly": "HTTPS-Zwang"
+    }
+}

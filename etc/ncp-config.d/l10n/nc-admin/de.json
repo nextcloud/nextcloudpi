@@ -1,0 +1,9 @@
+{
+    "translations":{
+        "Change password for the Nextcloud admin user": "Das Nextcloud Administratorpasswort einsehen oder ändern",
+        "USER": "Benutzer",
+        "PASSWORD": "Passwort",
+        "CONFIRM": "Passwort bestätigen",
+        "nc-admin": "Nextcloud Adminpasswort"                               
+    }
+}

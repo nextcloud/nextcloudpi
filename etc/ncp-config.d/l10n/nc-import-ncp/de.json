@@ -1,3 +1,7 @@
-{"translations": {
-    "nc-import-ncp": "NCP-Import"
-}}
+{
+    "translations": {
+        "FILE": "Datei",
+        "Import NextCloudPi configuration from file": "NextcloudPi-Konfiguration aus Datei importieren",
+        "nc-import-ncp": "NCP-Konfig. importieren"
+    }
+}

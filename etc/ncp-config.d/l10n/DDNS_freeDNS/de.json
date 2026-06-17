@@ -1,0 +1,10 @@
+{
+    "translations":{
+        "ACTIVE": "Aktiviert",
+        "UPDATEHASH": "Hash aktualisieren",
+        "DOMAIN": "Domain",
+        "UPDATEINTERVAL": "Update-Intervall",
+        "DDNS FreeDNS client (need account)": "Kostenloser Dynamic-DNS Anbieter FreeDNS (Account benötigt)",
+        "DDNS_freeDNS": "freeDNS"
+    }
+}

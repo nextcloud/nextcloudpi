@@ -1,0 +1,9 @@
+{
+    "translations":{
+        "ACTIVE": "Aktiviert",
+        "DOMAIN": "Domain",
+        "TOKEN": "Token",
+        "Free Dynamic DNS provider (need account from spdyn.de)": "Kostenloser Dynamic-DNS Anbieter spDYN (Account benötigt)",
+        "DDNS_spDYN": "spDYN"
+    }
+}

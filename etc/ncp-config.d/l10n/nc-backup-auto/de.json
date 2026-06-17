@@ -1,12 +1,12 @@
 {
     "translations":{
-    "ACTIVE":"Aktiviert",
-        "DESTDIR":"Ziel-Verzeichnis",
-        "INCLUDEDATA":"Daten mit sichern",
-        "COMPRESS":"Komprimieren",
-        "BACKUPDAYS":"Sicherungs-Periode (in Tage)",
-        "BACKUPLIMIT":"Sicherungs-Limit",
-        "nc-backup-auto":"Automatische Sicherung"
-        
+        "ACTIVE": "Aktiviert",
+        "DESTDIR": "Ziel-Verzeichnis",
+        "INCLUDEDATA": "Daten auch sichern",
+        "COMPRESS": "Sicherung komprimieren",
+        "BACKUPDAYS": "Sicherungsintervall (Tage)",
+        "BACKUPLIMIT": "Maximale Anzahl an Sicherungen",
+        "Set periodic backups": "Automatische Backups einrichten",
+        "nc-backup-auto": "Automatische Sicherung"
     }
 }

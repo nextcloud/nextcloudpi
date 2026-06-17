@@ -1,3 +1,6 @@
-{"translations": {
-    "nc-scan": "Datei-Scan"
-}}
+{
+    "translations": {
+        "Scan NC for externally modified files": "Nextcloud nach Dateien durchsuchen, die durch externe Zugriffe verändert wurden",
+        "nc-scan": "Datei-Scan"
+    }
+}

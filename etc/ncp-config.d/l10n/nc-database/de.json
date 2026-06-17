@@ -1,3 +1,8 @@
-{"translations": {
-    "nc-database": "Datenbank"
-}}
+{
+    "translations": {
+        "DBDIR": "Datenbankverzeichnis",
+        "This utility allows you to move your database to a new location, like an external USB drive.": "Mit diesem Tool kann die Datenbank verschoben werden, z.B. auf ein externes USB-Laufwerk.",
+        "Note that non Unix filesystems such as NTFS are not supported\nbecause they do not provide a compatible user/permissions system.\n\nYou need to use a USB drive that is permanently on and is responsive \nor the database will fail.\n\nPlease note that the default location, when first installed is /var/lib/mysql/. \nMove it to the desired location by editing the DBDIR= field, the one shown is an example.\n\n** If it ever fails with a white page, move the database back to the SD **": "Nicht-Unix-Dateisysteme wie NTFS werden nicht unterstützt werden,\nda sie keine kompatible Rechteverwaltung haben.\n\nDas USB-Laufwerk muss dauerhaft eingeschaltet sein und zügig reagieren,\nsonst funktioniert die Datenbank nicht korrekt.\n\nDer Standard-Speicherort nach der Ersteinrichtung ist /var/lib/mysql/. \nDie Datenbank kann an den gewünschten Speicherort verschoben werden, indem das Feld „Datenbankverzeichnis“ angepasst wird; der zuerst angezeigte Pfad dient nur als Beispiel.\n\n** Sollte es jemals zu einem Fehler kommen (leere Seite), bitte die Datenbank zurück auf die SD-Karte verschieben! **",
+        "nc-database": "Datenbank verschieben"
+    }
+}

@@ -1,0 +1,8 @@
+{
+    "translations":{
+        "ACTIVE": "Aktiviert",
+        "Automatically apply Nextcloud updates": "Nextcloud-Updates automatisch installieren",
+        "CHECK_INCOMPATIBLE_APPS": "Auf inkompatible Apps prüfen",
+        "nc-autoupdate-nc": "Autom. Nextcloud-Updates"
+    }
+}

@@ -1,4 +1,9 @@
-{"translations": {
-    "nc-automount": "Automatische Datenträgereinbindung",
-    "ACTIVE":"Aktiviert"
-}}
+{
+    "translations": {
+        "ACTIVE": "Aktiviert",
+        "Automount USB drives by plugging them in": "Eingesteckte USB-Laufwerke automatisch einbinden",
+        "Plugged in USB drives will be automounted under /media\non boot or at the moment of insertion.\n\nFormat your drive as ext4 in order to move NC datafolder or database\nVFAT or NTFS is not recommended for this task, as it does not suport permissions\n\nIMPORTANT: halt or umount the drive before extracting":
+            "Angeschlossene USB-Laufwerke werden beim Booten oder nach dem Einstecken\nautomatisch unter /media eingebunden (mounting).\n\nDas Laufwerk bitte als ext4 formatieren, um den Nextcloud Data-Ordner oder die Datenbank darauf zu verschieben.\nVFAT oder NTFS werden nicht empfohlen, da diese Dateisysteme keine Verwaltung von Zugriffsrechten unterstützen.\n\nWICHTIG: Das Laufwerk ausschalten oder per umount aushängen, bevor es vom Raspberry Pi abgezogen wird!",
+        "nc-automount": "Autom. Laufwerkseinbindung"
+    }
+}

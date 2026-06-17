@@ -1,0 +1,7 @@
+{
+    "translations":{
+        "ACTIVE": "Aktiviert",
+        "Set pretty URLs (no index.php in URL)": "Hübsche URLs aktivieren (keine index.php in der URL)",
+        "nc-prettyURL":"Hübsche URLs"
+    }
+}

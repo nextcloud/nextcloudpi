@@ -1,0 +1,12 @@
+{
+    "translations":{
+        "ACTIVE": "Aktiviert",
+        "BANTIME": "Bann-Zeit",
+        "FINDTIME": "Scan-Zeit",
+        "MAXRETRY": "Maximale Anzahl der Zugriffsversuche",
+        "EMAIL": "E-Mail Adresse",
+        "MAILALERTS": "Per E-Mail über Alarme informieren",
+        "Brute force protection for SSH and NextCloud": "Brute-Force-Schutz für SSH und NextCloud",
+        "fail2ban": "fail2ban"
+    }
+}

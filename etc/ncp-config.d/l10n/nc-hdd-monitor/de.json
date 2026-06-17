@@ -1,0 +1,8 @@
+{
+    "translations": {
+        "ACTIVE": "Aktiviert",
+        "Monitor HDD health automatically": "Den Zustand der HDD automatisch überwachen",
+        "EMAIL": "E-mail",
+        "nc-hdd-monitor": "HDD-Überwachung"
+    }
+}

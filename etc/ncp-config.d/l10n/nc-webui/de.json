@@ -1,7 +1,7 @@
 {
     "translations":{
-      "ACTIVE":"Aktiviert",
-      "Enable or disable the NCP web interface":"Aktivieren oder deaktivieren von der NCP-Weboberfläche",
-      "nc-webui":"NCP-Weboberfläche"
+        "ACTIVE": "Aktiviert",
+        "Enable or disable the NCP web interface": "NCP-Weboberfläche aktivieren oder deaktivieren",
+        "nc-webui": "NCP-Weboberfläche"
     }
-  }
+}
