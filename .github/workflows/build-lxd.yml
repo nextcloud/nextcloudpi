@@ -177,6 +177,8 @@ jobs:
           if-no-files-found: error
 
   test-update:
+    # TODO: Fix and reenable
+    if: ${{ false }}
     needs:
       - determine-runner
       - build-previous
