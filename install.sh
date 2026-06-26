@@ -80,9 +80,8 @@ rm /usr/local/etc/ncp-config.d/nc-nextcloud.cfg    # armbian overlay is ro
 systemctl restart mysqld # TODO this shouldn't be necessary, but somehow it's needed in Debian 9.6. Fixme
 install_app    ncp.sh
 run_app_unsafe bin/ncp/CONFIG/nc-init.sh
-# notify_push was skipped during nc-init because /.ncp-image was set
-# start it now explicitly
-[[ -f /.docker-image ]] || start_notify_push
+# Start notify_push explicitly if not inside an image build
+[[ "${CODE_DIR}" != "" ]] || start_notify_push
 
 echo 'Moving data directory to a more sensible location'
 df -h
