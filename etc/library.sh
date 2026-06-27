@@ -143,27 +143,34 @@ function configure_app()
 function set-nc-domain()
 {
   local domain="${1?}"
-  domain="$(sed 's|http.\?://||;s|\(/.*\)||' <<<"${domain}")"
-  if ! ping -c1 -w1 -q "${domain}" &>/dev/null; then
+  local proto="${domain%://*}"
+  domain="${domain#*://}" #strip protocol
+  local host="${domain%%/*}" # strip path
+  local port="${domain#*:}"
+  [[ "$port" =~ [0-9]+ ]] || port=''
+  host="${host%:*}" # strip port
+  if ! ping -c1 -w1 -q "${host}" &>/dev/null; then
     unset domain
+    unset host
+    unset proto
+    unset port
   fi
   if [[ "${domain}" == "" ]] || is_an_ip "${domain}"; then
     echo "warning: No domain found. Defaulting to '$(hostname)'"
     echo "overwrite.cli.url was: $(ncc config:system:get overwrite.cli.url)"
     domain="$(hostname)"
   fi
-  local proto
-  proto="$(ncc config:system:get overwriteprotocol)" || true
-  [[ "${proto}" == "" ]] && proto="https"
-  local url="${proto}://${domain%*/}"
+  [[ -n "$proto" ]] || proto="$(ncc config:system:get overwriteprotocol)" || true
+  [[ -z "$port" ]] || port=":$port"
+  local url="${proto:-https}://${host%/*}${port:-}"
   [[ "$2" == "--no-trusted-domain" ]] || ncc config:system:set trusted_domains 3 --value="${domain%*/}"
   ncc config:system:set overwrite.cli.url --value="${url}/"
   if is_ncp_activated && is_app_enabled notify_push; then
     ncc config:system:set trusted_proxies 11 --value="127.0.0.1"
     ncc config:system:set trusted_proxies 12 --value="::1"
 #    ncc config:system:set trusted_proxies 13 --value="${domain}"
-    local domain_ip="$(dig +short "${domain}")"
-    [[ -z "$domain_ip" ]] || ncc config:system:set trusted_proxies 14 --value="$(dig +short "${domain}")"
+    local domain_ip="$(dig +short "${host}")"
+    [[ -z "$domain_ip" ]] || ncc config:system:set trusted_proxies 14 --value="$(dig +short "${host}")"
     sleep 5 # this seems to be required in the VM for some reason. We get `http2 error: protocol error` after ncp-upgrade-nc
     for try in {1..5}
     do
