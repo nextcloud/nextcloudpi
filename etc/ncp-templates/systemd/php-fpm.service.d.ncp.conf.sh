@@ -35,5 +35,6 @@ else
 [Service]
 ReadWritePaths=/usr/local/etc/ncp-config.d
 ReadWritePaths=/var/www/ncp-web
+ProtectSystem=yes
 EOF
 fi
