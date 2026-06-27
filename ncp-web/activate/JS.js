@@ -58,6 +58,8 @@ function seturl_ok_cb( result )
                                                    + '"USER"    : "ncp" }',
                                                csrf_token: $( '#csrf-token' ).get( '.value' ) }
     ).then( nc_admin_ok_cb ).error( errorMsg );
+  } else {
+    $('#error-box').fill( ret.output ? ret.output : "Error setting url. Please reload and try again." );
   }
 }
 
