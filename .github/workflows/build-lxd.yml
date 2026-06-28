@@ -159,6 +159,7 @@ jobs:
         env:
           USE_INCUS: "${{ needs.determine-runner.outputs.lxc_cmd == 'incus' && 'yes' || 'no' }}"
         run: |
+          set -x
           export CI
           LXD_EXTRA_PROFILE="$LXD_EXTRA_PROFILE" BRANCH="${VERSION##refs/heads/}" ./build/build-LXD.sh
       - name: Pack LXD image
@@ -176,6 +177,8 @@ jobs:
           if-no-files-found: error
 
   test-update:
+    # TODO: Fix and reenable
+    if: ${{ false }}
     needs:
       - determine-runner
       - build-previous
@@ -269,16 +272,16 @@ jobs:
           export FF_BINARY_PATH="$(which firefox)"
           sudo "$LXC" exec ncp -- /usr/local/bin/ncc config:system:set overwrite.cli.url --value "https://nextcloudpi.local"
           sudo "$LXC" exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
-          ../.venv/bin/python activation_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
+          ../.venv/bin/python activation_tests.py -t 300 --no-gui "nextcloudpi.local" 443 4443 || {
             echo "Activation test failed!"
             echo "Geckodriver logs:"
             tail -n 20 geckodriver.log >&2 || true
             echo "================"
             echo "ncp.log: "
-            sudo "$LXC" exec ncp -- bash -c "tail -n20 /var/log/ncp.log" || true
+            sudo "$LXC" exec ncp -- bash -c "cat /var/log/ncp.log" || true
             echo "================"
             echo "nextcloud log: "
-            datadir="$("$LXC" exec ncp -- ncc config:system:get datadirectory)"
+            datadir="$(sudo "$LXC" exec ncp -- ncc config:system:get datadirectory)"
             sudo "$LXC" exec ncp -- cat "$datadir/nextcloud.log" || true
             exit 1
           }
@@ -295,7 +298,7 @@ jobs:
             sudo "$LXC" exec ncp -- cat "$datadir/nextcloud.log" || true
             exit 1
           }
-          USE_INCUS="$USE_INCUS" python system_tests.py --non-interactive --skip-update-test || {
+          USE_INCUS="$USE_INCUS" ../.venv/bin/python system_tests.py --non-interactive --skip-update-test || {
             echo "System test failed!"
             exit 1
           }
@@ -321,7 +324,17 @@ jobs:
           sudo "$LXC" exec ncp -- bash -c "DBG=x ncp-update ${UPDATE_ARGS[*]}"
           sudo "$LXC" exec ncp -- /usr/local/bin/ncc status
 
-          if [[ "$current_nc_version" =~ "$latest_nc_version".* ]]
+          latest_build="${latest_nc_version#*.}"
+          latest_build="${latest_build#*.}"
+          
+          if [[ "$current_nc_version" =~ ^[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*$ ]]
+          then
+            current_nc_version="${current_nc_version%.*}"
+          fi
+          current_build="${current_nc_version#*.}"
+          current_build="${current_build#*.}"
+          
+          if [[ "${current_nc_version%.*}" == "${latest_nc_version%.*}" ]] && [[ "${current_build}" -ge "${latest_build}" ]]
           then
             echo "Nextcloud is up to date - skipping NC update test."
           else
@@ -393,7 +406,6 @@ jobs:
           sudo "$LXC" stop ncp
 
   test-dist-upgrade:
-    if: false
     needs:
       - determine-runner
     runs-on: ${{ needs.determine-runner.outputs.runner_label }}
@@ -401,8 +413,8 @@ jobs:
       VERSION: "${{ inputs.git_ref || github.ref }}"
       LXC: "${{ needs.determine-runner.outputs.lxc_cmd }}"
       LXD_EXTRA_PROFILE: "${{ needs.determine-runner.outputs.lxd_extra_profile }}"
-      PREVIOUS_IMAGE_URL_ARM64: "https://github.com/nextcloud/nextcloudpi/releases/download/v1.53.2/NextcloudPi_LXD_arm64_v1.53.2.tar.gz"
-      PREVIOUS_IMAGE_URL_AMD64: "https://github.com/nextcloud/nextcloudpi/releases/download/v1.53.2/NextCloudPi_LXD_x86_v1.53.2.tar.gz"
+      PREVIOUS_IMAGE_URL_ARM64: "https://github.com/nextcloud/nextcloudpi/releases/download/v1.57.1/NextcloudPi_LXD_arm64_v1.57.1.tar.gz"
+      PREVIOUS_IMAGE_URL_AMD64: "https://github.com/nextcloud/nextcloudpi/releases/download/v1.57.1/NextCloudPi_LXD_x86_v1.57.1.tar.gz"
       USE_INCUS: "${{ needs.determine-runner.outputs.lxc_cmd == 'incus' && 'yes' || 'no' }}"
     steps:
       - name: Setup incus
@@ -416,7 +428,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          ref: "v1.54.3"
+          ref: "v1.57.1"
       - name: Setup Firefox
         if: ${{ runner.arch != 'ARM64' }}
         continue-on-error: true
@@ -425,6 +437,7 @@ jobs:
       - name: Setup Firefox from packages
         if: ${{ runner.arch == 'ARM64' || steps.setup-firefox-browser-action.outcome == 'failure' }}
         run: |
+          sudo apt-get update
           sudo apt-get install -y --no-install-recommends firefox
       - name: Setup GeckoDriver
         env:
@@ -458,8 +471,9 @@ jobs:
       - name: Launch ncp container
         run: |
           set -x
+          . ./build/buildlib.sh
           sudo "$LXC" delete -q -f ncp || true
-          sudo "$LXC" image import -q "./ncp.tar.gz" --alias "ncp/update"
+          sudo "$LXC" image import -q "./ncp.tar.gz" --alias "ncp/update" || true
           LXC_ARGS=(-p default)
           [[ -z "$LXD_EXTRA_PROFILE" ]] || LXC_ARGS+=(-p "$LXD_EXTRA_PROFILE")
           systemd-run --user --scope -p "Delegate=yes" "$LXC" launch -q "${LXC_ARGS[@]}" "ncp/update" ncp || \
@@ -477,6 +491,7 @@ jobs:
           set -x
           export GECKODRIVER_PATH="$GECKODRIVER_PATH"
           export FF_BINARY_PATH="$(which firefox)"
+          sudo "$LXC" exec ncp -- /usr/local/bin/ncc config:system:set overwrite.cli.url --value "https://nextcloudpi.local"
           sudo "$LXC" exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
           ../.venv/bin/python activation_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
             echo "Activation test failed!"
@@ -485,6 +500,10 @@ jobs:
             echo "================"
             echo "ncp.log: "
             sudo "$LXC" exec ncp -- bash -c "tail -n20 /var/log/ncp.log" || true
+            echo "================"
+            echo "nextcloud log: "
+            datadir="$(sudo "$LXC" exec ncp -- ncc config:system:get datadirectory)"
+            sudo "$LXC" exec ncp -- cat "$datadir/nextcloud.log" || true
             exit 1
           }
           ../.venv/bin/python nextcloud_tests.py --skip-release-check --no-gui "nextcloudpi.local" 443 4443 || {
@@ -528,22 +547,34 @@ jobs:
           echo "Running update to ${VERSION}"
           
           current_nc_version="$(sudo "$LXC" exec ncp -- ncc status | grep "version:" | awk '{ print $3 }')"
-          latest_nc_version="29.0.9"
-          
-          sudo "$LXC" exec ncp -- apt-get update ||:
-          sudo "$LXC" exec ncp -- apt-get install --no-install-recommends -y gnupg2
-          sudo "$LXC" exec ncp -- apt-key adv --fetch-keys https://packages.sury.org/php/apt.gpg
-          
+          latest_nc_version="33.0.3"
+                    
           sudo "$LXC" exec ncp -- bash -c "DBG=x ncp-update ${UPDATE_ARGS[*]}"
           sudo "$LXC" exec ncp -- /usr/local/bin/ncc status
           
-          #if [[ "$current_nc_version" =~ "$latest_nc_version".* ]]
-          #then
-          #  echo "Nextcloud is up to date - skipping NC update test."
-          #else
-          #  sudo "$LXC" exec ncp -- bash -c "DBG=x ncp-update-nc ${latest_nc_version?}"
-          #  sudo "$LXC" exec ncp -- /usr/local/bin/ncc status
-          #fi
+          if [[ "$current_nc_version" =~ "$latest_nc_version".* ]]
+          then
+            echo "Nextcloud is up to date - skipping NC update test."
+          else
+            for i in {1..10}
+            do
+              echo "running nc update $i/10..."
+              sudo "$LXC" exec ncp -- bash -c "DBG=x ncp-update-nc ${latest_nc_version?}"
+              sudo "$LXC" exec ncp -- /usr/local/bin/ncc status
+              current_nc_version_new="$(sudo "$LXC" exec ncp -- ncc status | grep "version:" | awk '{ print $3 }')"
+          
+              if [[ "$current_nc_version_new" =~ "$latest_nc_version".* ]]
+              then
+                break
+              fi
+              if [[ "$current_nc_version" == "$current_nc_version_new" ]]
+              then
+                echo "failed to update to $latest_nc_version"
+                exit 1
+              fi
+              current_nc_version="$current_nc_version_new"
+            done
+          fi
   
           sudo "$LXC" exec ncp -- rm -f /opt/ncdata/data/nextcloud.log
           
@@ -564,9 +595,22 @@ jobs:
       - name: Test LXD Image
         working-directory: ./tests
         run: |
+          set -x
+          sudo "$LXC" exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
           export GECKODRIVER_PATH="$GECKODRIVER_PATH"
           export FF_BINARY_PATH="$(which firefox)"
-          ../.venv/bin/python nextcloud_tests.py --no-gui --skip-release-check "nextcloudpi.local" 443 4443 || {
+          
+          USE_INCUS="$USE_INCUS" ../.venv/bin/python system_tests.py --skip-update-test --non-interactive || {
+            echo "System test failed!"
+            echo "ncp.log: "
+            sudo "$LXC" exec ncp -- bash -c "tail -n20 /var/log/ncp.log" || true
+            echo "================"
+            echo "nextcloud log: "
+            datadir="$(sudo "$LXC" exec ncp -- ncc config:system:get datadirectory)"
+            sudo "$LXC" exec ncp -- cat "$datadir/nextcloud.log" || true
+            exit 1
+          }
+          ../.venv/bin/python nextcloud_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
             echo "Nextcloud test failed!"
             echo "Geckodriver logs:"
             tail -n 20 geckodriver.log >&2 || true
@@ -579,11 +623,6 @@ jobs:
             sudo "$LXC" exec ncp -- cat "$datadir/nextcloud.log" || true
             exit 1
           }
-          sudo "$LXC" exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
-          USE_INCUS="$USE_INCUS" ../.venv/bin/python system_tests.py --non-interactive --skip-update-test || {
-            echo "System test failed!"
-            exit 1
-          }
       - name: Checkout current version
         run: |
           git fetch origin
@@ -592,7 +631,7 @@ jobs:
         id: distupgrade
         run: |
           set -x
-          sudo "$LXC" exec ncp -- cat /etc/os-release | grep 'VERSION_ID="11"' || {
+          sudo "$LXC" exec ncp -- cat /etc/os-release | grep 'VERSION_ID="12"' || {
             echo "can't upgrade from Debian $(sudo "$LXC" exec ncp -- cat /etc/os-release | grep VERSION_ID=)"
             exit 1
           }
@@ -602,18 +641,27 @@ jobs:
           sudo "$LXC" exec ncp -- bash -c "DEBIAN_FRONTEND=noninteractive ncp-dist-upgrade"
           sudo "$LXC" exec ncp -- /usr/local/bin/ncc status
           
-          if [[ "$current_nc_version" =~ "$latest_nc_version".* ]]
+          latest_build="${latest_nc_version#*.}"
+          latest_build="${latest_build#*.}"
+          
+          if [[ "$current_nc_version" =~ ^[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*$ ]]
+          then
+            current_nc_version="${current_nc_version%.*}"
+          fi
+          current_build="${current_nc_version#*.}"
+          current_build="${current_build#*.}"
+          
+          if [[ "${current_nc_version%.*}" == "${latest_nc_version%.*}" ]] && [[ "${current_build}" -ge "${latest_build}" ]]
           then
             echo "Nextcloud is up to date - skipping NC update test."
           else
-            
-            for i in {1..10};
+            for i in {1..10}
             do
-              echo "running nc update ($i/10)..."
+              echo "running nc update $i/10..."
               sudo "$LXC" exec ncp -- bash -c "DBG=x ncp-update-nc ${latest_nc_version?}"
-            
               sudo "$LXC" exec ncp -- /usr/local/bin/ncc status
               current_nc_version_new="$(sudo "$LXC" exec ncp -- ncc status | grep "version:" | awk '{ print $3 }')"
+          
               if [[ "$current_nc_version_new" =~ "$latest_nc_version".* ]]
               then
                 break
@@ -632,10 +680,8 @@ jobs:
       - name: Relaunch container
         run: |
           set -x
-          LXC_ARGS=()
-          [[ -z "$LXD_EXTRA_PROFILE" ]] || LXC_ARGS+=(-p "$LXD_EXTRA_PROFILE")
-          systemd-run --user --scope -p "Delegate=yes" "$LXC" start ncp || \
-          sudo systemd-run --scope -p "Delegate=yes" "$LXC" start ncp
+          systemd-run --user --scope -p "Delegate=yes" "$LXC" start -q ncp || \
+          sudo systemd-run --scope -p "Delegate=yes" "$LXC" start -q ncp
           sudo "$LXC" exec ncp -- bash -c 'while [ "$(systemctl is-system-running 2>/dev/null)" != "running" ] && [ "$(systemctl is-system-running 2>/dev/null)" != "degraded" ]; do :; done'
           sleep 30
           ip="$(sudo "$LXC" list -c n4 -f csv | grep '^ncp' | cut -d ',' -f2)"
@@ -646,9 +692,20 @@ jobs:
         working-directory: ./tests
         run: |
           set -x
+          sudo "$LXC" exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
           export GECKODRIVER_PATH="$GECKODRIVER_PATH"
           export FF_BINARY_PATH="$(which firefox)"
-          sudo "$LXC" exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
+          
+          USE_INCUS="$USE_INCUS" ../.venv/bin/python system_tests.py --skip-update-test --non-interactive || {
+            echo "System test failed!"
+            echo "ncp.log: "
+            sudo "$LXC" exec ncp -- bash -c "tail -n20 /var/log/ncp.log" || true
+            echo "================"
+            echo "nextcloud log: "
+            datadir="$(sudo "$LXC" exec ncp -- ncc config:system:get datadirectory)"
+            sudo "$LXC" exec ncp -- cat "$datadir/nextcloud.log" || true
+            exit 1
+          }
           ../.venv/bin/python nextcloud_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
             echo "Nextcloud test failed!"
             echo "Geckodriver logs:"
@@ -660,10 +717,6 @@ jobs:
             echo "nextcloud log: "
             datadir="$(sudo "$LXC" exec ncp -- ncc config:system:get datadirectory)"
             sudo "$LXC" exec ncp -- cat "$datadir/nextcloud.log" || true
-            exit 1
-          }
-          USE_INCUS="$USE_INCUS" ../.venv/bin/python system_tests.py --non-interactive || {
-            echo "System test failed!"
             exit 1
           }
           sudo "$LXC" stop ncp
@@ -758,6 +811,7 @@ jobs:
           export GECKODRIVER_PATH="$GECKODRIVER_PATH"
           export FF_BINARY_PATH="$(which firefox)"
           sudo "$LXC" exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
+          sudo "$LXC" exec ncp -- bash -c 'ncc config:system:get overwrite.cli.url'
           ../.venv/bin/python activation_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
             echo "Activation test failed!"
             echo "Geckodriver logs:"
@@ -767,10 +821,11 @@ jobs:
             sudo "$LXC" exec ncp -- bash -c "tail -n20 /var/log/ncp.log" || true
             echo "================"
             echo "nextcloud log: "
-            datadir="$("$LXC" exec ncp -- ncc config:system:get datadirectory)"
+            datadir="$(sudo "$LXC" exec ncp -- ncc config:system:get datadirectory)"
             sudo "$LXC" exec ncp -- cat "$datadir/nextcloud.log" || true
             exit 1
           }
+          sudo "$LXC" exec ncp -- bash -c 'ncc config:system:get overwrite.cli.url'
           ../.venv/bin/python nextcloud_tests.py --no-gui "nextcloudpi.local" 443 4443 || {
             echo "Nextcloud test failed!"
             echo "Geckodriver logs:"

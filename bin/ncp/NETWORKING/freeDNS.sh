@@ -6,11 +6,11 @@
 # GPL licensed (see end of file) * Use at your own risk!
 #
 
-
-install()
-{
-  apt-get update
-  apt-get install --no-install-recommends -y dnsutils
+install() {
+  wait_for_dpkg \
+  && apt-get update \
+  && wait_for_dpkg \
+  && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y dnsutils
 }
 
 configure() 

@@ -17,7 +17,12 @@ install() {
   else
     echo 'PermitRootLogin prohibit-password' >> /etc/ssh/sshd_config
   fi
-  systemctl reload ssh
+  # On Debian 13+ SSH is socket-activated, reload via socket
+  if systemctl is-active ssh.socket &>/dev/null; then
+    systemctl restart ssh
+  else
+    systemctl reload ssh
+  fi
  }
 
 is_active()

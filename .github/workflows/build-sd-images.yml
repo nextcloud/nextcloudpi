@@ -178,12 +178,12 @@ jobs:
           echo 'Mutex posixsem' | sudo tee -a raspbian_root/etc/apache2/mods-available/ssl.conf
           echo 'ignore-warnings ARM64-COW-BUG' | sudo tee -a raspbian_root/etc/redis/redis.conf
           sudo mkdir -p raspbian_root/etc/systemd/system/redis-server.service.d
-          echo '[Service]' | sudo tee raspbian_root/etc/systemd/system/redis-server.service.d/ncp.conf
-          echo 'PrivateUsers=false' | sudo tee -a raspbian_root/etc/systemd/system/redis-server.service.d/ncp.conf
+          echo '[Service]' | sudo tee raspbian_root/etc/systemd/system/redis-server.service.d/ncp-ci.conf
+          echo 'PrivateUsers=false' | sudo tee -a raspbian_root/etc/systemd/system/redis-server.service.d/ncp-ci.conf
           
           sudo mkdir -p raspbian_root/etc/systemd/system/php8.3-fpm.service.d
-          echo '[Service]' | sudo tee raspbian_root/etc/systemd/system/php8.3-fpm.service.d/ncp.conf
-          echo 'ExecStartPre=mkdir -p /var/run/php' | sudo tee -a raspbian_root/etc/systemd/system/php8.3-fpm.service.d/ncp.conf
+          echo '[Service]' | sudo tee raspbian_root/etc/systemd/system/php8.3-fpm.service.d/ncp-ci.conf
+          echo 'ExecStartPre=mkdir -p /var/run/php' | sudo tee -a raspbian_root/etc/systemd/system/php8.3-fpm.service.d/ncp-ci.conf
       - name: Test image
         id: test
         run: |
@@ -194,7 +194,6 @@ jobs:
             echo -e "${LOG_DIAG} $msg" >&2
             return $rc
           }
-          
           sudo systemd-nspawn --boot -D ./raspbian_root/ -M ncp --hostname=nextcloudpi |& awk "{ print \"${LOG_GUEST} \" \$0 }" &
           sleep 60
           
@@ -214,6 +213,9 @@ jobs:
           
           [[ "$success" == "true" ]] || {
             echo -e "${LOG_CICD} Could not reach container. Aborting..."
+            "${CONTAINER_CMD[@]}" systemctl status --no-pager redis-server || :;
+            "${CONTAINER_CMD[@]}" systemctl status --no-pager mariadb || :;
+            "${CONTAINER_CMD[@]}" systemctl status --no-pager php8.3-fpm || :;
             exit 1
           }
 
@@ -421,8 +423,8 @@ jobs:
 #          echo 'Mutex posixsem' | sudo tee -a raspbian_root/etc/apache2/mods-available/ssl.conf
 #          echo 'ignore-warnings ARM64-COW-BUG' | sudo tee -a raspbian_root/etc/redis/redis.conf
 #          sudo mkdir -p raspbian_root/etc/systemd/system/redis-server.service.d
-#          echo '[Service]' | sudo tee raspbian_root/etc/systemd/system/redis-server.service.d/ncp.conf
-#          echo 'PrivateUsers=false' | sudo tee -a raspbian_root/etc/systemd/system/redis-server.service.d/ncp.conf
+#          echo '[Service]' | sudo tee raspbian_root/etc/systemd/system/redis-server.service.d/ncp-ci.conf
+#          echo 'PrivateUsers=false' | sudo tee -a raspbian_root/etc/systemd/system/redis-server.service.d/ncp-ci.conf
 #      - name: Test and activate image
 #        if:  ${{ steps.download-previous-image.outputs.skipped == 'false' }}
 #        id: test

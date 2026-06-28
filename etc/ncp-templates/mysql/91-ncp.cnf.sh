@@ -14,9 +14,6 @@ fi
 cat <<EOF
 [mysqld]
 transaction_isolation = READ-COMMITTED
-innodb_large_prefix=true
-innodb_file_per_table=1
-innodb_file_format=barracuda
 max_allowed_packet=256M
 
 [mysqldump]
@@ -26,7 +23,6 @@ max_allowed_packet = 256M
 # innodb settings
 skip-name-resolve
 innodb_buffer_pool_size = ${INNODB_BUFFER_POOL_SIZE}
-innodb_buffer_pool_instances = 1
 innodb_flush_log_at_trx_commit = 2
 innodb_log_buffer_size = 32M
 innodb_max_dirty_pages_pct = 90

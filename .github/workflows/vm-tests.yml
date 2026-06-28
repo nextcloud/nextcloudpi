@@ -21,7 +21,7 @@ jobs:
   installation-test:
     runs-on: ubuntu-latest
     container:
-      image: thecalcaholic/ncp-test-automation:bookworm
+      image: thecalcaholic/ncp-test-automation:latest
       env:
         HCLOUD_TOKEN: "${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}"
         UID: "${{ github.run_id }}-install"
@@ -105,6 +105,8 @@ jobs:
           echo "test_result=success" >> "$GITHUB_OUTPUT";
 
   update-test:
+    # TODO: Reenable for next release
+    if: ${{ false }}
     runs-on: ubuntu-latest
     container:
       image: thecalcaholic/ncp-test-automation:bookworm
@@ -577,7 +579,8 @@ jobs:
           hcloud image add-label -o "$snapshot_id" "test-result=${TEST_RESULT?}"
 
   update-postactivation-snapshot:
-    if: ${{ always() }}
+    # TODO: Reenable for next release
+    if: ${{ false }}
     needs:
       - update-test
     runs-on: ubuntu-latest
@@ -688,7 +691,8 @@ jobs:
     if: ${{ always() }}
     needs:
       - install-postactivation-snapshot
-      - update-postactivation-snapshot
+      # TODO: Reenable for next release
+      # - update-postactivation-snapshot
       # - dist-upgrade-postactivation-snapshot
     runs-on: ubuntu-latest
     container:

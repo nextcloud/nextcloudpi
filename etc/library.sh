@@ -14,7 +14,8 @@ export NCDIR=/var/www/nextcloud
 export ncc=/usr/local/bin/ncc
 export NCPCFG=${NCPCFG:-etc/ncp.cfg}
 export ARCH="$(dpkg --print-architecture)"
-export DB_PREFIX="$(php -r 'include("/var/www/nextcloud/config/config.php"); echo $CONFIG['"'dbtableprefix'"'];' || echo 'oc_')"
+# 2>/dev/null suppresses stderr-Output if PHP is not yet installed (new system)
+export DB_PREFIX="$(php -r 'include("/var/www/nextcloud/config/config.php"); echo $CONFIG['"'dbtableprefix'"'];' 2>/dev/null || echo 'oc_')"
 [[ "${ARCH}" =~ ^(armhf|arm)$ ]] && ARCH="armv7"
 [[ "${ARCH}" == "arm64" ]] && ARCH=aarch64
 [[ "${ARCH}" == "amd64" ]] && ARCH=x86_64
@@ -55,8 +56,10 @@ command -v jq &>/dev/null || {
 NCLATESTVER=$(jq -r .nextcloud_version < "$NCPCFG")
 PHPVER=$(     jq -r .php_version       < "$NCPCFG")
 RELEASE=$(    jq -r .release           < "$NCPCFG")
-# the default repo in bullseye is bullseye-security
-grep -Eh '^deb ' /etc/apt/sources.list | grep "${RELEASE}-security" > /dev/null && RELEASE="${RELEASE}-security"
+# check also /etc/apt/sources.list.d/ in Trixie
+grep -Eh '^deb ' /etc/apt/sources.list 2>/dev/null | grep "${RELEASE}-security" > /dev/null \
+  || grep -Eh '^deb ' /etc/apt/sources.list.d/*.list 2>/dev/null | grep "${RELEASE}-security" > /dev/null \
+  && RELEASE="${RELEASE}-security"
 command -v ncc &>/dev/null && NCVER="$(ncc status 2>/dev/null | grep "version:" | awk '{ print $3 }')"
 
 function configure_app()
@@ -140,27 +143,34 @@ function configure_app()
 function set-nc-domain()
 {
   local domain="${1?}"
-  domain="$(sed 's|http.\?://||;s|\(/.*\)||' <<<"${domain}")"
-  if ! ping -c1 -w1 -q "${domain}" &>/dev/null; then
+  local proto="${domain%://*}"
+  domain="${domain#*://}" #strip protocol
+  local host="${domain%%/*}" # strip path
+  local port="${domain#*:}"
+  [[ "$port" =~ ^[0-9]+$ ]] || port=''
+  host="${host%:*}" # strip port
+  if ! ping -c1 -w1 -q "${host}" &>/dev/null; then
     unset domain
+    unset host
+    unset proto
+    unset port
   fi
   if [[ "${domain}" == "" ]] || is_an_ip "${domain}"; then
     echo "warning: No domain found. Defaulting to '$(hostname)'"
     echo "overwrite.cli.url was: $(ncc config:system:get overwrite.cli.url)"
     domain="$(hostname)"
   fi
-  local proto
-  proto="$(ncc config:system:get overwriteprotocol)" || true
-  [[ "${proto}" == "" ]] && proto="https"
-  local url="${proto}://${domain%*/}"
+  [[ -n "$proto" ]] || proto="$(ncc config:system:get overwriteprotocol)" || true
+  [[ -z "$port" ]] || port=":$port"
+  local url="${proto:-https}://${host%/*}${port:-}"
   [[ "$2" == "--no-trusted-domain" ]] || ncc config:system:set trusted_domains 3 --value="${domain%*/}"
   ncc config:system:set overwrite.cli.url --value="${url}/"
   if is_ncp_activated && is_app_enabled notify_push; then
     ncc config:system:set trusted_proxies 11 --value="127.0.0.1"
     ncc config:system:set trusted_proxies 12 --value="::1"
 #    ncc config:system:set trusted_proxies 13 --value="${domain}"
-    local domain_ip="$(dig +short "${domain}")"
-    [[ -z "$domain_ip" ]] || ncc config:system:set trusted_proxies 14 --value="$(dig +short "${domain}")"
+    local domain_ip="$(dig +short "${host}")"
+    [[ -z "$domain_ip" ]] || ncc config:system:set trusted_proxies 14 --value="$(dig +short "${host}")"
     sleep 5 # this seems to be required in the VM for some reason. We get `http2 error: protocol error` after ncp-upgrade-nc
     for try in {1..5}
     do
@@ -177,6 +187,8 @@ function start_notify_push()
     if [[ -f /.docker-image ]]; then
       NEXTCLOUD_URL=https://localhost sudo -E -u www-data "/var/www/nextcloud/apps/notify_push/bin/${ARCH}/notify_push" --allow-self-signed /var/www/nextcloud/config/config.php &>/dev/null &
     else
+      # load generated systemd-unit
+      systemctl daemon-reload
       systemctl enable --now notify_push
     fi
     sleep 5 # apparently we need to make sure we wait until the database is written or something
@@ -601,8 +613,24 @@ function clear_password_fields()
 
 function apt_install()
 {
+  wait_for_dpkg
   apt-get update --allow-releaseinfo-change
+  wait_for_dpkg
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends -o Dpkg::Options::=--force-confdef -o Dpkg::Options::="--force-confold" "$@"
+}
+
+function wait_for_dpkg() {
+  local tries=0
+  while fuser /var/lib/dpkg/lock-frontend /var/lib/dpkg/lock >/dev/null 2>&1; do
+    echo "dpkg locked, waiting..."
+    fuser -v /var/lib/dpkg/lock-frontend /var/lib/dpkg/lock 2>/dev/null || true
+    sleep 2
+    tries=$((tries + 1))
+    if [[ $tries -ge 150 ]]; then
+      echo "dpkg lock timeout"
+      return 1
+    fi
+  done
 }
 
 function is_docker() {

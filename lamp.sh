@@ -66,6 +66,13 @@ install()
 
     install_template "php/opcache.ini.sh" "/etc/php/${PHPVER}/mods-available/opcache.ini" --defaults
 
+    # systemd drop-in: allow write access to NCP paths blocked by ProtectSystem=full
+    mkdir -p /var/www/ncp-web
+    chown www-data:www-data /var/www/ncp-web
+    install_template "systemd/php-fpm.service.d.ncp.conf.sh" \
+      "/etc/systemd/system/php${PHPVER}-fpm.service.d/ncp.conf"
+    systemctl daemon-reload
+
     a2enmod http2
     a2enconf http2
     a2enmod proxy_fcgi setenvif
@@ -102,7 +109,8 @@ install()
   done
 
   cd /tmp
-  mysql_secure_installation <<EOF
+  SECURE_INSTALL="$(command -v mariadb-secure-installation || command -v mysql_secure_installation)"
+  "$SECURE_INSTALL" <<EOF
 $DBPASSWD
 y
 $DBPASSWD
