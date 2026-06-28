@@ -147,7 +147,7 @@ function set-nc-domain()
   domain="${domain#*://}" #strip protocol
   local host="${domain%%/*}" # strip path
   local port="${domain#*:}"
-  [[ "$port" =~ [0-9]+ ]] || port=''
+  [[ "$port" =~ ^[0-9]+$ ]] || port=''
   host="${host%:*}" # strip port
   if ! ping -c1 -w1 -q "${host}" &>/dev/null; then
     unset domain

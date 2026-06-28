@@ -1,6 +1,7 @@
 #!/bin/bash
 
 source /usr/local/etc/library.sh
+[[ -z "$DBG" ]] || set $DBG
 
 # wait until user decrypts the instance first
 while :; do
