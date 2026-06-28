@@ -194,7 +194,6 @@ jobs:
             echo -e "${LOG_DIAG} $msg" >&2
             return $rc
           }
-          
           sudo systemd-nspawn --boot -D ./raspbian_root/ -M ncp --hostname=nextcloudpi |& awk "{ print \"${LOG_GUEST} \" \$0 }" &
           sleep 60
           
@@ -214,6 +213,9 @@ jobs:
           
           [[ "$success" == "true" ]] || {
             echo -e "${LOG_CICD} Could not reach container. Aborting..."
+            "${CONTAINER_CMD[@]}" systemctl status --no-pager redis-server || :;
+            "${CONTAINER_CMD[@]}" systemctl status --no-pager mariadb || :;
+            "${CONTAINER_CMD[@]}" systemctl status --no-pager php8.3-fpm || :;
             exit 1
           }
 

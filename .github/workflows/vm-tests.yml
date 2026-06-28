@@ -21,7 +21,7 @@ jobs:
   installation-test:
     runs-on: ubuntu-latest
     container:
-      image: thecalcaholic/ncp-test-automation:bookworm
+      image: thecalcaholic/ncp-test-automation:latest
       env:
         HCLOUD_TOKEN: "${{ secrets.TEST_AUTOMATION_HCLOUD_API_TOKEN }}"
         UID: "${{ github.run_id }}-install"
