@@ -52,7 +52,7 @@ binaries_no_docker = [
         'fail2ban-server',
         'udiskie',
         'ufw',
-        'samba',
+        'smbstatus',
         ]
 
 files_must_exist = [
