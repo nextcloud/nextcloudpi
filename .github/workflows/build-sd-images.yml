@@ -194,7 +194,6 @@ jobs:
             echo -e "${LOG_DIAG} $msg" >&2
             return $rc
           }
-          trap '
           sudo systemd-nspawn --boot -D ./raspbian_root/ -M ncp --hostname=nextcloudpi |& awk "{ print \"${LOG_GUEST} \" \$0 }" &
           sleep 60
           
