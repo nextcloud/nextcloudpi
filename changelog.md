@@ -1,5 +1,19 @@
 # NextcloudPi Changelog
 
+## [v1.58.0](https://github.com/nextcloud/nextcloudpi/tree/v1.58.0) (2026-06-29) Support for Debian 13 (dist-upgrade)
+
+### NOTE
+
+This release does not have downloadable images due to unsolved issues with the build system. Please download an earlier version and upgrade from there (run `ncp-update`).
+
+### Changes
+
+- Support updating to Debian 13 (dist-upgrade) (thanks @MagelanM)
+
+### Fixes
+
+- Disable OCSP stapling for self-signed certificates (thanks @MagelanM)
+
 ## [v1.57.1](https://github.com/nextcloud/nextcloudpi/tree/v1.57.1) (2026-04-14) Various fixes
 
 ### Fixes
