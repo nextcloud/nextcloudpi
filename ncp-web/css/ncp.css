@@ -814,7 +814,7 @@ kbd {
  line-height:44px;
  padding:0 10px
 }
-#app-navigation .app-navigation-entry-utils ul,#app-navigation .app-navigation-entry-menu ul {
+#app-navigation .app-navigation-entry-utils ul,#app-navigation .app-navigation-entry-menu ul, #ncp-options li {
  list-style-type:none
 }
 #app-navigation .app-navigation-entry-edit {
