@@ -547,7 +547,7 @@ jobs:
           echo "Running update to ${VERSION}"
           
           current_nc_version="$(sudo "$LXC" exec ncp -- ncc status | grep "version:" | awk '{ print $3 }')"
-          latest_nc_version="33.0.3"
+          latest_nc_version="34.0.2"
                     
           sudo "$LXC" exec ncp -- bash -c "DBG=x ncp-update ${UPDATE_ARGS[*]}"
           sudo "$LXC" exec ncp -- /usr/local/bin/ncc status
