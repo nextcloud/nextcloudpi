@@ -7,9 +7,9 @@ export DEBIAN_FRONTEND=noninteractive
 PHPVER_OLD="$PHPVER"
 PHPVER_NEW="8.5"
 PHP_PACKAGES_OLD=("php${PHPVER_OLD}" \
-  "php${PHPVER_OLD}"-{curl,gd,fpm,cli,opcache,mbstring,xml,zip,fileinfo,ldap,intl,bz2,mysql,bcmath,gmp,redis,common})
+  "php${PHPVER_OLD}"-{curl,gd,fpm,cli,opcache,mbstring,xml,zip,fileinfo,ldap,intl,bz2,mysql,bcmath,gmp,redis,common,apcu})
 PHP_PACKAGES_NEW=("php${PHPVER_NEW}" \
-  "php${PHPVER_NEW}"-{curl,gd,fpm,cli,mbstring,xml,zip,fileinfo,ldap,intl,bz2,mysql,bcmath,gmp,redis,common})
+  "php${PHPVER_NEW}"-{curl,gd,fpm,cli,mbstring,xml,zip,fileinfo,ldap,intl,bz2,mysql,bcmath,gmp,redis,common,apcu})
 
 php_restore() {
   trap "" INT TERM HUP ERR
@@ -24,7 +24,8 @@ php_restore() {
   apt-get remove --purge -y "${PHP_PACKAGES_NEW[@]}"
   apt-get install -y --no-install-recommends -t "$RELEASE" "${PHP_PACKAGES_OLD[@]}"
   set_ncpcfg "php_version" "${PHPVER_OLD}"
-  install_template "php/opcache.ini.sh" "/etc/php/${PHPVER_NEW}/mods-available/opcache.ini"
+  install_template "php/opcache.ini.sh" "/etc/php/${PHPVER_OLD}/mods-available/opcache.ini"
+  phpenmod -v "${PHPVER_OLD}" -s fpm opcache
   run_app nc-limits
   a2enconf "php${PHPVER_OLD}-fpm"
   service "php${PHPVER_OLD}-fpm" start
@@ -54,6 +55,7 @@ apt-get install -y --no-install-recommends -t "$RELEASE" "${PHP_PACKAGES_NEW[@]}
 
 set_ncpcfg "php_version" "${PHPVER_NEW}"
 install_template "php/opcache.ini.sh" "/etc/php/${PHPVER_NEW}/mods-available/opcache.ini"
+phpenmod -v "${PHPVER_NEW}" -s fpm opcache
 ( set -e; export PHPVER="${PHPVER_NEW}"; run_app nc-limits )
 
 a2enconf "php${PHPVER_NEW}-fpm"

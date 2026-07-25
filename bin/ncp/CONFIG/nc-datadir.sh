@@ -142,6 +142,7 @@ configure()
   # opcache dir
   create_opcache_dir
   install_template "php/opcache.ini.sh" "/etc/php/${PHPVER}/mods-available/opcache.ini"
+  systemctl reload "php${PHPVER}-fpm"
 
   # update fail2ban logpath
   [[ -f /etc/fail2ban/jail.local ]] && \

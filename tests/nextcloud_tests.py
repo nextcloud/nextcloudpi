@@ -234,6 +234,8 @@ def test_nextcloud(IP: str, nc_port: str, driver: WebDriver, skip_release_check:
                     expected['ncp_version'] = True
                 elif 'php version' in divs[0].text.lower() and divs[1].text == ncp_cfg['php_version']:
                     expected['php_version'] = True
+                elif 'php version' in divs[0].text.lower() and divs[1].text != ncp_cfg['php_version']:
+                    print(f"{tc.yellow}{divs[1].text} != ${ncp_cfg['php_version']}")
                 elif 'debian release' in divs[0].text.lower():
                     if divs[1].text == ncp_cfg['release'] or skip_release_check:
                         expected['debian_release'] = True

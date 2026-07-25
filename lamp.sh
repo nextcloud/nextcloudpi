@@ -65,6 +65,8 @@ install()
     ##########################################
 
     install_template "php/opcache.ini.sh" "/etc/php/${PHPVER}/mods-available/opcache.ini" --defaults
+    phpenmod -v "${PHPVER}" -s fpm opcache
+    systemctl reload "php${PHPVER}-fpm"
 
     # systemd drop-in: allow write access to NCP paths blocked by ProtectSystem=full
     mkdir -p /var/www/ncp-web
@@ -120,6 +122,11 @@ y
 y
 y
 EOF
+
+  php --version | grep "PHP ${PHPVER}" || {
+    echo "Unexpected default PHP version (expected: ${PHPVER})!"
+    return 1
+  }
 }
 
 configure() { :; }

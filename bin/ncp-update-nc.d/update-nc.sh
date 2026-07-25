@@ -260,7 +260,7 @@ then
 
   # Reload library.sh to reset PHPVER
   source /usr/local/etc/library.sh
-elif ! is_more_recent_than "34.0.0" "${NCVER}" && is_more_recent_than "8.5.0" "${PHPVER}.0" && [[ "$DEBIAN_VERSION" -ge 13 ]]
+elif ! is_more_recent_than "33.0.0" "${NCVER}" && is_more_recent_than "8.5.0" "${PHPVER}.0" && [[ "$DEBIAN_VERSION" -ge 13 ]]
 then
   /usr/local/bin/ncp-update-nc.d/upgrade-php-trixie-8.5.sh
 
