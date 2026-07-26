@@ -324,7 +324,10 @@ def settings_config_check(wait, test):
 
         test.check(True)
     except Exception as e:
-        print(driver.find_element(By.CSS_SELECTOR, "#security-warning").get_attribute("innerHTML"))
+        try:
+            print(driver.find_element(By.CSS_SELECTOR, "#security-warning").get_attribute("innerHTML"))
+        except NoSuchElementException:
+            print(driver.page_source)
         test.check(e)
 
 
