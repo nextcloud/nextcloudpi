@@ -161,6 +161,8 @@ jobs:
       - name: Prepare test
         run: |
           set -x
+          
+          PHPVER="$(jq -r .php_version ./etc/ncp.cfg)"
           mv "output/${ARTIFACT_FILE?}" ncp.img
           sudo apt-get update
           sudo apt-get install -y systemd-container
@@ -181,12 +183,14 @@ jobs:
           echo '[Service]' | sudo tee raspbian_root/etc/systemd/system/redis-server.service.d/ncp-ci.conf
           echo 'PrivateUsers=false' | sudo tee -a raspbian_root/etc/systemd/system/redis-server.service.d/ncp-ci.conf
           
-          sudo mkdir -p raspbian_root/etc/systemd/system/php8.3-fpm.service.d
-          echo '[Service]' | sudo tee raspbian_root/etc/systemd/system/php8.3-fpm.service.d/ncp-ci.conf
-          echo 'ExecStartPre=mkdir -p /var/run/php' | sudo tee -a raspbian_root/etc/systemd/system/php8.3-fpm.service.d/ncp-ci.conf
+          sudo mkdir -p raspbian_root/etc/systemd/system/php${PHPVER}-fpm.service.d
+          echo '[Service]' | sudo tee raspbian_root/etc/systemd/system/php${PHPVER}-fpm.service.d/ncp-ci.conf
+          echo 'ExecStartPre=mkdir -p /var/run/php' | sudo tee -a raspbian_root/etc/systemd/system/php${PHPVER}-fpm.service.d/ncp-ci.conf
       - name: Test image
         id: test
         run: |
+          
+          PHPVER="$(jq -r .php_version ./etc/ncp.cfg)"
           
           log_err() {
             rc="${1?}"
@@ -215,7 +219,7 @@ jobs:
             echo -e "${LOG_CICD} Could not reach container. Aborting..."
             "${CONTAINER_CMD[@]}" systemctl status --no-pager redis-server || :;
             "${CONTAINER_CMD[@]}" systemctl status --no-pager mariadb || :;
-            "${CONTAINER_CMD[@]}" systemctl status --no-pager php8.3-fpm || :;
+            "${CONTAINER_CMD[@]}" systemctl status --no-pager php${PHPVER}-fpm :;
             exit 1
           }
 
