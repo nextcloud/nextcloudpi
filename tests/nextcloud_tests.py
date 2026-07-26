@@ -189,6 +189,10 @@ def test_nextcloud(IP: str, nc_port: str, driver: WebDriver, skip_release_check:
         wait.until(VisibilityOfElementLocatedByAnyLocator([(By.CSS_SELECTOR, "#security-warning.settings-section")]))
         settings_config_check(wait, test)
     except TimeoutException:
+        try:
+            print(driver.find_element(By.CSS_SELECTOR, "#security-warning").get_attribute("innerHTML"))
+        except NoSuchElementException:
+            print(driver.page_source)
         settings_config_check_pre32(wait, test)
 
     close_first_run_wizard(driver, wait_multiplier)

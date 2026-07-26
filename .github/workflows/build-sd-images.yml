@@ -122,7 +122,7 @@ jobs:
 
   test:
     needs: build
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04-arm64
     env:
       VERSION: "${{ inputs.git_ref }}"
       ARTIFACT_ID: ${{ needs.build.outputs.artifact_name }}
@@ -186,6 +186,21 @@ jobs:
           sudo mkdir -p raspbian_root/etc/systemd/system/php${PHPVER}-fpm.service.d
           echo '[Service]' | sudo tee raspbian_root/etc/systemd/system/php${PHPVER}-fpm.service.d/ncp-ci.conf
           echo 'ExecStartPre=mkdir -p /var/run/php' | sudo tee -a raspbian_root/etc/systemd/system/php${PHPVER}-fpm.service.d/ncp-ci.conf
+          
+          # Disable ImportCredential and LoadCredential directives to workaround https://gitlab.com/qemu-project/qemu/-/work_items/1962
+          # see https://github.com/systemd/systemd/issues/31219#issuecomment-2846006948
+          for i in raspbian_root/usr/lib/systemd/system/*.service
+          do
+            [[ -f $i ]] || continue
+          	grep -q '^ImportCredential=' "$i" && {
+          	  sudo mkdir -p "${i/usr\/lib/etc}.d"
+          	  echo -e '[Service]\nImportCredential=' | sudo tee "${i/usr\/lib/etc}.d/unset-ImportCredential.conf"
+            }
+            grep -q '^LoadCredenital=' "$i" && {
+          	  sudo mkdir -p "${i/usr\/lib/etc}.d"
+          	  echo -e '[Service]\nLoadCredential=' | sudo tee "${i/usr\/lib/etc}.d/unset-LoadCredential.conf"
+            }
+          done
       - name: Test image
         id: test
         run: |

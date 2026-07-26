@@ -43,7 +43,7 @@ jobs:
           if [[ "${LXD_ARCH}" == "arm64" ]]
           then
             LXC_CMD="incus"
-            RUNNER_LABEL="ubuntu-20.04-arm64"
+            RUNNER_LABEL="ubuntu-26.04-arm64"
             echo "lxd_extra_profile=network" | tee -a "$GITHUB_OUTPUT"
           else
             LXC_CMD="incus"
@@ -71,10 +71,11 @@ jobs:
         with:
           ref: "${{ env.VERSION }}"
       - name: Setup incus
-        if: ${{ needs.determine-runner.outputs.runner_label != 'ubuntu-20.04-arm64' }}
+        if: ${{ needs.determine-runner.outputs.runner_label != 'ubuntu-26.04-arm64' }}
         run: |
           sudo apt-get update
-          sudo apt-get install -y incus qemu-system incus-tools
+          sudo apt-get install -y incus qemu-system
+          sudo apt-get install -y incus-tools || sudo apt-get install -y incus-extra
           sudo iptables -I DOCKER-USER -i incusbr0 -j ACCEPT
           sudo iptables -I DOCKER-USER -o incusbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
           sudo incus admin init --auto
@@ -147,7 +148,7 @@ jobs:
           echo "VERSION=$version" >> "$GITHUB_ENV"
           echo "previous_version=${version}" >> $GITHUB_OUTPUT
       - name: Setup incus
-        if: ${{ needs.determine-runner.outputs.runner_label != 'ubuntu-20.04-arm64' }}
+        if: ${{ needs.determine-runner.outputs.runner_label != 'ubuntu-26.04-arm64' }}
         run: |
           sudo apt-get update
           sudo apt-get install -y incus qemu-system incus-tools
@@ -199,7 +200,7 @@ jobs:
         with:
           ref: "${{ env.VERSION }}"
       - name: Setup incus
-        if: ${{ needs.determine-runner.outputs.runner_label != 'ubuntu-20.04-arm64' }}
+        if: ${{ needs.determine-runner.outputs.runner_label != 'ubuntu-26.04-arm64' }}
         run: |
           sudo apt-get update
           sudo apt-get install -y incus qemu-system incus-tools
@@ -254,7 +255,7 @@ jobs:
           . ./build/buildlib.sh
           sudo "$LXC" delete -q -f ncp || true
           sudo "$LXC" image import -q "./${ARTIFACT_FILE?}" --alias "ncp/test" || true
-          LXC_ARGS=(-p default)
+          LXC_ARGS=(-p default -c security.nesting=true)
           [[ -z "$LXD_EXTRA_PROFILE" ]] || LXC_ARGS+=(-p "$LXD_EXTRA_PROFILE")
           systemd-run --user --scope -p "Delegate=yes" "$LXC" launch -q "${LXC_ARGS[@]}" "ncp/test" ncp || \
           sudo systemd-run --scope -p "Delegate=yes" "$LXC" launch -q "${LXC_ARGS[@]}" "ncp/test" ncp
@@ -418,7 +419,7 @@ jobs:
       USE_INCUS: "${{ needs.determine-runner.outputs.lxc_cmd == 'incus' && 'yes' || 'no' }}"
     steps:
       - name: Setup incus
-        if: ${{ needs.determine-runner.outputs.runner_label != 'ubuntu-20.04-arm64' }}
+        if: ${{ needs.determine-runner.outputs.runner_label != 'ubuntu-26.04-arm64' }}
         run: |
           sudo apt-get update
           sudo apt-get install -y incus qemu-system incus-tools
@@ -474,7 +475,7 @@ jobs:
           . ./build/buildlib.sh
           sudo "$LXC" delete -q -f ncp || true
           sudo "$LXC" image import -q "./ncp.tar.gz" --alias "ncp/update" || true
-          LXC_ARGS=(-p default)
+          LXC_ARGS=(-p default -c security.nesting=true)
           [[ -z "$LXD_EXTRA_PROFILE" ]] || LXC_ARGS+=(-p "$LXD_EXTRA_PROFILE")
           systemd-run --user --scope -p "Delegate=yes" "$LXC" launch -q "${LXC_ARGS[@]}" "ncp/update" ncp || \
           sudo systemd-run --scope -p "Delegate=yes" "$LXC" launch -q "${LXC_ARGS[@]}" "ncp/update" ncp
@@ -739,7 +740,7 @@ jobs:
         with:
           ref: "${{ env.VERSION }}"
       - name: Setup incus
-        if: ${{ needs.determine-runner.outputs.runner_label != 'ubuntu-20.04-arm64' }}
+        if: ${{ needs.determine-runner.outputs.runner_label != 'ubuntu-26.04-arm64' }}
         run: |
           sudo apt-get update
           sudo apt-get install -y incus qemu-system incus-tools
@@ -794,7 +795,7 @@ jobs:
           . ./build/buildlib.sh
           sudo "$LXC" delete -q -f ncp || true
           sudo "$LXC" image import -q "./${ARTIFACT_FILE?}" --alias "ncp/test" || true
-          LXC_ARGS=(-p default)
+          LXC_ARGS=(-p default -c security.nesting=true)
           [[ -z "$LXD_EXTRA_PROFILE" ]] || LXC_ARGS+=(-p "$LXD_EXTRA_PROFILE")
           systemd-run --user --scope -p "Delegate=yes" "$LXC" launch -q "${LXC_ARGS[@]}" "ncp/test" ncp || \
           sudo systemd-run --scope -p "Delegate=yes" "$LXC" launch -q "${LXC_ARGS[@]}" "ncp/test" ncp
