@@ -8,10 +8,11 @@ PHPVER="${PHPVER?ERROR: PHPVER variable unset!}"
 if [[ "$1" == "--defaults" ]] || ! [[ -f "${BINDIR}/CONFIG/nc-limits.sh" ]]
 then
   echo "INFO: Restoring template to default settings" >&2
-
   PHPTHREADS=16
+  PHPMAXREQUESTS=500
 else
   PHPTHREADS="$(source "${BINDIR}/CONFIG/nc-limits.sh"; tmpl_php_threads)"
+  PHPMAXREQUESTS="$(source "${BINDIR}/CONFIG/nc-limits.sh"; tmpl_php_maxrequests)"
 fi
 
 
@@ -27,6 +28,7 @@ pm.max_children = ${PHPTHREADS}
 pm.start_servers = 4
 pm.min_spare_servers = 4
 pm.max_spare_servers = 8
+pm.max_requests = ${PHPMAXREQUESTS}
 pm.status_path = /status
 slowlog = log/\$pool.log.slow
 EOF
