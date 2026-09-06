@@ -122,7 +122,7 @@ jobs:
 
   test:
     needs: build
-    runs-on: ubuntu-20.04-arm64
+    runs-on: ubuntu-26.04-arm64
     env:
       VERSION: "${{ inputs.git_ref }}"
       ARTIFACT_ID: ${{ needs.build.outputs.artifact_name }}
@@ -136,8 +136,8 @@ jobs:
       run:
         shell: bash
     steps:
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+#      - name: Set up QEMU
+#        uses: docker/setup-qemu-action@v3
       - name: Disable apparmor
         run: |
           sudo systemctl disable apparmor
@@ -174,9 +174,9 @@ jobs:
           mount_raspbian "ncp.img"
           sudo cat raspbian_root/etc/machine-id
           sudo systemd-id128 new | sudo tee ./raspbian_root/etc/machine-id
-          sudo wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-aarch64-static -O raspbian_root/usr/bin/qemu-aarch64-static
-          sudo wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-arm-static -O raspbian_root/usr/bin/qemu-arm-static
-          sudo chmod +x raspbian_root/usr/bin/qemu-{arm,aarch64}-static
+          # sudo wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-aarch64-static -O raspbian_root/usr/bin/qemu-aarch64-static
+          # sudo wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-arm-static -O raspbian_root/usr/bin/qemu-arm-static
+          # sudo chmod +x raspbian_root/usr/bin/qemu-{arm,aarch64}-static
           echo 'Mutex posixsem' | sudo tee -a raspbian_root/etc/apache2/mods-available/ssl.conf
           echo 'ignore-warnings ARM64-COW-BUG' | sudo tee -a raspbian_root/etc/redis/redis.conf
           sudo mkdir -p raspbian_root/etc/systemd/system/redis-server.service.d
@@ -185,7 +185,7 @@ jobs:
           
           sudo mkdir -p raspbian_root/etc/systemd/system/php${PHPVER}-fpm.service.d
           echo '[Service]' | sudo tee raspbian_root/etc/systemd/system/php${PHPVER}-fpm.service.d/ncp-ci.conf
-          echo 'ExecStartPre=mkdir -p /var/run/php' | sudo tee -a raspbian_root/etc/systemd/system/php${PHPVER}-fpm.service.d/ncp-ci.conf
+          echo 'ExecStartPre=mkdir -p /var/run/php' | sudo tee raspbian_root/etc/systemd/system/php${PHPVER}-fpm.service.d/ncp-ci.conf
           
           # Disable ImportCredential and LoadCredential directives to workaround https://gitlab.com/qemu-project/qemu/-/work_items/1962
           # see https://github.com/systemd/systemd/issues/31219#issuecomment-2846006948
