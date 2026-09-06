@@ -1,3 +1,10 @@
-{"translations": {
-    "nc-limits": "Systembegrenzungen"
-}}
+{
+    "translations": {
+        "nc-limits": "Systembegrenzungen",
+        "MAXFILESIZE": "Maximale Dateigröße",
+        "MEMORYLIMIT": "Speicherlimit",
+        "PHPTHREADS": "PHP-Threads",
+        "PHPMAXREQUESTS": "Max. Anfragen vor Worker-Rotation",
+        "REDISMEM": "Redis-Speicher"
+    }
+}
