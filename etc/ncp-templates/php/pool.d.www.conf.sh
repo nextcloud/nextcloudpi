@@ -12,7 +12,7 @@ then
   PHPMAXREQUESTS=500
 else
   PHPTHREADS="$(source "${BINDIR}/CONFIG/nc-limits.sh"; tmpl_php_threads)"
-  PHPMAXREQUESTS="$(source "${BINDIR}/CONFIG/nc-limits.sh"; tmpl_php_maxrequests)"
+  PHPMAXREQUESTS="$(source "${BINDIR}/CONFIG/nc-limits.sh"; tmpl_php_max_requests)"
 fi
 
 

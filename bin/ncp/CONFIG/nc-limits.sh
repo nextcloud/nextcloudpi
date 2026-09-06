@@ -48,10 +48,10 @@ tmpl_php_threads() {
   [[ $PHPTHREADS -eq 0 ]] && PHPTHREADS=$(( TOTAL_MEM / ( 100 * 1024 * 1024 ) ))
   # Minimum 16
   [[ $PHPTHREADS -lt 16 ]] && PHPTHREADS=16
-   echo -n "$PHPTHREADS"
+  echo -n "$PHPTHREADS"
 }
 
-tmpl_php_maxrequests() {
+tmpl_php_max_requests() {
   local PHPMAXREQUESTS="$(find_app_param nc-limits PHPMAXREQUESTS)"
   [[ $PHPMAXREQUESTS -eq 0 ]] && PHPMAXREQUESTS=500
   echo -n "$PHPMAXREQUESTS"
@@ -65,7 +65,7 @@ configure()
   file /bin/bash | grep 64-bit > /dev/null || TOTAL_MEM="$(( 1024 * 1024 * 1024 * 4 ))"
   local AUTOMEM=$(( TOTAL_MEM * 75 / 100 ))
 
-# MAX FILESIZE & MAX PHP MEMORY
+# PHP MAX FILESIZE & PHP MAX MEMORY
   local require_fpm_restart=false
   local CONF=/etc/php/${PHPVER}/fpm/conf.d/90-ncp.ini
   local CONF_VALUE="$(cat "$CONF" 2> /dev/null || true)"
@@ -74,11 +74,11 @@ configure()
   install_template "php/90-ncp.ini.sh" "$CONF"
   [[ "$CONF_VALUE" == "$(cat "$CONF")" ]] || require_fpm_restart=true
 
-  # MAX PHP THREADS & MAX REQUESTS
+  # PHP THREADS & PHP MAX REQUESTS
   local CONF=/etc/php/${PHPVER}/fpm/pool.d/www.conf
   CONF_VALUE="$(cat "$CONF" 2> /dev/null || true)"
   echo "Using $(tmpl_php_threads) PHP threads"
-  echo "Using $(tmpl_php_maxrequests) for PHP max requests"
+  echo "Using $(tmpl_php_max_requests) for PHP max requests"
   install_template "php/pool.d.www.conf.sh" "$CONF"
   [[ "$CONF_VALUE"  == "$(cat "$CONF")"   ]] || require_fpm_restart=true
 
