@@ -9,3 +9,4 @@ source /usr/local/etc/library.sh
 install_template "systemd/php-fpm.service.d.ncp.conf.sh" \
   "/etc/systemd/system/php${PHPVER}-fpm.service.d/ncp.conf"
 systemctl daemon-reload
+systemctl reload "php${PHPVER}-fpm.service"

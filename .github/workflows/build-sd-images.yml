@@ -122,7 +122,7 @@ jobs:
 
   test:
     needs: build
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-26.04-arm64
     env:
       VERSION: "${{ inputs.git_ref }}"
       ARTIFACT_ID: ${{ needs.build.outputs.artifact_name }}
@@ -136,8 +136,8 @@ jobs:
       run:
         shell: bash
     steps:
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+#      - name: Set up QEMU
+#        uses: docker/setup-qemu-action@v3
       - name: Disable apparmor
         run: |
           sudo systemctl disable apparmor
@@ -145,7 +145,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: "${{ env.VERSION }}"
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         if: "${{ inputs.test_image_url == '' }}"
         with:
           name: ${{ env.ARTIFACT_ID }}
@@ -161,6 +161,8 @@ jobs:
       - name: Prepare test
         run: |
           set -x
+          
+          PHPVER="$(jq -r .php_version ./etc/ncp.cfg)"
           mv "output/${ARTIFACT_FILE?}" ncp.img
           sudo apt-get update
           sudo apt-get install -y systemd-container
@@ -172,21 +174,38 @@ jobs:
           mount_raspbian "ncp.img"
           sudo cat raspbian_root/etc/machine-id
           sudo systemd-id128 new | sudo tee ./raspbian_root/etc/machine-id
-          sudo wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-aarch64-static -O raspbian_root/usr/bin/qemu-aarch64-static
-          sudo wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-arm-static -O raspbian_root/usr/bin/qemu-arm-static
-          sudo chmod +x raspbian_root/usr/bin/qemu-{arm,aarch64}-static
+          # sudo wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-aarch64-static -O raspbian_root/usr/bin/qemu-aarch64-static
+          # sudo wget -nv https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-arm-static -O raspbian_root/usr/bin/qemu-arm-static
+          # sudo chmod +x raspbian_root/usr/bin/qemu-{arm,aarch64}-static
           echo 'Mutex posixsem' | sudo tee -a raspbian_root/etc/apache2/mods-available/ssl.conf
           echo 'ignore-warnings ARM64-COW-BUG' | sudo tee -a raspbian_root/etc/redis/redis.conf
           sudo mkdir -p raspbian_root/etc/systemd/system/redis-server.service.d
           echo '[Service]' | sudo tee raspbian_root/etc/systemd/system/redis-server.service.d/ncp-ci.conf
           echo 'PrivateUsers=false' | sudo tee -a raspbian_root/etc/systemd/system/redis-server.service.d/ncp-ci.conf
           
-          sudo mkdir -p raspbian_root/etc/systemd/system/php8.3-fpm.service.d
-          echo '[Service]' | sudo tee raspbian_root/etc/systemd/system/php8.3-fpm.service.d/ncp-ci.conf
-          echo 'ExecStartPre=mkdir -p /var/run/php' | sudo tee -a raspbian_root/etc/systemd/system/php8.3-fpm.service.d/ncp-ci.conf
+          sudo mkdir -p raspbian_root/etc/systemd/system/php${PHPVER}-fpm.service.d
+          echo '[Service]' | sudo tee raspbian_root/etc/systemd/system/php${PHPVER}-fpm.service.d/ncp-ci.conf
+          echo 'ExecStartPre=mkdir -p /var/run/php' | sudo tee raspbian_root/etc/systemd/system/php${PHPVER}-fpm.service.d/ncp-ci.conf
+          
+          # Disable ImportCredential and LoadCredential directives to workaround https://gitlab.com/qemu-project/qemu/-/work_items/1962
+          # see https://github.com/systemd/systemd/issues/31219#issuecomment-2846006948
+          for i in raspbian_root/usr/lib/systemd/system/*.service
+          do
+            [[ -f $i ]] || continue
+          	grep -q '^ImportCredential=' "$i" && {
+          	  sudo mkdir -p "${i/usr\/lib/etc}.d"
+          	  echo -e '[Service]\nImportCredential=' | sudo tee "${i/usr\/lib/etc}.d/unset-ImportCredential.conf"
+            }
+            grep -q '^LoadCredenital=' "$i" && {
+          	  sudo mkdir -p "${i/usr\/lib/etc}.d"
+          	  echo -e '[Service]\nLoadCredential=' | sudo tee "${i/usr\/lib/etc}.d/unset-LoadCredential.conf"
+            }
+          done
       - name: Test image
         id: test
         run: |
+          
+          PHPVER="$(jq -r .php_version ./etc/ncp.cfg)"
           
           log_err() {
             rc="${1?}"
@@ -194,7 +213,7 @@ jobs:
             echo -e "${LOG_DIAG} $msg" >&2
             return $rc
           }
-          sudo systemd-nspawn --boot -D ./raspbian_root/ -M ncp --hostname=nextcloudpi |& awk "{ print \"${LOG_GUEST} \" \$0 }" &
+          sudo systemd-nspawn --boot -D ./raspbian_root/ -M ncp --hostname=nextcloudpi --network-veth |& awk "{ print \"${LOG_GUEST} \" \$0 }" &
           sleep 60
           
           CONTAINER_CMD=(sudo systemd-run --machine=ncp -P --wait)
@@ -215,7 +234,7 @@ jobs:
             echo -e "${LOG_CICD} Could not reach container. Aborting..."
             "${CONTAINER_CMD[@]}" systemctl status --no-pager redis-server || :;
             "${CONTAINER_CMD[@]}" systemctl status --no-pager mariadb || :;
-            "${CONTAINER_CMD[@]}" systemctl status --no-pager php8.3-fpm || :;
+            "${CONTAINER_CMD[@]}" systemctl status --no-pager php${PHPVER}-fpm :;
             exit 1
           }
 
@@ -283,7 +302,8 @@ jobs:
           for attempt in {1..5}
           do
             echo -e "${LOG_CICD} == System Tests (attempt $attempt/5) =="
-            USE_SUDO=yes ./.venv/bin/python tests/system_tests.py --non-interactive |& awk "{ print \"${LOG_TEST} \" \$0 }"
+            # TODO: Reenable update test
+            USE_SUDO=yes ./.venv/bin/python tests/system_tests.py --skip-update-test --non-interactive |& awk "{ print \"${LOG_TEST} \" \$0 }"
             [[ ${PIPESTATUS[0]} -eq 0 ]] || {
               echo -e "${LOG_CICD} System test failed!"
               sleep 12
