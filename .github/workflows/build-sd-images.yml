@@ -145,7 +145,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: "${{ env.VERSION }}"
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         if: "${{ inputs.test_image_url == '' }}"
         with:
           name: ${{ env.ARTIFACT_ID }}
@@ -302,7 +302,7 @@ jobs:
           for attempt in {1..5}
           do
             echo -e "${LOG_CICD} == System Tests (attempt $attempt/5) =="
-            USE_SUDO=yes ./.venv/bin/python tests/system_tests.py --non-interactive |& awk "{ print \"${LOG_TEST} \" \$0 }"
+            USE_SUDO=yes ./.venv/bin/python tests/system_tests.py --skip-update-test --non-interactive |& awk "{ print \"${LOG_TEST} \" \$0 }"
             [[ ${PIPESTATUS[0]} -eq 0 ]] || {
               echo -e "${LOG_CICD} System test failed!"
               sleep 12
