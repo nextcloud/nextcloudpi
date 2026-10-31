@@ -22,15 +22,18 @@ echo "deb [signed-by=/usr/share/keyrings/debsuryorg-archive-keyring.gpg] https:/
 
 apt-get update
 apt-get upgrade -y
-for aptlist in /etc/apt/sources.list /etc/apt/sources.list.d/{php.list,armbian.list,raspi.list}
+for aptlist in /etc/apt/sources.list /etc/apt/sources.list.d/{php.list,armbian.list,raspi.list,armbian-config.sources,armbian.sources,debian.sources}
 do
   [ -f "$aptlist" ] && sed -i -e "s/bookworm/trixie/g" "$aptlist"
 done
-for aptlist in /etc/apt/sources.list.d/*.list
+for aptlist in /etc/apt/sources.list.d/*.list /etc/apt/sources.list.d/*.sources
 do
-  [[ "$aptlist" =~ "/etc/apt/sources.list.d/"(php|armbian|raspi)".list" ]] || {
+  [[ "$aptlist" =~ "/etc/apt/sources.list.d/"(php|armbian|raspi)".list" ]] \
+  || [[ "$aptlist" =~ "/etc/apt/sources.list.d/"(armbian-config|armbian|debian)".sources" ]] \
+  || [[ "$aptlist" =~ "/etc/apt/sources.list.d/"("*.list"|"*.sources") ]] \
+  || {
     echo "Disabling repositories from \"$aptlist\""
-    sed -i -e "s/deb/#deb/g" "$aptlist"
+    sed -i -e "s/deb/#deb/g" "$aptlist" || continue;
   }
 done
 apt-get update
