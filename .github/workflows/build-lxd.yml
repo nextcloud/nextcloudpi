@@ -36,6 +36,7 @@ jobs:
       runner_label: ${{ steps.script.outputs.runner_label }}
       lxc_cmd: ${{ steps.script.outputs.lxc_cmd }}
       lxd_extra_profile: ${{ steps.script.outputs.lxd_extra_profile }}
+      ff_binary: ${{ steps.script.outputs.ff_binary }}
     steps:
       - name: script
         id: script
@@ -45,9 +46,11 @@ jobs:
             LXC_CMD="incus"
             RUNNER_LABEL="ubuntu-26.04-arm64"
             echo "lxd_extra_profile=network" | tee -a "$GITHUB_OUTPUT"
+            echo "ff_binary=/usr/bin/firefox-esr" | tee -a "$GITHUB_OUTPUT"
           else
             LXC_CMD="incus"
             RUNNER_LABEL="ubuntu-latest"
+            echo "ff_binary=$(which firefox)" | tee -a "$GITHUB_OUTPUT"
           fi
 
           echo "runner_label=$RUNNER_LABEL" | tee -a $GITHUB_OUTPUT
@@ -151,7 +154,8 @@ jobs:
         if: ${{ needs.determine-runner.outputs.runner_label != 'ubuntu-26.04-arm64' }}
         run: |
           sudo apt-get update
-          sudo apt-get install -y incus qemu-system incus-tools
+          sudo apt-get install -y incus qemu-system
+          sudo apt-get install -y incus-tools || sudo apt-get install -y incus-extra
           sudo iptables -I DOCKER-USER -i incusbr0 -j ACCEPT
           sudo iptables -I DOCKER-USER -o incusbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
           sudo incus admin init --auto
@@ -203,7 +207,8 @@ jobs:
         if: ${{ needs.determine-runner.outputs.runner_label != 'ubuntu-26.04-arm64' }}
         run: |
           sudo apt-get update
-          sudo apt-get install -y incus qemu-system incus-tools
+          sudo apt-get install -y incus qemu-system
+          sudo apt-get install -y incus-tools || sudo apt-get install -y incus-extra
           sudo iptables -I DOCKER-USER -i incusbr0 -j ACCEPT
           sudo iptables -I DOCKER-USER -o incusbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
           sudo incus admin init --auto
@@ -232,6 +237,7 @@ jobs:
           sudo mv geckodriver /usr/local/bin/
           sudo chmod +x /usr/local/bin/geckodriver
           echo "GECKODRIVER_PATH=/usr/local/bin/geckodriver" >> "$GITHUB_ENV"
+          echo "FF_BINARY_PATH=${{ needs.determine-runner.outputs.ff_binary }}" >> "$GITHUB_ENV"
           geckodriver -V
       - name: Setup Selenium
         run: |
@@ -269,8 +275,6 @@ jobs:
         working-directory: ./tests
         run: |
           set -x
-          export GECKODRIVER_PATH="$GECKODRIVER_PATH"
-          export FF_BINARY_PATH="$(which firefox)"
           python="$(dirname "$PWD")/.venv/bin/python"
           sudo "$LXC" exec ncp -- /usr/local/bin/ncc config:system:set overwrite.cli.url --value "https://nextcloudpi.local"
           sudo "$LXC" exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
@@ -379,8 +383,6 @@ jobs:
         run: |
           set -x
           sudo "$LXC" exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
-          export GECKODRIVER_PATH="$GECKODRIVER_PATH"
-          export FF_BINARY_PATH="$(which firefox)"
           python="$(dirname "$PWD")/.venv/bin/python"
           
           USE_INCUS="$USE_INCUS" "$python" system_tests.py --skip-update-test --non-interactive || {
@@ -424,7 +426,8 @@ jobs:
         if: ${{ needs.determine-runner.outputs.runner_label != 'ubuntu-26.04-arm64' }}
         run: |
           sudo apt-get update
-          sudo apt-get install -y incus qemu-system incus-tools
+          sudo apt-get install -y incus qemu-system
+          sudo apt-get install -y incus-tools || sudo apt-get install -y incus-extra
           sudo iptables -I DOCKER-USER -i incusbr0 -j ACCEPT
           sudo iptables -I DOCKER-USER -o incusbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
           sudo incus admin init --auto
@@ -457,6 +460,7 @@ jobs:
           sudo mv geckodriver /usr/local/bin/
           sudo chmod +x /usr/local/bin/geckodriver
           echo "GECKODRIVER_PATH=/usr/local/bin/geckodriver" >> "$GITHUB_ENV"
+          echo "FF_BINARY_PATH=${{ needs.determine-runner.outputs.ff_binary }}" >> "$GITHUB_ENV"
           geckodriver -V
       - name: Setup Selenium
         run: |
@@ -492,8 +496,6 @@ jobs:
         working-directory: ./tests
         run: |
           set -x
-          export GECKODRIVER_PATH="$GECKODRIVER_PATH"
-          export FF_BINARY_PATH="$(which firefox)"
           sudo "$LXC" exec ncp -- /usr/local/bin/ncc config:system:set overwrite.cli.url --value "https://nextcloudpi.local"
           sudo "$LXC" exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
           python="$(dirname "$PWD")/.venv/bin/python"
@@ -601,8 +603,6 @@ jobs:
         run: |
           set -x
           sudo "$LXC" exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
-          export GECKODRIVER_PATH="$GECKODRIVER_PATH"
-          export FF_BINARY_PATH="$(which firefox)"
           python="$(dirname "$PWD")/.venv/bin/python"
           
           USE_INCUS="$USE_INCUS" "$python" system_tests.py --skip-update-test --non-interactive || {
@@ -698,8 +698,6 @@ jobs:
         run: |
           set -x
           sudo "$LXC" exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
-          export GECKODRIVER_PATH="$GECKODRIVER_PATH"
-          export FF_BINARY_PATH="$(which firefox)"
           python="$(dirname "$PWD")/.venv/bin/python"
           
           USE_INCUS="$USE_INCUS" "$python" system_tests.py --skip-update-test --non-interactive || {
@@ -748,7 +746,8 @@ jobs:
         if: ${{ needs.determine-runner.outputs.runner_label != 'ubuntu-26.04-arm64' }}
         run: |
           sudo apt-get update
-          sudo apt-get install -y incus qemu-system incus-tools
+          sudo apt-get install -y incus qemu-system
+          sudo apt-get install -y incus-tools || sudo apt-get install -y incus-extra
           sudo iptables -I DOCKER-USER -i incusbr0 -j ACCEPT
           sudo iptables -I DOCKER-USER -o incusbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
           sudo incus admin init --auto
@@ -777,6 +776,7 @@ jobs:
           sudo mv geckodriver /usr/local/bin/
           sudo chmod +x /usr/local/bin/geckodriver
           echo "GECKODRIVER_PATH=/usr/local/bin/geckodriver" >> "$GITHUB_ENV"
+          echo "FF_BINARY_PATH=${{ needs.determine-runner.outputs.ff_binary }}" >> "$GITHUB_ENV"
           geckodriver -V
       - name: Setup Selenium
         run: |
@@ -814,8 +814,6 @@ jobs:
         working-directory: ./tests
         run: |
           set -x
-          export GECKODRIVER_PATH="$GECKODRIVER_PATH"
-          export FF_BINARY_PATH="$(which firefox)"
           sudo "$LXC" exec ncp -- bash -c 'tail -f /var/log/ncp.log' |& awk '{ print "NCP::" $0 }' &
           sudo "$LXC" exec ncp -- bash -c 'ncc config:system:get overwrite.cli.url'
           python="$(dirname "$PWD")/.venv/bin/python"
