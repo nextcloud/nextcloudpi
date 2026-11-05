@@ -195,7 +195,7 @@ EOF
   ncc config:system:set jpeg_quality --value 60
 
   # other
-  ncc config:system:set serverid --value="$((RANDOM % 1024))" --type=integer
+  ncc config:system:set serverid --value="$((RANDOM % 512))" --type=integer
   ncc config:system:set overwriteprotocol --value=https
   ncc config:system:set overwrite.cli.url --value="https://nextcloudpi/"
 

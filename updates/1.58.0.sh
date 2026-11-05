@@ -2,6 +2,7 @@
 
 set -euo pipefail
 
+[[ -f /usr/local/etc/ncp.cfg ]] && export NCPCFG=/usr/local/etc/ncp.cfg
 source /usr/local/etc/library.sh
 
 # PHP-FPM systemd drop-in: allow write access to NCP paths blocked by ProtectSystem=full
@@ -9,3 +10,4 @@ source /usr/local/etc/library.sh
 install_template "systemd/php-fpm.service.d.ncp.conf.sh" \
   "/etc/systemd/system/php${PHPVER}-fpm.service.d/ncp.conf"
 systemctl daemon-reload
+systemctl reload "php${PHPVER}-fpm.service"

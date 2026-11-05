@@ -180,10 +180,12 @@ configure()
   if [[ -z "${OPCACHEDIR}" ]]
   then
     install_template "php/opcache.ini.sh" "/etc/php/${PHPVER}/mods-available/opcache.ini" --defaults
+    systemctl reload "php${PHPVER}-fpm"
   else
     mkdir -p "$OPCACHEDIR"
     chown -R www-data:www-data "$OPCACHEDIR"
     install_template "php/opcache.ini.sh" "/etc/php/${PHPVER}/mods-available/opcache.ini"
+    systemctl reload "php${PHPVER}-fpm"
   fi
 
   ## RE-CREATE DATABASE TABLE

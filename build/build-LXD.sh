@@ -39,7 +39,7 @@ LXC_CMD=(lxc)
 "${LXC_CMD[@]}" info || LXC_CMD=(sudo "${LXC_CMD[0]}")
 
 "${LXC_CMD[@]}" delete -f ncp 2>/dev/null || true
-LXC_CREATE=("${LXC_CMD[@]}" init -p default)
+LXC_CREATE=("${LXC_CMD[@]}" init -p default -c security.nesting=true)
 [[ -n "$LXD_EXTRA_PROFILE" ]] && LXC_CREATE+=(-p "$LXD_EXTRA_PROFILE")
 if [[ -n "$LXD_ARCH" ]] && [[ "$LXD_ARCH" != "x86" ]]
 then

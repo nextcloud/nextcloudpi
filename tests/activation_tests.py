@@ -13,7 +13,6 @@ More at https://ownyourbits.com
 """
 
 import sys
-import time
 import traceback
 import urllib
 import os
@@ -21,15 +20,15 @@ import getopt
 import configparser
 import signal
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.firefox.options import Options
 from selenium.common.exceptions import UnexpectedAlertPresentException
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
+from tempfile import TemporaryDirectory, mkdtemp
+from pathlib import Path
 
 suite_name = "activation tests"
 test_cfg = 'test_cfg.txt'
@@ -175,7 +174,7 @@ if __name__ == "__main__":
         print(f"Setting geckodriver from env ({os.environ['GECKODRIVER_PATH']})")
         webdriver_exec_path = os.environ['GECKODRIVER_PATH']
     if 'FF_BINARY_PATH' in os.environ:
-        print(f"Setting firefox binary from env ({os.environ['FF_BINARY_PATH']}")
+        print(f"Setting firefox binary from env ({os.environ['FF_BINARY_PATH']})")
         options.binary_location = os.environ['FF_BINARY_PATH']
     for opt, arg in opts:
         if opt in ('-h', '--help'):

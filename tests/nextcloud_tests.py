@@ -189,6 +189,10 @@ def test_nextcloud(IP: str, nc_port: str, driver: WebDriver, skip_release_check:
         wait.until(VisibilityOfElementLocatedByAnyLocator([(By.CSS_SELECTOR, "#security-warning.settings-section")]))
         settings_config_check(wait, test)
     except TimeoutException:
+        try:
+            print(driver.find_element(By.CSS_SELECTOR, "#security-warning").get_attribute("innerHTML"))
+        except NoSuchElementException:
+            print(driver.page_source)
         settings_config_check_pre32(wait, test)
 
     close_first_run_wizard(driver, wait_multiplier)
@@ -234,6 +238,8 @@ def test_nextcloud(IP: str, nc_port: str, driver: WebDriver, skip_release_check:
                     expected['ncp_version'] = True
                 elif 'php version' in divs[0].text.lower() and divs[1].text == ncp_cfg['php_version']:
                     expected['php_version'] = True
+                elif 'php version' in divs[0].text.lower() and divs[1].text != ncp_cfg['php_version']:
+                    print(f"{tc.yellow}{divs[1].text} != ${ncp_cfg['php_version']}")
                 elif 'debian release' in divs[0].text.lower():
                     if divs[1].text == ncp_cfg['release'] or skip_release_check:
                         expected['debian_release'] = True
@@ -322,7 +328,10 @@ def settings_config_check(wait, test):
 
         test.check(True)
     except Exception as e:
-        print(driver.find_element(By.CSS_SELECTOR, "#security-warning").get_attribute("innerHTML"))
+        try:
+            print(driver.find_element(By.CSS_SELECTOR, "#security-warning").get_attribute("innerHTML"))
+        except NoSuchElementException:
+            print(driver.page_source)
         test.check(e)
 
 

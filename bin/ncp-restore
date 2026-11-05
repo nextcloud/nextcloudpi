@@ -153,6 +153,7 @@ sed -i "s|'datadirectory' =>.*|'datadirectory' => '${DATADIR}',|" "${NCDIR}"/con
 
 # Just in case we moved the opcache dir
 install_template "php/opcache.ini.sh" "/etc/php/${PHPVER}/mods-available/opcache.ini"
+systemctl reload "php${PHPVER}-fpm"
 
 # tmp upload dir
 mkdir -p "$DATADIR/tmp"
