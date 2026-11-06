@@ -42,6 +42,14 @@ jobs:
       artifact_file: ${{ env.ARTIFACT_FILE }}
       artifact_name: ${{ github.run_id }}-${{ inputs.board_id }}-image
     steps:
+      - name: Print runner info
+        run: |
+          echo "runner name: ${RUNNER_NAME}"
+          echo "runner env: ${RUNNER_ENVIRONMENT}"
+          echo "runner OS: ${RUNNER_OS}"
+      - name: Init losetup
+        run: |
+          sudo losetup -f
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 #      - name: Set up QEMU

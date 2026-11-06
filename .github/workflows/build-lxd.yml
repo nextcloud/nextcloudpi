@@ -44,12 +44,12 @@ jobs:
           if [[ "${LXD_ARCH}" == "arm64" ]]
           then
             LXC_CMD="incus"
-            RUNNER_LABEL="ubuntu-26.04-arm64"
+            RUNNER_LABEL='["ubuntu-26.04-arm64"]'
             echo "lxd_extra_profile=network" | tee -a "$GITHUB_OUTPUT"
             echo "ff_binary=/usr/bin/firefox-esr" | tee -a "$GITHUB_OUTPUT"
           else
             LXC_CMD="incus"
-            RUNNER_LABEL="ubuntu-latest"
+            RUNNER_LABEL='["ubuntu-latest"]' #github-hosted
             echo "ff_binary=$(which firefox)" | tee -a "$GITHUB_OUTPUT"
           fi
 
@@ -58,7 +58,7 @@ jobs:
   build-current:
     needs:
       - determine-runner
-    runs-on: ${{ needs.determine-runner.outputs.runner_label }}
+    runs-on: ${{ fromJSON(needs.determine-runner.outputs.runner_label) }}
     outputs:
       artifact_name: "${{ env.ARTIFACT_NAME }}"
       artifact_file: "${{ steps.pack-lxd.outputs.artifact_file }}"
@@ -69,12 +69,17 @@ jobs:
       LXC: "${{ needs.determine-runner.outputs.lxc_cmd }}"
       LXD_EXTRA_PROFILE: "${{ needs.determine-runner.outputs.lxd_extra_profile }}"
     steps:
+      - name: Print runner info
+        run: |
+          echo "runner name: ${RUNNER_NAME}"
+          echo "runner env: ${RUNNER_ENVIRONMENT}"
+          echo "runner OS: ${RUNNER_OS}"
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           ref: "${{ env.VERSION }}"
       - name: Setup incus
-        if: ${{ needs.determine-runner.outputs.runner_label != 'ubuntu-26.04-arm64' }}
+        if: ${{ needs.determine-runner.outputs.runner_label != '["ubuntu-26.04-arm64"]' }}
         run: |
           sudo apt-get update
           sudo apt-get install -y incus qemu-system
@@ -105,7 +110,7 @@ jobs:
   build-previous:
     needs:
       - determine-runner
-    runs-on: ${{ needs.determine-runner.outputs.runner_label }}
+    runs-on: ${{ fromJSON(needs.determine-runner.outputs.runner_label) }}
     if: ${{ inputs.arch == 'x86' || inputs.arch == '' }}
     outputs:
       artifact_name: "${{ env.ARTIFACT_NAME }}"
@@ -118,6 +123,11 @@ jobs:
       LXC: "${{ needs.determine-runner.outputs.lxc_cmd }}"
       LXD_EXTRA_PROFILE: "${{ needs.determine-runner.outputs.lxd_extra_profile }}"
     steps:
+      - name: Print runner info
+        run: |
+          echo "runner name: ${RUNNER_NAME}"
+          echo "runner env: ${RUNNER_ENVIRONMENT}"
+          echo "runner OS: ${RUNNER_OS}"
       - name: Checkout code
         uses: actions/checkout@v4
         with:
@@ -151,7 +161,7 @@ jobs:
           echo "VERSION=$version" >> "$GITHUB_ENV"
           echo "previous_version=${version}" >> $GITHUB_OUTPUT
       - name: Setup incus
-        if: ${{ needs.determine-runner.outputs.runner_label != 'ubuntu-26.04-arm64' }}
+        if: ${{ needs.determine-runner.outputs.runner_label != '["ubuntu-26.04-arm64"]' }}
         run: |
           sudo apt-get update
           sudo apt-get install -y incus qemu-system
@@ -187,7 +197,7 @@ jobs:
     needs:
       - determine-runner
       - build-previous
-    runs-on: ${{ needs.determine-runner.outputs.runner_label }}
+    runs-on: ${{ fromJSON(needs.determine-runner.outputs.runner_label) }}
     outputs:
       artifact_name: "${{ env.ARTIFACT_NAME }}"
       artifact_file: "${{ steps.pack-lxd.outputs.artifact_file }}"
@@ -204,7 +214,7 @@ jobs:
         with:
           ref: "${{ env.VERSION }}"
       - name: Setup incus
-        if: ${{ needs.determine-runner.outputs.runner_label != 'ubuntu-26.04-arm64' }}
+        if: ${{ needs.determine-runner.outputs.runner_label != '["ubuntu-26.04-arm64"]' }}
         run: |
           sudo apt-get update
           sudo apt-get install -y incus qemu-system
@@ -413,7 +423,7 @@ jobs:
   test-dist-upgrade:
     needs:
       - determine-runner
-    runs-on: ${{ needs.determine-runner.outputs.runner_label }}
+    runs-on: ${{ fromJSON(needs.determine-runner.outputs.runner_label) }}
     env:
       VERSION: "${{ inputs.git_ref || github.ref }}"
       LXC: "${{ needs.determine-runner.outputs.lxc_cmd }}"
@@ -422,8 +432,13 @@ jobs:
       PREVIOUS_IMAGE_URL_AMD64: "https://github.com/nextcloud/nextcloudpi/releases/download/v1.57.1/NextCloudPi_LXD_x86_v1.57.1.tar.gz"
       USE_INCUS: "${{ needs.determine-runner.outputs.lxc_cmd == 'incus' && 'yes' || 'no' }}"
     steps:
+      - name: Print runner info
+        run: |
+          echo "runner name: ${RUNNER_NAME}"
+          echo "runner env: ${RUNNER_ENVIRONMENT}"
+          echo "runner OS: ${RUNNER_OS}"
       - name: Setup incus
-        if: ${{ needs.determine-runner.outputs.runner_label != 'ubuntu-26.04-arm64' }}
+        if: ${{ needs.determine-runner.outputs.runner_label != '["ubuntu-26.04-arm64"]' }}
         run: |
           sudo apt-get update
           sudo apt-get install -y incus qemu-system
@@ -729,7 +744,7 @@ jobs:
     needs:
       - determine-runner
       - build-current
-    runs-on: ${{ needs.determine-runner.outputs.runner_label }}
+    runs-on: ${{ fromJSON(needs.determine-runner.outputs.runner_label) }}
     env:
       VERSION: "${{ inputs.git_ref || github.head_ref || github.ref_name }}"
       ARTIFACT_NAME: ${{ needs.build-current.outputs.artifact_name }}
@@ -738,12 +753,17 @@ jobs:
       USE_INCUS: "${{ needs.determine-runner.outputs.lxc_cmd == 'incus' && 'yes' || 'no' }}"
       LXD_EXTRA_PROFILE: "${{ needs.determine-runner.outputs.lxd_extra_profile }}"
     steps:
+      - name: Print runner info
+        run: |
+          echo "runner name: ${RUNNER_NAME}"
+          echo "runner env: ${RUNNER_ENVIRONMENT}"
+          echo "runner OS: ${RUNNER_OS}"
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           ref: "${{ env.VERSION }}"
       - name: Setup incus
-        if: ${{ needs.determine-runner.outputs.runner_label != 'ubuntu-26.04-arm64' }}
+        if: ${{ needs.determine-runner.outputs.runner_label != '["ubuntu-26.04-arm64"]' }}
         run: |
           sudo apt-get update
           sudo apt-get install -y incus qemu-system
