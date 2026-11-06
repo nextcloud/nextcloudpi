@@ -1,5 +1,17 @@
 # NextcloudPi Changelog
 
+## [v1.59.0](https://github.com/nextcloud/nextcloudpi/tree/v1.59.0) (2026-11-06) Support for Nextcloud 34 and PHP 8.5
+
+### Changes
+
+- Adds support for Nextcloud 34
+- Adds support for PHP 8.5
+- Updates to Armbian base v26.08
+
+### Fixes
+
+- Fixes dist-upgrade on latest armbian versions by adding support for migrating new-style apt sources ([#2149](https://github.com/nextcloud/nextcloudpi/issues/2149))
+
 ## [v1.58.0](https://github.com/nextcloud/nextcloudpi/tree/v1.58.0) (2026-06-29) Support for Debian 13 (dist-upgrade)
 
 ### NOTE
