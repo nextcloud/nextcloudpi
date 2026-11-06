@@ -24,7 +24,7 @@ from subprocess import run as sp_run, getstatusoutput, PIPE, CompletedProcess
 from typing import Optional
 
 def run(*args, **kwargs):
-    print("running command: " + " ".join(args[0]))
+    # print("running command: " + " ".join(args[0]))
     return sp_run(*args, **kwargs)
 
 processes_must_be_running = [

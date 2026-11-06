@@ -18,7 +18,7 @@ then
 fi
 
 echo "Configuring serverid ..."
-ncc config:system:get serverid > /dev/null || ncc config:system:set serverid --value="$((RANDOM % 1024))" --type=integer
+ncc config:system:get serverid > /dev/null || ncc config:system:set serverid --value="$((RANDOM % 512))" --type=integer
 echo "Installing PHP APCU ..."
 apt-get install -y php${PHPVER}-apcu
 echo "Enable apache2 remoteip"
