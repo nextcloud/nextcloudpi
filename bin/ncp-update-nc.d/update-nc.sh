@@ -219,6 +219,7 @@ $ncc | grep -q db:add-missing-primary-keys && $ncc db:add-missing-primary-keys -
 $ncc | grep -q db:convert-filecache-bigint && $ncc db:convert-filecache-bigint -n
 $ncc | grep -q db:convert-mysql-charset && $ncc db:convert-mysql-charset -n
 $ncc maintenance:repair --help | grep -q -e '--include-expensive' && $ncc maintenance:repair --include-expensive
+$ncc app:update --all
 if $ncc app_api:daemon:list | grep 'No registered daemon configs.' > /dev/null 2>&1
 then
   $ncc app:disable app_api
