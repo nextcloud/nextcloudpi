@@ -43,7 +43,7 @@ connect_to_nc_update() {
     return 0
   elif [[ "$(systemctl is-active ncp-update-nc ||:)" == "failed" ]]
   then
-    echo "Nextcloud update failed (or was installed already)."
+    echo "Nextcloud update failed."
     return 1
   else
     echo "Nextcloud update was not found or failed (unexpected status: '$(systemctl is-active ncp-update-nc ||:)')"
